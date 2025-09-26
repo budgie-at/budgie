@@ -1,158 +1,322 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 
-# Suuudokuuu
+# Budgie — Mobile Expenses, Banking & Wealth Tracker (Offline-First)
 
-> Sudoku game to help **_Ukraine_** win the war against `russia`.
+> A privacy-first money app with offline-first design, optional bank sync, and an AI chat that answers questions about your spending, budgets, debts, goals, and portfolio (stocks & crypto).
 
-Unique. modern, open source [React Native](https://reactnative.dev/) / [Expo](https://expo.dev/) Sudoku game with a lot of features.
+## Table of Contents
 
-Feel free to create an `issue`, `feature request` or `pull request` if you have any **_suggestions_** or **_ideas_**.
+- [Project Description](#project-description)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Roadmap](#roadmap)
+  - [Phase 0 — Foundations](#phase-0--foundations-week-1)
+  - [Phase 1 — Core Expenses & Budgets](#phase-1--core-expenses--budgets-weeks-23)
+  - [Phase 2 — Bank Sync & Ingestion](#phase-2--bank-sync-read-only--ingestion-weeks-45)
+  - [Phase 3 — Portfolio (Stocks & Crypto)](#phase-3--portfolio-stocks--crypto-weeks-67)
+  - [Phase 4 — Debts & Goals](#phase-4--debts--goals-weeks-89)
+  - [Phase 5 — AI Chat v1](#phase-5--ai-chat-v1-local-first-weeks-1011)
+  - [Phase 6 — Rules, Recurring & Notifications](#phase-6--rules-recurring--notifications-weeks-1213)
+  - [Phase 7 — Polish & Public Beta](#phase-7--polish--public-beta-weeks-1415)
+  - [Phase 8 — v1 Launch](#phase-8--v1-launch-week-16)
+- [Non-Functional Requirements](#non-functional-requirements)
+- [AI Chat Capabilities](#ai-chat-capabilities-v1)
+- [QA & Testing](#qa--testing)
+- [CI/CD](#cicd)
+- [Risks & Mitigations](#risks--mitigations)
+- [Backlog / Nice-to-Have](#backlog--nice-to-have)
+- [Contributing](#contributing)
+- [License](LICENSE)
 
-## Play now! Do not hesitate
+---
 
-| [![Play directly in your browser!](packages/app/assets/chrome.png)](https://www.suuudokuuu.com/) | [![Download on the App Store](packages/app/assets/appstore-badge.png)](https://apps.apple.com/ua/app/suuudokuuu/id6449440933) | [![Download on the Play Market](packages/app/assets/google-play-badge.png)](https://apps.apple.com/ua/app/suuudokuuu/id6449440933) |
-| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+## Project Description
 
-![Play directly in your browser!](packages/app/assets/gameplay.gif)]
+**Vision**: Clarity about money without giving up privacy. Budgie works entirely offline, then selectively uses the network for bank sync and market prices when available.
+
+**Audience**: Individuals and couples who want simple day-to-day tracking with a wider view (banking + investments + debts + goals).
+
+**Differentiators**:
+- Offline-first core (manual entry always works; everything stored locally)
+- Bank sync ingestion that never blocks manual use (read-only; dedupe with local entries)
+- Unified wealth view (cash/bank, stocks, crypto, debts, goals)
+- Built-in AI chat that speaks plain language about your money (“why did groceries spike?”, “how to hit my trip goal?”)
+
+**Platforms**: iOS & Android (React Native / Expo)
+**Monetization (later)**: Free core; Pro adds multi-device sync, advanced rules, expanded connectors, automated exports
+**Privacy**: Local database is the source of truth; encryption at rest; opt-in analytics; no ads
+
+---
 
 ## Features
 
-### Monorepo architecture
+- **Expenses**: Quick add (≤3 taps), categories, accounts, budgets (monthly)
+- **Insights**: Category breakdown, daily burn, budget usage
+- **Bank Sync (read-only)**: OAuth connectors + CSV import fallback, dedupe, rules
+- **Portfolio**: Stocks & crypto holdings with cached prices and P&L
+- **Debts**: Credit/loan tracking, APR, payoff calculators (snowball/avalanche)
+- **Goals**: Targets, deadlines, allocation suggestions
+- **AI Chat**: Natural-language Q&A with citations into app views
+- **Export**: CSV (month/custom); onboarding with sample data; full offline usability
 
-Project is using a monorepo approach with [TurboRepo](https://turborepo.com/) to manage multiple packages in a single repository.
+---
 
-### Internalization(i18n)
+## Tech Stack
 
-The app supports multiple languages, which is detected by [expo-localization](https://docs.expo.dev/versions/latest/sdk/localization/) including:
+- **App**: React Native (Expo), TypeScript, Expo Router, TanStack Query, Zustand/Jotai
+- **Local DB**: WatermelonDB (schema versions & migrations, lazy loading, sync adapter)
+- **Bank Sync**: Aggregator/OAuth connectors (abstracted provider API) + CSV import
+- *8Market Data**: On-demand price fetch & local cache for stocks/crypto; offline last-known prices
+- **AI**: On-device first (small LLM) with optional cloud inference; RAG over local data
+- **Observability**: Sentry (crash/perf), opt-in analytics (redacted events)
+- **Testing**: Vitest/Jest, React Native Testing Library, Maestro (E2E)
+- **CI/CD**: GitHub Actions → EAS build & submit; Maestro for E2E
 
-- Ukrainian
-- English
-- French
-- German
-- Spanish
+---
 
-> i18n is implemented using [Lingui](https://lingui.dev/) library
+## Architecture
 
-### App versioning and release management
+- **Offline-first**: All core features work without network; bank sync & price fetches are additive
+- **Ingestion pipeline**: normalize → dedupe (fuzzy match) → categorize (rules) → review queue
+- **Price cache**: batched fetch; last-known fallback; manual override
+- **AI layer**: embeddings over local data (transactions/budgets/holdings/debts/goals); intent → metric/period/entity; optional cloud for heavy queries
+- **Security**: tokens in secure storage; at-rest encryption where available; PII minimization
+- **WatermelonDB specifics**: normalized models, background sync adapter for bank imports, schema migrations tracked per version
 
-The app uses [semantic versioning](https://semver.org/) to manage versions with [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
-meaning each commit and pull request has a strict format, which allows to generate beautiful changelogs and release notes automatically.
+---
 
-A [github PR workflow](.github/workflows/pr.yml#29) has a step to validate the PR title using [commitlint](https://commitlint.js.org/) to ensure that the PR title follows the conventional commits format.
+## Roadmap
 
-> Users can automatically see current app version on home page using [expo-constants](https://docs.expo.dev/versions/latest/sdk/constants/)
+> Track in GitHub Projects. Use labels `area:*`, `type:feat|bug|doc`, `size:S|M|L`, `prio:P0|P1|P2`.
 
-#### Native versions
+## Phase 0 — Foundations (Week 1)
+**Goals**
+- App scaffold, tokens, navigation; WatermelonDB v0; secure storage; CI/E2E
 
-App uses [fingerprint](https://expo.dev/blog/understanding-and-comparing-fingerprints-in-expo-apps) [runtimeVersion](https://docs.expo.dev/eas-update/runtime-versions/) policy ensure that expo-updates are applied to the correct version of the app.
+**Deliverables**
+- Boot iOS/Android; dark mode
+- WMDB schema + migrations; seed sample data
+- Actions: typecheck, lint, tests, EAS build; Maestro “app opens”
+- Sentry; analytics consent
 
-> To automate `user-facing` app version `app.cofig.js` takes it from the `package.json` file of the `app` package, which is updated automatically by [lerna](https://lerna.js.org/).
+**Acceptance**
+- Cold start < 2s; PR CI green; crash-free dev builds ≥ 99%
 
-[Expo tutorial on app versioning](https://docs.expo.dev/tutorial/eas/manage-app-versions/)
+**Key Tasks**
+- `feat: expo + ts strict + router`
+- `feat(db): watermelon schema v0 + migrations`
+- `chore(ci): actions + EAS + maestro skeleton`
+- `feat(security): secure storage + opt-in analytics`
 
-#### Release management
+---
 
-The app uses [lerna](https://lerna.js.org/) to manage versions of the packages in the monorepo, generate changelogs for each package if it was changed, and create [Github releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases).
+## Phase 1 — Core Expenses & Budgets (Weeks 2–3)
 
-### Enterprise-grade CI/CD
+**Goals**
+- Ultra-fast manual entry; lists; edit/delete; budgets; base insights
 
-[EAS](https://expo.dev/eas) over the air updates are used to deliver the PRs and production updates to the users, 2 channels are used:
+**Deliverables**
+- Quick Add (amount → category → account → note)
+- Transactions list (virtualized), edit, delete (soft)
+- Budgets (monthly/category) + progress ring; insights (category pie, daily line)
+- CSV export
 
-- `development` - for the pull requests
-- `production` - for the master branch
+**Acceptance**
+- Add expense ≤ 3 taps (median); full offline
+- Budget recomputes instantly on add/edit/remove
+- Unit/component tests for input & budget math
 
-All changes are represented as `pull requests`, each pipeline runs:
+**Key Tasks**
+- `feat(tx): quick add + keyboard`
+- `feat(budget): model + UI + recompute`
+- `feat(insights): category + daily`
+- `feat(export): csv (month/custom)`
 
-- [Linting](https://eslint.org/) to ensure code quality
-- [Type checking](https://www.typescriptlang.org/) to ensure type safety
-- [Unit tests](https://jestjs.io/) to ensure code correctness
-- [Copy-paste detection](https://github.com/kucherenko/jscpd) to ensure code uniqueness
-- [Dead code detection](https://knip.dev/) to ensure code cleanliness
-- [CodeQL](https://codeql.github.com/) to ensure code security
-- TODO: [Maestro tests](https://maestro.mobile.dev/) to ensure app functionality
+## Phase 2 — Bank Sync (Read-Only) & Ingestion (Weeks 4–5)
 
-> These strict rules ensure that the code is of high quality, secure, and maintainable.
-> Also this is very helpful for Copilot and other AI tools
+**Goals**
+- Link bank; import safely; never block offline usage
 
-#### Pull requests
+**Deliverables**
+- Connector abstraction (OAuth UI, token store) + CSV import fallback
+- Ingestion pipeline: normalize → dedupe → categorize (rules)
+- Manual review queue (imported/uncategorized)
+- Background sync (pull on open; user-triggered refresh)
 
-Each pull request creates an EAS preview for the `iOS`, `Android` and `Web` platforms, all info is published as comments to the PR, and web deployment is created.
+**Acceptance**
+- First link pulls 90 days in < 60s (happy path)
+- Dedupe rate ≥ 99% vs manual entries (amount/date/merchant heuristics)
+- Network failures fail “softly”; app remains usable offline
 
-#### Master branch
+**Key Tasks**
+- `feat(ingest): provider sdk + oauth`
+- `feat(ingest): normalizer + dedupe`
+- `feat(rules): merchant/time/amount heuristics`
+- `ui: review queue + conflict hints`
 
-Each commit to the `master` branch:
+## Phase 3 — Portfolio (Stocks & Crypto) (Weeks 6–7)
 
-- creates an EAS OTA update for the `iOS`, `Android` and `Web` production platforms.
-- creates a new [GitHub release](#app-versioning-and-release-management) with the changelog for the release
+**Goals**
+- Manual holdings; price cache; unified net worth
 
-> Production Web is hosted on [Vercel](https://vercel.com/), maybe we will migrate to EAS hosting when it becomes stable.
+**Deliverables**
+- Holdings editor (ticker/qty/cost; crypto: symbol/network)
+- Price cache (batched fetch; last-known fallback)
+- Portfolio screen: value, P&L (daily/total), allocation
+- Watchlists; manual price override
 
-Each commit
+**Acceptance**
+- Renders offline with last-known prices
+- Price refresh < 2s per symbol (batched)
+- P&L matches spreadsheet within ±0.1%
 
-#### [AppStore](https://www.apple.com/app-store/) and [Google Play](https://play.google.com/console)
+**Key Tasks**
+- `feat(prices): cache + adapters`
+- `feat(portfolio): holdings + charts`
+- `test: rounding/currency math`
 
-Special manual [GitHub Workflow](./.github/workflows/native-publish.yml) is used to build and publish the app to the stores.
+## Phase 4 — Debts & Goals (Weeks 8–9)
 
-> For the iOS app is published ti the TestFlight, for the Play Market it is published to the internal testing track.
+**Goals**
+- Track loans/credit; payoff; fund goals; budget interplay
 
-Then after manual review the app can be published to the production track.
+**Deliverables**
+- Debts (APR, min payment, due date), payoff calculators (snowball/avalanche)
+- Goals (target/date/priority); allocation suggestions from surplus
+- Notifications: due payments, slipping goals
 
-#### Internal distribution and testing
+**Acceptance**
+- Amortization accurate to lender statement within 1 payment
+- Goal ETA responds to budget changes
 
-For testing on `real devices` special manual [GitHub Workflow](./.github/workflows/native-dev-build.yml) is used to build the app for internal distribution.
+**Key Tasks**
+- `feat(debts): model + calculators + reminders`
+- `feat(goals): model + allocation engine`
+- `ui: insights → goals/debt widgets`
 
-> You need to register your device in the Expo dashboard to be able to install the development build.
+## Phase 5 — AI Chat v1 (Local-First) (Weeks 10–11)
 
-[Register your IOS device](https://expo.dev/register-device/c1da1a6e-616b-40a3-93ba-45bef53696e5)
+**Goals**
+- Natural-language Q&A and explanations over user data
 
-### Auto-candidates
+**Deliverables**
+- Embedding index over transactions/budgets/holdings/debts/goals
+- Intent detection: query → metric/period/category/entity
+- Chat UI with citations to in-app views; privacy toggle (offline-only vs cloud-assist)
 
-The app supports `auto-candidates mode`, which allows you to fill the candidates automatically based on the current state of the board.
+**Acceptance**
+- Answers < 2s for common queries
+- ≥90% correct on curated set; answers link to source screens
 
-### Web keyboard support
+**Key Tasks**
+- `feat(ai): embeddings + retrieval`
+- `feat(chat): intents + tool responses`
+- `test: gold-set Q&A`
 
-Use your arrow keys to navigate through the Sudoku board, press any number `1-9` to fill the cell.
+## Phase 6 — Rules, Recurring & Notifications (Weeks 12–13)
 
-> `Tab` activates auto-candidate mode
+**Goals**
+- Reduce manual work; habit-forming nudges
 
-### Sharing puzzles
+**Deliverables**
+- Rules editor (contains/regex → set category/account/goal)
+- Recurring transactions (salary/subscriptions) with drift handling
+- Alerts: budget 80/100%, low balance, upcoming debt payment
 
-You can share the current puzzle with your friends via a link, which will open the app with the same puzzle, score, mistakes and timer.
+**Acceptance**
+- ≥95% of repeated merchants auto-categorized after 2 entries
+- Recurring reliability ≥ 99% within 1h of schedule
 
-> [Expo - Sharing](https://docs.expo.dev/versions/latest/sdk/sharing/)
->
-> [Expo - Linking](https://docs.expo.dev/versions/latest/sdk/linking/)
->
-> [Expo - Router](https://docs.expo.dev/linking/overview/#use-expo-router-to-handle-deep-linking)
+**Key Tasks**
+- `feat(rules): engine + audit log`
+- `feat(recurring): scheduler`
+- `feat(notify): local notifications`
 
-### Theming support
+## Phase 7 — Polish & Public Beta (Weeks 14–15)
 
-You can switch between light and dark themes, OS/Browser theme is detected automatically initially.
+**Goals**
+- A11y, perf, stability; store prep
 
-> [React navigation theming](https://reactnavigation.org/docs/themes/)
->
-> [React native - Appearance](https://reactnative.dev/docs/appearance)
->
-> [React native - useColorTheme](https://reactnative.dev/docs/usecolorscheme)
+**Deliverables**
+- Accessibility pass (labels, contrast, dynamic type); haptics/gestures
+- Perf: list virtualization; WatermelonDB indices; memoized selectors
+- App icons, splash, store metadata; feedback panel
 
-### Universal links
+**Acceptance**
+- Crash-free users ≥ 99.5% (beta)
+- TTI < 1.5s on mid-tier devices
 
-Sharing a link to `https://suuudokuuu.com/` will open the app on your device if it is installed, otherwise it will open the web version of the app.
+**Key Tasks**
+- `perf: profile + optimize`
+- `a11y: voiceover/talkback`
+- `release: beta metadata + guide`
 
-> [Expo iOS Universal Links](https://docs.expo.dev/linking/ios-universal-links/)
->
-> [Expo - Android Linking](https://docs.expo.dev/linking/android-app-links/)
->
-> [Expo - iOS Linking](https://docs.expo.dev/linking/ios-universal-links/)
+## Phase 8 — v1 Launch (Week 16)
 
-### Animation
+**Goals**
+- Production release; support loop; metrics
 
-The app uses [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) for smooth animations and transitions.
+**Deliverables**
+- Store listings (localized), privacy policy, support site
+- Post-launch dashboard: activation, retention, crash
+- Data portability docs (export/delete)
 
-> Cell text animations are implemented using single `SharedValue` to optimize the performance, prop flag triggers the animation.
+**Acceptance**
+- Approved on App Store & Play
+- Activation ≥ 60% (first 5 transactions within 24h)
 
-## Packages
+**Key Tasks**
+- `release: 1.0.0`
+- `docs: privacy + data handling`
+- `growth: share/export hooks`
 
-- [app](packages/app/readme.md) - React Native / Expo application package
-- [generator](packages/generator/readme.md) - Sudoku puzzle generator
-- [app-tests](tests/app-tests/readme.md) - Maestro tests for the app package
+---
+
+## Non-Functional Requirements
+- **Offline-first**: All core actions work without network; sync & prices are additive
+- **Security**: Keystore-backed token storage; PII minimization; redacted analytics
+- **Performance**: Add/edit < 100 ms; chat answers < 2 s (local queries)
+- **Reliability**: Idempotent ingestion; conflict-safe merges; reversible migrations
+- **Accessibility8**: WCAG AA contrast; full screen-reader paths; reduced motion
+- **Internationalization**: Locale/currency aware; RTL-safe layouts
+
+## AI Chat Capabilities (v1)
+- **Q&A**: “How much did I spend on food last month?”, “What’s my net worth trend?”
+- **Explain**: “Why is this month higher?” (high-impact merchants, one-offs)
+- **Coach**: “To hit the Trip goal by July, add €X/week or cut Y% from dining.”
+- **Navigate**: Answers link to filtered views/charts
+- **Privacy Controls**: Offline-only mode vs per-question cloud assist (opt-in)
+
+## QA & Testing
+
+- **Unit**: currency math, dedupe, rules, amortization, P&L
+- **Component**: Quick Add, BudgetCard, HoldingsEditor, DebtPlanner, Chat
+- **E2E (Maestro)**: First run → Link bank (mock) → Import → Budget updates → Portfolio render → Debt payoff → Chat Q&A
+- **Property-based**: dedupe & rules engine
+
+## CI/CD
+- **PR checks**: typecheck, lint, tests, bundle size, E2E (Android)
+- **Builds**: nightly internal; weekly beta; EAS submit
+- **Observability**: symbolication, crash triage, auto-changelog (semantic-release)
+
+## Risks & Mitigations
+- **Aggregator variance**: Abstract provider; CSV fallback; robust normalizer
+- **Price feeds**: Cache & batch; show timestamps; allow manual overrides offline
+- **LLM footprint**: Modular AI (on-device first); streaming; cloud opt-in for complex queries
+- **Data integrity**: Import audit log; idempotent merges; user-visible review queue
+
+## Backlog / Nice-to-Have
+- Receipt OCR; bank SMS/email parsers
+- Widgets & lock-screen complications
+- Shared spaces (household) with roles
+- Tax lots & realized gains report
+- Multi-goal optimizer (Pareto frontier)
+
+## Contributing
+- Create small, focused PRs.
+- Use Conventional Commits (`feat:`, `fix:`, `chore:`…).
+- Add tests for new logic; update docs for user-facing changes.
+
+## License
+TBD (e.g., MIT).
