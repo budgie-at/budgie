@@ -1,5 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 
+[!Budgie Logo](assets/black-on-white.svg)
+
 # Budgie — Mobile Expenses, Banking & Wealth Tracker (Offline-First)
 
 > A privacy-first money app with offline-first design, optional bank sync, and an AI chat that answers questions about your spending, budgets, debts, goals, and portfolio (stocks & crypto).
@@ -62,6 +64,12 @@
 
 ---
 
+## Assets
+
+- [Logos](https://www.figma.com/design/BGehzLZktv9XRlStPootaE/Budgie?node-id=0-1&t=Apy06tSgKFKIFFO4-1)
+
+---
+
 ## Tech Stack
 
 - **App**: React Native (Expo), TypeScript, Expo Router, TanStack Query, Zustand/Jotai
@@ -105,6 +113,7 @@
 
 **Key Tasks**
 - `feat: expo + ts strict + router`
+- `feat(contracts): data contracts`
 - `feat(db): watermelon schema v0 + migrations`
 - `chore(ci): actions + EAS + maestro skeleton`
 - `feat(security): secure storage + opt-in analytics`
