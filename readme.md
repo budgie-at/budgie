@@ -1,6 +1,8 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
 
-[!Budgie Logo](assets/black-on-white.svg)
+<p align="center">
+    <img alt="Budgie Logo" src="assets/black-on-white.svg" width="200">
+</p>
 
 # Budgie — Mobile Expenses, Banking & Wealth Tracker (Offline-First)
 
