@@ -1,11 +1,10 @@
-import type { PropsWithChildren } from 'react';
-
-import '@/styles/globals.css';
 import { Inter } from 'next/font/google';
 
-import type { Metadata } from 'next';
+import { ThemeProvider } from '../components/theme-provider';
+import '../styles/globals.css'
 
-import { ThemeProvider } from '@/components/theme-provider';
+import type { Metadata } from 'next';
+import type { PropsWithChildren } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -37,17 +36,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html
-            lang="en"
-            suppressHydrationWarning
-        >
+        <html lang="en" suppressHydrationWarning>
             <body className={inter.className}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    disableTransitionOnChange
-                    enableSystem
-                >
+                <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                     {children}
                 </ThemeProvider>
             </body>
