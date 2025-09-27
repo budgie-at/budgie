@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+    --color-border: hsl(240 5.9% 90%);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -50,9 +54,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
