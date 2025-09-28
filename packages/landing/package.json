@@ -4,9 +4,9 @@
     "private": true,
     "scripts": {
         "build": "next build",
-        "dev": "next dev",
-        "lint": "next lint",
-        "start": "next start"
+        "build:start": "next start",
+        "start": "next dev",
+        "lint": "next lint"
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.12",
