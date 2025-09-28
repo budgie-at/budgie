@@ -1,11 +1,11 @@
 'use client';
 
-import { ChevronRight, Menu, Moon, Sun, X } from 'lucide-react';
+import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 import { Logo } from '../logo/logo';
+import { ThemeSwitcher } from '../theme-switcher/theme-switcher';
 import { Button } from '../ui/button';
 
 import { MobileMenu } from './mobile-menu';
@@ -13,12 +13,8 @@ import { MobileMenu } from './mobile-menu';
 export const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const { theme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setMounted(true);
-
         const handleScroll = (): void => {
             setIsScrolled(window.scrollY > 10);
         };
@@ -29,10 +25,6 @@ export const Header = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
-
-    const toggleTheme = (): void => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
-    };
 
     return (
         <header
@@ -66,25 +58,15 @@ export const Header = () => {
                     </Link>
                 </nav>
 
-                <div className="hidden md:flex gap-4 items-center">
-                    <Button className="rounded-full" onClick={toggleTheme} size="icon" variant="ghost">
-                        {mounted && theme === 'dark' ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
+                <div className="flex gap-4 items-center">
+                    <ThemeSwitcher />
 
-                        <span className="sr-only">Toggle theme</span>
-                    </Button>
-
-                    <Button className="rounded-full">
+                    <Button className="hidden rounded-full md:flex">
                         Download App
                         <ChevronRight className="ml-1 size-4" />
                     </Button>
-                </div>
 
-                <div className="flex items-center gap-4 md:hidden">
-                    <Button className="rounded-full" onClick={toggleTheme} size="icon" variant="ghost">
-                        {mounted && theme === 'dark' ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
-                    </Button>
-
-                    <Button onClick={() => void setMobileMenuOpen(!mobileMenuOpen)} size="icon" variant="ghost">
+                    <Button className="md:hidden" onClick={() => void setMobileMenuOpen(prev => !prev)} size="icon" variant="ghost">
                         {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
 
                         <span className="sr-only">Toggle menu</span>
