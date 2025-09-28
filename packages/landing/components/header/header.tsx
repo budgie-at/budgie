@@ -36,7 +36,7 @@ export const Header = () => {
 
     return (
         <header
-            className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-sm' : 'bg-transparent'}`}
+            className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
         >
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex items-center gap-2 font-bold">

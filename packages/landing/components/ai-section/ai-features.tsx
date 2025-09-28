@@ -25,7 +25,7 @@ export const AiFeatures = () => (
         <div className="space-y-6">
             {features.map(feature => (
                 <div className="flex items-start gap-4" key={feature.title}>
-                    <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0 mt-1">
+                    <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-1">
                         {feature.icon}
                     </div>
 
