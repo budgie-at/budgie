@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 export const WhitelistOfferDetails = () => (
     <div className="space-y-4">
         <Button
-            className="w-full sm:w-auto rounded-full h-14 px-12 text-lg bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg"
+            className="w-full sm:w-auto rounded-full h-14 px-12 text-lg bg-linear-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg"
             size="lg"
         >
             Join Whitelist - Save 25%

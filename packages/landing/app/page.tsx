@@ -12,7 +12,7 @@ import { WhitelistSection } from '../components/whitelist-section/whitelist-sect
 
 export default function LandingPage() {
     return (
-        <div className="flex min-h-[100dvh] flex-col">
+        <div className="flex min-h-dvh flex-col">
             <Header />
 
             <main className="flex-1">
