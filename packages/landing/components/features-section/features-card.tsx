@@ -10,7 +10,7 @@ interface FeaturesCardProps {
 }
 
 export const FeaturesCard = ({ icon, title, description }: FeaturesCardProps) => (
-    <Card className="h-full overflow-hidden border-border/40 bg-gradient-to-b from-background to-muted/10 backdrop-blur transition-all hover:shadow-md">
+    <Card className="h-full overflow-hidden border-border/40 bg-linear-to-b from-background to-muted/10 backdrop-blur-sm transition-all hover:shadow-md">
         <CardContent className="p-6 flex flex-col h-full">
             <div className="size-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary mb-4">
                 {icon}
