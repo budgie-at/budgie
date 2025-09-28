@@ -22,7 +22,7 @@ export const Logo = () => {
     }, []);
 
     return (
-        <div className="size-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground">
+        <div className="size-8 rounded-lg bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground">
             <Image alt="Budgie logo" height={32} src={logo} width={32} />
         </div>
     );

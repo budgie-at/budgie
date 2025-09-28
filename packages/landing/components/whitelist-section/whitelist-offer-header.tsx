@@ -1,6 +1,6 @@
 export const WhitelistOfferHeader = () => (
     <div className="space-y-4">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-primary to-secondary">
             Join the Whitelist & Save 25%
         </h2>
 
