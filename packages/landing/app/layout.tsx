@@ -1,12 +1,56 @@
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import { ThemeProvider } from '../components/theme-provider';
-import '../styles/globals.css'
+import '../styles/globals.css';
 
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
 
-const inter = Inter({ subsets: ['latin'] });
+
+const fixelDisplay = localFont({
+    src: [
+        {
+            path: './fonts/fixel-display/fixel-display-regular.woff2',
+            weight: '400',
+            style: 'normal'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-regular-italic.woff2',
+            weight: '400',
+            style: 'italic'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-medium.woff2',
+            weight: '500',
+            style: 'normal'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-medium-italic.woff2',
+            weight: '500',
+            style: 'italic'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-semi-bold.woff2',
+            weight: '600',
+            style: 'normal'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-semi-bold-italic.woff2',
+            weight: '600',
+            style: 'italic'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-bold.woff2',
+            weight: '700',
+            style: 'normal'
+        },
+        {
+            path: './fonts/fixel-display/fixel-display-bold-italic.woff2',
+            weight: '700',
+            style: 'italic'
+        }
+    ]
+});
 
 export const metadata: Metadata = {
     title: 'Budgie - Privacy-First Expense Tracker',
@@ -37,7 +81,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={inter.className}>
+            <body className={fixelDisplay.className}>
                 <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                     {children}
                 </ThemeProvider>
