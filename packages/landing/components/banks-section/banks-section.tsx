@@ -9,7 +9,7 @@ export const BanksSection = () => (
                 <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 lg:gap-16">
                     {banks.map(bank => (
                         <div
-                            className="h-8 px-4 flex items-center justify-center bg-muted/50 rounded text-sm font-medium text-muted-foreground"
+                            className="h-8 px-4 flex items-center justify-center bg-muted rounded text-sm font-medium text-muted-foreground"
                             key={bank}
                         >
                             {bank}
