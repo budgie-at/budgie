@@ -1,5 +1,5 @@
-import { TagEntityInterface } from '@/tag';
+import type { TagCreateEntitySchema } from '@/tag';
+import type { z } from 'zod';
 
-const TagCreateEntityFields = ['title'] as const;
 
-export interface TagCreateEntityInterface extends Pick<TagEntityInterface, (typeof TagCreateEntityFields)[number]> {}
+export interface TagCreateEntityInterface extends z.infer<typeof TagCreateEntitySchema> {}
