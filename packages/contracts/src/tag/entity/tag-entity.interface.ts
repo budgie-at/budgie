@@ -1,5 +1,5 @@
-import { BaseEntityInterface } from '@/generic';
+import type { TagEntitySchema } from '@/tag';
+import type { z } from 'zod';
 
-export interface TagEntityInterface extends BaseEntityInterface {
-    title: string;
-}
+
+export interface TagEntityInterface extends z.infer<typeof TagEntitySchema> {}

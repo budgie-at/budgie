@@ -1,6 +1,5 @@
-export interface BaseEntityInterface {
-    id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-}
+import type { BaseEntitySchema } from '@/generic';
+import type { z } from 'zod';
+
+
+export interface BaseEntityInterface extends z.infer<typeof BaseEntitySchema> {}

@@ -1,5 +1,5 @@
-import { AccountEntityInterface } from './account-entity.interface';
+import type { AccountCreateEntitySchema } from '@/account';
+import type { z } from 'zod';
 
-const AccountCreateEntityFields = [] as const;
 
-export interface AccountCreateEntityInterface extends Pick<AccountEntityInterface, (typeof AccountCreateEntityFields)[number]> {}
+export interface AccountCreateEntityInterface extends z.infer<typeof AccountCreateEntitySchema> {}
