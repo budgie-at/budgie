@@ -1,0 +1,25 @@
+{
+    "name": "@budgie/contracts",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Contracts",
+    "sideEffects": false,
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./dist/esm/index.js",
+            "types": "./dist/esm/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "yarn run -T tsc -p tsconfig.json && yarn run -T tsc-alias -p tsconfig.json",
+        "build:watch": "yarn build:esm --watch",
+        "main": "dist/cjs/index.js",
+        "module": "dist/esm/index.js",
+        "types": "dist/esm/index.d.ts",
+        "clear": "yarn run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
+        "format": "yarn run -T prettier --write src",
+        "lint": "yarn run -T eslint --quiet --fix src --ext .ts",
+        "ts": "yarn run -T tsc -p ."
+    }
+}
