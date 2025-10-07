@@ -1,7 +1,5 @@
-import type { BaseEntityInterface } from '@/generic';
-import type { TransactionEntityInterface } from '@/transaction';
-import type { AccountAssociationEnum } from '@/account';
+import type { AccountEntitySchema } from '@/account';
+import type { z } from 'zod';
 
-export interface AccountEntityInterface extends BaseEntityInterface {
-    [AccountAssociationEnum.TRANSACTIONS]?: TransactionEntityInterface[];
-}
+
+export interface AccountEntityInterface extends z.infer<typeof AccountEntitySchema> {}
