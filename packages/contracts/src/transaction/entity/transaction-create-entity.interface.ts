@@ -1,6 +1,5 @@
-import { TransactionEntityInterface } from '@/transaction';
+import type { TransactionCreateEntitySchema } from '@/transaction';
+import type { z } from 'zod';
 
-const TransactionCreateEntityFields = ['accountId', 'title', 'operationDate', 'amount', 'comment', 'type'] as const;
 
-export interface TransactionCreateEntityInterface
-    extends Pick<TransactionEntityInterface, (typeof TransactionCreateEntityFields)[number]> {}
+export interface TransactionCreateEntityInterface extends z.infer<typeof TransactionCreateEntitySchema> {}

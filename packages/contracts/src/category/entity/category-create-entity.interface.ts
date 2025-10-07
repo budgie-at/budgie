@@ -1,5 +1,5 @@
-import { CategoryEntityInterface } from './category-entity.interface';
+import type { CategoryCreateEntitySchema } from '@/category';
+import type { z } from 'zod';
 
-const CategoryCreateEntityFields = ['title'] as const
 
-export interface CategoryCreateEntityInterface extends Pick<CategoryEntityInterface, (typeof CategoryCreateEntityFields)[number]> {}
+export interface CategoryCreateEntityInterface extends z.infer<typeof CategoryCreateEntitySchema> {}

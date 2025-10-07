@@ -1,9 +1,5 @@
-import type { CategoryAssociationEnum } from '@/category';
-import type { BaseEntityInterface } from '@/generic';
-import type { TransactionEntityInterface } from '@/transaction';
+import type { CategoryEntitySchema } from '@/category';
+import type { z } from 'zod';
 
-export interface CategoryEntityInterface extends BaseEntityInterface {
-    title: string;
 
-    [CategoryAssociationEnum.TRANSACTIONS]?: TransactionEntityInterface[];
-}
+export interface CategoryEntityInterface extends z.infer<typeof CategoryEntitySchema> {}
