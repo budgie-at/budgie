@@ -4,7 +4,6 @@
     "private": true,
     "description": "Contracts",
     "sideEffects": false,
-    "type": "module",
     "exports": {
         ".": {
             "import": "./dist/esm/index.js",
@@ -21,5 +20,8 @@
         "format": "yarn run -T prettier --write src",
         "lint": "yarn run -T eslint --quiet --fix src --ext .ts",
         "ts": "yarn run -T tsc -p ."
+    },
+    "dependencies": {
+        "zod": "^4.1.12"
     }
 }
