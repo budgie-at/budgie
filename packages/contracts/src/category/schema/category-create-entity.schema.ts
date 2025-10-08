@@ -1,4 +1,4 @@
-import { CategoryEntitySchema } from '@/category';
+import { CategoryEntitySchema } from './category-entity.schema';
 
 export const CategoryCreateEntitySchema = CategoryEntitySchema.pick({
     title: true
