@@ -12,7 +12,7 @@ export const TransactionEntitySchema = BaseEntitySchema.extend({
     title: string().describe('Title of the transaction.'),
     amount: number().describe('Amount of the transaction.'),
     comment: string().optional().describe('Comment of the transaction.'),
-    accountId: number().describe('Id of the account associated with the transaction.'),
+    accountId: number().positive().describe('Id of the account associated with the transaction.'),
     type: TransactionTypeEnumSchema,
     operationDate: date()
         .default(() => new Date())
