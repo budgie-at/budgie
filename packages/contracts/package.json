@@ -13,7 +13,6 @@
     "scripts": {
         "build": "yarn run -T tsc -p tsconfig.json",
         "build:watch": "yarn build:esm --watch",
-        "main": "dist/cjs/index.js",
         "module": "dist/esm/index.js",
         "types": "dist/esm/index.d.ts",
         "clear": "yarn run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
