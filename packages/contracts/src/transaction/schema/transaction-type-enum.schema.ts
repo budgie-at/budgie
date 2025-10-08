@@ -1,3 +1,5 @@
 import { enum as zodEnum } from 'zod';
 
-export const TransactionTypeEnumSchema = zodEnum(['INCOME', 'EXPENSE', 'TRANSFER', 'DEBT']).describe('Type of the transaction.');
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+
+export const TransactionTypeEnumSchema = zodEnum(TransactionTypeEnum).describe('Type of the transaction.');
