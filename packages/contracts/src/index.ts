@@ -1,3 +1,4 @@
+export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
@@ -21,6 +22,7 @@ export type { CategoryCreateEntityInterface } from './category/entity/category-c
 export { CategoryEntitySchema } from './category/schema/category-entity.schema';
 export { CategoryCreateEntitySchema } from './category/schema/category-create-entity.schema';
 
+export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
