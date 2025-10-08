@@ -1,4 +1,4 @@
-import { TransactionEntitySchema } from '@/transaction';
+import { TransactionEntitySchema } from './transaction-entity.schema';
 
 export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
     type: true,
