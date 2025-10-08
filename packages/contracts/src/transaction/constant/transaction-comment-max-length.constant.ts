@@ -1,0 +1,1 @@
+export const TRANSACTION_COMMENT_MAX_LENGTH = 255;
