@@ -6,5 +6,6 @@ export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
     amount: true,
     comment: true,
     accountId: true,
-    operationDate: true
+    operationDate: true,
+    counterpartyAccountId: true,
 });
