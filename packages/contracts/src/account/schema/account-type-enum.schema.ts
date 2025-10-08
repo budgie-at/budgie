@@ -1,3 +1,3 @@
-import { z } from 'zod';
+import { enum as zodEnum } from 'zod';
 
-export const AccountTypeEnumSchema = z.enum(['bank', 'crypto', 'cash', 'stocks']);
+export const AccountTypeEnumSchema = zodEnum(['bank', 'crypto', 'cash', 'stocks']).describe('Type of the account.');

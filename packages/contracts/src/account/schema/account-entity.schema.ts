@@ -5,9 +5,9 @@ import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountTypeEnumSchema } from './account-type-enum.schema';
 
 export const AccountEntitySchema = BaseEntitySchema.extend({
-    type: AccountTypeEnumSchema,
+    type: AccountTypeEnumSchema.describe('Type of the account.'),
 
     get [AccountAssociationEnum.TRANSACTIONS]() {
-        return TransactionEntitySchema;
+        return TransactionEntitySchema.describe('Transactions associated with the account.');
     }
 });
