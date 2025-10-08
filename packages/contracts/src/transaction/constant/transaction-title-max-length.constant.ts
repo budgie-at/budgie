@@ -1,0 +1,1 @@
+export const TRANSACTION_TITLE_MAX_LENGTH = 100;
