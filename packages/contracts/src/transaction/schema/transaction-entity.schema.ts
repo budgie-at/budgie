@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { array, date, number, string } from 'zod';
 
 import { AccountEntitySchema } from '../../account/schema/account-entity.schema';
 import { CategoryEntitySchema } from '../../category/schema/category-entity.schema';
@@ -9,20 +9,22 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { TransactionTypeEnumSchema } from './transaction-type-enum.schema';
 
 export const TransactionEntitySchema = BaseEntitySchema.extend({
-    title: z.string(),
-    amount: z.number(),
-    comment: z.string(),
-    accountId: z.number(),
+    title: string().describe('Title of the transaction.'),
+    amount: number().describe('Amount of the transaction.'),
+    comment: string().optional().describe('Comment of the transaction.'),
+    accountId: number().describe('Id of the account associated with the transaction.'),
     type: TransactionTypeEnumSchema,
-    operationDate: z.date().default(() => new Date()),
+    operationDate: date()
+        .default(() => new Date())
+        .describe('Date of the transaction. Default is current date. Can be changed later.'),
 
     get [TransactionAssociationEnum.ACCOUNT]() {
-        return AccountEntitySchema;
+        return AccountEntitySchema.describe('Account associated with the transaction.');
     },
     get [TransactionAssociationEnum.CATEGORIES]() {
-        return z.array(CategoryEntitySchema);
+        return array(CategoryEntitySchema).describe('Categories of the transaction.');
     },
     get [TransactionAssociationEnum.TAGS]() {
-        return z.array(TagEntitySchema);
+        return array(TagEntitySchema).describe('Tags of the transaction.');
     }
 });
