@@ -1,3 +1,6 @@
 module.exports = {
-    // HINT: Automatically extends the parent and root .eslintrc.js
+    extends: '../../.eslintrc.js',
+    rules: {
+        '@typescript-eslint/no-empty-object-type': 'off'
+    }
 };
