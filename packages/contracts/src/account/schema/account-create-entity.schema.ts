@@ -1,4 +1,4 @@
-import { AccountEntitySchema } from '@/account';
+import { AccountEntitySchema } from './account-entity.schema';
 
 export const AccountCreateEntitySchema = AccountEntitySchema.pick({
     type: true

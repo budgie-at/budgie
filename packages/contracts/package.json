@@ -11,7 +11,7 @@
         }
     },
     "scripts": {
-        "build": "yarn run -T tsc -p tsconfig.json && yarn run -T tsc-alias -p tsconfig.json",
+        "build": "yarn run -T tsc -p tsconfig.json",
         "build:watch": "yarn build:esm --watch",
         "main": "dist/cjs/index.js",
         "module": "dist/esm/index.js",

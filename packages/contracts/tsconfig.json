@@ -8,11 +8,6 @@
         "lib": [
             "esnext"
         ],
-        "paths": {
-            "@/*": [
-                "./src/*"
-            ]
-        },
         "outDir": "dist/esm",
         "module": "esnext",
         "noEmit": false

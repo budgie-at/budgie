@@ -1,9 +1,12 @@
 import { z } from 'zod';
 
-import { AccountEntitySchema } from '@/account';
-import { BaseEntitySchema } from '@/generic';
-import { TagEntitySchema } from '@/tag';
-import { TransactionAssociationEnum, TransactionTypeEnumSchema } from '@/transaction';
+import { AccountEntitySchema } from '../../account/schema/account-entity.schema';
+import { CategoryEntitySchema } from '../../category/schema/category-entity.schema';
+import { BaseEntitySchema } from '../../generic/schema/base-entity.schema';
+import { TagEntitySchema } from '../../tag/schema/tag-entity.schema';
+import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+
+import { TransactionTypeEnumSchema } from './transaction-type-enum.schema';
 
 export const TransactionEntitySchema = BaseEntitySchema.extend({
     title: z.string(),
@@ -17,7 +20,7 @@ export const TransactionEntitySchema = BaseEntitySchema.extend({
         return AccountEntitySchema;
     },
     get [TransactionAssociationEnum.CATEGORIES]() {
-        return z.array(TagEntitySchema);
+        return z.array(CategoryEntitySchema);
     },
     get [TransactionAssociationEnum.TAGS]() {
         return z.array(TagEntitySchema);
