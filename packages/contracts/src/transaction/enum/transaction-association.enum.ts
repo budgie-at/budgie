@@ -1,6 +1,6 @@
 export enum TransactionAssociationEnum {
-    COUNTERPARTY_ACCOUNT = 'counterpartyAccount',
+    DESTINATION_ACCOUNT = 'destinationAccount',
+    SOURCE_ACCOUNT = 'sourceAccount',
     CATEGORY = 'category',
-    ACCOUNT = 'account',
     TAGS = 'tags'
 }
