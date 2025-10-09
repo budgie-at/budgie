@@ -1,3 +1,5 @@
+export { CurrencyEnum } from './generic/enum/currency.enum';
+
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
