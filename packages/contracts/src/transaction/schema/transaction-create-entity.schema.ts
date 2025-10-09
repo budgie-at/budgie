@@ -5,7 +5,7 @@ export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
     title: true,
     amount: true,
     comment: true,
-    accountId: true,
     operatedAt: true,
-    counterpartyAccountId: true
+    sourceAccountId: true,
+    destinationAccountId: true
 });
