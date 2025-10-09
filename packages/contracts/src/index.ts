@@ -5,7 +5,6 @@ export type { AccountEntityInterface } from './account/entity/account-entity.int
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
-export { AccountTypeEnumSchema } from './account/schema/account-type-enum.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
 
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
