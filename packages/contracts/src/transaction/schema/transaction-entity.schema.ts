@@ -17,7 +17,7 @@ export const TransactionEntitySchema = BaseEntitySchema.extend({
     accountId: number().positive().describe('Id of the account associated with the transaction.'),
     counterpartyAccountId: number().positive().optional().describe('Id of the counterparty account.'),
     comment: string().max(TRANSACTION_COMMENT_MAX_LENGTH).optional().describe('Comment of the transaction.'),
-    operationDate: date()
+    operatedAt: date()
         .default(() => new Date())
         .describe('Date of the transaction. Default is current date. Can be changed later.'),
 
@@ -27,8 +27,8 @@ export const TransactionEntitySchema = BaseEntitySchema.extend({
     get [TransactionAssociationEnum.COUNTERPARTY_ACCOUNT]() {
         return AccountEntitySchema.nullable().describe('Counterparty account of the transaction.');
     },
-    get [TransactionAssociationEnum.CATEGORIES]() {
-        return array(CategoryEntitySchema).describe('Categories of the transaction.');
+    get [TransactionAssociationEnum.CATEGORY]() {
+        return CategoryEntitySchema.describe('Category of the transaction.');
     },
     get [TransactionAssociationEnum.TAGS]() {
         return array(TagEntitySchema).describe('Tags of the transaction.');
