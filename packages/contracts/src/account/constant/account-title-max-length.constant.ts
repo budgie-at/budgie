@@ -1,0 +1,1 @@
+export const ACCOUNT_TITLE_MAX_LENGTH = 100;
