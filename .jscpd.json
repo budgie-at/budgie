@@ -1,5 +1,5 @@
 {
-    "threshold": 3,
+    "threshold": 0,
     "reporters": ["console", "html"],
     "output": "report/jscpd",
     "ignore": [
@@ -15,6 +15,7 @@
         "**/coverage/**",
         "**/node_modules/**",
         "**/ios/**",
+        "**/landing/**",
         "**/android/**"
     ],
     "absolute": false,
