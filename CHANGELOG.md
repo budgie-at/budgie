@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.45.1](https://github.com/budgie-at/budgie/compare/v1.45.0...v1.45.1) (2025-10-12)
+
+**Note:** Version bump only for package @suuudokuuu/root
+
 # 1.45.0 (2025-10-12)
 
 ### Bug Fixes
