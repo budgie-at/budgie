@@ -51,7 +51,7 @@ export const HeroSection = () => (
                         className="w-full h-auto"
                         height={720}
                         priority
-                        src="/images/design-mode/ai-budgeting-app.jpg"
+                        src="/images/design-mode/ai-budgeting-app-4x.jpg"
                         width={1280}
                     />
 
