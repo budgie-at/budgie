@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { motion } from 'framer-motion';
 import { Github } from 'lucide-react';
@@ -51,7 +51,7 @@ export const HeroSection = () => (
                         className="w-full h-auto"
                         height={720}
                         priority
-                        src="/images/design-mode/photo_2025-09-26_21-57-24.jpg"
+                        src="/images/design-mode/ai-budgeting-app-4x.jpg"
                         width={1280}
                     />
 
