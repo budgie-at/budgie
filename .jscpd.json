@@ -15,6 +15,7 @@
         "**/coverage/**",
         "**/node_modules/**",
         "**/ios/**",
+        "**/landing/**",
         "**/android/**"
     ],
     "absolute": false,
