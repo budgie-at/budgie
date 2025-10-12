@@ -1,11 +1,11 @@
 {
-    "name": "my-v0-project",
+    "name": "@budgie-at/landing",
     "version": "0.1.0",
     "private": true,
     "scripts": {
         "release": "next build",
         "release:start": "next start",
-        "start": "next dev",
+        "start": "next dev --turbo",
         "lint": "next lint"
     },
     "dependencies": {
@@ -29,6 +29,7 @@
         "@types/node": "^24.5.2",
         "@types/react": "^19.1.14",
         "@types/react-dom": "^19.1.9",
+        "babel-plugin-react-compiler": "^1.0.0",
         "postcss": "^8.5",
         "tailwindcss": "^4.1.13",
         "typescript": "^5.9.2"
