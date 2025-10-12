@@ -7260,6 +7260,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-react-compiler@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "babel-plugin-react-compiler@npm:1.0.0"
+  dependencies:
+    "@babel/types": "npm:^7.26.0"
+  checksum: 10/51358f4da7dd338afd93ca647af3b5b95fdedd2ffde78719fbba5c542e3d66d338f020bc61234caf4ddf25cddbf517ae101ff76e362e3244d1047c1e64d90a60
+  languageName: node
+  linkType: hard
+
 "babel-plugin-react-compiler@npm:^19.1.0-rc.2":
   version: 19.1.0-rc.3
   resolution: "babel-plugin-react-compiler@npm:19.1.0-rc.3"
@@ -15416,6 +15425,7 @@ __metadata:
     "@types/react": "npm:^19.1.14"
     "@types/react-dom": "npm:^19.1.9"
     autoprefixer: "npm:^10.4.21"
+    babel-plugin-react-compiler: "npm:^1.0.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     date-fns: "npm:^4.1.0"
