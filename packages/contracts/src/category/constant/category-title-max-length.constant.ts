@@ -1,0 +1,1 @@
+export const CATEGORY_TITLE_MAX_LENGTH = 100;
