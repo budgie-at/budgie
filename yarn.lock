@@ -1951,6 +1951,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@budgie-at/landing@workspace:packages/landing":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/landing@workspace:packages/landing"
+  dependencies:
+    "@radix-ui/react-accordion": "npm:^1.2.12"
+    "@radix-ui/react-slot": "npm:^1.2.3"
+    "@tailwindcss/postcss": "npm:^4.1.13"
+    "@types/node": "npm:^24.5.2"
+    "@types/react": "npm:^19.1.14"
+    "@types/react-dom": "npm:^19.1.9"
+    autoprefixer: "npm:^10.4.21"
+    babel-plugin-react-compiler: "npm:^1.0.0"
+    class-variance-authority: "npm:^0.7.1"
+    clsx: "npm:^2.1.1"
+    date-fns: "npm:^4.1.0"
+    framer-motion: "npm:^12.23.22"
+    lucide-react: "npm:^0.544.0"
+    next: "npm:^15.5.4"
+    next-themes: "npm:^0.4.6"
+    postcss: "npm:^8.5"
+    react: "npm:^19.1.1"
+    react-dom: "npm:^19.1.1"
+    tailwind-merge: "npm:^2.5.5"
+    tailwindcss: "npm:^4.1.13"
+    tailwindcss-animate: "npm:^1.0.7"
+    typescript: "npm:^5.9.2"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
@@ -15413,35 +15442,6 @@ __metadata:
   checksum: 10/36fc968b0e9c9c63029d4f9dc63911950a3bdf55c9a87f58d3a266289b67180201cade911e7699f8b2fa596b34c9db43dad37649e3f7fdd13c3bb9edb0017ee7
   languageName: node
   linkType: hard
-
-"my-v0-project@workspace:packages/landing":
-  version: 0.0.0-use.local
-  resolution: "my-v0-project@workspace:packages/landing"
-  dependencies:
-    "@radix-ui/react-accordion": "npm:^1.2.12"
-    "@radix-ui/react-slot": "npm:^1.2.3"
-    "@tailwindcss/postcss": "npm:^4.1.13"
-    "@types/node": "npm:^24.5.2"
-    "@types/react": "npm:^19.1.14"
-    "@types/react-dom": "npm:^19.1.9"
-    autoprefixer: "npm:^10.4.21"
-    babel-plugin-react-compiler: "npm:^1.0.0"
-    class-variance-authority: "npm:^0.7.1"
-    clsx: "npm:^2.1.1"
-    date-fns: "npm:^4.1.0"
-    framer-motion: "npm:^12.23.22"
-    lucide-react: "npm:^0.544.0"
-    next: "npm:^15.5.4"
-    next-themes: "npm:^0.4.6"
-    postcss: "npm:^8.5"
-    react: "npm:^19.1.1"
-    react-dom: "npm:^19.1.1"
-    tailwind-merge: "npm:^2.5.5"
-    tailwindcss: "npm:^4.1.13"
-    tailwindcss-animate: "npm:^1.0.7"
-    typescript: "npm:^5.9.2"
-  languageName: unknown
-  linkType: soft
 
 "mz@npm:^2.7.0":
   version: 2.7.0
