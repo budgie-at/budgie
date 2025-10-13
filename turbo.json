@@ -12,12 +12,6 @@
         "lint": {
             "outputs": []
         },
-        "deadcode": {
-            "outputs": []
-        },
-        "cpd": {
-            "outputs": ["report/jscpd/**"]
-        },
         "format": {
             "outputs": []
         },
