@@ -1,14 +1,8 @@
-import { array, literal } from 'zod';
+import { literal } from 'zod';
 
-import { HoldingEntitySchema } from '../../../holding/schema/holding-entity.schema';
-import { AccountAssociationEnum } from '../../enum/account-association.enum';
 import { AccountTypeEnum } from '../../enum/account-type.enum';
-import { BaseAccountEntitySchema } from '../base/base-account-entity.schema';
+import { AccountEntitySchema } from '../account-entity.schema';
 
-export const CryptoAccountEntitySchema = BaseAccountEntitySchema.extend({
-    type: literal(AccountTypeEnum.CRYPTO),
-
-    get [AccountAssociationEnum.HOLDINGS]() {
-        return array(HoldingEntitySchema).describe('Holdings associated with the account.');
-    }
+export const CryptoAccountEntitySchema = AccountEntitySchema.omit({ type: true, balance: true }).extend({
+    type: literal(AccountTypeEnum.CRYPTO)
 });
