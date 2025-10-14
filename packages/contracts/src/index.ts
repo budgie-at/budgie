@@ -12,6 +12,15 @@ export type { AccountCreateEntityInterface } from './account/entity/account-crea
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
 
+export { BankAccountEntitySchema } from './account/schema/bank/bank-account-entity.schema';
+export { BankAccountCreateEntitySchema } from './account/schema/bank/bank-account-create-entity.schema';
+
+export { CashAccountEntitySchema } from './account/schema/cash/cash-account-entity.schema';
+export { CashAccountCreateEntitySchema } from './account/schema/cash/cash-account-create-entity.schema';
+
+export { CryptoAccountEntitySchema } from './account/schema/crypto/crypto-account-entity.schema';
+export { CryptoAccountCreateEntitySchema } from './account/schema/crypto/crypto-account-create-entity.schema';
+
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
@@ -22,6 +31,12 @@ export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.in
 
 export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
+
+export { HoldingEntitySchema } from './holding/schema/holding-entity.schema';
+export { HoldingCreateEntitySchema } from './holding/schema/holding-create-entity.schema';
+
+export type { HoldingEntityInterface } from './holding/entity/holding-entity.interface';
+export type { HoldingCreateEntityInterface } from './holding/entity/holding-create-entity.interface';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
@@ -40,8 +55,14 @@ export { TransactionAssociationEnum } from './transaction/enum/transaction-assoc
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
-export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
-export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
+export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense/expense-transaction-entity.interface';
+export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense/expense-transaction-create-entity.interface';
+
+export type { IncomeTransactionEntityInterface } from './transaction/entity/income/income-transaction-entity.interface';
+export type { IncomeTransactionCreateEntityInterface } from './transaction/entity/income/income-transaction-create-entity.interface';
+
+export type { TransferTransactionEntityInterface } from './transaction/entity/transfer/transfer-transaction-entity.interface';
+export type { TransferTransactionCreateEntityInterface } from './transaction/entity/transfer/transfer-transaction-create-entity.interface';
 
 export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
 export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
@@ -56,3 +77,27 @@ export { TransactionToTagCreateEntitySchema } from './transaction-to-tag/schema/
 
 export type { TransactionToTagEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-entity.interface';
 export type { TransactionToTagCreateEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-create-entity.interface';
+
+export { ExpenseTransactionEntitySchema } from './transaction/schema/expense/expense-transaction-entity.schema';
+export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense/expense-transaction-create-entity.schema';
+
+export { IncomeTransactionEntitySchema } from './transaction/schema/income/income-transaction-entity.schema';
+export { IncomeTransactionCreateEntitySchema } from './transaction/schema/income/income-transaction-create-entity.schema';
+
+export { TransferTransactionEntitySchema } from './transaction/schema/transfer/transfer-transaction-entity.schema';
+export { TransferTransactionCreateEntitySchema } from './transaction/schema/transfer/transfer-transaction-create-entity.schema';
+
+export { TransactionLineEntitySchema } from './transaction-line/schema/transaction-line-entity.schema';
+export { TransactionLineCreateEntitySchema } from './transaction-line/schema/transaction-line-create-entity.schema';
+
+export { AssetTransactionLineEntitySchema } from './transaction-line/schema/asset/asset-transaction-line-entity.schema';
+export { AssetTransactionLineCreateEntitySchema } from './transaction-line/schema/asset/asset-transaction-line-create-entity.schema';
+
+export { MoneyTransactionLineEntitySchema } from './transaction-line/schema/money/money-transaction-line-entity.schema';
+export { MoneyTransactionLineCreateEntitySchema } from './transaction-line/schema/money/money-transaction-line-create-entity.schema';
+
+export { TransactionLineRoleEnum } from './transaction-line/enum/transaction-line-role.enum';
+export { TransactionLineAssociationEnum } from './transaction-line/enum/transaction-line-association.enum';
+
+export type { TransactionLineEntityInterface } from './transaction-line/entity/transaction-line-entity.interface';
+export type { TransactionLineCreateEntityInterface } from './transaction-line/entity/transaction-line-create-entity.interface';
