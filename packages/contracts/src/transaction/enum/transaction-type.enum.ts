@@ -1,6 +1,8 @@
 export enum TransactionTypeEnum {
+    DEBT = 'DEBT',
     INCOME = 'INCOME',
     EXPENSE = 'EXPENSE',
     TRANSFER = 'TRANSFER',
-    DEBT = 'DEBT'
+    BUY_ASSET = 'BUY_ASSET',
+    SELL_ASSET = 'SELL_ASSET'
 }
