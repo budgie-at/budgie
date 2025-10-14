@@ -55,6 +55,8 @@ export { TransactionAssociationEnum } from './transaction/enum/transaction-assoc
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
+export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
+
 export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense/expense-transaction-entity.interface';
 export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense/expense-transaction-create-entity.interface';
 
