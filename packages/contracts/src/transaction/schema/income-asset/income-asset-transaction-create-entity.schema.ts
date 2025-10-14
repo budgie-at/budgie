@@ -1,10 +1,10 @@
 import { array } from 'zod';
 
+import { TransactionLineRoleEnum } from '../../../transaction-line/enum/transaction-line-role.enum';
 import { AssetTransactionLineCreateEntitySchema } from '../../../transaction-line/schema/asset/asset-transaction-line-create-entity.schema';
-import { validateAssetIncomeLines } from '../../../transaction-line/util/validate-asset-income-lines.util';
+import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transaction-create-entity-fields.schema';
 
 import { IncomeAssetTransactionEntitySchema } from './income-asset-transaction-entity.schema';
-import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transaction-create-entity-fields.schema';
 
 export const IncomeAssetTransactionCreateEntitySchema = IncomeAssetTransactionEntitySchema.pick({
     type: true
@@ -14,5 +14,27 @@ export const IncomeAssetTransactionCreateEntitySchema = IncomeAssetTransactionEn
         lines: array(AssetTransactionLineCreateEntitySchema).min(1).describe('Lines associated with the asset-income transaction.')
     })
     .superRefine(({ lines }, ctx) => {
-        validateAssetIncomeLines(lines, ctx);
+        const principals = lines.filter(({ role }) => role === TransactionLineRoleEnum.PRINCIPAL);
+
+        if (principals.length !== 1) {
+            ctx.addIssue({ code: 'custom', path: ['lines'], message: 'income requires exactly 1 principal line' });
+
+            return;
+        }
+
+        const [principal] = principals;
+
+        if (principal.quantity <= 0) {
+            ctx.addIssue({ code: 'custom', path: ['lines'], message: 'income principal quantity must be > 0' });
+        }
+
+        lines.forEach(({ accountId, role, quantity }, index) => {
+            if (accountId !== principal.accountId) {
+                ctx.addIssue({ code: 'custom', path: ['lines', index, 'accountId'], message: 'must match income account' });
+            }
+
+            if ((role === TransactionLineRoleEnum.FEE || role === TransactionLineRoleEnum.TAX) && quantity >= 0) {
+                ctx.addIssue({ code: 'custom', path: ['lines', index, 'quantity'], message: 'fee/tax must be negative' });
+            }
+        });
     });

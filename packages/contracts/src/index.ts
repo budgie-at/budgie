@@ -95,6 +95,12 @@ export { IncomeAssetTransactionCreateEntitySchema } from './transaction/schema/i
 export { ExpenseAssetTransactionEntitySchema } from './transaction/schema/expense-asset/expense-asset-transaction-entity.schema';
 export { ExpenseAssetTransactionCreateEntitySchema } from './transaction/schema/expense-asset/expense-asset-transaction-create-entity.schema';
 
+export { BuyAssetTransactionEntitySchema } from './transaction/schema/buy-asset/buy-asset-transaction-entity.schema';
+export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset/buy-asset-transaction-create-entity.schema';
+
+export { SellAssetTransactionEntitySchema } from './transaction/schema/sell-asset/sell-asset-transaction-entity.schema';
+export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset/sell-asset-transaction-create-entity.schema';
+
 export { TransferAssetTransactionEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-create-entity.schema';
 
