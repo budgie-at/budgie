@@ -21,6 +21,9 @@ export { CashAccountCreateEntitySchema } from './account/schema/cash/cash-accoun
 export { CryptoAccountEntitySchema } from './account/schema/crypto/crypto-account-entity.schema';
 export { CryptoAccountCreateEntitySchema } from './account/schema/crypto/crypto-account-create-entity.schema';
 
+export { StocksAccountEntitySchema } from './account/schema/stocks/stocks-account-entity.schema';
+export { StocksAccountCreateEntitySchema } from './account/schema/stocks/stocks-account-create-entity.schema';
+
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
