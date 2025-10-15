@@ -9,7 +9,7 @@ export const SellAssetTransactionEntitySchema = TransactionEntitySchema.omit({
     lines: true,
     type: true
 }).extend({
-    type: literal(TransactionTypeEnum.SELL_ASSET),
+    type: literal(TransactionTypeEnum.TRANSFER),
     lines: array(union([AssetTransactionLineEntitySchema, MoneyTransactionLineEntitySchema]))
         .min(2)
         .describe('Lines associated with the sell asset transaction.')
