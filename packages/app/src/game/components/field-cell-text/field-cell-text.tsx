@@ -10,7 +10,7 @@ import { CellFontSizeConstant } from '../constants/dimensions.contant';
 
 import { FieldCellTextStyles as styles } from './field-cell-text.styles';
 
-import type { CellInterface } from '@suuudokuuu/generator';
+import type { CellInterface } from '@budgie-at/generator';
 import type { useAnimatedStyle } from 'react-native-reanimated';
 
 interface Props {
