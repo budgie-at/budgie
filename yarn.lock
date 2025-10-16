@@ -1142,6 +1142,70 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@budgie-at/app-tests@workspace:tests/app-tests":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/app-tests@workspace:tests/app-tests"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/app@workspace:packages/app":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/app@workspace:packages/app"
+  dependencies:
+    "@budgie-at/generator": "workspace:*"
+    "@expo-google-fonts/inter": "npm:^0.2.3"
+    "@expo/fingerprint": "npm:~0.15.1"
+    "@lingui/core": "npm:^5.3.3"
+    "@lingui/react": "npm:^5.3.3"
+    "@react-native-async-storage/async-storage": "npm:2.2.0"
+    "@react-navigation/native": "npm:^7.0.14"
+    "@reduxjs/toolkit": "npm:^2.5.0"
+    "@rnw-community/shared": "npm:^1.3.0"
+    "@types/react": "npm:19.1.0"
+    "@types/react-dom": "npm:19.1.0"
+    babel-plugin-macros: "npm:^3.1.0"
+    babel-plugin-react-compiler: "npm:^1.0.0"
+    date-fns: "npm:^4.1.0"
+    eas-build-cache-provider: "npm:^16.4.2"
+    expo: "npm:^54.0.13"
+    expo-constants: "npm:~18.0.9"
+    expo-dev-client: "npm:~6.0.12"
+    expo-device: "npm:~8.0.7"
+    expo-font: "npm:~14.0.8"
+    expo-haptics: "npm:~15.0.7"
+    expo-linking: "npm:~8.0.8"
+    expo-localization: "npm:~17.0.7"
+    expo-router: "npm:~6.0.6"
+    expo-sharing: "npm:~14.0.7"
+    expo-splash-screen: "npm:~31.0.10"
+    expo-status-bar: "npm:~3.0.8"
+    expo-system-ui: "npm:~6.0.7"
+    expo-updates: "npm:~29.0.10"
+    lucide-react-native: "npm:^0.525.0"
+    react: "npm:^19.1.1"
+    react-compiler-runtime: "npm:19.0.0-beta-63e3235-20250105"
+    react-dom: "npm:^19.1.1"
+    react-native: "npm:0.81.4"
+    react-native-gesture-handler: "npm:~2.28.0"
+    react-native-reanimated: "npm:^4.1.0"
+    react-native-safe-area-context: "npm:~5.6.0"
+    react-native-screens: "npm:~4.16.0"
+    react-native-svg: "npm:15.12.1"
+    react-native-web: "npm:^0.21.0"
+    react-native-worklets: "npm:^0.5.1"
+    react-redux: "npm:^9.2.0"
+    redux-persist: "npm:^6.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/generator@workspace:*, @budgie-at/generator@workspace:packages/generator":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/generator@workspace:packages/generator"
+  dependencies:
+    "@rnw-community/shared": "npm:^1.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@budgie-at/landing@workspace:packages/landing":
   version: 0.0.0-use.local
   resolution: "@budgie-at/landing@workspace:packages/landing"
@@ -1167,6 +1231,45 @@ __metadata:
     tailwind-merge: "npm:^2.5.5"
     tailwindcss: "npm:^4.1.13"
     tailwindcss-animate: "npm:^1.0.7"
+    typescript: "npm:^5.9.2"
+  languageName: unknown
+  linkType: soft
+
+"@budgie-at/root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@budgie-at/root@workspace:."
+  dependencies:
+    "@commitlint/cli": "npm:^19.8.1"
+    "@commitlint/config-conventional": "npm:^19.8.1"
+    "@commitlint/config-lerna-scopes": "npm:^19.8.1"
+    "@jest/globals": "npm:^29.5.0"
+    "@lingui/babel-plugin-lingui-macro": "npm:^5.3.3"
+    "@lingui/cli": "npm:^5.3.3"
+    "@types/node": "npm:^24.5.2"
+    "@typescript-eslint/eslint-plugin": "npm:^8.37.0"
+    "@typescript-eslint/parser": "npm:^8.37.0"
+    babel-jest: "npm:^29.5.0"
+    eslint: "npm:^8.57.1"
+    eslint-plugin-eslint-comments: "npm:^3.2.0"
+    eslint-plugin-import: "npm:^2.32.0"
+    eslint-plugin-jest: "npm:^29.0.1"
+    eslint-plugin-lingui: "npm:^0.10.1"
+    eslint-plugin-n: "npm:^17.21.0"
+    eslint-plugin-promise: "npm:^7.2.1"
+    eslint-plugin-react: "npm:^7.37.5"
+    eslint-plugin-react-compiler: "npm:^19.1.0-rc.2"
+    eslint-plugin-react-hooks: "npm:^5.2.0"
+    eslint-plugin-react-native: "npm:^5.0.0"
+    eslint-plugin-rxjs: "npm:^5.0.3"
+    husky: "npm:^9.1.7"
+    jest: "npm:~29.7.0"
+    jscpd: "npm:^4.0.5"
+    knip: "npm:^5.62.0"
+    lerna: "npm:^8.2.3"
+    lint-staged: "npm:^16.1.2"
+    prettier: "npm:^3.6.2"
+    sort-package-json: "npm:^3.4.0"
+    turbo: "npm:^2.5.8"
     typescript: "npm:^5.9.2"
   languageName: unknown
   linkType: soft
@@ -4689,109 +4792,6 @@ __metadata:
   checksum: 10/da08032b67a090b8844b2a2be7b299da1f6f48fa0b86f74e5add9d545bb8cc23aed2ed8d0cde43fca5e486b29004e31f65cbe205fd892213d5ada0c1ce9005c1
   languageName: node
   linkType: hard
-
-"@suuudokuuu/app-tests@workspace:tests/app-tests":
-  version: 0.0.0-use.local
-  resolution: "@suuudokuuu/app-tests@workspace:tests/app-tests"
-  languageName: unknown
-  linkType: soft
-
-"@suuudokuuu/app@workspace:packages/app":
-  version: 0.0.0-use.local
-  resolution: "@suuudokuuu/app@workspace:packages/app"
-  dependencies:
-    "@expo-google-fonts/inter": "npm:^0.2.3"
-    "@expo/fingerprint": "npm:~0.15.1"
-    "@lingui/core": "npm:^5.3.3"
-    "@lingui/react": "npm:^5.3.3"
-    "@react-native-async-storage/async-storage": "npm:2.2.0"
-    "@react-navigation/native": "npm:^7.0.14"
-    "@reduxjs/toolkit": "npm:^2.5.0"
-    "@rnw-community/shared": "npm:^1.3.0"
-    "@suuudokuuu/generator": "workspace:*"
-    "@types/react": "npm:19.1.0"
-    "@types/react-dom": "npm:19.1.0"
-    babel-plugin-macros: "npm:^3.1.0"
-    babel-plugin-react-compiler: "npm:^1.0.0"
-    date-fns: "npm:^4.1.0"
-    eas-build-cache-provider: "npm:^16.4.2"
-    expo: "npm:^54.0.13"
-    expo-constants: "npm:~18.0.9"
-    expo-dev-client: "npm:~6.0.12"
-    expo-device: "npm:~8.0.7"
-    expo-font: "npm:~14.0.8"
-    expo-haptics: "npm:~15.0.7"
-    expo-linking: "npm:~8.0.8"
-    expo-localization: "npm:~17.0.7"
-    expo-router: "npm:~6.0.6"
-    expo-sharing: "npm:~14.0.7"
-    expo-splash-screen: "npm:~31.0.10"
-    expo-status-bar: "npm:~3.0.8"
-    expo-system-ui: "npm:~6.0.7"
-    expo-updates: "npm:~29.0.10"
-    lucide-react-native: "npm:^0.525.0"
-    react: "npm:19.1.0"
-    react-compiler-runtime: "npm:19.0.0-beta-63e3235-20250105"
-    react-dom: "npm:19.1.0"
-    react-native: "npm:0.81.4"
-    react-native-gesture-handler: "npm:~2.28.0"
-    react-native-reanimated: "npm:^4.1.0"
-    react-native-safe-area-context: "npm:~5.6.0"
-    react-native-screens: "npm:~4.16.0"
-    react-native-svg: "npm:15.12.1"
-    react-native-web: "npm:^0.21.0"
-    react-native-worklets: "npm:^0.5.1"
-    react-redux: "npm:^9.2.0"
-    redux-persist: "npm:^6.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@suuudokuuu/generator@workspace:*, @suuudokuuu/generator@workspace:packages/generator":
-  version: 0.0.0-use.local
-  resolution: "@suuudokuuu/generator@workspace:packages/generator"
-  dependencies:
-    "@rnw-community/shared": "npm:^1.3.0"
-  languageName: unknown
-  linkType: soft
-
-"@suuudokuuu/root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@suuudokuuu/root@workspace:."
-  dependencies:
-    "@commitlint/cli": "npm:^19.8.1"
-    "@commitlint/config-conventional": "npm:^19.8.1"
-    "@commitlint/config-lerna-scopes": "npm:^19.8.1"
-    "@jest/globals": "npm:^29.5.0"
-    "@lingui/babel-plugin-lingui-macro": "npm:^5.3.3"
-    "@lingui/cli": "npm:^5.3.3"
-    "@types/node": "npm:^24.5.2"
-    "@typescript-eslint/eslint-plugin": "npm:^8.37.0"
-    "@typescript-eslint/parser": "npm:^8.37.0"
-    babel-jest: "npm:^29.5.0"
-    eslint: "npm:^8.57.1"
-    eslint-plugin-eslint-comments: "npm:^3.2.0"
-    eslint-plugin-import: "npm:^2.32.0"
-    eslint-plugin-jest: "npm:^29.0.1"
-    eslint-plugin-lingui: "npm:^0.10.1"
-    eslint-plugin-n: "npm:^17.21.0"
-    eslint-plugin-promise: "npm:^7.2.1"
-    eslint-plugin-react: "npm:^7.37.5"
-    eslint-plugin-react-compiler: "npm:^19.1.0-rc.2"
-    eslint-plugin-react-hooks: "npm:^5.2.0"
-    eslint-plugin-react-native: "npm:^5.0.0"
-    eslint-plugin-rxjs: "npm:^5.0.3"
-    husky: "npm:^9.1.7"
-    jest: "npm:~29.7.0"
-    jscpd: "npm:^4.0.5"
-    knip: "npm:^5.62.0"
-    lerna: "npm:^8.2.3"
-    lint-staged: "npm:^16.1.2"
-    prettier: "npm:^3.6.2"
-    sort-package-json: "npm:^3.4.0"
-    turbo: "npm:^2.5.8"
-    typescript: "npm:^5.9.2"
-  languageName: unknown
-  linkType: soft
 
 "@swc/helpers@npm:0.5.15":
   version: 0.5.15
@@ -15171,17 +15171,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:19.1.0":
-  version: 19.1.0
-  resolution: "react-dom@npm:19.1.0"
-  dependencies:
-    scheduler: "npm:^0.26.0"
-  peerDependencies:
-    react: ^19.1.0
-  checksum: 10/c5b58605862c7b0bb044416b01c73647bb8e89717fb5d7a2c279b11815fb7b49b619fe685c404e59f55eb52c66831236cc565c25ee1c2d042739f4a2cc538aa2
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:^19.1.1":
   version: 19.1.1
   resolution: "react-dom@npm:19.1.1"
@@ -15476,13 +15465,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:19.1.0":
-  version: 19.1.0
-  resolution: "react@npm:19.1.0"
-  checksum: 10/d0180689826fd9de87e839c365f6f361c561daea397d61d724687cae88f432a307d1c0f53a0ee95ddbe3352c10dac41d7ff1ad85530fb24951b27a39e5398db4
-  languageName: node
-  linkType: hard
-
 "react@npm:^19.1.1":
   version: 19.1.1
   resolution: "react@npm:19.1.1"
@@ -15614,9 +15596,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-persist@patch:redux-persist@npm%3A6.0.0#./.yarn/patches/redux-persist-npm-6.0.0-56dad69feb.patch::locator=%40suuudokuuu%2Froot%40workspace%3A.":
+"redux-persist@patch:redux-persist@npm%3A6.0.0#./.yarn/patches/redux-persist-npm-6.0.0-56dad69feb.patch::locator=%40budgie-at%2Froot%40workspace%3A.":
   version: 6.0.0
-  resolution: "redux-persist@patch:redux-persist@npm%3A6.0.0#./.yarn/patches/redux-persist-npm-6.0.0-56dad69feb.patch::version=6.0.0&hash=1b9e11&locator=%40suuudokuuu%2Froot%40workspace%3A."
+  resolution: "redux-persist@patch:redux-persist@npm%3A6.0.0#./.yarn/patches/redux-persist-npm-6.0.0-56dad69feb.patch::version=6.0.0&hash=1b9e11&locator=%40budgie-at%2Froot%40workspace%3A."
   peerDependencies:
     redux: ">4.0.0"
   checksum: 10/38119579d16b91b08f21b3721359dd75fa8e92f282ddcfd945823f2ce2381bb9bfe529f07d224d0221110829eadf9de7c87fade2e061deb97b077fd127c626f1

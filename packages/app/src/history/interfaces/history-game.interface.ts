@@ -1,4 +1,4 @@
-import { DifficultyEnum } from '@suuudokuuu/generator';
+import { DifficultyEnum } from '@budgie-at/generator';
 
 export interface HistoryGameInterface {
     difficulty: DifficultyEnum;
