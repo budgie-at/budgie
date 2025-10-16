@@ -14,7 +14,7 @@ import { FieldCellSelectors as selectors } from './field-cell.selectors';
 import { FieldCellStyles as styles } from './field-cell.styles';
 
 import type { BWDarkTheme } from '../../../theme/themes/bw.theme';
-import type { CellInterface } from '@suuudokuuu/generator';
+import type { CellInterface } from '@budgie-at/generator';
 import type { ReactNode} from 'react';
 
 const ReanimatedPressable = Reanimated.createAnimatedComponent(Pressable);

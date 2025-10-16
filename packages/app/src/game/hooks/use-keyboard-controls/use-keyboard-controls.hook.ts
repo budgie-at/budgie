@@ -1,5 +1,5 @@
 import type { OnEventFn } from '@rnw-community/shared';
-import type { CellInterface, Sudoku } from '@suuudokuuu/generator';
+import type { CellInterface, Sudoku } from '@budgie-at/generator';
 
 export const useKeyboardControls = (
     _sudoku: Sudoku,

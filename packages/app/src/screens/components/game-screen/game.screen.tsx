@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { DifficultyEnum, emptyScoredCells } from '@suuudokuuu/generator';
+import { DifficultyEnum, emptyScoredCells } from '@budgie-at/generator';
 import * as Haptics from 'expo-haptics';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useRouter } from 'expo-router';
@@ -30,7 +30,7 @@ import { ThemeContext } from '../../../theme/context/theme.context';
 import { GameScreenSelectors } from './game-screen.selectors';
 import { GameScreenStyles as styles } from './game-screen.styles';
 
-import type { CellInterface, ScoredCellsInterface } from '@suuudokuuu/generator';
+import type { CellInterface, ScoredCellsInterface } from '@budgie-at/generator';
 import type { Dispatch, SetStateAction } from 'react';
 
 const setSharingAvailable = (setHasSharing: Dispatch<SetStateAction<boolean>>): void => {
