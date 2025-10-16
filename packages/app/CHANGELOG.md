@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.47.0](https://github.com/budgie-at/budgie/compare/v1.46.0...v1.47.0) (2025-10-16)
+
+### Features
+
+- fix react versions ([a812a1e](https://github.com/budgie-at/budgie/commit/a812a1e7ce0c096ed92b9c812b3f4ce93b91d51d))
+
 ## [1.45.1](https://github.com/budgie-at/budgie/compare/v1.45.0...v1.45.1) (2025-10-12)
 
 **Note:** Version bump only for package @budgie-at/app
