@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.47.0](https://github.com/budgie-at/budgie/compare/v1.46.0...v1.47.0) (2025-10-16)
+
+### Bug Fixes
+
+- resolve conflicts ([4118fc6](https://github.com/budgie-at/budgie/commit/4118fc62b90948086d588efb7189196a02c41043))
+
+### Features
+
+- fix react versions ([8042bc7](https://github.com/budgie-at/budgie/commit/8042bc7339c665c19ba0e23ec0c72a6c49e5c3ab))
+- fix react versions ([a812a1e](https://github.com/budgie-at/budgie/commit/a812a1e7ce0c096ed92b9c812b3f4ce93b91d51d))
+
 # [1.46.0](https://github.com/budgie-at/budgie/compare/v1.45.1...v1.46.0) (2025-10-12)
 
 ### Features

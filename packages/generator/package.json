@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/generator",
-    "version": "1.45.1",
+    "version": "1.47.0",
     "private": true,
     "sideEffects": "false",
     "exports": {
