@@ -1,4 +1,4 @@
-import { isEmptyScoredCells } from '@suuudokuuu/generator';
+import { isEmptyScoredCells } from '@budgie-at/generator';
 import { use, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
@@ -17,7 +17,7 @@ import { FieldCellText } from '../field-cell-text/field-cell-text';
 import { FieldStyles as styles } from './field.styles';
 
 import type { OnEventFn } from '@rnw-community/shared';
-import type { CellInterface, ScoredCellsInterface } from '@suuudokuuu/generator';
+import type { CellInterface, ScoredCellsInterface } from '@budgie-at/generator';
 
 const getCellKey = (cell: CellInterface) => `${cell.y}-${cell.x}`;
 

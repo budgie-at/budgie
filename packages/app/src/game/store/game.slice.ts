@@ -5,7 +5,7 @@ import { solutionStepFromCell } from '../interface/solution-step.interface';
 import { initialGameState } from './game.state';
 
 import type { GameState } from './game.state';
-import type { CellInterface, DifficultyEnum, ScoredCellsInterface, Sudoku } from '@suuudokuuu/generator';
+import type { CellInterface, DifficultyEnum, ScoredCellsInterface, Sudoku } from '@budgie-at/generator';
 
 export const gameSlice = createSlice({
     name: 'game',
