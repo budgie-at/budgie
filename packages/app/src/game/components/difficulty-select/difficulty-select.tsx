@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { DifficultyEnum } from '@suuudokuuu/generator';
+import { DifficultyEnum } from '@budgie-at/generator';
 import { View } from 'react-native';
 
 import { BlackButton } from '../../../@generic/components/black-button/black-button';

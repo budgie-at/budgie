@@ -23,7 +23,7 @@ import { ThemeContext } from '../../../theme/context/theme.context';
 import { HomeScreenSelectors } from './home-screen.selectors';
 import { HomeScreenStyles as styles } from './home-screen.styles';
 
-import type { DifficultyEnum } from '@suuudokuuu/generator';
+import type { DifficultyEnum } from '@budgie-at/generator';
 
 // eslint-disable-next-line max-lines-per-function
 export const HomeScreen = () => {

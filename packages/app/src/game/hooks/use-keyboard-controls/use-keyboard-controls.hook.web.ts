@@ -6,7 +6,7 @@ import { useAppDispatch } from '../../../@generic/hooks/use-app-dispatch.hook';
 import { gameToggleCandidatesAction } from '../../store/game.actions';
 
 import type { OnEventFn } from '@rnw-community/shared';
-import type { CellInterface, Sudoku } from '@suuudokuuu/generator';
+import type { CellInterface, Sudoku } from '@budgie-at/generator';
 
 export const useKeyboardControls = (
     sudoku: Sudoku,

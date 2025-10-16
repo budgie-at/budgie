@@ -17,7 +17,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.45.1](https://github.com/budgie-at/budgie/compare/v1.45.0...v1.45.1) (2025-10-12)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # 1.45.0 (2025-10-12)
 
@@ -419,7 +419,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.41.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.41.0...v1.41.1) (2025-08-05)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.41.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.40.2...v1.41.0) (2025-08-05)
 
@@ -521,7 +521,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.35.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.35.0...v1.35.1) (2025-07-29)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.35.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.34.0...v1.35.0) (2025-07-29)
 
@@ -680,11 +680,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.24.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.24.1...v1.24.2) (2025-07-25)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.24.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.24.0...v1.24.1) (2025-07-25)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.24.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.23.1...v1.24.0) (2025-07-24)
 
@@ -740,15 +740,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.22.6](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.5...v1.22.6) (2025-07-22)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.5](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.4...v1.22.5) (2025-07-22)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.4](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.3...v1.22.4) (2025-07-21)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.3](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.2...v1.22.3) (2025-07-21)
 
@@ -763,7 +763,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.22.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.1...v1.22.2) (2025-07-21)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.0...v1.22.1) (2025-07-21)
 
@@ -809,7 +809,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.20.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.20.1...v1.20.2) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.20.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.20.0...v1.20.1) (2025-07-20)
 
@@ -831,15 +831,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.18.5](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.4...v1.18.5) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.4](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.3...v1.18.4) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.3](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.2...v1.18.3) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.1...v1.18.2) (2025-07-20)
 
