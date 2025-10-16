@@ -1,4 +1,4 @@
-import { DifficultyEnum } from '@suuudokuuu/generator';
+import { DifficultyEnum } from '@budgie-at/generator';
 
 import { emptyGameHistory } from '../../history/interfaces/history-game.interface';
 import { solutionStepsParse, solutionStepsStringify } from '../interface/solution-step.interface';
