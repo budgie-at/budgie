@@ -1,6 +1,6 @@
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
-import { Sudoku, defaultSudokuConfig } from '@suuudokuuu/generator';
+import { Sudoku, defaultSudokuConfig } from '@budgie-at/generator';
 import { useRouter } from 'expo-router';
 import React, { createContext, useEffect, useState } from 'react';
 
@@ -14,7 +14,7 @@ import { gameLoadAction, gameResetAction, gameResumeAction, gameStartAction } fr
 import { gameSudokuStringSelector } from '../store/game.selectors';
 import { urlToGameState } from '../store/game.state';
 
-import type { DifficultyEnum } from '@suuudokuuu/generator';
+import type { DifficultyEnum } from '@budgie-at/generator';
 import type { ReactNode } from 'react';
 
 export const GameContext = createContext<{

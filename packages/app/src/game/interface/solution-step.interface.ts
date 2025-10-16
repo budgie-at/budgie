@@ -1,6 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
-import type { CellInterface } from '@suuudokuuu/generator';
+import type { CellInterface } from '@budgie-at/generator';
 
 export interface SolutionStepInterface {
     x: number;
