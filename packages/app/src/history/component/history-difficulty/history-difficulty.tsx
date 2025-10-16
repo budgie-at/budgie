@@ -12,7 +12,7 @@ import { ThemeContext } from '../../../theme/context/theme.context';
 
 import { HistoryDifficultyStyles as styles } from './history-difficulty.styles';
 
-import type { DifficultyEnum } from '@suuudokuuu/generator';
+import type { DifficultyEnum } from '@budgie-at/generator';
 
 interface Props {
     readonly difficulty: DifficultyEnum;
