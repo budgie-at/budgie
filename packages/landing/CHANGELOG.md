@@ -1,0 +1,35 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [1.46.0](https://github.com/budgie-at/budgie/compare/v1.45.1...v1.46.0) (2025-10-12)
+
+### Features
+
+- change app image in hero section ([9f5cd91](https://github.com/budgie-at/budgie/commit/9f5cd91c5e8a608d1b9b7764a4376168e2d93013))
+- change app image in hero section ([e830119](https://github.com/budgie-at/budgie/commit/e830119fd570fe55d6d68717603f2b02628115f2))
+- change image size ([67886f7](https://github.com/budgie-at/budgie/commit/67886f7354507d6b5a13c25ba6f35ebf18c7b3d3))
+- change image size ([7a8e255](https://github.com/budgie-at/budgie/commit/7a8e255dfd93ab0bc247584ca8ef1eab1660f104))
+- change image size ([49a5ab5](https://github.com/budgie-at/budgie/commit/49a5ab5566f0bc2b06e8273e8911611d222fcd56))
+- change image size ([c406f14](https://github.com/budgie-at/budgie/commit/c406f14e9a5378b73b9ecad7d0eb20d500cea4c7))
+- change image size ([3162959](https://github.com/budgie-at/budgie/commit/3162959dabcf95ee9ee059d99c3b9ad99b2e8bc6))
+
+## [1.45.1](https://github.com/budgie-at/budgie/compare/v1.45.0...v1.45.1) (2025-10-12)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+# 1.45.0 (2025-10-12)
+
+### Bug Fixes
+
+- **landing:** fixed styling ([34e973f](https://github.com/budgie-at/budgie/commit/34e973f33f8a50b16fa391a7e817206d75ee0f06))
+- **landing:** fixed styling ([028b637](https://github.com/budgie-at/budgie/commit/028b6372c1653d345c5c3781f253fd92d805f7d6))
+- **landing:** improvements ([84e45b9](https://github.com/budgie-at/budgie/commit/84e45b9d3d98671437c478d814f531e9f5258c4a))
+
+### Features
+
+- add landing app ([32837e7](https://github.com/budgie-at/budgie/commit/32837e7698a026f6f80bdb75d1215f5f8ccb4637))
+- rename script ([bebd945](https://github.com/budgie-at/budgie/commit/bebd94554ced95c18ca7d81b6e8abcbd173eda2c))
+- rename script ([3a5a692](https://github.com/budgie-at/budgie/commit/3a5a692029eb798cba7aac2e085ace0ce10b493b))
+- resolve deadcode issues ([e656afa](https://github.com/budgie-at/budgie/commit/e656afa42368d94f5fb468a99848eae586dccb73))

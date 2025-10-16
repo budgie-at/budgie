@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { DifficultyEnum } from '@suuudokuuu/generator';
+import { DifficultyEnum } from '@budgie-at/generator';
 import { ScrollView, View } from 'react-native';
 
 import { Header } from '../../../@generic/components/header/header';

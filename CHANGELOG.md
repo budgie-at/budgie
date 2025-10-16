@@ -3,6 +3,383 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.47.0](https://github.com/budgie-at/budgie/compare/v1.46.0...v1.47.0) (2025-10-16)
+
+### Bug Fixes
+
+- resolve conflicts ([4118fc6](https://github.com/budgie-at/budgie/commit/4118fc62b90948086d588efb7189196a02c41043))
+
+### Features
+
+- fix react versions ([8042bc7](https://github.com/budgie-at/budgie/commit/8042bc7339c665c19ba0e23ec0c72a6c49e5c3ab))
+- fix react versions ([a812a1e](https://github.com/budgie-at/budgie/commit/a812a1e7ce0c096ed92b9c812b3f4ce93b91d51d))
+
+# [1.46.0](https://github.com/budgie-at/budgie/compare/v1.45.1...v1.46.0) (2025-10-12)
+
+### Features
+
+- change app image in hero section ([9f5cd91](https://github.com/budgie-at/budgie/commit/9f5cd91c5e8a608d1b9b7764a4376168e2d93013))
+- change app image in hero section ([e830119](https://github.com/budgie-at/budgie/commit/e830119fd570fe55d6d68717603f2b02628115f2))
+- change image size ([67886f7](https://github.com/budgie-at/budgie/commit/67886f7354507d6b5a13c25ba6f35ebf18c7b3d3))
+- change image size ([7a8e255](https://github.com/budgie-at/budgie/commit/7a8e255dfd93ab0bc247584ca8ef1eab1660f104))
+- change image size ([49a5ab5](https://github.com/budgie-at/budgie/commit/49a5ab5566f0bc2b06e8273e8911611d222fcd56))
+- change image size ([c406f14](https://github.com/budgie-at/budgie/commit/c406f14e9a5378b73b9ecad7d0eb20d500cea4c7))
+- change image size ([3162959](https://github.com/budgie-at/budgie/commit/3162959dabcf95ee9ee059d99c3b9ad99b2e8bc6))
+
+## [1.45.1](https://github.com/budgie-at/budgie/compare/v1.45.0...v1.45.1) (2025-10-12)
+
+**Note:** Version bump only for package @budgie-at/root
+
+# 1.45.0 (2025-10-12)
+
+### Bug Fixes
+
+- adaptive cell size and font based on the platform ([1bf2485](https://github.com/budgie-at/budgie/commit/1bf2485f632209e3b3090381b5a647b0ea5fc49b))
+- added eslintignore ([9cf8a8f](https://github.com/budgie-at/budgie/commit/9cf8a8f1eaea36a15e91bd5c70ba6109b6514b62))
+- added hours support to timer text ([3219e25](https://github.com/budgie-at/budgie/commit/3219e25d3bd98d12495b17a00cc0cccab763c2a9))
+- added ios config to bypass compliance ([bf292b9](https://github.com/budgie-at/budgie/commit/bf292b93124cd1a7e5948130c4a38d3e0d5aff16))
+- added privacy policy ([25541de](https://github.com/budgie-at/budgie/commit/25541de026ddcd040335b28a08679cc64bde94af))
+- added separate release job ([ac31443](https://github.com/budgie-at/budgie/commit/ac31443c1894acb089e33dec4591f4501ae742db))
+- added separate release job ([fd9bc2e](https://github.com/budgie-at/budgie/commit/fd9bc2ee15264b54f7f549b784301e21a3ba975a))
+- added separate release job ([5ca70cd](https://github.com/budgie-at/budgie/commit/5ca70cd3250c126c9a1bef9a9b6bddb61fd33bc9))
+- added separate release job ([43ef1bd](https://github.com/budgie-at/budgie/commit/43ef1bd38d02a6fbaa40b921c2241660d62901ef))
+- added web version page titles, fixed haptic error on web ([91d29b5](https://github.com/budgie-at/budgie/commit/91d29b5df5b9064bb4540f742bd9c18b9535fce0))
+- app version generation ([46c293a](https://github.com/budgie-at/budgie/commit/46c293aca7b8ec0d7b93f15d19ee231fb202464c))
+- app version generation ([6904892](https://github.com/budgie-at/budgie/commit/69048922799b460c02b1b3f27c416a67006ffe4b))
+- **app:** added gray color ([fdb6b1b](https://github.com/budgie-at/budgie/commit/fdb6b1bcc9352bd00e2196e56ac50692326bd0c4))
+- **app:** align controls with new buttons ([ae03bec](https://github.com/budgie-at/budgie/commit/ae03bec71a787ac5c27f5fc69b94978fe51a8805))
+- **app:** align controls with new buttons ([0e65c0b](https://github.com/budgie-at/budgie/commit/0e65c0bf05bb8251d22883e9f9d92f742e8fa036))
+- **app:** browser navigation back ([a273234](https://github.com/budgie-at/budgie/commit/a273234f929578f3eef838141e4a7d2c4a31640b))
+- **app:** browser navigation back ([5f0af99](https://github.com/budgie-at/budgie/commit/5f0af997b36763ce9ca942d84e70fd2e2acc042f))
+- **app:** difficulty/mistakes ([a361e91](https://github.com/budgie-at/budgie/commit/a361e91645e10bcaf2a396bb36ee6cbffffe8cbc))
+- **app:** field is not clickable on the edges on web ([6009e54](https://github.com/budgie-at/budgie/commit/6009e54888decea83232b3500dc3fd1f8793cac1))
+- **app:** fix available items font size setting ([5c5486c](https://github.com/budgie-at/budgie/commit/5c5486ca2cb2f4acaa0fae269af466bc55bc399e))
+- **app:** fix field styling ([4e7be27](https://github.com/budgie-at/budgie/commit/4e7be27da4a85e4f08cf7f09c07a0cf8f6cfad4f))
+- **app:** fix fingerprint to work on internal dev build ([dfeba04](https://github.com/budgie-at/budgie/commit/dfeba04f9aa23e4980d607cbc34fe46c2ce8b8b6))
+- **app:** fix fingerprint to work on internal dev build ([b93487b](https://github.com/budgie-at/budgie/commit/b93487b395fb54a7b69eb352469fe415f99ba339))
+- **app:** fix game timer, using Intl ([ddd51d5](https://github.com/budgie-at/budgie/commit/ddd51d5ebeeb4847482e2f8e4bbd80d960064916))
+- **app:** fix i18n ([b58b7e7](https://github.com/budgie-at/budgie/commit/b58b7e7e1bda629bf0138dc18b98e58a1772c1e0))
+- **app:** fix i18n ([8823637](https://github.com/budgie-at/budgie/commit/8823637d7bf63e65f9382e6aef6bd193e0ba9eb9))
+- **app:** fix i18n ([fb0b7ca](https://github.com/budgie-at/budgie/commit/fb0b7ca6d798d71928d5e17c6fc789f49498e32b))
+- **app:** fix ios fingerprint ([62a7d4d](https://github.com/budgie-at/budgie/commit/62a7d4da0d45e511fd79140a2c19b52c6456b820))
+- **app:** fix ios fingerprint ([5796656](https://github.com/budgie-at/budgie/commit/5796656ffa8b74eac6d4f81f31a29be3b390853d))
+- **app:** fix ios fingerprint ([f9dd029](https://github.com/budgie-at/budgie/commit/f9dd0297932287ab0365e779fff07f4d60f6ec47))
+- **app:** fix native keyboard handler error ([6ffab9a](https://github.com/budgie-at/budgie/commit/6ffab9abe7f8a7eadc51b54bb9388177875cb193))
+- **app:** fix parsing boolean from the url state ([bc1240b](https://github.com/budgie-at/budgie/commit/bc1240b099cfeb5a441a8919391a4098318cb7f7))
+- **app:** fix phone field size ([ae04247](https://github.com/budgie-at/budgie/commit/ae042474a5de0742d024abb2e6eb419d7aedb436))
+- **app:** fix styling ([ecc63c6](https://github.com/budgie-at/budgie/commit/ecc63c6afa51f33f3f603ea2bbf9b4c8b6ded032))
+- **app:** fix styling ([9ff68b4](https://github.com/budgie-at/budgie/commit/9ff68b476248fe2ab4abb22ce8196900d7476911))
+- **app:** fix text animation ([df9c360](https://github.com/budgie-at/budgie/commit/df9c36069ef4de482118f44af54a3d1b1d8de9f4))
+- **app:** fix text animation ([e182ad6](https://github.com/budgie-at/budgie/commit/e182ad62f9ec4924d9400fbb44d2852f9561b11f))
+- **app:** game screen for iphone ([bc95638](https://github.com/budgie-at/budgie/commit/bc95638d2868442816aa8719cc1904d65984141a))
+- **app:** game screen for iphone ([b5e81ad](https://github.com/budgie-at/budgie/commit/b5e81ad1a74a40827a4ed281534b9f0d98de53b5))
+- **app:** game screen for iphone ([2554723](https://github.com/budgie-at/budgie/commit/255472339a157bb7adb1bf12e4194f879489e764))
+- **app:** game screen for iphone ([c82bdda](https://github.com/budgie-at/budgie/commit/c82bdda22d073347f5164111d3ff9dd2f93c4ce1))
+- **app:** game screen for iphone ([610dd00](https://github.com/budgie-at/budgie/commit/610dd006ed18655cab744fe0b4a817cfeef2f86a))
+- **app:** game state parsing and sharing ([fcc2f89](https://github.com/budgie-at/budgie/commit/fcc2f898d5d7c90457192eafe8d742e4abc6a5d4))
+- **app:** i18n ([1544ed4](https://github.com/budgie-at/budgie/commit/1544ed489d115e26cb8dcd31a5e46609bba24932))
+- **app:** i18n ([6e6b3e2](https://github.com/budgie-at/budgie/commit/6e6b3e296b3f78b8b41cb62e75643d7e2a6d2c31))
+- **app:** improve candidate and cell styling ([291b5e5](https://github.com/budgie-at/budgie/commit/291b5e53342e0ce597c5ed7b851d4aaf2430fbf5))
+- **app:** improve candidate styling ([1088124](https://github.com/budgie-at/budgie/commit/108812486009235649d828f10e9b3a32e234b081))
+- **app:** improve field responsive styling ([4165857](https://github.com/budgie-at/budgie/commit/416585765ced315cea94c3bf3768181cabe95175))
+- **app:** initial language selection ([da6f8ac](https://github.com/budgie-at/budgie/commit/da6f8acc6f68ed6e1ac983290116cd8684f78300))
+- **app:** initial language selection ([e4710b1](https://github.com/budgie-at/budgie/commit/e4710b130b41144b1bce7c2f654daa4941bcc50d))
+- **app:** ios site association ids ([bd2a2ff](https://github.com/budgie-at/budgie/commit/bd2a2ff903e37b0879471fa2c52b2411ad9da9ab))
+- **app:** ios site association ids ([429a166](https://github.com/budgie-at/budgie/commit/429a166098f4d542b26d46b8886673961f0fec31))
+- **app:** language fallback ([c9d8527](https://github.com/budgie-at/budgie/commit/c9d85271bdbaff61a677d85ee1afd05b0297cf40))
+- **app:** native expo support ([2fb4eb0](https://github.com/budgie-at/budgie/commit/2fb4eb0c226b009033ce80f3babb551e24af9107))
+- **app:** remove font scaling ([9992374](https://github.com/budgie-at/budgie/commit/99923745a82d9f974865ceee4d18fe96bd2db1fa))
+- **app:** remove losing focus if last value filled ([0183c64](https://github.com/budgie-at/budgie/commit/0183c640ed083a51bfd69df56b5e544e271ac556))
+- **app:** single fingerprint for all ios/android ([f594b0a](https://github.com/budgie-at/budgie/commit/f594b0a457fc2599c9aecbfa76b9e51f7cbfc57e))
+- **app:** single fingerprint for all ios/android ([3b59d4d](https://github.com/budgie-at/budgie/commit/3b59d4d36ed1dee96b7a25bb9f9167578cc926eb))
+- **app:** single fingerprint for all ios/android ([4fe9cb6](https://github.com/budgie-at/budgie/commit/4fe9cb6c5cdaba80178eb5c6cad7bc7f06909193))
+- **app:** single fingerprint for all ios/android ([5d3880e](https://github.com/budgie-at/budgie/commit/5d3880ebc5bc1f76ece55164a46f006543b3267c))
+- **app:** svg colors on white theme ([56918fc](https://github.com/budgie-at/budgie/commit/56918fc5328656e88b3e4cf43ace10b87ad2ab12))
+- **app:** themes ([2fbbfb1](https://github.com/budgie-at/budgie/commit/2fbbfb1d443b359ac95633a204c9e92f62fa4927))
+- **app:** themes and status bar ([60035c4](https://github.com/budgie-at/budgie/commit/60035c42abf286b92f253328defd4d4d21d0d68e))
+- auto theme ([0d4789f](https://github.com/budgie-at/budgie/commit/0d4789fdb36544e2570ecd2cb108b8ba976e6b87))
+- auto theme ([c90660f](https://github.com/budgie-at/budgie/commit/c90660fb8079fe0a9ae61b87fef248829c6f3863))
+- correct failing test in sudoku-navigation.spec.ts ([0929507](https://github.com/budgie-at/budgie/commit/09295074816cdd04ac96a90f437379b58889dcc7))
+- deps ([6748efe](https://github.com/budgie-at/budgie/commit/6748efee3568af97f217f1f22042ee1d449b7398))
+- disabled navigation gestures ([dfe44a1](https://github.com/budgie-at/budgie/commit/dfe44a1fda7a38bf76f453547804913f4640904d))
+- excluded ios/android from git ([797803b](https://github.com/budgie-at/budgie/commit/797803bac28fc580c5d62cd792b35a8ed9b9a84c))
+- **field-cell:** resolve ReanimatedError by inlining animation logic and keeping optimization changes ([51685aa](https://github.com/budgie-at/budgie/commit/51685aaaaac205272f8b4cc94d7ff42d32b3f5bf))
+- fixed alert/confirm for the web ([788ce13](https://github.com/budgie-at/budgie/commit/788ce13239455ed493b89e1765c80890da673aff))
+- fixed automatic GH release creation ([1861828](https://github.com/budgie-at/budgie/commit/1861828186b73173372d75a8116397c9003c01e7))
+- fixed available value missing bug ([56f3be5](https://github.com/budgie-at/budgie/commit/56f3be56355035f77f147bceaed13730b80f48c2))
+- fixed available values ([3a541cc](https://github.com/budgie-at/budgie/commit/3a541cc73084e5a631560dc9f8de1124b3423843))
+- fixed cell light theme colors ([313b1e9](https://github.com/budgie-at/budgie/commit/313b1e942f677158bad553ab131d8f90364a750b))
+- fixed cell light theme colors ([0651f74](https://github.com/budgie-at/budgie/commit/0651f746a01ec8be27b9beaef8237203e52bafda))
+- fixed cell light theme colors ([265d5ef](https://github.com/budgie-at/budgie/commit/265d5ef9c6cd2cb7cb4fb1bbb9e9d3ee50ad8c19))
+- fixed cell rendering logic, redux issues ([12cf89a](https://github.com/budgie-at/budgie/commit/12cf89a0dbaeb10e0778c7f0273fc901601ace11))
+- fixed cell rendering logic, redux issues ([8028f90](https://github.com/budgie-at/budgie/commit/8028f904d9bd6ef70f545d83fddb0bb52281afcf))
+- fixed cell scored animation ([04d3d71](https://github.com/budgie-at/budgie/commit/04d3d712adae949db653f3bc5efa98fe0c2fd37d))
+- fixed cell scored animation ([256b6e1](https://github.com/budgie-at/budgie/commit/256b6e1487c68609cb88a2afecfafc46ad0e6416))
+- fixed closing app on running game and continue - stopped timier ([66211f6](https://github.com/budgie-at/budgie/commit/66211f6c47801dfae53fdffee4a57f0276906121))
+- fixed difficulty, and empty column dots ([641b946](https://github.com/budgie-at/budgie/commit/641b946560c81eb36139612386bc32d7638cf932))
+- fixed eas config ([87336f2](https://github.com/budgie-at/budgie/commit/87336f2e3e343bd00cac0ffb9dfc4797834779c1))
+- fixed expo deps ([2e810c2](https://github.com/budgie-at/budgie/commit/2e810c25f85553a8e6812d939d0f677fa5e7f99b))
+- fixed game duration ([5ba9c2a](https://github.com/budgie-at/budgie/commit/5ba9c2a6ba913bea3e7bd2bf70172ce1f1a94da8))
+- fixed game finish state ([9feb146](https://github.com/budgie-at/budgie/commit/9feb146b0d67dbeb74d80db79c5631eabc402113))
+- fixed history ([5aea8ad](https://github.com/budgie-at/budgie/commit/5aea8add7b4ba85564a1651bb6f67567ba1aa518))
+- fixed imprting expo app.json to get version ([c22a956](https://github.com/budgie-at/budgie/commit/c22a956e51be96cfda898287e79b154939603d8a))
+- fixed pause, winner screen change logic to unmount game screen and stop the timer ([ae06b5d](https://github.com/budgie-at/budgie/commit/ae06b5d7c6badbcb814cd9f5ee5c2339c7e69b21))
+- fixed pause, winner screen change logic to unmount game screen and stop the timer ([79e3a7c](https://github.com/budgie-at/budgie/commit/79e3a7c5cf3ae7287e8b6e6edd1540d84bfcd903))
+- fixed privacy policy return button ([6851cbe](https://github.com/budgie-at/budgie/commit/6851cbed1d903cc6f971962f4d0eaaa7a5ab0aa0))
+- fixed pushing tags after the release ([79f5b58](https://github.com/budgie-at/budgie/commit/79f5b58f1193a92909c0848d155a62dbdb8669d3))
+- fixed row/col/group score calculation ([a9e5a83](https://github.com/budgie-at/budgie/commit/a9e5a8348f957343032382db404c1c4f24cb826b))
+- fixed score reset on win/lose, added history state ([87b55fe](https://github.com/budgie-at/budgie/commit/87b55fe85279409d6f5f56764a943bc03b540cdd))
+- fixed state migration ([2283040](https://github.com/budgie-at/budgie/commit/2283040f7bd018dee451cb47dfbbb3fd7ba49b78))
+- fixed state score calculation ([dd07432](https://github.com/budgie-at/budgie/commit/dd07432af151ca4c816508d1f04351b5cf4bf8d8))
+- fixed state score calculation ([6a45a82](https://github.com/budgie-at/budgie/commit/6a45a821fd7ef367147b3847a0c6cbe04046e9b0))
+- fixed styling across platforms, negative score ([b58fe91](https://github.com/budgie-at/budgie/commit/b58fe917ce3e40e654c106d51f98c7863ef0297b))
+- fixed timer start/stop on pause/return ([77ba27c](https://github.com/budgie-at/budgie/commit/77ba27c6e44ebc337bd202c24ca44b2b1f6abbad))
+- fixed win/loose play again button ([de926eb](https://github.com/budgie-at/budgie/commit/de926eb1d7dc979a237f4b92561d12784c8c699f))
+- **generator:** fix possible/available values calculation ([e0b9841](https://github.com/budgie-at/budgie/commit/e0b9841b8d6182ddf32b2e353717338121674910))
+- **generator:** fix possible/available values calculation ([0d177a4](https://github.com/budgie-at/budgie/commit/0d177a49f76c8b0ecf8fdcb7a7d5796075660fb5))
+- **generator:** replace protected config access with defaultSudokuConfig in tests ([c789b26](https://github.com/budgie-at/budgie/commit/c789b26bc58646b6f11d6d8b0369a7e2f21ad9d1))
+- improved scored cells comparison, should fix incorrect animations ([ddade16](https://github.com/budgie-at/budgie/commit/ddade168b06116b7eab47d91a3976e18325263a8))
+- isCellWrong test to ensure wrong value is actually different from correct value ([3060eae](https://github.com/budgie-at/budgie/commit/3060eae1ab2d1da3c6e9f61d738c487955c43df4))
+- **landing:** fixed styling ([34e973f](https://github.com/budgie-at/budgie/commit/34e973f33f8a50b16fa391a7e817206d75ee0f06))
+- **landing:** fixed styling ([028b637](https://github.com/budgie-at/budgie/commit/028b6372c1653d345c5c3781f253fd92d805f7d6))
+- **landing:** improvements ([84e45b9](https://github.com/budgie-at/budgie/commit/84e45b9d3d98671437c478d814f531e9f5258c4a))
+- main screen history stats when no data ([768b23d](https://github.com/budgie-at/budgie/commit/768b23dc0480c750ea80269c34935dd1bb6007c8))
+- mistakes count to loose, incapsulated field/cell logic into sudoku ([393dcd5](https://github.com/budgie-at/budgie/commit/393dcd514ba760adae803c7b0463d00105877054))
+- mobile web style ([218c1e5](https://github.com/budgie-at/budgie/commit/218c1e5f31780d18530f554f19ff9082b92fc5e1))
+- mobile web style ([80354d8](https://github.com/budgie-at/budgie/commit/80354d84cb6784056648f7f73f73c3d85376480d))
+- optimized cell rendering ([8d714ec](https://github.com/budgie-at/budgie/commit/8d714ecc5aaaf06e3ad14f1d894465ded69649e0))
+- patched react-native-version to support new app.json without expo ([d0686db](https://github.com/budgie-at/budgie/commit/d0686dbd515de3e87d3204e3aafd41578a3d2689))
+- patched react-native-version to support new app.json without expo ([6f677e0](https://github.com/budgie-at/budgie/commit/6f677e0af33776d2da84b5362472d2b4713ba522))
+- possible values re-rendering ([42313ce](https://github.com/budgie-at/budgie/commit/42313ce5cec1dffbf0d24c4d08109c929b8f5ca8))
+- refactor calculation logic, re-renders, timer speed up ([a504a59](https://github.com/budgie-at/budgie/commit/a504a59fc970df1ad6cfa4bd51fb7d0cc3e9195b))
+- release it ([ad01eb0](https://github.com/budgie-at/budgie/commit/ad01eb0636c827cdd5dea56f109eaa2352b875fd))
+- release it ([5d6cdf1](https://github.com/budgie-at/budgie/commit/5d6cdf1b1deb7250fb1630a1ab80ae1c2620baf8))
+- remove coverage from git ([8e63099](https://github.com/budgie-at/budgie/commit/8e6309924e6422bc16d0afc52734b321c3065119))
+- removed ios folder ([140b192](https://github.com/budgie-at/budgie/commit/140b19252bf03ef324b837daf973384fe2bc990c))
+- resolve TypeScript compilation errors in sudoku-navigation.spec.ts ([4016a03](https://github.com/budgie-at/budgie/commit/4016a0303cbe1597e163775d70b45779459abba4))
+- **tests:** resolve ESLint failures in sudoku.spec.ts ([1e2307a](https://github.com/budgie-at/budgie/commit/1e2307a7a68d7a1db477342fb9dad27b670dbb5c))
+- theme automatic ([95b34ba](https://github.com/budgie-at/budgie/commit/95b34ba69c58aaed44807bf20c4afd1c6cee6a72))
+- web bundle error, bump redux ([6e24b1e](https://github.com/budgie-at/budgie/commit/6e24b1e70172aa0955a4154f189e76312fe7b89c))
+- web mobile field position ([3035e21](https://github.com/budgie-at/budgie/commit/3035e212f2f6cf369e42ed7bd6daa52a0c10c4d3))
+- web mobile field size ([9eff124](https://github.com/budgie-at/budgie/commit/9eff124615eb3f22dec50f6561f8f2a10821895f))
+- web version routing, small generic improvement in constants ([e94f7bf](https://github.com/budgie-at/budgie/commit/e94f7bf477050b68e074e86a1b14248d043e5a0c))
+- whole support banner is pressable ([632df99](https://github.com/budgie-at/budgie/commit/632df990e7ce2748127b606cf6309cf43f1fd405))
+- winner screen elapsed text ([7783bb7](https://github.com/budgie-at/budgie/commit/7783bb782f12973239eddf4c9d38d2adb8f5ac90))
+
+### Features
+
+- add contracts package ([b5465ed](https://github.com/budgie-at/budgie/commit/b5465ed19bebd16327bd12bcbeb998938fcbf384))
+- add counterparty account; add currency ([9130d46](https://github.com/budgie-at/budgie/commit/9130d46e1ac2a207c554769239fb8b0ee3cf53f6))
+- add describe to entity fields ([56d8d5a](https://github.com/budgie-at/budgie/commit/56d8d5a515974b2f58a0c9dcad14b0abe2e313ac))
+- add enums ([015567a](https://github.com/budgie-at/budgie/commit/015567a41ba3b60d9f8c44da300e74d4cf89fb16))
+- add landing app ([32837e7](https://github.com/budgie-at/budgie/commit/32837e7698a026f6f80bdb75d1215f5f8ccb4637))
+- add zod to contracts ([71c0cfb](https://github.com/budgie-at/budgie/commit/71c0cfbc138b49112edace70a5bb546921ad9d8f))
+- add zod to contracts ([5f2bf94](https://github.com/budgie-at/budgie/commit/5f2bf943489fd1d5d36071719cc0aec42184c1c1))
+- added android build config ([ed3ea55](https://github.com/budgie-at/budgie/commit/ed3ea552acd6c21b4ce18eefbc15d7f156fac11d))
+- added automatic react-native versioning on release ([d832066](https://github.com/budgie-at/budgie/commit/d832066c99b8ef702eea023105183f254cc20507))
+- added completed value based animation, small refactoring ([c9a3ec1](https://github.com/budgie-at/budgie/commit/c9a3ec18d564e7ff11a6e810a89c8e99d704b56c))
+- added const for progressWidth ([c5a6fba](https://github.com/budgie-at/budgie/commit/c5a6fba22925b33214512eacff89756d79a5204c))
+- added dark theme ([f5bec17](https://github.com/budgie-at/budgie/commit/f5bec17a728e5d112f730fa90497505b0de62375))
+- added dark theme ([d667e6a](https://github.com/budgie-at/budgie/commit/d667e6a67b227fc92d800f131697aaa9653eb5a6))
+- added dev build ([7a3aba0](https://github.com/budgie-at/budgie/commit/7a3aba0ce098bba8e1e1032ec7da8864769143cc))
+- added donation to win/lose pages ([e97117d](https://github.com/budgie-at/budgie/commit/e97117df769620d4a37d59905e96c7e595a3d010))
+- added dot symbol for active empty cell ([5a1a148](https://github.com/budgie-at/budgie/commit/5a1a1483afdc8b5f53fa915647294de1125d3365))
+- added exit, added generic black button style, fixed cell x/y coordinates ([94aea1d](https://github.com/budgie-at/budgie/commit/94aea1da398b0de1759ef4c4bb1c980327e99202))
+- added expo-router ([25f28ce](https://github.com/budgie-at/budgie/commit/25f28cee754f47f30de70cacb10ab60597977e18))
+- added expo-router ([ec34bc2](https://github.com/budgie-at/budgie/commit/ec34bc29ef97351f5747ba728e8256fde3a625d8))
+- added filling logic ([10efaab](https://github.com/budgie-at/budgie/commit/10efaab34ccb9f097dcd533b23d5a6108550c40e))
+- added game field with blank spaces ([5cd3626](https://github.com/budgie-at/budgie/commit/5cd3626bbf3865b0cef143574385d575861f8f85))
+- added game pause, closes [#2](https://github.com/budgie-at/budgie/issues/2), closes [#1](https://github.com/budgie-at/budgie/issues/1) ([8ebe293](https://github.com/budgie-at/budgie/commit/8ebe29353c8475c0ba52490bc5d90a73a174252e))
+- added games history ([7c062d4](https://github.com/budgie-at/budgie/commit/7c062d437e4325ce7176e2af57ac8f2a3fef4b1f))
+- added games history ([576951b](https://github.com/budgie-at/budgie/commit/576951b88fb24b8c863e5c1f41cebf48312c6407))
+- added grid markup ([9535751](https://github.com/budgie-at/budgie/commit/9535751d62ceade1efa921abbbb9b97677e9ab3b))
+- added grid markup ([7694442](https://github.com/budgie-at/budgie/commit/7694442460e9fe1d0cad5c479db420dce7c46adb))
+- added haptic ([3e318cc](https://github.com/budgie-at/budgie/commit/3e318cc890050b6895385ea6082f443223a77a9f))
+- added haptic to ui buttons, fixed mistakes increase on losing game ([8d3bb68](https://github.com/budgie-at/budgie/commit/8d3bb6806a270c25d01d950021395ff6024f47fb))
+- added icons ([96c9f41](https://github.com/budgie-at/budgie/commit/96c9f41dba70f5b29344a0e776624a7837140587))
+- added icons ([43debb9](https://github.com/budgie-at/budgie/commit/43debb9a071030801698f05dd833c0b9f74ce2a4))
+- added ios folder for xcode cloud ([25f1ce2](https://github.com/budgie-at/budgie/commit/25f1ce2ba63c0b1b653b48182898d4a861ca9c94))
+- added loser screen, mistakes logic and some styling ([89c986f](https://github.com/budgie-at/budgie/commit/89c986f1bb7904b01f079e0bdf573e54eab0c40a))
+- added navigation ([d025575](https://github.com/budgie-at/budgie/commit/d0255752db5512c71f3cc4b89c51fa7e550bda94))
+- added navigation ([0451648](https://github.com/budgie-at/budgie/commit/045164854182c62ec09d81ebde3aa897f6e118e1))
+- added random filling logic ([badfeb6](https://github.com/budgie-at/budgie/commit/badfeb636c6076782d75ad6cdd497ddc740419ef))
+- added reanimated animation ([3f78d94](https://github.com/budgie-at/budgie/commit/3f78d94d8cbdca9c2699772f4388f6e0dc910a54))
+- added reanimated animation ([92eff5b](https://github.com/budgie-at/budgie/commit/92eff5b08cb160c63b73119bd057632fba38cb8c))
+- added reanimated animation, fixed filling logic bug ([d24c9c9](https://github.com/budgie-at/budgie/commit/d24c9c9e0d301392b64951f26658e4f5343bbfd1))
+- added redux and pressable cells ([9ccf23e](https://github.com/budgie-at/budgie/commit/9ccf23e0fbc0b0238ea5d97d2f2d3df56480e2d2))
+- added redux-persist to save current game progress ([4db11f7](https://github.com/budgie-at/budgie/commit/4db11f787ad635e09b177f0980d42541dbbd0817))
+- added release ([56cde95](https://github.com/budgie-at/budgie/commit/56cde959724c645faa60e3ce77f9dfab29cd26df))
+- added release to main branch merge ([ad7dadc](https://github.com/budgie-at/budgie/commit/ad7dadc74af01ef9bd9ccf5409eac6054744aac4))
+- added release to main branch merge ([75fe2d9](https://github.com/budgie-at/budgie/commit/75fe2d9025942b8efb6096c6d96c882e219979d1))
+- added release to main branch merge ([7ca5a6a](https://github.com/budgie-at/budgie/commit/7ca5a6a181a4a75339d3e9f484d14217ee95b926))
+- added release to main branch merge ([bc9f1b1](https://github.com/budgie-at/budgie/commit/bc9f1b1fbcd29f86660c7156b615c7fc1a86c491))
+- added release to main branch merge ([8290b18](https://github.com/budgie-at/budgie/commit/8290b18fc943cb6f119b561461d1991f50f75123))
+- added release to main branch merge ([274280e](https://github.com/budgie-at/budgie/commit/274280e63d671eaeba723bcc5b6b10cc47e8ae88))
+- added row/col/group completion animation ([788b51c](https://github.com/budgie-at/budgie/commit/788b51c708ca8e66c944025b7d04a103ec36f709))
+- added score calculation and timer ([883ead5](https://github.com/budgie-at/budgie/commit/883ead5dc0a6f3ce69e9a5f2ea1f55ed5bef8d5f))
+- added score calculation and timer ([b4464dd](https://github.com/budgie-at/budgie/commit/b4464ddb51afa1d31b4524bb80ef6dceeef5726e))
+- added support ukraine banner on index page ([06f1ba7](https://github.com/budgie-at/budgie/commit/06f1ba7d34bd27dff920591c09e401a307c2b086))
+- added support ukraine banner on index page ([e1af8fe](https://github.com/budgie-at/budgie/commit/e1af8fe28f5757bb7ec341e5b539a0bf6ec2781c))
+- added todo ([826f5a7](https://github.com/budgie-at/budgie/commit/826f5a7fb7085329eb3456757e4490d7eb6db693))
+- added turbo ([25e4241](https://github.com/budgie-at/budgie/commit/25e4241297c34da7d13786efc126263fadb7eb8e))
+- added turbo ([9fca8c7](https://github.com/budgie-at/budgie/commit/9fca8c7a36ebc9a859bd68da3f6b1dfbd9b32188))
+- added value selection check for empty selected cell ([0d7885c](https://github.com/budgie-at/budgie/commit/0d7885ccee0267239e5028182c223fe3d1173d49))
+- added value selection check for empty selected cell ([cac5dae](https://github.com/budgie-at/budgie/commit/cac5dae36b9bb2015f8787423dcb2c51b962e190))
+- added values progress bar ([e90515d](https://github.com/budgie-at/budgie/commit/e90515de299ffa5e3f7fc7a1e0d4109f2c7f7141))
+- **app-tests:** added showFilledNumber settings ([11b90f3](https://github.com/budgie-at/budgie/commit/11b90f3db8f1444faa23a7e356a2e1690775217d))
+- **app-tests:** added showFilledNumber settings ([2b3da9e](https://github.com/budgie-at/budgie/commit/2b3da9e1a3605ec82c46a860dd10d218463b5494))
+- **app-tests:** added showFilledNumber settings ([4ec49de](https://github.com/budgie-at/budgie/commit/4ec49def17aeb019a9031e990c644a5bf6740ee9))
+- **app-tests:** added themes support ([4d0d131](https://github.com/budgie-at/budgie/commit/4d0d1312fa2df45edde5fd4b2837cb01dbe677a7))
+- **app-tests:** added themes support ([f3bdc3f](https://github.com/budgie-at/budgie/commit/f3bdc3f94f657cbf9daf0c9fc6ee791cd5bdad9e))
+- **app,generator:** added candidate mode ([e064aa4](https://github.com/budgie-at/budgie/commit/e064aa4f978975a9f6375a157e25477a030af85f))
+- **app,generator:** added contrast to filled cells ([c79c69c](https://github.com/budgie-at/budgie/commit/c79c69c2ce1ae9bb3b673c1e1087bfa5c6a8fe94))
+- **app,generator:** added contrast to filled cells ([1216356](https://github.com/budgie-at/budgie/commit/1216356efb2b0079adc5871e9b73e6ebeeee2f0b))
+- **app,generator:** added contrast to filled cells ([cbcd11e](https://github.com/budgie-at/budgie/commit/cbcd11ebde60ce10e4a0092936048c63ebc861a2))
+- **app,generator:** added contrast to filled cells ([7958c98](https://github.com/budgie-at/budgie/commit/7958c985e527f3d95fd48360befbd4f8e70e640f))
+- **app,generator:** added contrast to filled cells ([b946756](https://github.com/budgie-at/budgie/commit/b94675677b48433a70a2a0dd4536417f2ebb10b4))
+- **app,generator:** added loading indicator ([f51923c](https://github.com/budgie-at/budgie/commit/f51923ce7f96760622740c1a8989d3f01a0edd6e))
+- **app,generator:** avoid passing solved puzzle as string ([c456d7a](https://github.com/budgie-at/budgie/commit/c456d7a760be20ceb35601263dbc60f59a2b6027))
+- **app,generator:** implement keyboard controls ([787c478](https://github.com/budgie-at/budgie/commit/787c4782ce1cf7793fc95ceac268bb1800bdc430))
+- **app,generator:** implement keyboard controls ([f1ca0d1](https://github.com/budgie-at/budgie/commit/f1ca0d12b0929ccd6429bbbe587f89ec6188673e))
+- **app,generator:** implement keyboard controls ([360e4a8](https://github.com/budgie-at/budgie/commit/360e4a8f4036522f21bd5a558b99f4beab2cb1fd))
+- **app:** added android deep links ([8e7ac54](https://github.com/budgie-at/budgie/commit/8e7ac544a6a492edc14e23db50d08da6ad26b2db))
+- **app:** added candidate highlight ([d0abca0](https://github.com/budgie-at/budgie/commit/d0abca0f4804ee6a4c1d258bf555111a7672aaf7))
+- **app:** added candidate highlight ([db19a8e](https://github.com/budgie-at/budgie/commit/db19a8e4cb64c7ee80ae42885e77d4fc9cafcf10))
+- **app:** added candidate highlight ([39e66fd](https://github.com/budgie-at/budgie/commit/39e66fd919ee6fb088bf258022c840ce830de9a5))
+- **app:** added max mistakes selector, hardcore mode ([4e0afd1](https://github.com/budgie-at/budgie/commit/4e0afd1603a6788c0568b5782adc7831f7a9d6e5))
+- **app:** added max mistakes selector, hardcore mode ([83ee598](https://github.com/budgie-at/budgie/commit/83ee598586e8d6fa2d6ae54b1ef7275408cb5886))
+- **app:** added max mistakes selector, hardcore mode ([e14afc4](https://github.com/budgie-at/budgie/commit/e14afc4e207b0241d2123f7bc5df79030857ce65))
+- **app:** added max mistakes selector, hardcore mode ([b4a1e09](https://github.com/budgie-at/budgie/commit/b4a1e09c853dfc09cb346a84127f622e585099c7))
+- **app:** added max mistakes selector, hardcore mode ([41cf87c](https://github.com/budgie-at/budgie/commit/41cf87cc6704140605e672ceaf4c2b4abb72f3bd))
+- **app:** added puzzle sharing ([db315b7](https://github.com/budgie-at/budgie/commit/db315b761feceeb2f83631818a532bbd96e8a226))
+- **app:** added settings ([6ab3e22](https://github.com/budgie-at/budgie/commit/6ab3e22a2c43384f4a187ce0c8ae5881cfb07c71))
+- **app:** added settings ([9e4eb0d](https://github.com/budgie-at/budgie/commit/9e4eb0d06d5edde97ed2007432e7d427585b97d2))
+- **app:** added settings ([61b0ad6](https://github.com/budgie-at/budgie/commit/61b0ad679c98b55d08487485e7777a4a15f922f5))
+- **app:** added settings ([ebd330e](https://github.com/budgie-at/budgie/commit/ebd330e8f2b20593001876e8306003bf2d1734e0))
+- **app:** added settings ([7275c3e](https://github.com/budgie-at/budgie/commit/7275c3e377a5e23aac34e20727f599f49fe30971))
+- **app:** added statistics page, extended data ([6812868](https://github.com/budgie-at/budgie/commit/681286814c8ae15af66f271a389e08fe933346e7))
+- **app:** added statistics page, extended data ([bfe3fe0](https://github.com/budgie-at/budgie/commit/bfe3fe0e8254cd996cbddeb841938c7b74c6958e))
+- **app:** added statistics page, extended data ([6093b3d](https://github.com/budgie-at/budgie/commit/6093b3d8e9e23118699b9b021c9a88ebec953fbb))
+- **app:** added statistics page, extended data ([8decc36](https://github.com/budgie-at/budgie/commit/8decc36702beb4e9e7943d765a3755fe92730438))
+- **app:** added theme background color ([f60a443](https://github.com/budgie-at/budgie/commit/f60a443776fc013b7dc0cf9f3c9c8c82aa778296))
+- **app:** added theme button to game screen ([769019c](https://github.com/budgie-at/budgie/commit/769019ca831cd3e33bbbdd4e4ee9c2f35f7b1469))
+- **app:** added universal links ([540ddf3](https://github.com/budgie-at/budgie/commit/540ddf31ad5117f9f20f6e3d011f1f2f61d62e17))
+- **app:** change runtimeVersion to fingerprint ([42b54e7](https://github.com/budgie-at/budgie/commit/42b54e799e1b509ed22808fe670ea6122061d8b8))
+- **app:** change runtimeVersion to fingerprint ([a734292](https://github.com/budgie-at/budgie/commit/a7342927902b0c9a9bb9982fae6dfc45893cf1c9))
+- **app:** change runtimeVersion to fingerprint ([dd5b7db](https://github.com/budgie-at/budgie/commit/dd5b7db2214ce1c3827c22a891e2b31b98cd7ee5))
+- **app:** change runtimeVersion to fingerprint ([aff6199](https://github.com/budgie-at/budgie/commit/aff6199104c325c0c3afb9c0d51e1c06d45d1285))
+- **app:** change runtimeVersion to fingerprint ([b47a60a](https://github.com/budgie-at/budgie/commit/b47a60aae16da5596c18cf9039ff56d63ee7af74))
+- **app:** disable app font scaling ([528c756](https://github.com/budgie-at/budgie/commit/528c756b875cf6ef209e86d6a65c4dac79e7cda3))
+- **app:** encode sharing state ([260210a](https://github.com/budgie-at/budgie/commit/260210a3f3900ea6b60e3281665b4689a13cf68d))
+- **app:** fix android target 35 ([e894195](https://github.com/budgie-at/budgie/commit/e8941954fcaa11ccca64ee03ee64f55ae9b14cfb))
+- **app:** fix runtimeVersion ([5c2718a](https://github.com/budgie-at/budgie/commit/5c2718a70c662a8ef32469a0d48f03ff0f2b7a09))
+- **app:** fix runtimeVersion ([122d22f](https://github.com/budgie-at/budgie/commit/122d22f1d45b5559e2195ff09049ae827ef07c70))
+- **app:** fix styles ([76818b9](https://github.com/budgie-at/budgie/commit/76818b98daaa0721e922e3ed4d6684cf8eb91710))
+- **app:** hide auto candidates for Nightmare + Hardcore ([588572b](https://github.com/budgie-at/budgie/commit/588572b397d33670cbbcc803bfa7db266c33b1a1))
+- **app:** i18n support ([5be57bf](https://github.com/budgie-at/budgie/commit/5be57bf106a4b2c32c24a8bf7f431b1186d46ee5))
+- **app:** i18n support ([0a69a2b](https://github.com/budgie-at/budgie/commit/0a69a2b705f8e475044cb397099ede7ba1a04053))
+- **app:** i18n support ([83a8b99](https://github.com/budgie-at/budgie/commit/83a8b99cd2644e24983e475303c96d86c6a03f84))
+- **app:** i18n support ([1b50f11](https://github.com/budgie-at/budgie/commit/1b50f119023b51cae25afbeb9ea90be3a15b6c5c))
+- **app:** i18n support ([335af03](https://github.com/budgie-at/budgie/commit/335af032bdad5837692e0c66dfc2e90384504e08))
+- **app:** i18n support ([869679f](https://github.com/budgie-at/budgie/commit/869679f4b233aac824c41d8ff1c300f0ff1979fc))
+- **app:** i18n support ([c5f9048](https://github.com/budgie-at/budgie/commit/c5f90486d46f60c711f794b36d75dba547124ac0))
+- **app:** i18n support ([ba61a89](https://github.com/budgie-at/budgie/commit/ba61a89b70ec84d2adeed5aca73656b52a5c8262))
+- **app:** improve active value cells background ([2ceb5a9](https://github.com/budgie-at/budgie/commit/2ceb5a9af63ee4e1395288bc67f08bfb4e5e1325))
+- **app:** improve game header ([ce1b2b4](https://github.com/budgie-at/budgie/commit/ce1b2b410cc1da13f2e0205fe61e345223b96d0c))
+- **app:** improve game header ([88a30f0](https://github.com/budgie-at/budgie/commit/88a30f0064ecc0a8b90674d749997927983085c1))
+- **app:** improve game header ([373d591](https://github.com/budgie-at/budgie/commit/373d591a38f41adcca99dd5f219d4382621ee758))
+- **app:** improve game header ([fa2d15f](https://github.com/budgie-at/budgie/commit/fa2d15fcb930d953cd02bfd1e4f42dfa3399ed00))
+- **app:** improved statistics ([5e89274](https://github.com/budgie-at/budgie/commit/5e892747d6c13c596bf1a8b05e3a7805a38343c2))
+- **app:** improved statistics ([122e642](https://github.com/budgie-at/budgie/commit/122e642759392f3e697114fede074c4c7067fc18))
+- **app:** increase cell font size ([20a1206](https://github.com/budgie-at/budgie/commit/20a1206cce9f188986d500f9b112ada399e0bc6a))
+- **app:** make phone cell size dynamic to support more screens ([1c47dea](https://github.com/budgie-at/budgie/commit/1c47dea8b35800fb4f8d00b2413decaafd833450))
+- **app:** migrate to app.config.js, add package.json as version ([14525e6](https://github.com/budgie-at/budgie/commit/14525e6eb905b64f24e5b8800661365ac49cf772))
+- **app:** moved auto-candidates button ([4a6e8e0](https://github.com/budgie-at/budgie/commit/4a6e8e0f30f11ce7ae317cd4e0d7482fb6c952af))
+- **app:** refactor game and history state, add solution steps ([d970a35](https://github.com/budgie-at/budgie/commit/d970a357d673b909ae66d77ebb64b32309aebc32))
+- **app:** refactor game and history state, add solution steps ([05f8983](https://github.com/budgie-at/budgie/commit/05f898307e04b697f4ffce2e7f64bee26b7546b4))
+- **app:** refactor game and history state, add solution steps ([30688f8](https://github.com/budgie-at/budgie/commit/30688f8d9dc69e699f2db31409d23ea379f910fd))
+- **app:** refactor game and history state, add solution steps ([ec57ad6](https://github.com/budgie-at/budgie/commit/ec57ad670ece61df5f63d6a3589322214af7a88b))
+- bump deps ([7e68637](https://github.com/budgie-at/budgie/commit/7e68637391f17c254661e16a6427a27b28af5dea))
+- bump expo and deps ([36aad0d](https://github.com/budgie-at/budgie/commit/36aad0d3d17c7cae95dcc7cf495a99fb74f1b414))
+- bump expo and deps ([00072e0](https://github.com/budgie-at/budgie/commit/00072e039883dda238c328a04d4701fcd20e66db))
+- bump turbo ([b0883f3](https://github.com/budgie-at/budgie/commit/b0883f3f768cffbeffe0c8b4f3037fd1f2e3e9ca))
+- bump turbo ([97906cc](https://github.com/budgie-at/budgie/commit/97906cc179c4c8bcad03c790d6faf04ba4bfa411))
+- bump yarn ([5199349](https://github.com/budgie-at/budgie/commit/5199349f3d8e564083268d96af9138c9586c3425))
+- bump yarn ([b0e7c24](https://github.com/budgie-at/budgie/commit/b0e7c2438a2f40c84a53034b1353fc4ceafc5029))
+- changed elapsed time text to be timer text ([3b60453](https://github.com/budgie-at/budgie/commit/3b604538673e42fea65819e2bef3042d5effce90))
+- disable font scaling ([52b7b60](https://github.com/budgie-at/budgie/commit/52b7b60814dd398085613878b777f884d924832a))
+- expo 52 update ([284f199](https://github.com/budgie-at/budgie/commit/284f19924e1471b7ce794fcd1a57e2c5d9094433))
+- expo 54 migration ([#102](https://github.com/budgie-at/budgie/issues/102)) ([52c26a9](https://github.com/budgie-at/budgie/commit/52c26a93541a9e8d7b464894119376b0953495dd))
+- fix review comments ([5dbb383](https://github.com/budgie-at/budgie/commit/5dbb3831d53ab51aa25282a4313412312320cb9a))
+- fix review comments ([df30442](https://github.com/budgie-at/budgie/commit/df304425af5d9bf91ef2719e4036985e044e5471))
+- fix review comments ([9580897](https://github.com/budgie-at/budgie/commit/958089723b781e58af2d8491b2756a07f3074596))
+- fixed animation for row/col/group ([8d0be05](https://github.com/budgie-at/budgie/commit/8d0be0589c87fdfaccbfc320f9f6c9757c345328))
+- fixed testflight encryption compliance ([7a740d3](https://github.com/budgie-at/budgie/commit/7a740d3bc92c6ea72ccaabf2f4826c6f7c29b097))
+- fixed x/y ([207e238](https://github.com/budgie-at/budgie/commit/207e2383f35a4a3ba6c477b7f5635ebe0101dad5))
+- fixed x/y ([00f5021](https://github.com/budgie-at/budgie/commit/00f5021dca474bca13deffad7f550fe3c7729325))
+- **generator:** added DLX algorithm ([3803c16](https://github.com/budgie-at/budgie/commit/3803c16fe60d745a7c9e7eabfcd83cb41e96a8d3))
+- **generator:** added DLX algorithm ([19b579b](https://github.com/budgie-at/budgie/commit/19b579be201770e74d6383502df34d40674ed59c))
+- **generator:** added DLX algorithm ([f0ac98f](https://github.com/budgie-at/budgie/commit/f0ac98fa57c6896752935d23d97277fab0215c1b))
+- **generator:** added DLX algorithm ([0df8247](https://github.com/budgie-at/budgie/commit/0df82474824c3e9e88a03e0c1c872bf80378c2ce))
+- **generator:** added DLX algorithm ([112455a](https://github.com/budgie-at/budgie/commit/112455a8f41305cf1e95d4f0efbc25febcce982f))
+- **generator:** added DLX algorithm ([280acef](https://github.com/budgie-at/budgie/commit/280acef19a19140f230863c0cd1fd58eef4220f5))
+- **generator:** added DLX algorithm ([32958c0](https://github.com/budgie-at/budgie/commit/32958c0c60ee7e702df683f6b16d98e84fe00bad))
+- **generator:** added DLX algorithm ([11a1223](https://github.com/budgie-at/budgie/commit/11a122388fe3cee3c05b06b83e8dac7a5e9fd34a))
+- **generator:** added DLX algorithm ([f8dbcfa](https://github.com/budgie-at/budgie/commit/f8dbcfa07112f89881ceace29b037bd4e6baa9cb))
+- **generator:** added DLX algorithm ([53f443d](https://github.com/budgie-at/budgie/commit/53f443dea1c672ebb2d2848f3d876b6590fd6a95))
+- **generator:** added DLX algorithm ([ef18c23](https://github.com/budgie-at/budgie/commit/ef18c239c838f68ab3a1d8213672e4466a217f7a))
+- **generator:** added DLX algorithm ([07c9c06](https://github.com/budgie-at/budgie/commit/07c9c06da7bda4ac10fa3800d732162215266df2))
+- **generator:** added DLX algorithm ([34af3a1](https://github.com/budgie-at/budgie/commit/34af3a1e0171475479d1e6ee52c1581631e05ff8))
+- **generator:** added DLX algorithm ([a45f48d](https://github.com/budgie-at/budgie/commit/a45f48d086503a6555ae89fc8308be45f3123115))
+- **generator:** added DLX algorithm ([a57c56d](https://github.com/budgie-at/budgie/commit/a57c56d5950c91e52799593be2d6c0ab1fbf791a))
+- **generator:** fix tests ([dd5257a](https://github.com/budgie-at/budgie/commit/dd5257a4504b9ea289711b700c9eef3313901854))
+- improved group border style ([7bc9f0e](https://github.com/budgie-at/budgie/commit/7bc9f0e5d56d60be30619dc2d8b79434f7a43b97))
+- improved mechanics on selecting correct value ([4596e5b](https://github.com/budgie-at/budgie/commit/4596e5bd0d75f5e3eecc528ef23999f24d799602))
+- improved web styling ([b804853](https://github.com/budgie-at/budgie/commit/b8048531d6bf6ef90e26cd5b1c869b40ecafd9ec))
+- increase difficulty, refactor game screen ([24a6140](https://github.com/budgie-at/budgie/commit/24a61405c6e818a10a336b7628525e354e5ebfa7))
+- migrated to knip ([a532b51](https://github.com/budgie-at/budgie/commit/a532b518d31759b117f7e3b79f298bd11c09ac32))
+- migrated to knip ([9f2f46b](https://github.com/budgie-at/budgie/commit/9f2f46bfc463d2bc8dd9fd43f662cbe2e1095ae0))
+- moved eas udpate workflow to pull-request workflow job ([7e0d589](https://github.com/budgie-at/budgie/commit/7e0d58988d5df7413220834b973e614d516cbd9d))
+- moved rendering logic to the cell, fixed x/y ([8e409ec](https://github.com/budgie-at/budgie/commit/8e409eca8951d4aa8ffd5e824146d0dc3a5b2e1c))
+- moved rendering logic to the cell, fixed x/y ([d9dfb94](https://github.com/budgie-at/budgie/commit/d9dfb94e00d0a864c5be6224018f983d9242487d))
+- optimized cell rendering ([d2e8f1f](https://github.com/budgie-at/budgie/commit/d2e8f1ffd9a095e8323f11bb0929c0f4badbe75a))
+- optimized cell rendering ([c9b1785](https://github.com/budgie-at/budgie/commit/c9b1785097847977d862f56a416793ece39a5343))
+- optimized field re-renders, changed history action and logic ([9cfe68f](https://github.com/budgie-at/budgie/commit/9cfe68fc0fdce47093fe6f3065e020027fb41b08))
+- optimized scoring, react and sudoku class integration ([a2c824e](https://github.com/budgie-at/budgie/commit/a2c824e4b139129bf34d3f0b9d760c9394c750d3))
+- refactored available values progress coloring through theme ([b86c3ee](https://github.com/budgie-at/budgie/commit/b86c3ee2f5be64fca9bae5f2a042e5de31bc90ac))
+- remove .idea ([7e60e88](https://github.com/budgie-at/budgie/commit/7e60e88819f1a3c795054e67a87754ecb4143627))
+- remove useless index files ([0783bec](https://github.com/budgie-at/budgie/commit/0783bec831968330af0fdd15cbc5b9cbf7c45b48))
+- remove useless script from contracts ([75df5e3](https://github.com/budgie-at/budgie/commit/75df5e328fd77f93406ed9bfc76c192e2c17bf58))
+- remove useless scripts ([cfb7d09](https://github.com/budgie-at/budgie/commit/cfb7d09e1ddad4d99321323e988cbf48a473ef40))
+- removed idea ([04c4309](https://github.com/budgie-at/budgie/commit/04c4309460be0115fd2368c6246ab5fd4affd568))
+- removed idea ([8498733](https://github.com/budgie-at/budgie/commit/84987331e83fb0c00fea60138753514dff32d586))
+- rename script ([6cf6640](https://github.com/budgie-at/budgie/commit/6cf664070ae039ea872f1d45d32df16eac68d679))
+- rename script ([5528822](https://github.com/budgie-at/budgie/commit/55288225be7462b6383e699cf68a7251cceb9ef4))
+- rename script ([f2485dd](https://github.com/budgie-at/budgie/commit/f2485ddefb440f902633d6855a866f5be3a8cd49))
+- rename script ([bebd945](https://github.com/budgie-at/budgie/commit/bebd94554ced95c18ca7d81b6e8abcbd173eda2c))
+- rename script ([3a5a692](https://github.com/budgie-at/budgie/commit/3a5a692029eb798cba7aac2e085ace0ce10b493b))
+- resolve deadcode issues ([e656afa](https://github.com/budgie-at/budgie/commit/e656afa42368d94f5fb468a99848eae586dccb73))
+- started creation of game logic class with string representation ([51e43e3](https://github.com/budgie-at/budgie/commit/51e43e32bbbb52099d93f022d96d4ca2caf76d21))
+- started creation of game logic class with string representation ([f2c303d](https://github.com/budgie-at/budgie/commit/f2c303d85fd41f9019c0f5368b1da5f70d355044))
+- updated privacy policy ([ac499d1](https://github.com/budgie-at/budgie/commit/ac499d12882fa643281037a23fe2b9cfdbe8396e))
+- web theme color status bars ([40b7903](https://github.com/budgie-at/budgie/commit/40b79033a50ad014ffdbac09380d3cc55c32f62b))
+- working basic flow ([3d413dd](https://github.com/budgie-at/budgie/commit/3d413dd5ae607b65f849be235bfaec77d1690ad4))
+
+### Performance Improvements
+
+- **app:** improve animation ([54d741f](https://github.com/budgie-at/budgie/commit/54d741fae494c69d666bb1bcbc7575ab8a7d440a))
+- **app:** improve animation ([9de31b1](https://github.com/budgie-at/budgie/commit/9de31b1e2c8d173a54cda08dd150dc312823d34e))
+- **app:** improve animation, fix win animation ([31f6f8b](https://github.com/budgie-at/budgie/commit/31f6f8bf33213a008bad37bd1eb295aaa795ab31))
+- **app:** improve animation, fix win animation ([80b85a6](https://github.com/budgie-at/budgie/commit/80b85a6e1546f75b56180a630d305dae757dd926))
+- **app:** optimize cells rendering ([ed80aed](https://github.com/budgie-at/budgie/commit/ed80aedb2adc61df71642a7f07eedd9e4fca4144))
+- **app:** optimize cells rendering ([9edaee9](https://github.com/budgie-at/budgie/commit/9edaee9d2b8601a810ba56b76647eb6fc5a7655c))
+- **app:** optimize iOS animation performance and reduce UI blocking ([f76847b](https://github.com/budgie-at/budgie/commit/f76847b3f465b9b8caaade2429cf2b78d2b21517))
+- **generator:** limit DLX solver unique solutions count ([cbd0dc2](https://github.com/budgie-at/budgie/commit/cbd0dc25a406b3aa48e6d093861c0b0c9c47e779))
+
+### Reverts
+
+- turbo ([804f9f6](https://github.com/budgie-at/budgie/commit/804f9f65a806e9e99ceb155b5a2c70c1b6140b8e))
+
 # [1.44.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.43.0...v1.44.0) (2025-09-24)
 
 ### Features
@@ -53,7 +430,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.41.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.41.0...v1.41.1) (2025-08-05)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.41.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.40.2...v1.41.0) (2025-08-05)
 
@@ -155,7 +532,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.35.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.35.0...v1.35.1) (2025-07-29)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.35.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.34.0...v1.35.0) (2025-07-29)
 
@@ -314,11 +691,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.24.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.24.1...v1.24.2) (2025-07-25)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.24.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.24.0...v1.24.1) (2025-07-25)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 # [1.24.0](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.23.1...v1.24.0) (2025-07-24)
 
@@ -374,15 +751,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.22.6](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.5...v1.22.6) (2025-07-22)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.5](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.4...v1.22.5) (2025-07-22)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.4](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.3...v1.22.4) (2025-07-21)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.3](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.2...v1.22.3) (2025-07-21)
 
@@ -397,7 +774,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.22.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.1...v1.22.2) (2025-07-21)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.22.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.22.0...v1.22.1) (2025-07-21)
 
@@ -443,7 +820,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.20.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.20.1...v1.20.2) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.20.1](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.20.0...v1.20.1) (2025-07-20)
 
@@ -465,15 +842,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.18.5](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.4...v1.18.5) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.4](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.3...v1.18.4) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.3](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.2...v1.18.3) (2025-07-20)
 
-**Note:** Version bump only for package @suuudokuuu/root
+**Note:** Version bump only for package @budgie-at/root
 
 ## [1.18.2](https://github.com/vitalyiegorov/suuudokuuu/compare/v1.18.1...v1.18.2) (2025-07-20)
 

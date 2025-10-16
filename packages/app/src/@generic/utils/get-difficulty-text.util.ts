@@ -1,5 +1,5 @@
 import { t } from '@lingui/core/macro';
-import { DifficultyEnum } from '@suuudokuuu/generator';
+import { DifficultyEnum } from '@budgie-at/generator';
 
 export const getDifficultyText = (difficulty: DifficultyEnum): string => {
     switch (difficulty) {
