@@ -1,0 +1,41 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+@theme {
+    --color-text-primary: rgb(0, 0, 0);
+    --color-text-primary-reverse: rgb(255, 255, 255);
+    --color-text-secondary: rgb(115, 115, 115);
+    --color-bg-primary: rgb(255, 255, 255);
+    --color-bg-primary-reverse: rgb(0, 0, 0);
+    --color-surface-secondary: rgb(10, 10, 10, 0.05);
+    --color-surface-widget: rgb(248, 248, 248, 0.50);
+    --color-border-secondary: rgb(229, 229, 229);
+    --color-positive: rgb(16, 185, 129);
+    --color-negative: rgb(239, 68, 68);
+    --color-warning: rgb(255, 185, 0);
+    --color-warning-fg: rgb(187, 77, 0);
+    --color-positive-weak: rgb(16, 185, 129, 0.10);
+    --color-negative-weak: rgb(239, 68, 68, 0.10);
+    --color-warning-weak: rgb(255, 185, 0, 0.10);
+}
+
+.dark {
+    --color-text-primary: rgb(255, 255, 255);
+    --color-text-primary-reverse: rgb(0, 0, 0);
+    --color-text-secondary: rgb(136, 136, 136);
+    --color-bg-primary: rgb(0, 0, 0);
+    --color-bg-primary-reverse: rgb(255, 255, 255);
+    --color-surface-secondary: rgb(255, 255, 255, 0.05);
+    --color-surface-widget: rgb(10, 10, 10, 0.50);
+    --color-border-secondary: rgb(34, 34, 34);
+    --color-positive: rgb(1, 255, 136);
+    --color-negative: rgb(255, 107, 107);
+    --color-warning: rgb(255, 185, 0);
+    --color-warning-fg: rgb(255, 185, 0);
+    --color-positive-weak: rgb(1, 255, 136, 0.10);
+    --color-negative-weak: rgb(255, 107, 107, 0.10);
+    --color-warning-weak: rgb(255, 185, 0, 0.10);
+}

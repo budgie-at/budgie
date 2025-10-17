@@ -8,7 +8,7 @@ export default function HomePage() {
 
     return (
         <Page>
-            <Text style={{ color: '#ffffff' }}>{t`Home Screen`}</Text>
+            <Text className="text-text-primary">{t`Home Screen`}</Text>
         </Page>
     );
 }
