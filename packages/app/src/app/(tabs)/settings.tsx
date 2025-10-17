@@ -8,7 +8,7 @@ export default function SettingsPage() {
 
     return (
         <Page>
-            <Text style={{color: '#ffffff'}}>{t`Settings Page`}</Text>
+            <Text className="text-text-primary">{t`Settings Page`}</Text>
         </Page>
     );
 }
