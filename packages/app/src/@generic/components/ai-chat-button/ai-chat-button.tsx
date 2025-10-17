@@ -18,7 +18,7 @@ export const AiChatButton = () => {
     const color = scheme === 'dark' ? '#000000' : '#ffffff';
     console.log({ color, scheme });
 
-    const styles = [AiChatButtonStyles.container, { backgroundColor: theme.colors.backgroundColor, shadowColor: theme.colors.black }];
+    const styles = [AiChatButtonStyles.container, { backgroundColor: bg, shadowColor: theme.colors.black }];
 
     const openChatBottomSheet = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
