@@ -3,7 +3,7 @@
     "details": [
       {
         "appIDs": [
-          "3R8589YV24.com.vitalyiegorov.suuudokuuu"
+          "3R8589YV24.com.vitalyiegorov.budgie"
         ],
         "components": [
           {
@@ -16,12 +16,12 @@
   },
   "activitycontinuation": {
     "apps": [
-      "3R8589YV24.com.vitalyiegorov.suuudokuuu"
+      "3R8589YV24.com.vitalyiegorov.budgie"
     ]
   },
   "webcredentials": {
     "apps": [
-      "3R8589YV24.com.vitalyiegorov.suuudokuuu"
+      "3R8589YV24.com.vitalyiegorov.budgie"
     ]
   }
 }
