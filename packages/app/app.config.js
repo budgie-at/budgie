@@ -5,7 +5,7 @@ const IS_DEV = APP_VARIANT === 'development';
 const IS_PREVIEW = APP_VARIANT === 'preview';
 
 const getUniqueIdentifier = isAndroid => {
-    const prefix = isAndroid ? 'com.vitaliiyehorov.suuudokuuu' : 'com.vitalyiegorov.suuudokuuu';
+    const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
 
     if (IS_DEV) {
         return `${prefix}.dev`;
@@ -20,21 +20,21 @@ const getUniqueIdentifier = isAndroid => {
 
 const getAppName = () => {
     if (IS_DEV) {
-        return 'suuudokuuu (Dev)';
+        return 'budgie (Dev)';
     }
 
     if (IS_PREVIEW) {
-        return 'suuudokuuu (Preview)';
+        return 'budgie (Preview)';
     }
 
-    return 'suuudokuuu';
+    return 'budgie';
 };
 
 export default ({ config }) => ({
     ...config,
     name: getAppName(),
-    slug: 'suuudokuuu',
-    scheme: 'suuudokuuu',
+    slug: 'budgie',
+    scheme: 'budgie',
     version: rootPkg.version,
     orientation: 'portrait',
     icon: './assets/icon.png',
@@ -51,7 +51,7 @@ export default ({ config }) => ({
         config: {
             usesNonExemptEncryption: false
         },
-        associatedDomains: ['applinks:suuudokuuu.com']
+        associatedDomains: ['applinks:budgie.com']
     },
     android: {
         adaptiveIcon: {
@@ -66,7 +66,7 @@ export default ({ config }) => ({
                 data: [
                     {
                         scheme: 'https',
-                        host: '*.suuudokuuu.com',
+                        host: '*.budgie.com',
                         pathPrefix: '/'
                     }
                 ],
@@ -88,7 +88,7 @@ export default ({ config }) => ({
         url: 'https://u.expo.dev/4a70028a-5f9e-4ab6-9389-82d8b8b6c833'
     },
     plugins: [
-        ['expo-router', { origin: 'https://www.suuudokuuu.com/' }],
+        ['expo-router', { origin: 'https://www.budgie.com/' }],
         ['expo-font', { fonts: ['../../node_modules/@expo-google-fonts/inter/Inter_900Black.ttf'] }]
     ],
     experiments: {
