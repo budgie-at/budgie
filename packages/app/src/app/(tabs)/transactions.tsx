@@ -8,7 +8,7 @@ export default function TransactionsPage() {
 
     return (
         <Page>
-            <Text style={{color: '#ffffff'}}>{t`Transactions Page`}</Text>
+            <Text className="text-text-primary">{t`Transactions Page`}</Text>
         </Page>
     );
 }
