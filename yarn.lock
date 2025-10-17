@@ -1155,6 +1155,7 @@ __metadata:
     "@budgie-at/generator": "workspace:*"
     "@expo-google-fonts/inter": "npm:^0.2.3"
     "@expo/fingerprint": "npm:~0.15.1"
+    "@gorhom/bottom-sheet": "npm:^5.2.6"
     "@lingui/core": "npm:^5.3.3"
     "@lingui/react": "npm:^5.3.3"
     "@react-native-async-storage/async-storage": "npm:2.2.0"
@@ -1181,13 +1182,13 @@ __metadata:
     expo-status-bar: "npm:~3.0.8"
     expo-system-ui: "npm:~6.0.7"
     expo-updates: "npm:~29.0.10"
-    lucide-react-native: "npm:^0.525.0"
+    lucide-react-native: "npm:^0.545.0"
     react: "npm:^19.1.1"
     react-compiler-runtime: "npm:19.0.0-beta-63e3235-20250105"
     react-dom: "npm:^19.1.1"
     react-native: "npm:0.81.4"
     react-native-gesture-handler: "npm:~2.28.0"
-    react-native-reanimated: "npm:^4.1.0"
+    react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"
     react-native-screens: "npm:~4.16.0"
     react-native-svg: "npm:15.12.1"
@@ -2362,6 +2363,40 @@ __metadata:
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
   checksum: 10/052dd232140fa60e81588000cbe729a40146579b361f1070bce63e2a761388a22a16d00beeffc504bd3601cb8e055c57b21a185448b3ed550cf50716f4fd442e
+  languageName: node
+  linkType: hard
+
+"@gorhom/bottom-sheet@npm:^5.2.6":
+  version: 5.2.6
+  resolution: "@gorhom/bottom-sheet@npm:5.2.6"
+  dependencies:
+    "@gorhom/portal": "npm:1.0.14"
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-native": "*"
+    react: "*"
+    react-native: "*"
+    react-native-gesture-handler: ">=2.16.1"
+    react-native-reanimated: "*"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-native":
+      optional: true
+  checksum: 10/bca8cf14a7627d2fb2b5e6ed75e5fa79be373ee1d227941e0a3c1b33b3385b04a24353b0c48c00b8aeea72a17a4612eefd31ac1b38ab66f5b3103d3d4eb9fef2
+  languageName: node
+  linkType: hard
+
+"@gorhom/portal@npm:1.0.14":
+  version: 1.0.14
+  resolution: "@gorhom/portal@npm:1.0.14"
+  dependencies:
+    nanoid: "npm:^3.3.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/e0fa06be88b850cccdc6a1417a86e5ac21d82e3bfd1cec7eb05eccf7f3b595babe305541f278fdcbde34f3a9db465097dca2c785445c28bafb83b744e235da0c
   languageName: node
   linkType: hard
 
@@ -12599,14 +12634,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react-native@npm:^0.525.0":
-  version: 0.525.0
-  resolution: "lucide-react-native@npm:0.525.0"
+"lucide-react-native@npm:^0.545.0":
+  version: 0.545.0
+  resolution: "lucide-react-native@npm:0.545.0"
   peerDependencies:
     react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-native: "*"
     react-native-svg: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
-  checksum: 10/09ae442665c1e4f00966a584557353cae51aba0964ca9317f713ef137bf45ddc0ac74217fc528681b0d903579996d958c509d9e9e207ce389cd17b323774b8ee
+  checksum: 10/834e1540217e777d8d24371913477f8b4fd7fd7cb0f41cfe09bf273dbed1e44a9ed35f20ce9eefd2e28ee13f1a6184b388d6d24953b577155123d5c6508b7969
   languageName: node
   linkType: hard
 
@@ -13427,7 +13462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
+"nanoid@npm:^3.3.1, nanoid@npm:^3.3.11, nanoid@npm:^3.3.6, nanoid@npm:^3.3.7, nanoid@npm:^3.3.8":
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
@@ -15243,9 +15278,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "react-native-reanimated@npm:4.1.0"
+"react-native-reanimated@npm:~4.1.1":
+  version: 4.1.3
+  resolution: "react-native-reanimated@npm:4.1.3"
   dependencies:
     react-native-is-edge-to-edge: "npm:^1.2.1"
     semver: "npm:7.7.2"
@@ -15254,7 +15289,7 @@ __metadata:
     react: "*"
     react-native: "*"
     react-native-worklets: ">=0.5.0"
-  checksum: 10/1420a4f76b0123aa47e1cfb07bba130f3a81176f727af957c53f526f19b70b1525187f4e931f14a124d5064bfeb96144880b236543d7655ff3b51fed48b7654d
+  checksum: 10/f11287c506a640593f74694df6d1d89f56ef2de1bdd57ec9a00c5353be40a48bede121f79b20c1b8f6009b640af37cbada3172b5bf6b320cad954001fc1b79ef
   languageName: node
   linkType: hard
 
