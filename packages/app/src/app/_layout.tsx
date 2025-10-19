@@ -1,4 +1,3 @@
-/* eslint-disable */
 // eslint-disable-next-line camelcase
 import { Inter_500Medium, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { i18n } from '@lingui/core';
@@ -11,8 +10,9 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import { appRootPersistor, appRootStore } from '../@generic/app-root.store';
-import { ThemeProvider } from '../theme/context/theme.context';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
+import '../global.css';
+import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
 enableFreeze();
@@ -40,11 +40,11 @@ export default function RootLayout() {
     return (
         <Provider store={appRootStore}>
             <PersistGate loading={null} persistor={appRootPersistor}>
-                <ThemeProvider>
-                    <I18nProvider i18n={i18n}>
-                        <Stack screenOptions={stackOptions}></Stack>
-                    </I18nProvider>
-                </ThemeProvider>
+                <I18nProvider i18n={i18n}>
+                    <ThemeProvider>
+                        <Stack screenOptions={stackOptions} />
+                    </ThemeProvider>
+                </I18nProvider>
             </PersistGate>
         </Provider>
     );
