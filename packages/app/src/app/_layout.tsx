@@ -13,7 +13,6 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { appRootPersistor, appRootStore } from '../@generic/app-root.store';
 import { ThemeProvider } from '../theme/context/theme.context';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
-import { GameProvider } from '../game/context/game.context';
 
 enableScreens();
 enableFreeze();
@@ -43,9 +42,7 @@ export default function RootLayout() {
             <PersistGate loading={null} persistor={appRootPersistor}>
                 <ThemeProvider>
                     <I18nProvider i18n={i18n}>
-                        <GameProvider>
-                            <Stack screenOptions={stackOptions}></Stack>
-                        </GameProvider>
+                        <Stack screenOptions={stackOptions}></Stack>
                     </I18nProvider>
                 </ThemeProvider>
             </PersistGate>
