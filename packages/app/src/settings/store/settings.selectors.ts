@@ -7,4 +7,3 @@ const settingsSelector = (state: RootState) => state.settings;
 
 export const settingsKeySelector = (key: keyof Pick<SettingsState, 'hasVibration' | 'isDarkColorSchema'>) =>
     createSelector(settingsSelector, state => state[key]);
-export const settingsLanguageSelector = createSelector(settingsSelector, state => state.language);
