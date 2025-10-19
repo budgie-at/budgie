@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.48.0](https://github.com/budgie-at/budgie/compare/v1.47.1...v1.48.0) (2025-10-19)
+
+### Bug Fixes
+
+- add nativewind ([e5eb761](https://github.com/budgie-at/budgie/commit/e5eb761783bce99aa3b320960bbe0b4953cafc9f))
+- fix react versions ([e8aae51](https://github.com/budgie-at/budgie/commit/e8aae51dcf9ae5e0b3efba1db4ed940c26ad4298))
+
+### Features
+
+- add basic navigation ([45d1a0e](https://github.com/budgie-at/budgie/commit/45d1a0e2c6a40a8436b37f07a01d5c0e32d2d641))
+- remove "buy asset" and "sell asset" transaction types ([06a02b4](https://github.com/budgie-at/budgie/commit/06a02b4afee52c85a78f6e7bb79736cbfe2bbef7))
+
 ## [1.47.1](https://github.com/budgie-at/budgie/compare/v1.47.0...v1.47.1) (2025-10-19)
 
 **Note:** Version bump only for package @budgie-at/root
