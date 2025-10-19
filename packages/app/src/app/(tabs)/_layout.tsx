@@ -1,4 +1,4 @@
-import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
+import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { ChartNoAxesColumn, Home, Receipt, Settings } from 'lucide-react-native';
 import { styled } from 'nativewind';
 
