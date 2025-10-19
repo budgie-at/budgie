@@ -15,6 +15,7 @@ module.exports = {
             'error',
             {
                 ignore: ['^(?![A-Z])\\S+$', '^[A-Z0-9_-]+$', 'rgba', 'rgb', '^Inter_[0-9A-Z]+', '^Arrow[A-Z]+', 'Tab', 'Enter'],
+                ignoreNames: [{ regex: { pattern: 'className', flags: 'i' } }],
                 ignoreFunctions: ['format']
             }
         ],
