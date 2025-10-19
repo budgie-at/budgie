@@ -1,32 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { createMigrate, persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore } from 'redux-persist';
 
-import { gameSlice } from '../game/store/game.slice';
-import { initialGameState } from '../game/store/game.state';
 import { settingsSlice } from '../settings/store/settings.slice';
 
-import type { GameState } from '../game/store/game.state';
-import type { MigrationManifest } from 'redux-persist/es/types';
-
-const migrations: MigrationManifest<RootState> = {
-    12: state => ({
-        ...state,
-        [gameSlice.name]: {
-            ...initialGameState,
-            ...state[gameSlice.name],
-            historyByDifficulty: {
-                ...initialGameState.historyByDifficulty,
-                // @ts-expect-error Migrating old state
-                // eslint-disable-next-line  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-type-assertion
-                ...(state.history?.byDifficulty as unknown as GameState['historyByDifficulty'])
-            }
-        }
-    })
-};
-
 const rootReducer = combineReducers({
-    [gameSlice.name]: gameSlice.reducer,
     [settingsSlice.name]: settingsSlice.reducer
 });
 
@@ -35,8 +13,7 @@ const persistedReducer = persistReducer(
     {
         key: 'root',
         storage: AsyncStorage,
-        version: 12,
-        migrate: createMigrate(migrations)
+        version: 1
     },
     rootReducer
 ) as unknown as typeof rootReducer;
