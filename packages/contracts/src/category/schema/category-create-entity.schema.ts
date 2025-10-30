@@ -1,5 +1,6 @@
-import { createInsertSchema } from 'drizzle-zod';
+import { CategoryEntitySchema } from './category-entity.schema';
 
-import { CategoryEntityTable } from '../table/category-entity.table';
-
-export const CategoryCreateEntitySchema = createInsertSchema(CategoryEntityTable);
+export const CategoryCreateEntitySchema = CategoryEntitySchema.pick({
+    title: true,
+    icon: true
+});

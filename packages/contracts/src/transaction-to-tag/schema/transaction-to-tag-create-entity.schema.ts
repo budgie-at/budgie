@@ -1,5 +1,6 @@
-import { createInsertSchema } from 'drizzle-zod';
+import { TransactionToTagEntitySchema } from './transaction-to-tag-entity.schema';
 
-import { TransactionToTagEntityTable } from '../table/transaction-to-tag-entity.table';
-
-export const TransactionToTagCreateEntitySchema = createInsertSchema(TransactionToTagEntityTable);
+export const TransactionToTagCreateEntitySchema = TransactionToTagEntitySchema.pick({
+    transactionId: true,
+    tagId: true
+});
