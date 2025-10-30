@@ -19,6 +19,12 @@
         "ts": "yarn run -T tsc -p ."
     },
     "dependencies": {
+        "drizzle-orm": "^0.44.7",
+        "drizzle-zod": "^0.8.3",
+        "expo-sqlite": "^16.0.8",
         "zod": "^4.1.12"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.31.5"
     }
 }
