@@ -1,5 +1,14 @@
-import { createInsertSchema } from 'drizzle-zod';
+import { TransactionEntitySchema } from './transaction-entity.schema';
 
-import { TransactionEntityTable } from '../table/transaction-entity.table';
-
-export const TransactionCreateEntitySchema = createInsertSchema(TransactionEntityTable);
+export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
+    type: true,
+    title: true,
+    amount: true,
+    comment: true,
+    accountId: true,
+    categoryId: true,
+    operatedAt: true
+}).partial({
+    comment: true,
+    operatedAt: true
+});
