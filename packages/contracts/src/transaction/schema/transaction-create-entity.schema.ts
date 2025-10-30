@@ -1,11 +1,5 @@
-import { TransactionEntitySchema } from './transaction-entity.schema';
+import { createInsertSchema } from 'drizzle-zod';
 
-export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
-    type: true,
-    title: true,
-    amount: true,
-    comment: true,
-    operatedAt: true,
-    sourceAccountId: true,
-    destinationAccountId: true
-});
+import { TransactionEntityTable } from '../table/transaction-entity.table';
+
+export const TransactionCreateEntitySchema = createInsertSchema(TransactionEntityTable);

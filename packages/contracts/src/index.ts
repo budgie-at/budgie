@@ -3,6 +3,9 @@ export { CurrencyEnum } from './generic/enum/currency.enum';
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
+export { AccountEntityTable } from './account/table/account-entity.table';
+export { AccountRelations } from './account/relations/account-entity.relations';
+
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 
@@ -17,6 +20,10 @@ export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
+
+export { CategoryEntityTable } from './category/table/category-entity.table';
+export { CategoryEntityRelations } from './category/relations/category-entity.relations';
+
 export type { CategoryEntityInterface } from './category/entity/category-entity.interface';
 export type { CategoryCreateEntityInterface } from './category/entity/category-create-entity.interface';
 
@@ -25,9 +32,23 @@ export { CategoryCreateEntitySchema } from './category/schema/category-create-en
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
+
+export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
+export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
+
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
 
-export { TransactionTypeEnumSchema } from './transaction/schema/transaction-type-enum.schema';
 export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
 export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
+
+export { TransactionToTagAssociationEnum } from './transaction-to-tag/enum/transaction-to-tag-association.enum';
+
+export { TransactionToTagEntityTable } from './transaction-to-tag/table/transaction-to-tag-entity.table';
+export { TransactionToTagEntityRelations } from './transaction-to-tag/relations/transaction-to-tag-entity.relations';
+
+export { TransactionToTagEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-entity.schema';
+export { TransactionToTagCreateEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-create-entity.schema';
+
+export type { TransactionToTagEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-entity.interface';
+export type { TransactionToTagCreateEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-create-entity.interface';
