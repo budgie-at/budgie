@@ -4,7 +4,7 @@ export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export { AccountEntityTable } from './account/table/account-entity.table';
-export { AccountRelations } from './account/relations/account-entity.relations';
+export { AccountEntityRelations } from './account/relations/account-entity.relations';
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
@@ -13,6 +13,10 @@ export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
 
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
+
+export { TagEntityTable } from './tag/table/tag-entity.table';
+export { TagEntityRelations } from './tag/relations/tag-entity.relations';
+
 export type { TagEntityInterface } from './tag/entity/tag-entity.interface';
 export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.interface';
 
