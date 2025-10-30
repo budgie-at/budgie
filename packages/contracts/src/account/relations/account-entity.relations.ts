@@ -4,6 +4,6 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountEntityTable } from '../table/account-entity.table';
 
-export const AccountRelations = relations(AccountEntityTable, ({ many }) => ({
+export const AccountEntityRelations = relations(AccountEntityTable, ({ many }) => ({
     [AccountAssociationEnum.TRANSACTIONS]: many(TransactionEntityTable)
 }));
