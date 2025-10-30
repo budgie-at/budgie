@@ -1,5 +1,5 @@
-import { createInsertSchema } from 'drizzle-zod';
+import { TagEntitySchema } from './tag-entity.schema';
 
-import { TagEntityTable } from '../table/tag-entity.table';
-
-export const TagCreateEntitySchema = createInsertSchema(TagEntityTable);
+export const TagCreateEntitySchema = TagEntitySchema.pick({
+    title: true
+});
