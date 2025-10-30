@@ -1,5 +1,6 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
+import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
@@ -11,7 +12,7 @@ export const TransactionEntityTable = sqliteTable(
         categoryId: int('category_id', { mode: 'number' }).notNull(),
         title: text().default('').notNull(),
         comment: text().default('').notNull(),
-        type: text({ enum: Object.values(TransactionTypeEnum) as [string, ...string[]] })
+        type: text({ enum: convertEnumToDrizzleEnum(TransactionTypeEnum) })
             .default(TransactionTypeEnum.EXPENSE)
             .notNull(),
         operatedAt: int('operated_at', { mode: 'timestamp' }).notNull()
