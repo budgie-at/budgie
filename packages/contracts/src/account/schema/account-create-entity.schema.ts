@@ -1,6 +1,5 @@
-import { AccountEntitySchema } from './account-entity.schema';
+import { createInsertSchema } from 'drizzle-zod';
 
-export const AccountCreateEntitySchema = AccountEntitySchema.pick({
-    type: true,
-    balance: true,
-});
+import { AccountEntityTable } from '../table/account-entity.table';
+
+export const AccountCreateEntitySchema = createInsertSchema(AccountEntityTable);
