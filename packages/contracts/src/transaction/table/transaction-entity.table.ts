@@ -16,6 +16,6 @@ export const TransactionEntityTable = sqliteTable(
         type: text({ enum: convertEnumToDrizzleEnum(TransactionTypeEnum) })
             .default(TransactionTypeEnum.EXPENSE)
             .notNull(),
-        operatedAt: int({ mode: 'timestamp' }).default(CURRENT_TIMESTAMP).notNull()
+        operatedAt: int('operated_at', { mode: 'timestamp' }).default(CURRENT_TIMESTAMP).notNull()
     })
 );
