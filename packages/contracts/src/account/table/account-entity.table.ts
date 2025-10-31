@@ -11,9 +11,11 @@ export const AccountEntityTable = sqliteTable(
         balance: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),
         type: text({ enum: convertEnumToDrizzleEnum(AccountTypeEnum) })
+            .$type<AccountTypeEnum>()
             .default(AccountTypeEnum.BANK)
             .notNull(),
         currency: text({ enum: convertEnumToDrizzleEnum(CurrencyEnum) })
+            .$type<CurrencyEnum>()
             .default(CurrencyEnum.UAH)
             .notNull()
     })
