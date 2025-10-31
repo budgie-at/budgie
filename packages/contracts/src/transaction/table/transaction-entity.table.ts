@@ -1,5 +1,6 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
+import { CURRENT_TIMESTAMP } from '../../generic/constant/current-timestamp.constant';
 import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -15,6 +16,6 @@ export const TransactionEntityTable = sqliteTable(
         type: text({ enum: convertEnumToDrizzleEnum(TransactionTypeEnum) })
             .default(TransactionTypeEnum.EXPENSE)
             .notNull(),
-        operatedAt: int('operated_at', { mode: 'timestamp' }).notNull()
+        operatedAt: int({ mode: 'timestamp' }).default(CURRENT_TIMESTAMP).notNull()
     })
 );

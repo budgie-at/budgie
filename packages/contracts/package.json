@@ -13,7 +13,6 @@
         },
         "./package.json": "./package.json"
     },
-    "type": "module",
     "main": "./dist/esm/index.js",
     "types": "./dist/esm/index.d.ts",
     "react-native": "./dist/esm/index.js",
