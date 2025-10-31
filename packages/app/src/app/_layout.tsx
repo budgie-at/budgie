@@ -2,6 +2,7 @@
 import { Inter_500Medium, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -9,9 +10,11 @@ import { enableFreeze, enableScreens } from 'react-native-screens';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
+import migrations from '../../drizzle/migrations';
 import { appRootPersistor, appRootStore } from '../@generic/app-root.store';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
+import { db } from '../drizzle/db/db';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
@@ -26,14 +29,15 @@ const stackOptions = { headerShown: false, gestureEnabled: false };
 export default function RootLayout() {
     // eslint-disable-next-line camelcase
     const [loaded] = useFonts({ Inter_500Medium, Inter_700Bold });
+    const { success } = useMigrations(db, migrations);
 
     useEffect(() => {
-        if (loaded) {
+        if (loaded && success) {
             void SplashScreen.hideAsync();
         }
-    }, [loaded]);
+    }, [loaded, success]);
 
-    if (!loaded) {
+    if (!loaded || !success) {
         return null;
     }
 
