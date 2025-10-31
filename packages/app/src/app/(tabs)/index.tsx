@@ -1,6 +1,8 @@
 import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react';
 import { useLingui } from '@lingui/react/macro';
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { useSQLiteContext } from 'expo-sqlite';
 import { Pressable, Text } from 'react-native';
 
 import { createAccountMutation } from '../../@account/mutation/create-account.mutation';
@@ -8,8 +10,11 @@ import { useGetAccountsQuery } from '../../@account/query/use-get-accounts.query
 import { Page } from '../../@generic/components/page/page';
 
 export default function HomePage() {
-    const { t } = useLingui();
     const { data } = useGetAccountsQuery();
+    const { t } = useLingui();
+
+    const db = useSQLiteContext();
+    useDrizzleStudio(db);
 
     const onAdd = async () => {
         await createAccountMutation({
