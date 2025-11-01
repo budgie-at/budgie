@@ -1327,7 +1327,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
-    "@budgie/contracts": "npm:*"
+    "@budgie/contracts": "npm:^1.49.0"
     "@expo-google-fonts/inter": "npm:^0.2.3"
     "@expo/fingerprint": "npm:~0.15.1"
     "@libsql/client": "npm:^0.15.15"
@@ -1458,7 +1458,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@npm:*, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@npm:^1.49.0, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
