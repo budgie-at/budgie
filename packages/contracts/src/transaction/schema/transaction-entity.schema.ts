@@ -1,36 +1,18 @@
-import { array, date, number, string } from 'zod';
+import { createSelectSchema } from 'drizzle-zod';
+import { enum as zodEnum } from 'zod';
 
-import { AccountEntitySchema } from '../../account/schema/account-entity.schema';
-import { CategoryEntitySchema } from '../../category/schema/category-entity.schema';
-import { BaseEntitySchema } from '../../generic/schema/base-entity.schema';
-import { TagEntitySchema } from '../../tag/schema/tag-entity.schema';
+import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-max-length.constant';
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
-import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { TransactionEntityTable } from '../table/transaction-entity.table';
 
-import { TransactionTypeEnumSchema } from './transaction-type-enum.schema';
-
-export const TransactionEntitySchema = BaseEntitySchema.extend({
-    type: TransactionTypeEnumSchema,
-    title: string().max(TRANSACTION_TITLE_MAX_LENGTH).describe('Title of the transaction.'),
-    amount: number().describe('Amount of the transaction.'),
-    sourceAccountId: number().positive().describe('Id of the source account associated with the transaction.'),
-    destinationAccountId: number().positive().optional().describe('Id of the destination account.'),
-    comment: string().max(TRANSACTION_COMMENT_MAX_LENGTH).optional().describe('Comment of the transaction.'),
-    operatedAt: date()
-        .default(() => new Date())
-        .describe('Date of the transaction. Default is current date. Can be changed later.'),
-
-    get [TransactionAssociationEnum.SOURCE_ACCOUNT]() {
-        return AccountEntitySchema.describe('Source account associated with the transaction.');
-    },
-    get [TransactionAssociationEnum.DESTINATION_ACCOUNT]() {
-        return AccountEntitySchema.nullable().describe('Destination account of the transaction.');
-    },
-    get [TransactionAssociationEnum.CATEGORY]() {
-        return CategoryEntitySchema.describe('Category of the transaction.');
-    },
-    get [TransactionAssociationEnum.TAGS]() {
-        return array(TagEntitySchema).describe('Tags of the transaction.');
-    }
+export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable, {
+    ...BaseEntityFields,
+    type: zodEnum(TransactionTypeEnum).describe('The transaction type.'),
+    title: schema => schema.max(TRANSACTION_TITLE_MAX_LENGTH).describe('The transaction title.'),
+    comment: schema => schema.max(TRANSACTION_COMMENT_MAX_LENGTH).describe('The transaction comment.'),
+    operatedAt: schema => schema.describe('The transaction operated at.'),
+    accountId: schema => schema.describe('The id of the account transaction belongs to.'),
+    categoryId: schema => schema.describe('The id of the category transaction belongs to.')
 });

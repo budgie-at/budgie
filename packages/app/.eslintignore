@@ -4,6 +4,7 @@
 .android/
 .ios/
 src/locales
+drizzle/
 
 app.config.js
 babel.config.js
