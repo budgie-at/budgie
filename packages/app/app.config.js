@@ -88,6 +88,7 @@ export default ({ config }) => ({
         url: 'https://u.expo.dev/4a70028a-5f9e-4ab6-9389-82d8b8b6c833'
     },
     plugins: [
+        'expo-sqlite',
         ['expo-router', { origin: 'https://www.suuudokuuu.com/' }],
         ['expo-font', { fonts: ['../../node_modules/@expo-google-fonts/inter/Inter_900Black.ttf'] }]
     ],
