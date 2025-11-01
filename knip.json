@@ -29,6 +29,7 @@
         "date-fns",
         "postcss",
         "tsx",
+        "react-native-css",
         "babel-plugin-inline-import",
         "autoprefixer",
         "tailwindcss-animate",
