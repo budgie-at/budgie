@@ -1,6 +1,6 @@
 import type { ZodDate, ZodNumber } from 'zod';
 
-export interface BaseOverrides {
+interface BaseOverrides {
     id: (schema: ZodNumber) => ZodNumber;
     createdAt: (schema: ZodDate) => ZodDate;
     updatedAt: (schema: ZodDate) => ZodDate;

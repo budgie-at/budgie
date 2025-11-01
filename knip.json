@@ -28,6 +28,8 @@
         "babel-jest",
         "date-fns",
         "postcss",
+        "tsx",
+        "babel-plugin-inline-import",
         "autoprefixer",
         "tailwindcss-animate",
         "babel-plugin-react-compiler",

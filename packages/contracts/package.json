@@ -1,36 +1,33 @@
 {
-    "name": "@budgie/contracts",
-    "version": "1.45.1",
-    "private": true,
-    "description": "Contracts",
-    "sideEffects": false,
-    "exports": {
-        ".": {
-            "types": "./dist/esm/index.d.ts",
-            "import": "./dist/esm/index.js",
-            "default": "./dist/esm/index.js",
-            "react-native": "./dist/esm/index.js"
-        },
-        "./package.json": "./package.json"
+  "name": "@budgie/contracts",
+  "version": "1.45.1",
+  "private": true,
+  "description": "Contracts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js",
+      "react-native": "./dist/esm/index.js"
     },
-    "main": "./dist/esm/index.js",
-    "types": "./dist/esm/index.d.ts",
-    "react-native": "./dist/esm/index.js",
-    "scripts": {
-        "build": "yarn run -T tsc -p tsconfig.json",
-        "build:watch": "yarn build --watch",
-        "clear": "yarn run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
-        "format": "yarn run -T prettier --write src",
-        "lint": "yarn run -T eslint --quiet --fix src --ext .ts",
-        "ts": "yarn run -T tsc -p ."
-    },
-    "dependencies": {
-        "drizzle-orm": "^0.44.7",
-        "drizzle-zod": "^0.8.3",
-        "expo-sqlite": "^16.0.8",
-        "zod": "^4.1.12"
-    },
-    "devDependencies": {
-        "drizzle-kit": "^0.31.5"
-    }
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "react-native": "./dist/esm/index.js",
+  "scripts": {
+    "build": "yarn run -T tsc -p tsconfig.json",
+    "build:watch": "yarn build --watch",
+    "clear": "yarn run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
+    "format": "yarn run -T prettier --write src",
+    "lint": "yarn run -T eslint --quiet --fix src --ext .ts",
+    "ts": "yarn run -T tsc -p ."
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.7",
+    "drizzle-zod": "^0.8.3",
+    "expo-sqlite": "^16.0.8",
+    "zod": "^4.1.12"
+  }
 }
