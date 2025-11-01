@@ -1462,7 +1462,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
-    drizzle-kit: "npm:^0.31.5"
     drizzle-orm: "npm:^0.44.7"
     drizzle-zod: "npm:^0.8.3"
     expo-sqlite: "npm:^16.0.8"
@@ -8826,20 +8825,6 @@ __metadata:
   version: 17.2.3
   resolution: "dotenv@npm:17.2.3"
   checksum: 10/f8b78626ebfff6e44420f634773375c9651808b3e1a33df6d4cc19120968eea53e100f59f04ec35f2a20b2beb334b6aba4f24040b2f8ad61773f158ac042a636
-  languageName: node
-  linkType: hard
-
-"drizzle-kit@npm:^0.31.5":
-  version: 0.31.5
-  resolution: "drizzle-kit@npm:0.31.5"
-  dependencies:
-    "@drizzle-team/brocli": "npm:^0.10.2"
-    "@esbuild-kit/esm-loader": "npm:^2.5.5"
-    esbuild: "npm:^0.25.4"
-    esbuild-register: "npm:^3.5.0"
-  bin:
-    drizzle-kit: bin.cjs
-  checksum: 10/facd41b91d2d07e03b1ee9ebc29b7b967b2af0529474b077afa396ba055f789c10ee3ada2ca14577049cfd2735e6bd81d42341bf5f876c023d51869ec6f89bd8
   languageName: node
   linkType: hard
 
