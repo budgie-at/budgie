@@ -1,1 +1,0 @@
-export const INSTRUMENT_SYMBOL_MIN_LENGTH = 1

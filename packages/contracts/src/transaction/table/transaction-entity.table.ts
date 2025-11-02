@@ -9,7 +9,7 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 export const TransactionEntityTable = sqliteTable(
     'transactions',
     withBaseEntityTableColumns({
-        holdingId: int('holding_id', { mode: 'number' }),
+        instrument: text(),
         categoryId: int('category_id', { mode: 'number' }),
         amount: int({ mode: 'number' }).default(0).notNull(),
         quantity: int({ mode: 'number' }).default(0).notNull(),

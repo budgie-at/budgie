@@ -1,1 +1,0 @@
-export const INSTRUMENT_SYMBOL_MAX_LENGTH = 32;

@@ -3,5 +3,6 @@ import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transactio
 import { TransferAssetTransactionEntitySchema } from './transfer-asset-transaction-entity.schema';
 
 export const TransferAssetTransactionCreateEntitySchema = TransferAssetTransactionEntitySchema.pick({
-    type: true
+    type: true,
+    instrument: true
 }).extend(BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape);
