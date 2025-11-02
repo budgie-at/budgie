@@ -20,21 +20,21 @@ const getUniqueIdentifier = isAndroid => {
 
 const getAppName = () => {
     if (IS_DEV) {
-        return 'budgie (Dev)';
+        return 'suuudokuuu (Dev)';
     }
 
     if (IS_PREVIEW) {
-        return 'budgie (Preview)';
+        return 'suuudokuuu (Preview)';
     }
 
-    return 'budgie';
+    return 'suuudokuuu';
 };
 
 export default ({ config }) => ({
     ...config,
     name: getAppName(),
-    slug: 'budgie',
-    scheme: 'budgie',
+    slug: 'suuudokuuu',
+    scheme: 'suuudokuuu',
     version: rootPkg.version,
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
