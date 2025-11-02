@@ -25,10 +25,10 @@
         "ts": "run -T tsc -p ."
     },
     "dependencies": {
+        "@rnw-community/shared": "^1.3.0",
         "drizzle-orm": "^0.44.7",
         "drizzle-zod": "^0.8.3",
         "expo-sqlite": "^16.0.8",
-        "@rnw-community/shared": "^1.3.0",
         "zod": "^4.1.12"
     }
 }

@@ -12,5 +12,6 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     title: schema => schema.max(ACCOUNT_TITLE_MAX_LENGTH).describe('The account title.'),
     type: zodEnum(AccountTypeEnum).describe('The account type.'),
     balance: schema => schema.describe('The account balance.'),
+    order: schema => schema.nonnegative().describe('The account order.'),
     currency: zodEnum(CurrencyEnum).describe('The account currency.')
 });
