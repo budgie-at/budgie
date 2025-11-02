@@ -47,9 +47,9 @@ export default ({ config }) => ({
         },
         associatedDomains: ['applinks:suuudokuuu.com'],
         icon: {
-            dark: './assets/icons/icon-dark.png',
-            light: './assets/icons/icon-light.png',
-            tinted: './assets/icons/icon-tinted.png'
+            dark: './assets/icons/ios-dark.png',
+            light: './assets/icons/ios-light.png',
+            tinted: './assets/icons/ios-tinted.png'
         }
     },
     android: {
