@@ -15,6 +15,13 @@
       "when": 1761920358025,
       "tag": "0001_flawless_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762108483068,
+      "tag": "0002_skinny_winter_soldier",
+      "breakpoints": true
     }
   ]
 }
