@@ -35,15 +35,6 @@ export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.in
 export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
-export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
-export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
-
-export { InstrumentEntitySchema } from './instrument/schema/instrument-entity.schema';
-export { InstrumentCreateEntitySchema } from './instrument/schema/instrument-create-entity.schema';
-
-export type { InstrumentEntityInterface } from './instrument/entity/instrument-entity.interface';
-export type { InstrumentCreateEntityInterface } from './instrument/entity/instrument-create-entity.interface';
-
 export { HoldingEntityTable } from './holding/table/holding-entity.table';
 export { HoldingEntityRelations } from './holding/relations/holding-entity.relations';
 
