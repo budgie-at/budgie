@@ -1,13 +1,10 @@
-import { array, literal } from 'zod';
+import { literal } from 'zod';
 
-import { MoneyTransactionLineEntitySchema } from '../../../transaction-line/schema/money/money-transaction-line-entity.schema';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
 import { TransactionEntitySchema } from '../transaction-entity.schema';
 
 export const ExpenseTransactionEntitySchema = TransactionEntitySchema.omit({
-    lines: true,
     type: true
 }).extend({
-    type: literal(TransactionTypeEnum.EXPENSE),
-    lines: array(MoneyTransactionLineEntitySchema).min(1).describe('Lines associated with the expense transaction.')
+    type: literal(TransactionTypeEnum.EXPENSE)
 });
