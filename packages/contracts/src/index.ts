@@ -6,8 +6,6 @@ export { AccountAssociationEnum } from './account/enum/account-association.enum'
 export { AccountEntityTable } from './account/table/account-entity.table';
 export { AccountEntityRelations } from './account/relations/account-entity.relations';
 
-export type { AccountEntityInterface } from './account/entity/account-entity.interface';
-
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
 
@@ -22,6 +20,20 @@ export { CryptoAccountCreateEntitySchema } from './account/schema/crypto/crypto-
 
 export { StocksAccountEntitySchema } from './account/schema/stocks/stocks-account-entity.schema';
 export { StocksAccountCreateEntitySchema } from './account/schema/stocks/stocks-account-create-entity.schema';
+
+export type { AccountEntityInterface } from './account/entity/account-entity.interface';
+
+export type { CashAccountEntityInterface } from './account/entity/cash/cash-account-entity.interface';
+export type { CashAccountCreateEntityInterface } from './account/entity/cash/cash-account-create-entity.interface';
+
+export type { BankAccountEntityInterface } from './account/entity/bank/bank-account-entity.interface';
+export type { BankAccountCreateEntityInterface } from './account/entity/bank/bank-account-create-entity.interface';
+
+export type { CryptoAccountEntityInterface } from './account/entity/crypto/crypto-account-entity.interface';
+export type { CryptoAccountCreateEntityInterface } from './account/entity/crypto/crypto-account-create-entity.interface';
+
+export type { StocksAccountEntityInterface } from './account/entity/stocks/stocks-account-entity.interface';
+export type { StocksAccountCreateEntityInterface } from './account/entity/stocks/stocks-account-create-entity.interface';
 
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
