@@ -1,14 +1,8 @@
-import { number } from 'zod';
+import { createSelectSchema } from 'drizzle-zod';
 
-import { BaseEntitySchema } from '../../generic/schema/base-entity.schema';
-import { InstrumentEntitySchema } from '../../instrument/schema/instrument-entity.schema';
-import { HoldingAssociationEnum } from '../enum/holding-association.enum';
+import { HoldingEntityTable } from '../table/holding-entity.table';
 
-export const HoldingEntitySchema = BaseEntitySchema.extend({
-    instrumentId: number().describe('Id of the instrument associated with the holding.'),
-    quantity: number().nonnegative().describe('Quantity of the holding.'),
-
-    get [HoldingAssociationEnum.INSTRUMENT]() {
-        return InstrumentEntitySchema.describe('Instrument associated with the holding.');
-    }
+export const HoldingEntitySchema = createSelectSchema(HoldingEntityTable, {
+    instrumentId: schema => schema.positive().describe('The id of the instrument the holding belongs to.'),
+    quantity: schema => schema.nonnegative().describe('The holding quantity.')
 });
