@@ -20,30 +20,24 @@ const getUniqueIdentifier = isAndroid => {
 
 const getAppName = () => {
     if (IS_DEV) {
-        return 'suuudokuuu (Dev)';
+        return 'budgie (Dev)';
     }
 
     if (IS_PREVIEW) {
-        return 'suuudokuuu (Preview)';
+        return 'budgie (Preview)';
     }
 
-    return 'suuudokuuu';
+    return 'budgie';
 };
 
 export default ({ config }) => ({
     ...config,
     name: getAppName(),
-    slug: 'suuudokuuu',
-    scheme: 'suuudokuuu',
+    slug: 'budgie',
+    scheme: 'budgie',
     version: rootPkg.version,
     orientation: 'portrait',
-    icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
-    splash: {
-        image: './assets/splash.png',
-        resizeMode: 'contain',
-        backgroundColor: '#000000'
-    },
     assetBundlePatterns: ['**/*'],
     ios: {
         supportsTablet: true,
@@ -51,12 +45,18 @@ export default ({ config }) => ({
         config: {
             usesNonExemptEncryption: false
         },
-        associatedDomains: ['applinks:suuudokuuu.com']
+        associatedDomains: ['applinks:suuudokuuu.com'],
+        icon: {
+            dark: './assets/icons/icon-dark.png',
+            light: './assets/icons/icon-light.png',
+            tinted: './assets/icons/icon-tinted.png'
+        }
     },
     android: {
         adaptiveIcon: {
-            foregroundImage: './assets/adaptive-icon.png',
-            backgroundColor: '#000000'
+            foregroundImage: './assets/icons/adaptive-icon.png',
+            monochromeImage: './assets/icons/adaptive-icon.png',
+            backgroundColor: '#ffffff'
         },
         package: getUniqueIdentifier(true),
         intentFilters: [
@@ -89,6 +89,19 @@ export default ({ config }) => ({
     },
     plugins: [
         'expo-sqlite',
+        [
+            'expo-splash-screen',
+            {
+                image: './assets/icons/splash-icon-dark.png',
+                imageWidth: 200,
+                resizeMode: 'contain',
+                backgroundColor: '#ffffff',
+                dark: {
+                    image: './assets/icons/splash-icon-light.png',
+                    backgroundColor: '#000000'
+                }
+            }
+        ],
         ['expo-router', { origin: 'https://www.suuudokuuu.com/' }],
         ['expo-font', { fonts: ['../../node_modules/@expo-google-fonts/inter/Inter_900Black.ttf'] }]
     ],
