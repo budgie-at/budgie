@@ -3,5 +3,5 @@ import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transactio
 import { IncomeTransactionEntitySchema } from './income-transaction-entity.schema';
 
 export const IncomeTransactionCreateEntitySchema = IncomeTransactionEntitySchema.pick({ type: true }).extend(
-    BaseTransactionCreateEntityFieldsSchema.shape
+    BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape
 );
