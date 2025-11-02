@@ -8,6 +8,7 @@ import { AccountTypeEnum } from '../enum/account-type.enum';
 export const AccountEntityTable = sqliteTable(
     'accounts',
     withBaseEntityTableColumns({
+        order: int({ mode: 'number' }).default(0).notNull(),
         balance: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),
         type: text({ enum: convertEnumToDrizzleEnum(AccountTypeEnum) })
@@ -17,6 +18,7 @@ export const AccountEntityTable = sqliteTable(
         currency: text({ enum: convertEnumToDrizzleEnum(CurrencyEnum) })
             .$type<CurrencyEnum>()
             .default(CurrencyEnum.UAH)
-            .notNull()
+            .notNull(),
+        includeInNetWorth: int({ mode: 'boolean' }).default(true).notNull()
     })
 );

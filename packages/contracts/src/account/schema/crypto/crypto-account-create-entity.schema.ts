@@ -4,6 +4,6 @@ import { HoldingCreateEntitySchema } from '../../../holding/schema/holding-creat
 
 import { CryptoAccountEntitySchema } from './crypto-account-entity.schema';
 
-export const CryptoAccountCreateEntitySchema = CryptoAccountEntitySchema.pick({ type: true }).extend({
+export const CryptoAccountCreateEntitySchema = CryptoAccountEntitySchema.pick({ type: true, title: true }).extend({
     holdings: array(HoldingCreateEntitySchema).describe('Holdings of the account.')
 });
