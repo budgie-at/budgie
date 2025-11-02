@@ -18,7 +18,7 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     operatedAt: schema => schema.describe('The transaction operated at.'),
     accountId: schema => schema.describe('The id of the account transaction belongs to.'),
     counterAccountId: schema => schema.optional().describe('The id of the counter account transaction belongs to.'),
-    holdingId: schema => schema.positive().nullable().describe('The id of the holding transaction belongs to.'),
+    instrument: schema => schema.nullable().describe('The instrument transaction belongs to.'),
     categoryId: schema => schema.positive().nullable().describe('The id of the category transaction belongs to.'),
     transferDirection: zodEnum(TransactionTransferDirectionEnum).optional().describe('The transaction transfer direction.')
 });
