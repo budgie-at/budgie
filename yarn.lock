@@ -1328,7 +1328,6 @@ __metadata:
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
     "@budgie/contracts": "npm:^1.49.0"
-    "@expo-google-fonts/inter": "npm:^0.2.3"
     "@expo/fingerprint": "npm:~0.15.2"
     "@libsql/client": "npm:^0.15.15"
     "@lingui/core": "npm:^5.3.3"
@@ -2312,13 +2311,6 @@ __metadata:
   version: 8.57.1
   resolution: "@eslint/js@npm:8.57.1"
   checksum: 10/7562b21be10c2adbfa4aa5bb2eccec2cb9ac649a3569560742202c8d1cb6c931ce634937a2f0f551e078403a1c1285d6c2c0aa345dafc986149665cd69fe8b59
-  languageName: node
-  linkType: hard
-
-"@expo-google-fonts/inter@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "@expo-google-fonts/inter@npm:0.2.3"
-  checksum: 10/434dd414e4d4dd9b61283cc09dfc499d5a4162bcaa39d0ac88cc3664bac0f21d8c54c0be9868b36bcf6d562be077eec6fbe8874274bd447d29d4ee1e988d8682
   languageName: node
   linkType: hard
 

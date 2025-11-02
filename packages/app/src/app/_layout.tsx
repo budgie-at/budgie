@@ -1,5 +1,3 @@
-// eslint-disable-next-line camelcase
-import { Inter_500Medium, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -30,16 +28,15 @@ const stackOptions = { headerShown: false, gestureEnabled: false };
 
 export default function RootLayout() {
     // eslint-disable-next-line camelcase
-    const [loaded] = useFonts({ Inter_500Medium, Inter_700Bold });
     const { success } = useMigrations(db, migrations);
 
     useEffect(() => {
-        if (loaded && success) {
+        if (success) {
             void SplashScreen.hideAsync();
         }
-    }, [loaded, success]);
+    }, [success]);
 
-    if (!loaded || !success) {
+    if (!success) {
         return null;
     }
 
