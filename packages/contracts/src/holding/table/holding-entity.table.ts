@@ -1,11 +1,11 @@
-import { int, sqliteTable } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 
 export const HoldingEntityTable = sqliteTable(
     'holdings',
     withBaseEntityTableColumns({
-        instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
+        instrument: text().notNull(),
         quantity: int({ mode: 'number' }).notNull()
     })
 );
