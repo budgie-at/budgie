@@ -4,6 +4,7 @@ export const BaseTransactionCreateEntityFieldsSchema = TransactionEntitySchema.p
     note: true,
     type: true,
     title: true,
+    accountId: true,
     operatedAt: true,
     categoryId: true
 });
