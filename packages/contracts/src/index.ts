@@ -7,7 +7,6 @@ export { AccountEntityTable } from './account/table/account-entity.table';
 export { AccountEntityRelations } from './account/relations/account-entity.relations';
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
-// export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
@@ -36,7 +35,6 @@ export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
 export { HoldingEntityTable } from './holding/table/holding-entity.table';
-export { HoldingEntityRelations } from './holding/relations/holding-entity.relations';
 
 export { HoldingEntitySchema } from './holding/schema/holding-entity.schema';
 export { HoldingCreateEntitySchema } from './holding/schema/holding-create-entity.schema';
