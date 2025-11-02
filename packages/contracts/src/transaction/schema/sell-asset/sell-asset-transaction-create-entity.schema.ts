@@ -4,4 +4,4 @@ import { SellAssetTransactionEntitySchema } from './sell-asset-transaction-entit
 
 export const SellAssetTransactionCreateEntitySchema = SellAssetTransactionEntitySchema.pick({
     type: true
-}).extend(BaseTransactionCreateEntityFieldsSchema.shape);
+}).extend(BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape);

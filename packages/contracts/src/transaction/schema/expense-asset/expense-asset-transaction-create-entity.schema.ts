@@ -4,4 +4,4 @@ import { ExpenseAssetTransactionEntitySchema } from './expense-asset-transaction
 
 export const ExpenseAssetTransactionCreateEntitySchema = ExpenseAssetTransactionEntitySchema.pick({
     type: true
-}).extend(BaseTransactionCreateEntityFieldsSchema.shape);
+}).extend(BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape);

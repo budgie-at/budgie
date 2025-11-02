@@ -2,6 +2,6 @@ import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transactio
 
 import { TransferTransactionEntitySchema } from './transfer-transaction-entity.schema';
 
-export const TransferTransactionCreateEntitySchema = TransferTransactionEntitySchema.pick({ type: true }).extend(
-    BaseTransactionCreateEntityFieldsSchema.shape
+export const TransferTransactionCreateEntitySchema = TransferTransactionEntitySchema.pick({ type: true, transferDirection: true }).extend(
+    BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape
 );

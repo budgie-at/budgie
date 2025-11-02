@@ -1,4 +1,4 @@
 import type { TransactionToTagCreateEntitySchema } from '../schema/transaction-to-tag-create-entity.schema';
-import type { z } from 'zod';
+import type { infer } from 'zod';
 
-export interface TransactionToTagCreateEntityInterface extends z.infer<typeof TransactionToTagCreateEntitySchema> {}
+export interface TransactionToTagCreateEntityInterface extends infer<typeof TransactionToTagCreateEntitySchema> {}

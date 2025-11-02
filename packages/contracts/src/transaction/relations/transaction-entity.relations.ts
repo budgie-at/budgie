@@ -7,7 +7,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntityRelations = relations(TransactionEntityTable, ({ one, many }) => ({
-    [TransactionAssociationEnum.SOURCE_ACCOUNT]: one(AccountEntityTable, {
+    [TransactionAssociationEnum.ACCOUNT]: one(AccountEntityTable, {
         fields: [TransactionEntityTable.accountId],
         references: [AccountEntityTable.id]
     }),

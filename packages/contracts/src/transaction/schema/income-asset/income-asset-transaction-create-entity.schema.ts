@@ -4,4 +4,4 @@ import { IncomeAssetTransactionEntitySchema } from './income-asset-transaction-e
 
 export const IncomeAssetTransactionCreateEntitySchema = IncomeAssetTransactionEntitySchema.pick({
     type: true
-}).extend(BaseTransactionCreateEntityFieldsSchema.shape);
+}).extend(BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape);

@@ -4,15 +4,21 @@ import { enum as zodEnum } from 'zod';
 import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-max-length.constant';
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
+import { TransactionTransferDirectionEnum } from '../enum/transaction-transfer-direction.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable, {
     ...BaseEntityFields,
+    amount: schema => schema.describe('The transaction amount.'),
     type: zodEnum(TransactionTypeEnum).describe('The transaction type.'),
+    quantity: schema => schema.describe('The transaction holding quantity.'),
     title: schema => schema.max(TRANSACTION_TITLE_MAX_LENGTH).describe('The transaction title.'),
     comment: schema => schema.max(TRANSACTION_COMMENT_MAX_LENGTH).describe('The transaction comment.'),
     operatedAt: schema => schema.describe('The transaction operated at.'),
     accountId: schema => schema.describe('The id of the account transaction belongs to.'),
-    categoryId: schema => schema.describe('The id of the category transaction belongs to.')
+    counterAccountId: schema => schema.optional().describe('The id of the counter account transaction belongs to.'),
+    holdingId: schema => schema.positive().nullable().describe('The id of the holding transaction belongs to.'),
+    categoryId: schema => schema.positive().nullable().describe('The id of the category transaction belongs to.'),
+    transferDirection: zodEnum(TransactionTransferDirectionEnum).optional().describe('The transaction transfer direction.')
 });
