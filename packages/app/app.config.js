@@ -35,16 +35,9 @@ export default ({ config }) => ({
     name: getAppName(),
     slug: 'suuudokuuu',
     scheme: 'suuudokuuu',
-    icon: './assets/icons/ios-dark.png',
     version: rootPkg.version,
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
-    splash: {
-        imageWidth: 200,
-        resizeMode: 'contain',
-        backgroundColor: '#000000',
-        image: './assets/icons/splash-icon-dark.png'
-    },
     assetBundlePatterns: ['**/*'],
     ios: {
         supportsTablet: true,
