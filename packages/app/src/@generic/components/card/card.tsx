@@ -2,13 +2,15 @@ import * as Slot from '@rn-primitives/slot';
 import { View } from 'react-native';
 
 import type { PropsWithChildren } from 'react';
+import { cn } from '../../utils/cn.util';
 
 interface CardPropsInterface {
     readonly asChild?: boolean;
+    readonly className?: string;
 }
 
-export const Card = ({ asChild, ...rest }: PropsWithChildren<CardPropsInterface>) => {
+export const Card = ({ asChild, className, ...rest }: PropsWithChildren<CardPropsInterface>) => {
     const Component = asChild === true ? Slot.View : View;
 
-    return <Component className="p-5xl border rounded-5xl border-corner" {...rest} />;
+    return <Component className={cn(`p-5xl border rounded-5xl border-corner`, className)} {...rest} />;
 };
