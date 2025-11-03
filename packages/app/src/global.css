@@ -46,6 +46,14 @@
     --color-primary: rgb(0, 0, 0);
     --color-primary-reverse: rgb(255, 255, 255);
 
+    --color-secondary-foreground: rgba(115, 115, 115, 1);
+    --color-secondary-corner: rgba(229, 229, 229, 1);
+    --color-secondary-background: rgba(248, 248, 248, 1);
+
+    --color-secondary-reverse-foreground: rgba(136, 136, 136, 1);
+    --color-secondary-reverse-corner: rgba(34, 34, 34, 1);
+    --color-secondary-reverse-background: rgba(10, 10, 10, 1);
+
     --color-positive-foreground: rgba(16, 185, 129, 1);
     --color-positive-corner: rgba(16, 185, 129, 0.2);
     --color-positive-background: rgba(16, 185, 129, 0.1);
@@ -72,6 +80,14 @@
 .dark {
     --color-primary: rgb(255, 255, 255);
     --color-primary-reverse: rgb(0, 0, 0);
+
+    --color-secondary-foreground: rgba(136, 136, 136, 1);
+    --color-secondary-corner: rgba(34, 34, 34, 1);
+    --color-secondary-background: rgba(10, 10, 10, 1);
+
+    --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
+    --color-secondary-reverse-corner: rgba(229, 229, 229, 1);
+    --color-secondary-reverse-background: rgba(248, 248, 248, 1);
 
     --color-positive-foreground: rgba(0, 255, 136, 1);
     --color-positive-corner: rgba(1, 255, 136, 0.20);

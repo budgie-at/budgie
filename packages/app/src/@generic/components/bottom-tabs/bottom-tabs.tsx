@@ -5,6 +5,6 @@ import type { PropsWithChildren } from 'react';
 
 export const BottomTabs = ({ children }: PropsWithChildren) => (
     <SafeAreaView>
-        <View className="flex-row justify-evenly border-t border-t-border-secondary items-baseline">{children}</View>
+        <View className="flex-row justify-evenly border-t border-t-secondary-corner items-baseline">{children}</View>
     </SafeAreaView>
 );
