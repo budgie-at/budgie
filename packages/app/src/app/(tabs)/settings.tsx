@@ -8,7 +8,7 @@ export default function SettingsPage() {
 
     return (
         <Page>
-            <Text className="text-text-primary">{t`Settings Page`}</Text>
+            <Text className="text-primary">{t`Settings Page`}</Text>
         </Page>
     );
 }

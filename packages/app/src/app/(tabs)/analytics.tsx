@@ -8,7 +8,7 @@ export default function AnalyticsPage() {
 
     return (
         <Page>
-            <Text className="text-text-primary">{t`Analytics Page`}</Text>
+            <Text className="text-primary">{t`Analytics Page`}</Text>
         </Page>
     );
 }
