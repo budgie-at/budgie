@@ -1,12 +1,11 @@
 import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react';
 import { useLingui } from '@lingui/react/macro';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Pressable, Text } from 'react-native';
 
-import { AccountCard } from '../../@account/components/account-card';
+import { AccountList } from '../../@account/components/account-list/account-list';
 import { createAccountMutation } from '../../@account/mutation/create-account.mutation';
 import { useGetAccountsQuery } from '../../@account/query/use-get-accounts.query';
 import { Card } from '../../@generic/components/card/card';
@@ -41,19 +40,7 @@ export default function HomePage() {
                 </Pressable>
             </Card>
 
-            {data.map(account => (
-                <AccountCard key={account.id} />
-            ))}
-
-            {data.map(account => (
-                <Text className="text-primary" key={account.id}>
-                    <Trans
-                        id="greeting"
-                        message="ID: {accountId}. Created at: {createdAt}"
-                        values={{ accountId: account.id, createdAt: account.createdAt.toTimeString() }}
-                    />
-                </Text>
-            ))}
+            <AccountList accounts={data} />
         </Page>
     );
 }
