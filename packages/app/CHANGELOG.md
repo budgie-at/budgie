@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.50.0](https://github.com/budgie-at/budgie/compare/v1.49.0...v1.50.0) (2025-11-03)
+
+### Features
+
+- change app icons ([f10754e](https://github.com/budgie-at/budgie/commit/f10754e0d4289c9be6a9774761fe75265f644e20))
+- change app icons ([8bdf75b](https://github.com/budgie-at/budgie/commit/8bdf75b996faea6fae1f698ed4aaadbfdedd6ea4))
+- change app icons ([0fab204](https://github.com/budgie-at/budgie/commit/0fab204d71ad4b529c1795db3e1af626870a6108))
+- change font ([7659eda](https://github.com/budgie-at/budgie/commit/7659eda0e38f14c4355ba9765275664820646a72))
+
 # [1.49.0](https://github.com/budgie-at/budgie/compare/v1.48.0...v1.49.0) (2025-11-01)
 
 ### Features
