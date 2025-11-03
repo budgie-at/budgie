@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
 import React, { createContext } from 'react';
 import { Appearance, Platform, View } from 'react-native';
 
+import type { OnEventFn } from '@rnw-community/shared';
 import { emptyFn } from '@rnw-community/shared';
 
 import { useAppDispatch } from '../../@generic/hooks/use-app-dispatch.hook';
@@ -9,13 +11,12 @@ import { settingsSetAction } from '../../settings/store/settings.actions';
 import { settingsKeySelector } from '../../settings/store/settings.selectors';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
-import type { OnEventFn } from '@rnw-community/shared';
-import type { ReactNode } from 'react';
-
-const ThemeContext = createContext<{
+export interface ThemeContextInterface {
     colorScheme: ColorSchemaEnum;
     toggleColorSchema: OnEventFn;
-}>({ colorScheme: ColorSchemaEnum.Light, toggleColorSchema: emptyFn });
+}
+
+export const ThemeContext = createContext<ThemeContextInterface>({ colorScheme: ColorSchemaEnum.Light, toggleColorSchema: emptyFn });
 
 export const ThemeProvider = ({ children }: { readonly children: ReactNode }) => {
     const dispatch = useAppDispatch();
@@ -40,7 +41,7 @@ export const ThemeProvider = ({ children }: { readonly children: ReactNode }) =>
 
     return (
         <ThemeContext value={{ colorScheme, toggleColorSchema }}>
-            <View className={`flex-1 ${isDarkColorSchema ? 'dark' : ''}`}>{children}</View>
+            <View className={`flex-1 ${isDarkColorSchema ? 'dark' : 'light'}`}>{children}</View>
         </ThemeContext>
     );
 };

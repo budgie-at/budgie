@@ -10,7 +10,7 @@ const Wrapper = styled(Tabs);
 
 export default function TabsLayout() {
     return (
-        <Wrapper className="bg-bg-primary flex-1">
+        <Wrapper className="bg-primary-reverse flex-1">
             <TabSlot />
 
             <TabList asChild>

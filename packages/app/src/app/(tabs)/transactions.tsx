@@ -8,7 +8,7 @@ export default function TransactionsPage() {
 
     return (
         <Page>
-            <Text className="text-text-primary">{t`Transactions Page`}</Text>
+            <Text className="text-primary">{t`Transactions Page`}</Text>
         </Page>
     );
 }
