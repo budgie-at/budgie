@@ -15,6 +15,7 @@ interface CircleIconPropsInterface {
     readonly border?: boolean;
     readonly icon: LucideIcon;
     readonly variant?: Variant;
+    readonly className?: string;
 }
 
 const wrapperVariants = cva<{
@@ -64,8 +65,8 @@ const iconSize: Record<Size, number> = {
     xl: 20
 };
 
-export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true }: CircleIconPropsInterface) => (
-    <View className={cn(wrapperVariants({ variant, size, border }))}>
-        <Icon className={cn(iconVariants({ variant }))} icon={icon} size={iconSize[size]} />
+export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: CircleIconPropsInterface) => (
+    <View className={cn(wrapperVariants({ variant, size, border }), className)}>
+        <Icon className={iconVariants({ variant })} icon={icon} size={iconSize[size]} />
     </View>
 );
