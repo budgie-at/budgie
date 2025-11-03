@@ -9,7 +9,6 @@ import { formatMoney } from '../../../@generic/utils/format-money.util';
 import type { IconName } from '../../../@generic/constant/icons.constant';
 import type { AccountEntityInterface } from '@budgie/contracts';
 
-
 interface AccountCardPropsInterface extends Pick<AccountEntityInterface, 'title' | 'balance' | 'currency'> {
     readonly className?: string;
     readonly icon: IconName;

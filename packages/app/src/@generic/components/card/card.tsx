@@ -1,8 +1,9 @@
 import * as Slot from '@rn-primitives/slot';
 import { View } from 'react-native';
 
-import type { PropsWithChildren } from 'react';
 import { cn } from '../../utils/cn.util';
+
+import type { PropsWithChildren } from 'react';
 
 interface CardPropsInterface {
     readonly asChild?: boolean;
