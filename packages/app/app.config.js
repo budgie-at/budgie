@@ -37,13 +37,7 @@ export default ({ config }) => ({
     scheme: 'suuudokuuu',
     version: rootPkg.version,
     orientation: 'portrait',
-    icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
-    splash: {
-        image: './assets/splash.png',
-        resizeMode: 'contain',
-        backgroundColor: '#000000'
-    },
     assetBundlePatterns: ['**/*'],
     ios: {
         supportsTablet: true,
@@ -51,12 +45,18 @@ export default ({ config }) => ({
         config: {
             usesNonExemptEncryption: false
         },
-        associatedDomains: ['applinks:suuudokuuu.com']
+        associatedDomains: ['applinks:suuudokuuu.com'],
+        icon: {
+            dark: './assets/icons/ios-dark.png',
+            light: './assets/icons/ios-light.png',
+            tinted: './assets/icons/ios-tinted.png'
+        }
     },
     android: {
         adaptiveIcon: {
-            foregroundImage: './assets/adaptive-icon.png',
-            backgroundColor: '#000000'
+            foregroundImage: './assets/icons/adaptive-icon.png',
+            monochromeImage: './assets/icons/adaptive-icon.png',
+            backgroundColor: '#ffffff'
         },
         package: getUniqueIdentifier(true),
         intentFilters: [
@@ -89,8 +89,92 @@ export default ({ config }) => ({
     },
     plugins: [
         'expo-sqlite',
+        [
+            'expo-splash-screen',
+            {
+                image: './assets/icons/splash-icon-dark.png',
+                imageWidth: 200,
+                resizeMode: 'contain',
+                backgroundColor: '#ffffff',
+                dark: {
+                    image: './assets/icons/splash-icon-light.png',
+                    backgroundColor: '#000000'
+                }
+            }
+        ],
         ['expo-router', { origin: 'https://www.suuudokuuu.com/' }],
-        ['expo-font', { fonts: ['../../node_modules/@expo-google-fonts/inter/Inter_900Black.ttf'] }]
+        [
+            'expo-font',
+            {
+                fonts: [
+                    './assets/fonts/FixelDisplay-Regular.ttf',
+                    './assets/fonts/FixelDisplay-RegularItalic.ttf',
+                    './assets/fonts/FixelDisplay-Medium.ttf',
+                    './assets/fonts/FixelDisplay-MediumItalic.ttf',
+                    './assets/fonts/FixelDisplay-SemiBold.ttf',
+                    './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
+                    './assets/fonts/FixelDisplay-Bold.ttf',
+                    './assets/fonts/FixelDisplay-BoldItalic.ttf'
+                ],
+                android: {
+                    fonts: [
+                        {
+                            fontFamily: 'FixelDisplay',
+                            fontDefinitions: [
+                                {
+                                    path: './assets/fonts/FixelDisplay-Regular.ttf',
+                                    weight: 400
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-RegularItalic.ttf',
+                                    weight: 400,
+                                    style: 'italic'
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-Medium.ttf',
+                                    weight: 500
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-MediumItalic.ttf',
+                                    weight: 500,
+                                    style: 'italic'
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-SemiBold.ttf',
+                                    weight: 600
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
+                                    weight: 600,
+                                    style: 'italic'
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-Bold.ttf',
+                                    weight: 700
+                                },
+                                {
+                                    path: './assets/fonts/FixelDisplay-BoldItalic.ttf',
+                                    weight: 700,
+                                    style: 'italic'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                ios: {
+                    fonts: [
+                        './assets/fonts/FixelDisplay-Regular.ttf',
+                        './assets/fonts/FixelDisplay-RegularItalic.ttf',
+                        './assets/fonts/FixelDisplay-Medium.ttf',
+                        './assets/fonts/FixelDisplay-MediumItalic.ttf',
+                        './assets/fonts/FixelDisplay-SemiBold.ttf',
+                        './assets/fonts/FixelDisplay-SemiBoldItalic.ttf',
+                        './assets/fonts/FixelDisplay-Bold.ttf',
+                        './assets/fonts/FixelDisplay-BoldItalic.ttf'
+                    ]
+                }
+            }
+        ]
     ],
     experiments: {
         reactCompiler: true,
