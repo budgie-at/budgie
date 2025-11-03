@@ -1,14 +1,10 @@
-import { HouseIcon } from 'lucide-react-native';
-
 import { Card } from '../../@generic/components/card/card';
-import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
+import { Chip } from '../../@generic/components/chip/chip';
 
 export const AccountCard = () => (
-    <Card>
-        <CircleIcon border={false} icon={HouseIcon} size="xs" variant="positive" />
-        <CircleIcon icon={HouseIcon} size="sm" variant="warning" />
-        <CircleIcon icon={HouseIcon} size="md" variant="default" />
-        <CircleIcon icon={HouseIcon} size="lg" variant="destructive" />
-        <CircleIcon icon={HouseIcon} size="xl" variant="ghost" />
+    <Card className="flex-row flex-wrap">
+        <Chip isSelected label="Chip asdasd1" />
+        <Chip label="Chip 2 asdasd asdasda asdasd" />
+        <Chip label="Chip 3" />
     </Card>
 );
