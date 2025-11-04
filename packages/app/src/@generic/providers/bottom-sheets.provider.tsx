@@ -6,7 +6,7 @@ import CreateTransactionBottomSheetProvider from '../../@account/provider/create
 import type { PropsWithChildren } from 'react';
 
 export const BottomSheetsProvider = ({ children }: PropsWithChildren) => (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView className='flex-1'>
         <BottomSheetModalProvider>
             <CreateTransactionBottomSheetProvider>{children}</CreateTransactionBottomSheetProvider>
         </BottomSheetModalProvider>
