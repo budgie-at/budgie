@@ -11,30 +11,30 @@ import { ICONS } from '../../@generic/constant/icons.constant';
 const Wrapper = styled(Tabs);
 
 export default function TabsLayout() {
-    const {open} = useContext(CreateAccountBottomSheetContext)
+    const { open } = useContext(CreateAccountBottomSheetContext);
 
-return (
-    <Wrapper className="bg-primary-reverse flex-1">
-        <TabSlot />
+    return (
+        <Wrapper className="bg-primary-reverse flex-1">
+            <TabSlot />
 
-        <TabList asChild>
-            <BottomTabs>
-                <TabTrigger asChild href="/" name="index">
-                    <TabButton icon={ICONS.Home} />
-                </TabTrigger>
-                <TabTrigger asChild href="/transactions" name="transactions">
-                    <TabButton icon={ICONS.Receipt} />
-                </TabTrigger>
+            <TabList asChild>
+                <BottomTabs>
+                    <TabTrigger asChild href="/" name="index">
+                        <TabButton icon={ICONS.Home} />
+                    </TabTrigger>
+                    <TabTrigger asChild href="/transactions" name="transactions">
+                        <TabButton icon={ICONS.Receipt} />
+                    </TabTrigger>
 
-                <AiChatButton />
+                    <AiChatButton />
 
-                <TabTrigger asChild href="/analytics" name="analytics">
-                    <TabButton icon={ICONS.ChartNoAxesColumn} />
-                </TabTrigger>
+                    <TabTrigger asChild href="/analytics" name="analytics">
+                        <TabButton icon={ICONS.ChartNoAxesColumn} />
+                    </TabTrigger>
 
-                <TabButton icon={ICONS.Plus} onPress={open} />
-            </BottomTabs>
-        </TabList>
-    </Wrapper>
-);
+                    <TabButton icon={ICONS.Plus} onPress={open} />
+                </BottomTabs>
+            </TabList>
+        </Wrapper>
+    );
 }
