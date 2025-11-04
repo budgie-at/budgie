@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Pressable, Text } from 'react-native';
+import { Text } from 'react-native';
 
 import { AccountList } from '../../@account/components/account-list/account-list';
 import { createAccountMutation } from '../../@account/mutation/create-account.mutation';
@@ -34,10 +34,8 @@ export default function HomePage() {
         <Page>
             <Text className="text-primary">{t`Home Screen`}</Text>
 
-            <Card asChild>
-                <Pressable onPress={() => void onAdd()}>
-                    <Text className="text-primary">{t`Create Account`}</Text>
-                </Pressable>
+            <Card onPress={() => void onAdd()}>
+                <Text className="text-primary">{t`Create Account`}</Text>
             </Card>
 
             <AccountList accounts={data} />
