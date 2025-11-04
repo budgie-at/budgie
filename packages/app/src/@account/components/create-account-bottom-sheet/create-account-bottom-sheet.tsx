@@ -9,7 +9,6 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { Ref } from 'react';
-import { ArrowRightLeft } from 'lucide-react-native';
 
 interface CreateAccountBottomSheetPropsInterface {
     readonly ref: Ref<BottomSheetModal>;
