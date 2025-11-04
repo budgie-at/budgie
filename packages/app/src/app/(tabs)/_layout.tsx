@@ -1,34 +1,34 @@
-import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { ChartNoAxesColumn, Home, Receipt, Settings } from 'lucide-react-native';
+import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 import { styled } from 'nativewind';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/components/tab-button/tab-button';
+import { ICONS } from '../../@generic/constant/icons.constant';
 import { AiChatButton } from '../../ai-chat/components/ai-chat-button/ai-chat-button';
 
 const Wrapper = styled(Tabs);
 
 export default function TabsLayout() {
     return (
-        <Wrapper className="bg-bg-primary flex-1">
+        <Wrapper className="bg-primary-reverse flex-1">
             <TabSlot />
 
             <TabList asChild>
                 <BottomTabs>
                     <TabTrigger asChild href="/" name="index">
-                        <TabButton icon={Home} />
+                        <TabButton icon={ICONS.Home} />
                     </TabTrigger>
                     <TabTrigger asChild href="/transactions" name="transactions">
-                        <TabButton icon={Receipt} />
+                        <TabButton icon={ICONS.Receipt} />
                     </TabTrigger>
 
                     <AiChatButton />
 
                     <TabTrigger asChild href="/analytics" name="analytics">
-                        <TabButton icon={ChartNoAxesColumn} />
+                        <TabButton icon={ICONS.ChartNoAxesColumn} />
                     </TabTrigger>
-                    <TabTrigger asChild href="/settings" name="settings">
-                        <TabButton icon={Settings} />
+                    <TabTrigger asChild href="/add-account" name="add-account">
+                        <TabButton icon={ICONS.Plus} />
                     </TabTrigger>
                 </BottomTabs>
             </TabList>

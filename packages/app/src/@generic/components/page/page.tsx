@@ -1,8 +1,9 @@
-import { styled } from 'nativewind';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
+
+import { cn } from '../../utils/cn.util';
 
 import type { ComponentProps } from 'react';
 
-const Wrapper = styled(SafeAreaView);
-
-export const Page = (props: ComponentProps<typeof SafeAreaView>) => <Wrapper {...props} className="bg-bg-primary flex-1" />;
+export const Page = ({ className, ...rest }: ComponentProps<typeof View>) => (
+    <View {...rest} className={cn('bg-primary-reverse pl-5xl pr-5xl flex-1', className)} />
+);
