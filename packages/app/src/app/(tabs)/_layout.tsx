@@ -1,37 +1,40 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { styled } from 'nativewind';
+import { useContext } from 'react';
 
+import { AiChatButton } from '../../@ai/components/ai-chat-button/ai-chat-button';
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/components/tab-button/tab-button';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { AiChatButton } from '../../ai-chat/components/ai-chat-button/ai-chat-button';
+import { CreateAccountBottomSheetContext } from '../../@account/provider/create-account-bottom-sheet.provider';
 
 const Wrapper = styled(Tabs);
 
 export default function TabsLayout() {
-    return (
-        <Wrapper className="bg-primary-reverse flex-1">
-            <TabSlot />
+    const {open} = useContext(CreateAccountBottomSheetContext)
 
-            <TabList asChild>
-                <BottomTabs>
-                    <TabTrigger asChild href="/" name="index">
-                        <TabButton icon={ICONS.Home} />
-                    </TabTrigger>
-                    <TabTrigger asChild href="/transactions" name="transactions">
-                        <TabButton icon={ICONS.Receipt} />
-                    </TabTrigger>
+return (
+    <Wrapper className="bg-primary-reverse flex-1">
+        <TabSlot />
 
-                    <AiChatButton />
+        <TabList asChild>
+            <BottomTabs>
+                <TabTrigger asChild href="/" name="index">
+                    <TabButton icon={ICONS.Home} />
+                </TabTrigger>
+                <TabTrigger asChild href="/transactions" name="transactions">
+                    <TabButton icon={ICONS.Receipt} />
+                </TabTrigger>
 
-                    <TabTrigger asChild href="/analytics" name="analytics">
-                        <TabButton icon={ICONS.ChartNoAxesColumn} />
-                    </TabTrigger>
-                    <TabTrigger asChild href="/add-account" name="add-account">
-                        <TabButton icon={ICONS.Plus} />
-                    </TabTrigger>
-                </BottomTabs>
-            </TabList>
-        </Wrapper>
-    );
+                <AiChatButton />
+
+                <TabTrigger asChild href="/analytics" name="analytics">
+                    <TabButton icon={ICONS.ChartNoAxesColumn} />
+                </TabTrigger>
+
+                <TabButton icon={ICONS.Plus} onPress={open} />
+            </BottomTabs>
+        </TabList>
+    </Wrapper>
+);
 }
