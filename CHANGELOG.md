@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.51.0](https://github.com/budgie-at/budgie/compare/v1.50.0...v1.51.0) (2025-11-04)
+
+### Bug Fixes
+
+- add temp default icon for accounts ([7080e54](https://github.com/budgie-at/budgie/commit/7080e547aac095b0632edd2841fa9d81970c3168))
+- change bottom-tabs safe-area edges ([9a3cbdc](https://github.com/budgie-at/budgie/commit/9a3cbdc34313768d7164dee0f6a56107b95d9851))
+- change page component ([3e9a1cf](https://github.com/budgie-at/budgie/commit/3e9a1cfc30eb35d2b5d026e15c82b66ab265c990))
+- remove useless lib ([f288eb5](https://github.com/budgie-at/budgie/commit/f288eb51604340ea47237c7ff9a3720585922063))
+- rename props interfaces ([d8f4d95](https://github.com/budgie-at/budgie/commit/d8f4d959bac0c90af873788c00a4560108f89019))
+- replace SafeAreaView with View in page component ([0b838d9](https://github.com/budgie-at/budgie/commit/0b838d94753d0334a2ddd09fd8c42b24e7910f48))
+- resolve knip issues ([6ebb592](https://github.com/budgie-at/budgie/commit/6ebb59295ea614101db2531443f36c2908585fc8))
+
+### Features
+
+- add basic account card component ([12848e2](https://github.com/budgie-at/budgie/commit/12848e292e1a4134403ea4cf0d4d2349e1009c28))
+- add chip icon variants ([21d4ea7](https://github.com/budgie-at/budgie/commit/21d4ea742d0bd73c280dd8910b6ee525c3d8b493))
+- add icon support for chip ([cd9f759](https://github.com/budgie-at/budgie/commit/cd9f759bf9f99fd722c49d7bbf076f6cf3f67976))
+- add page-sheet example ([ba7ad09](https://github.com/budgie-at/budgie/commit/ba7ad090fa956e67e7e3665385dd77dd297e5313))
+- add shared chip component ([22c76ca](https://github.com/budgie-at/budgie/commit/22c76ca28b5c6d1e5dc9af437cef761c3a7f66f5))
+- add shared circle-icon component ([f2ffa67](https://github.com/budgie-at/budgie/commit/f2ffa677e884523be4664c131bdc158160d61050))
+- wip ([2982871](https://github.com/budgie-at/budgie/commit/2982871c07d7035841d7e406d3c976fb887dcc83))
+
 # [1.50.0](https://github.com/budgie-at/budgie/compare/v1.49.0...v1.50.0) (2025-11-03)
 
 ### Features
