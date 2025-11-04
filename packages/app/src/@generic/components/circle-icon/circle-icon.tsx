@@ -7,19 +7,19 @@ import { Icon } from '../icon/icon';
 import type { ClassValue } from 'clsx';
 import type { LucideIcon } from 'lucide-react-native';
 
-type Variant = 'default' | 'destructive' | 'warning' | 'positive' | 'ghost';
+type CircleIconVariant = 'default' | 'destructive' | 'warning' | 'positive' | 'ghost';
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface Props {
     readonly size?: Size;
     readonly border?: boolean;
     readonly icon: LucideIcon;
-    readonly variant?: Variant;
+    readonly variant?: CircleIconVariant;
     readonly className?: string;
 }
 
 const wrapperVariants = cva<{
-    variant: Record<Variant, ClassValue>;
+    variant: Record<CircleIconVariant, ClassValue>;
     size: Record<Size, ClassValue>;
     border: Record<'true' | 'false', string>;
 }>('rounded-full border block items-center justify-center', {
@@ -45,7 +45,7 @@ const wrapperVariants = cva<{
     }
 });
 
-const iconVariants = cva<{ variant: Record<Variant, ClassValue> }>('', {
+const iconVariants = cva<{ variant: Record<CircleIconVariant, ClassValue> }>('', {
     variants: {
         variant: {
             positive: 'text-positive-foreground',
