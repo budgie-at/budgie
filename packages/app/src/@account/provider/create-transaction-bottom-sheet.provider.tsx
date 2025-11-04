@@ -2,7 +2,7 @@ import { createContext, useRef } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { CreateTransactionBottomSheet } from '../components/create-transaction-bottom-sheet/create-transaction-bottom-sheet';
+import { CreateTransactionBottomSheet } from '../../@transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet';
 
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { EmptyFn } from '@rnw-community/shared';
