@@ -5,37 +5,109 @@
 @import "nativewind/theme";
 
 @theme {
-    --color-text-primary: rgb(0, 0, 0);
-    --color-text-primary-reverse: rgb(255, 255, 255);
-    --color-text-secondary: rgb(115, 115, 115);
-    --color-bg-primary: rgb(255, 255, 255);
-    --color-bg-primary-reverse: rgb(0, 0, 0);
-    --color-surface-secondary: rgb(10, 10, 10, 0.05);
-    --color-surface-widget: rgb(248, 248, 248, 0.50);
-    --color-border-secondary: rgb(229, 229, 229);
-    --color-positive: rgb(16, 185, 129);
-    --color-negative: rgb(239, 68, 68);
-    --color-warning: rgb(255, 185, 0);
-    --color-warning-fg: rgb(187, 77, 0);
-    --color-positive-weak: rgb(16, 185, 129, 0.10);
-    --color-negative-weak: rgb(239, 68, 68, 0.10);
-    --color-warning-weak: rgb(255, 185, 0, 0.10);
+    --padding-xxs: 0.125rem;  /* 2px  */
+    --padding-xs: 0.25rem;   /* 4px  */
+    --padding-sm: 0.375rem;  /* 6px  */
+    --padding-md: 0.5rem;    /* 8px  */
+    --padding-lg: 0.625rem;  /* 10px */
+    --padding-xl: 0.75rem;   /* 12px */
+    --padding-2xl: 0.875rem;  /* 14px */
+    --padding-3xl: 1rem;      /* 16px */
+    --padding-4xl: 1.125rem;  /* 18px */
+    --padding-5xl: 1.25rem;   /* 20px */
+    --padding-6xl: 1.375rem;  /* 22px */
+    --padding-7xl: 1.5rem;    /* 24px */
+    --margin-xxs: 0.125rem;  /* 2px  */
+    --margin-xs: 0.25rem;   /* 4px  */
+    --margin-sm: 0.375rem;  /* 6px  */
+    --margin-md: 0.5rem;    /* 8px  */
+    --margin-lg: 0.625rem;  /* 10px */
+    --margin-xl: 0.75rem;   /* 12px */
+    --margin-2xl: 0.875rem;  /* 14px */
+    --margin-3xl: 1rem;      /* 16px */
+    --margin-4xl: 1.125rem;  /* 18px */
+    --margin-5xl: 1.25rem;   /* 20px */
+    --margin-6xl: 1.375rem;  /* 22px */
+    --margin-7xl: 1.5rem;    /* 24px */
+    --radius-xxs: 0.125rem;  /* 2px  */
+    --radius-xs: 0.25rem;   /* 4px  */
+    --radius-sm: 0.375rem;  /* 6px  */
+    --radius-md: 0.5rem;    /* 8px  */
+    --radius-lg: 0.625rem;  /* 10px */
+    --radius-xl: 0.75rem;   /* 12px */
+    --radius-2xl: 0.875rem;  /* 14px */
+    --radius-3xl: 1rem;      /* 16px */
+    --radius-4xl: 1.125rem;  /* 18px */
+    --radius-5xl: 1.25rem;   /* 20px */
+    --radius-6xl: 1.375rem;  /* 22px */
+    --radius-7xl: 1.5rem;    /* 24px */
+    --stroke-25: 0.156rem;
+
+    --color-primary: rgb(0, 0, 0);
+    --color-primary-reverse: rgb(255, 255, 255);
+
+    --color-secondary-foreground: rgba(115, 115, 115, 1);
+    --color-secondary-corner: rgba(229, 229, 229, 1);
+    --color-secondary-background: rgba(248, 248, 248, 1);
+
+    --color-secondary-reverse-foreground: rgba(136, 136, 136, 1);
+    --color-secondary-reverse-corner: rgba(34, 34, 34, 1);
+    --color-secondary-reverse-background: rgba(10, 10, 10, 1);
+
+    --color-positive-foreground: rgba(16, 185, 129, 1);
+    --color-positive-corner: rgba(16, 185, 129, 0.2);
+    --color-positive-background: rgba(16, 185, 129, 0.1);
+
+    --color-destructive-foreground: rgba(239, 68, 68, 1);
+    --color-destructive-corner: rgba(239, 68, 68, 0.2);
+    --color-destructive-background: rgba(239, 68, 68, 0.1);
+
+    --color-warning-foreground: rgba(240, 177, 0, 1);
+    --color-warning-corner: rgba(240, 177, 0, 0.2);
+    --color-warning-background: rgba(240, 177, 0, 0.1);
+
+    --color-default-foreground: rgba(43, 127, 255, 1);
+    --color-default-corner: rgba(43, 127, 255, 0.2);
+    --color-default-background: rgba(43, 127, 255, 0.1);
+
+    --color-ghost-foreground: rgba(0, 0, 0, 1);
+    --color-ghost-corner: rgba(0, 0, 0, 0.2);
+    --color-ghost-background: rgba(10, 10, 10, 0.05);
+
+    --color-corner: rgba(229, 229, 229, 1);
 }
 
 .dark {
-    --color-text-primary: rgb(255, 255, 255);
-    --color-text-primary-reverse: rgb(0, 0, 0);
-    --color-text-secondary: rgb(136, 136, 136);
-    --color-bg-primary: rgb(0, 0, 0);
-    --color-bg-primary-reverse: rgb(255, 255, 255);
-    --color-surface-secondary: rgb(255, 255, 255, 0.05);
-    --color-surface-widget: rgb(10, 10, 10, 0.50);
-    --color-border-secondary: rgb(34, 34, 34);
-    --color-positive: rgb(1, 255, 136);
-    --color-negative: rgb(255, 107, 107);
-    --color-warning: rgb(255, 185, 0);
-    --color-warning-fg: rgb(255, 185, 0);
-    --color-positive-weak: rgb(1, 255, 136, 0.10);
-    --color-negative-weak: rgb(255, 107, 107, 0.10);
-    --color-warning-weak: rgb(255, 185, 0, 0.10);
+    --color-primary: rgb(255, 255, 255);
+    --color-primary-reverse: rgb(0, 0, 0);
+
+    --color-secondary-foreground: rgba(136, 136, 136, 1);
+    --color-secondary-corner: rgba(34, 34, 34, 1);
+    --color-secondary-background: rgba(10, 10, 10, 1);
+
+    --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
+    --color-secondary-reverse-corner: rgba(229, 229, 229, 1);
+    --color-secondary-reverse-background: rgba(248, 248, 248, 1);
+
+    --color-positive-foreground: rgba(0, 255, 136, 1);
+    --color-positive-corner: rgba(1, 255, 136, 0.20);
+    --color-positive-background: rgba(1, 255, 136, 0.10);
+
+    --color-destructive-foreground: rgba(255, 68, 68, 1);
+    --color-destructive-corner: rgba(255, 107, 107, 0.20);
+    --color-destructive-background: rgba(255, 68, 68, 0.20);
+
+    --color-warning-foreground: rgba(240, 177, 0, 1);
+    --color-warning-corner: rgba(240, 177, 0, 0.20);
+    --color-warning-background: rgba(240, 177, 0, 0.10);
+
+    --color-default-foreground: rgba(43, 127, 255, 1);
+    --color-default-corner: rgba(43, 127, 255, 0.2);
+    --color-default-background: rgba(43, 127, 255, 0.1);
+
+    --color-ghost-foreground: rgba(255, 255, 255, 1);
+    --color-ghost-corner: rgba(255, 255, 255, 0.2);
+    --color-ghost-background: rgba(255, 255, 255, 0.05);
+
+    --color-corner: rgba(34, 34, 34, 1);
 }
