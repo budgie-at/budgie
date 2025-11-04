@@ -10,7 +10,7 @@ import type { LucideIcon } from 'lucide-react-native';
 type Variant = 'default' | 'destructive' | 'warning' | 'positive' | 'ghost';
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
-interface CircleIconPropsInterface {
+interface Props {
     readonly size?: Size;
     readonly border?: boolean;
     readonly icon: LucideIcon;
@@ -65,7 +65,7 @@ const iconSize: Record<Size, number> = {
     xl: 20
 };
 
-export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: CircleIconPropsInterface) => (
+export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: Props) => (
     <View className={cn(wrapperVariants({ variant, size, border }), className)}>
         <Icon className={iconVariants({ variant })} icon={icon} size={iconSize[size]} />
     </View>
