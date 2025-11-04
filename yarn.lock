@@ -1341,12 +1341,14 @@ __metadata:
     babel-plugin-inline-import: "npm:^3.0.0"
     babel-plugin-macros: "npm:^3.1.0"
     babel-plugin-react-compiler: "npm:^1.0.0"
+    class-variance-authority: "npm:^0.7.1"
+    clsx: "npm:^2.1.1"
     date-fns: "npm:^4.1.0"
     dotenv: "npm:^17.2.3"
     drizzle-kit: "npm:^0.31.6"
     drizzle-orm: "npm:^0.44.7"
     eas-build-cache-provider: "npm:^16.4.2"
-    expo: "npm:54.0.21"
+    expo: "npm:^54.0.21"
     expo-constants: "npm:~18.0.10"
     expo-dev-client: "npm:~6.0.16"
     expo-drizzle-studio-plugin: "npm:^0.2.1"
@@ -1376,6 +1378,7 @@ __metadata:
     react-native-worklets: "npm:^0.5.1"
     react-redux: "npm:^9.2.0"
     redux-persist: "npm:^6.0.0"
+    tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.14"
     tsx: "npm:^4.20.6"
   languageName: unknown
@@ -10471,7 +10474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:54.0.21":
+"expo@npm:^54.0.21":
   version: 54.0.21
   resolution: "expo@npm:54.0.21"
   dependencies:
@@ -18804,6 +18807,13 @@ __metadata:
   version: 2.6.0
   resolution: "tailwind-merge@npm:2.6.0"
   checksum: 10/a84f49d6f2cfb18ba06dc51b446b69f6b42cedcb9c9fa4e7c5f931b56e739870e513339e02b348b43f44011fa4852f02f72658a3f3e066e5101b09fc28644210
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "tailwind-merge@npm:3.3.1"
+  checksum: 10/ad97f0763afdfdce785b8de50bc546951bb3cc803ab4f809cb10d654d9b7e28b0d19dead70ab9070edf479af68622a5f6ba16a21584fa8c21236855709dc648f
   languageName: node
   linkType: hard
 

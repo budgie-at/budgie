@@ -16,7 +16,7 @@ module.exports = {
             {
                 ignore: ['^(?![A-Z])\\S+$', '^[A-Z0-9_-]+$', 'rgba', 'rgb', '^Inter_[0-9A-Z]+', '^Arrow[A-Z]+', 'Tab', 'Enter'],
                 ignoreNames: [{ regex: { pattern: 'className', flags: 'i' } }],
-                ignoreFunctions: ['format']
+                ignoreFunctions: ['format', 'cva']
             }
         ],
         'lingui/t-call-in-function': 2,
