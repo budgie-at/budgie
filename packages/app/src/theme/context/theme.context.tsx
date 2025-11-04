@@ -1,8 +1,6 @@
-import type { ReactNode } from 'react';
 import React, { createContext } from 'react';
 import { Appearance, Platform, View } from 'react-native';
 
-import type { OnEventFn } from '@rnw-community/shared';
 import { emptyFn } from '@rnw-community/shared';
 
 import { useAppDispatch } from '../../@generic/hooks/use-app-dispatch.hook';
@@ -11,12 +9,15 @@ import { settingsSetAction } from '../../settings/store/settings.actions';
 import { settingsKeySelector } from '../../settings/store/settings.selectors';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
-export interface ThemeContextInterface {
+import type { OnEventFn } from '@rnw-community/shared';
+import type { ReactNode } from 'react';
+
+interface ThemeContextInterface {
     colorScheme: ColorSchemaEnum;
     toggleColorSchema: OnEventFn;
 }
 
-export const ThemeContext = createContext<ThemeContextInterface>({ colorScheme: ColorSchemaEnum.Light, toggleColorSchema: emptyFn });
+const ThemeContext = createContext<ThemeContextInterface>({ colorScheme: ColorSchemaEnum.Light, toggleColorSchema: emptyFn });
 
 export const ThemeProvider = ({ children }: { readonly children: ReactNode }) => {
     const dispatch = useAppDispatch();
