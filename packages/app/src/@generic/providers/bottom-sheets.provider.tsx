@@ -1,14 +1,14 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import CreateAccountBottomSheetProvider from '../../@account/provider/create-account-bottom-sheet.provider';
+import CreateTransactionBottomSheetProvider from '../../@account/provider/create-transaction-bottom-sheet.provider';
 
 import type { PropsWithChildren } from 'react';
 
 export const BottomSheetsProvider = ({ children }: PropsWithChildren) => (
     <GestureHandlerRootView>
         <BottomSheetModalProvider>
-            <CreateAccountBottomSheetProvider>{children}</CreateAccountBottomSheetProvider>
+            <CreateTransactionBottomSheetProvider>{children}</CreateTransactionBottomSheetProvider>
         </BottomSheetModalProvider>
     </GestureHandlerRootView>
 );

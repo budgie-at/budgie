@@ -1,3 +1,4 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
@@ -12,12 +13,19 @@ interface Props {
     readonly title: string;
     readonly icon: IconName;
     readonly description: string;
-    readonly variant: CircleIconVariant;
+    readonly type: TransactionTypeEnum;
 }
 
-export const CreateAccountCard = ({ title, description, variant, icon }: Props) => (
+const iconVariant: Record<TransactionTypeEnum, CircleIconVariant> = {
+    [TransactionTypeEnum.TRANSFER]: 'default',
+    [TransactionTypeEnum.DEBT]: 'warning',
+    [TransactionTypeEnum.INCOME]: 'positive',
+    [TransactionTypeEnum.EXPENSE]: 'destructive',
+}
+
+export const CreateTransactionCard = ({ title, description, type, icon }: Props) => (
     <Card className="p-5xl items-center gap-x-4 flex-row" key={title}>
-        <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={variant} />
+        <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={iconVariant[type]} />
 
         <View className="mr-auto">
             <Text className="text-primary text-[16px] font-medium">{title}</Text>

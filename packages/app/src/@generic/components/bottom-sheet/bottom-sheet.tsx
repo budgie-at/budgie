@@ -9,7 +9,7 @@ import { BottomSheetBackdrop } from './bottom-sheet-backdrop';
 
 import type { PropsWithChildren, Ref } from 'react';
 
-interface BottomSheetPropsInterface {
+interface Props {
     readonly className?: string;
     readonly handleClassName?: string;
     readonly contentClassName?: string;
@@ -31,7 +31,7 @@ export const BottomSheet = ({
     className,
     handleClassName,
     contentClassName
-}: PropsWithChildren<BottomSheetPropsInterface>) => (
+}: PropsWithChildren<Props>) => (
     <Modal
         backdropComponent={BottomSheetBackdrop}
         backgroundClassName="bg-primary-reverse"

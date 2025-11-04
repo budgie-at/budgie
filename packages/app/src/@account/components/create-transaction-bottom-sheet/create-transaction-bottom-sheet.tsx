@@ -1,41 +1,42 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { CreateAccountCard } from '../create-account-card/create-account-card';
+import { CreateTransactionCard } from '../create-transaction-card/create-transaction-card';
 
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { Ref } from 'react';
 
-interface CreateAccountBottomSheetPropsInterface {
+interface Props {
     readonly ref: Ref<BottomSheetModal>;
 }
 
-export const CreateAccountBottomSheet = ({ ref }: CreateAccountBottomSheetPropsInterface) => {
+export const CreateTransactionBottomSheet = ({ ref }: Props) => {
     const { t } = useLingui();
 
-    const accountTypes = [
+    const transactionTypes = [
         {
             title: t`Expense`,
-            variant: 'destructive',
+            type: TransactionTypeEnum.EXPENSE,
             icon: 'TrendingDown',
             description: t`Money you spend`
         },
         {
             title: t`Income`,
-            variant: 'positive',
+            type: TransactionTypeEnum.INCOME,
             icon: 'TrendingUp',
             description: t`Money you earn`
         },
         {
             title: t`Transfer`,
-            variant: 'default',
+            type: TransactionTypeEnum.TRANSFER,
             icon: 'ArrowRightLeft',
             description: t`Move between accounts`
         },
         {
             title: t`Debt`,
-            variant: 'warning',
+            type: TransactionTypeEnum.DEBT,
             icon: 'CreditCard',
             description: t`Loans & credit cards`
         }
@@ -49,8 +50,8 @@ export const CreateAccountBottomSheet = ({ ref }: CreateAccountBottomSheetPropsI
             </View>
 
             <View className="gap-y-3.5">
-                {accountTypes.map(({ title, description, icon, variant }) => (
-                    <CreateAccountCard description={description} icon={icon} key={title} title={title} variant={variant} />
+                {transactionTypes.map(({ title, description, icon, type }) => (
+                    <CreateTransactionCard description={description} icon={icon} key={title} title={title} type={type} />
                 ))}
             </View>
         </BottomSheet>
