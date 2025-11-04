@@ -1,4 +1,4 @@
-import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
+import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 import { styled } from 'nativewind';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
@@ -27,8 +27,8 @@ export default function TabsLayout() {
                     <TabTrigger asChild href="/analytics" name="analytics">
                         <TabButton icon={ICONS.ChartNoAxesColumn} />
                     </TabTrigger>
-                    <TabTrigger asChild href="/settings" name="settings">
-                        <TabButton icon={ICONS.Settings} />
+                    <TabTrigger asChild href="/add-account" name="add-account">
+                        <TabButton icon={ICONS.Plus} />
                     </TabTrigger>
                 </BottomTabs>
             </TabList>
