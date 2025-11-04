@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-max-depth */
+
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -46,8 +48,18 @@ export default function RootLayout() {
                 <I18nProvider i18n={i18n}>
                     <ThemeProvider>
                         <SQLiteProvider databaseName={DB_NAME} options={{ enableChangeListener: true }}>
-                            {/* eslint-disable-next-line react/jsx-max-depth */}
-                            <Stack screenOptions={stackOptions} />
+                            <Stack screenOptions={stackOptions}>
+                                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+                                <Stack.Screen
+                                    name="ai"
+                                    options={{
+                                        headerShown: false,
+                                        presentation: 'modal',
+                                        gestureEnabled: true
+                                    }}
+                                />
+                            </Stack>
                         </SQLiteProvider>
                     </ThemeProvider>
                 </I18nProvider>
