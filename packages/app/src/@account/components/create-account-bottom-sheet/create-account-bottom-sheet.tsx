@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { Card } from '../../../@generic/components/card/card';
@@ -53,23 +53,21 @@ export const CreateAccountBottomSheet = ({ ref }: CreateAccountBottomSheetPropsI
 
             <View className="gap-y-3.5">
                 {accountTypes.map(account => (
-                    <Card asChild className="p-5xl items-center gap-x-4" key={account.title}>
-                        <Pressable className="flex-row gap-1">
-                            <CircleIcon
-                                border={false}
-                                className="rounded-5xl w-12 h-12"
-                                icon={account.icon}
-                                size="xl"
-                                variant={account.variant}
-                            />
+                    <Card className="p-5xl items-center gap-x-4 flex-row gap-1" key={account.title}>
+                        <CircleIcon
+                            border={false}
+                            className="rounded-5xl w-12 h-12"
+                            icon={account.icon}
+                            size="xl"
+                            variant={account.variant}
+                        />
 
-                            <View className="mr-auto">
-                                <Text className="text-primary text-[16px] font-medium">{account.title}</Text>
-                                <Text className="text-secondary-foreground text-[14px]">{account.description}</Text>
-                            </View>
+                        <View className="mr-auto">
+                            <Text className="text-primary text-[16px] font-medium">{account.title}</Text>
+                            <Text className="text-secondary-foreground text-[14px]">{account.description}</Text>
+                        </View>
 
-                            <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
-                        </Pressable>
+                        <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
                     </Card>
                 ))}
             </View>
