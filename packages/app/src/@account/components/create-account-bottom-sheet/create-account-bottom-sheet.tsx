@@ -2,10 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { CreateAccountCard } from '../create-account-card/create-account-card';
 
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { Ref } from 'react';
@@ -21,25 +18,25 @@ export const CreateAccountBottomSheet = ({ ref }: CreateAccountBottomSheetPropsI
         {
             title: t`Expense`,
             variant: 'destructive',
-            icon: ICONS.TrendingDown,
+            icon: 'TrendingDown',
             description: t`Money you spend`
         },
         {
             title: t`Income`,
             variant: 'positive',
-            icon: ICONS.TrendingUp,
+            icon: 'TrendingUp',
             description: t`Money you earn`
         },
         {
             title: t`Transfer`,
             variant: 'default',
-            icon: ICONS.ArrowRightLeft,
+            icon: 'ArrowRightLeft',
             description: t`Move between accounts`
         },
         {
             title: t`Debt`,
             variant: 'warning',
-            icon: ICONS.CreditCard,
+            icon: 'CreditCard',
             description: t`Loans & credit cards`
         }
     ] as const;
@@ -52,23 +49,8 @@ export const CreateAccountBottomSheet = ({ ref }: CreateAccountBottomSheetPropsI
             </View>
 
             <View className="gap-y-3.5">
-                {accountTypes.map(account => (
-                    <Card className="p-5xl items-center gap-x-4 flex-row gap-1" key={account.title}>
-                        <CircleIcon
-                            border={false}
-                            className="rounded-5xl w-12 h-12"
-                            icon={account.icon}
-                            size="xl"
-                            variant={account.variant}
-                        />
-
-                        <View className="mr-auto">
-                            <Text className="text-primary text-[16px] font-medium">{account.title}</Text>
-                            <Text className="text-secondary-foreground text-[14px]">{account.description}</Text>
-                        </View>
-
-                        <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
-                    </Card>
+                {accountTypes.map(({ title, description, icon, variant }) => (
+                    <CreateAccountCard description={description} icon={icon} key={title} title={title} variant={variant} />
                 ))}
             </View>
         </BottomSheet>
