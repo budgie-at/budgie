@@ -2,11 +2,11 @@ import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { styled } from 'nativewind';
 import { useContext } from 'react';
 
+import { CreateAccountBottomSheetContext } from '../../@account/provider/create-account-bottom-sheet.provider';
 import { AiChatButton } from '../../@ai/components/ai-chat-button/ai-chat-button';
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/components/tab-button/tab-button';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { CreateAccountBottomSheetContext } from '../../@account/provider/create-account-bottom-sheet.provider';
 
 const Wrapper = styled(Tabs);
 

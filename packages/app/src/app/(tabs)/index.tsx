@@ -35,7 +35,7 @@ export default function HomePage() {
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 <Text className="text-primary">{t`Home Screen`}</Text>
 
-                <Card  onPress={handleCardPress}>
+                <Card onPress={handleCardPress}>
                     <Text className="text-primary">{t`Create Account`}</Text>
                 </Card>
 
