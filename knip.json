@@ -14,11 +14,12 @@
         "**/selectors.ts",
         "packages/app/src/game/store/game.state.ts",
         "packages/contracts/src/**/*.enum.ts",
-        "tests/web-tests/**"
+        "tests/web-tests/**",
+
+        "packages/app/src/@generic/components/chip/chip.tsx"
     ],
     "ignoreDependencies": [
         "husky",
-        "tailwindcss",
         "@lingui/cli",
         "react-native-worklets",
         "@expo/metro-config",
