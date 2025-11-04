@@ -8,7 +8,7 @@ import { Icon } from '../icon/icon';
 
 import type { LucideIcon } from 'lucide-react-native';
 
-interface ChipPropsInterface {
+interface Props {
     readonly onPress?: () => void;
     readonly isSelected?: boolean;
     readonly className?: string;
@@ -25,7 +25,7 @@ const chipVariants = cva('max-w-50 rounded-5xl py-3 px-3xl gap-x-2 border items-
     }
 });
 
-export const Chip = ({ label, onPress, className, isSelected = false, icon }: ChipPropsInterface) => (
+export const Chip = ({ label, onPress, className, isSelected = false, icon }: Props) => (
     <Pressable className={cn(chipVariants({ isSelected }), className)} disabled={isSelected} onPress={onPress}>
         {isDefined(icon) && <Icon className={isSelected ? 'text-primary' : 'text-secondary-foreground'} icon={icon} size={16} />}
 
