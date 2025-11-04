@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const CreateAccountCard = ({ title, description, variant, icon }: Props) => (
-    <Card className="p-5xl items-center gap-x-4 flex-row gap-1" key={title}>
+    <Card className="p-5xl items-center gap-x-4 flex-row" key={title}>
         <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={variant} />
 
         <View className="mr-auto">
