@@ -1,5 +1,3 @@
-
-
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -61,10 +59,7 @@ export default function RootLayout() {
                                 <Stack screenOptions={stackOptions}>
                                     <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                                    <Stack.Screen
-                                        name="ai"
-                                        options={aiScreenOptions}
-                                    />
+                                    <Stack.Screen name="ai" options={aiScreenOptions} />
                                 </Stack>
                             </BottomSheetsProvider>
                         </SQLiteProvider>
