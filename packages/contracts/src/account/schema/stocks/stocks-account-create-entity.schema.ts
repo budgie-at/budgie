@@ -4,6 +4,16 @@ import { HoldingCreateEntitySchema } from '../../../holding/schema/holding-creat
 
 import { StocksAccountEntitySchema } from './stocks-account-entity.schema';
 
-export const StocksAccountCreateEntitySchema = StocksAccountEntitySchema.pick({ type: true }).extend({
-    holdings: array(HoldingCreateEntitySchema).describe('Holdings of the account.')
-});
+export const StocksAccountCreateEntitySchema = StocksAccountEntitySchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true
+})
+    .extend({
+        holdings: array(HoldingCreateEntitySchema).describe('Holdings of the account.')
+    })
+    .partial({
+        order: true,
+        includeInNetWorth: true
+    });

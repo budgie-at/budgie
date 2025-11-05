@@ -4,6 +4,16 @@ import { HoldingCreateEntitySchema } from '../../../holding/schema/holding-creat
 
 import { CryptoAccountEntitySchema } from './crypto-account-entity.schema';
 
-export const CryptoAccountCreateEntitySchema = CryptoAccountEntitySchema.pick({ type: true, title: true }).extend({
-    holdings: array(HoldingCreateEntitySchema).describe('Holdings of the account.')
-});
+export const CryptoAccountCreateEntitySchema = CryptoAccountEntitySchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true
+})
+    .extend({
+        holdings: array(HoldingCreateEntitySchema).describe('Holdings of the account.')
+    })
+    .partial({
+        order: true,
+        includeInNetWorth: true
+    });

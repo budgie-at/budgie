@@ -3,8 +3,17 @@ import { literal } from 'zod';
 import { TransactionTypeEnum } from '../../enum/transaction-type.enum';
 import { TransactionEntitySchema } from '../transaction-entity.schema';
 
-export const TransferTransactionEntitySchema = TransactionEntitySchema.required({ transferDirection: true, counterAccountId: true }).extend(
-    {
+export const TransferTransactionEntitySchema = TransactionEntitySchema.omit({
+    type: true,
+    quantity: true,
+    instrument: true,
+    pricePerUnit: true
+})
+    .extend({
         type: literal(TransactionTypeEnum.TRANSFER)
-    }
-);
+    })
+    .required({
+        categoryId: true,
+        counterAccountId: true,
+        transferDirection: true
+    });
