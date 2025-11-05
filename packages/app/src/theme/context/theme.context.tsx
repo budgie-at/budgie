@@ -40,8 +40,10 @@ export const ThemeProvider = ({ children }: { readonly children: ReactNode }) =>
         }
     };
 
+    const contextValue = { colorScheme, toggleColorSchema };
+
     return (
-        <ThemeContext value={{ colorScheme, toggleColorSchema }}>
+        <ThemeContext value={contextValue}>
             <View className={`flex-1 ${isDarkColorSchema ? 'dark' : 'light'}`}>{children}</View>
         </ThemeContext>
     );
