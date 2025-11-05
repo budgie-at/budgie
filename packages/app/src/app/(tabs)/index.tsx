@@ -20,7 +20,7 @@ export default function HomePage() {
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
-    const onAdd = async () => {
+    const handleCardPress = async () => {
         await createAccountMutation({
             balance: 0,
             title: 'example',
@@ -34,7 +34,7 @@ export default function HomePage() {
         <Page>
             <Text className="text-primary">{t`Home Screen`}</Text>
 
-            <Card onPress={() => void onAdd()}>
+            <Card onPress={handleCardPress}>
                 <Text className="text-primary">{t`Create Account`}</Text>
             </Card>
 

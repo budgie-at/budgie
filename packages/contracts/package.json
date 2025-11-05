@@ -17,12 +17,12 @@
     "types": "./dist/esm/index.d.ts",
     "react-native": "./dist/esm/index.js",
     "scripts": {
-        "build": "yarn run -T tsc -p tsconfig.json",
+        "build": "run -T tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",
-        "clear": "yarn run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
-        "format": "yarn run -T prettier --write src",
-        "lint": "yarn run -T eslint --quiet --fix src --ext .ts",
-        "ts": "yarn run -T tsc -p ."
+        "clear": "run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
+        "format": "run -T prettier --write src",
+        "lint": "run -T eslint --fix src",
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "drizzle-orm": "^0.44.7",
