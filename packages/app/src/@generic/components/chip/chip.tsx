@@ -34,12 +34,17 @@ const iconVariants = cva('', {
     }
 });
 
-export const Chip = ({ label, onPress, className, isSelected = false, icon }: Props) => (
-    <Pressable className={cn(chipVariants({ isSelected }), className)} disabled={isSelected} onPress={onPress}>
-        {isDefined(icon) && <Icon className={iconVariants({ isSelected })} icon={icon} size={16} />}
+export const Chip = ({ label, onPress, className, isSelected = false, icon }: Props) => {
+    // TODO: Can we use variant or helper?
+    const textClassName = isSelected ? 'text-primary' : 'text-secondary-foreground';
 
-        <Text className={isSelected ? 'text-primary' : 'text-secondary-foreground'} ellipsizeMode="tail" numberOfLines={1}>
-            {label}
-        </Text>
-    </Pressable>
-);
+    return (
+        <Pressable className={cn(chipVariants({ isSelected }), className)} disabled={isSelected} onPress={onPress}>
+            {isDefined(icon) && <Icon className={iconVariants({ isSelected })} icon={icon} size={16} />}
+
+            <Text className={textClassName} ellipsizeMode="tail" numberOfLines={1}>
+                {label}
+            </Text>
+        </Pressable>
+    );
+};
