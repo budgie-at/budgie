@@ -1,5 +1,8 @@
 export default {
     sourceLocale: 'en',
+    fallbackLocales: {
+        default: 'en'
+    },
     pseudoLocale: 'pseudo',
     locales: ['uk', 'en', 'fr', 'de', 'es'],
     catalogs: [

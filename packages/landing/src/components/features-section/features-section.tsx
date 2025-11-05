@@ -1,9 +1,7 @@
-'use client';
-
 import { Trans, useLingui } from '@lingui/react/macro';
-import { motion } from 'framer-motion';
 import { Banknote, Layers, Shield, Target, TrendingUp, WifiOff } from 'lucide-react';
 
+import { Motion } from '../../lib/motion';
 import { FeaturesSectionItem } from '../features-section-item/features-section-item';
 import { Badge } from '../ui/badge';
 
@@ -28,7 +26,7 @@ export const FeaturesSection = () => {
     return (
         <section className="w-full py-20 md:py-32" id="features">
             <div className="container px-4 md:px-6">
-                <motion.div
+                <Motion
                     className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
                     initial={initialMotion}
                     transition={transitionMotion}
@@ -49,9 +47,9 @@ export const FeaturesSection = () => {
                             keeping your financial data exactly where it belongs—on your device.
                         </Trans>
                     </p>
-                </motion.div>
+                </Motion>
 
-                <motion.div
+                <Motion
                     className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
                     initial="hidden"
                     variants={containerVariants}
@@ -93,7 +91,7 @@ export const FeaturesSection = () => {
                         icon={<Target className="size-5" />}
                         title={t`Goals & Debt Tracking`}
                     />
-                </motion.div>
+                </Motion>
             </div>
         </section>
     );
