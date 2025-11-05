@@ -1,14 +1,14 @@
-'use client';
 /* eslint-disable react/jsx-max-depth */
 
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 import { FooterDetails } from './footer-details';
 
 // eslint-disable-next-line max-lines-per-function
 export const Footer = () => {
-    const date = new Date().getFullYear();
+    const date = useMemo(() => new Date().getFullYear(), []);
 
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
