@@ -1,7 +1,7 @@
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
 
@@ -25,13 +25,9 @@ const Modal = styled(BottomSheetModal, {
 
 const Content = styled(BottomSheetView);
 
-export const BottomSheet = ({
-    ref,
-    children,
-    className,
-    handleClassName,
-    contentClassName
-}: PropsWithChildren<Props>) => (
+const edges: Edges = ['bottom'];
+
+export const BottomSheet = ({ ref, children, className, handleClassName, contentClassName }: PropsWithChildren<Props>) => (
     <Modal
         backdropComponent={BottomSheetBackdrop}
         backgroundClassName="bg-primary-reverse"
@@ -42,7 +38,7 @@ export const BottomSheet = ({
         ref={ref}
     >
         <Content className={cn('bg-primary-reverse pt-4 px-6 pb-6', contentClassName)}>
-            <SafeAreaView edges={['bottom']}>{children}</SafeAreaView>
+            <SafeAreaView edges={edges}>{children}</SafeAreaView>
         </Content>
     </Modal>
 );
