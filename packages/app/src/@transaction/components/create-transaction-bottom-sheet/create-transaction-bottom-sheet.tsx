@@ -1,5 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
@@ -15,44 +15,42 @@ interface Props {
 export const CreateTransactionBottomSheet = ({ ref }: Props) => {
     const { t } = useLingui();
 
-    const transactionTypes = [
-        {
-            title: t`Expense`,
-            type: TransactionTypeEnum.EXPENSE,
-            icon: 'TrendingDown',
-            description: t`Money you spend`
-        },
-        {
-            title: t`Income`,
-            type: TransactionTypeEnum.INCOME,
-            icon: 'TrendingUp',
-            description: t`Money you earn`
-        },
-        {
-            title: t`Transfer`,
-            type: TransactionTypeEnum.TRANSFER,
-            icon: 'ArrowRightLeft',
-            description: t`Move between accounts`
-        },
-        {
-            title: t`Debt`,
-            type: TransactionTypeEnum.DEBT,
-            icon: 'CreditCard',
-            description: t`Loans & credit cards`
-        }
-    ] as const;
-
     return (
         <BottomSheet ref={ref}>
             <View className="gap-y-1 mb-10">
-                <Text className="text-center text-[20px] text-primary font-semibold">{t`New Transaction`}</Text>
-                <Text className="text-center text-[14px] text-secondary-foreground">{t`Choose a type to get started`}</Text>
+                <Text className="text-center text-[20px] text-primary font-semibold">
+                    <Trans>New Transaction</Trans>
+                </Text>
+                <Text className="text-center text-[14px] text-secondary-foreground">
+                    <Trans>Choose a type to get started</Trans>
+                </Text>
             </View>
 
             <View className="gap-y-3.5">
-                {transactionTypes.map(({ title, description, icon, type }) => (
-                    <CreateTransactionCard description={description} icon={icon} key={title} title={title} type={type} />
-                ))}
+                <CreateTransactionCard
+                    description={t`Money you spend`}
+                    icon="TrendingDown"
+                    title={t`Expense`}
+                    type={TransactionTypeEnum.EXPENSE}
+                />
+                <CreateTransactionCard
+                    description={t`Money you earn`}
+                    icon="TrendingUp"
+                    title={t`Income`}
+                    type={TransactionTypeEnum.INCOME}
+                />
+                <CreateTransactionCard
+                    description={t`Move between accounts`}
+                    icon="ArrowRightLeft"
+                    title={t`Transfer`}
+                    type={TransactionTypeEnum.TRANSFER}
+                />
+                <CreateTransactionCard
+                    description={t`Loans & credit cards`}
+                    icon="CreditCard"
+                    title={t`Debt`}
+                    type={TransactionTypeEnum.DEBT}
+                />
             </View>
         </BottomSheet>
     );
