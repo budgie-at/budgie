@@ -6,7 +6,8 @@
         "build": "next build --turbo",
         "release:start": "next start",
         "start": "next dev --turbo",
-        "lint": "next lint"
+        "lint": "run -T eslint --fix .",
+        "ts": "run -T tsc -p ."
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.12",
