@@ -4,6 +4,11 @@ import { motion } from 'framer-motion';
 
 import { WhitelistOffer } from './whitelist-offer';
 
+const motionInitial = { opacity: 0, y: 20 };
+const motionTransition = { duration: 0.5 };
+const motionViewport = { once: true };
+const motionWhileInView = { opacity: 1, y: 0 };
+
 export const WhitelistSection = () => (
     <section
         className="w-full py-20 md:py-32 bg-linear-to-br from-primary/5 via-primary/10 to-secondary/5 relative overflow-hidden"
@@ -14,10 +19,10 @@ export const WhitelistSection = () => (
         <div className="container px-4 md:px-6 relative">
             <motion.div
                 className="max-w-4xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={motionInitial}
+                transition={motionTransition}
+                viewport={motionViewport}
+                whileInView={motionWhileInView}
             >
                 <WhitelistOffer />
             </motion.div>

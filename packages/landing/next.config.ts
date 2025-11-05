@@ -1,16 +1,17 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+    eslint: {
+        ignoreDuringBuilds: true
+    },
+    typescript: {
+        ignoreBuildErrors: true
+    },
     experimental: {
         reactCompiler: true,
         inlineCss: true,
-    },
-}
+        swcPlugins: [['@lingui/swc-plugin', {}]]
+    }
+};
 
-export default nextConfig
+export default nextConfig;
