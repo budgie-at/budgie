@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-11-05 09:09+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+
+#: src/app/[lang]/layout.tsx:81
+#: src/app/[lang]/layout.tsx:82
+msgid "Budgie"
+msgstr "Budgie"
+
+#: src/app/[lang]/layout.tsx:73
+#: src/app/[lang]/layout.tsx:86
+#: src/app/[lang]/layout.tsx:95
+msgid "Budgie - Privacy-First Expense Tracker"
+msgstr "Budgie - Privacy-First Expense Tracker"
+
+#: src/app/[lang]/layout.tsx:80
+msgid "Budgie Team"
+msgstr "Budgie Team"
+
+#: src/app/[lang]/layout.tsx:78
+msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
+msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
+
+#: src/app/[lang]/layout.tsx:75
+msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
+msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
+
+#: src/app/[lang]/layout.tsx:88
+#: src/app/[lang]/layout.tsx:97
+msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
+msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
