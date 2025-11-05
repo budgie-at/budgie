@@ -9,8 +9,13 @@ import { HeroSection } from '../../components/hero-section/hero-section';
 import { HowItWorksSection } from '../../components/how-it-works-section/how-it-works-section';
 import { TestimonialsSection } from '../../components/testimonials-section/testimonials-section';
 import { WhitelistSection } from '../../components/whitelist-section/whitelist-section';
+import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 
-export default function LandingPage() {
+export default async function LandingPage(props: PageLangParam) {
+    const { lang } = await props.params;
+
+    initLingui(lang);
+
     return (
         <div className="flex min-h-dvh flex-col">
             <Header />
