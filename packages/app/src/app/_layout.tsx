@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-max-depth */
+ 
 
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
