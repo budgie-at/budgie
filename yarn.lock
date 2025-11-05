@@ -1456,7 +1456,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
-    "@rnw-community/shared": "npm:^1.3.0"
+    "@rnw-community/shared": "npm:^1.8.2"
     drizzle-orm: "npm:^0.44.7"
     drizzle-zod: "npm:^0.8.3"
     expo-sqlite: "npm:^16.0.8"
