@@ -11,12 +11,7 @@ interface Props {
 }
 
 export const LinguiClientProvider = ({ children, initialLocale, initialMessages }: Props) => {
-    const [i18n] = useState(() =>
-        setupI18n({
-            locale: initialLocale,
-            messages: { [initialLocale]: initialMessages }
-        })
-    );
+    const [i18n] = useState(() => setupI18n({ locale: initialLocale, messages: { [initialLocale]: initialMessages } }));
 
     return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
 };
