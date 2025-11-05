@@ -296,8 +296,7 @@ export default defineConfig(
         extends: [promisePlugin.configs['flat/recommended']]
     },
     {
-        // TODO: Refactor landing and enable
-        files: ['packages/app/**/*.{ts,tsx}'],
+        files: ['**/*.{ts,tsx}'],
         extends: [pluginLingui.configs['flat/recommended']],
         rules: {
             'lingui/no-unlocalized-strings': [
@@ -316,8 +315,7 @@ export default defineConfig(
         }
     },
     {
-        // TODO: Refactor landing and enable
-        files: ['packages/app/**/*.{ts,tsx}'],
+        files: ['**/*.{ts,tsx}'],
         extends: [reactPlugin.configs.flat.recommended, reactHooksPlugin.configs.flat.recommended],
         plugins: { '@rnw-community': rnwcPlugin },
         settings: {
