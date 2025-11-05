@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.53.0](https://github.com/budgie-at/budgie/compare/v1.52.0...v1.53.0) (2025-11-05)
+
+### Bug Fixes
+
+- add flex-1 ([ad7d340](https://github.com/budgie-at/budgie/commit/ad7d3404483046d4b7e0500ee8c2da1be7309a39))
+- disable lint for providers ([84ecc11](https://github.com/budgie-at/budgie/commit/84ecc11c3f844e489a702a03fa3c6897d6237f99))
+- disable lint for providers ([002f9c6](https://github.com/budgie-at/budgie/commit/002f9c66cec20b9e649fc947bcf181dd4409d46a))
+- move to transaction folder ([28f2e82](https://github.com/budgie-at/budgie/commit/28f2e82cf6deb538eaecd00a3b6b76bb6d340ee0))
+- rename create-account to create-transaction ([6e53720](https://github.com/budgie-at/budgie/commit/6e53720eb7f0f63892e3fe8ac5082918c2c88700))
+- replace icon for transfer ([a2d35b7](https://github.com/budgie-at/budgie/commit/a2d35b7803065c8b9e7bf17cde5380f44f888dcc))
+- replace icon for transfer ([e986dff](https://github.com/budgie-at/budgie/commit/e986dffe6b8d584077903d060b9589439b4bfc0d))
+- resolve conflicts ([12fbaad](https://github.com/budgie-at/budgie/commit/12fbaadb4cf588d6ec33dabc065c12de145349e6))
+- resolve conflicts ([ea5c069](https://github.com/budgie-at/budgie/commit/ea5c0697c4eecec37765000e006613a009625d5c))
+- resolve conflicts ([ebe2786](https://github.com/budgie-at/budgie/commit/ebe2786add38580a10c60aebb6240cb16f042b56))
+
+### Features
+
+- add create-account bottom-sheet component ([1e68ebf](https://github.com/budgie-at/budgie/commit/1e68ebf9a6efde32ffc0877bb9c483c3549ad8b7))
+- add create-account-card component ([df3d4c2](https://github.com/budgie-at/budgie/commit/df3d4c2c9cd88df561132439994edc71da3465db))
+- add create-account-card component ([636080c](https://github.com/budgie-at/budgie/commit/636080c2b1863da38ce53590e903011371b6ffae))
+- change t to Trans ([54e7411](https://github.com/budgie-at/budgie/commit/54e7411da88ea07cd3b346849b01c62973a54bf1))
+
 # [1.52.0](https://github.com/budgie-at/budgie/compare/v1.51.0...v1.52.0) (2025-11-05)
 
 ### Features
