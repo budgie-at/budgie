@@ -1,8 +1,11 @@
-'use client'
+'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { motion } from 'framer-motion';
 
-import { WhitelistOffer } from './whitelist-offer';
+import { Card } from '../ui/card/card';
+import { CardContent } from '../ui/card/card-content';
+import { WhitelistSectionOffer } from '../whitelist-section-offer/whitelist-section-offer';
 
 const motionInitial = { opacity: 0, y: 20 };
 const motionTransition = { duration: 0.5 };
@@ -24,7 +27,15 @@ export const WhitelistSection = () => (
                 viewport={motionViewport}
                 whileInView={motionWhileInView}
             >
-                <WhitelistOffer />
+                <Card className="relative overflow-hidden border-2 border-primary/30 bg-linear-to-br from-background via-background to-primary/5 backdrop-blur-sm shadow-2xl">
+                    <div className="whitespace-nowrap absolute top-0 left-1/2 -translate-x-1/2 bg-linear-to-r from-primary to-secondary text-primary-foreground px-8 py-3 text-sm font-bold rounded-b-xl shadow-lg">
+                        <Trans>🎉 EXCLUSIVE WHITELIST OFFER</Trans>
+                    </div>
+
+                    <CardContent className="p-8 md:p-12">
+                        <WhitelistSectionOffer />
+                    </CardContent>
+                </Card>
             </motion.div>
         </div>
     </section>
