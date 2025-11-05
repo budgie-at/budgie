@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Mic } from 'lucide-react-native';
 import { Pressable, Text, View } from 'react-native';
@@ -6,8 +6,6 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '../../../@generic/components/icon/icon';
 
 export const AiChatButton = () => {
-    const { t } = useLingui();
-
     const navigateToAiPage = () => {
         void router.push('/ai');
     };
@@ -18,7 +16,9 @@ export const AiChatButton = () => {
                 <Icon className="text-primary-reverse" icon={Mic} size={16} />
             </Pressable>
 
-            <Text className="text-primary text-center">{t`AI`}</Text>
+            <Text className="text-primary text-center">
+                <Trans>AI</Trans>
+            </Text>
         </View>
     );
 };

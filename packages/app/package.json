@@ -21,6 +21,7 @@
     "dependencies": {
         "@budgie/contracts": "^1.52.0",
         "@expo/fingerprint": "~0.15.2",
+        "@gorhom/bottom-sheet": "^5.2.6",
         "@libsql/client": "^0.15.15",
         "@lingui/core": "^5.5.2",
         "@lingui/react": "^5.5.2",
@@ -52,7 +53,7 @@
         "react-dom": "19.1.0",
         "react-native": "0.81.5",
         "react-native-css": "^3.0.1",
-        "react-native-gesture-handler": "~2.28.0",
+        "react-native-gesture-handler": "^2.29.1",
         "react-native-reanimated": "~4.1.1",
         "react-native-safe-area-context": "~5.6.0",
         "react-native-screens": "~4.16.0",
