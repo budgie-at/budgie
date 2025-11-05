@@ -1,8 +1,6 @@
-'use client';
-
 import { Trans, useLingui } from '@lingui/react/macro';
-import { motion } from 'framer-motion';
 
+import { Motion } from '../../lib/motion';
 import { FaqSectionItem } from '../faq-section-item/faq-section-item';
 import { Accordion } from '../ui/accordion/accordion';
 import { Badge } from '../ui/badge';
@@ -18,7 +16,7 @@ export const FaqSection = () => {
     return (
         <section className="w-full py-20 md:py-32" id="faq">
             <div className="container px-4 md:px-6">
-                <motion.div
+                <Motion
                     className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
                     initial={initialMotion}
                     transition={transitionMotion}
@@ -36,7 +34,7 @@ export const FaqSection = () => {
                     <p className="max-w-[800px] text-muted-foreground md:text-lg">
                         <Trans>Everything you need to know about Budgie&apos;s privacy-first approach to expense tracking.</Trans>
                     </p>
-                </motion.div>
+                </Motion>
 
                 <div className="mx-auto max-w-3xl">
                     <Accordion className="w-full" collapsible type="single">
