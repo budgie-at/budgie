@@ -18,7 +18,7 @@
     "react-native": "./dist/esm/index.js",
     "scripts": {
         "build": "run -T tsc -p tsconfig.json",
-        "build:watch": "build --watch",
+        "build:watch": "yarn build --watch",
         "clear": "run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
