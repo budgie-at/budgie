@@ -1,9 +1,10 @@
-/* eslint-disable react/jsx-max-depth */
+ 
 
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
+import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
@@ -26,10 +27,17 @@ i18n.activate(i18nGetOSLocale());
 
 void SplashScreen.preventAutoHideAsync();
 
+const SQLOptions = { enableChangeListener: true };
+
 const stackOptions = { headerShown: false, gestureEnabled: false };
+const tabsOptions = { headerShown: false };
+const aiScreenOptions: ExtendedStackNavigationOptions = {
+    headerShown: false,
+    presentation: 'modal',
+    gestureEnabled: true
+};
 
 export default function RootLayout() {
-    // eslint-disable-next-line camelcase
     const { success } = useMigrations(db, migrations);
 
     useEffect(() => {
@@ -47,18 +55,10 @@ export default function RootLayout() {
             <PersistGate loading={null} persistor={appRootPersistor}>
                 <I18nProvider i18n={i18n}>
                     <ThemeProvider>
-                        <SQLiteProvider databaseName={DB_NAME} options={{ enableChangeListener: true }}>
+                        <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
                             <Stack screenOptions={stackOptions}>
-                                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
-                                <Stack.Screen
-                                    name="ai"
-                                    options={{
-                                        headerShown: false,
-                                        presentation: 'modal',
-                                        gestureEnabled: true
-                                    }}
-                                />
+                                <Stack.Screen name="(tabs)" options={tabsOptions} />
+                                <Stack.Screen name="ai" options={aiScreenOptions} />
                             </Stack>
                         </SQLiteProvider>
                     </ThemeProvider>
