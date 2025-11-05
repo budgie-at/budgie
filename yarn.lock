@@ -1318,8 +1318,8 @@ __metadata:
     "@budgie/contracts": "npm:^1.49.0"
     "@expo/fingerprint": "npm:~0.15.2"
     "@libsql/client": "npm:^0.15.15"
-    "@lingui/core": "npm:^5.3.3"
-    "@lingui/react": "npm:^5.3.3"
+    "@lingui/core": "npm:^5.5.2"
+    "@lingui/react": "npm:^5.5.2"
     "@react-native-async-storage/async-storage": "npm:2.2.0"
     "@reduxjs/toolkit": "npm:^2.5.0"
     "@rnw-community/shared": "npm:^1.3.0"
@@ -1376,9 +1376,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/landing@workspace:packages/landing"
   dependencies:
+    "@lingui/core": "npm:^5.5.2"
+    "@lingui/loader": "npm:^5.5.2"
+    "@lingui/macro": "npm:^5.5.2"
+    "@lingui/react": "npm:^5.5.2"
+    "@lingui/swc-plugin": "npm:^5.6.1"
     "@radix-ui/react-accordion": "npm:^1.2.12"
     "@radix-ui/react-slot": "npm:^1.2.3"
+    "@rnw-community/shared": "npm:^1.8.2"
     "@tailwindcss/postcss": "npm:^4.1.13"
+    "@types/negotiator": "npm:^0.6.3"
     "@types/node": "npm:^24.5.2"
     "@types/react": "npm:^19.1.0"
     "@types/react-dom": "npm:^19.1.0"
@@ -1389,11 +1396,13 @@ __metadata:
     date-fns: "npm:^4.1.0"
     framer-motion: "npm:^12.23.22"
     lucide-react: "npm:^0.544.0"
+    negotiator: "npm:^1.0.0"
     next: "npm:^15.5.4"
     next-themes: "npm:^0.4.6"
     postcss: "npm:^8.5"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
+    server-only: "npm:^0.0.1"
     tailwind-merge: "npm:^2.5.5"
     tailwindcss: "npm:^4.1.13"
     tailwindcss-animate: "npm:^1.0.7"
@@ -1410,8 +1419,8 @@ __metadata:
     "@commitlint/config-lerna-scopes": "npm:^19.8.1"
     "@eslint/js": "npm:^9.39.1"
     "@jest/globals": "npm:^29.5.0"
-    "@lingui/babel-plugin-lingui-macro": "npm:^5.3.3"
-    "@lingui/cli": "npm:^5.3.3"
+    "@lingui/babel-plugin-lingui-macro": "npm:^5.5.2"
+    "@lingui/cli": "npm:^5.5.2"
     "@rnw-community/eslint-plugin": "npm:^1.8.2"
     "@types/node": "npm:^24.5.2"
     babel-jest: "npm:^29.5.0"
@@ -3795,47 +3804,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lingui/babel-plugin-extract-messages@npm:5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/babel-plugin-extract-messages@npm:5.3.3"
-  checksum: 10/d1a42443847505c43018296cb42063c691031680490863c5b71e0e895e7b70c14819e69605dbaed76e81bae33d52de0591dbbc78be5f232e1b21178ed73e7bca
+"@lingui/babel-plugin-extract-messages@npm:5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/babel-plugin-extract-messages@npm:5.5.2"
+  checksum: 10/b8b74e51f698bdf95a1febb3b08d971512f5293d933557f142c575eb7f7958e82977fb638504472d8896fadc7f7c8298e3ef6b5b4aed539f5b7145c2daf07f30
   languageName: node
   linkType: hard
 
-"@lingui/babel-plugin-lingui-macro@npm:5.3.3, @lingui/babel-plugin-lingui-macro@npm:^5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/babel-plugin-lingui-macro@npm:5.3.3"
+"@lingui/babel-plugin-lingui-macro@npm:5.5.2, @lingui/babel-plugin-lingui-macro@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/babel-plugin-lingui-macro@npm:5.5.2"
   dependencies:
     "@babel/core": "npm:^7.20.12"
     "@babel/runtime": "npm:^7.20.13"
     "@babel/types": "npm:^7.20.7"
-    "@lingui/conf": "npm:5.3.3"
-    "@lingui/core": "npm:5.3.3"
-    "@lingui/message-utils": "npm:5.3.3"
+    "@lingui/conf": "npm:5.5.2"
+    "@lingui/core": "npm:5.5.2"
+    "@lingui/message-utils": "npm:5.5.2"
   peerDependencies:
     babel-plugin-macros: 2 || 3
   peerDependenciesMeta:
     babel-plugin-macros:
       optional: true
-  checksum: 10/4a3f58ea3ec13e2353320820b55ddc8962fd129673e9ef7e966aadddb6f67a5ce87782c932d28656afcc004ee83b24064029e5b4bc8f1737925665b3b5ee5b0e
+  checksum: 10/a2ba08c2ee04b5758b5eab303b5e24ba67e30620d5ad48eb394ef39503ee56c9073e800da13f4ac5a1894fee14621428fa885de8fe3b86f654f0b4b75c90e6da
   languageName: node
   linkType: hard
 
-"@lingui/cli@npm:^5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/cli@npm:5.3.3"
+"@lingui/cli@npm:5.5.2, @lingui/cli@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/cli@npm:5.5.2"
   dependencies:
     "@babel/core": "npm:^7.21.0"
     "@babel/generator": "npm:^7.21.1"
     "@babel/parser": "npm:^7.22.0"
     "@babel/runtime": "npm:^7.21.0"
     "@babel/types": "npm:^7.21.2"
-    "@lingui/babel-plugin-extract-messages": "npm:5.3.3"
-    "@lingui/babel-plugin-lingui-macro": "npm:5.3.3"
-    "@lingui/conf": "npm:5.3.3"
-    "@lingui/core": "npm:5.3.3"
-    "@lingui/format-po": "npm:5.3.3"
-    "@lingui/message-utils": "npm:5.3.3"
+    "@lingui/babel-plugin-extract-messages": "npm:5.5.2"
+    "@lingui/babel-plugin-lingui-macro": "npm:5.5.2"
+    "@lingui/conf": "npm:5.5.2"
+    "@lingui/core": "npm:5.5.2"
+    "@lingui/format-po": "npm:5.5.2"
+    "@lingui/message-utils": "npm:5.5.2"
     chokidar: "npm:3.5.1"
     cli-table: "npm:^0.3.11"
     commander: "npm:^10.0.0"
@@ -3844,79 +3853,112 @@ __metadata:
     esbuild: "npm:^0.25.1"
     glob: "npm:^11.0.0"
     micromatch: "npm:^4.0.7"
+    ms: "npm:^2.1.3"
     normalize-path: "npm:^3.0.0"
     ora: "npm:^5.1.0"
     picocolors: "npm:^1.1.1"
     pofile: "npm:^1.1.4"
     pseudolocale: "npm:^2.0.0"
     source-map: "npm:^0.8.0-beta.0"
+    threads: "npm:^1.7.0"
   bin:
-    lingui: ./dist/lingui.js
-  checksum: 10/5f635334dadce3826332a5da6d5d9fc1bb22148df199827dbcc567447ce0afdbbf58832fa2170a015b66cc9d394919fb17167c527a3fbe3f2b532f3987492c73
+    lingui: dist/lingui.js
+  checksum: 10/43a2600aea7a050f52cdf2cef03acba9e96aa3be248474252daff361a62cc7a446e1e6f7e649ee76e2c1746146762a1b871b2ae7d7db9c15f72b8e64a4141e8d
   languageName: node
   linkType: hard
 
-"@lingui/conf@npm:5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/conf@npm:5.3.3"
+"@lingui/conf@npm:5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/conf@npm:5.5.2"
   dependencies:
     "@babel/runtime": "npm:^7.20.13"
     cosmiconfig: "npm:^8.0.0"
     jest-validate: "npm:^29.4.3"
-    jiti: "npm:^1.17.1"
+    jiti: "npm:^2.5.1"
     picocolors: "npm:^1.1.1"
-  checksum: 10/1f8b6d55d68874b3f7b9a0f19c63f2c8985da8d71a5cb597ecd2ec0233cb6cb61c3215a15ac5bee804f1c4bd68a18188a3b6589df664a5a6ed750bf19b0b783a
+  checksum: 10/d6cf2c2fdd41ae12d4bb48642c54cc8d8a1a4229b524a0de3c357f7057651b1b71d693e25020b7155b6709791293311c04b2c8af8f48e8760dcb432e9e6243cc
   languageName: node
   linkType: hard
 
-"@lingui/core@npm:5.3.3, @lingui/core@npm:^5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/core@npm:5.3.3"
+"@lingui/core@npm:5.5.2, @lingui/core@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/core@npm:5.5.2"
   dependencies:
     "@babel/runtime": "npm:^7.20.13"
-    "@lingui/message-utils": "npm:5.3.3"
+    "@lingui/message-utils": "npm:5.5.2"
   peerDependencies:
-    "@lingui/babel-plugin-lingui-macro": 5.3.3
+    "@lingui/babel-plugin-lingui-macro": 5.5.2
     babel-plugin-macros: 2 || 3
   peerDependenciesMeta:
     "@lingui/babel-plugin-lingui-macro":
       optional: true
     babel-plugin-macros:
       optional: true
-  checksum: 10/924d3b9499981ce8a656462be876165d7daba9ea1e0c5f468da2cfdcc6853dd1e64d641799e5d8c3432221a323de66fc68e51943ff94d07a8f8085ef25539b93
+  checksum: 10/f39616f0b25144a70050c93311e883c73dfe93c811e51ca308ded93cdaf74419bc480724e7159ef28b44aa9c8dd935046abf12b342bfd10ef4a985ec5cac729f
   languageName: node
   linkType: hard
 
-"@lingui/format-po@npm:5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/format-po@npm:5.3.3"
+"@lingui/format-po@npm:5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/format-po@npm:5.5.2"
   dependencies:
-    "@lingui/conf": "npm:5.3.3"
-    "@lingui/message-utils": "npm:5.3.3"
+    "@lingui/conf": "npm:5.5.2"
+    "@lingui/message-utils": "npm:5.5.2"
     date-fns: "npm:^3.6.0"
     pofile: "npm:^1.1.4"
-  checksum: 10/8706eabb29aab9978a33ad0850d2753b3eac98068f93e43a236e196578dac82c1da7cd83d367ce05f87cbc676231d8a33f0baf7078617308b1f28efc9e269c5a
+  checksum: 10/a21c9a76de53415fa5c091501f921a34a3ba3b818b9271327035e21d868542e9b8d05bb0136808cc7a8969d13a5682d593ac141581892195b283c95042f82198
   languageName: node
   linkType: hard
 
-"@lingui/message-utils@npm:5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/message-utils@npm:5.3.3"
+"@lingui/loader@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/loader@npm:5.5.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@lingui/cli": "npm:5.5.2"
+    "@lingui/conf": "npm:5.5.2"
+  peerDependencies:
+    webpack: ^5.0.0
+  checksum: 10/58b237c1a6c6c6a750d8f31313da4bd432721306cf87c8a3b3b7ad7815f785538c37c49b8ca31687ca489f941420b1dcc70baa0aa9b0b4be0029335bd527392a
+  languageName: node
+  linkType: hard
+
+"@lingui/macro@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/macro@npm:5.5.2"
+  dependencies:
+    "@lingui/core": "npm:5.5.2"
+    "@lingui/react": "npm:5.5.2"
+  peerDependencies:
+    "@lingui/babel-plugin-lingui-macro": 5.5.2
+    babel-plugin-macros: 2 || 3
+  peerDependenciesMeta:
+    "@lingui/babel-plugin-lingui-macro":
+      optional: true
+    babel-plugin-macros:
+      optional: true
+  checksum: 10/d93821b2bc86f1b2a016e0f37131200dbe7efcda2ec3a06f0f98c17c22294988517ec3ee624a068014af467842ae232a4025f5e21c4ffeaf7dcb09c8448076dc
+  languageName: node
+  linkType: hard
+
+"@lingui/message-utils@npm:5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/message-utils@npm:5.5.2"
   dependencies:
     "@messageformat/parser": "npm:^5.0.0"
     js-sha256: "npm:^0.10.1"
-  checksum: 10/fd646602472978cbb2f7676064e68e524061c7626b616fdcb4b80244040335090afbc9c19347283b7b64e755461b95f9db80a1f98ff1a31df451bb8304b11cd6
+  checksum: 10/1c0020baf19ea0cb253035167068a5d074e437aaa44ce56f478f6c80ef121353b885f1a242c0fafc73c0dabbb4aaeda70c18570f6ed3fbb7f916640b0588f834
   languageName: node
   linkType: hard
 
-"@lingui/react@npm:^5.3.3":
-  version: 5.3.3
-  resolution: "@lingui/react@npm:5.3.3"
+"@lingui/react@npm:5.5.2, @lingui/react@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "@lingui/react@npm:5.5.2"
   dependencies:
     "@babel/runtime": "npm:^7.20.13"
-    "@lingui/core": "npm:5.3.3"
+    "@lingui/core": "npm:5.5.2"
   peerDependencies:
-    "@lingui/babel-plugin-lingui-macro": 5.3.3
+    "@lingui/babel-plugin-lingui-macro": 5.5.2
     babel-plugin-macros: 2 || 3
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
@@ -3924,7 +3966,21 @@ __metadata:
       optional: true
     babel-plugin-macros:
       optional: true
-  checksum: 10/eff34b892c338c3fa1cd270155ec711b561f46c80b2dddf87660514ff57df41395fb0ce121a06e070f4320c430c6a6258dd6efeb1cc21e36386dde1db2c6425f
+  checksum: 10/d5a2fc0f1ab486b4f823d2272b13ade24e976a81b0e3138ad172cf153b7ffbe0468f795e3e5d93567fff8a377151f74f88dafeb4368afbbd9b51b4415132a1c5
+  languageName: node
+  linkType: hard
+
+"@lingui/swc-plugin@npm:^5.6.1":
+  version: 5.6.1
+  resolution: "@lingui/swc-plugin@npm:5.6.1"
+  peerDependencies:
+    "@lingui/core": 5
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    next:
+      optional: true
+  checksum: 10/1af3cb7cd5f699bb0e2c1074a87335de4bb365b47c2b20112d00c80e8943b2c121b2adc92b85ae14843dddb4bef309db583eb0b58dfee9b10801fe0c003ef4c8
   languageName: node
   linkType: hard
 
@@ -5438,6 +5494,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rnw-community/shared@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "@rnw-community/shared@npm:1.8.2"
+  checksum: 10/a6006bbebddcec9756b25e646a0ffc28e88413328e0efc4a1ecb43fcb3100958e601ae265b246d0e5557d29fe81cc9425a9fa35191174a8cff008a4362381394
+  languageName: node
+  linkType: hard
+
 "@rtsao/scc@npm:^1.1.0":
   version: 1.1.0
   resolution: "@rtsao/scc@npm:1.1.0"
@@ -6043,6 +6106,13 @@ __metadata:
   version: 1.2.5
   resolution: "@types/minimist@npm:1.2.5"
   checksum: 10/477047b606005058ab0263c4f58097136268007f320003c348794f74adedc3166ffc47c80ec3e94687787f2ab7f4e72c468223946e79892cf0fd9e25e9970a90
+  languageName: node
+  linkType: hard
+
+"@types/negotiator@npm:^0.6.3":
+  version: 0.6.4
+  resolution: "@types/negotiator@npm:0.6.4"
+  checksum: 10/e0694e10875f7bab9b0a2d1b9ea5fa0785e980c2737c406b8218a85732bb3f2f7f28c01fa15ba07dc555f8c83c24611494b5aed45b882fdf92ffcbb755b1c532
   languageName: node
   linkType: hard
 
@@ -7539,7 +7609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"callsites@npm:^3.0.0":
+"callsites@npm:^3.0.0, callsites@npm:^3.1.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
   checksum: 10/072d17b6abb459c2ba96598918b55868af677154bec7e73d222ef95a8fdb9bbf7dae96a8421085cdad8cd190d86653b5b6dc55a4484f2e5b2e27d5e0c3fc15b3
@@ -8595,6 +8665,18 @@ __metadata:
   dependencies:
     ms: "npm:^2.1.1"
   checksum: 10/d86fd7be2b85462297ea16f1934dc219335e802f629ca9a69b63ed8ed041dda492389bb2ee039217c02e5b54792b1c51aa96ae954cf28634d363a2360c7a1639
+  languageName: node
+  linkType: hard
+
+"debug@npm:^4.2.0":
+  version: 4.4.3
+  resolution: "debug@npm:4.4.3"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/9ada3434ea2993800bd9a1e320bd4aa7af69659fb51cca685d390949434bc0a8873c21ed7c9b852af6f2455a55c6d050aa3937d52b3c69f796dab666f762acad
   languageName: node
   linkType: hard
 
@@ -9908,6 +9990,13 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 10/c85fefe4a81a1a476e62087366907af830b62a6565ac153f6d50a100a42a946aeb049c3af8f06c0e091105ba0fe97ac109f379f32755a67f66ecb7d4d1e4dca3
+  languageName: node
+  linkType: hard
+
+"esm@npm:^3.2.25":
+  version: 3.2.25
+  resolution: "esm@npm:3.2.25"
+  checksum: 10/ee96b8202b76dd1841c55e8a066608d6f0ae0333012be5c77829ccadcd21114283b4d7bf9ac1b8c09853258829c7843e9c6d7e0594acbc5e813cb37d82728d4b
   languageName: node
   linkType: hard
 
@@ -12177,6 +12266,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-observable@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "is-observable@npm:2.1.0"
+  checksum: 10/93b0e0f9b115ef4b5f0523f4930667a7809a42e9cf1b23a444f8a9c15f72b9c1729b2a4691d55a5c479a05eafd5dda9b51ed1b65336d56027b7989ecb8ef51bf
+  languageName: node
+  linkType: hard
+
 "is-plain-obj@npm:^1.0.0, is-plain-obj@npm:^1.1.0":
   version: 1.1.0
   resolution: "is-plain-obj@npm:1.1.0"
@@ -12948,15 +13044,6 @@ __metadata:
   version: 0.16.1
   resolution: "jimp-compact@npm:0.16.1"
   checksum: 10/c9645d159e187383483673a68a444486177b2ee18d6a404ff33fac79bd069610dd043740c4414ba92b3785a1a4daf1c97aee055be6cdcdf5a8623a8327da3c98
-  languageName: node
-  linkType: hard
-
-"jiti@npm:^1.17.1":
-  version: 1.21.7
-  resolution: "jiti@npm:1.21.7"
-  bin:
-    jiti: bin/jiti.js
-  checksum: 10/6a182521532126e4b7b5ad64b64fb2e162718fc03bc6019c21aa2222aacde6c6dfce4fc3bce9f69561a73b24ab5f79750ad353c37c3487a220d5869a39eae3a2
   languageName: node
   linkType: hard
 
@@ -14988,6 +15075,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"negotiator@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "negotiator@npm:1.0.0"
+  checksum: 10/b5734e87295324fabf868e36fb97c84b7d7f3156ec5f4ee5bf6e488079c11054f818290fc33804cef7b1ee21f55eeb14caea83e7dafae6492a409b3e573153e5
+  languageName: node
+  linkType: hard
+
 "neo-async@npm:^2.6.0":
   version: 2.6.2
   resolution: "neo-async@npm:2.6.2"
@@ -15577,6 +15671,13 @@ __metadata:
     define-properties: "npm:^1.2.1"
     es-object-atoms: "npm:^1.0.0"
   checksum: 10/f5ec9eccdefeaaa834b089c525663436812a65ff13de7964a1c3a9110f32054f2d58aa476a645bb14f75a79f3fe1154fb3e7bfdae7ac1e80affe171b2ef74bce
+  languageName: node
+  linkType: hard
+
+"observable-fns@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "observable-fns@npm:0.6.1"
+  checksum: 10/6b97d685db359196b081e152af2b37859dcc2d0a8d21ba9772cae79240af63b903604c9e30e0295fb9d89fcfd7eb93b8338b89da22fbee40589d367644185eff
   languageName: node
   linkType: hard
 
@@ -18935,6 +19036,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"threads@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "threads@npm:1.7.0"
+  dependencies:
+    callsites: "npm:^3.1.0"
+    debug: "npm:^4.2.0"
+    is-observable: "npm:^2.1.0"
+    observable-fns: "npm:^0.6.1"
+    tiny-worker: "npm:>= 2"
+  dependenciesMeta:
+    tiny-worker:
+      optional: true
+  checksum: 10/e4cefeac67a9d3609d95b2c02e9f868e152dec210179073810a64084256fad2e0795d778ec69a06eb5bd4a76185af689ca0348f84d44d758d6736edbfa841116
+  languageName: node
+  linkType: hard
+
 "throat@npm:^5.0.0":
   version: 5.0.0
   resolution: "throat@npm:5.0.0"
@@ -18956,6 +19073,15 @@ __metadata:
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: 10/5da78346f70139a7d213b65a0106f3c398d6bc5301f9248b5275f420abc2c4b1e77c2abc72d218dedc28c41efb2e7c312cb76a7730d04f9c2d37d247da3f4198
+  languageName: node
+  linkType: hard
+
+"tiny-worker@npm:>= 2":
+  version: 2.3.0
+  resolution: "tiny-worker@npm:2.3.0"
+  dependencies:
+    esm: "npm:^3.2.25"
+  checksum: 10/5643f030984a38a3c1b20fde0af93cf5a19d246cdf8ebaeb85e7a076115c1f976363ac9f8611fca507f6a6ae350b01f0a42c2ae522e75f1719f36779e93b8618
   languageName: node
   linkType: hard
 
