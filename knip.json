@@ -19,6 +19,7 @@
         "packages/app/src/@generic/components/chip/chip.tsx"
     ],
     "ignoreDependencies": [
+        "@jest/globals",
         "husky",
         "@lingui/cli",
         "react-native-worklets",
