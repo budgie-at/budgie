@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.52.0](https://github.com/budgie-at/budgie/compare/v1.51.0...v1.52.0) (2025-11-05)
+
+### Features
+
+- eslint 9 migration ([6e50f0c](https://github.com/budgie-at/budgie/commit/6e50f0ccf2f5d1e7fc0848f73df7fd2267f89724))
+- eslint 9 migration ([3dd073f](https://github.com/budgie-at/budgie/commit/3dd073f81be0062d19ec991bd849a83c5271d567))
+- eslint 9 migration ([523665d](https://github.com/budgie-at/budgie/commit/523665d1de26a6da2584bee897e7deae635740a2))
+- eslint 9 migration ([4ada25b](https://github.com/budgie-at/budgie/commit/4ada25b273f9864324cd4f033783625876bc8fc7))
+- **landing:** i18n, refactoring ([b714984](https://github.com/budgie-at/budgie/commit/b714984de642b3fecf182988feb504eff495e9a4))
+- **landing:** i18n, refactoring ([3b11b75](https://github.com/budgie-at/budgie/commit/3b11b75d655653d40d5f2c9f89075cb8f69c0393))
+- **landing:** i18n, refactoring ([80f84be](https://github.com/budgie-at/budgie/commit/80f84be76439fc1edb28db061ca87a1a89df4050))
+- **landing:** i18n, refactoring ([88b7d98](https://github.com/budgie-at/budgie/commit/88b7d9805d93257fb534088573abb66d1b4568f3))
+
 # [1.48.0](https://github.com/budgie-at/budgie/compare/v1.47.1...v1.48.0) (2025-10-19)
 
 **Note:** Version bump only for package @budgie-at/landing
