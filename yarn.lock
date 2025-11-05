@@ -1315,7 +1315,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
-    "@budgie/contracts": "npm:^1.49.0"
+    "@budgie/contracts": "npm:^1.52.0"
     "@expo/fingerprint": "npm:~0.15.2"
     "@libsql/client": "npm:^0.15.15"
     "@lingui/babel-plugin-lingui-macro": "npm:^5.5.2"
@@ -1444,7 +1444,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@npm:^1.49.0, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@npm:^1.52.0, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
