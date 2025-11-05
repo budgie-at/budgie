@@ -1,9 +1,7 @@
-'use client';
-
 import { Trans } from '@lingui/react/macro';
-import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 
+import { Motion } from '../../lib/motion';
 import { AiSectionDetails } from '../ai-section-details/ai-section-details';
 import { AiSectionFeatures } from '../ai-section-features/ai-section-features';
 import { Badge } from '../ui/badge';
@@ -26,7 +24,7 @@ const rightColumnWhileInViewMotion = { opacity: 1, x: 0 };
 export const AiSection = () => (
     <section className="w-full py-20 md:py-32">
         <div className="container px-4 md:px-6">
-            <motion.div
+            <Motion
                 className="flex flex-col items-center justify-center space-y-4 text-center mb-16"
                 initial={headerInitialMotion}
                 transition={headerTransitionMotion}
@@ -48,10 +46,10 @@ export const AiSection = () => (
                         happens locally for complete privacy.
                     </Trans>
                 </p>
-            </motion.div>
+            </Motion>
 
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <motion.div
+                <Motion
                     className="space-y-8"
                     initial={leftColumnInitialMotion}
                     transition={leftColumnTransitionMotion}
@@ -59,9 +57,9 @@ export const AiSection = () => (
                     whileInView={leftColumnWhileInViewMotion}
                 >
                     <AiSectionFeatures />
-                </motion.div>
+                </Motion>
 
-                <motion.div
+                <Motion
                     className="relative"
                     initial={rightColumnInitialMotion}
                     transition={rightColumnTransitionMotion}
@@ -69,7 +67,7 @@ export const AiSection = () => (
                     whileInView={rightColumnWhileInViewMotion}
                 >
                     <AiSectionDetails />
-                </motion.div>
+                </Motion>
             </div>
         </div>
     </section>

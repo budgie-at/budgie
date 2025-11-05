@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro';
-import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
+import { Motion } from '../../lib/motion';
 import { Button } from '../ui/button';
 
 interface MobileMenuProps {
@@ -14,7 +14,7 @@ const exitProps = { opacity: 0, y: -20 };
 const initialProps = { opacity: 0, y: -20 };
 
 export const MobileMenu = ({ onClose }: MobileMenuProps) => (
-    <motion.div
+    <Motion
         animate={animateProps}
         className="md:hidden absolute top-16 inset-x-0 bg-background/95 backdrop-blur-lg border-b"
         exit={exitProps}
@@ -44,5 +44,5 @@ export const MobileMenu = ({ onClose }: MobileMenuProps) => (
                 </Button>
             </div>
         </div>
-    </motion.div>
+    </Motion>
 );

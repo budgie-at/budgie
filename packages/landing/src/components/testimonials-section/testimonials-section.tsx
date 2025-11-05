@@ -1,8 +1,6 @@
-'use client';
-
 import { Trans, useLingui } from '@lingui/react/macro';
-import { motion } from 'framer-motion';
 
+import { Motion } from '../../lib/motion';
 import { TestimonialSectionItem } from '../testimonials-section-item/testimonial-section-item';
 import { Badge } from '../ui/badge';
 
@@ -17,7 +15,7 @@ export const TestimonialsSection = () => {
     return (
         <section className="w-full py-20 md:py-32" id="testimonials">
             <div className="container px-4 md:px-6">
-                <motion.div
+                <Motion
                     className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
                     initial={initialMotion}
                     transition={transitionMotion}
@@ -35,7 +33,7 @@ export const TestimonialsSection = () => {
                     <p className="max-w-[800px] text-muted-foreground md:text-lg">
                         <Trans>See what users love about Budgie&apos;s approach to private, comprehensive expense tracking.</Trans>
                     </p>
-                </motion.div>
+                </Motion>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     <TestimonialSectionItem

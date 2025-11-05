@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { Motion } from '../../lib/motion';
 
 interface Props {
     step: string;
@@ -15,7 +15,7 @@ export const HowItWorksSectionStep = ({ step, title, description, index }: Props
     const stepTransition = { duration: 0.5, delay: index * 0.1 };
 
     return (
-        <motion.div
+        <Motion
             className="relative z-10 flex flex-col items-center text-center space-y-4"
             initial={initialMotion}
             transition={stepTransition}
@@ -29,6 +29,6 @@ export const HowItWorksSectionStep = ({ step, title, description, index }: Props
             <h3 className="text-xl font-bold">{title}</h3>
 
             <p className="text-muted-foreground">{description}</p>
-        </motion.div>
+        </Motion>
     );
 };
