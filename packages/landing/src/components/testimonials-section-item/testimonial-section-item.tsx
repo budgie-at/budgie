@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 
+import { Motion } from '../../lib/motion';
 import { Card } from '../ui/card/card';
 import { CardContent } from '../ui/card/card-content';
 
@@ -20,7 +20,7 @@ export const TestimonialSectionItem = ({ quote, author, role, rating, index }: P
     const itemTransition = { duration: 0.5, delay: index * 0.05 };
 
     return (
-        <motion.div initial={initialMotion} transition={itemTransition} viewport={viewportOnce} whileInView={animatedMotion}>
+        <Motion initial={initialMotion} transition={itemTransition} viewport={viewportOnce} whileInView={animatedMotion}>
             <Card className="h-full overflow-hidden border-border/40 bg-linear-to-b from-background to-muted/10 backdrop-blur-sm transition-all hover:shadow-md">
                 <CardContent className="p-6 flex flex-col h-full">
                     <div className="flex mb-4">
@@ -44,6 +44,6 @@ export const TestimonialSectionItem = ({ quote, author, role, rating, index }: P
                     </div>
                 </CardContent>
             </Card>
-        </motion.div>
+        </Motion>
     );
 };
