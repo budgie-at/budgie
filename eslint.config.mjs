@@ -313,7 +313,7 @@ export default defineConfig(
                         'Enter',
                         'use client'
                     ],
-                    ignoreNames: [{ regex: { pattern: 'className', flags: 'i' } }],
+                    ignoreNames: [{ regex: { pattern: 'className', flags: 'i' } }, { regex: { pattern: 'icon', flags: 'i' } }],
                     ignoreFunctions: ['format', 'cva']
                 }
             ],
