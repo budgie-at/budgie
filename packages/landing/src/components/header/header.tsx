@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -26,6 +27,9 @@ export const Header = () => {
         };
     }, []);
 
+    const handleMenuToggle = () => void setMobileMenuOpen(prev => !prev);
+    const handleMobileMenuClose = () => void setMobileMenuOpen(false);
+
     return (
         <header
             className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
@@ -34,27 +38,29 @@ export const Header = () => {
                 <div className="flex items-center gap-2 font-bold">
                     <Logo />
 
-                    <span>Budgie</span>
+                    <span>
+                        <Trans>Budgie</Trans>
+                    </span>
                 </div>
 
                 <nav className="hidden md:flex gap-8">
                     <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#features">
-                        Features
+                        <Trans>Features</Trans>
                     </Link>
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href="#testimonials"
                     >
-                        Testimonials
+                        <Trans>Testimonials</Trans>
                     </Link>
 
                     <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#whitelist">
-                        Whitelist
+                        <Trans>Whitelist</Trans>
                     </Link>
 
                     <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#faq">
-                        FAQ
+                        <Trans>FAQ</Trans>
                     </Link>
                 </nav>
 
@@ -62,19 +68,21 @@ export const Header = () => {
                     <ThemeSwitcher />
 
                     <Button className="hidden rounded-full md:flex">
-                        Download App
+                        <Trans>Download App</Trans>
                         <ChevronRight className="ml-1 size-4" />
                     </Button>
 
-                    <Button className="md:hidden" onClick={() => void setMobileMenuOpen(prev => !prev)} size="icon" variant="ghost">
+                    <Button className="md:hidden" onClick={handleMenuToggle} size="icon" variant="ghost">
                         {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
 
-                        <span className="sr-only">Toggle menu</span>
+                        <span className="sr-only">
+                            <Trans>Toggle menu</Trans>
+                        </span>
                     </Button>
                 </div>
             </div>
 
-            {mobileMenuOpen ? <MobileMenu onClose={() => void setMobileMenuOpen(false)} /> : null}
+            {mobileMenuOpen ? <MobileMenu onClose={handleMobileMenuClose} /> : null}
         </header>
     );
 };

@@ -1,3 +1,4 @@
+import { t } from '@lingui/macro';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
@@ -14,7 +15,7 @@ export const ThemeSwitcher = () => {
         <Button className="rounded-full" onClick={handleClick} size="icon" variant="ghost">
             {theme === 'dark' ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
 
-            <span className="sr-only">Toggle theme</span>
+            <span className="sr-only">{t`Toggle theme`}</span>
         </Button>
     );
 };

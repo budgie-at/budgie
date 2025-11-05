@@ -302,7 +302,17 @@ export default defineConfig(
             'lingui/no-unlocalized-strings': [
                 'error',
                 {
-                    ignore: ['^(?![A-Z])\\S+$', '^[A-Z0-9_-]+$', 'rgba', 'rgb', '^Inter_[0-9A-Z]+', '^Arrow[A-Z]+', 'Tab', 'Enter'],
+                    ignore: [
+                        '^(?![A-Z])\\S+$',
+                        '^[A-Z0-9_-]+$',
+                        'rgba',
+                        'rgb',
+                        '^Inter_[0-9A-Z]+',
+                        '^Arrow[A-Z]+',
+                        'Tab',
+                        'Enter',
+                        'use client'
+                    ],
                     ignoreNames: [{ regex: { pattern: 'className', flags: 'i' } }],
                     ignoreFunctions: ['format', 'cva']
                 }
@@ -333,7 +343,7 @@ export default defineConfig(
             'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
             'react/require-default-props': 'off',
             'react/jsx-props-no-spreading': 'off',
-            'react/jsx-max-depth': ['error', { max: 4 }],
+            'react/jsx-max-depth': ['error', { max: 6 }],
             'react/jsx-no-literals': 'off',
             'react/jsx-no-bind': 'off',
             'react/jsx-no-constructed-context-values': 'off',

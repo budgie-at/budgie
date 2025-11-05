@@ -1,10 +1,10 @@
 import '../../../styles/globals.css';
 import { msg } from '@lingui/core/macro';
-import { setI18n } from '@lingui/react/server';
 import localFont from 'next/font/local';
 
 import linguiConfig from '../../../lingui.config.mjs';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
+import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { ThemeProvider } from '../../providers/theme-provider';
 
@@ -55,8 +55,7 @@ const fixelDisplay = localFont({
     ]
 });
 
-interface Props {
-    params: Promise<{ lang: string }>;
+interface Props extends PageLangParam {
     children: ReactNode;
 }
 
@@ -103,8 +102,7 @@ export async function generateMetadata(props: Props) {
 export default async function RootLayout({ params, children }: Props) {
     const { lang } = await params;
 
-    const i18n = getI18nInstance(lang);
-    setI18n(i18n);
+    initLingui(lang);
 
     return (
         <html lang="en" suppressHydrationWarning>
