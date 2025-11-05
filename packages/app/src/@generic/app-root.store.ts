@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
     [settingsSlice.name]: settingsSlice.reducer
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+ 
 const persistedReducer = persistReducer(
     {
         key: 'root',
