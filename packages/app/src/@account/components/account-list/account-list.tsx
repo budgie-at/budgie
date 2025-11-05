@@ -18,3 +18,5 @@ export const AccountList = ({ accounts }: Props) => (
         ))}
     </View>
 );
+
+
