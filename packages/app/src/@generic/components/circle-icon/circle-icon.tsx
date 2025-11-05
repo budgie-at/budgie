@@ -4,23 +4,22 @@ import { View } from 'react-native';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
+import type { CircleIconSize } from '../../type/circle-icon-size.type';
+import type { CircleIconVariant } from '../../type/circle-icon-variant.type';
 import type { ClassValue } from 'clsx';
 import type { LucideIcon } from 'lucide-react-native';
 
-type Variant = 'default' | 'destructive' | 'warning' | 'positive' | 'ghost';
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
 interface Props {
-    readonly size?: Size;
+    readonly size?: CircleIconSize;
     readonly border?: boolean;
     readonly icon: LucideIcon;
-    readonly variant?: Variant;
+    readonly variant?: CircleIconVariant;
     readonly className?: string;
 }
 
 const wrapperVariants = cva<{
-    variant: Record<Variant, ClassValue>;
-    size: Record<Size, ClassValue>;
+    variant: Record<CircleIconVariant, ClassValue>;
+    size: Record<CircleIconSize, ClassValue>;
     border: Record<'true' | 'false', string>;
 }>('rounded-full border block items-center justify-center', {
     variants: {
@@ -45,7 +44,7 @@ const wrapperVariants = cva<{
     }
 });
 
-const iconVariants = cva<{ variant: Record<Variant, ClassValue> }>('', {
+const iconVariants = cva<{ variant: Record<CircleIconVariant, ClassValue> }>('', {
     variants: {
         variant: {
             positive: 'text-positive-foreground',
@@ -57,7 +56,7 @@ const iconVariants = cva<{ variant: Record<Variant, ClassValue> }>('', {
     }
 });
 
-const iconSize: Record<Size, number> = {
+const iconSize: Record<CircleIconSize, number> = {
     xs: 14,
     sm: 14,
     md: 16,

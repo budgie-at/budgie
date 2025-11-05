@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Text } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 import { AccountList } from '../../@account/components/account-list/account-list';
 import { createAccountMutation } from '../../@account/mutation/create-account.mutation';
@@ -32,13 +32,15 @@ export default function HomePage() {
 
     return (
         <Page>
-            <Text className="text-primary">{t`Home Screen`}</Text>
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+                <Text className="text-primary">{t`Home Screen`}</Text>
 
-            <Card onPress={handleCardPress}>
-                <Text className="text-primary">{t`Create Account`}</Text>
-            </Card>
+                <Card onPress={handleCardPress}>
+                    <Text className="text-primary">{t`Create Account`}</Text>
+                </Card>
 
-            <AccountList accounts={data} />
+                <AccountList accounts={data} />
+            </ScrollView>
         </Page>
     );
 }

@@ -1,5 +1,4 @@
- 
-
+/* eslint-disable react/jsx-max-depth */
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -14,6 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import migrations from '../../drizzle/migrations';
 import { appRootPersistor, appRootStore } from '../@generic/app-root.store';
+import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
@@ -56,10 +56,13 @@ export default function RootLayout() {
                 <I18nProvider i18n={i18n}>
                     <ThemeProvider>
                         <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                            <Stack screenOptions={stackOptions}>
-                                <Stack.Screen name="(tabs)" options={tabsOptions} />
-                                <Stack.Screen name="ai" options={aiScreenOptions} />
-                            </Stack>
+                            <BottomSheetsProvider>
+                                <Stack screenOptions={stackOptions}>
+                                    <Stack.Screen name="(tabs)" options={tabsOptions} />
+
+                                    <Stack.Screen name="ai" options={aiScreenOptions} />
+                                </Stack>
+                            </BottomSheetsProvider>
                         </SQLiteProvider>
                     </ThemeProvider>
                 </I18nProvider>
