@@ -7,5 +7,6 @@ import { CategoryEntityTable } from '../table/category-entity.table';
 export const CategoryEntitySchema = createSelectSchema(CategoryEntityTable, {
     ...BaseEntityFields,
     title: schema => schema.max(CATEGORY_TITLE_MAX_LENGTH).describe('The category title.'),
-    icon: schema => schema.describe('The category icon.')
+    icon: schema => schema.describe('The category icon.'),
+    parentId: schema => schema.positive().nullable().describe('The id of the parent category.'),
 });

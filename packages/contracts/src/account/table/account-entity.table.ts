@@ -8,6 +8,7 @@ import { AccountTypeEnum } from '../enum/account-type.enum';
 export const AccountEntityTable = sqliteTable(
     'accounts',
     withBaseEntityTableColumns({
+        icon: text().notNull(),
         order: int({ mode: 'number' }).default(0).notNull(),
         balance: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),

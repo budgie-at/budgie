@@ -10,9 +10,10 @@ import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable, {
     ...BaseEntityFields,
-    amount: schema => schema.describe('The transaction amount.'),
+    amount: schema => schema.default(0).describe('The transaction amount.'),
     type: zodEnum(TransactionTypeEnum).describe('The transaction type.'),
-    quantity: schema => schema.describe('The transaction holding quantity.'),
+    pricePerUnit: schema => schema.default(0).describe('The transaction price per unit.'),
+    quantity: schema => schema.default(0).describe('The transaction holding quantity.'),
     title: schema => schema.max(TRANSACTION_TITLE_MAX_LENGTH).describe('The transaction title.'),
     comment: schema => schema.max(TRANSACTION_COMMENT_MAX_LENGTH).describe('The transaction comment.'),
     operatedAt: schema => schema.describe('The transaction operated at.'),
@@ -20,5 +21,8 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     counterAccountId: schema => schema.optional().describe('The id of the counter account transaction belongs to.'),
     instrument: schema => schema.nullable().describe('The instrument transaction belongs to.'),
     categoryId: schema => schema.positive().nullable().describe('The id of the category transaction belongs to.'),
-    transferDirection: zodEnum(TransactionTransferDirectionEnum).optional().describe('The transaction transfer direction.')
+    transferDirection: zodEnum(TransactionTransferDirectionEnum)
+        .default(TransactionTransferDirectionEnum.IN)
+        .optional()
+        .describe('The transaction transfer direction.')
 });
