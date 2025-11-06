@@ -110,8 +110,8 @@ msgid "Be among the first to experience Budgie Pro with exclusive early access p
 msgstr "Sé de los primeros en experimentar Budgie Pro con precios exclusivos de acceso anticipado. Lugares limitados para adoptadores tempranos conscientes de la privacidad."
 
 #: src/components/footer/footer.tsx:78
-#: src/components/header/header.tsx:73
-#: src/components/header/mobile-menu.tsx:38
+#: src/components/header/header.tsx:74
+#: src/components/header/mobile-menu.tsx:39
 msgid "Blog"
 msgstr "Blog"
 
@@ -122,7 +122,7 @@ msgstr "Blog y Perspectivas"
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/components/footer/footer-details.tsx:20
-#: src/components/header/header.tsx:53
+#: src/components/header/header.tsx:54
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -232,7 +232,7 @@ msgstr "Descargar"
 msgid "Download & Install"
 msgstr "Descargar e Instalar"
 
-#: src/components/header/header.tsx:92
+#: src/components/header/header.tsx:94
 msgid "Download App"
 msgstr "Descargar App"
 
@@ -261,15 +261,15 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "rastreador de gastos, app de presupuesto, sincronización bancaria, seguimiento de cripto, privacidad, sin conexión primero, multimoneda, seguimiento de deudas, gestión financiera"
 
 #: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:84
-#: src/components/header/mobile-menu.tsx:46
+#: src/components/header/header.tsx:85
+#: src/components/header/mobile-menu.tsx:47
 msgid "FAQ"
 msgstr "Preguntas Frecuentes"
 
 #: src/components/features-section/features-section.tsx:37
 #: src/components/footer/footer.tsx:43
-#: src/components/header/header.tsx:62
-#: src/components/header/mobile-menu.tsx:30
+#: src/components/header/header.tsx:63
+#: src/components/header/mobile-menu.tsx:31
 msgid "Features"
 msgstr "Características"
 
@@ -367,7 +367,7 @@ msgstr "Únete a miles de usuarios conscientes de la privacidad que confían en 
 
 #: src/app/[lang]/blog/[slug]/page.tsx:188
 #: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:51
+#: src/components/header/mobile-menu.tsx:59
 #: src/components/hero-section/hero-section.tsx:49
 msgid "Join Whitelist"
 msgstr "Unirse a Lista de Espera"
@@ -375,6 +375,10 @@ msgstr "Unirse a Lista de Espera"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Unirse a Lista de Espera - Ahorra 25%"
+
+#: src/components/header/mobile-menu.tsx:53
+msgid "Language"
+msgstr ""
 
 #: src/components/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
@@ -534,6 +538,10 @@ msgstr "Mantente informado sobre privacidad financiera, mejores prácticas de se
 msgid "Support"
 msgstr "Soporte"
 
+#: src/components/language-switcher/language-switcher.tsx:55
+msgid "Switch language"
+msgstr ""
+
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Sincroniza con más de 1000 bancos e instituciones financieras"
@@ -547,8 +555,8 @@ msgstr "Toma el Control de tu Privacidad Financiera"
 msgid "Terms of Service"
 msgstr "Términos de Servicio"
 
-#: src/components/header/header.tsx:69
-#: src/components/header/mobile-menu.tsx:34
+#: src/components/header/header.tsx:70
+#: src/components/header/mobile-menu.tsx:35
 #: src/components/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Testimonios"
@@ -561,7 +569,7 @@ msgstr "El seguimiento de cripto es increíble. Puedo ver todas mis posiciones D
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "El rastreador de gastos con privacidad primero que mantiene tus datos financieros exactamente donde deben estar: en tu dispositivo."
 
-#: src/components/header/header.tsx:100
+#: src/components/header/header.tsx:102
 msgid "Toggle menu"
 msgstr "Alternar menú"
 
@@ -624,8 +632,8 @@ msgid "What cryptocurrencies and assets can I track?"
 msgstr "¿Qué criptomonedas y activos puedo rastrear?"
 
 #: src/components/footer/footer.tsx:51
-#: src/components/header/header.tsx:80
-#: src/components/header/mobile-menu.tsx:42
+#: src/components/header/header.tsx:81
+#: src/components/header/mobile-menu.tsx:43
 msgid "Whitelist"
 msgstr "Lista de Espera"
 
