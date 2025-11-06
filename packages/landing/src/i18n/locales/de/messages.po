@@ -384,10 +384,6 @@ msgstr "Whitelist beitreten - 25% sparen"
 msgid "Language"
 msgstr "Sprache"
 
-#: src/app/[lang]/legal/[slug]/page.tsx:77
-msgid "Last Updated"
-msgstr ""
-
 #: src/generic/component/blog-section/blog-section.tsx:22
 msgid "Latest from Our Blog"
 msgstr "Neuestes aus unserem Blog"

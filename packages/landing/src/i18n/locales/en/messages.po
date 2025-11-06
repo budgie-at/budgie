@@ -384,10 +384,6 @@ msgstr "Join Whitelist - Save 25%"
 msgid "Language"
 msgstr "Language"
 
-#: src/app/[lang]/legal/[slug]/page.tsx:77
-msgid "Last Updated"
-msgstr "Last Updated"
-
 #: src/generic/component/blog-section/blog-section.tsx:22
 msgid "Latest from Our Blog"
 msgstr "Latest from Our Blog"
