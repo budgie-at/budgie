@@ -150,7 +150,7 @@ export const Footer = ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/privacy-policy`}
+                                    href={`/${lang}/legal/privacy-policy`}
                                 >
                                     <Trans>Privacy Policy</Trans>
                                 </Link>
@@ -158,13 +158,13 @@ export const Footer = ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/terms-of-service`}
+                                    href={`/${lang}/legal/terms-of-service`}
                                 >
                                     <Trans>Terms of Service</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/license`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/license`}>
                                     <Trans>License</Trans>
                                 </Link>
                             </li>
@@ -183,15 +183,15 @@ export const Footer = ({ lang }: Props) => {
                     </p>
 
                     <div className="flex gap-4">
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/privacy-policy`}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/privacy-policy`}>
                             <Trans>Privacy Policy</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/terms-of-service`}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/terms-of-service`}>
                             <Trans>Terms of Service</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/license`}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/license`}>
                             <Trans>Open Source License</Trans>
                         </Link>
                     </div>

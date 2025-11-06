@@ -17,10 +17,6 @@ msgstr ""
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 
-#: src/app/[lang]/license/page.tsx:121
-msgid "\"This software is licensed for noncommercial use under the Prosperity Public License. Commercial use requires a license from Budgie.\""
-msgstr "\"This software is licensed for noncommercial use under the Prosperity Public License. Commercial use requires a license from Budgie.\""
-
 #: src/generic/component/ai-section-features/ai-section-features.tsx:44
 msgid "\"Why did I spend so much this month?\""
 msgstr "\"Why did I spend so much this month?\""
@@ -53,30 +49,6 @@ msgstr "$15/month"
 msgid "$20/month"
 msgstr "$20/month"
 
-#: src/app/[lang]/terms-of-service/page.tsx:33
-msgid "1. Agreement to Terms"
-msgstr "1. Agreement to Terms"
-
-#: src/app/[lang]/license/page.tsx:34
-msgid "1. Commitment to Open Source"
-msgstr "1. Commitment to Open Source"
-
-#: src/app/[lang]/privacy-policy/page.tsx:33
-msgid "1. Introduction"
-msgstr "1. Introduction"
-
-#: src/app/[lang]/license/page.tsx:101
-msgid "1. Noncommercial Use Only"
-msgstr "1. Noncommercial Use Only"
-
-#: src/app/[lang]/privacy-policy/page.tsx:284
-msgid "10. Changes to This Privacy Policy"
-msgstr "10. Changes to This Privacy Policy"
-
-#: src/app/[lang]/terms-of-service/page.tsx:381
-msgid "10. Indemnification"
-msgstr "10. Indemnification"
-
 #: src/generic/component/ai-section-features/ai-section-features.tsx:21
 msgid "100% On-Device Processing"
 msgstr "100% On-Device Processing"
@@ -89,94 +61,6 @@ msgstr "100% Secure"
 msgid "100% secure • Open source • Your data stays on your device"
 msgstr "100% secure • Open source • Your data stays on your device"
 
-#: src/app/[lang]/privacy-policy/page.tsx:295
-msgid "11. Contact Us"
-msgstr "11. Contact Us"
-
-#: src/app/[lang]/terms-of-service/page.tsx:406
-msgid "11. Termination"
-msgstr "11. Termination"
-
-#: src/app/[lang]/terms-of-service/page.tsx:436
-msgid "12. Governing Law and Dispute Resolution"
-msgstr "12. Governing Law and Dispute Resolution"
-
-#: src/app/[lang]/privacy-policy/page.tsx:315
-msgid "12. Legal Framework Compliance"
-msgstr "12. Legal Framework Compliance"
-
-#: src/app/[lang]/terms-of-service/page.tsx:440
-msgid "12.1 Governing Law"
-msgstr "12.1 Governing Law"
-
-#: src/app/[lang]/terms-of-service/page.tsx:449
-msgid "12.2 Dispute Resolution"
-msgstr "12.2 Dispute Resolution"
-
-#: src/app/[lang]/terms-of-service/page.tsx:469
-msgid "12.3 Class Action Waiver"
-msgstr "12.3 Class Action Waiver"
-
-#: src/app/[lang]/terms-of-service/page.tsx:480
-msgid "13. General Provisions"
-msgstr "13. General Provisions"
-
-#: src/app/[lang]/terms-of-service/page.tsx:484
-msgid "13.1 Entire Agreement"
-msgstr "13.1 Entire Agreement"
-
-#: src/app/[lang]/terms-of-service/page.tsx:493
-msgid "13.2 Severability"
-msgstr "13.2 Severability"
-
-#: src/app/[lang]/terms-of-service/page.tsx:502
-msgid "13.3 Waiver"
-msgstr "13.3 Waiver"
-
-#: src/app/[lang]/terms-of-service/page.tsx:511
-msgid "13.4 Assignment"
-msgstr "13.4 Assignment"
-
-#: src/app/[lang]/terms-of-service/page.tsx:520
-msgid "13.5 Force Majeure"
-msgstr "13.5 Force Majeure"
-
-#: src/app/[lang]/terms-of-service/page.tsx:531
-msgid "14. Contact Information"
-msgstr "14. Contact Information"
-
-#: src/app/[lang]/privacy-policy/page.tsx:44
-msgid "2. Data We Collect"
-msgstr "2. Data We Collect"
-
-#: src/app/[lang]/terms-of-service/page.tsx:49
-msgid "2. Description of Service"
-msgstr "2. Description of Service"
-
-#: src/app/[lang]/license/page.tsx:112
-msgid "2. Notices"
-msgstr "2. Notices"
-
-#: src/app/[lang]/license/page.tsx:45
-msgid "2. Software License"
-msgstr "2. Software License"
-
-#: src/app/[lang]/privacy-policy/page.tsx:48
-msgid "2.1 Information Stored Locally on Your Device"
-msgstr "2.1 Information Stored Locally on Your Device"
-
-#: src/app/[lang]/license/page.tsx:49
-msgid "2.1 Prosperity Public License 3.0.0"
-msgstr "2.1 Prosperity Public License 3.0.0"
-
-#: src/app/[lang]/privacy-policy/page.tsx:80
-msgid "2.2 Information We May Collect"
-msgstr "2.2 Information We May Collect"
-
-#: src/app/[lang]/license/page.tsx:96
-msgid "2.2 License Conditions"
-msgstr "2.2 License Conditions"
-
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:49
 msgid "25% off for the first year"
 msgstr "25% off for the first year"
@@ -185,229 +69,13 @@ msgstr "25% off for the first year"
 msgid "25% off your first year of Budgie Pro"
 msgstr "25% off your first year of Budgie Pro"
 
-#: src/app/[lang]/license/page.tsx:143
-msgid "3. Commercial Use"
-msgstr "3. Commercial Use"
-
-#: src/app/[lang]/privacy-policy/page.tsx:102
-msgid "3. How We Use Your Information"
-msgstr "3. How We Use Your Information"
-
-#: src/app/[lang]/license/page.tsx:130
-msgid "3. No Liability"
-msgstr "3. No Liability"
-
-#: src/app/[lang]/terms-of-service/page.tsx:65
-msgid "3. User Accounts and Eligibility"
-msgstr "3. User Accounts and Eligibility"
-
-#: src/app/[lang]/terms-of-service/page.tsx:69
-msgid "3.1 Eligibility"
-msgstr "3.1 Eligibility"
-
-#: src/app/[lang]/terms-of-service/page.tsx:78
-msgid "3.2 Account Security"
-msgstr "3.2 Account Security"
-
-#: src/app/[lang]/privacy-policy/page.tsx:138
-msgid "4. Data Storage and Security"
-msgstr "4. Data Storage and Security"
-
-#: src/app/[lang]/terms-of-service/page.tsx:106
-msgid "4. License and Permitted Use"
-msgstr "4. License and Permitted Use"
-
-#: src/app/[lang]/license/page.tsx:182
-msgid "4. Third-Party Open Source Components"
-msgstr "4. Third-Party Open Source Components"
-
-#: src/app/[lang]/terms-of-service/page.tsx:110
-msgid "4.1 Limited License"
-msgstr "4.1 Limited License"
-
-#: src/app/[lang]/privacy-policy/page.tsx:142
-msgid "4.1 Local Storage"
-msgstr "4.1 Local Storage"
-
-#: src/app/[lang]/terms-of-service/page.tsx:119
-msgid "4.2 Restrictions"
-msgstr "4.2 Restrictions"
-
-#: src/app/[lang]/privacy-policy/page.tsx:162
-msgid "4.2 Third-Party Services"
-msgstr "4.2 Third-Party Services"
-
-#: src/app/[lang]/license/page.tsx:255
-msgid "5. Contributing to Budgie"
-msgstr "5. Contributing to Budgie"
-
-#: src/app/[lang]/privacy-policy/page.tsx:192
-msgid "5. Data Sharing and Disclosure"
-msgstr "5. Data Sharing and Disclosure"
-
-#: src/app/[lang]/terms-of-service/page.tsx:159
-msgid "5. Financial Information and Disclaimers"
-msgstr "5. Financial Information and Disclaimers"
-
-#: src/app/[lang]/terms-of-service/page.tsx:163
-msgid "5.1 Not Financial Advice"
-msgstr "5.1 Not Financial Advice"
-
-#: src/app/[lang]/terms-of-service/page.tsx:172
-msgid "5.2 Data Accuracy"
-msgstr "5.2 Data Accuracy"
-
-#: src/app/[lang]/terms-of-service/page.tsx:200
-msgid "5.3 Third-Party Services"
-msgstr "5.3 Third-Party Services"
-
-#: src/app/[lang]/license/page.tsx:314
-msgid "6. Source Code Access"
-msgstr "6. Source Code Access"
-
-#: src/app/[lang]/terms-of-service/page.tsx:211
-msgid "6. User Content and Data"
-msgstr "6. User Content and Data"
-
-#: src/app/[lang]/privacy-policy/page.tsx:220
-msgid "6. Your Rights and Choices"
-msgstr "6. Your Rights and Choices"
-
-#: src/app/[lang]/terms-of-service/page.tsx:215
-msgid "6.1 Your Data"
-msgstr "6.1 Your Data"
-
-#: src/app/[lang]/terms-of-service/page.tsx:224
-msgid "6.2 Data Backup"
-msgstr "6.2 Data Backup"
-
-#: src/app/[lang]/terms-of-service/page.tsx:233
-msgid "6.3 Prohibited Content"
-msgstr "6.3 Prohibited Content"
-
-#: src/app/[lang]/privacy-policy/page.tsx:251
-msgid "7. Children's Privacy"
-msgstr "7. Children's Privacy"
-
-#: src/app/[lang]/terms-of-service/page.tsx:258
-msgid "7. Intellectual Property Rights"
-msgstr "7. Intellectual Property Rights"
-
-#: src/app/[lang]/license/page.tsx:366
-msgid "7. Security Disclosures"
-msgstr "7. Security Disclosures"
-
-#: src/app/[lang]/privacy-policy/page.tsx:262
-msgid "8. International Data Transfers"
-msgstr "8. International Data Transfers"
-
-#: src/app/[lang]/terms-of-service/page.tsx:274
-msgid "8. Payment Terms"
-msgstr "8. Payment Terms"
-
-#: src/app/[lang]/license/page.tsx:403
-msgid "8. Trademark Usage"
-msgstr "8. Trademark Usage"
-
-#: src/app/[lang]/terms-of-service/page.tsx:278
-msgid "8.1 Free and Premium Features"
-msgstr "8.1 Free and Premium Features"
-
-#: src/app/[lang]/terms-of-service/page.tsx:287
-msgid "8.2 Subscriptions"
-msgstr "8.2 Subscriptions"
-
-#: src/app/[lang]/terms-of-service/page.tsx:310
-msgid "8.3 Price Changes"
-msgstr "8.3 Price Changes"
-
-#: src/app/[lang]/privacy-policy/page.tsx:273
-msgid "9. Data Retention"
-msgstr "9. Data Retention"
-
-#: src/app/[lang]/terms-of-service/page.tsx:321
-msgid "9. Disclaimers and Limitation of Liability"
-msgstr "9. Disclaimers and Limitation of Liability"
-
-#: src/app/[lang]/license/page.tsx:428
-msgid "9. Questions and Contact"
-msgstr "9. Questions and Contact"
-
-#: src/app/[lang]/terms-of-service/page.tsx:325
-msgid "9.1 Disclaimer of Warranties"
-msgstr "9.1 Disclaimer of Warranties"
-
-#: src/app/[lang]/terms-of-service/page.tsx:348
-msgid "9.2 Limitation of Liability"
-msgstr "9.2 Limitation of Liability"
-
-#: src/app/[lang]/privacy-policy/page.tsx:229
-msgid "Access: Your data is always accessible within the app"
-msgstr "Access: Your data is always accessible within the app"
-
-#: src/app/[lang]/privacy-policy/page.tsx:60
-msgid "Account balances and banking information (if bank sync is enabled)"
-msgstr "Account balances and banking information (if bank sync is enabled)"
-
-#: src/app/[lang]/terms-of-service/page.tsx:551
-msgid "Acknowledgment"
-msgstr "Acknowledgment"
-
-#: src/app/[lang]/license/page.tsx:292
-msgid "Add tests for new functionality"
-msgstr "Add tests for new functionality"
-
 #: src/generic/component/ai-section/ai-section.tsx:36
 msgid "AI Assistant"
 msgstr "AI Assistant"
 
-#: src/app/[lang]/privacy-policy/page.tsx:75
-msgid "AI chat conversations and financial insights"
-msgstr "AI chat conversations and financial insights"
-
-#: src/app/[lang]/terms-of-service/page.tsx:187
-msgid "AI-generated insights and recommendations"
-msgstr "AI-generated insights and recommendations"
-
 #: src/generic/component/ai-section-features/ai-section-features.tsx:50
 msgid "AI:"
 msgstr "AI:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:145
-msgid "All your financial data is stored locally on your device using industry-standard encryption. We utilize device-level security features including:"
-msgstr "All your financial data is stored locally on your device using industry-standard encryption. We utilize device-level security features including:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:180
-msgid "Analytics services (anonymous, opt-in only)"
-msgstr "Analytics services (anonymous, opt-in only)"
-
-#: src/app/[lang]/privacy-policy/page.tsx:89
-msgid "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
-msgstr "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
-
-#: src/app/[lang]/terms-of-service/page.tsx:360
-msgid "Any conduct or content of any third party on the Service"
-msgstr "Any conduct or content of any third party on the Service"
-
-#: src/app/[lang]/terms-of-service/page.tsx:363
-msgid "Any content obtained from the Service"
-msgstr "Any content obtained from the Service"
-
-#: src/app/[lang]/terms-of-service/page.tsx:452
-msgid "Any disputes arising from or relating to these Terms or the Service shall be resolved through:"
-msgstr "Any disputes arising from or relating to these Terms or the Service shall be resolved through:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:343
-msgid "Any errors in the Service will be corrected"
-msgstr "Any errors in the Service will be corrected"
-
-#: src/app/[lang]/terms-of-service/page.tsx:399
-msgid "Any User Content you submit or transmit through the Service"
-msgstr "Any User Content you submit or transmit through the Service"
-
-#: src/app/[lang]/license/page.tsx:212
-msgid "Apache License 2.0 - Typed superset of JavaScript"
-msgstr "Apache License 2.0 - Typed superset of JavaScript"
 
 #: src/generic/component/footer/footer.tsx:74
 msgid "App"
@@ -425,18 +93,6 @@ msgstr "As a freelancer with multiple currencies, Budgie is a lifesaver. The deb
 msgid "Ask questions like \"Why is there so little money?\" and get detailed breakdowns of your spending patterns, unusual transactions, and budget insights."
 msgstr "Ask questions like \"Why is there so little money?\" and get detailed breakdowns of your spending patterns, unusual transactions, and budget insights."
 
-#: src/app/[lang]/terms-of-service/page.tsx:143
-msgid "Attempt to gain unauthorized access to any part of the Service"
-msgstr "Attempt to gain unauthorized access to any part of the Service"
-
-#: src/app/[lang]/license/page.tsx:332
-msgid "Audit our security and privacy implementations"
-msgstr "Audit our security and privacy implementations"
-
-#: src/app/[lang]/privacy-policy/page.tsx:95
-msgid "Authentication tokens for optional bank sync services (stored securely in device keychain)"
-msgstr "Authentication tokens for optional bank sync services (stored securely in device keychain)"
-
 #: src/generic/component/features-section/features-section.tsx:66
 msgid "Automatically import transactions from your bank accounts for effortless tracking."
 msgstr "Automatically import transactions from your bank accounts for effortless tracking."
@@ -445,10 +101,6 @@ msgstr "Automatically import transactions from your bank accounts for effortless
 msgid "Bank of America"
 msgstr "Bank of America"
 
-#: src/app/[lang]/privacy-policy/page.tsx:171
-msgid "Bank sync providers (only with your explicit authorization)"
-msgstr "Bank sync providers (only with your explicit authorization)"
-
 #: src/generic/component/faq-section/faq-section.tsx:60
 msgid "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
 msgstr "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
@@ -456,10 +108,6 @@ msgstr "Bank sync requires an internet connection to fetch new transactions, but
 #: src/generic/component/features-section/features-section.tsx:68
 msgid "Bank Synchronization"
 msgstr "Bank Synchronization"
-
-#: src/app/[lang]/terms-of-service/page.tsx:184
-msgid "Bank synchronization data"
-msgstr "Bank synchronization data"
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:19
 msgid "Be among the first to experience Budgie Pro with exclusive early access pricing. Limited spots available for privacy-conscious early adopters."
@@ -475,14 +123,6 @@ msgstr "Blog"
 msgid "Blog & Insights"
 msgstr "Blog & Insights"
 
-#: src/app/[lang]/license/page.tsx:323
-msgid "Browse the source code online"
-msgstr "Browse the source code online"
-
-#: src/app/[lang]/privacy-policy/page.tsx:63
-msgid "Budget settings and categories"
-msgstr "Budget settings and categories"
-
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/generic/component/footer/footer.tsx:27
@@ -496,10 +136,6 @@ msgstr "Budgie"
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie - Privacy-First Expense Tracker"
 
-#: src/app/[lang]/privacy-policy/page.tsx:36
-msgid "Budgie (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and website (collectively, the \"Service\"). We are a privacy-first financial tracking application that operates on an offline-first basis, meaning your financial data stays on your device."
-msgstr "Budgie (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and website (collectively, the \"Service\"). We are a privacy-first financial tracking application that operates on an offline-first basis, meaning your financial data stays on your device."
-
 #: src/generic/component/ai-section-details/ai-section-details.tsx:15
 msgid "Budgie AI"
 msgstr "Budgie AI"
@@ -511,26 +147,6 @@ msgstr "Budgie Blog"
 #: src/generic/component/features-section/features-section.tsx:45
 msgid "Budgie combines powerful expense tracking with complete privacy. Track every dollar, euro, or bitcoin while keeping your financial data exactly where it belongs—on your device."
 msgstr "Budgie combines powerful expense tracking with complete privacy. Track every dollar, euro, or bitcoin while keeping your financial data exactly where it belongs—on your device."
-
-#: src/app/[lang]/license/page.tsx:185
-msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
-msgstr "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:52
-msgid "Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals, and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features that require explicit user consent."
-msgstr "Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals, and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features that require explicit user consent."
-
-#: src/app/[lang]/license/page.tsx:37
-msgid "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
-msgstr "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
-
-#: src/app/[lang]/license/page.tsx:52
-msgid "Budgie is licensed under the Prosperity Public License 3.0.0, a source-available license that allows free use for noncommercial purposes while requiring a separate commercial license for commercial use. This license enables:"
-msgstr "Budgie is licensed under the Prosperity Public License 3.0.0, a source-available license that allows free use for noncommercial purposes while requiring a separate commercial license for commercial use. This license enables:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:41
-msgid "Budgie is operated by Budgie (\"we,\" \"us,\" or \"our\"). We reserve the right to update, change, or replace any part of these Terms by posting updates and changes to our website. Your continued use of the Service following the posting of any changes constitutes acceptance of those changes."
-msgstr "Budgie is operated by Budgie (\"we,\" \"us,\" or \"our\"). We reserve the right to update, change, or replace any part of these Terms by posting updates and changes to our website. Your continued use of the Service following the posting of any changes constitutes acceptance of those changes."
 
 #: src/generic/component/hero-section/hero-section.tsx:40
 msgid "Budgie is the offline-first expense tracker that keeps your financial data completely private. Track cash, crypto, stocks, and bank accounts across multiple currencies—all stored securely on your device."
@@ -560,29 +176,9 @@ msgstr "Budgie Team"
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 
-#: src/app/[lang]/license/page.tsx:335
-msgid "Build the application from source"
-msgstr "Build the application from source"
-
 #: src/app/[lang]/blog/[slug]/page.tsx:140
 msgid "By"
 msgstr "By"
-
-#: src/app/[lang]/terms-of-service/page.tsx:36
-msgid "By accessing or using Budgie (\"Service,\" \"App,\" or \"Application\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not access or use the Service. These Terms apply to all users of the Service, including without limitation users who are browsers, customers, and/or contributors of content."
-msgstr "By accessing or using Budgie (\"Service,\" \"App,\" or \"Application\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not access or use the Service. These Terms apply to all users of the Service, including without limitation users who are browsers, customers, and/or contributors of content."
-
-#: src/app/[lang]/terms-of-service/page.tsx:554
-msgid "BY USING THE SERVICE, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM."
-msgstr "BY USING THE SERVICE, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM."
-
-#: src/app/[lang]/terms-of-service/page.tsx:190
-msgid "Calculations and projections"
-msgstr "Calculations and projections"
-
-#: src/app/[lang]/privacy-policy/page.tsx:327
-msgid "California Consumer Privacy Act (CCPA) - United States"
-msgstr "California Consumer Privacy Act (CCPA) - United States"
 
 #: src/generic/component/faq-section/faq-section.tsx:74
 msgid "Can I use Budgie across multiple devices?"
@@ -596,25 +192,9 @@ msgstr "Cancel anytime"
 msgid "Chase"
 msgstr "Chase"
 
-#: src/app/[lang]/license/page.tsx:326
-msgid "Clone the repository for local development"
-msgstr "Clone the repository for local development"
-
-#: src/app/[lang]/privacy-policy/page.tsx:177
-msgid "Cloud AI services (only when you enable cloud-assisted AI features)"
-msgstr "Cloud AI services (only when you enable cloud-assisted AI features)"
-
 #: src/generic/component/banks-section/banks-section.tsx:20
 msgid "Coinbase"
 msgstr "Coinbase"
-
-#: src/app/[lang]/license/page.tsx:421
-msgid "Commercial use of our trademarks requires explicit permission"
-msgstr "Commercial use of our trademarks requires explicit permission"
-
-#: src/app/[lang]/license/page.tsx:64
-msgid "Community contributions and improvements"
-msgstr "Community contributions and improvements"
 
 #: src/generic/component/features-section/features-section.tsx:80
 msgid "Complete Privacy"
@@ -624,41 +204,9 @@ msgstr "Complete Privacy"
 msgid "Connect Your Accounts"
 msgstr "Connect Your Accounts"
 
-#: src/app/[lang]/terms-of-service/page.tsx:248
-msgid "Contains malicious code or harmful components"
-msgstr "Contains malicious code or harmful components"
-
-#: src/app/[lang]/privacy-policy/page.tsx:232
-msgid "Correction: You can edit or correct your data at any time"
-msgstr "Correction: You can edit or correct your data at any time"
-
-#: src/app/[lang]/license/page.tsx:286
-msgid "Create a feature branch for your changes"
-msgstr "Create a feature branch for your changes"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:52
 msgid "Crypto Investor"
 msgstr "Crypto Investor"
-
-#: src/app/[lang]/terms-of-service/page.tsx:421
-msgid "Data stored locally on your device will remain accessible"
-msgstr "Data stored locally on your device will remain accessible"
-
-#: src/app/[lang]/privacy-policy/page.tsx:69
-msgid "Debt and loan information"
-msgstr "Debt and loan information"
-
-#: src/app/[lang]/privacy-policy/page.tsx:235
-msgid "Deletion: You can delete your data by uninstalling the app or using the in-app data deletion feature"
-msgstr "Deletion: You can delete your data by uninstalling the app or using the in-app data deletion feature"
-
-#: src/app/[lang]/privacy-policy/page.tsx:157
-msgid "Device biometric authentication support"
-msgstr "Device biometric authentication support"
-
-#: src/app/[lang]/privacy-policy/page.tsx:92
-msgid "Device information (type, operating system version) for debugging purposes"
-msgstr "Device information (type, operating system version) for debugging purposes"
 
 #: src/generic/component/testimonials-section/testimonials-section.tsx:44
 msgid "Digital Nomad"
@@ -671,14 +219,6 @@ msgstr "Direct line to our development team"
 #: src/generic/component/blog-section/blog-section.tsx:26
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
 msgstr "Discover insights about financial privacy, security best practices, and how to take control of your money."
-
-#: src/app/[lang]/license/page.tsx:161
-msgid "Distributing modified versions of Budgie commercially"
-msgstr "Distributing modified versions of Budgie commercially"
-
-#: src/app/[lang]/license/page.tsx:378
-msgid "Do not publicly disclose the vulnerability until we have addressed it"
-msgstr "Do not publicly disclose the vulnerability until we have addressed it"
 
 #: src/generic/component/footer/footer.tsx:117
 msgid "Documentation"
@@ -704,26 +244,9 @@ msgstr "Download App"
 msgid "Early Access"
 msgstr "Early Access"
 
-#: src/app/[lang]/terms-of-service/page.tsx:541
-msgid "Email: legal@budgie.at"
-msgstr "Email: legal@budgie.at"
-
-#: src/app/[lang]/license/page.tsx:172
-#: src/app/[lang]/license/page.tsx:438
-msgid "Email: licensing@budgie.at"
-msgstr "Email: licensing@budgie.at"
-
-#: src/app/[lang]/privacy-policy/page.tsx:305
-msgid "Email: privacy@budgie.at"
-msgstr "Email: privacy@budgie.at"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:56
 msgid "Emily Johnson"
 msgstr "Emily Johnson"
-
-#: src/app/[lang]/privacy-policy/page.tsx:151
-msgid "Encrypted local database storage"
-msgstr "Encrypted local database storage"
 
 #: src/generic/component/faq-section/faq-section.tsx:35
 msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
@@ -740,10 +263,6 @@ msgstr "Example AI Conversations"
 #: src/app/[lang]/layout.tsx:77
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
-
-#: src/app/[lang]/privacy-policy/page.tsx:120
-msgid "Facilitate optional bank synchronization (with your explicit consent)"
-msgstr "Facilitate optional bank synchronization (with your explicit consent)"
 
 #: src/generic/component/faq-section/faq-section.tsx:27
 #: src/generic/component/header/header.tsx:83
@@ -762,45 +281,13 @@ msgstr "Features"
 msgid "Finally, an expense tracker that doesn't spy on me! Budgie works perfectly offline and my bank sync is seamless. Love the multi-currency support."
 msgstr "Finally, an expense tracker that doesn't spy on me! Budgie works perfectly offline and my bank sync is seamless. Love the multi-currency support."
 
-#: src/app/[lang]/privacy-policy/page.tsx:72
-msgid "Financial goals and targets"
-msgstr "Financial goals and targets"
-
-#: src/app/[lang]/terms-of-service/page.tsx:369
-msgid "Financial losses or decisions made based on the Service"
-msgstr "Financial losses or decisions made based on the Service"
-
-#: src/app/[lang]/privacy-policy/page.tsx:57
-msgid "Financial transactions and expense records"
-msgstr "Financial transactions and expense records"
-
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:64
 msgid "First Year Discount"
 msgstr "First Year Discount"
 
-#: src/app/[lang]/terms-of-service/page.tsx:458
-msgid "First, good-faith negotiation between the parties"
-msgstr "First, good-faith negotiation between the parties"
-
-#: src/app/[lang]/license/page.tsx:247
-msgid "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our GitHub repository. Each component is used in accordance with its respective license terms."
-msgstr "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our GitHub repository. Each component is used in accordance with its respective license terms."
-
-#: src/app/[lang]/license/page.tsx:388
-msgid "For more information, see our "
-msgstr "For more information, see our "
-
-#: src/app/[lang]/license/page.tsx:283
-msgid "Fork the repository on GitHub"
-msgstr "Fork the repository on GitHub"
-
 #: src/generic/component/faq-section/faq-section.tsx:48
 msgid "Free expense apps make money by selling your financial data or showing ads. Budgie's premium model means we work for you, not advertisers. Your subscription funds ongoing development, security updates, and ensures your data remains completely private—never sold or monetized."
 msgstr "Free expense apps make money by selling your financial data or showing ads. Budgie's premium model means we work for you, not advertisers. Your subscription funds ongoing development, security updates, and ensures your data remains completely private—never sold or monetized."
-
-#: src/app/[lang]/license/page.tsx:58
-msgid "Free use, copying, modification, and sharing for noncommercial purposes"
-msgstr "Free use, copying, modification, and sharing for noncommercial purposes"
 
 #: src/generic/component/testimonials-section/testimonials-section.tsx:60
 msgid "Freelance Designer"
@@ -809,18 +296,6 @@ msgstr "Freelance Designer"
 #: src/generic/component/faq-section/faq-section.tsx:31
 msgid "Frequently Asked Questions"
 msgstr "Frequently Asked Questions"
-
-#: src/app/[lang]/license/page.tsx:61
-msgid "Full access to source code for review and security audits"
-msgstr "Full access to source code for review and security audits"
-
-#: src/app/[lang]/privacy-policy/page.tsx:324
-msgid "General Data Protection Regulation (GDPR) - European Union"
-msgstr "General Data Protection Regulation (GDPR) - European Union"
-
-#: src/app/[lang]/license/page.tsx:441
-msgid "General inquiries: hello@budgie.at"
-msgstr "General inquiries: hello@budgie.at"
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:47
 msgid "Get Budgie from the app store. No registration required—your privacy starts immediately."
@@ -846,11 +321,6 @@ msgstr "Get personalized recommendations like \"Don't give a girl so much money!
 msgid "GitHub"
 msgstr "GitHub"
 
-#: src/app/[lang]/license/page.tsx:344
-#: src/app/[lang]/license/page.tsx:447
-msgid "GitHub:"
-msgstr "GitHub:"
-
 #: src/generic/component/features-section/features-section.tsx:92
 msgid "Goals & Debt Tracking"
 msgstr "Goals & Debt Tracking"
@@ -875,85 +345,17 @@ msgstr "How It Works"
 msgid "How much does Budgie cost?"
 msgstr "How much does Budgie cost?"
 
-#: src/app/[lang]/license/page.tsx:279
-msgid "How to Contribute"
-msgstr "How to Contribute"
-
 #: src/generic/component/ai-section-details/ai-section-details.tsx:34
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 msgstr "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
-
-#: src/app/[lang]/privacy-policy/page.tsx:117
-msgid "Identify and fix bugs and technical issues"
-msgstr "Identify and fix bugs and technical issues"
-
-#: src/app/[lang]/terms-of-service/page.tsx:496
-msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
-msgstr "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
-
-#: src/app/[lang]/terms-of-service/page.tsx:461
-msgid "If negotiation fails, binding arbitration in accordance with Austrian law"
-msgstr "If negotiation fails, binding arbitration in accordance with Austrian law"
-
-#: src/app/[lang]/terms-of-service/page.tsx:81
-msgid "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
-msgstr "If the Service requires account creation, you are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:534
-msgid "If you have any questions about these Terms, please contact us at:"
-msgstr "If you have any questions about these Terms, please contact us at:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:298
-msgid "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:"
-msgstr "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:"
-
-#: src/app/[lang]/license/page.tsx:431
-msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
-msgstr "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:290
-msgid "If you purchase a subscription:"
-msgstr "If you purchase a subscription:"
-
-#: src/app/[lang]/license/page.tsx:146
-msgid "If you wish to use Budgie for commercial purposes, including but not limited to:"
-msgstr "If you wish to use Budgie for commercial purposes, including but not limited to:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:96
-msgid "Immediately notify us of any unauthorized use of your account"
-msgstr "Immediately notify us of any unauthorized use of your account"
-
-#: src/app/[lang]/privacy-policy/page.tsx:114
-msgid "Improve and optimize app performance"
-msgstr "Improve and optimize app performance"
-
-#: src/app/[lang]/privacy-policy/page.tsx:213
-msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
-msgstr "In connection with a merger, acquisition, or sale of assets (users will be notified)"
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:15
 msgid "Instant Financial Analysis"
 msgstr "Instant Financial Analysis"
 
-#: src/app/[lang]/license/page.tsx:155
-msgid "Integrating Budgie into a commercial product"
-msgstr "Integrating Budgie into a commercial product"
-
-#: src/app/[lang]/privacy-policy/page.tsx:66
-msgid "Investment portfolio data (stocks and cryptocurrency holdings)"
-msgstr "Investment portfolio data (stocks and cryptocurrency holdings)"
-
-#: src/app/[lang]/terms-of-service/page.tsx:242
-msgid "Is illegal, fraudulent, or promotes illegal activity"
-msgstr "Is illegal, fraudulent, or promotes illegal activity"
-
 #: src/generic/component/faq-section/faq-section.tsx:86
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Is there a free trial or money-back guarantee?"
-
-#: src/app/[lang]/terms-of-service/page.tsx:251
-msgid "Is used to facilitate money laundering or other financial crimes"
-msgstr "Is used to facilitate money laundering or other financial crimes"
 
 #: src/app/[lang]/blog/[slug]/page.tsx:173
 msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
@@ -982,11 +384,9 @@ msgstr "Join Whitelist - Save 25%"
 msgid "Language"
 msgstr "Language"
 
-#: src/app/[lang]/license/page.tsx:27
-#: src/app/[lang]/privacy-policy/page.tsx:26
-#: src/app/[lang]/terms-of-service/page.tsx:26
-msgid "Last Updated: November 6, 2024"
-msgstr "Last Updated: November 6, 2024"
+#: src/app/[lang]/legal/[slug]/page.tsx:77
+msgid "Last Updated"
+msgstr "Last Updated"
 
 #: src/generic/component/blog-section/blog-section.tsx:22
 msgid "Latest from Our Blog"
@@ -1000,74 +400,18 @@ msgstr "Legal"
 msgid "License"
 msgstr "License"
 
-#: src/app/[lang]/license/page.tsx:353
-msgid "License:"
-msgstr "License:"
-
-#: src/app/[lang]/license/page.tsx:77
-msgid "Licensor: Budgie"
-msgstr "Licensor: Budgie"
-
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:104
 msgid "Limited time"
 msgstr "Limited time"
-
-#: src/app/[lang]/terms-of-service/page.tsx:90
-msgid "Maintain and promptly update your account information"
-msgstr "Maintain and promptly update your account information"
-
-#: src/app/[lang]/terms-of-service/page.tsx:93
-msgid "Maintain the security of your password and device"
-msgstr "Maintain the security of your password and device"
-
-#: src/app/[lang]/license/page.tsx:289
-msgid "Make your changes with clear, descriptive commit messages"
-msgstr "Make your changes with clear, descriptive commit messages"
 
 #: src/generic/component/testimonials-section/testimonials-section.tsx:48
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
-#: src/app/[lang]/terms-of-service/page.tsx:181
-msgid "Market data and pricing information"
-msgstr "Market data and pricing information"
-
-#: src/app/[lang]/privacy-policy/page.tsx:174
-msgid "Market data providers for investment pricing"
-msgstr "Market data providers for investment pricing"
-
 #: src/app/[lang]/blog/[slug]/page.tsx:134
 #: src/generic/component/blog-card/blog-card.tsx:77
 msgid "min read"
 msgstr "min read"
-
-#: src/app/[lang]/license/page.tsx:194
-msgid "MIT License - Cross-platform mobile application framework"
-msgstr "MIT License - Cross-platform mobile application framework"
-
-#: src/app/[lang]/license/page.tsx:230
-msgid "MIT License - Data fetching and state management"
-msgstr "MIT License - Data fetching and state management"
-
-#: src/app/[lang]/license/page.tsx:239
-msgid "MIT License - Internationalization framework"
-msgstr "MIT License - Internationalization framework"
-
-#: src/app/[lang]/license/page.tsx:203
-msgid "MIT License - React framework for web applications"
-msgstr "MIT License - React framework for web applications"
-
-#: src/app/[lang]/license/page.tsx:221
-msgid "MIT License - Reactive database framework for React Native"
-msgstr "MIT License - Reactive database framework for React Native"
-
-#: src/app/[lang]/license/page.tsx:418
-msgid "Modified versions must be clearly identified as such"
-msgstr "Modified versions must be clearly identified as such"
-
-#: src/app/[lang]/terms-of-service/page.tsx:128
-msgid "Modify, reverse engineer, decompile, or disassemble the Application"
-msgstr "Modify, reverse engineer, decompile, or disassemble the Application"
 
 #: src/generic/component/features-section/features-section.tsx:72
 msgid "Monitor cash, crypto, stocks, and bank accounts all in one place."
@@ -1093,18 +437,6 @@ msgstr "No articles found"
 msgid "No commitment"
 msgstr "No commitment"
 
-#: src/app/[lang]/terms-of-service/page.tsx:505
-msgid "No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term or any other term, and our failure to assert any right or provision under these Terms shall not constitute a waiver of such right or provision."
-msgstr "No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term or any other term, and our failure to assert any right or provision under these Terms shall not constitute a waiver of such right or provision."
-
-#: src/app/[lang]/terms-of-service/page.tsx:99
-msgid "Not share your account credentials with any third party"
-msgstr "Not share your account credentials with any third party"
-
-#: src/app/[lang]/license/page.tsx:152
-msgid "Offering Budgie as a service to customers or clients"
-msgstr "Offering Budgie as a service to customers or clients"
-
 #: src/generic/component/features-section/features-section.tsx:62
 msgid "Offline-First Design"
 msgstr "Offline-First Design"
@@ -1121,50 +453,9 @@ msgstr "Open Source"
 msgid "Open Source & Private"
 msgstr "Open Source & Private"
 
-#: src/app/[lang]/license/page.tsx:24
 #: src/generic/component/footer/footer.tsx:195
 msgid "Open Source License"
 msgstr "Open Source License"
-
-#: src/app/[lang]/privacy-policy/page.tsx:241
-msgid "Opt-out: Disable analytics and optional cloud features in app settings"
-msgstr "Opt-out: Disable analytics and optional cloud features in app settings"
-
-#: src/app/[lang]/privacy-policy/page.tsx:333
-msgid "Other applicable data protection and privacy laws"
-msgstr "Other applicable data protection and privacy laws"
-
-#: src/app/[lang]/license/page.tsx:460
-msgid "Our Commitment"
-msgstr "Our Commitment"
-
-#: src/app/[lang]/privacy-policy/page.tsx:254
-msgid "Our Service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately."
-msgstr "Our Service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately."
-
-#: src/app/[lang]/terms-of-service/page.tsx:373
-msgid "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE HUNDRED DOLLARS ($100), WHICHEVER IS GREATER."
-msgstr "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE HUNDRED DOLLARS ($100), WHICHEVER IS GREATER."
-
-#: src/app/[lang]/license/page.tsx:87
-msgid "Permission is hereby granted, free of charge, to any person obtaining a copy of the Software to use, copy, modify, and share the Software for noncommercial purposes, subject to the following conditions:"
-msgstr "Permission is hereby granted, free of charge, to any person obtaining a copy of the Software to use, copy, modify, and share the Software for noncommercial purposes, subject to the following conditions:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:330
-msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
-msgstr "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
-
-#: src/app/[lang]/license/page.tsx:67
-msgid "Personal use without restrictions"
-msgstr "Personal use without restrictions"
-
-#: src/app/[lang]/license/page.tsx:375
-msgid "Please report it responsibly by emailing security@budgie.at"
-msgstr "Please report it responsibly by emailing security@budgie.at"
-
-#: src/app/[lang]/privacy-policy/page.tsx:238
-msgid "Portability: Export your data in CSV format at any time"
-msgstr "Portability: Export your data in CSV format at any time"
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:70
 msgid "Priority Support"
@@ -1178,71 +469,22 @@ msgstr "Privacy First"
 msgid "Privacy Guide"
 msgstr "Privacy Guide"
 
-#: src/app/[lang]/privacy-policy/page.tsx:23
 #: src/generic/component/footer/footer.tsx:155
 #: src/generic/component/footer/footer.tsx:187
 msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
-#: src/app/[lang]/license/page.tsx:73
-msgid "Prosperity Public License 3.0.0"
-msgstr "Prosperity Public License 3.0.0"
-
-#: src/app/[lang]/terms-of-service/page.tsx:87
-msgid "Provide accurate, current, and complete information"
-msgstr "Provide accurate, current, and complete information"
-
-#: src/app/[lang]/privacy-policy/page.tsx:111
-msgid "Provide and maintain the Service"
-msgstr "Provide and maintain the Service"
-
-#: src/app/[lang]/privacy-policy/page.tsx:123
-msgid "Provide customer support"
-msgstr "Provide customer support"
-
-#: src/app/[lang]/license/page.tsx:381
-msgid "Provide detailed information to help us reproduce and fix the issue"
-msgstr "Provide detailed information to help us reproduce and fix the issue"
-
-#: src/app/[lang]/license/page.tsx:83
-msgid "Purpose: Noncommercial use"
-msgstr "Purpose: Noncommercial use"
-
 #: src/app/[lang]/blog/[slug]/page.tsx:169
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Ready to Take Control of Your Financial Privacy?"
-
-#: src/app/[lang]/terms-of-service/page.tsx:305
-msgid "Refunds are subject to the policies of the app store (Apple App Store or Google Play Store)"
-msgstr "Refunds are subject to the policies of the app store (Apple App Store or Google Play Store)"
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:29
 msgid "Regular Price"
 msgstr "Regular Price"
 
-#: src/app/[lang]/terms-of-service/page.tsx:131
-msgid "Remove, alter, or obscure any proprietary notices or labels"
-msgstr "Remove, alter, or obscure any proprietary notices or labels"
-
-#: src/app/[lang]/license/page.tsx:341
-msgid "Repository Information"
-msgstr "Repository Information"
-
-#: src/app/[lang]/terms-of-service/page.tsx:149
-msgid "Resell, redistribute, or sublicense the Service"
-msgstr "Resell, redistribute, or sublicense the Service"
-
 #: src/generic/component/footer/footer.tsx:106
 msgid "Resources"
 msgstr "Resources"
-
-#: src/app/[lang]/license/page.tsx:329
-msgid "Review our commit history and development process"
-msgstr "Review our commit history and development process"
-
-#: src/app/[lang]/privacy-policy/page.tsx:244
-msgid "Revoke consent: Disconnect bank sync or disable cloud AI at any time"
-msgstr "Revoke consent: Disconnect bank sync or disable cloud AI at any time"
 
 #: src/generic/component/footer/footer.tsx:98
 msgid "Roadmap"
@@ -1260,10 +502,6 @@ msgstr "Sarah Chen"
 msgid "Search articles..."
 msgstr "Search articles..."
 
-#: src/app/[lang]/privacy-policy/page.tsx:154
-msgid "Secure keychain/keystore for sensitive credentials"
-msgstr "Secure keychain/keystore for sensitive credentials"
-
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:54
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
@@ -1272,17 +510,9 @@ msgstr "Securely link your bank accounts, crypto wallets, and investment account
 msgid "Security"
 msgstr "Security"
 
-#: src/app/[lang]/license/page.tsx:395
-msgid "Security Policy"
-msgstr "Security Policy"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:34
 msgid "See what users love about Budgie's approach to private, comprehensive expense tracking."
 msgstr "See what users love about Budgie's approach to private, comprehensive expense tracking."
-
-#: src/app/[lang]/privacy-policy/page.tsx:126
-msgid "Send important updates about the Service (security notices, policy changes)"
-msgstr "Send important updates about the Service (security notices, policy changes)"
 
 #: src/generic/component/features-section/features-section.tsx:90
 msgid "Set financial goals and track debt payments to achieve financial freedom."
@@ -1292,10 +522,6 @@ msgstr "Set financial goals and track debt payments to achieve financial freedom
 msgid "Showing results for: <0>{searchQuery}</0>"
 msgstr "Showing results for: <0>{searchQuery}</0>"
 
-#: src/app/[lang]/privacy-policy/page.tsx:265
-msgid "Since your financial data is stored locally on your device, international data transfers are minimal. However, if you use optional cloud features, your data may be processed in countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including GDPR and CCPA."
-msgstr "Since your financial data is stored locally on your device, international data transfers are minimal. However, if you use optional cloud features, your data may be processed in countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including GDPR and CCPA."
-
 #: src/generic/component/ai-section/ai-section.tsx:40
 msgid "Smart Financial Insights, Privately Powered"
 msgstr "Smart Financial Insights, Privately Powered"
@@ -1303,10 +529,6 @@ msgstr "Smart Financial Insights, Privately Powered"
 #: src/generic/component/ai-section-features/ai-section-features.tsx:27
 msgid "Smart Spending Advice"
 msgstr "Smart Spending Advice"
-
-#: src/app/[lang]/license/page.tsx:80
-msgid "Software: Budgie – Mobile Expenses, Banking & Wealth Tracker"
-msgstr "Software: Budgie – Mobile Expenses, Banking & Wealth Tracker"
 
 #: src/generic/component/footer/footer.tsx:133
 msgid "Source Code"
@@ -1319,22 +541,6 @@ msgstr "Start Tracking in Minutes"
 #: src/app/[lang]/blog/page.tsx:55
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
-
-#: src/app/[lang]/terms-of-service/page.tsx:266
-msgid "Subject to the open source license under which the software is distributed (see our Open Source License page), you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of that software, except as permitted by law or with our written permission."
-msgstr "Subject to the open source license under which the software is distributed (see our Open Source License page), you may not copy, modify, distribute, sell, or lease any part of our Service or included software, nor may you reverse engineer or attempt to extract the source code of that software, except as permitted by law or with our written permission."
-
-#: src/app/[lang]/terms-of-service/page.tsx:113
-msgid "Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to download, install, and use the Application on your personal mobile device solely for your personal, non-commercial use."
-msgstr "Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to download, install, and use the Application on your personal mobile device solely for your personal, non-commercial use."
-
-#: src/app/[lang]/license/page.tsx:295
-msgid "Submit a pull request with a detailed description"
-msgstr "Submit a pull request with a detailed description"
-
-#: src/app/[lang]/terms-of-service/page.tsx:296
-msgid "Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period"
-msgstr "Subscriptions automatically renew unless canceled at least 24 hours before the end of the current period"
 
 #: src/generic/component/footer/footer.tsx:138
 msgid "Support"
@@ -1352,7 +558,6 @@ msgstr "Syncs with 1000+ banks and financial institutions"
 msgid "Take Control of Your Financial Privacy"
 msgstr "Take Control of Your Financial Privacy"
 
-#: src/app/[lang]/terms-of-service/page.tsx:23
 #: src/generic/component/footer/footer.tsx:163
 #: src/generic/component/footer/footer.tsx:191
 msgid "Terms of Service"
@@ -1364,89 +569,13 @@ msgstr "Terms of Service"
 msgid "Testimonials"
 msgstr "Testimonials"
 
-#: src/app/[lang]/terms-of-service/page.tsx:464
-msgid "The arbitration shall be conducted in English in Vienna, Austria"
-msgstr "The arbitration shall be conducted in English in Vienna, Austria"
-
-#: src/app/[lang]/license/page.tsx:317
-msgid "The complete source code for Budgie is available on GitHub. You can:"
-msgstr "The complete source code for Budgie is available on GitHub. You can:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:281
-msgid "The core features of the Service are provided free of charge. We may offer premium features, subscriptions, or in-app purchases (\"Premium Services\") that require payment. All fees are clearly disclosed before purchase."
-msgstr "The core features of the Service are provided free of charge. We may offer premium features, subscriptions, or in-app purchases (\"Premium Services\") that require payment. All fees are clearly disclosed before purchase."
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:50
 msgid "The crypto tracking is incredible. I can see all my DeFi positions alongside my traditional accounts. The privacy-first approach sold me immediately."
 msgstr "The crypto tracking is incredible. I can see all my DeFi positions alongside my traditional accounts. The privacy-first approach sold me immediately."
 
-#: src/app/[lang]/privacy-policy/page.tsx:51
-msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
-msgstr "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
-
 #: src/generic/component/footer/footer.tsx:32
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
-
-#: src/app/[lang]/terms-of-service/page.tsx:340
-msgid "The results obtained from the Service will be accurate or reliable"
-msgstr "The results obtained from the Service will be accurate or reliable"
-
-#: src/app/[lang]/terms-of-service/page.tsx:166
-msgid "THE SERVICE IS FOR INFORMATIONAL AND ORGANIZATIONAL PURPOSES ONLY. NOTHING IN THE SERVICE CONSTITUTES FINANCIAL, INVESTMENT, LEGAL, OR TAX ADVICE. We are not licensed financial advisors, accountants, or tax professionals. You should consult with appropriate professionals before making any financial decisions."
-msgstr "THE SERVICE IS FOR INFORMATIONAL AND ORGANIZATIONAL PURPOSES ONLY. NOTHING IN THE SERVICE CONSTITUTES FINANCIAL, INVESTMENT, LEGAL, OR TAX ADVICE. We are not licensed financial advisors, accountants, or tax professionals. You should consult with appropriate professionals before making any financial decisions."
-
-#: src/app/[lang]/terms-of-service/page.tsx:328
-msgid "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND ACCURACY. WE DO NOT WARRANT THAT:"
-msgstr "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND ACCURACY. WE DO NOT WARRANT THAT:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:57
-msgid "The Service is provided \"as is\" and we reserve the right to modify, suspend, or discontinue any aspect of the Service at any time without notice."
-msgstr "The Service is provided \"as is\" and we reserve the right to modify, suspend, or discontinue any aspect of the Service at any time without notice."
-
-#: src/app/[lang]/terms-of-service/page.tsx:337
-msgid "The Service will be uninterrupted, timely, secure, or error-free"
-msgstr "The Service will be uninterrupted, timely, secure, or error-free"
-
-#: src/app/[lang]/terms-of-service/page.tsx:334
-msgid "The Service will meet your requirements"
-msgstr "The Service will meet your requirements"
-
-#: src/app/[lang]/terms-of-service/page.tsx:261
-msgid "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
-msgstr "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
-
-#: src/app/[lang]/license/page.tsx:133
-msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-
-#: src/app/[lang]/privacy-policy/page.tsx:184
-msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
-msgstr "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
-
-#: src/app/[lang]/terms-of-service/page.tsx:443
-msgid "These Terms shall be governed by and construed in accordance with the laws of Austria, without regard to its conflict of law provisions."
-msgstr "These Terms shall be governed by and construed in accordance with the laws of Austria, without regard to its conflict of law provisions."
-
-#: src/app/[lang]/terms-of-service/page.tsx:487
-msgid "These Terms, together with our Privacy Policy and any other legal notices published by us, constitute the entire agreement between you and Budgie concerning the Service."
-msgstr "These Terms, together with our Privacy Policy and any other legal notices published by us, constitute the entire agreement between you and Budgie concerning the Service."
-
-#: src/app/[lang]/privacy-policy/page.tsx:318
-msgid "This Privacy Policy is designed to comply with:"
-msgstr "This Privacy Policy is designed to comply with:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:204
-msgid "To comply with legal obligations (e.g., court orders, regulatory requirements)"
-msgstr "To comply with legal obligations (e.g., court orders, regulatory requirements)"
-
-#: src/app/[lang]/privacy-policy/page.tsx:207
-msgid "To protect our rights, property, or safety, or that of our users or the public"
-msgstr "To protect our rights, property, or safety, or that of our users or the public"
-
-#: src/app/[lang]/terms-of-service/page.tsx:351
-msgid "TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BUDGIE, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:"
-msgstr "TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL BUDGIE, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM:"
 
 #: src/generic/component/header/header.tsx:100
 msgid "Toggle menu"
@@ -1477,10 +606,6 @@ msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 
-#: src/app/[lang]/terms-of-service/page.tsx:140
-msgid "Transmit viruses, malware, or any malicious code"
-msgstr "Transmit viruses, malware, or any malicious code"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:30
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Trusted by Privacy-Conscious Users"
@@ -1493,26 +618,6 @@ msgstr "Try adjusting your search query or browse all articles."
 msgid "Twitter"
 msgstr "Twitter"
 
-#: src/app/[lang]/terms-of-service/page.tsx:366
-msgid "Unauthorized access, use, or alteration of your content"
-msgstr "Unauthorized access, use, or alteration of your content"
-
-#: src/app/[lang]/terms-of-service/page.tsx:146
-msgid "Use automated systems to access the Service without permission"
-msgstr "Use automated systems to access the Service without permission"
-
-#: src/app/[lang]/terms-of-service/page.tsx:134
-msgid "Use the Service for any illegal or unauthorized purpose"
-msgstr "Use the Service for any illegal or unauthorized purpose"
-
-#: src/app/[lang]/terms-of-service/page.tsx:152
-msgid "Use the Service to provide services to third parties"
-msgstr "Use the Service to provide services to third parties"
-
-#: src/app/[lang]/license/page.tsx:158
-msgid "Using Budgie in a business or organizational context for profit"
-msgstr "Using Budgie in a business or organizational context for profit"
-
 #: src/generic/component/blog-section/blog-section.tsx:51
 msgid "View All Articles"
 msgstr "View All Articles"
@@ -1522,76 +627,9 @@ msgstr "View All Articles"
 msgid "View Source Code"
 msgstr "View Source Code"
 
-#: src/app/[lang]/terms-of-service/page.tsx:137
-msgid "Violate any laws in your jurisdiction"
-msgstr "Violate any laws in your jurisdiction"
-
-#: src/app/[lang]/terms-of-service/page.tsx:245
-msgid "Violates the rights of others"
-msgstr "Violates the rights of others"
-
-#: src/app/[lang]/license/page.tsx:299
-msgid "Visit our GitHub repository at "
-msgstr "Visit our GitHub repository at "
-
-#: src/app/[lang]/license/page.tsx:463
-msgid "We believe in transparent, ethical software development. By keeping Budgie open source, we ensure that our privacy and security claims can be independently verified. We are committed to maintaining Budgie as an open source project and fostering a welcoming community for contributors and users alike."
-msgstr "We believe in transparent, ethical software development. By keeping Budgie open source, we ensure that our privacy and security claims can be independently verified. We are committed to maintaining Budgie as an open source project and fostering a welcoming community for contributors and users alike."
-
-#: src/app/[lang]/privacy-policy/page.tsx:195
-msgid "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"
-msgstr "We do not sell, trade, or rent your personal information to third parties. We may share limited information only in the following circumstances:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:130
-msgid "We do NOT use your financial data for advertising, profiling, or any commercial purposes beyond providing the Service to you."
-msgstr "We do NOT use your financial data for advertising, profiling, or any commercial purposes beyond providing the Service to you."
-
-#: src/app/[lang]/terms-of-service/page.tsx:424
-msgid "We may delete any cloud-stored data in accordance with our data retention policy"
-msgstr "We may delete any cloud-stored data in accordance with our data retention policy"
-
-#: src/app/[lang]/terms-of-service/page.tsx:409
-msgid "We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason, including without limitation if you breach these Terms. Upon termination:"
-msgstr "We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason, including without limitation if you breach these Terms. Upon termination:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:287
-msgid "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date. For significant changes, we will provide prominent notice within the app. Your continued use of the Service after changes become effective constitutes acceptance of the revised policy."
-msgstr "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date. For significant changes, we will provide prominent notice within the app. Your continued use of the Service after changes become effective constitutes acceptance of the revised policy."
-
 #: src/generic/component/faq-section/faq-section.tsx:84
 msgid "We offer a 14-day free trial so you can experience Budgie's privacy-first approach risk-free. If you're not completely satisfied within 30 days, we provide a full refund—no questions asked."
 msgstr "We offer a 14-day free trial so you can experience Budgie's privacy-first approach risk-free. If you're not completely satisfied within 30 days, we provide a full refund—no questions asked."
-
-#: src/app/[lang]/terms-of-service/page.tsx:313
-msgid "We reserve the right to change our prices at any time. Price changes will not affect existing subscriptions until renewal. We will provide reasonable notice of price changes."
-msgstr "We reserve the right to change our prices at any time. Price changes will not affect existing subscriptions until renewal. We will provide reasonable notice of price changes."
-
-#: src/app/[lang]/terms-of-service/page.tsx:523
-msgid "We shall not be liable for any failure to perform our obligations where such failure results from circumstances beyond our reasonable control, including but not limited to acts of God, war, riot, embargoes, acts of civil or military authorities, fire, floods, accidents, pandemics, or strikes."
-msgstr "We shall not be liable for any failure to perform our obligations where such failure results from circumstances beyond our reasonable control, including but not limited to acts of God, war, riot, embargoes, acts of civil or military authorities, fire, floods, accidents, pandemics, or strikes."
-
-#: src/app/[lang]/license/page.tsx:369
-msgid "We take security seriously. If you discover a security vulnerability in Budgie:"
-msgstr "We take security seriously. If you discover a security vulnerability in Budgie:"
-
-#: src/app/[lang]/privacy-policy/page.tsx:105
-msgid "We use the limited information we collect to:"
-msgstr "We use the limited information we collect to:"
-
-#: src/app/[lang]/license/page.tsx:258
-msgid "We welcome contributions from the community! By contributing to Budgie, you agree that:"
-msgstr "We welcome contributions from the community! By contributing to Budgie, you agree that:"
-
-#: src/app/[lang]/license/page.tsx:384
-msgid "We will acknowledge your report within 48 hours"
-msgstr "We will acknowledge your report within 48 hours"
-
-#: src/app/[lang]/license/page.tsx:175
-#: src/app/[lang]/license/page.tsx:444
-#: src/app/[lang]/privacy-policy/page.tsx:308
-#: src/app/[lang]/terms-of-service/page.tsx:544
-msgid "Website: https://budgie.at"
-msgstr "Website: https://budgie.at"
 
 #: src/generic/component/banks-section/banks-section.tsx:19
 msgid "Wells Fargo"
@@ -1600,22 +638,6 @@ msgstr "Wells Fargo"
 #: src/generic/component/faq-section/faq-section.tsx:68
 msgid "What cryptocurrencies and assets can I track?"
 msgstr "What cryptocurrencies and assets can I track?"
-
-#: src/app/[lang]/privacy-policy/page.tsx:165
-msgid "When you opt into optional features, we may use the following trusted third-party services:"
-msgstr "When you opt into optional features, we may use the following trusted third-party services:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:203
-msgid "When you use optional features such as bank synchronization or market data feeds, you are also subject to the terms and conditions of those third-party service providers. We are not responsible for the availability, accuracy, or reliability of third-party services."
-msgstr "When you use optional features such as bank synchronization or market data feeds, you are also subject to the terms and conditions of those third-party service providers. We are not responsible for the availability, accuracy, or reliability of third-party services."
-
-#: src/app/[lang]/license/page.tsx:406
-msgid "While the Budgie source code is available under the Prosperity Public License, the \"Budgie\" name and logo are trademarks of Budgie. Use of these trademarks is subject to the following guidelines:"
-msgstr "While the Budgie source code is available under the Prosperity Public License, the \"Budgie\" name and logo are trademarks of Budgie. Use of these trademarks is subject to the following guidelines:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:175
-msgid "While we strive to provide accurate information, we do not warrant the accuracy, completeness, or reliability of:"
-msgstr "While we strive to provide accurate information, we do not warrant the accuracy, completeness, or reliability of:"
 
 #: src/generic/component/footer/footer.tsx:88
 #: src/generic/component/header/header.tsx:76
@@ -1635,121 +657,13 @@ msgstr "Why is there so little money left?"
 msgid "Why isn't Budgie free like other expense trackers?"
 msgstr "Why isn't Budgie free like other expense trackers?"
 
-#: src/app/[lang]/privacy-policy/page.tsx:210
-msgid "With service providers who assist in operating the Service (bound by strict confidentiality agreements)"
-msgstr "With service providers who assist in operating the Service (bound by strict confidentiality agreements)"
-
-#: src/app/[lang]/privacy-policy/page.tsx:201
-msgid "With your explicit consent"
-msgstr "With your explicit consent"
-
-#: src/app/[lang]/privacy-policy/page.tsx:83
-msgid "With your explicit consent, we may collect the following minimal information:"
-msgstr "With your explicit consent, we may collect the following minimal information:"
-
 #: src/generic/component/ai-section-details/ai-section-details.tsx:43
 msgid "Yes, show me the details"
 msgstr "Yes, show me the details"
 
-#: src/app/[lang]/terms-of-service/page.tsx:236
-msgid "You agree not to use the Service to store or transmit any content that:"
-msgstr "You agree not to use the Service to store or transmit any content that:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:122
-msgid "You agree NOT to:"
-msgstr "You agree NOT to:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:472
-msgid "You agree that any dispute resolution proceedings will be conducted only on an individual basis and not in a class, consolidated, or representative action."
-msgstr "You agree that any dispute resolution proceedings will be conducted only on an individual basis and not in a class, consolidated, or representative action."
-
-#: src/app/[lang]/terms-of-service/page.tsx:384
-msgid "You agree to defend, indemnify, and hold harmless Budgie and its licensors, affiliates, and service providers, and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to:"
-msgstr "You agree to defend, indemnify, and hold harmless Budgie and its licensors, affiliates, and service providers, and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to:"
-
-#: src/app/[lang]/license/page.tsx:273
-msgid "You agree to follow our code of conduct and contribution guidelines"
-msgstr "You agree to follow our code of conduct and contribution guidelines"
-
-#: src/app/[lang]/terms-of-service/page.tsx:194
-msgid "You are responsible for verifying all financial information and calculations provided by the Service."
-msgstr "You are responsible for verifying all financial information and calculations provided by the Service."
-
-#: src/app/[lang]/terms-of-service/page.tsx:227
-msgid "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
-msgstr "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
-
-#: src/app/[lang]/terms-of-service/page.tsx:302
-msgid "You can manage subscriptions and turn off auto-renewal in your device's account settings"
-msgstr "You can manage subscriptions and turn off auto-renewal in your device's account settings"
-
-#: src/app/[lang]/privacy-policy/page.tsx:223
-msgid "You have the following rights regarding your data:"
-msgstr "You have the following rights regarding your data:"
-
-#: src/app/[lang]/license/page.tsx:267
-msgid "You have the right to make the contribution and grant us the rights to use it"
-msgstr "You have the right to make the contribution and grant us the rights to use it"
-
-#: src/app/[lang]/terms-of-service/page.tsx:514
-msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."
-msgstr "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."
-
-#: src/app/[lang]/license/page.tsx:415
-msgid "You may not use our trademarks in a way that suggests endorsement"
-msgstr "You may not use our trademarks in a way that suggests endorsement"
-
-#: src/app/[lang]/license/page.tsx:104
-msgid "You may not use the Software for a fee, charge, consideration, or in or for a commercial product, service, or activity without a separate commercial license from the Licensor."
-msgstr "You may not use the Software for a fee, charge, consideration, or in or for a commercial product, service, or activity without a separate commercial license from the Licensor."
-
-#: src/app/[lang]/terms-of-service/page.tsx:428
-msgid "You may terminate your use of the Service at any time by uninstalling the Application and ceasing to access the Service."
-msgstr "You may terminate your use of the Service at any time by uninstalling the Application and ceasing to access the Service."
-
-#: src/app/[lang]/license/page.tsx:412
-msgid "You may use the name \"Budgie\" to refer to the software project"
-msgstr "You may use the name \"Budgie\" to refer to the software project"
-
-#: src/app/[lang]/terms-of-service/page.tsx:72
-msgid "You must be at least 18 years of age to use this Service. By using the Service, you represent and warrant that you are at least 18 years old and have the legal capacity to enter into these Terms. If you are using the Service on behalf of an organization, you represent that you have the authority to bind that organization to these Terms."
-msgstr "You must be at least 18 years of age to use this Service. By using the Service, you represent and warrant that you are at least 18 years old and have the legal capacity to enter into these Terms. If you are using the Service on behalf of an organization, you represent that you have the authority to bind that organization to these Terms."
-
-#: src/app/[lang]/license/page.tsx:165
-msgid "You must obtain a separate commercial license. Please contact us at:"
-msgstr "You must obtain a separate commercial license. Please contact us at:"
-
-#: src/app/[lang]/license/page.tsx:115
-msgid "You must retain the copyright notice, this license notice, and the following attribution in all copies or substantial portions of the Software and derivative works:"
-msgstr "You must retain the copyright notice, this license notice, and the following attribution in all copies or substantial portions of the Software and derivative works:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:218
-msgid "You retain all rights to the financial data and content you input into the Service (\"User Content\"). By using the Service, you grant us a limited license to process your User Content solely for the purpose of providing the Service to you."
-msgstr "You retain all rights to the financial data and content you input into the Service (\"User Content\"). By using the Service, you grant us a limited license to process your User Content solely for the purpose of providing the Service to you."
-
-#: src/app/[lang]/terms-of-service/page.tsx:418
-msgid "You should cease all use of the Service"
-msgstr "You should cease all use of the Service"
-
 #: src/generic/component/ai-section-features/ai-section-features.tsx:40
 msgid "You:"
 msgstr "You:"
-
-#: src/app/[lang]/terms-of-service/page.tsx:357
-msgid "Your access to or use of (or inability to access or use) the Service"
-msgstr "Your access to or use of (or inability to access or use) the Service"
-
-#: src/app/[lang]/terms-of-service/page.tsx:299
-msgid "Your account will be charged for renewal within 24 hours prior to the end of the current period"
-msgstr "Your account will be charged for renewal within 24 hours prior to the end of the current period"
-
-#: src/app/[lang]/license/page.tsx:270
-msgid "Your contribution does not violate any third-party rights"
-msgstr "Your contribution does not violate any third-party rights"
-
-#: src/app/[lang]/license/page.tsx:264
-msgid "Your contributions will be licensed under the same Prosperity Public License 3.0.0"
-msgstr "Your contributions will be licensed under the same Prosperity Public License 3.0.0"
 
 #: src/generic/component/faq-section/faq-section.tsx:54
 msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
@@ -1759,10 +673,6 @@ msgstr "Your data never leaves your device unless you explicitly sync with your 
 msgid "Your financial data never leaves your device. The AI runs locally, ensuring your spending habits and financial questions remain completely private."
 msgstr "Your financial data never leaves your device. The AI runs locally, ensuring your spending habits and financial questions remain completely private."
 
-#: src/app/[lang]/privacy-policy/page.tsx:276
-msgid "Your financial data remains on your device until you choose to delete it. If you use optional cloud features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely in aggregated form."
-msgstr "Your financial data remains on your device until you choose to delete it. If you use optional cloud features, we retain your data only as long as necessary to provide the Service or as required by law. Anonymous analytics data may be retained indefinitely in aggregated form."
-
 #: src/generic/component/features-section/features-section.tsx:78
 msgid "Your financial data stays on your device. No cloud storage, no data mining."
 msgstr "Your financial data stays on your device. No cloud storage, no data mining."
@@ -1770,19 +680,3 @@ msgstr "Your financial data stays on your device. No cloud storage, no data mini
 #: src/generic/component/hero-section/hero-section.tsx:36
 msgid "Your Money, Your Privacy, Your Control"
 msgstr "Your Money, Your Privacy, Your Control"
-
-#: src/app/[lang]/terms-of-service/page.tsx:415
-msgid "Your right to use the Service will immediately cease"
-msgstr "Your right to use the Service will immediately cease"
-
-#: src/app/[lang]/terms-of-service/page.tsx:393
-msgid "Your use or misuse of the Service"
-msgstr "Your use or misuse of the Service"
-
-#: src/app/[lang]/terms-of-service/page.tsx:396
-msgid "Your violation of any law or the rights of a third party"
-msgstr "Your violation of any law or the rights of a third party"
-
-#: src/app/[lang]/terms-of-service/page.tsx:390
-msgid "Your violation of these Terms"
-msgstr "Your violation of these Terms"
