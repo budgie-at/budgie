@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.55.2](https://github.com/budgie-at/budgie/compare/v1.55.1...v1.55.2) (2025-11-06)
+
+### Bug Fixes
+
+- **landing:** i18n middleware ([6d9bbea](https://github.com/budgie-at/budgie/commit/6d9bbea3bb5a7a6855382bd578e210a79f1d6063))
+- **landing:** i18n middleware ([4dfcb02](https://github.com/budgie-at/budgie/commit/4dfcb023b5a9d5314fce3a55aa8c9321b2fbc1cf))
+
 ## [1.55.1](https://github.com/budgie-at/budgie/compare/v1.55.0...v1.55.1) (2025-11-06)
 
 ### Bug Fixes
