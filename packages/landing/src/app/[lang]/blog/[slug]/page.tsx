@@ -9,8 +9,8 @@ import { notFound } from 'next/navigation';
 import { isDefined } from '@rnw-community/shared';
 
 import { BlogDataInterface } from '../../../../blog/interface/blog-data.interface';
-import { getAllArticles } from '../../../../blog/mdx-articles';
 import { calculateReadingTime } from '../../../../blog/util/calculate-reading-time.util';
+import { getArticles } from '../../../../blog/util/get-articles.util';
 import { Footer } from '../../../../generic/component/footer/footer';
 import { Header } from '../../../../generic/component/header/header';
 import { Motion } from '../../../../generic/component/motion/motion';
@@ -26,7 +26,7 @@ interface Props extends PageLangParam {
 
 // eslint-disable-next-line func-style
 export async function generateStaticParams() {
-    const articles = getAllArticles();
+    const articles = getArticles();
 
     return articles.map(article => ({ slug: article.slug }));
 }

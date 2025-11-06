@@ -9,13 +9,13 @@ import { useState, useTransition } from 'react';
 
 import { Button } from '../../../ui/button';
 
-interface BlogSearchProps {
+interface Props {
     locale: string;
     searchQuery: string;
     currentPage: number;
 }
 
-export const BlogSearch = ({ locale, searchQuery }: BlogSearchProps) => {
+export const BlogSearch = ({ locale, searchQuery }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();

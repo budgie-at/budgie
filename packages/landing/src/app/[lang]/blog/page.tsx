@@ -2,14 +2,13 @@ import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
 import { Suspense } from 'react';
 
-import { getAllArticles } from '../../../blog/mdx-articles';
+import { BlogSearch } from '../../../blog/component/blog-search/blog-search';
+import { getArticles } from '../../../blog/util/get-articles.util';
 import { BlogCard } from '../../../generic/component/blog-card/blog-card';
 import { Footer } from '../../../generic/component/footer/footer';
 import { Header } from '../../../generic/component/header/header';
 import { Motion } from '../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
-
-import { BlogSearch } from './blog-search';
 
 interface Props extends PageLangParam {
     searchParams: Promise<{ q?: string; page?: string }>;
@@ -22,7 +21,7 @@ export default async function BlogPage(props: Props) {
 
     initLingui(lang);
 
-    const allArticles = getAllArticles();
+    const allArticles = getArticles();
     const searchQuery = q.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;
