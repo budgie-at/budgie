@@ -18,6 +18,7 @@ import { Badge } from '../../../../components/ui/badge';
 import { Button } from '../../../../components/ui/button';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
+import { calculateReadingTime } from '../../../../lib/blog-utils';
 import { Motion } from '../../../../lib/motion';
 
 import { BlogArticleContent } from './blog-article-content';
@@ -95,7 +96,7 @@ export default async function BlogArticlePage(props: BlogArticlePageProps) {
     });
 
     const content = article.content[lang as keyof typeof article.content] || article.content.en;
-    const readingTime = Math.ceil(content.split(' ').length / 200);
+    const readingTime = calculateReadingTime(content);
 
     return (
         <div className="flex min-h-dvh flex-col">
