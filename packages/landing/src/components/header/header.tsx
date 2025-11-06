@@ -5,6 +5,7 @@ import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { Logo } from '../logo/logo';
 import { ThemeSwitcher } from '../theme-switcher/theme-switcher';
 import { Button } from '../ui/button';
@@ -65,6 +66,7 @@ export const Header = () => {
                 </nav>
 
                 <div className="flex gap-4 items-center">
+                    <LanguageSwitcher />
                     <ThemeSwitcher />
 
                     <Button className="hidden rounded-full md:flex">
