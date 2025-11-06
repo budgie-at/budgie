@@ -108,7 +108,7 @@ msgstr "Be among the first to experience Budgie Pro with exclusive early access 
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/components/footer/footer-details.tsx:13
-#: src/components/header/header.tsx:42
+#: src/components/header/header.tsx:43
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -206,7 +206,7 @@ msgstr "Download"
 msgid "Download & Install"
 msgstr "Download & Install"
 
-#: src/components/header/header.tsx:71
+#: src/components/header/header.tsx:73
 msgid "Download App"
 msgstr "Download App"
 
@@ -235,15 +235,15 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 
 #: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:63
-#: src/components/header/mobile-menu.tsx:37
+#: src/components/header/header.tsx:64
+#: src/components/header/mobile-menu.tsx:38
 msgid "FAQ"
 msgstr "FAQ"
 
 #: src/components/features-section/features-section.tsx:37
 #: src/components/footer/footer.tsx:27
-#: src/components/header/header.tsx:48
-#: src/components/header/mobile-menu.tsx:25
+#: src/components/header/header.tsx:49
+#: src/components/header/mobile-menu.tsx:26
 msgid "Features"
 msgstr "Features"
 
@@ -336,7 +336,7 @@ msgid "Join thousands of privacy-conscious users who trust Budgie to track their
 msgstr "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 
 #: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:42
+#: src/components/header/mobile-menu.tsx:50
 #: src/components/hero-section/hero-section.tsx:49
 msgid "Join Whitelist"
 msgstr "Join Whitelist"
@@ -344,6 +344,10 @@ msgstr "Join Whitelist"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Join Whitelist - Save 25%"
+
+#: src/components/header/mobile-menu.tsx:44
+msgid "Language"
+msgstr "Language"
 
 #: src/components/footer/footer.tsx:79
 msgid "Legal"
@@ -474,6 +478,10 @@ msgstr "Start Tracking in Minutes"
 msgid "Support"
 msgstr "Support"
 
+#: src/components/language-switcher/language-switcher.tsx:56
+msgid "Switch language"
+msgstr "Switch language"
+
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Syncs with 1000+ banks and financial institutions"
@@ -487,8 +495,8 @@ msgstr "Take Control of Your Financial Privacy"
 msgid "Terms of Service"
 msgstr "Terms of Service"
 
-#: src/components/header/header.tsx:55
-#: src/components/header/mobile-menu.tsx:29
+#: src/components/header/header.tsx:56
+#: src/components/header/mobile-menu.tsx:30
 #: src/components/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Testimonials"
@@ -501,7 +509,7 @@ msgstr "The crypto tracking is incredible. I can see all my DeFi positions along
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 
-#: src/components/header/header.tsx:79
+#: src/components/header/header.tsx:81
 msgid "Toggle menu"
 msgstr "Toggle menu"
 
@@ -556,8 +564,8 @@ msgid "What cryptocurrencies and assets can I track?"
 msgstr "What cryptocurrencies and assets can I track?"
 
 #: src/components/footer/footer.tsx:32
-#: src/components/header/header.tsx:59
-#: src/components/header/mobile-menu.tsx:33
+#: src/components/header/header.tsx:60
+#: src/components/header/mobile-menu.tsx:34
 msgid "Whitelist"
 msgstr "Whitelist"
 
