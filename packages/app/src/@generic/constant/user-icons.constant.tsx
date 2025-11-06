@@ -2,23 +2,19 @@ import {
     ArrowRightLeft,
     Bitcoin,
     ChartNoAxesColumn,
-    Check,
-    ChevronLeft,
     ChevronRight,
     CreditCard,
     Home,
+    LucideIcon,
     Plus,
     Receipt,
     Settings,
-    Sparkles,
     TrendingDown,
     TrendingUp,
     Wallet
 } from 'lucide-react-native';
 
-import type { LucideIcon } from 'lucide-react-native';
-
-export const ICONS = {
+export const USER_ICONS = Object.entries({
     Home,
     Receipt,
     ChartNoAxesColumn,
@@ -27,15 +23,13 @@ export const ICONS = {
     ArrowRightLeft,
     TrendingUp,
     Plus,
-    Sparkles,
     ChevronRight,
-    ChevronLeft,
     CreditCard,
     Bitcoin,
-    Wallet,
-    Check
-} as const satisfies Record<string, LucideIcon>;
+    Wallet
+}).map(([name, icon]) => ({ name, icon }));
 
-export type IconName = keyof typeof ICONS;
-export type IconType = typeof ICONS[IconName];
-
+export interface UserIcon {
+    name: string;
+    icon: LucideIcon;
+}

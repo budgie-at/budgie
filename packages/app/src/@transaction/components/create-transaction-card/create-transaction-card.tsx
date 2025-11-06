@@ -24,7 +24,7 @@ const iconVariant: Record<TransactionTypeEnum, CircleIconVariant> = {
 }
 
 export const CreateTransactionCard = ({ title, description, type, icon }: Props) => (
-    <Card className="p-5xl items-center gap-x-4 flex-row" key={title}>
+    <Card className="p-5xl items-center gap-x-4 flex-row">
         <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={iconVariant[type]} />
 
         <View className="mr-auto">

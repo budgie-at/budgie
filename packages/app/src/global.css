@@ -74,6 +74,8 @@
     --color-ghost-corner: rgba(0, 0, 0, 0.2);
     --color-ghost-background: rgba(10, 10, 10, 0.05);
 
+    --color-pink-foreground: rgba(246, 51, 154, 0.70);
+
     --color-corner: rgba(229, 229, 229, 1);
 }
 
@@ -108,6 +110,8 @@
     --color-ghost-foreground: rgba(255, 255, 255, 1);
     --color-ghost-corner: rgba(255, 255, 255, 0.2);
     --color-ghost-background: rgba(255, 255, 255, 0.05);
+
+    --color-pink-foreground: rgba(246, 51, 154, 0.70);
 
     --color-corner: rgba(34, 34, 34, 1);
 }

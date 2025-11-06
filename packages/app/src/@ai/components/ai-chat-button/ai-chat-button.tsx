@@ -12,7 +12,7 @@ export const AiChatButton = () => {
 
     return (
         <View>
-            <Pressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-4" onPress={navigateToAiPage}>
+            <Pressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-4 shadow-primary shadow-2xl" onPress={navigateToAiPage}>
                 <Icon className="text-primary-reverse" icon={Mic} size={16} />
             </Pressable>
 
