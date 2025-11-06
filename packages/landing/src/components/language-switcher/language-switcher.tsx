@@ -16,7 +16,6 @@ import {
 const LANGUAGE_NAMES: Record<string, string> = {
     // eslint-disable-next-line lingui/no-unlocalized-strings
     en: 'English',
-     
     uk: 'Українська',
     // eslint-disable-next-line lingui/no-unlocalized-strings
     fr: 'Français',
