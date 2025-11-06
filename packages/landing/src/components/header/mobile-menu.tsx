@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { Motion } from '../../lib/motion';
+import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { Button } from '../ui/button';
 
 interface MobileMenuProps {
@@ -47,6 +48,13 @@ export const MobileMenu = ({ onClose, locale }: MobileMenuProps) => {
                 </Link>
 
                 <div className="flex flex-col gap-2 pt-2 border-t">
+                    <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">
+                        <Trans>Language</Trans>
+                    </span>
+                        <LanguageSwitcher />
+                    </div>
+
                     <Button className="rounded-full">
                         <Trans>Join Whitelist</Trans>
                         <ChevronRight className="ml-1 size-4" />
