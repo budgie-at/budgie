@@ -7,7 +7,7 @@ import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../../ui/button';
 
 interface BlogSearchProps {
     locale: string;
