@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { getRecentArticles } from '../../../blog/mdx-articles';
+import { getArticles } from '../../../blog/util/get-articles.util';
 import { Button } from '../../../ui/button';
 import { BlogCard } from '../blog-card/blog-card';
 import { Motion } from '../motion/motion';
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const BlogSection = ({ locale }: Props) => {
-    const recentArticles = getRecentArticles(3);
+    const recentArticles = getArticles().slice(0, 3);
 
     return (
         <section className="w-full py-20 md:py-32 bg-muted/30">
