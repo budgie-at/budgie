@@ -347,7 +347,7 @@ msgstr "Unirse a Lista de Espera - Ahorra 25%"
 
 #: src/components/header/mobile-menu.tsx:44
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: src/components/footer/footer.tsx:79
 msgid "Legal"
@@ -478,9 +478,9 @@ msgstr "Comienza a Rastrear en Minutos"
 msgid "Support"
 msgstr "Soporte"
 
-#: src/components/language-switcher/language-switcher.tsx:55
+#: src/components/language-switcher/language-switcher.tsx:56
 msgid "Switch language"
-msgstr ""
+msgstr "Cambiar idioma"
 
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
