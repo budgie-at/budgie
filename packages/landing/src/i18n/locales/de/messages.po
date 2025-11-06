@@ -378,7 +378,7 @@ msgstr "Whitelist beitreten - 25% sparen"
 
 #: src/components/header/mobile-menu.tsx:53
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: src/components/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
@@ -540,7 +540,7 @@ msgstr "Support"
 
 #: src/components/language-switcher/language-switcher.tsx:55
 msgid "Switch language"
-msgstr ""
+msgstr "Sprache wechseln"
 
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"

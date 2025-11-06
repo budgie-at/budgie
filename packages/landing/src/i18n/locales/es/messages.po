@@ -378,7 +378,7 @@ msgstr "Unirse a Lista de Espera - Ahorra 25%"
 
 #: src/components/header/mobile-menu.tsx:53
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: src/components/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
@@ -540,7 +540,7 @@ msgstr "Soporte"
 
 #: src/components/language-switcher/language-switcher.tsx:55
 msgid "Switch language"
-msgstr ""
+msgstr "Cambiar idioma"
 
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
