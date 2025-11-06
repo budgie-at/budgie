@@ -108,7 +108,7 @@ msgstr "Станьте одним із перших, хто спробує Budgi
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/components/footer/footer-details.tsx:13
-#: src/components/header/header.tsx:42
+#: src/components/header/header.tsx:43
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -206,7 +206,7 @@ msgstr "Завантажити"
 msgid "Download & Install"
 msgstr "Завантажте та встановіть"
 
-#: src/components/header/header.tsx:71
+#: src/components/header/header.tsx:73
 msgid "Download App"
 msgstr "Завантажити додаток"
 
@@ -235,15 +235,15 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
 
 #: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:63
-#: src/components/header/mobile-menu.tsx:37
+#: src/components/header/header.tsx:64
+#: src/components/header/mobile-menu.tsx:38
 msgid "FAQ"
 msgstr "Питання та відповіді"
 
 #: src/components/features-section/features-section.tsx:37
 #: src/components/footer/footer.tsx:27
-#: src/components/header/header.tsx:48
-#: src/components/header/mobile-menu.tsx:25
+#: src/components/header/header.tsx:49
+#: src/components/header/mobile-menu.tsx:26
 msgid "Features"
 msgstr "Можливості"
 
@@ -336,7 +336,7 @@ msgid "Join thousands of privacy-conscious users who trust Budgie to track their
 msgstr "Приєднуйтесь до тисяч користувачів, які цінують приватність і довіряють Budgie облік своїх витрат без компромісів із фінансовими даними."
 
 #: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:42
+#: src/components/header/mobile-menu.tsx:50
 #: src/components/hero-section/hero-section.tsx:49
 msgid "Join Whitelist"
 msgstr "Приєднатися до білого списку"
@@ -344,6 +344,10 @@ msgstr "Приєднатися до білого списку"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Приєднайтесь до білого списку — заощадьте 25%"
+
+#: src/components/header/mobile-menu.tsx:44
+msgid "Language"
+msgstr "Мова"
 
 #: src/components/footer/footer.tsx:79
 msgid "Legal"
@@ -474,6 +478,10 @@ msgstr "Почніть облік за кілька хвилин"
 msgid "Support"
 msgstr "Підтримка"
 
+#: src/components/language-switcher/language-switcher.tsx:56
+msgid "Switch language"
+msgstr "Змінити мову"
+
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Синхронізується з 1000+ банками та фінансовими установами"
@@ -487,8 +495,8 @@ msgstr "Візьміть під контроль свою фінансову п�
 msgid "Terms of Service"
 msgstr "Умови користування"
 
-#: src/components/header/header.tsx:55
-#: src/components/header/mobile-menu.tsx:29
+#: src/components/header/header.tsx:56
+#: src/components/header/mobile-menu.tsx:30
 #: src/components/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Відгуки"
@@ -501,7 +509,7 @@ msgstr "Відстеження криптовалют — неймовірне. 
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "Трекер витрат із пріоритетом приватності, який зберігає ваші фінансові дані лише на вашому пристрої."
 
-#: src/components/header/header.tsx:79
+#: src/components/header/header.tsx:81
 msgid "Toggle menu"
 msgstr "Відкрити/закрити меню"
 
@@ -556,8 +564,8 @@ msgid "What cryptocurrencies and assets can I track?"
 msgstr "Які криптовалюти й активи можна відстежувати?"
 
 #: src/components/footer/footer.tsx:32
-#: src/components/header/header.tsx:59
-#: src/components/header/mobile-menu.tsx:33
+#: src/components/header/header.tsx:60
+#: src/components/header/mobile-menu.tsx:34
 msgid "Whitelist"
 msgstr "Білий список"
 
