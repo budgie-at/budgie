@@ -13,8 +13,9 @@ interface Props {
     readonly size?: CircleIconSize;
     readonly border?: boolean;
     readonly icon: LucideIcon;
-    readonly variant?: CircleIconVariant;
     readonly className?: string;
+    readonly iconClassName?: string;
+    readonly variant?: CircleIconVariant;
 }
 
 const wrapperVariants = cva<{
@@ -35,7 +36,9 @@ const wrapperVariants = cva<{
             sm: 'w-7 h-7',
             md: 'w-8 h-8',
             lg: 'w-8.5 h-8.5',
-            xl: 'w-9 h-9'
+            xl: 'w-9 h-9',
+            '2xl': 'w-[52px] h-[52px]',
+            '3xl': 'w-[62px] h-[62px]',
         },
         border: {
             true: 'border',
@@ -61,11 +64,13 @@ const iconSize: Record<CircleIconSize, number> = {
     sm: 14,
     md: 16,
     lg: 18,
-    xl: 20
+    xl: 20,
+    '2xl': 24,
+    '3xl': 28,
 };
 
-export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: Props) => (
+export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className, iconClassName }: Props) => (
     <View className={cn(wrapperVariants({ variant, size, border }), className)}>
-        <Icon className={iconVariants({ variant })} icon={icon} size={iconSize[size]} />
+        <Icon className={cn(iconVariants({ variant }), iconClassName)} icon={icon} size={iconSize[size]} />
     </View>
 );

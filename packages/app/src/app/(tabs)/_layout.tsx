@@ -32,6 +32,10 @@ export default function TabsLayout() {
                     <CreateTransactionTab />
                 </BottomTabs>
             </TabList>
+
+            <TabList className="hidden">
+                <TabTrigger name="account" href="/(tabs)/account" />
+            </TabList>
         </Wrapper>
     );
 }

@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
+import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
@@ -29,8 +30,13 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 
-const stackOptions = { headerShown: false, gestureEnabled: false };
-const tabsOptions = { headerShown: false };
+const stackOptions: NativeStackNavigationOptions = {
+    headerShown: false,
+    gestureEnabled: false,
+    contentStyle: { backgroundColor: 'black' }
+};
+const tabsOptions = { headerShown: false, gestureEnabled: true, contentStyle: { backgroundColor: 'black' } };
+const mainOptions = { headerShown: false, gestureEnabled: true, contentStyle: { backgroundColor: 'black' } };
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     headerShown: false,
     presentation: 'modal',
@@ -59,8 +65,9 @@ export default function RootLayout() {
                             <BottomSheetsProvider>
                                 <Stack screenOptions={stackOptions}>
                                     <Stack.Screen name="(tabs)" options={tabsOptions} />
+                                    <Stack.Screen name="(main)" options={mainOptions} />
 
-                                    <Stack.Screen name="ai" options={aiScreenOptions} />
+                                    <Stack.Screen name="(modals)/ai" options={aiScreenOptions} />
                                 </Stack>
                             </BottomSheetsProvider>
                         </SQLiteProvider>
