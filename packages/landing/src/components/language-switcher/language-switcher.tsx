@@ -34,6 +34,7 @@ export const LanguageSwitcher = () => {
     const params = useParams();
     const { i18n } = useLingui();
 
+    // Determine current locale: prioritize URL param, fallback to i18n state, then config default
     const currentLocale = (params.lang as string) || i18n.locale || locales[0] || 'en';
 
     const handleLanguageChange = (newLocale: string) => (): void => {
