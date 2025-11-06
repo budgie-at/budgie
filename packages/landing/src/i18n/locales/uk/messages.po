@@ -384,10 +384,6 @@ msgstr "Приєднайтесь до білого списку — заощад
 msgid "Language"
 msgstr "Мова"
 
-#: src/app/[lang]/legal/[slug]/page.tsx:77
-msgid "Last Updated"
-msgstr ""
-
 #: src/generic/component/blog-section/blog-section.tsx:22
 msgid "Latest from Our Blog"
 msgstr "Останнє з нашого блогу"
