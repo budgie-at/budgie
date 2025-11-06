@@ -28,7 +28,7 @@ const Modal = styled(BottomSheetModal, {
 const Content = styled(BottomSheetView);
 const edges: Edges = ['bottom'];
 
-const edges: Edges = ['bottom'];export const BottomSheet = ({ ref, children, className, snapPoints = [], handleClassName, contentClassName }: PropsWithChildren<Props>) => (
+export const BottomSheet = ({ ref, children, className, snapPoints = [], handleClassName, contentClassName }: PropsWithChildren<Props>) => (
     <Modal
         backdropComponent={BottomSheetBackdrop}
         backgroundClassName="bg-primary-reverse"
