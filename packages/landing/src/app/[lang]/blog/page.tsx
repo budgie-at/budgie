@@ -1,37 +1,32 @@
-/* eslint-disable max-lines-per-function */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @rnw-community/no-complex-jsx-logic */
-
 import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
 import { Suspense } from 'react';
 
-import { BlogCard } from '../../../components/blog-card/blog-card';
-import { Footer } from '../../../components/footer/footer';
-import { Header } from '../../../components/header/header';
+import { getAllArticles } from '../../../blog/mdx-articles';
+import { BlogCard } from '../../../generic/component/blog-card/blog-card';
+import { Footer } from '../../../generic/component/footer/footer';
+import { Header } from '../../../generic/component/header/header';
+import { Motion } from '../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
-import { getAllArticles } from '../../../lib/mdx-articles';
-import { Motion } from '../../../lib/motion';
 
 import { BlogSearch } from './blog-search';
 
-const initialMotion = { opacity: 0, y: 20 };
-const transitionMotion = { duration: 0.5 };
+interface Props extends PageLangParam {
+    searchParams: Promise<{ q?: string; page?: string }>;
+}
 
-export const dynamic = 'force-dynamic';
-
-export default async function BlogPage(props: PageLangParam & { searchParams: Promise<{ q?: string; page?: string }> }) {
+// eslint-disable-next-line max-lines-per-function
+export default async function BlogPage(props: Props) {
     const { lang } = await props.params;
-    const searchParams = await props.searchParams;
+    const { q = '', page = '1' } = await props.searchParams;
 
     initLingui(lang);
 
     const allArticles = getAllArticles();
-    const searchQuery = searchParams?.q?.toLowerCase() || '';
-    const currentPage = Number.parseInt(searchParams?.page || '1', 10);
+    const searchQuery = q.toLowerCase() || '';
+    const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;
 
-    // Filter articles based on search query
     const filteredArticles = searchQuery
         ? allArticles.filter(
               article =>
@@ -41,7 +36,6 @@ export default async function BlogPage(props: PageLangParam & { searchParams: Pr
           )
         : allArticles;
 
-    // Paginate articles
     const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
     const startIndex = (currentPage - 1) * articlesPerPage;
     const paginatedArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
@@ -53,7 +47,7 @@ export default async function BlogPage(props: PageLangParam & { searchParams: Pr
             <main className="flex-1">
                 <section className="w-full py-20 md:py-32 overflow-hidden">
                     <div className="container px-4 md:px-6">
-                        <Motion animate={{ opacity: 1, y: 0 }} className="text-center mb-12" initial={initialMotion} transition={transitionMotion}>
+                        <Motion className="text-center mb-12">
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                                 <Trans>Blog & Insights</Trans>
                             </h1>
@@ -88,17 +82,14 @@ export default async function BlogPage(props: PageLangParam & { searchParams: Pr
                                 </div>
 
                                 {totalPages > 1 && (
-                                    <Motion
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="flex justify-center gap-2 mt-8"
-                                        initial={initialMotion}
-                                        transition={transitionMotion}
-                                    >
+                                    <Motion className="flex justify-center gap-2 mt-8">
                                         {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
                                             const isActive = page === currentPage;
                                             const params = new URLSearchParams();
 
-                                            if (searchQuery) {params.set('q', searchQuery);}
+                                            if (searchQuery) {
+                                                params.set('q', searchQuery);
+                                            }
                                             params.set('page', page.toString());
 
                                             return (
@@ -119,12 +110,7 @@ export default async function BlogPage(props: PageLangParam & { searchParams: Pr
                                 )}
                             </>
                         ) : (
-                            <Motion
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-center py-12"
-                                initial={initialMotion}
-                                transition={transitionMotion}
-                            >
+                            <Motion className="text-center py-12">
                                 <Search className="size-16 mx-auto mb-4 text-muted-foreground" />
 
                                 <h3 className="text-2xl font-bold mb-2">
