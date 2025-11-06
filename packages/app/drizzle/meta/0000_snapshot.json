@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1e271069-75af-46e7-b3d0-a9e81fa4a08e",
+  "id": "be428fac-8418-49cb-b299-9c053a44e4da",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -19,14 +19,16 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "updatedAt": {
           "name": "updatedAt",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "deletedAt": {
           "name": "deletedAt",
@@ -34,6 +36,21 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
         },
         "balance": {
           "name": "balance",
@@ -66,6 +83,14 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'UAH'"
+        },
+        "include_in_net_worth": {
+          "name": "include_in_net_worth",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
         }
       },
       "indexes": {},
@@ -89,14 +114,16 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "updatedAt": {
           "name": "updatedAt",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "deletedAt": {
           "name": "deletedAt",
@@ -142,14 +169,16 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "updatedAt": {
           "name": "updatedAt",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "deletedAt": {
           "name": "deletedAt",
@@ -188,17 +217,33 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "updatedAt": {
           "name": "updatedAt",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         },
         "deletedAt": {
           "name": "deletedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "instrument": {
+          "name": "instrument",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -212,18 +257,34 @@
           "autoincrement": false,
           "default": 0
         },
-        "account_id": {
-          "name": "account_id",
+        "quantity": {
+          "name": "quantity",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "pricePerUnit": {
+          "name": "pricePerUnit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "from_account_id": {
+          "name": "from_account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
-        "category_id": {
-          "name": "category_id",
+        "to_account_id": {
+          "name": "to_account_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "title": {
@@ -255,7 +316,8 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "(unixepoch())"
         }
       },
       "indexes": {},
