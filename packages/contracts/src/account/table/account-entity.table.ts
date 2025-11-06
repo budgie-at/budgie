@@ -20,6 +20,6 @@ export const AccountEntityTable = sqliteTable(
             .$type<CurrencyEnum>()
             .default(CurrencyEnum.UAH)
             .notNull(),
-        includeInNetWorth: int({ mode: 'boolean' }).default(true).notNull()
+        includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()
     })
 );

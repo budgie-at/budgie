@@ -7,13 +7,14 @@ export const ExpenseTransactionEntitySchema = TransactionEntitySchema.omit({
     type: true,
     quantity: true,
     instrument: true,
-    pricePerUnit: true,
-    counterAccountId: true,
-    transferDirection: true
+    toAccountId: true,
+    pricePerUnit: true
 })
     .extend({
         type: literal(TransactionTypeEnum.EXPENSE)
     })
     .required({
-        categoryId: true
+        amount: true,
+        categoryId: true,
+        fromAccountId: true
     });
