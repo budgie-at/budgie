@@ -13,7 +13,8 @@ export const TransferTransactionEntitySchema = TransactionEntitySchema.omit({
         type: literal(TransactionTypeEnum.TRANSFER)
     })
     .required({
+        amount: true,
         categoryId: true,
-        counterAccountId: true,
-        transferDirection: true
+        toAccountId: true,
+        fromAccountId: true
     });
