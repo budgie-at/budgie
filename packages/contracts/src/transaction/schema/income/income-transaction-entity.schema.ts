@@ -8,12 +8,13 @@ export const IncomeTransactionEntitySchema = TransactionEntitySchema.omit({
     quantity: true,
     instrument: true,
     pricePerUnit: true,
-    counterAccountId: true,
-    transferDirection: true
+    fromAccountId: true
 })
     .extend({
         type: literal(TransactionTypeEnum.INCOME)
     })
     .required({
-        categoryId: true
+        amount: true,
+        categoryId: true,
+        toAccountId: true
     });
