@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.55.1](https://github.com/budgie-at/budgie/compare/v1.55.0...v1.55.1) (2025-11-06)
+
+### Bug Fixes
+
+- **landing:** missing blog, home page ([c2f8e7e](https://github.com/budgie-at/budgie/commit/c2f8e7e01f21d8beae872b6d473a8e20073c29ae))
+
 # [1.55.0](https://github.com/budgie-at/budgie/compare/v1.54.0...v1.55.0) (2025-11-06)
 
 ### Features
