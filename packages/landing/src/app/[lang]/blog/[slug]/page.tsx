@@ -75,7 +75,9 @@ export default async function BlogArticlePage(props: Props) {
 
     initLingui(lang);
 
-    const { default: Post, metadata } = await getPost(slug, lang);
+    const { default: Post, metadata } = await getPost(slug, lang).catch(() => {
+        notFound();
+    });
 
     if (!isDefined(metadata)) {
         notFound();
