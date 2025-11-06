@@ -43,7 +43,7 @@ export const BlogCard = ({ slug, title, description, date, tags, image, locale, 
                                 alt={title}
                                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 fill
-                                /* eslint-disable-next-line lingui/no-unlocalized-strings */
+                                 
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 src={image}
                             />
