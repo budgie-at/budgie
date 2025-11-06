@@ -5,9 +5,10 @@ export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
     title: true,
     amount: true,
     comment: true,
-    accountId: true,
     categoryId: true,
-    operatedAt: true
+    operatedAt: true,
+    toAccountId: true,
+    fromAccountId: true,
 }).partial({
     comment: true,
     operatedAt: true
