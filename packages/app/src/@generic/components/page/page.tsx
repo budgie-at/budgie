@@ -1,6 +1,6 @@
 import { styled } from 'nativewind';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
 
