@@ -8,6 +8,7 @@ import { Calendar, Clock } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { calculateReadingTime } from '../../lib/blog-utils';
 import { Motion } from '../../lib/motion';
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card/card';
@@ -33,7 +34,7 @@ export const BlogCard = ({ slug, title, description, date, tags, image, locale, 
         day: 'numeric'
     });
 
-    const readingTime = Math.ceil(description.split(' ').length / 200);
+    const readingTime = calculateReadingTime(description);
 
     return (
         <Motion

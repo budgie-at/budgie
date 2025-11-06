@@ -1,7 +1,7 @@
 /* eslint-disable max-statements */
 /* eslint-disable no-plusplus */
 /* eslint-disable require-unicode-regexp */
-/* eslint-disable lingui/no-unlocalized-strings */
+ 
 /* eslint-disable @rnw-community/no-complex-jsx-logic */
 /* eslint-disable no-continue */
 
@@ -76,18 +76,38 @@ export const BlogArticleContent = ({ content }: BlogArticleContentProps) => {
                 // Empty line - skip
                 continue;
             } else {
-                // Regular paragraph - process inline formatting
-                const processedLine = line
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>');
+                // Regular paragraph - process inline formatting safely
+                const parts = line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g);
+                const paragraphIndex = currentIndex++;
+                const processedParts = parts.map((part, idx) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={`strong-${paragraphIndex}-${idx}`}>{part.slice(2, -2)}</strong>;
+                    } else if (part.match(/\[(.*?)\]\((.*?)\)/)) {
+                        const match = part.match(/\[(.*?)\]\((.*?)\)/);
+
+                        if (match) {
+                            const [, text, url] = match;
+
+                            // Only allow http, https, and anchor links
+                            if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('#')) {
+                                return (
+                                    <a key={`link-${paragraphIndex}-${idx}`} className="text-primary hover:underline" href={url}>
+                                        {text}
+                                    </a>
+                                );
+                            }
+
+                            return text;
+                        }
+                    }
+
+                    return part;
+                });
 
                 elements.push(
-                    <p
-                        key={`p-${currentIndex++}`}
-                        className="text-base md:text-lg leading-relaxed mb-4 text-muted-foreground"
-                         
-                        dangerouslySetInnerHTML={{ __html: processedLine }}
-                    />
+                    <p key={`p-${paragraphIndex}`} className="text-base md:text-lg leading-relaxed mb-4 text-muted-foreground">
+                        {processedParts}
+                    </p>
                 );
             }
         }
