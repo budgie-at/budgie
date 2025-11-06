@@ -6,11 +6,11 @@ import { Trans } from '@lingui/react/macro';
 import { Search } from 'lucide-react';
 import { Suspense } from 'react';
 
-import { getAllArticles } from '../../../../content/blog/articles';
 import { BlogCard } from '../../../components/blog-card/blog-card';
 import { Footer } from '../../../components/footer/footer';
 import { Header } from '../../../components/header/header';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+import { getAllArticles } from '../../../lib/mdx-articles';
 import { Motion } from '../../../lib/motion';
 
 import { BlogSearch } from './blog-search';
