@@ -378,7 +378,7 @@ msgstr "Rejoindre la liste blanche – Économisez 25 %"
 
 #: src/components/header/mobile-menu.tsx:53
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: src/components/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
@@ -540,7 +540,7 @@ msgstr "Support"
 
 #: src/components/language-switcher/language-switcher.tsx:55
 msgid "Switch language"
-msgstr ""
+msgstr "Changer de langue"
 
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
