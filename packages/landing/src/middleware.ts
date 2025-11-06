@@ -1,7 +1,3 @@
-/*
- * For more info see
- * https://nextjs.org/docs/app/building-your-application/routing/internationalization
- * */
 import Negotiator from 'negotiator';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -28,7 +24,6 @@ export function middleware(request: NextRequest) {
         return;
     }
 
-    // Redirect if there is no locale
     const locale = getRequestLocale(request.headers);
     request.nextUrl.pathname = `/${locale}${pathname}`;
 
@@ -38,16 +33,4 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(request.nextUrl);
 }
 
-export const config = {
-    matcher: [
-        /*
-         * Match all request paths except:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-         * Feel free to modify this pattern to include more paths.
-         */
-        '/((?!_next/static|_next/image|favicon.ico|.well-known|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
-    ]
-};
+export const config = { matcher: ['/((?!_next).*)'] };

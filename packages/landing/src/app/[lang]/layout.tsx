@@ -105,7 +105,7 @@ export default async function RootLayout({ params, children }: Props) {
     initLingui(lang);
 
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang={lang} suppressHydrationWarning>
             <body className={fixelDisplay.className}>
                 <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>

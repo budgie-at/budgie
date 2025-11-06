@@ -25,9 +25,13 @@ msgstr "«Чому я так багато витратив цього місяц
 msgid "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
 msgstr "«Ви витратили на 40% більше на ресторани ($320 проти $230 в середньому). Найбільша витрата — $85 у Fancy Restaurant 15-го числа.»"
 
-#: src/components/footer/footer.tsx:109
+#: src/components/footer/footer.tsx:157
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Всі права захищено."
+
+#: src/app/[lang]/blog/[slug]/page.tsx:113
+msgid "← Back to Blog"
+msgstr "← Назад до блогу"
 
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:112
 msgid "<0>Limited Offer:</0> Only 500 whitelist spots available. Get 25% off your first year of Budgie Pro when you join the whitelist."
@@ -73,7 +77,7 @@ msgstr "AI-асистент"
 msgid "AI:"
 msgstr "AI:"
 
-#: src/components/footer/footer.tsx:21
+#: src/components/footer/footer.tsx:34
 msgid "App"
 msgstr "Додаток"
 
@@ -105,10 +109,20 @@ msgstr "Синхронізація з банком"
 msgid "Be among the first to experience Budgie Pro with exclusive early access pricing. Limited spots available for privacy-conscious early adopters."
 msgstr "Станьте одним із перших, хто спробує Budgie Pro за ексклюзивною ціною раннього доступу. Кількість місць обмежена для тих, хто цінує приватність."
 
+#: src/components/footer/footer.tsx:78
+#: src/components/header/header.tsx:74
+#: src/components/header/mobile-menu.tsx:39
+msgid "Blog"
+msgstr "Блог"
+
+#: src/app/[lang]/blog/page.tsx:58
+msgid "Blog & Insights"
+msgstr "Блог та Аналітика"
+
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
-#: src/components/footer/footer-details.tsx:13
-#: src/components/header/header.tsx:43
+#: src/components/footer/footer-details.tsx:20
+#: src/components/header/header.tsx:54
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -121,6 +135,10 @@ msgstr "Budgie — трекер витрат із пріоритетом при�
 #: src/components/ai-section-details/ai-section-details.tsx:15
 msgid "Budgie AI"
 msgstr "Budgie AI"
+
+#: src/app/[lang]/blog/[slug]/page.tsx:59
+msgid "Budgie Blog"
+msgstr "Блог Budgie"
 
 #: src/components/features-section/features-section.tsx:45
 msgid "Budgie combines powerful expense tracking with complete privacy. Track every dollar, euro, or bitcoin while keeping your financial data exactly where it belongs—on your device."
@@ -153,6 +171,10 @@ msgstr "Команда Budgie"
 #: src/components/faq-section/faq-section.tsx:78
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie використовує ліцензію з відкритим кодом, яка дозволяє переглядати, змінювати та вносити вклад у код, але лише ми можемо монетизувати офіційний додаток. Це забезпечує прозорість та стійкість проєкту."
+
+#: src/app/[lang]/blog/[slug]/page.tsx:147
+msgid "By"
+msgstr "Автор"
 
 #: src/components/faq-section/faq-section.tsx:74
 msgid "Can I use Budgie across multiple devices?"
@@ -190,7 +212,11 @@ msgstr "Діджитал-номад"
 msgid "Direct line to our development team"
 msgstr "Прямий зв’язок із командою розробки"
 
-#: src/components/footer/footer.tsx:56
+#: src/components/blog-section/blog-section.tsx:39
+msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
+msgstr "Відкрийте для себе інформацію про фінансову конфіденційність, найкращі практики безпеки та як взяти під контроль свої гроші."
+
+#: src/components/footer/footer.tsx:86
 msgid "Documentation"
 msgstr "Документація"
 
@@ -198,7 +224,7 @@ msgstr "Документація"
 msgid "Does bank sync work offline?"
 msgstr "Чи працює синхронізація з банком офлайн?"
 
-#: src/components/footer/footer.tsx:37
+#: src/components/footer/footer.tsx:59
 msgid "Download"
 msgstr "Завантажити"
 
@@ -206,7 +232,7 @@ msgstr "Завантажити"
 msgid "Download & Install"
 msgstr "Завантажте та встановіть"
 
-#: src/components/header/header.tsx:73
+#: src/components/header/header.tsx:94
 msgid "Download App"
 msgstr "Завантажити додаток"
 
@@ -235,15 +261,15 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
 
 #: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:64
-#: src/components/header/mobile-menu.tsx:38
+#: src/components/header/header.tsx:85
+#: src/components/header/mobile-menu.tsx:47
 msgid "FAQ"
 msgstr "Питання та відповіді"
 
 #: src/components/features-section/features-section.tsx:37
-#: src/components/footer/footer.tsx:27
-#: src/components/header/header.tsx:49
-#: src/components/header/mobile-menu.tsx:26
+#: src/components/footer/footer.tsx:43
+#: src/components/header/header.tsx:63
+#: src/components/header/mobile-menu.tsx:31
 msgid "Features"
 msgstr "Можливості"
 
@@ -287,7 +313,7 @@ msgstr "Отримуйте миттєві відповіді щодо витра
 msgid "Get personalized recommendations like \"Don't give a girl so much money!\" and other practical insights to help you make better financial decisions."
 msgstr "Отримуйте персоналізовані поради, наприклад «Не давай дівчині так багато грошей!» та інші практичні підказки для кращих фінансових рішень."
 
-#: src/components/footer/footer-details.tsx:26
+#: src/components/footer/footer-details.tsx:33
 msgid "GitHub"
 msgstr "GitHub"
 
@@ -327,6 +353,10 @@ msgstr "Миттєвий фінансовий аналіз"
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Чи є безкоштовний пробний період або гарантія повернення грошей?"
 
+#: src/app/[lang]/blog/[slug]/page.tsx:181
+msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
+msgstr "Приєднуйтесь до списку очікування Budgie та будьте серед перших, хто відчує справжнє приватне фінансове управління."
+
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:15
 msgid "Join the Whitelist & Save 25%"
 msgstr "Приєднуйтесь до білого списку та заощаджуйте 25%"
@@ -335,8 +365,9 @@ msgstr "Приєднуйтесь до білого списку та заоща�
 msgid "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 msgstr "Приєднуйтесь до тисяч користувачів, які цінують приватність і довіряють Budgie облік своїх витрат без компромісів із фінансовими даними."
 
+#: src/app/[lang]/blog/[slug]/page.tsx:188
 #: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:50
+#: src/components/header/mobile-menu.tsx:59
 #: src/components/hero-section/hero-section.tsx:49
 msgid "Join Whitelist"
 msgstr "Приєднатися до білого списку"
@@ -345,15 +376,19 @@ msgstr "Приєднатися до білого списку"
 msgid "Join Whitelist - Save 25%"
 msgstr "Приєднайтесь до білого списку — заощадьте 25%"
 
-#: src/components/header/mobile-menu.tsx:44
+#: src/components/header/mobile-menu.tsx:53
 msgid "Language"
 msgstr "Мова"
 
-#: src/components/footer/footer.tsx:79
+#: src/components/blog-section/blog-section.tsx:35
+msgid "Latest from Our Blog"
+msgstr "Останнє з нашого блогу"
+
+#: src/components/footer/footer.tsx:115
 msgid "Legal"
 msgstr "Юридична інформація"
 
-#: src/components/footer/footer.tsx:95
+#: src/components/footer/footer.tsx:140
 msgid "License"
 msgstr "Ліцензія"
 
@@ -364,6 +399,11 @@ msgstr "Обмежений час"
 #: src/components/testimonials-section/testimonials-section.tsx:48
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
+
+#: src/app/[lang]/blog/[slug]/page.tsx:141
+#: src/components/blog-card/blog-card.tsx:87
+msgid "min read"
+msgstr "хв читання"
 
 #: src/components/features-section/features-section.tsx:72
 msgid "Monitor cash, crypto, stocks, and bank accounts all in one place."
@@ -380,6 +420,10 @@ msgstr "Облік різних активів"
 #: src/components/features-section/features-section.tsx:86
 msgid "Multi-Currency Support"
 msgstr "Підтримка багатьох валют"
+
+#: src/app/[lang]/blog/page.tsx:131
+msgid "No articles found"
+msgstr "Статей не знайдено"
 
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:88
 msgid "No commitment"
@@ -401,7 +445,7 @@ msgstr "Відкритий код"
 msgid "Open Source & Private"
 msgstr "Відкритий код і приватність"
 
-#: src/components/footer/footer.tsx:122
+#: src/components/footer/footer.tsx:170
 msgid "Open Source License"
 msgstr "Ліцензія з відкритим кодом"
 
@@ -413,24 +457,28 @@ msgstr "Пріоритетна підтримка"
 msgid "Privacy First"
 msgstr "Приватність понад усе"
 
-#: src/components/footer/footer.tsx:61
+#: src/components/footer/footer.tsx:94
 msgid "Privacy Guide"
 msgstr "Посібник із приватності"
 
-#: src/components/footer/footer.tsx:85
-#: src/components/footer/footer.tsx:114
+#: src/components/footer/footer.tsx:124
+#: src/components/footer/footer.tsx:162
 msgid "Privacy Policy"
 msgstr "Політика конфіденційності"
+
+#: src/app/[lang]/blog/[slug]/page.tsx:177
+msgid "Ready to Take Control of Your Financial Privacy?"
+msgstr "Готові взяти під контроль свою фінансову конфіденційність?"
 
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:29
 msgid "Regular Price"
 msgstr "Звичайна ціна"
 
-#: src/components/footer/footer.tsx:50
+#: src/components/footer/footer.tsx:72
 msgid "Resources"
 msgstr "Ресурси"
 
-#: src/components/footer/footer.tsx:42
+#: src/components/footer/footer.tsx:64
 msgid "Roadmap"
 msgstr "План розвитку"
 
@@ -442,11 +490,15 @@ msgstr "Robinhood"
 msgid "Sarah Chen"
 msgstr "Sarah Chen"
 
+#: src/app/[lang]/blog/blog-search.tsx:55
+msgid "Search articles..."
+msgstr "Пошук статей..."
+
 #: src/components/how-it-works-section/how-it-works-section.tsx:54
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Безпечно підключайте банківські рахунки, криптогаманці й інвестиційні рахунки для автоматичного обліку."
 
-#: src/components/footer/footer.tsx:100
+#: src/components/footer/footer.tsx:148
 msgid "Security"
 msgstr "Безпека"
 
@@ -458,6 +510,10 @@ msgstr "Дізнайтесь, за що користувачі цінують Bu
 msgid "Set financial goals and track debt payments to achieve financial freedom."
 msgstr "Ставте фінансові цілі та відстежуйте погашення боргів для досягнення фінансової свободи."
 
+#: src/app/[lang]/blog/blog-search.tsx:80
+msgid "Showing results for: <0>{searchQuery}</0>"
+msgstr "Показані результати для: <0>{searchQuery}</0>"
+
 #: src/components/ai-section/ai-section.tsx:40
 msgid "Smart Financial Insights, Privately Powered"
 msgstr "Розумна фінансова аналітика із захистом приватності"
@@ -466,7 +522,7 @@ msgstr "Розумна фінансова аналітика із захисто
 msgid "Smart Spending Advice"
 msgstr "Розумні поради щодо витрат"
 
-#: src/components/footer/footer.tsx:66
+#: src/components/footer/footer.tsx:102
 msgid "Source Code"
 msgstr "Вихідний код"
 
@@ -474,11 +530,15 @@ msgstr "Вихідний код"
 msgid "Start Tracking in Minutes"
 msgstr "Почніть облік за кілька хвилин"
 
-#: src/components/footer/footer.tsx:71
+#: src/app/[lang]/blog/page.tsx:62
+msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
+msgstr "Будьте в курсі фінансової конфіденційності, найкращих практик безпеки та останніх функцій Budgie."
+
+#: src/components/footer/footer.tsx:107
 msgid "Support"
 msgstr "Підтримка"
 
-#: src/components/language-switcher/language-switcher.tsx:56
+#: src/components/language-switcher/language-switcher.tsx:55
 msgid "Switch language"
 msgstr "Змінити мову"
 
@@ -490,13 +550,13 @@ msgstr "Синхронізується з 1000+ банками та фінанс
 msgid "Take Control of Your Financial Privacy"
 msgstr "Візьміть під контроль свою фінансову приватність"
 
-#: src/components/footer/footer.tsx:90
-#: src/components/footer/footer.tsx:118
+#: src/components/footer/footer.tsx:132
+#: src/components/footer/footer.tsx:166
 msgid "Terms of Service"
 msgstr "Умови користування"
 
-#: src/components/header/header.tsx:56
-#: src/components/header/mobile-menu.tsx:30
+#: src/components/header/header.tsx:70
+#: src/components/header/mobile-menu.tsx:35
 #: src/components/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Відгуки"
@@ -505,11 +565,11 @@ msgstr "Відгуки"
 msgid "The crypto tracking is incredible. I can see all my DeFi positions alongside my traditional accounts. The privacy-first approach sold me immediately."
 msgstr "Відстеження криптовалют — неймовірне. Я бачу всі свої DeFi-позиції разом із традиційними рахунками. Підхід із пріоритетом приватності переконав мене одразу."
 
-#: src/components/footer/footer-details.tsx:18
+#: src/components/footer/footer-details.tsx:25
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "Трекер витрат із пріоритетом приватності, який зберігає ваші фінансові дані лише на вашому пристрої."
 
-#: src/components/header/header.tsx:81
+#: src/components/header/header.tsx:102
 msgid "Toggle menu"
 msgstr "Відкрити/закрити меню"
 
@@ -542,9 +602,17 @@ msgstr "Відстежуйте витрати, синхронізуйте бан
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Довіряють користувачі, які цінують приватність"
 
-#: src/components/footer/footer-details.tsx:47
+#: src/app/[lang]/blog/page.tsx:135
+msgid "Try adjusting your search query or browse all articles."
+msgstr "Спробуйте налаштувати пошуковий запит або перегляньте всі статті."
+
+#: src/components/footer/footer-details.tsx:54
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/components/blog-section/blog-section.tsx:70
+msgid "View All Articles"
+msgstr "Переглянути всі статті"
 
 #: src/components/cta-section/cta-section.tsx:52
 #: src/components/hero-section/hero-section.tsx:55
@@ -563,9 +631,9 @@ msgstr "Wells Fargo"
 msgid "What cryptocurrencies and assets can I track?"
 msgstr "Які криптовалюти й активи можна відстежувати?"
 
-#: src/components/footer/footer.tsx:32
-#: src/components/header/header.tsx:60
-#: src/components/header/mobile-menu.tsx:34
+#: src/components/footer/footer.tsx:51
+#: src/components/header/header.tsx:81
+#: src/components/header/mobile-menu.tsx:43
 msgid "Whitelist"
 msgstr "Білий список"
 
