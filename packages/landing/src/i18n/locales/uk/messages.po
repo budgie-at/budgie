@@ -347,7 +347,7 @@ msgstr "Приєднайтесь до білого списку — заощад
 
 #: src/components/header/mobile-menu.tsx:44
 msgid "Language"
-msgstr ""
+msgstr "Мова"
 
 #: src/components/footer/footer.tsx:79
 msgid "Legal"
@@ -478,9 +478,9 @@ msgstr "Почніть облік за кілька хвилин"
 msgid "Support"
 msgstr "Підтримка"
 
-#: src/components/language-switcher/language-switcher.tsx:55
+#: src/components/language-switcher/language-switcher.tsx:56
 msgid "Switch language"
-msgstr ""
+msgstr "Змінити мову"
 
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"

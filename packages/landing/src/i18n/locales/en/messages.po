@@ -478,7 +478,7 @@ msgstr "Start Tracking in Minutes"
 msgid "Support"
 msgstr "Support"
 
-#: src/components/language-switcher/language-switcher.tsx:55
+#: src/components/language-switcher/language-switcher.tsx:56
 msgid "Switch language"
 msgstr "Switch language"
 
