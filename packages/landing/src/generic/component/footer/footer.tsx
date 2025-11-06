@@ -20,7 +20,7 @@ export const Footer = ({ lang }: Props) => {
             <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
                 <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
                     <div className="space-y-4">
-                        <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={lang}>
+                        <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                             <Logo />
 
                             <span>
@@ -183,15 +183,15 @@ export const Footer = ({ lang }: Props) => {
                     </p>
 
                     <div className="flex gap-4">
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}`}>
                             <Trans>Privacy Policy</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}`}>
                             <Trans>Terms of Service</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}`}>
                             <Trans>Open Source License</Trans>
                         </Link>
                     </div>

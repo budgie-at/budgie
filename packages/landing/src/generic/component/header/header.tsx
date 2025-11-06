@@ -39,7 +39,7 @@ export const Header = ({ lang }: Props) => {
             className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
         >
             <div className="container flex h-16 items-center justify-between">
-                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={lang}>
+                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                     <Logo />
 
                     <span>
