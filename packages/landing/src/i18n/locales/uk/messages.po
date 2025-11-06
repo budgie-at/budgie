@@ -110,8 +110,8 @@ msgid "Be among the first to experience Budgie Pro with exclusive early access p
 msgstr "Станьте одним із перших, хто спробує Budgie Pro за ексклюзивною ціною раннього доступу. Кількість місць обмежена для тих, хто цінує приватність."
 
 #: src/components/footer/footer.tsx:78
-#: src/components/header/header.tsx:73
-#: src/components/header/mobile-menu.tsx:38
+#: src/components/header/header.tsx:74
+#: src/components/header/mobile-menu.tsx:39
 msgid "Blog"
 msgstr "Блог"
 
@@ -122,7 +122,7 @@ msgstr "Блог та Аналітика"
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/components/footer/footer-details.tsx:20
-#: src/components/header/header.tsx:53
+#: src/components/header/header.tsx:54
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -232,7 +232,7 @@ msgstr "Завантажити"
 msgid "Download & Install"
 msgstr "Завантажте та встановіть"
 
-#: src/components/header/header.tsx:92
+#: src/components/header/header.tsx:94
 msgid "Download App"
 msgstr "Завантажити додаток"
 
@@ -261,15 +261,15 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
 
 #: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:84
-#: src/components/header/mobile-menu.tsx:46
+#: src/components/header/header.tsx:85
+#: src/components/header/mobile-menu.tsx:47
 msgid "FAQ"
 msgstr "Питання та відповіді"
 
 #: src/components/features-section/features-section.tsx:37
 #: src/components/footer/footer.tsx:43
-#: src/components/header/header.tsx:62
-#: src/components/header/mobile-menu.tsx:30
+#: src/components/header/header.tsx:63
+#: src/components/header/mobile-menu.tsx:31
 msgid "Features"
 msgstr "Можливості"
 
@@ -367,7 +367,7 @@ msgstr "Приєднуйтесь до тисяч користувачів, як�
 
 #: src/app/[lang]/blog/[slug]/page.tsx:188
 #: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:51
+#: src/components/header/mobile-menu.tsx:59
 #: src/components/hero-section/hero-section.tsx:49
 msgid "Join Whitelist"
 msgstr "Приєднатися до білого списку"
@@ -375,6 +375,10 @@ msgstr "Приєднатися до білого списку"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Приєднайтесь до білого списку — заощадьте 25%"
+
+#: src/components/header/mobile-menu.tsx:53
+msgid "Language"
+msgstr ""
 
 #: src/components/blog-section/blog-section.tsx:35
 msgid "Latest from Our Blog"
@@ -534,6 +538,10 @@ msgstr "Будьте в курсі фінансової конфіденційн
 msgid "Support"
 msgstr "Підтримка"
 
+#: src/components/language-switcher/language-switcher.tsx:55
+msgid "Switch language"
+msgstr ""
+
 #: src/components/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Синхронізується з 1000+ банками та фінансовими установами"
@@ -547,8 +555,8 @@ msgstr "Візьміть під контроль свою фінансову п�
 msgid "Terms of Service"
 msgstr "Умови користування"
 
-#: src/components/header/header.tsx:69
-#: src/components/header/mobile-menu.tsx:34
+#: src/components/header/header.tsx:70
+#: src/components/header/mobile-menu.tsx:35
 #: src/components/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Відгуки"
@@ -561,7 +569,7 @@ msgstr "Відстеження криптовалют — неймовірне. 
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "Трекер витрат із пріоритетом приватності, який зберігає ваші фінансові дані лише на вашому пристрої."
 
-#: src/components/header/header.tsx:100
+#: src/components/header/header.tsx:102
 msgid "Toggle menu"
 msgstr "Відкрити/закрити меню"
 
@@ -624,8 +632,8 @@ msgid "What cryptocurrencies and assets can I track?"
 msgstr "Які криптовалюти й активи можна відстежувати?"
 
 #: src/components/footer/footer.tsx:51
-#: src/components/header/header.tsx:80
-#: src/components/header/mobile-menu.tsx:42
+#: src/components/header/header.tsx:81
+#: src/components/header/mobile-menu.tsx:43
 msgid "Whitelist"
 msgstr "Білий список"
 
