@@ -3,28 +3,21 @@
 import { Trans } from '@lingui/react/macro';
 import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Button } from '../../../ui/button';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { Logo } from '../logo/logo';
+import { MobileMenu } from '../mobile-menu/mobile-menu';
 import { ThemeSwitcher } from '../theme-switcher/theme-switcher';
 
-import { MobileMenu } from './mobile-menu';
-
-interface HeaderProps {
-    locale?: string;
+interface Props {
+    lang: string;
 }
 
-export const Header = ({ locale }: HeaderProps = {}) => {
+export const Header = ({ lang }: Props) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const pathname = usePathname();
-
-    const currentLocale = locale || (pathname ? pathname.split('/')[1] : 'en') || 'en';
-    const homeUrl = `/${currentLocale}`;
-    const blogUrl = `/${currentLocale}/blog`;
 
     useEffect(() => {
         const handleScroll = (): void => {
@@ -46,7 +39,7 @@ export const Header = ({ locale }: HeaderProps = {}) => {
             className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
         >
             <div className="container flex h-16 items-center justify-between">
-                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={homeUrl}>
+                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={lang}>
                     <Logo />
 
                     <span>
@@ -57,32 +50,35 @@ export const Header = ({ locale }: HeaderProps = {}) => {
                 <nav className="hidden md:flex gap-8">
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`${homeUrl}#features`}
+                        href={`/${lang}#features`}
                     >
                         <Trans>Features</Trans>
                     </Link>
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`${homeUrl}#testimonials`}
+                        href={`/${lang}#testimonials`}
                     >
                         <Trans>Testimonials</Trans>
                     </Link>
 
-                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href={blogUrl}>
+                    <Link
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        href={`/${lang}/blog`}
+                    >
                         <Trans>Blog</Trans>
                     </Link>
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`${homeUrl}#whitelist`}
+                        href={`/${lang}#whitelist`}
                     >
                         <Trans>Whitelist</Trans>
                     </Link>
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href={`${homeUrl}#faq`}
+                        href={`/${lang}#faq`}
                     >
                         <Trans>FAQ</Trans>
                     </Link>
@@ -107,7 +103,7 @@ export const Header = ({ locale }: HeaderProps = {}) => {
                 </div>
             </div>
 
-            {mobileMenuOpen ? <MobileMenu locale={currentLocale} onClose={handleMobileMenuClose} /> : null}
+            {mobileMenuOpen ? <MobileMenu lang={lang} onClose={handleMobileMenuClose} /> : null}
         </header>
     );
 };

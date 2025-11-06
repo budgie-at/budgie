@@ -19,7 +19,7 @@ export default async function LandingPage(props: PageLangParam) {
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <Header />
+            <Header lang={lang} />
 
             <main className="flex-1">
                 <HeroSection />
@@ -34,7 +34,7 @@ export default async function LandingPage(props: PageLangParam) {
                 <CtaSection />
             </main>
 
-            <Footer />
+            <Footer lang={lang} />
         </div>
     );
 }
