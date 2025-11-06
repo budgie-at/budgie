@@ -7,5 +7,5 @@ export const ExpenseTransactionCreateEntitySchema = ExpenseTransactionEntitySche
     deletedAt: true
 }).partial({
     comment: true,
-    operatedAt: true,
+    operatedAt: true
 });
