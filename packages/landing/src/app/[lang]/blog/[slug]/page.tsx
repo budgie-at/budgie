@@ -11,7 +11,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { getAllArticles, getArticleBySlug } from '../../../../../content/blog/articles';
 import { Footer } from '../../../../components/footer/footer';
 import { Header } from '../../../../components/header/header';
 import { Badge } from '../../../../components/ui/badge';
@@ -19,6 +18,7 @@ import { Button } from '../../../../components/ui/button';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { calculateReadingTime } from '../../../../lib/blog-utils';
+import { getAllArticles, getArticleBySlug } from '../../../../lib/mdx-articles';
 import { Motion } from '../../../../lib/motion';
 
 import { BlogArticleContent } from './blog-article-content';
@@ -45,7 +45,7 @@ export async function generateStaticParams() {
 // eslint-disable-next-line func-style
 export async function generateMetadata(props: BlogArticlePageProps): Promise<Metadata> {
     const { slug, lang } = await props.params;
-    const article = getArticleBySlug(slug);
+    const article = getArticleBySlug(slug, lang);
 
     if (!article) {
         return {
@@ -83,7 +83,7 @@ export default async function BlogArticlePage(props: BlogArticlePageProps) {
 
     initLingui(lang);
 
-    const article = getArticleBySlug(slug);
+    const article = getArticleBySlug(slug, lang);
 
     if (!article) {
         notFound();
@@ -95,7 +95,7 @@ export default async function BlogArticlePage(props: BlogArticlePageProps) {
         day: 'numeric'
     });
 
-    const content = article.content[lang as keyof typeof article.content] || article.content.en;
+    const {content} = article;
     const readingTime = calculateReadingTime(content);
 
     return (

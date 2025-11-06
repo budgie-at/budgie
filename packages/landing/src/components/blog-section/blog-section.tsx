@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { getRecentArticles } from '../../../content/blog/articles';
+import { getRecentArticles } from '../../lib/mdx-articles';
 import { Motion } from '../../lib/motion';
 import { BlogCard } from '../blog-card/blog-card';
 import { Button } from '../ui/button';
