@@ -1,10 +1,11 @@
 import { TransactionEntitySchema } from '../transaction-entity.schema';
 
-export const BaseTransactionCreateEntityFieldsSchema = TransactionEntitySchema.pick({
-    type: true,
-    title: true,
+export const BaseTransactionCreateEntityFieldsSchema = TransactionEntitySchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true
+}).partial({
     comment: true,
-    accountId: true,
-    operatedAt: true,
-    categoryId: true
+    operatedAt: true
 });
