@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.55.0](https://github.com/budgie-at/budgie/compare/v1.54.0...v1.55.0) (2025-11-06)
+
+### Features
+
+- **landing:** add Blog to navigation and fix logo links ([a265698](https://github.com/budgie-at/budgie/commit/a265698489a76784d1f994f304ead3e6915250ca))
+- **landing:** blog ([013c79d](https://github.com/budgie-at/budgie/commit/013c79dafdce87dcc0e046ef98232cabbb899bd5))
+- **landing:** blog ([fa232d7](https://github.com/budgie-at/budgie/commit/fa232d7fc4a84f8fa1286d2f1f81362a0496a644))
+- **landing:** blog ([72fc69c](https://github.com/budgie-at/budgie/commit/72fc69c668910c713b8b5ad8b3713e7eb9108f5f))
+- **landing:** blog ([9093091](https://github.com/budgie-at/budgie/commit/9093091f9e9bfe8d52a8293322d792b3909460f5))
+- **landing:** blog ([32f92ff](https://github.com/budgie-at/budgie/commit/32f92ffa3322f13a4426d2d024ed15e06c256606))
+- **landing:** blog ([617d8ee](https://github.com/budgie-at/budgie/commit/617d8ee3eed7ec4afdf0753d904946ecbf55adb1))
+- **landing:** blog ([4925421](https://github.com/budgie-at/budgie/commit/4925421af099f8e4f8f0760bea038c2b80989b64))
+- **landing:** blog ([0519236](https://github.com/budgie-at/budgie/commit/0519236aaf21517877d5a8cd6b6d88b4054ce1c5))
+- **landing:** blog ([63889b4](https://github.com/budgie-at/budgie/commit/63889b4c99ebbe5838629c1cb6eac6b522d0ec17))
+- **landing:** implement SEO blog with articles, search, and pagination ([759ab4f](https://github.com/budgie-at/budgie/commit/759ab4fabc73d632187ca47387b584b162bff249))
+
 # [1.54.0](https://github.com/budgie-at/budgie/compare/v1.53.0...v1.54.0) (2025-11-06)
 
 ### Bug Fixes
