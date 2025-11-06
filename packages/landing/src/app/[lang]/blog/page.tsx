@@ -1,0 +1,146 @@
+/* eslint-disable max-lines-per-function */
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable @rnw-community/no-complex-jsx-logic */
+
+import { Trans } from '@lingui/react/macro';
+import { Search } from 'lucide-react';
+import { Suspense } from 'react';
+
+import { getAllArticles } from '../../../../content/blog/articles';
+import { BlogCard } from '../../../components/blog-card/blog-card';
+import { Footer } from '../../../components/footer/footer';
+import { Header } from '../../../components/header/header';
+import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+import { Motion } from '../../../lib/motion';
+
+import { BlogSearch } from './blog-search';
+
+const initialMotion = { opacity: 0, y: 20 };
+const transitionMotion = { duration: 0.5 };
+
+export const dynamic = 'force-dynamic';
+
+export default async function BlogPage(props: PageLangParam & { searchParams: Promise<{ q?: string; page?: string }> }) {
+    const { lang } = await props.params;
+    const searchParams = await props.searchParams;
+
+    initLingui(lang);
+
+    const allArticles = getAllArticles();
+    const searchQuery = searchParams?.q?.toLowerCase() || '';
+    const currentPage = Number.parseInt(searchParams?.page || '1', 10);
+    const articlesPerPage = 9;
+
+    // Filter articles based on search query
+    const filteredArticles = searchQuery
+        ? allArticles.filter(
+              article =>
+                  article.title.toLowerCase().includes(searchQuery) ||
+                  article.description.toLowerCase().includes(searchQuery) ||
+                  article.tags.some(tag => tag.toLowerCase().includes(searchQuery))
+          )
+        : allArticles;
+
+    // Paginate articles
+    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+    const startIndex = (currentPage - 1) * articlesPerPage;
+    const paginatedArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
+
+    return (
+        <div className="flex min-h-dvh flex-col">
+            <Header />
+
+            <main className="flex-1">
+                <section className="w-full py-20 md:py-32 overflow-hidden">
+                    <div className="container px-4 md:px-6">
+                        <Motion animate={{ opacity: 1, y: 0 }} className="text-center mb-12" initial={initialMotion} transition={transitionMotion}>
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                                <Trans>Blog & Insights</Trans>
+                            </h1>
+
+                            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                                <Trans>
+                                    Stay informed about financial privacy, security best practices, and the latest features in Budgie.
+                                </Trans>
+                            </p>
+
+                            <Suspense fallback={<div className="h-12" />}>
+                                <BlogSearch currentPage={currentPage} locale={lang} searchQuery={searchQuery} />
+                            </Suspense>
+                        </Motion>
+
+                        {paginatedArticles.length > 0 ? (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                                    {paginatedArticles.map((article, index) => (
+                                        <BlogCard
+                                            key={article.slug}
+                                            date={article.date}
+                                            description={article.description}
+                                            image={article.image}
+                                            index={index}
+                                            locale={lang}
+                                            slug={article.slug}
+                                            tags={article.tags}
+                                            title={article.title}
+                                        />
+                                    ))}
+                                </div>
+
+                                {totalPages > 1 && (
+                                    <Motion
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="flex justify-center gap-2 mt-8"
+                                        initial={initialMotion}
+                                        transition={transitionMotion}
+                                    >
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                                            const isActive = page === currentPage;
+                                            const params = new URLSearchParams();
+
+                                            if (searchQuery) {params.set('q', searchQuery);}
+                                            params.set('page', page.toString());
+
+                                            return (
+                                                <a
+                                                    key={page}
+                                                    className={`px-4 py-2 rounded-md transition-colors ${
+                                                        isActive
+                                                            ? 'bg-primary text-primary-foreground'
+                                                            : 'bg-muted hover:bg-muted/80 text-foreground'
+                                                    }`}
+                                                    href={`/${lang}/blog?${params.toString()}`}
+                                                >
+                                                    {page}
+                                                </a>
+                                            );
+                                        })}
+                                    </Motion>
+                                )}
+                            </>
+                        ) : (
+                            <Motion
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-center py-12"
+                                initial={initialMotion}
+                                transition={transitionMotion}
+                            >
+                                <Search className="size-16 mx-auto mb-4 text-muted-foreground" />
+
+                                <h3 className="text-2xl font-bold mb-2">
+                                    <Trans>No articles found</Trans>
+                                </h3>
+
+                                <p className="text-muted-foreground">
+                                    <Trans>Try adjusting your search query or browse all articles.</Trans>
+                                </p>
+                            </Motion>
+                        )}
+                    </div>
+                </section>
+            </main>
+
+            <Footer />
+        </div>
+    );
+}

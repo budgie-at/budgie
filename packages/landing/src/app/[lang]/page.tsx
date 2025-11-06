@@ -1,5 +1,6 @@
 import { AiSection } from '../../components/ai-section/ai-section';
 import { BanksSection } from '../../components/banks-section/banks-section';
+import { BlogSection } from '../../components/blog-section/blog-section';
 import { CtaSection } from '../../components/cta-section/cta-section';
 import { FaqSection } from '../../components/faq-section/faq-section';
 import { FeaturesSection } from '../../components/features-section/features-section';
@@ -27,6 +28,7 @@ export default async function LandingPage(props: PageLangParam) {
                 <HowItWorksSection />
                 <AiSection />
                 <TestimonialsSection />
+                <BlogSection locale={lang} />
                 <WhitelistSection />
                 <FaqSection />
                 <CtaSection />
