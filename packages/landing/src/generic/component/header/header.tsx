@@ -22,7 +22,6 @@ export const Header = ({ locale }: HeaderProps = {}) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const pathname = usePathname();
 
-    // Extract locale from pathname if not provided
     const currentLocale = locale || (pathname ? pathname.split('/')[1] : 'en') || 'en';
     const homeUrl = `/${currentLocale}`;
     const blogUrl = `/${currentLocale}/blog`;
