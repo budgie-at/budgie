@@ -1,33 +1,73 @@
 /* eslint-disable react/jsx-max-depth */
 
-'use client';
-
 import { Trans } from '@lingui/react/macro';
+import { Github } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { FooterDetails } from './footer-details';
+import { Logo } from '../logo/logo';
 
-interface FooterProps {
-    locale?: string;
+interface Props {
+    lang: string;
 }
 
 // eslint-disable-next-line max-lines-per-function
-export const Footer = ({ locale }: FooterProps = {}) => {
+export const Footer = ({ lang }: Props) => {
     const date = useMemo(() => new Date().getFullYear(), []);
-    const pathname = usePathname();
-
-    // Extract locale from pathname if not provided
-    const currentLocale = locale || (pathname ? pathname.split('/')[1] : 'en') || 'en';
-    const homeUrl = `/${currentLocale}`;
-    const blogUrl = `/${currentLocale}/blog`;
 
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
             <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
                 <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
-                    <FooterDetails locale={currentLocale} />
+                    <div className="space-y-4">
+                        <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={lang}>
+                            <Logo />
+
+                            <span>
+                                <Trans>Budgie</Trans>
+                            </span>
+                        </Link>
+
+                        <p className="text-sm text-muted-foreground">
+                            <Trans>
+                                The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device.
+                            </Trans>
+                        </p>
+
+                        <div className="flex gap-4">
+                            <Link
+                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                href="https://github.com/budgie-at/budgie"
+                            >
+                                <Github className="size-5" />
+
+                                <span className="sr-only">
+                                    <Trans>GitHub</Trans>
+                                </span>
+                            </Link>
+
+                            <Link className="text-muted-foreground hover:text-foreground transition-colors" href="https://x.com/budgie_at">
+                                <svg
+                                    className="size-5"
+                                    fill="none"
+                                    height="24"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                                </svg>
+
+                                <span className="sr-only">
+                                    <Trans>Twitter</Trans>
+                                </span>
+                            </Link>
+                        </div>
+                    </div>
 
                     <div className="space-y-4">
                         <h4 className="text-sm font-bold">
@@ -36,31 +76,25 @@ export const Footer = ({ locale }: FooterProps = {}) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#features`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#features`}>
                                     <Trans>Features</Trans>
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#whitelist`}
+                                    href={`/${lang}/#whitelist`}
                                 >
                                     <Trans>Whitelist</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#download`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#download`}>
                                     <Trans>Download</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`${homeUrl}#roadmap`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#roadmap`}>
                                     <Trans>Roadmap</Trans>
                                 </Link>
                             </li>
@@ -74,22 +108,19 @@ export const Footer = ({ locale }: FooterProps = {}) => {
 
                         <ul className="space-y-2 text-sm">
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={blogUrl}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href="/blog">
                                     <Trans>Blog</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#documentation`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/#documentation`}>
                                     <Trans>Documentation</Trans>
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#privacy-guide`}
+                                    href={`/${lang}/#privacy-guide`}
                                 >
                                     <Trans>Privacy Guide</Trans>
                                 </Link>
@@ -97,13 +128,13 @@ export const Footer = ({ locale }: FooterProps = {}) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#source-code`}
+                                    href={`/${lang}/#source-code`}
                                 >
                                     <Trans>Source Code</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`${homeUrl}#support`}>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#support`}>
                                     <Trans>Support</Trans>
                                 </Link>
                             </li>
@@ -119,7 +150,7 @@ export const Footer = ({ locale }: FooterProps = {}) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#privacy-policy`}
+                                    href={`/${lang}/#privacy-policy`}
                                 >
                                     <Trans>Privacy Policy</Trans>
                                 </Link>
@@ -127,24 +158,18 @@ export const Footer = ({ locale }: FooterProps = {}) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#terms-of-service`}
+                                    href={`/${lang}/#terms-of-service`}
                                 >
                                     <Trans>Terms of Service</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#license`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#license`}>
                                     <Trans>License</Trans>
                                 </Link>
                             </li>
                             <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`${homeUrl}#security`}
-                                >
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#security`}>
                                     <Trans>Security</Trans>
                                 </Link>
                             </li>
@@ -158,15 +183,15 @@ export const Footer = ({ locale }: FooterProps = {}) => {
                     </p>
 
                     <div className="flex gap-4">
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href="#">
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
                             <Trans>Privacy Policy</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href="#">
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
                             <Trans>Terms of Service</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href="#">
+                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={lang}>
                             <Trans>Open Source License</Trans>
                         </Link>
                     </div>
