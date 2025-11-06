@@ -41,7 +41,7 @@ export default async function BlogPage(props: Props) {
 
     return (
         <div className="flex min-h-dvh flex-col">
-            <Header />
+            <Header lang={lang} />
 
             <main className="flex-1">
                 <section className="w-full py-20 md:py-32 overflow-hidden">
@@ -125,7 +125,7 @@ export default async function BlogPage(props: Props) {
                 </section>
             </main>
 
-            <Footer />
+            <Footer lang={lang} />
         </div>
     );
 }
