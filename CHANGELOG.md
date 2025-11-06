@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.54.0](https://github.com/budgie-at/budgie/compare/v1.53.0...v1.54.0) (2025-11-06)
+
+### Bug Fixes
+
+- **landing:** address code review feedback ([90ad736](https://github.com/budgie-at/budgie/commit/90ad7367cc7e9f6c4362594b8809e8fd0b430839))
+
+### Features
+
+- **landing:** add i18n language switcher component ([39cb993](https://github.com/budgie-at/budgie/commit/39cb9935e1312b5bf7ebe6989cc645d0bbf94759))
+
 # [1.53.0](https://github.com/budgie-at/budgie/compare/v1.52.0...v1.53.0) (2025-11-05)
 
 ### Bug Fixes
