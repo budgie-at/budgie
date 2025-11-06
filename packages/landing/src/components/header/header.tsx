@@ -3,6 +3,7 @@
 import { Trans } from '@lingui/react/macro';
 import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { Logo } from '../logo/logo';
@@ -11,9 +12,19 @@ import { Button } from '../ui/button';
 
 import { MobileMenu } from './mobile-menu';
 
-export const Header = () => {
+interface HeaderProps {
+    locale?: string;
+}
+
+export const Header = ({ locale }: HeaderProps = {}) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const pathname = usePathname();
+
+    // Extract locale from pathname if not provided
+    const currentLocale = locale || (pathname ? pathname.split('/')[1] : 'en') || 'en';
+    const homeUrl = `/${currentLocale}`;
+    const blogUrl = `/${currentLocale}/blog`;
 
     useEffect(() => {
         const handleScroll = (): void => {
@@ -35,31 +46,41 @@ export const Header = () => {
             className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
         >
             <div className="container flex h-16 items-center justify-between">
-                <div className="flex items-center gap-2 font-bold">
+                <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={homeUrl}>
                     <Logo />
 
                     <span>
                         <Trans>Budgie</Trans>
                     </span>
-                </div>
+                </Link>
 
                 <nav className="hidden md:flex gap-8">
-                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#features">
+                    <Link
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        href={`${homeUrl}#features`}
+                    >
                         <Trans>Features</Trans>
                     </Link>
 
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                        href="#testimonials"
+                        href={`${homeUrl}#testimonials`}
                     >
                         <Trans>Testimonials</Trans>
                     </Link>
 
-                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#whitelist">
+                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href={blogUrl}>
+                        <Trans>Blog</Trans>
+                    </Link>
+
+                    <Link
+                        className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        href={`${homeUrl}#whitelist`}
+                    >
                         <Trans>Whitelist</Trans>
                     </Link>
 
-                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href="#faq">
+                    <Link className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href={`${homeUrl}#faq`}>
                         <Trans>FAQ</Trans>
                     </Link>
                 </nav>
@@ -82,7 +103,7 @@ export const Header = () => {
                 </div>
             </div>
 
-            {mobileMenuOpen ? <MobileMenu onClose={handleMobileMenuClose} /> : null}
+            {mobileMenuOpen ? <MobileMenu locale={currentLocale} onClose={handleMobileMenuClose} /> : null}
         </header>
     );
 };
