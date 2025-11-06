@@ -3,6 +3,7 @@ import { enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { CurrencyEnum } from '../../generic/enum/currency.enum';
+import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
 import { ACCOUNT_TITLE_MAX_LENGTH } from '../constant/account-title-max-length.constant';
 import { AccountTypeEnum } from '../enum/account-type.enum';
 import { AccountEntityTable } from '../table/account-entity.table';
@@ -15,5 +16,5 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     balance: schema => schema.describe('The account balance.'),
     order: schema => schema.nonnegative().default(0).describe('The account order.'),
     currency: zodEnum(CurrencyEnum).describe('The account currency.'),
-    icon: schema => schema.describe('The account icon.')
+    icon: zodEnum(UserIconNameEnum).describe('The account icon.')
 });
