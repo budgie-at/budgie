@@ -29,6 +29,10 @@ msgstr "\"Sie haben 40% mehr für Restaurantbesuche ausgegeben ($320 vs. $230 Du
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Alle Rechte vorbehalten."
 
+#: src/app/[lang]/blog/[slug]/page.tsx:104
+msgid "← Back to Blog"
+msgstr "← Zurück zum Blog"
+
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:112
 msgid "<0>Limited Offer:</0> Only 500 whitelist spots available. Get 25% off your first year of Budgie Pro when you join the whitelist."
 msgstr "<0>Limitiertes Angebot:</0> Nur 500 Whitelist-Plätze verfügbar. Erhalten Sie 25% Rabatt auf Ihr erstes Jahr Budgie Pro, wenn Sie der Whitelist beitreten."
@@ -105,6 +109,10 @@ msgstr "Bank-Synchronisation"
 msgid "Be among the first to experience Budgie Pro with exclusive early access pricing. Limited spots available for privacy-conscious early adopters."
 msgstr "Gehören Sie zu den Ersten, die Budgie Pro mit exklusivem Early-Access-Preis erleben. Begrenzte Plätze für datenschutzbewusste Early Adopters verfügbar."
 
+#: src/app/[lang]/blog/page.tsx:54
+msgid "Blog & Insights"
+msgstr "Blog & Einblicke"
+
 #: src/app/[lang]/layout.tsx:80
 #: src/app/[lang]/layout.tsx:81
 #: src/components/footer/footer-details.tsx:13
@@ -121,6 +129,10 @@ msgstr "Budgie - Ausgaben-Tracker mit Datenschutz-Fokus"
 #: src/components/ai-section-details/ai-section-details.tsx:15
 msgid "Budgie AI"
 msgstr "Budgie KI"
+
+#: src/app/[lang]/blog/[slug]/page.tsx:50
+msgid "Budgie Blog"
+msgstr "Budgie Blog"
 
 #: src/components/features-section/features-section.tsx:45
 msgid "Budgie combines powerful expense tracking with complete privacy. Track every dollar, euro, or bitcoin while keeping your financial data exactly where it belongs—on your device."
@@ -153,6 +165,10 @@ msgstr "Budgie-Team"
 #: src/components/faq-section/faq-section.tsx:78
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie verwendet eine Source-Available-Lizenz, die es Ihnen ermöglicht, den Code anzusehen, zu ändern und dazu beizutragen, während sichergestellt wird, dass nur wir die offizielle App monetarisieren können. Dies hält das Projekt nachhaltig und bewahrt gleichzeitig Transparenz."
+
+#: src/app/[lang]/blog/[slug]/page.tsx:138
+msgid "By"
+msgstr "Von"
 
 #: src/components/faq-section/faq-section.tsx:74
 msgid "Can I use Budgie across multiple devices?"
@@ -189,6 +205,10 @@ msgstr "Digitaler Nomade"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:68
 msgid "Direct line to our development team"
 msgstr "Direkter Draht zu unserem Entwicklerteam"
+
+#: src/components/blog-section/blog-section.tsx:37
+msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
+msgstr "Entdecken Sie Einblicke in finanzielle Privatsphäre, Sicherheits-Best-Practices und wie Sie die Kontrolle über Ihr Geld übernehmen."
 
 #: src/components/footer/footer.tsx:56
 msgid "Documentation"
@@ -327,6 +347,10 @@ msgstr "Sofortige Finanzanalyse"
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Gibt es eine kostenlose Testversion oder Geld-zurück-Garantie?"
 
+#: src/app/[lang]/blog/[slug]/page.tsx:172
+msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
+msgstr "Treten Sie der Budgie-Warteliste bei und gehören Sie zu den Ersten, die wirklich privates Finanzmanagement erleben."
+
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:15
 msgid "Join the Whitelist & Save 25%"
 msgstr "Treten Sie der Whitelist bei & sparen Sie 25%"
@@ -335,6 +359,7 @@ msgstr "Treten Sie der Whitelist bei & sparen Sie 25%"
 msgid "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 msgstr "Schließen Sie sich Tausenden datenschutzbewussten Nutzern an, die Budgie vertrauen, ihre Ausgaben zu verfolgen, ohne ihre Finanzdaten zu gefährden."
 
+#: src/app/[lang]/blog/[slug]/page.tsx:179
 #: src/components/cta-section/cta-section.tsx:42
 #: src/components/header/mobile-menu.tsx:42
 #: src/components/hero-section/hero-section.tsx:49
@@ -344,6 +369,10 @@ msgstr "Whitelist beitreten"
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Whitelist beitreten - 25% sparen"
+
+#: src/components/blog-section/blog-section.tsx:33
+msgid "Latest from Our Blog"
+msgstr "Neuestes aus unserem Blog"
 
 #: src/components/footer/footer.tsx:79
 msgid "Legal"
@@ -361,6 +390,11 @@ msgstr "Begrenzte Zeit"
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
+#: src/app/[lang]/blog/[slug]/page.tsx:132
+#: src/components/blog-card/blog-card.tsx:83
+msgid "min read"
+msgstr "Min. Lesezeit"
+
 #: src/components/features-section/features-section.tsx:72
 msgid "Monitor cash, crypto, stocks, and bank accounts all in one place."
 msgstr "Überwachen Sie Bargeld, Krypto, Aktien und Bankkonten an einem Ort."
@@ -376,6 +410,10 @@ msgstr "Multi-Asset-Tracking"
 #: src/components/features-section/features-section.tsx:86
 msgid "Multi-Currency Support"
 msgstr "Multi-Währungsunterstützung"
+
+#: src/app/[lang]/blog/page.tsx:127
+msgid "No articles found"
+msgstr "Keine Artikel gefunden"
 
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:88
 msgid "No commitment"
@@ -418,6 +456,10 @@ msgstr "Datenschutz-Leitfaden"
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
+#: src/app/[lang]/blog/[slug]/page.tsx:168
+msgid "Ready to Take Control of Your Financial Privacy?"
+msgstr "Bereit, die Kontrolle über Ihre finanzielle Privatsphäre zu übernehmen?"
+
 #: src/components/whitelist-section-offer/whitelist-section-offer.tsx:29
 msgid "Regular Price"
 msgstr "Regulärer Preis"
@@ -438,6 +480,10 @@ msgstr "Robinhood"
 msgid "Sarah Chen"
 msgstr "Sarah Chen"
 
+#: src/app/[lang]/blog/blog-search.tsx:53
+msgid "Search articles..."
+msgstr "Artikel suchen..."
+
 #: src/components/how-it-works-section/how-it-works-section.tsx:54
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Verknüpfen Sie sicher Ihre Bankkonten, Krypto-Wallets und Investmentkonten für automatisches Tracking."
@@ -454,6 +500,10 @@ msgstr "Sehen Sie, was Nutzer an Budgies Ansatz zur privaten, umfassenden Ausgab
 msgid "Set financial goals and track debt payments to achieve financial freedom."
 msgstr "Setzen Sie finanzielle Ziele und verfolgen Sie Schuldenzahlungen, um finanzielle Freiheit zu erreichen."
 
+#: src/app/[lang]/blog/blog-search.tsx:78
+msgid "Showing results for: <0>{searchQuery}</0>"
+msgstr "Ergebnisse für: <0>{searchQuery}</0>"
+
 #: src/components/ai-section/ai-section.tsx:40
 msgid "Smart Financial Insights, Privately Powered"
 msgstr "Intelligente Finanzeinblicke, privat betrieben"
@@ -469,6 +519,10 @@ msgstr "Quellcode"
 #: src/components/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
 msgstr "Beginnen Sie in Minuten mit dem Tracking"
+
+#: src/app/[lang]/blog/page.tsx:58
+msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
+msgstr "Bleiben Sie über finanzielle Privatsphäre, Sicherheits-Best-Practices und die neuesten Funktionen in Budgie informiert."
 
 #: src/components/footer/footer.tsx:71
 msgid "Support"
@@ -534,9 +588,17 @@ msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken, verwalten Sie Krypto
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Vertraut von datenschutzbewussten Nutzern"
 
+#: src/app/[lang]/blog/page.tsx:131
+msgid "Try adjusting your search query or browse all articles."
+msgstr "Versuchen Sie, Ihre Suchanfrage anzupassen oder alle Artikel zu durchsuchen."
+
 #: src/components/footer/footer-details.tsx:47
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/components/blog-section/blog-section.tsx:68
+msgid "View All Articles"
+msgstr "Alle Artikel anzeigen"
 
 #: src/components/cta-section/cta-section.tsx:52
 #: src/components/hero-section/hero-section.tsx:55
