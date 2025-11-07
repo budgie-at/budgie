@@ -113,29 +113,11 @@ export const Footer = ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/#documentation`}>
-                                    <Trans>Documentation</Trans>
-                                </Link>
-                            </li>
-                            <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/#privacy-guide`}
-                                >
-                                    <Trans>Privacy Guide</Trans>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/#source-code`}
+                                    href="https://github.com/budgie-at/budgie"
                                 >
                                     <Trans>Source Code</Trans>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#support`}>
-                                    <Trans>Support</Trans>
                                 </Link>
                             </li>
                         </ul>
@@ -164,13 +146,11 @@ export const Footer = ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/license`}>
+                                <Link
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    href={`/${lang}/legal/license`}
+                                >
                                     <Trans>License</Trans>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/#security`}>
-                                    <Trans>Security</Trans>
                                 </Link>
                             </li>
                         </ul>
@@ -183,15 +163,24 @@ export const Footer = ({ lang }: Props) => {
                     </p>
 
                     <div className="flex gap-4">
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/privacy-policy`}>
+                        <Link
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            href={`/${lang}/legal/privacy-policy`}
+                        >
                             <Trans>Privacy Policy</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/terms-of-service`}>
+                        <Link
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            href={`/${lang}/legal/terms-of-service`}
+                        >
                             <Trans>Terms of Service</Trans>
                         </Link>
 
-                        <Link className="text-xs text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/legal/license`}>
+                        <Link
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                            href={`/${lang}/legal/license`}
+                        >
                             <Trans>Open Source License</Trans>
                         </Link>
                     </div>

@@ -119,20 +119,20 @@ msgstr "Станьте одним із перших, хто спробує Budgi
 msgid "Blog"
 msgstr "Блог"
 
-#: src/app/[lang]/blog/page.tsx:51
+#: src/app/[lang]/blog/page.tsx:46
 msgid "Blog & Insights"
 msgstr "Блог та Аналітика"
 
-#: src/app/[lang]/layout.tsx:80
-#: src/app/[lang]/layout.tsx:81
+#: src/app/[lang]/layout.tsx:82
+#: src/app/[lang]/layout.tsx:83
 #: src/generic/component/footer/footer.tsx:27
 #: src/generic/component/header/header.tsx:46
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:72
-#: src/app/[lang]/layout.tsx:85
-#: src/app/[lang]/layout.tsx:94
+#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:87
+#: src/app/[lang]/layout.tsx:96
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie — трекер витрат із пріоритетом приватності"
 
@@ -168,7 +168,7 @@ msgstr "Budgie Pro коштує $20/місяць або $16/місяць при 
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie підтримує облік основних криптовалют, акцій, ETF і традиційних банківських рахунків. Ви можете додати будь-який актив вручну або підключити підтримувані біржі та брокерів для автоматичного обліку."
 
-#: src/app/[lang]/layout.tsx:79
+#: src/app/[lang]/layout.tsx:81
 msgid "Budgie Team"
 msgstr "Команда Budgie"
 
@@ -260,7 +260,7 @@ msgstr "Все, що потрібно для контролю фінансів"
 msgid "Example AI Conversations"
 msgstr "Приклади діалогів із AI"
 
-#: src/app/[lang]/layout.tsx:77
+#: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
 
@@ -425,7 +425,7 @@ msgstr "Облік різних активів"
 msgid "Multi-Currency Support"
 msgstr "Підтримка багатьох валют"
 
-#: src/app/[lang]/blog/page.tsx:116
+#: src/app/[lang]/blog/page.tsx:111
 msgid "No articles found"
 msgstr "Статей не знайдено"
 
@@ -534,7 +534,7 @@ msgstr "Вихідний код"
 msgid "Start Tracking in Minutes"
 msgstr "Почніть облік за кілька хвилин"
 
-#: src/app/[lang]/blog/page.tsx:55
+#: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Будьте в курсі фінансової конфіденційності, найкращих практик безпеки та останніх функцій Budgie."
 
@@ -593,12 +593,12 @@ msgstr "Відстежуйте витрати будь-де й будь-коли
 msgid "Track expenses in any currency with real-time exchange rates."
 msgstr "Відстежуйте витрати в будь-якій валюті з актуальними курсами обміну."
 
-#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:76
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Відстежуйте витрати, синхронізуйте банки, керуйте криптовалютою й акціями з повною приватністю. Підтримка багатьох валют, облік боргів і AI-аналітика — усе безпечно зберігається на вашому пристрої."
 
-#: src/app/[lang]/layout.tsx:87
-#: src/app/[lang]/layout.tsx:96
+#: src/app/[lang]/layout.tsx:89
+#: src/app/[lang]/layout.tsx:98
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Відстежуйте витрати, синхронізуйте банки, керуйте криптовалютою й акціями з повною приватністю. Підтримка багатьох валют, облік боргів і AI-аналітика."
 
@@ -606,7 +606,7 @@ msgstr "Відстежуйте витрати, синхронізуйте бан
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Довіряють користувачі, які цінують приватність"
 
-#: src/app/[lang]/blog/page.tsx:120
+#: src/app/[lang]/blog/page.tsx:115
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Спробуйте налаштувати пошуковий запит або перегляньте всі статті."
 

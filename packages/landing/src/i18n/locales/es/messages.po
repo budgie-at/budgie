@@ -119,20 +119,20 @@ msgstr "Sé de los primeros en experimentar Budgie Pro con precios exclusivos de
 msgid "Blog"
 msgstr "Blog"
 
-#: src/app/[lang]/blog/page.tsx:51
+#: src/app/[lang]/blog/page.tsx:46
 msgid "Blog & Insights"
 msgstr "Blog y Perspectivas"
 
-#: src/app/[lang]/layout.tsx:80
-#: src/app/[lang]/layout.tsx:81
+#: src/app/[lang]/layout.tsx:82
+#: src/app/[lang]/layout.tsx:83
 #: src/generic/component/footer/footer.tsx:27
 #: src/generic/component/header/header.tsx:46
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:72
-#: src/app/[lang]/layout.tsx:85
-#: src/app/[lang]/layout.tsx:94
+#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:87
+#: src/app/[lang]/layout.tsx:96
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie - Rastreador de Gastos con Privacidad Primero"
 
@@ -168,7 +168,7 @@ msgstr "Budgie Pro cuesta $20/mes o $16/mes con facturación anual (20% de ahorr
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie admite el seguimiento de las principales criptomonedas, acciones, ETFs y cuentas bancarias tradicionales. Puedes agregar manualmente cualquier activo o conectar intercambios y corredurías compatibles para seguimiento automático."
 
-#: src/app/[lang]/layout.tsx:79
+#: src/app/[lang]/layout.tsx:81
 msgid "Budgie Team"
 msgstr "Equipo Budgie"
 
@@ -260,7 +260,7 @@ msgstr "Todo lo que Necesitas para Dominar tus Finanzas"
 msgid "Example AI Conversations"
 msgstr "Ejemplos de Conversaciones con IA"
 
-#: src/app/[lang]/layout.tsx:77
+#: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "rastreador de gastos, app de presupuesto, sincronización bancaria, seguimiento de cripto, privacidad, sin conexión primero, multimoneda, seguimiento de deudas, gestión financiera"
 
@@ -425,7 +425,7 @@ msgstr "Seguimiento Multi-Activo"
 msgid "Multi-Currency Support"
 msgstr "Soporte Multimoneda"
 
-#: src/app/[lang]/blog/page.tsx:116
+#: src/app/[lang]/blog/page.tsx:111
 msgid "No articles found"
 msgstr "No se encontraron artículos"
 
@@ -534,7 +534,7 @@ msgstr "Código Fuente"
 msgid "Start Tracking in Minutes"
 msgstr "Comienza a Rastrear en Minutos"
 
-#: src/app/[lang]/blog/page.tsx:55
+#: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Mantente informado sobre privacidad financiera, mejores prácticas de seguridad y las últimas funciones de Budgie."
 
@@ -593,12 +593,12 @@ msgstr "Rastrea gastos en cualquier lugar, en cualquier momento. Tus datos se si
 msgid "Track expenses in any currency with real-time exchange rates."
 msgstr "Rastrea gastos en cualquier moneda con tasas de cambio en tiempo real."
 
-#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:76
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Rastrea gastos, sincroniza bancos, gestiona cripto y acciones con privacidad completa. Soporte multimoneda, seguimiento de deudas e información de IA, todo almacenado de forma segura en tu dispositivo."
 
-#: src/app/[lang]/layout.tsx:87
-#: src/app/[lang]/layout.tsx:96
+#: src/app/[lang]/layout.tsx:89
+#: src/app/[lang]/layout.tsx:98
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Rastrea gastos, sincroniza bancos, gestiona cripto y acciones con privacidad completa. Soporte multimoneda, seguimiento de deudas e información de IA."
 
@@ -606,7 +606,7 @@ msgstr "Rastrea gastos, sincroniza bancos, gestiona cripto y acciones con privac
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Confiado por Usuarios Conscientes de la Privacidad"
 
-#: src/app/[lang]/blog/page.tsx:120
+#: src/app/[lang]/blog/page.tsx:115
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Intenta ajustar tu consulta de búsqueda o navega por todos los artículos."
 
