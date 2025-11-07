@@ -25,11 +25,11 @@ msgstr "«Чому я так багато витратив цього місяц
 msgid "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
 msgstr "«Ви витратили на 40% більше на ресторани ($320 проти $230 в середньому). Найбільша витрата — $85 у Fancy Restaurant 15-го числа.»"
 
-#: src/generic/component/footer/footer.tsx:182
+#: src/generic/component/footer/footer.tsx:162
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Всі права захищено."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:106
+#: src/app/[lang]/blog/[slug]/page.tsx:101
 msgid "← Back to Blog"
 msgstr "← Назад до блогу"
 
@@ -81,9 +81,9 @@ msgstr "AI:"
 msgid "App"
 msgstr "Додаток"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:46
+#: src/app/[lang]/blog/[slug]/page.tsx:44
 msgid "Article Not Found"
-msgstr ""
+msgstr "Сторінка не знайдена"
 
 #: src/generic/component/testimonials-section/testimonials-section.tsx:58
 msgid "As a freelancer with multiple currencies, Budgie is a lifesaver. The debt tracking helped me pay off my student loans 6 months early!"
@@ -140,7 +140,7 @@ msgstr "Budgie — трекер витрат із пріоритетом при�
 msgid "Budgie AI"
 msgstr "Budgie AI"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:50
+#: src/app/[lang]/blog/[slug]/page.tsx:48
 msgid "Budgie Blog"
 msgstr "Блог Budgie"
 
@@ -176,7 +176,7 @@ msgstr "Команда Budgie"
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie використовує ліцензію з відкритим кодом, яка дозволяє переглядати, змінювати та вносити вклад у код, але лише ми можемо монетизувати офіційний додаток. Це забезпечує прозорість та стійкість проєкту."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:140
+#: src/app/[lang]/blog/[slug]/page.tsx:135
 msgid "By"
 msgstr "Автор"
 
@@ -219,10 +219,6 @@ msgstr "Прямий зв’язок із командою розробки"
 #: src/generic/component/blog-section/blog-section.tsx:26
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
 msgstr "Відкрийте для себе інформацію про фінансову конфіденційність, найкращі практики безпеки та як взяти під контроль свої гроші."
-
-#: src/generic/component/footer/footer.tsx:117
-msgid "Documentation"
-msgstr "Документація"
 
 #: src/generic/component/faq-section/faq-section.tsx:62
 msgid "Does bank sync work offline?"
@@ -357,7 +353,7 @@ msgstr "Миттєвий фінансовий аналіз"
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Чи є безкоштовний пробний період або гарантія повернення грошей?"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:173
+#: src/app/[lang]/blog/[slug]/page.tsx:168
 msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
 msgstr "Приєднуйтесь до списку очікування Budgie та будьте серед перших, хто відчує справжнє приватне фінансове управління."
 
@@ -369,7 +365,7 @@ msgstr "Приєднуйтесь до білого списку та заоща�
 msgid "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 msgstr "Приєднуйтесь до тисяч користувачів, які цінують приватність і довіряють Budgie облік своїх витрат без компромісів із фінансовими даними."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:180
+#: src/app/[lang]/blog/[slug]/page.tsx:175
 #: src/generic/component/cta-section/cta-section.tsx:42
 #: src/generic/component/hero-section/hero-section.tsx:49
 #: src/generic/component/mobile-menu/mobile-menu.tsx:53
@@ -388,11 +384,11 @@ msgstr "Мова"
 msgid "Latest from Our Blog"
 msgstr "Останнє з нашого блогу"
 
-#: src/generic/component/footer/footer.tsx:146
+#: src/generic/component/footer/footer.tsx:128
 msgid "Legal"
 msgstr "Юридична інформація"
 
-#: src/generic/component/footer/footer.tsx:168
+#: src/generic/component/footer/footer.tsx:153
 msgid "License"
 msgstr "Ліцензія"
 
@@ -404,7 +400,7 @@ msgstr "Обмежений час"
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:134
+#: src/app/[lang]/blog/[slug]/page.tsx:129
 #: src/generic/component/blog-card/blog-card.tsx:77
 msgid "min read"
 msgstr "хв читання"
@@ -449,7 +445,7 @@ msgstr "Відкритий код"
 msgid "Open Source & Private"
 msgstr "Відкритий код і приватність"
 
-#: src/generic/component/footer/footer.tsx:195
+#: src/generic/component/footer/footer.tsx:184
 msgid "Open Source License"
 msgstr "Ліцензія з відкритим кодом"
 
@@ -461,16 +457,12 @@ msgstr "Пріоритетна підтримка"
 msgid "Privacy First"
 msgstr "Приватність понад усе"
 
-#: src/generic/component/footer/footer.tsx:125
-msgid "Privacy Guide"
-msgstr "Посібник із приватності"
-
-#: src/generic/component/footer/footer.tsx:155
-#: src/generic/component/footer/footer.tsx:187
+#: src/generic/component/footer/footer.tsx:137
+#: src/generic/component/footer/footer.tsx:170
 msgid "Privacy Policy"
 msgstr "Політика конфіденційності"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:169
+#: src/app/[lang]/blog/[slug]/page.tsx:164
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Готові взяти під контроль свою фінансову конфіденційність?"
 
@@ -502,10 +494,6 @@ msgstr "Пошук статей..."
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Безпечно підключайте банківські рахунки, криптогаманці й інвестиційні рахунки для автоматичного обліку."
 
-#: src/generic/component/footer/footer.tsx:173
-msgid "Security"
-msgstr "Безпека"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:34
 msgid "See what users love about Budgie's approach to private, comprehensive expense tracking."
 msgstr "Дізнайтесь, за що користувачі цінують Budgie — приватний і комплексний облік витрат."
@@ -526,7 +514,7 @@ msgstr "Розумна фінансова аналітика із захисто
 msgid "Smart Spending Advice"
 msgstr "Розумні поради щодо витрат"
 
-#: src/generic/component/footer/footer.tsx:133
+#: src/generic/component/footer/footer.tsx:120
 msgid "Source Code"
 msgstr "Вихідний код"
 
@@ -537,10 +525,6 @@ msgstr "Почніть облік за кілька хвилин"
 #: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Будьте в курсі фінансової конфіденційності, найкращих практик безпеки та останніх функцій Budgie."
-
-#: src/generic/component/footer/footer.tsx:138
-msgid "Support"
-msgstr "Підтримка"
 
 #: src/generic/component/language-switcher/language-switcher.tsx:50
 msgid "Switch language"
@@ -554,8 +538,8 @@ msgstr "Синхронізується з 1000+ банками та фінанс
 msgid "Take Control of Your Financial Privacy"
 msgstr "Візьміть під контроль свою фінансову приватність"
 
-#: src/generic/component/footer/footer.tsx:163
-#: src/generic/component/footer/footer.tsx:191
+#: src/generic/component/footer/footer.tsx:145
+#: src/generic/component/footer/footer.tsx:177
 msgid "Terms of Service"
 msgstr "Умови користування"
 
