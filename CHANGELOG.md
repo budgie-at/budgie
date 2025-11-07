@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.56.0](https://github.com/budgie-at/budgie/compare/v1.55.2...v1.56.0) (2025-11-07)
+
+### Bug Fixes
+
+- **landing:** mdx styling ([08a3570](https://github.com/budgie-at/budgie/commit/08a357047920344ad6bd02837259f21db6225b4d))
+- **landing:** mdx styling ([7f890ac](https://github.com/budgie-at/budgie/commit/7f890acee42396d827db4592f36983a5a0c3e4bd))
+- **landing:** mdx styling ([295af26](https://github.com/budgie-at/budgie/commit/295af260c2a91b86999807251a37c5ffe9c82a90))
+- **landing:** mdx styling ([f4fe2b8](https://github.com/budgie-at/budgie/commit/f4fe2b88e7dfa159ace33870369d6828a0f34b05))
+
+### Features
+
+- **landing:** add Privacy Policy, Terms of Service, and Open Source License pages ([a1fda33](https://github.com/budgie-at/budgie/commit/a1fda3313e8d2e04865dbb3b93a72637384756f6))
+
 ## [1.55.2](https://github.com/budgie-at/budgie/compare/v1.55.1...v1.55.2) (2025-11-06)
 
 ### Bug Fixes
