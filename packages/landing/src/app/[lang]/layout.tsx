@@ -3,6 +3,8 @@ import { msg } from '@lingui/core/macro';
 import localFont from 'next/font/local';
 
 import linguiConfig from '../../../lingui.config.mjs';
+import { Footer } from '../../generic/component/footer/footer';
+import { Header } from '../../generic/component/header/header';
 import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
@@ -109,7 +111,11 @@ export default async function RootLayout({ params, children }: Props) {
             <body className={fixelDisplay.className}>
                 <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
-                        {children}
+                        <div className="flex min-h-dvh flex-col">
+                            <Header lang={lang} />
+                            {children}
+                            <Footer lang={lang} />
+                        </div>
                     </ThemeProvider>
                 </LinguiClientProvider>
             </body>
