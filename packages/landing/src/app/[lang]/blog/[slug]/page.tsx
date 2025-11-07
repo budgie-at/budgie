@@ -11,8 +11,6 @@ import { isDefined } from '@rnw-community/shared';
 import { BlogDataInterface } from '../../../../blog/interface/blog-data.interface';
 import { calculateReadingTime } from '../../../../blog/util/calculate-reading-time.util';
 import { getArticles } from '../../../../blog/util/get-articles.util';
-import { Footer } from '../../../../generic/component/footer/footer';
-import { Header } from '../../../../generic/component/header/header';
 import { Motion } from '../../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -92,101 +90,95 @@ export default async function BlogArticlePage(props: Props) {
     const readingTime = calculateReadingTime(Post.toString());
 
     return (
-        <div className="flex min-h-dvh flex-col">
-            <Header lang={lang} />
+        <main className="flex-1">
+            <article className="w-full py-20 md:py-32">
+                <div className="container px-4 md:px-6 max-w-4xl">
+                    <Motion>
+                        <Link
+                            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
+                            href={`/${lang}/blog`}
+                        >
+                            <Trans>← Back to Blog</Trans>
+                        </Link>
 
-            <main className="flex-1">
-                <article className="w-full py-20 md:py-32">
-                    <div className="container px-4 md:px-6 max-w-4xl">
-                        <Motion>
-                            <Link
-                                className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                                href={`/${lang}/blog`}
-                            >
-                                <Trans>← Back to Blog</Trans>
+                        <div className="mb-8">
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {metadata.tags.map(tag => (
+                                    <Badge key={tag} variant="secondary">
+                                        <Tag className="size-3 mr-1" />
+                                        {tag}
+                                    </Badge>
+                                ))}
+                            </div>
+
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">{metadata.title}</h1>
+
+                            <p className="text-lg md:text-xl text-muted-foreground mb-6">{metadata.description}</p>
+
+                            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pb-6 border-b">
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="size-4" />
+
+                                    <span>{formattedDate}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Clock className="size-4" />
+
+                                    <span>
+                                        {readingTime} <Trans>min read</Trans>
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <span>
+                                        <Trans>By</Trans> {metadata.author}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {metadata.image && (
+                            <div className="relative w-full h-[400px] mb-12 rounded-xl overflow-hidden">
+                                <Image
+                                    alt={metadata.title}
+                                    className="object-cover"
+                                    fill
+                                    priority
+                                    sizes="(max-width: 768px) 100vw, 896px"
+                                    src={metadata.image}
+                                />
+                            </div>
+                        )}
+                    </Motion>
+
+                    <Motion>
+                        <div className="prose prose-lg dark:prose-invert max-w-none">
+                            <Post />
+                        </div>
+                    </Motion>
+
+                    <Motion className="mt-12 pt-8 border-t" index={1}>
+                        <div className="bg-muted/50 rounded-xl p-8 text-center">
+                            <h3 className="text-2xl font-bold mb-4">
+                                <Trans>Ready to Take Control of Your Financial Privacy?</Trans>
+                            </h3>
+
+                            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                                <Trans>
+                                    Join the Budgie waitlist and be among the first to experience truly private financial management.
+                                </Trans>
+                            </p>
+
+                            <Link href={`/${lang}#whitelist`}>
+                                <Button className="rounded-full h-12 px-8" size="lg">
+                                    <Trans>Join Whitelist</Trans>
+                                </Button>
                             </Link>
-
-                            <div className="mb-8">
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    {metadata.tags.map(tag => (
-                                        <Badge key={tag} variant="secondary">
-                                            <Tag className="size-3 mr-1" />
-                                            {tag}
-                                        </Badge>
-                                    ))}
-                                </div>
-
-                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">{metadata.title}</h1>
-
-                                <p className="text-lg md:text-xl text-muted-foreground mb-6">{metadata.description}</p>
-
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pb-6 border-b">
-                                    <div className="flex items-center gap-2">
-                                        <Calendar className="size-4" />
-
-                                        <span>{formattedDate}</span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <Clock className="size-4" />
-
-                                        <span>
-                                            {readingTime} <Trans>min read</Trans>
-                                        </span>
-                                    </div>
-
-                                    <div className="flex items-center gap-2">
-                                        <span>
-                                            <Trans>By</Trans> {metadata.author}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {metadata.image && (
-                                <div className="relative w-full h-[400px] mb-12 rounded-xl overflow-hidden">
-                                    <Image
-                                        alt={metadata.title}
-                                        className="object-cover"
-                                        fill
-                                        priority
-                                        sizes="(max-width: 768px) 100vw, 896px"
-                                        src={metadata.image}
-                                    />
-                                </div>
-                            )}
-                        </Motion>
-
-                        <Motion>
-                            <div className="prose prose-lg dark:prose-invert max-w-none">
-                                <Post />
-                            </div>
-                        </Motion>
-
-                        <Motion className="mt-12 pt-8 border-t" index={1}>
-                            <div className="bg-muted/50 rounded-xl p-8 text-center">
-                                <h3 className="text-2xl font-bold mb-4">
-                                    <Trans>Ready to Take Control of Your Financial Privacy?</Trans>
-                                </h3>
-
-                                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                                    <Trans>
-                                        Join the Budgie waitlist and be among the first to experience truly private financial management.
-                                    </Trans>
-                                </p>
-
-                                <Link href={`/${lang}#whitelist`}>
-                                    <Button className="rounded-full h-12 px-8" size="lg">
-                                        <Trans>Join Whitelist</Trans>
-                                    </Button>
-                                </Link>
-                            </div>
-                        </Motion>
-                    </div>
-                </article>
-            </main>
-
-            <Footer lang={lang} />
-        </div>
+                        </div>
+                    </Motion>
+                </div>
+            </article>
+        </main>
     );
 }
