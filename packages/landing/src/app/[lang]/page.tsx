@@ -4,8 +4,6 @@ import { BlogSection } from '../../generic/component/blog-section/blog-section';
 import { CtaSection } from '../../generic/component/cta-section/cta-section';
 import { FaqSection } from '../../generic/component/faq-section/faq-section';
 import { FeaturesSection } from '../../generic/component/features-section/features-section';
-import { Footer } from '../../generic/component/footer/footer';
-import { Header } from '../../generic/component/header/header';
 import { HeroSection } from '../../generic/component/hero-section/hero-section';
 import { HowItWorksSection } from '../../generic/component/how-it-works-section/how-it-works-section';
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
@@ -18,23 +16,17 @@ export default async function LandingPage(props: PageLangParam) {
     initLingui(lang);
 
     return (
-        <div className="flex min-h-dvh flex-col">
-            <Header lang={lang} />
-
-            <main className="flex-1">
-                <HeroSection />
-                <BanksSection />
-                <FeaturesSection />
-                <HowItWorksSection />
-                <AiSection />
-                <TestimonialsSection />
-                <BlogSection locale={lang} />
-                <WhitelistSection />
-                <FaqSection />
-                <CtaSection />
-            </main>
-
-            <Footer lang={lang} />
-        </div>
+        <main className="flex-1">
+            <HeroSection />
+            <BanksSection />
+            <FeaturesSection />
+            <HowItWorksSection />
+            <AiSection />
+            <TestimonialsSection />
+            <BlogSection locale={lang} />
+            <WhitelistSection />
+            <FaqSection />
+            <CtaSection />
+        </main>
     );
 }
