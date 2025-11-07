@@ -5,5 +5,5 @@ export const SellAssetTransactionEntitySchema = BaseTransferTransactionEntitySch
     quantity: true,
     instrument: true,
     toAccountId: true,
-    pricePerUnit: true,
+    pricePerUnit: true
 });

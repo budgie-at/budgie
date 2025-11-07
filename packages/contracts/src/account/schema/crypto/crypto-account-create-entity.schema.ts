@@ -1,9 +1,9 @@
 import { array } from 'zod';
 
+import { convertToCreateEntitySchema } from '../../../generic/util/convert-to-create-entity-schema.util';
 import { HoldingCreateEntitySchema } from '../../../holding/schema/holding-create-entity.schema';
 
 import { CryptoAccountEntitySchema } from './crypto-account-entity.schema';
-import { convertToCreateEntitySchema } from '../../../generic/util/convert-to-create-entity-schema.util';
 
 export const CryptoAccountCreateEntitySchema = convertToCreateEntitySchema(CryptoAccountEntitySchema)
     .extend({
