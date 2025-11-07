@@ -119,20 +119,20 @@ msgstr "Be among the first to experience Budgie Pro with exclusive early access 
 msgid "Blog"
 msgstr "Blog"
 
-#: src/app/[lang]/blog/page.tsx:51
+#: src/app/[lang]/blog/page.tsx:46
 msgid "Blog & Insights"
 msgstr "Blog & Insights"
 
-#: src/app/[lang]/layout.tsx:80
-#: src/app/[lang]/layout.tsx:81
+#: src/app/[lang]/layout.tsx:82
+#: src/app/[lang]/layout.tsx:83
 #: src/generic/component/footer/footer.tsx:27
 #: src/generic/component/header/header.tsx:46
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:72
-#: src/app/[lang]/layout.tsx:85
-#: src/app/[lang]/layout.tsx:94
+#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:87
+#: src/app/[lang]/layout.tsx:96
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie - Privacy-First Expense Tracker"
 
@@ -168,7 +168,7 @@ msgstr "Budgie Pro costs $20/month or $16/month when billed annually (20% saving
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 
-#: src/app/[lang]/layout.tsx:79
+#: src/app/[lang]/layout.tsx:81
 msgid "Budgie Team"
 msgstr "Budgie Team"
 
@@ -260,7 +260,7 @@ msgstr "Everything You Need to Master Your Finances"
 msgid "Example AI Conversations"
 msgstr "Example AI Conversations"
 
-#: src/app/[lang]/layout.tsx:77
+#: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 
@@ -425,7 +425,7 @@ msgstr "Multi-Asset Tracking"
 msgid "Multi-Currency Support"
 msgstr "Multi-Currency Support"
 
-#: src/app/[lang]/blog/page.tsx:116
+#: src/app/[lang]/blog/page.tsx:111
 msgid "No articles found"
 msgstr "No articles found"
 
@@ -534,7 +534,7 @@ msgstr "Source Code"
 msgid "Start Tracking in Minutes"
 msgstr "Start Tracking in Minutes"
 
-#: src/app/[lang]/blog/page.tsx:55
+#: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 
@@ -593,12 +593,12 @@ msgstr "Track expenses anywhere, anytime. Your data syncs when you're back onlin
 msgid "Track expenses in any currency with real-time exchange rates."
 msgstr "Track expenses in any currency with real-time exchange rates."
 
-#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:76
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 
-#: src/app/[lang]/layout.tsx:87
-#: src/app/[lang]/layout.tsx:96
+#: src/app/[lang]/layout.tsx:89
+#: src/app/[lang]/layout.tsx:98
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 
@@ -606,7 +606,7 @@ msgstr "Track expenses, sync banks, manage crypto & stocks with complete privacy
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Trusted by Privacy-Conscious Users"
 
-#: src/app/[lang]/blog/page.tsx:120
+#: src/app/[lang]/blog/page.tsx:115
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Try adjusting your search query or browse all articles."
 
