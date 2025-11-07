@@ -1,8 +1,8 @@
-import { BaseTransactionCreateEntityFieldsSchema } from '../base/base-transaction-create-entity-fields.schema';
+import { convertToCreateEntitySchema } from '../../../generic/util/convert-to-create-entity-schema.util';
 
 import { TransferAssetTransactionEntitySchema } from './transfer-asset-transaction-entity.schema';
 
-export const TransferAssetTransactionCreateEntitySchema = TransferAssetTransactionEntitySchema.pick({
-    type: true,
-    instrument: true
-}).extend(BaseTransactionCreateEntityFieldsSchema.omit({ type: true }).shape);
+export const TransferAssetTransactionCreateEntitySchema = convertToCreateEntitySchema(TransferAssetTransactionEntitySchema).partial({
+    comment: true,
+    operatedAt: true
+});
