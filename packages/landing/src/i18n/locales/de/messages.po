@@ -13,662 +13,650 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/faq-section/faq-section.tsx:72
+#: src/generic/component/faq-section/faq-section.tsx:72
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "Ja! Sie können Ihre Daten über Ihren eigenen Cloud-Speicher (iCloud, Google Drive, Dropbox) auf mehreren Geräten synchronisieren. Ihre Daten bleiben verschlüsselt und privat – wir sehen sie während des Synchronisierungsprozesses niemals."
 
-#: src/components/ai-section-features/ai-section-features.tsx:44
+#: src/generic/component/ai-section-features/ai-section-features.tsx:44
 msgid "\"Why did I spend so much this month?\""
 msgstr "\"Warum habe ich diesen Monat so viel ausgegeben?\""
 
-#: src/components/ai-section-features/ai-section-features.tsx:54
+#: src/generic/component/ai-section-features/ai-section-features.tsx:54
 msgid "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
 msgstr "\"Sie haben 40% mehr für Restaurantbesuche ausgegeben ($320 vs. $230 Durchschnitt). Ihre größte Ausgabe war $85 im Fancy Restaurant am 15.\""
 
-#: src/components/footer/footer.tsx:157
+#: src/generic/component/footer/footer.tsx:162
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. Alle Rechte vorbehalten."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:113
+#: src/app/[lang]/blog/[slug]/page.tsx:101
 msgid "← Back to Blog"
 msgstr "← Zurück zum Blog"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:112
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:112
 msgid "<0>Limited Offer:</0> Only 500 whitelist spots available. Get 25% off your first year of Budgie Pro when you join the whitelist."
 msgstr "<0>Limitiertes Angebot:</0> Nur 500 Whitelist-Plätze verfügbar. Erhalten Sie 25% Rabatt auf Ihr erstes Jahr Budgie Pro, wenn Sie der Whitelist beitreten."
 
-#: src/components/whitelist-section/whitelist-section.tsx:30
+#: src/generic/component/whitelist-section/whitelist-section.tsx:30
 msgid "🎉 EXCLUSIVE WHITELIST OFFER"
 msgstr "🎉 EXKLUSIVES WHITELIST-ANGEBOT"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:45
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:45
 msgid "$15/month"
 msgstr "$15/Monat"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:33
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:33
 msgid "$20/month"
 msgstr "$20/Monat"
 
-#: src/components/ai-section-features/ai-section-features.tsx:21
+#: src/generic/component/ai-section-features/ai-section-features.tsx:21
 msgid "100% On-Device Processing"
 msgstr "100% Verarbeitung auf dem Gerät"
 
-#: src/components/hero-section/hero-section.tsx:64
+#: src/generic/component/hero-section/hero-section.tsx:64
 msgid "100% Secure"
 msgstr "100% Sicher"
 
-#: src/components/cta-section/cta-section.tsx:57
+#: src/generic/component/cta-section/cta-section.tsx:57
 msgid "100% secure • Open source • Your data stays on your device"
 msgstr "100% sicher • Open Source • Ihre Daten bleiben auf Ihrem Gerät"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:49
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:49
 msgid "25% off for the first year"
 msgstr "25% Rabatt für das erste Jahr"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:62
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:62
 msgid "25% off your first year of Budgie Pro"
 msgstr "25% Rabatt auf Ihr erstes Jahr Budgie Pro"
 
-#: src/components/ai-section/ai-section.tsx:36
+#: src/generic/component/ai-section/ai-section.tsx:36
 msgid "AI Assistant"
 msgstr "KI-Assistent"
 
-#: src/components/ai-section-features/ai-section-features.tsx:50
+#: src/generic/component/ai-section-features/ai-section-features.tsx:50
 msgid "AI:"
 msgstr "KI:"
 
-#: src/components/footer/footer.tsx:34
+#: src/generic/component/footer/footer.tsx:74
 msgid "App"
 msgstr "App"
 
-#: src/components/testimonials-section/testimonials-section.tsx:58
+#: src/app/[lang]/blog/[slug]/page.tsx:44
+msgid "Article Not Found"
+msgstr "Artikel nicht gefunden"
+
+#: src/generic/component/testimonials-section/testimonials-section.tsx:58
 msgid "As a freelancer with multiple currencies, Budgie is a lifesaver. The debt tracking helped me pay off my student loans 6 months early!"
 msgstr "Als Freelancer mit mehreren Währungen ist Budgie ein Lebensretter. Die Schuldenverfolgung hat mir geholfen, meine Studienkredite 6 Monate früher abzubezahlen!"
 
-#: src/components/ai-section-features/ai-section-features.tsx:13
+#: src/generic/component/ai-section-features/ai-section-features.tsx:13
 msgid "Ask questions like \"Why is there so little money?\" and get detailed breakdowns of your spending patterns, unusual transactions, and budget insights."
 msgstr "Stellen Sie Fragen wie \"Warum ist so wenig Geld übrig?\" und erhalten Sie detaillierte Aufschlüsselungen Ihrer Ausgabenmuster, ungewöhnlicher Transaktionen und Budget-Einblicke."
 
-#: src/components/features-section/features-section.tsx:66
+#: src/generic/component/features-section/features-section.tsx:66
 msgid "Automatically import transactions from your bank accounts for effortless tracking."
 msgstr "Importieren Sie Transaktionen automatisch von Ihren Bankkonten für müheloses Tracking."
 
-#: src/components/banks-section/banks-section.tsx:18
+#: src/generic/component/banks-section/banks-section.tsx:18
 msgid "Bank of America"
 msgstr "Bank of America"
 
-#: src/components/faq-section/faq-section.tsx:60
+#: src/generic/component/faq-section/faq-section.tsx:60
 msgid "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
 msgstr "Die Banksynchronisation benötigt eine Internetverbindung, um neue Transaktionen abzurufen, aber einmal synchronisiert können Sie alles offline anzeigen und kategorisieren. Die App funktioniert vollständig offline für manuelle Ausgabeneingaben und die Anzeige Ihrer Daten."
 
-#: src/components/features-section/features-section.tsx:68
+#: src/generic/component/features-section/features-section.tsx:68
 msgid "Bank Synchronization"
 msgstr "Bank-Synchronisation"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:19
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:19
 msgid "Be among the first to experience Budgie Pro with exclusive early access pricing. Limited spots available for privacy-conscious early adopters."
 msgstr "Gehören Sie zu den Ersten, die Budgie Pro mit exklusivem Early-Access-Preis erleben. Begrenzte Plätze für datenschutzbewusste Early Adopters verfügbar."
 
-#: src/components/footer/footer.tsx:78
-#: src/components/header/header.tsx:74
-#: src/components/header/mobile-menu.tsx:39
+#: src/generic/component/footer/footer.tsx:112
+#: src/generic/component/header/header.tsx:69
+#: src/generic/component/mobile-menu/mobile-menu.tsx:33
 msgid "Blog"
 msgstr "Blog"
 
-#: src/app/[lang]/blog/page.tsx:58
+#: src/app/[lang]/blog/page.tsx:46
 msgid "Blog & Insights"
 msgstr "Blog & Einblicke"
 
-#: src/app/[lang]/layout.tsx:80
-#: src/app/[lang]/layout.tsx:81
-#: src/components/footer/footer-details.tsx:20
-#: src/components/header/header.tsx:54
+#: src/app/[lang]/layout.tsx:82
+#: src/app/[lang]/layout.tsx:83
+#: src/generic/component/footer/footer.tsx:27
+#: src/generic/component/header/header.tsx:46
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/[lang]/layout.tsx:72
-#: src/app/[lang]/layout.tsx:85
-#: src/app/[lang]/layout.tsx:94
+#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:87
+#: src/app/[lang]/layout.tsx:96
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie - Ausgaben-Tracker mit Datenschutz-Fokus"
 
-#: src/components/ai-section-details/ai-section-details.tsx:15
+#: src/generic/component/ai-section-details/ai-section-details.tsx:15
 msgid "Budgie AI"
 msgstr "Budgie KI"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:59
+#: src/app/[lang]/blog/[slug]/page.tsx:48
 msgid "Budgie Blog"
 msgstr "Budgie Blog"
 
-#: src/components/features-section/features-section.tsx:45
+#: src/generic/component/features-section/features-section.tsx:45
 msgid "Budgie combines powerful expense tracking with complete privacy. Track every dollar, euro, or bitcoin while keeping your financial data exactly where it belongs—on your device."
 msgstr "Budgie kombiniert leistungsstarke Ausgabenverfolgung mit vollständiger Privatsphäre. Verfolgen Sie jeden Dollar, Euro oder Bitcoin, während Ihre Finanzdaten genau dort bleiben, wo sie hingehören – auf Ihrem Gerät."
 
-#: src/components/hero-section/hero-section.tsx:40
+#: src/generic/component/hero-section/hero-section.tsx:40
 msgid "Budgie is the offline-first expense tracker that keeps your financial data completely private. Track cash, crypto, stocks, and bank accounts across multiple currencies—all stored securely on your device."
 msgstr "Budgie ist der Offline-First-Ausgaben-Tracker, der Ihre Finanzdaten vollständig privat hält. Verfolgen Sie Bargeld, Krypto, Aktien und Bankkonten in mehreren Währungen – alles sicher auf Ihrem Gerät gespeichert."
 
-#: src/components/logo/logo.tsx:16
+#: src/generic/component/logo/logo.tsx:19
 msgid "Budgie logo"
 msgstr "Budgie-Logo"
 
-#: src/components/hero-section/hero-section.tsx:94
+#: src/generic/component/hero-section/hero-section.tsx:94
 msgid "Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types"
 msgstr "Budgie Mobile-App-Interface mit Saldoübersicht mit Multi-Währungs-Bankkonten einschließlich Monobank-Karten und verschiedenen Kontotypen"
 
-#: src/components/faq-section/faq-section.tsx:42
+#: src/generic/component/faq-section/faq-section.tsx:42
 msgid "Budgie Pro costs $20/month or $16/month when billed annually (20% savings). Whitelist members get an exclusive 25% discount for their first year. This premium pricing ensures we can maintain the highest privacy and security standards without relying on data monetization."
 msgstr "Budgie Pro kostet $20/Monat oder $16/Monat bei jährlicher Abrechnung (20% Ersparnis). Whitelist-Mitglieder erhalten einen exklusiven Rabatt von 25% für ihr erstes Jahr. Diese Premium-Preisgestaltung stellt sicher, dass wir die höchsten Datenschutz- und Sicherheitsstandards aufrechterhalten können, ohne auf Datenmonetarisierung angewiesen zu sein."
 
-#: src/components/faq-section/faq-section.tsx:66
+#: src/generic/component/faq-section/faq-section.tsx:66
 msgid "Budgie supports tracking for major cryptocurrencies, stocks, ETFs, and traditional bank accounts. You can manually add any asset or connect supported exchanges and brokerages for automatic tracking."
 msgstr "Budgie unterstützt das Tracking für wichtige Kryptowährungen, Aktien, ETFs und traditionelle Bankkonten. Sie können jedes Asset manuell hinzufügen oder unterstützte Börsen und Broker für automatisches Tracking verbinden."
 
-#: src/app/[lang]/layout.tsx:79
+#: src/app/[lang]/layout.tsx:81
 msgid "Budgie Team"
 msgstr "Budgie-Team"
 
-#: src/components/faq-section/faq-section.tsx:78
+#: src/generic/component/faq-section/faq-section.tsx:78
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie verwendet eine Source-Available-Lizenz, die es Ihnen ermöglicht, den Code anzusehen, zu ändern und dazu beizutragen, während sichergestellt wird, dass nur wir die offizielle App monetarisieren können. Dies hält das Projekt nachhaltig und bewahrt gleichzeitig Transparenz."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:147
+#: src/app/[lang]/blog/[slug]/page.tsx:135
 msgid "By"
 msgstr "Von"
 
-#: src/components/faq-section/faq-section.tsx:74
+#: src/generic/component/faq-section/faq-section.tsx:74
 msgid "Can I use Budgie across multiple devices?"
 msgstr "Kann ich Budgie auf mehreren Geräten verwenden?"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:96
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:96
 msgid "Cancel anytime"
 msgstr "Jederzeit kündbar"
 
-#: src/components/banks-section/banks-section.tsx:17
+#: src/generic/component/banks-section/banks-section.tsx:17
 msgid "Chase"
 msgstr "Chase"
 
-#: src/components/banks-section/banks-section.tsx:20
+#: src/generic/component/banks-section/banks-section.tsx:20
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/components/features-section/features-section.tsx:80
+#: src/generic/component/features-section/features-section.tsx:80
 msgid "Complete Privacy"
 msgstr "Vollständige Privatsphäre"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:57
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:57
 msgid "Connect Your Accounts"
 msgstr "Verbinden Sie Ihre Konten"
 
-#: src/components/testimonials-section/testimonials-section.tsx:52
+#: src/generic/component/testimonials-section/testimonials-section.tsx:52
 msgid "Crypto Investor"
 msgstr "Krypto-Investor"
 
-#: src/components/testimonials-section/testimonials-section.tsx:44
+#: src/generic/component/testimonials-section/testimonials-section.tsx:44
 msgid "Digital Nomad"
 msgstr "Digitaler Nomade"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:68
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:68
 msgid "Direct line to our development team"
 msgstr "Direkter Draht zu unserem Entwicklerteam"
 
-#: src/components/blog-section/blog-section.tsx:39
+#: src/generic/component/blog-section/blog-section.tsx:26
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
 msgstr "Entdecken Sie Einblicke in finanzielle Privatsphäre, Sicherheits-Best-Practices und wie Sie die Kontrolle über Ihr Geld übernehmen."
 
-#: src/components/footer/footer.tsx:86
-msgid "Documentation"
-msgstr "Dokumentation"
-
-#: src/components/faq-section/faq-section.tsx:62
+#: src/generic/component/faq-section/faq-section.tsx:62
 msgid "Does bank sync work offline?"
 msgstr "Funktioniert die Banksynchronisation offline?"
 
-#: src/components/footer/footer.tsx:59
+#: src/generic/component/footer/footer.tsx:93
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:50
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:50
 msgid "Download & Install"
 msgstr "Herunterladen & Installieren"
 
-#: src/components/header/header.tsx:94
+#: src/generic/component/header/header.tsx:92
 msgid "Download App"
 msgstr "App herunterladen"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:58
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:58
 msgid "Early Access"
 msgstr "Early Access"
 
-#: src/components/testimonials-section/testimonials-section.tsx:56
+#: src/generic/component/testimonials-section/testimonials-section.tsx:56
 msgid "Emily Johnson"
 msgstr "Emily Johnson"
 
-#: src/components/faq-section/faq-section.tsx:35
+#: src/generic/component/faq-section/faq-section.tsx:35
 msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
 msgstr "Alles, was Sie über Budgies Datenschutz-zuerst-Ansatz zur Ausgabenverfolgung wissen müssen."
 
-#: src/components/features-section/features-section.tsx:41
+#: src/generic/component/features-section/features-section.tsx:41
 msgid "Everything You Need to Master Your Finances"
 msgstr "Alles, was Sie brauchen, um Ihre Finanzen zu meistern"
 
-#: src/components/ai-section-features/ai-section-features.tsx:34
+#: src/generic/component/ai-section-features/ai-section-features.tsx:34
 msgid "Example AI Conversations"
 msgstr "Beispiel-KI-Gespräche"
 
-#: src/app/[lang]/layout.tsx:77
+#: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 msgstr "Ausgaben-Tracker, Budget-App, Banksynchronisation, Krypto-Tracking, Datenschutz, Offline-First, Multi-Währung, Schuldenverfolgung, Finanzverwaltung"
 
-#: src/components/faq-section/faq-section.tsx:27
-#: src/components/header/header.tsx:85
-#: src/components/header/mobile-menu.tsx:47
+#: src/generic/component/faq-section/faq-section.tsx:27
+#: src/generic/component/header/header.tsx:83
+#: src/generic/component/mobile-menu/mobile-menu.tsx:41
 msgid "FAQ"
 msgstr "FAQ"
 
-#: src/components/features-section/features-section.tsx:37
-#: src/components/footer/footer.tsx:43
-#: src/components/header/header.tsx:63
-#: src/components/header/mobile-menu.tsx:31
+#: src/generic/component/features-section/features-section.tsx:37
+#: src/generic/component/footer/footer.tsx:80
+#: src/generic/component/header/header.tsx:55
+#: src/generic/component/mobile-menu/mobile-menu.tsx:25
 msgid "Features"
 msgstr "Funktionen"
 
-#: src/components/testimonials-section/testimonials-section.tsx:42
+#: src/generic/component/testimonials-section/testimonials-section.tsx:42
 msgid "Finally, an expense tracker that doesn't spy on me! Budgie works perfectly offline and my bank sync is seamless. Love the multi-currency support."
 msgstr "Endlich ein Ausgaben-Tracker, der mich nicht ausspioniert! Budgie funktioniert perfekt offline und meine Banksynchronisation ist nahtlos. Liebe die Multi-Währungsunterstützung."
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:64
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:64
 msgid "First Year Discount"
 msgstr "Erstes-Jahr-Rabatt"
 
-#: src/components/faq-section/faq-section.tsx:48
+#: src/generic/component/faq-section/faq-section.tsx:48
 msgid "Free expense apps make money by selling your financial data or showing ads. Budgie's premium model means we work for you, not advertisers. Your subscription funds ongoing development, security updates, and ensures your data remains completely private—never sold or monetized."
 msgstr "Kostenlose Ausgaben-Apps verdienen Geld durch den Verkauf Ihrer Finanzdaten oder das Anzeigen von Werbung. Budgies Premium-Modell bedeutet, dass wir für Sie arbeiten, nicht für Werbetreibende. Ihr Abonnement finanziert laufende Entwicklung, Sicherheitsupdates und stellt sicher, dass Ihre Daten vollständig privat bleiben – niemals verkauft oder monetarisiert."
 
-#: src/components/testimonials-section/testimonials-section.tsx:60
+#: src/generic/component/testimonials-section/testimonials-section.tsx:60
 msgid "Freelance Designer"
 msgstr "Freiberuflicher Designer"
 
-#: src/components/faq-section/faq-section.tsx:31
+#: src/generic/component/faq-section/faq-section.tsx:31
 msgid "Frequently Asked Questions"
 msgstr "Häufig gestellte Fragen"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:47
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:47
 msgid "Get Budgie from the app store. No registration required—your privacy starts immediately."
 msgstr "Holen Sie sich Budgie aus dem App Store. Keine Registrierung erforderlich – Ihre Privatsphäre beginnt sofort."
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:56
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:56
 msgid "Get Budgie Pro before the public launch"
 msgstr "Erhalten Sie Budgie Pro vor dem öffentlichen Start"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:36
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:36
 msgid "Get complete control over your finances with just a few simple steps. No accounts, no cloud storage, no compromises."
 msgstr "Erhalten Sie vollständige Kontrolle über Ihre Finanzen mit nur wenigen einfachen Schritten. Keine Konten, kein Cloud-Speicher, keine Kompromisse."
 
-#: src/components/ai-section/ai-section.tsx:44
+#: src/generic/component/ai-section/ai-section.tsx:44
 msgid "Get instant answers about your spending with Budgie's on-device AI. No data leaves your phone—smart analysis happens locally for complete privacy."
 msgstr "Erhalten Sie sofortige Antworten zu Ihren Ausgaben mit Budgies Geräte-interner KI. Keine Daten verlassen Ihr Telefon – intelligente Analysen erfolgen lokal für vollständige Privatsphäre."
 
-#: src/components/ai-section-features/ai-section-features.tsx:25
+#: src/generic/component/ai-section-features/ai-section-features.tsx:25
 msgid "Get personalized recommendations like \"Don't give a girl so much money!\" and other practical insights to help you make better financial decisions."
 msgstr "Erhalten Sie personalisierte Empfehlungen wie \"Gib nicht so viel Geld aus!\" und andere praktische Einblicke, die Ihnen helfen, bessere finanzielle Entscheidungen zu treffen."
 
-#: src/components/footer/footer-details.tsx:33
+#: src/generic/component/footer/footer.tsx:45
 msgid "GitHub"
 msgstr "GitHub"
 
-#: src/components/features-section/features-section.tsx:92
+#: src/generic/component/features-section/features-section.tsx:92
 msgid "Goals & Debt Tracking"
 msgstr "Ziele & Schuldenverfolgung"
 
-#: src/components/ai-section-details/ai-section-details.tsx:49
+#: src/generic/component/ai-section-details/ai-section-details.tsx:49
 msgid "Here's your spending spike: 🎬 Movies & concerts: $180 🛍️ Online shopping: $120 🍕 Food delivery: $100. Consider setting a $200 entertainment budget next month?"
 msgstr "Hier ist Ihr Ausgabenanstieg: 🎬 Filme & Konzerte: $180 🛍️ Online-Shopping: $120 🍕 Essenslieferung: $100. Erwägen Sie, nächsten Monat ein Unterhaltungsbudget von $200 festzulegen?"
 
-#: src/components/faq-section/faq-section.tsx:80
+#: src/generic/component/faq-section/faq-section.tsx:80
 msgid "How does the open source license work?"
 msgstr "Wie funktioniert die Open-Source-Lizenz?"
 
-#: src/components/faq-section/faq-section.tsx:56
+#: src/generic/component/faq-section/faq-section.tsx:56
 msgid "How is my financial data kept private?"
 msgstr "Wie werden meine Finanzdaten privat gehalten?"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:28
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:28
 msgid "How It Works"
 msgstr "So funktioniert's"
 
-#: src/components/faq-section/faq-section.tsx:44
+#: src/generic/component/faq-section/faq-section.tsx:44
 msgid "How much does Budgie cost?"
 msgstr "Was kostet Budgie?"
 
-#: src/components/ai-section-details/ai-section-details.tsx:34
+#: src/generic/component/ai-section-details/ai-section-details.tsx:34
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 msgstr "Ich habe Ihre Ausgaben analysiert und festgestellt, dass Sie diesen Monat $450 mehr als üblich ausgegeben haben. Die Hauptschuldigen: $280 für Unterhaltung und $170 für Impulskäufe. Soll ich Ihnen die Aufschlüsselung zeigen?"
 
-#: src/components/ai-section-features/ai-section-features.tsx:15
+#: src/generic/component/ai-section-features/ai-section-features.tsx:15
 msgid "Instant Financial Analysis"
 msgstr "Sofortige Finanzanalyse"
 
-#: src/components/faq-section/faq-section.tsx:86
+#: src/generic/component/faq-section/faq-section.tsx:86
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Gibt es eine kostenlose Testversion oder Geld-zurück-Garantie?"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:181
+#: src/app/[lang]/blog/[slug]/page.tsx:168
 msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
 msgstr "Treten Sie der Budgie-Warteliste bei und gehören Sie zu den Ersten, die wirklich privates Finanzmanagement erleben."
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:15
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:15
 msgid "Join the Whitelist & Save 25%"
 msgstr "Treten Sie der Whitelist bei & sparen Sie 25%"
 
-#: src/components/cta-section/cta-section.tsx:33
+#: src/generic/component/cta-section/cta-section.tsx:33
 msgid "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 msgstr "Schließen Sie sich Tausenden datenschutzbewussten Nutzern an, die Budgie vertrauen, ihre Ausgaben zu verfolgen, ohne ihre Finanzdaten zu gefährden."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:188
-#: src/components/cta-section/cta-section.tsx:42
-#: src/components/header/mobile-menu.tsx:59
-#: src/components/hero-section/hero-section.tsx:49
+#: src/app/[lang]/blog/[slug]/page.tsx:175
+#: src/generic/component/cta-section/cta-section.tsx:42
+#: src/generic/component/hero-section/hero-section.tsx:49
+#: src/generic/component/mobile-menu/mobile-menu.tsx:53
 msgid "Join Whitelist"
 msgstr "Whitelist beitreten"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:79
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:79
 msgid "Join Whitelist - Save 25%"
 msgstr "Whitelist beitreten - 25% sparen"
 
-#: src/components/header/mobile-menu.tsx:53
+#: src/generic/component/mobile-menu/mobile-menu.tsx:47
 msgid "Language"
 msgstr "Sprache"
 
-#: src/components/blog-section/blog-section.tsx:35
+#: src/generic/component/blog-section/blog-section.tsx:22
 msgid "Latest from Our Blog"
 msgstr "Neuestes aus unserem Blog"
 
-#: src/components/footer/footer.tsx:115
+#: src/generic/component/footer/footer.tsx:128
 msgid "Legal"
 msgstr "Rechtliches"
 
-#: src/components/footer/footer.tsx:140
+#: src/generic/component/footer/footer.tsx:153
 msgid "License"
 msgstr "Lizenz"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:104
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:104
 msgid "Limited time"
 msgstr "Begrenzte Zeit"
 
-#: src/components/testimonials-section/testimonials-section.tsx:48
+#: src/generic/component/testimonials-section/testimonials-section.tsx:48
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:141
-#: src/components/blog-card/blog-card.tsx:87
+#: src/app/[lang]/blog/[slug]/page.tsx:129
+#: src/generic/component/blog-card/blog-card.tsx:77
 msgid "min read"
 msgstr "Min. Lesezeit"
 
-#: src/components/features-section/features-section.tsx:72
+#: src/generic/component/features-section/features-section.tsx:72
 msgid "Monitor cash, crypto, stocks, and bank accounts all in one place."
 msgstr "Überwachen Sie Bargeld, Krypto, Aktien und Bankkonten an einem Ort."
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:61
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:61
 msgid "Monitor expenses, set goals, track debts, and gain insights—all while keeping your data private."
 msgstr "Überwachen Sie Ausgaben, setzen Sie Ziele, verfolgen Sie Schulden und gewinnen Sie Einblicke – alles bei gleichzeitiger Wahrung Ihrer Privatsphäre."
 
-#: src/components/features-section/features-section.tsx:74
+#: src/generic/component/features-section/features-section.tsx:74
 msgid "Multi-Asset Tracking"
 msgstr "Multi-Asset-Tracking"
 
-#: src/components/features-section/features-section.tsx:86
+#: src/generic/component/features-section/features-section.tsx:86
 msgid "Multi-Currency Support"
 msgstr "Multi-Währungsunterstützung"
 
-#: src/app/[lang]/blog/page.tsx:131
+#: src/app/[lang]/blog/page.tsx:111
 msgid "No articles found"
 msgstr "Keine Artikel gefunden"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:88
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:88
 msgid "No commitment"
 msgstr "Keine Verpflichtung"
 
-#: src/components/features-section/features-section.tsx:62
+#: src/generic/component/features-section/features-section.tsx:62
 msgid "Offline-First Design"
 msgstr "Offline-First-Design"
 
-#: src/components/ai-section-details/ai-section-details.tsx:19
+#: src/generic/component/ai-section-details/ai-section-details.tsx:19
 msgid "On-device assistant"
 msgstr "Geräteinterner Assistent"
 
-#: src/components/hero-section/hero-section.tsx:72
+#: src/generic/component/hero-section/hero-section.tsx:72
 msgid "Open Source"
 msgstr "Open Source"
 
-#: src/components/hero-section/hero-section.tsx:32
+#: src/generic/component/hero-section/hero-section.tsx:32
 msgid "Open Source & Private"
 msgstr "Open Source & Privat"
 
-#: src/components/footer/footer.tsx:170
+#: src/generic/component/footer/footer.tsx:184
 msgid "Open Source License"
 msgstr "Open-Source-Lizenz"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:70
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:70
 msgid "Priority Support"
 msgstr "Prioritäts-Support"
 
-#: src/components/hero-section/hero-section.tsx:80
+#: src/generic/component/hero-section/hero-section.tsx:80
 msgid "Privacy First"
 msgstr "Datenschutz zuerst"
 
-#: src/components/footer/footer.tsx:94
-msgid "Privacy Guide"
-msgstr "Datenschutz-Leitfaden"
-
-#: src/components/footer/footer.tsx:124
-#: src/components/footer/footer.tsx:162
+#: src/generic/component/footer/footer.tsx:137
+#: src/generic/component/footer/footer.tsx:170
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:177
+#: src/app/[lang]/blog/[slug]/page.tsx:164
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Bereit, die Kontrolle über Ihre finanzielle Privatsphäre zu übernehmen?"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:29
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:29
 msgid "Regular Price"
 msgstr "Regulärer Preis"
 
-#: src/components/footer/footer.tsx:72
+#: src/generic/component/footer/footer.tsx:106
 msgid "Resources"
 msgstr "Ressourcen"
 
-#: src/components/footer/footer.tsx:64
+#: src/generic/component/footer/footer.tsx:98
 msgid "Roadmap"
 msgstr "Roadmap"
 
-#: src/components/banks-section/banks-section.tsx:21
+#: src/generic/component/banks-section/banks-section.tsx:21
 msgid "Robinhood"
 msgstr "Robinhood"
 
-#: src/components/testimonials-section/testimonials-section.tsx:40
+#: src/generic/component/testimonials-section/testimonials-section.tsx:40
 msgid "Sarah Chen"
 msgstr "Sarah Chen"
 
-#: src/app/[lang]/blog/blog-search.tsx:55
+#: src/blog/component/blog-search/blog-search.tsx:55
 msgid "Search articles..."
 msgstr "Artikel suchen..."
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:54
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:54
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Verknüpfen Sie sicher Ihre Bankkonten, Krypto-Wallets und Investmentkonten für automatisches Tracking."
 
-#: src/components/footer/footer.tsx:148
-msgid "Security"
-msgstr "Sicherheit"
-
-#: src/components/testimonials-section/testimonials-section.tsx:34
+#: src/generic/component/testimonials-section/testimonials-section.tsx:34
 msgid "See what users love about Budgie's approach to private, comprehensive expense tracking."
 msgstr "Sehen Sie, was Nutzer an Budgies Ansatz zur privaten, umfassenden Ausgabenverfolgung lieben."
 
-#: src/components/features-section/features-section.tsx:90
+#: src/generic/component/features-section/features-section.tsx:90
 msgid "Set financial goals and track debt payments to achieve financial freedom."
 msgstr "Setzen Sie finanzielle Ziele und verfolgen Sie Schuldenzahlungen, um finanzielle Freiheit zu erreichen."
 
-#: src/app/[lang]/blog/blog-search.tsx:80
+#: src/blog/component/blog-search/blog-search.tsx:80
 msgid "Showing results for: <0>{searchQuery}</0>"
 msgstr "Ergebnisse für: <0>{searchQuery}</0>"
 
-#: src/components/ai-section/ai-section.tsx:40
+#: src/generic/component/ai-section/ai-section.tsx:40
 msgid "Smart Financial Insights, Privately Powered"
 msgstr "Intelligente Finanzeinblicke, privat betrieben"
 
-#: src/components/ai-section-features/ai-section-features.tsx:27
+#: src/generic/component/ai-section-features/ai-section-features.tsx:27
 msgid "Smart Spending Advice"
 msgstr "Intelligente Ausgabenberatung"
 
-#: src/components/footer/footer.tsx:102
+#: src/generic/component/footer/footer.tsx:120
 msgid "Source Code"
 msgstr "Quellcode"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:32
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
 msgstr "Beginnen Sie in Minuten mit dem Tracking"
 
-#: src/app/[lang]/blog/page.tsx:62
+#: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Bleiben Sie über finanzielle Privatsphäre, Sicherheits-Best-Practices und die neuesten Funktionen in Budgie informiert."
 
-#: src/components/footer/footer.tsx:107
-msgid "Support"
-msgstr "Support"
-
-#: src/components/language-switcher/language-switcher.tsx:55
+#: src/generic/component/language-switcher/language-switcher.tsx:50
 msgid "Switch language"
 msgstr "Sprache wechseln"
 
-#: src/components/banks-section/banks-section.tsx:13
+#: src/generic/component/banks-section/banks-section.tsx:13
 msgid "Syncs with 1000+ banks and financial institutions"
 msgstr "Synchronisiert mit 1000+ Banken und Finanzinstituten"
 
-#: src/components/cta-section/cta-section.tsx:29
+#: src/generic/component/cta-section/cta-section.tsx:29
 msgid "Take Control of Your Financial Privacy"
 msgstr "Übernehmen Sie die Kontrolle über Ihre finanzielle Privatsphäre"
 
-#: src/components/footer/footer.tsx:132
-#: src/components/footer/footer.tsx:166
+#: src/generic/component/footer/footer.tsx:145
+#: src/generic/component/footer/footer.tsx:177
 msgid "Terms of Service"
 msgstr "Nutzungsbedingungen"
 
-#: src/components/header/header.tsx:70
-#: src/components/header/mobile-menu.tsx:35
-#: src/components/testimonials-section/testimonials-section.tsx:26
+#: src/generic/component/header/header.tsx:62
+#: src/generic/component/mobile-menu/mobile-menu.tsx:29
+#: src/generic/component/testimonials-section/testimonials-section.tsx:26
 msgid "Testimonials"
 msgstr "Erfahrungsberichte"
 
-#: src/components/testimonials-section/testimonials-section.tsx:50
+#: src/generic/component/testimonials-section/testimonials-section.tsx:50
 msgid "The crypto tracking is incredible. I can see all my DeFi positions alongside my traditional accounts. The privacy-first approach sold me immediately."
 msgstr "Das Krypto-Tracking ist unglaublich. Ich kann alle meine DeFi-Positionen neben meinen traditionellen Konten sehen. Der Datenschutz-zuerst-Ansatz hat mich sofort überzeugt."
 
-#: src/components/footer/footer-details.tsx:25
+#: src/generic/component/footer/footer.tsx:32
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "Der Datenschutz-zuerst-Ausgaben-Tracker, der Ihre Finanzdaten genau dort hält, wo sie hingehören – auf Ihrem Gerät."
 
-#: src/components/header/header.tsx:102
+#: src/generic/component/header/header.tsx:100
 msgid "Toggle menu"
 msgstr "Menü umschalten"
 
-#: src/components/theme-switcher/theme-switcher.tsx:19
+#: src/generic/component/theme-switcher/theme-switcher.tsx:19
 msgid "Toggle theme"
 msgstr "Thema umschalten"
 
-#: src/components/how-it-works-section/how-it-works-section.tsx:64
+#: src/generic/component/how-it-works-section/how-it-works-section.tsx:64
 msgid "Track Everything"
 msgstr "Alles verfolgen"
 
-#: src/components/features-section/features-section.tsx:60
+#: src/generic/component/features-section/features-section.tsx:60
 msgid "Track expenses anywhere, anytime. Your data syncs when you're back online."
 msgstr "Verfolgen Sie Ausgaben überall und jederzeit. Ihre Daten synchronisieren sich, wenn Sie wieder online sind."
 
-#: src/components/features-section/features-section.tsx:84
+#: src/generic/component/features-section/features-section.tsx:84
 msgid "Track expenses in any currency with real-time exchange rates."
 msgstr "Verfolgen Sie Ausgaben in jeder Währung mit Echtzeit-Wechselkursen."
 
-#: src/app/[lang]/layout.tsx:74
+#: src/app/[lang]/layout.tsx:76
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights - all stored securely on your device."
 msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken, verwalten Sie Krypto & Aktien mit vollständiger Privatsphäre. Multi-Währungsunterstützung, Schuldenverfolgung und KI-Einblicke - alles sicher auf Ihrem Gerät gespeichert."
 
-#: src/app/[lang]/layout.tsx:87
-#: src/app/[lang]/layout.tsx:96
+#: src/app/[lang]/layout.tsx:89
+#: src/app/[lang]/layout.tsx:98
 msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
 msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken, verwalten Sie Krypto & Aktien mit vollständiger Privatsphäre. Multi-Währungsunterstützung, Schuldenverfolgung und KI-Einblicke."
 
-#: src/components/testimonials-section/testimonials-section.tsx:30
+#: src/generic/component/testimonials-section/testimonials-section.tsx:30
 msgid "Trusted by Privacy-Conscious Users"
 msgstr "Vertraut von datenschutzbewussten Nutzern"
 
-#: src/app/[lang]/blog/page.tsx:135
+#: src/app/[lang]/blog/page.tsx:115
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Versuchen Sie, Ihre Suchanfrage anzupassen oder alle Artikel zu durchsuchen."
 
-#: src/components/footer/footer-details.tsx:54
+#: src/generic/component/footer/footer.tsx:66
 msgid "Twitter"
 msgstr "Twitter"
 
-#: src/components/blog-section/blog-section.tsx:70
+#: src/generic/component/blog-section/blog-section.tsx:51
 msgid "View All Articles"
 msgstr "Alle Artikel anzeigen"
 
-#: src/components/cta-section/cta-section.tsx:52
-#: src/components/hero-section/hero-section.tsx:55
+#: src/generic/component/cta-section/cta-section.tsx:52
+#: src/generic/component/hero-section/hero-section.tsx:55
 msgid "View Source Code"
 msgstr "Quellcode anzeigen"
 
-#: src/components/faq-section/faq-section.tsx:84
+#: src/generic/component/faq-section/faq-section.tsx:84
 msgid "We offer a 14-day free trial so you can experience Budgie's privacy-first approach risk-free. If you're not completely satisfied within 30 days, we provide a full refund—no questions asked."
 msgstr "Wir bieten eine 14-tägige kostenlose Testversion, damit Sie Budgies Datenschutz-zuerst-Ansatz risikofrei erleben können. Wenn Sie innerhalb von 30 Tagen nicht vollständig zufrieden sind, bieten wir eine vollständige Rückerstattung – ohne Fragen."
 
-#: src/components/banks-section/banks-section.tsx:19
+#: src/generic/component/banks-section/banks-section.tsx:19
 msgid "Wells Fargo"
 msgstr "Wells Fargo"
 
-#: src/components/faq-section/faq-section.tsx:68
+#: src/generic/component/faq-section/faq-section.tsx:68
 msgid "What cryptocurrencies and assets can I track?"
 msgstr "Welche Kryptowährungen und Assets kann ich verfolgen?"
 
-#: src/components/footer/footer.tsx:51
-#: src/components/header/header.tsx:81
-#: src/components/header/mobile-menu.tsx:43
+#: src/generic/component/footer/footer.tsx:88
+#: src/generic/component/header/header.tsx:76
+#: src/generic/component/mobile-menu/mobile-menu.tsx:37
 msgid "Whitelist"
 msgstr "Whitelist"
 
-#: src/components/whitelist-section-offer/whitelist-section-offer.tsx:41
+#: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:41
 msgid "Whitelist Price"
 msgstr "Whitelist-Preis"
 
-#: src/components/ai-section-details/ai-section-details.tsx:28
+#: src/generic/component/ai-section-details/ai-section-details.tsx:28
 msgid "Why is there so little money left?"
 msgstr "Warum ist so wenig Geld übrig?"
 
-#: src/components/faq-section/faq-section.tsx:50
+#: src/generic/component/faq-section/faq-section.tsx:50
 msgid "Why isn't Budgie free like other expense trackers?"
 msgstr "Warum ist Budgie nicht kostenlos wie andere Ausgaben-Tracker?"
 
-#: src/components/ai-section-details/ai-section-details.tsx:43
+#: src/generic/component/ai-section-details/ai-section-details.tsx:43
 msgid "Yes, show me the details"
 msgstr "Ja, zeige mir die Details"
 
-#: src/components/ai-section-features/ai-section-features.tsx:40
+#: src/generic/component/ai-section-features/ai-section-features.tsx:40
 msgid "You:"
 msgstr "Sie:"
 
-#: src/components/faq-section/faq-section.tsx:54
+#: src/generic/component/faq-section/faq-section.tsx:54
 msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
 msgstr "Ihre Daten verlassen niemals Ihr Gerät, es sei denn, Sie synchronisieren explizit mit Ihrem eigenen Cloud-Speicher. Wir haben keine Server, die Ihre Finanzinformationen speichern, und wir können Ihre Transaktionen nicht sehen. Alles wird lokal auf Ihrem Gerät verschlüsselt."
 
-#: src/components/ai-section-features/ai-section-features.tsx:19
+#: src/generic/component/ai-section-features/ai-section-features.tsx:19
 msgid "Your financial data never leaves your device. The AI runs locally, ensuring your spending habits and financial questions remain completely private."
 msgstr "Ihre Finanzdaten verlassen niemals Ihr Gerät. Die KI läuft lokal und stellt sicher, dass Ihre Ausgabegewohnheiten und finanziellen Fragen vollständig privat bleiben."
 
-#: src/components/features-section/features-section.tsx:78
+#: src/generic/component/features-section/features-section.tsx:78
 msgid "Your financial data stays on your device. No cloud storage, no data mining."
 msgstr "Ihre Finanzdaten bleiben auf Ihrem Gerät. Kein Cloud-Speicher, kein Data-Mining."
 
-#: src/components/hero-section/hero-section.tsx:36
+#: src/generic/component/hero-section/hero-section.tsx:36
 msgid "Your Money, Your Privacy, Your Control"
 msgstr "Ihr Geld, Ihre Privatsphäre, Ihre Kontrolle"
