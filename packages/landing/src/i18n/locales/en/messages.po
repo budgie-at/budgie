@@ -25,11 +25,11 @@ msgstr "\"Why did I spend so much this month?\""
 msgid "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
 msgstr "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
 
-#: src/generic/component/footer/footer.tsx:182
+#: src/generic/component/footer/footer.tsx:162
 msgid "© {date} Budgie. All rights reserved."
 msgstr "© {date} Budgie. All rights reserved."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:106
+#: src/app/[lang]/blog/[slug]/page.tsx:101
 msgid "← Back to Blog"
 msgstr "← Back to Blog"
 
@@ -81,7 +81,7 @@ msgstr "AI:"
 msgid "App"
 msgstr "App"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:46
+#: src/app/[lang]/blog/[slug]/page.tsx:44
 msgid "Article Not Found"
 msgstr "Article Not Found"
 
@@ -140,7 +140,7 @@ msgstr "Budgie - Privacy-First Expense Tracker"
 msgid "Budgie AI"
 msgstr "Budgie AI"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:50
+#: src/app/[lang]/blog/[slug]/page.tsx:48
 msgid "Budgie Blog"
 msgstr "Budgie Blog"
 
@@ -176,7 +176,7 @@ msgstr "Budgie Team"
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:140
+#: src/app/[lang]/blog/[slug]/page.tsx:135
 msgid "By"
 msgstr "By"
 
@@ -219,10 +219,6 @@ msgstr "Direct line to our development team"
 #: src/generic/component/blog-section/blog-section.tsx:26
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
 msgstr "Discover insights about financial privacy, security best practices, and how to take control of your money."
-
-#: src/generic/component/footer/footer.tsx:117
-msgid "Documentation"
-msgstr "Documentation"
 
 #: src/generic/component/faq-section/faq-section.tsx:62
 msgid "Does bank sync work offline?"
@@ -357,7 +353,7 @@ msgstr "Instant Financial Analysis"
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Is there a free trial or money-back guarantee?"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:173
+#: src/app/[lang]/blog/[slug]/page.tsx:168
 msgid "Join the Budgie waitlist and be among the first to experience truly private financial management."
 msgstr "Join the Budgie waitlist and be among the first to experience truly private financial management."
 
@@ -369,7 +365,7 @@ msgstr "Join the Whitelist & Save 25%"
 msgid "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 msgstr "Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their financial data."
 
-#: src/app/[lang]/blog/[slug]/page.tsx:180
+#: src/app/[lang]/blog/[slug]/page.tsx:175
 #: src/generic/component/cta-section/cta-section.tsx:42
 #: src/generic/component/hero-section/hero-section.tsx:49
 #: src/generic/component/mobile-menu/mobile-menu.tsx:53
@@ -388,11 +384,11 @@ msgstr "Language"
 msgid "Latest from Our Blog"
 msgstr "Latest from Our Blog"
 
-#: src/generic/component/footer/footer.tsx:146
+#: src/generic/component/footer/footer.tsx:128
 msgid "Legal"
 msgstr "Legal"
 
-#: src/generic/component/footer/footer.tsx:168
+#: src/generic/component/footer/footer.tsx:153
 msgid "License"
 msgstr "License"
 
@@ -404,7 +400,7 @@ msgstr "Limited time"
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:134
+#: src/app/[lang]/blog/[slug]/page.tsx:129
 #: src/generic/component/blog-card/blog-card.tsx:77
 msgid "min read"
 msgstr "min read"
@@ -449,7 +445,7 @@ msgstr "Open Source"
 msgid "Open Source & Private"
 msgstr "Open Source & Private"
 
-#: src/generic/component/footer/footer.tsx:195
+#: src/generic/component/footer/footer.tsx:184
 msgid "Open Source License"
 msgstr "Open Source License"
 
@@ -461,16 +457,12 @@ msgstr "Priority Support"
 msgid "Privacy First"
 msgstr "Privacy First"
 
-#: src/generic/component/footer/footer.tsx:125
-msgid "Privacy Guide"
-msgstr "Privacy Guide"
-
-#: src/generic/component/footer/footer.tsx:155
-#: src/generic/component/footer/footer.tsx:187
+#: src/generic/component/footer/footer.tsx:137
+#: src/generic/component/footer/footer.tsx:170
 msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
-#: src/app/[lang]/blog/[slug]/page.tsx:169
+#: src/app/[lang]/blog/[slug]/page.tsx:164
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Ready to Take Control of Your Financial Privacy?"
 
@@ -502,10 +494,6 @@ msgstr "Search articles..."
 msgid "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 msgstr "Securely link your bank accounts, crypto wallets, and investment accounts for automatic tracking."
 
-#: src/generic/component/footer/footer.tsx:173
-msgid "Security"
-msgstr "Security"
-
 #: src/generic/component/testimonials-section/testimonials-section.tsx:34
 msgid "See what users love about Budgie's approach to private, comprehensive expense tracking."
 msgstr "See what users love about Budgie's approach to private, comprehensive expense tracking."
@@ -526,7 +514,7 @@ msgstr "Smart Financial Insights, Privately Powered"
 msgid "Smart Spending Advice"
 msgstr "Smart Spending Advice"
 
-#: src/generic/component/footer/footer.tsx:133
+#: src/generic/component/footer/footer.tsx:120
 msgid "Source Code"
 msgstr "Source Code"
 
@@ -537,10 +525,6 @@ msgstr "Start Tracking in Minutes"
 #: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
-
-#: src/generic/component/footer/footer.tsx:138
-msgid "Support"
-msgstr "Support"
 
 #: src/generic/component/language-switcher/language-switcher.tsx:50
 msgid "Switch language"
@@ -554,8 +538,8 @@ msgstr "Syncs with 1000+ banks and financial institutions"
 msgid "Take Control of Your Financial Privacy"
 msgstr "Take Control of Your Financial Privacy"
 
-#: src/generic/component/footer/footer.tsx:163
-#: src/generic/component/footer/footer.tsx:191
+#: src/generic/component/footer/footer.tsx:145
+#: src/generic/component/footer/footer.tsx:177
 msgid "Terms of Service"
 msgstr "Terms of Service"
 
