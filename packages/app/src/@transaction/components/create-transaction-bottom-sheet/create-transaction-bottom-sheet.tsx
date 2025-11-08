@@ -18,10 +18,10 @@ export const CreateTransactionBottomSheet = ({ ref }: Props) => {
     return (
         <BottomSheet ref={ref}>
             <View className="gap-y-1 mb-10">
-                <Text className="text-center text-[20px] text-primary font-semibold">
+                <Text className="text-center text-xl text-primary font-semibold">
                     <Trans>New Transaction</Trans>
                 </Text>
-                <Text className="text-center text-[14px] text-secondary-foreground">
+                <Text className="text-center text-sm text-secondary-foreground">
                     <Trans>Choose a type to get started</Trans>
                 </Text>
             </View>
