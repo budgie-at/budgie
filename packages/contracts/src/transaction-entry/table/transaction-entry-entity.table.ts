@@ -12,6 +12,6 @@ export const TransactionEntryEntityTable = sqliteTable(
         instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
         transactionId: int('transaction_id', { mode: 'number' }).notNull(),
         amount: int('amount', { mode: 'number' }).notNull(),
-        description: text('description').default('').notNull()
+        comment: text('comment').default('').notNull()
     })
 );

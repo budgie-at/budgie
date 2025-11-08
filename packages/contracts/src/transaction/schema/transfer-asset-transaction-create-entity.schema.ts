@@ -8,7 +8,6 @@ import { transferTransactionRefine } from '../refines/transfer-transaction.refin
 import { TransferTransactionEntitySchema } from './transfer-transaction-entity.schema';
 
 export const TransferAssetTransactionCreateEntitySchema = convertToCreateEntitySchema(TransferTransactionEntitySchema)
-    .partial({ comment: true, operatedAt: true })
     .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).length(2) })
     .superRefine(({ entries, exchangeRate }, context) => {
         transferTransactionRefine(entries, exchangeRate, context, {

@@ -13,6 +13,17 @@ export { AccountCreateEntitySchema } from './account/schema/account-create-entit
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 
+export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
+
+export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
+export { AccountBalanceEntityRelations } from './account-balance/relations/account-balance-entity.relations';
+
+export { AccountBalanceEntitySchema } from './account-balance/schema/account-balance-entity.schema';
+export { AccountBalanceCreateEntitySchema } from './account-balance/schema/account-balance-create-entity.schema';
+
+export type { AccountBalanceEntityInterface } from './account-balance/entity/account-balance-entity.interface';
+export type { AccountBalanceCreateEntityInterface } from './account-balance/entity/account-balance-create-entity.interface';
+
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
@@ -98,10 +109,8 @@ export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
 
-export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
-
-export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
-export { AccountBalanceEntityRelations } from './account-balance/relations/account-balance-entity.relations';
+export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction-entry/constant/transaction-entry-comment-max-length.constant';
+export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction-entry/constant/transaction-entry-title-max-length.constant';
 
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
@@ -113,3 +122,14 @@ export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/t
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+
+export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
+
+export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-entity.table';
+export { ExchangeRateEntityRelations } from './exchange-rate/relations/exchange-rate-entity.relations';
+
+export { ExchangeRateEntitySchema } from './exchange-rate/schema/exchange-rate-entity.schema';
+export { ExchangeRateCreateEntitySchema } from './exchange-rate/schema/exchange-rate-create-entity.schema';
+
+export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchange-rate-entity.interface';
+export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';

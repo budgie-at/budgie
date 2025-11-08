@@ -7,7 +7,6 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { ExpenseTransactionEntitySchema } from './expense-transaction-entity.schema';
 
 export const ExpenseTransactionCreateEntitySchema = convertToCreateEntitySchema(ExpenseTransactionEntitySchema)
-    .partial({ comment: true, operatedAt: true })
     .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).length(1) })
     .superRefine(({ entries }, context) => {
         const [entry] = entries;
