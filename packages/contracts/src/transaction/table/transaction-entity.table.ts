@@ -10,8 +10,6 @@ export const TransactionEntityTable = sqliteTable(
     withBaseEntityTableColumns({
         instrument: text(),
         categoryId: int('category_id', { mode: 'number' }),
-        amount: int({ mode: 'number' }).default(0).notNull(),
-        quantity: int({ mode: 'number' }).default(0).notNull(),
         pricePerUnit: int({ mode: 'number' }).default(0).notNull(),
         fromAccountId: int('from_account_id', { mode: 'number' }),
         toAccountId: int('to_account_id', { mode: 'number' }),

@@ -120,3 +120,19 @@ export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sel
 
 export { TransferAssetTransactionEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-create-entity.schema';
+
+export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
+
+export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
+export { AccountBalanceEntityTable } from './account-balance/relations/account-balance-entity.relations';
+
+export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
+
+export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
+export { TransactionEntryEntityRelations } from './transaction-entry/relations/transaction-entry-entity.relations';
+
+export { TransactionEntryEntitySchema } from './transaction-entry/schema/transaction-entry-entity.schema';
+export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/transaction-entry-create-entity.schema';
+
+export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
+export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
