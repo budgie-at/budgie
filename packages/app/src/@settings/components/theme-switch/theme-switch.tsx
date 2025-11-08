@@ -19,19 +19,20 @@ export const ThemeSwitch = () => {
     };
 
     return (
-        <Card className={'flex-row gap-x-[12px] bg-secondary-background items-center'}>
-            <CircleIcon size={'xl'} icon={ICONS.Moon} variant={'ghost'} />
+        <Card className='flex-row gap-x-xl bg-secondary-background items-center'>
+            <CircleIcon size='xl' icon={ICONS.Moon} variant='ghost' />
 
-            <View className={'gap-y-[5px] flex-1'}>
-                <Text className={'text-primary text-[16px]'}>
+            <View className='gap-y-sm flex-1'>
+                <Text className='text-primary text-md'>
                     <Trans>Dark Mode</Trans>
                 </Text>
-                <Text className={'text-secondary-foreground text-[14px]'}>
+                <Text className='text-secondary-foreground text-sm'>
                     <Trans>Switch between light and dark themes</Trans>
                 </Text>
             </View>
 
             <Switch
+                className='my-auto'
                 onChange={toggleColorSchema}
                 value={isDarkColorSchema}
                 trackColor={trackColor}
