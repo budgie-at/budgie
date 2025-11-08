@@ -1,4 +1,4 @@
-import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
@@ -13,10 +13,7 @@ export const TransactionEntityTable = sqliteTable(
             .notNull(),
         externalId: text('external_id'),
         operatedAt: text('operated_at').notNull(),
-        exchangeRate: text('exchange_rate').notNull(),
+        exchangeRate: int('exchange_rate', { mode: 'number' }).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
-    }),
-    columns => ({
-        uidxExternal: uniqueIndex('u_idx_transactions_external').on(columns.externalSource, columns.externalId)
     })
 );
