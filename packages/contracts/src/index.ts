@@ -94,16 +94,8 @@ export { IncomeTransactionCreateEntitySchema } from './transaction/schema/income
 export { TransferTransactionEntitySchema } from './transaction/schema/transfer-transaction-entity.schema';
 export { TransferTransactionCreateEntitySchema } from './transaction/schema/transfer-transaction-create-entity.schema';
 
-export { IncomeAssetTransactionEntitySchema } from './transaction/schema/income-asset-transaction-entity.schema';
-export { IncomeAssetTransactionCreateEntitySchema } from './transaction/schema/income-asset-transaction-create-entity.schema';
-
-export { ExpenseAssetTransactionEntitySchema } from './transaction/schema/expense-asset-transaction-entity.schema';
-export { ExpenseAssetTransactionCreateEntitySchema } from './transaction/schema/expense-asset-transaction-create-entity.schema';
-
 export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
-
-export { TransferAssetTransactionEntitySchema } from './transaction/schema/transfer-asset-transaction-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
 
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
