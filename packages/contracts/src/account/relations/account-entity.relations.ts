@@ -9,6 +9,11 @@ import { AccountEntityTable } from '../table/account-entity.table';
 export const AccountEntityRelations = relations(AccountEntityTable, ({ many, one }) => ({
     [AccountAssociationEnum.TRANSACTIONS]: many(TransactionEntityTable),
     [AccountAssociationEnum.BALANCES]: many(AccountBalanceEntityTable),
+    [AccountAssociationEnum.SUB_ACCOUNTS]: many(AccountEntityTable),
+    [AccountAssociationEnum.PARENT]: one(AccountEntityTable, {
+        fields: [AccountEntityTable.parentId],
+        references: [AccountEntityTable.id]
+    }),
     [AccountAssociationEnum.INSTRUMENT]: one(InstrumentEntityTable, {
         fields: [AccountEntityTable.instrumentId],
         references: [InstrumentEntityTable.id]
