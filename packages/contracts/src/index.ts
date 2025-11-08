@@ -55,6 +55,17 @@ export { HoldingCreateEntitySchema } from './holding/schema/holding-create-entit
 export type { HoldingEntityInterface } from './holding/entity/holding-entity.interface';
 export type { HoldingCreateEntityInterface } from './holding/entity/holding-create-entity.interface';
 
+export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
+
+export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
+export { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
+
+export { InstrumentEntitySchema } from './instrument/schema/instrument-entity.schema';
+export { InstrumentCreateEntitySchema } from './instrument/schema/instrument-create-entity.schema';
+
+export type { InstrumentEntityInterface } from './instrument/entity/instrument-entity.interface';
+export type { InstrumentCreateEntityInterface } from './instrument/entity/instrument-create-entity.interface';
+
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
 export { CategoryEntityTable } from './category/table/category-entity.table';
@@ -86,16 +97,16 @@ export type { TransferTransactionCreateEntityInterface } from './transaction/ent
 export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
 export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
 
-export { TransactionToTagAssociationEnum } from './transaction-to-tag/enum/transaction-to-tag-association.enum';
+export { TransactionEntryToTagAssociationEnum } from './transaction-entry-to-tag/enum/transaction-entry-to-tag-association.enum';
 
-export { TransactionToTagEntityTable } from './transaction-to-tag/table/transaction-to-tag-entity.table';
-export { TransactionToTagEntityRelations } from './transaction-to-tag/relations/transaction-to-tag-entity.relations';
+export { TransactionEntryToTagEntityTable } from './transaction-entry-to-tag/table/transaction-entry-to-tag-entity.table';
+export { TransactionEntryToTagEntityRelations } from './transaction-entry-to-tag/relations/transaction-entry-to-tag-entity.relations';
 
-export { TransactionToTagEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-entity.schema';
-export { TransactionToTagCreateEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-create-entity.schema';
+export { TransactionEntryToTagEntitySchema } from './transaction-entry-to-tag/schema/transaction-entry-to-tag-entity.schema';
+export { TransactionEntryToTagCreateEntitySchema } from './transaction-entry-to-tag/schema/transaction-entry-to-tag-create-entity.schema';
 
-export type { TransactionToTagEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-entity.interface';
-export type { TransactionToTagCreateEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-create-entity.interface';
+export type { TransactionEntryToTagEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-entity.interface';
+export type { TransactionEntryToTagCreateEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-create-entity.interface';
 
 export { ExpenseTransactionEntitySchema } from './transaction/schema/expense/expense-transaction-entity.schema';
 export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense/expense-transaction-create-entity.schema';
@@ -124,7 +135,7 @@ export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
-export { AccountBalanceEntityTable } from './account-balance/relations/account-balance-entity.relations';
+export { AccountBalanceEntityRelations } from './account-balance/relations/account-balance-entity.relations';
 
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
