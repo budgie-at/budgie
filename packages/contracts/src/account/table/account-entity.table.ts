@@ -23,7 +23,7 @@ export const AccountEntityTable = sqliteTable(
             .$type<AccountNatureEnum>()
             .notNull(),
         instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
-        currentBalance: int('current_balance', { mode: 'number' }).notNull(),
+        currentBalance: int('current_balance', { mode: 'number' }).default(0).notNull(),
         externalId: text('external_id'),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()
