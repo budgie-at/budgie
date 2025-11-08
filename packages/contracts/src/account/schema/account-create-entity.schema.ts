@@ -5,10 +5,17 @@ export const AccountCreateEntitySchema = AccountEntitySchema.pick({
     icon: true,
     order: true,
     title: true,
-    balance: true,
-    currency: true,
+    nature: true,
+    parentId: true,
+    externalId: true,
+    instrumentId: true,
+    externalSource: true,
     includeInNetWorth: true
 }).partial({
     order: true,
-    includeInNetWorth: true,
+    nature: true,
+    parentId: true,
+    externalId: true,
+    externalSource: true,
+    includeInNetWorth: true
 });
