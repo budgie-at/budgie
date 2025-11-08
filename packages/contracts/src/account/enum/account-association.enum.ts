@@ -1,5 +1,5 @@
 export enum AccountAssociationEnum {
     TRANSACTIONS = 'transactions',
-    INSTRUMENTS = 'instruments',
-    HOLDINGS = 'holdings',
+    INSTRUMENT = 'instrument',
+    BALANCES = 'balances',
 }
