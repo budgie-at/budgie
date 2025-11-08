@@ -2,6 +2,8 @@ export { CurrencyEnum } from './generic/enum/currency.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
 export { AccountTypeEnum } from './account/enum/account-type.enum';
+export { AccountNatureEnum } from './account/enum/account-nature.enum';
+export { ExternalSourceEnum } from './account/enum/external-source.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export { AccountEntityTable } from './account/table/account-entity.table';
