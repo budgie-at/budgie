@@ -12,12 +12,17 @@ import { ColorSchemaEnum } from '../enum/color-schema.enum';
 import type { OnEventFn } from '@rnw-community/shared';
 import type { ReactNode } from 'react';
 
-interface ThemeContextInterface {
+export interface ThemeContextInterface {
+    isDarkColorSchema: boolean;
     colorScheme: ColorSchemaEnum;
     toggleColorSchema: OnEventFn;
 }
 
-const ThemeContext = createContext<ThemeContextInterface>({ colorScheme: ColorSchemaEnum.Light, toggleColorSchema: emptyFn });
+export const ThemeContext = createContext<ThemeContextInterface>({
+    colorScheme: ColorSchemaEnum.Light,
+    toggleColorSchema: emptyFn,
+    isDarkColorSchema: false
+});
 
 export const ThemeProvider = ({ children }: { readonly children: ReactNode }) => {
     const dispatch = useAppDispatch();
@@ -40,11 +45,11 @@ export const ThemeProvider = ({ children }: { readonly children: ReactNode }) =>
         }
     };
 
-    const contextValue = { colorScheme, toggleColorSchema };
+    const contextValue = { colorScheme, toggleColorSchema, isDarkColorSchema };
 
     return (
-        <ThemeContext value={contextValue}>
+        <ThemeContext.Provider value={contextValue}>
             <View className={`flex-1 ${isDarkColorSchema ? 'dark' : 'light'}`}>{children}</View>
-        </ThemeContext>
+        </ThemeContext.Provider>
     );
 };
