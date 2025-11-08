@@ -11,7 +11,7 @@ import { Page } from '../../@generic/components/page/page';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { formatMoney } from '../../@generic/utils/format-money.util';
 
-const MOCK_BALANCE = 1_300
+const MOCK_BALANCE = 1_300;
 
 export default function HomePage() {
     const { data } = useGetAccountsQuery();
@@ -26,16 +26,16 @@ export default function HomePage() {
     return (
         <Page>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <Pressable className={'items-end p-[8px]'} onPress={navigateToSettings}>
-                    <Icon className={'text-primary'} icon={ICONS.Settings} size={16} />
+                <Pressable className="items-end p-md" onPress={navigateToSettings}>
+                    <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <View className={'items-center gap-y-[7px] mb-[20px]'}>
-                    <Text className={'uppercase text-[12px] text-secondary-foreground'}>
+                <View className="items-center gap-y-md mb-5xl">
+                    <Text className="uppercase text-xs text-secondary-foreground">
                         <Trans>Total Balance</Trans>
                     </Text>
 
-                    <Text className={'text-[60px] text-primary font-extralight'}>{balance}</Text>
+                    <Text className="text-8xl text-primary font-extralight">{balance}</Text>
                 </View>
 
                 <AccountList accounts={data} />

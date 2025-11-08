@@ -5,42 +5,67 @@
 @import "nativewind/theme";
 
 @theme {
-    --padding-xxs: 0.125rem;  /* 2px  */
-    --padding-xs: 0.25rem;   /* 4px  */
-    --padding-sm: 0.375rem;  /* 6px  */
-    --padding-md: 0.5rem;    /* 8px  */
-    --padding-lg: 0.625rem;  /* 10px */
-    --padding-xl: 0.75rem;   /* 12px */
-    --padding-2xl: 0.875rem;  /* 14px */
-    --padding-3xl: 1rem;      /* 16px */
-    --padding-4xl: 1.125rem;  /* 18px */
-    --padding-5xl: 1.25rem;   /* 20px */
-    --padding-6xl: 1.375rem;  /* 22px */
-    --padding-7xl: 1.5rem;    /* 24px */
-    --margin-xxs: 0.125rem;  /* 2px  */
-    --margin-xs: 0.25rem;   /* 4px  */
-    --margin-sm: 0.375rem;  /* 6px  */
-    --margin-md: 0.5rem;    /* 8px  */
-    --margin-lg: 0.625rem;  /* 10px */
-    --margin-xl: 0.75rem;   /* 12px */
-    --margin-2xl: 0.875rem;  /* 14px */
-    --margin-3xl: 1rem;      /* 16px */
-    --margin-4xl: 1.125rem;  /* 18px */
-    --margin-5xl: 1.25rem;   /* 20px */
-    --margin-6xl: 1.375rem;  /* 22px */
-    --margin-7xl: 1.5rem;    /* 24px */
-    --radius-xxs: 0.125rem;  /* 2px  */
-    --radius-xs: 0.25rem;   /* 4px  */
-    --radius-sm: 0.375rem;  /* 6px  */
-    --radius-md: 0.5rem;    /* 8px  */
-    --radius-lg: 0.625rem;  /* 10px */
-    --radius-xl: 0.75rem;   /* 12px */
-    --radius-2xl: 0.875rem;  /* 14px */
-    --radius-3xl: 1rem;      /* 16px */
-    --radius-4xl: 1.125rem;  /* 18px */
-    --radius-5xl: 1.25rem;   /* 20px */
-    --radius-6xl: 1.375rem;  /* 22px */
-    --radius-7xl: 1.5rem;    /* 24px */
+    --padding-xxs: 0.143rem;  /* 2px  */
+    --padding-xs: 0.286rem;   /* 4px  */
+    --padding-sm: 0.429rem;   /* 6px  */
+    --padding-md: 0.571rem;   /* 8px  */
+    --padding-lg: 0.714rem;   /* 10px */
+    --padding-xl: 0.857rem;   /* 12px */
+    --padding-2xl: 1rem;      /* 14px */
+    --padding-3xl: 1.143rem;  /* 16px */
+    --padding-4xl: 1.286rem;  /* 18px */
+    --padding-5xl: 1.429rem;  /* 20px */
+    --padding-6xl: 1.571rem;  /* 22px */
+    --padding-7xl: 1.714rem;  /* 24px */
+    --margin-xxs: 0.143rem;   /* 2px  */
+    --margin-xs: 0.286rem;    /* 4px  */
+    --margin-sm: 0.429rem;    /* 6px  */
+    --margin-md: 0.571rem;    /* 8px  */
+    --margin-lg: 0.714rem;    /* 10px */
+    --margin-xl: 0.857rem;    /* 12px */
+    --margin-2xl: 1rem;       /* 14px */
+    --margin-3xl: 1.143rem;   /* 16px */
+    --margin-4xl: 1.286rem;   /* 18px */
+    --margin-5xl: 1.429rem;   /* 20px */
+    --margin-6xl: 1.571rem;   /* 22px */
+    --margin-7xl: 1.714rem;   /* 24px */
+    --gap-xxs: 0.143rem;      /* 2px  */
+    --gap-xs: 0.286rem;       /* 4px  */
+    --gap-sm: 0.429rem;       /* 6px  */
+    --gap-md: 0.571rem;       /* 8px  */
+    --gap-lg: 0.714rem;       /* 10px */
+    --gap-xl: 0.857rem;       /* 12px */
+    --gap-2xl: 1rem;          /* 14px */
+    --gap-3xl: 1.143rem;      /* 16px */
+    --gap-4xl: 1.286rem;      /* 18px */
+    --gap-5xl: 1.429rem;      /* 20px */
+    --gap-6xl: 1.571rem;      /* 22px */
+    --gap-7xl: 1.714rem;      /* 24px */
+    --text-xxs: 0.714rem;     /* 10px */
+    --text-xs: 0.857rem;      /* 12px */
+    --text-sm: 1rem;          /* 14px */
+    --text-md: 1.143rem;      /* 16px */
+    --text-lg: 1.286rem;      /* 18px */
+    --text-xl: 1.429rem;      /* 20px */
+    --text-2xl: 1.571rem;     /* 22px */
+    --text-3xl: 1.714rem;     /* 24px */
+    --text-4xl: 2rem;         /* 28px */
+    --text-5xl: 2.286rem;     /* 32px */
+    --text-6xl: 2.571rem;     /* 36px */
+    --text-7xl: 3.429rem;     /* 48px */
+    --text-8xl: 4.286rem;     /* 60px */
+    --radius-xxs: 0.143rem;   /* 2px  */
+    --radius-xs: 0.286rem;    /* 4px  */
+    --radius-sm: 0.429rem;    /* 6px  */
+    --radius-md: 0.571rem;    /* 8px  */
+    --radius-lg: 0.714rem;    /* 10px */
+    --radius-xl: 0.857rem;    /* 12px */
+    --radius-2xl: 1rem;       /* 14px */
+    --radius-3xl: 1.143rem;   /* 16px */
+    --radius-4xl: 1.286rem;   /* 18px */
+    --radius-5xl: 1.429rem;   /* 20px */
+    --radius-6xl: 1.571rem;   /* 22px */
+    --radius-7xl: 1.714rem;   /* 24px */
     --stroke-25: 0.156rem;
 
     --color-primary: rgb(0, 0, 0);
@@ -75,6 +100,7 @@
     --color-ghost-background: rgba(10, 10, 10, 0.05);
 
     --color-corner: rgba(229, 229, 229, 1);
+    --color-separator: linear-gradient(90deg, rgba(0, 0, 0, 0.40) 0%, rgba(255, 255, 255, 0.00) 100%);
 }
 
 .dark {
@@ -110,4 +136,5 @@
     --color-ghost-background: rgba(255, 255, 255, 0.05);
 
     --color-corner: rgba(34, 34, 34, 1);
+    --color-separator: linear-gradient(90deg, rgba(255, 255, 255, 0.40) 0%, rgba(0, 0, 0, 0.00) 100%);
 }
