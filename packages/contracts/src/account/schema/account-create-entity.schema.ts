@@ -1,8 +1,8 @@
 import { AccountEntitySchema } from './account-entity.schema';
 
 export const AccountCreateEntitySchema = AccountEntitySchema.pick({
-    type: true,
     icon: true,
+    type: true,
     order: true,
     title: true,
     nature: true,
@@ -13,7 +13,6 @@ export const AccountCreateEntitySchema = AccountEntitySchema.pick({
     includeInNetWorth: true
 }).partial({
     order: true,
-    nature: true,
     parentId: true,
     externalId: true,
     externalSource: true,

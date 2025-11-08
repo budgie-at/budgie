@@ -1,12 +1,16 @@
 export {
     AccountEntityTable,
-    TransactionEntityTable,
-    TransactionToTagEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryToTagEntityTable,
     TagEntityTable,
     AccountEntityRelations,
-    TransactionEntityRelations,
+    TransactionEntryEntityRelations,
     TagEntityRelations,
     CategoryEntityTable,
     CategoryEntityRelations,
-    TransactionToTagEntityRelations
+    TransactionEntryToTagEntityRelations,
+    AccountBalanceEntityTable,
+    AccountBalanceEntityRelations,
+    ExchangeRateEntityTable,
+    ExchangeRateEntityRelations,
 } from '@budgie/contracts';
