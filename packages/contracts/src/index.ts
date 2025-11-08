@@ -10,31 +10,8 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
 
-export { BankAccountEntitySchema } from './account/schema/bank/bank-account-entity.schema';
-export { BankAccountCreateEntitySchema } from './account/schema/bank/bank-account-create-entity.schema';
-
-export { CashAccountEntitySchema } from './account/schema/cash/cash-account-entity.schema';
-export { CashAccountCreateEntitySchema } from './account/schema/cash/cash-account-create-entity.schema';
-
-export { CryptoAccountEntitySchema } from './account/schema/crypto/crypto-account-entity.schema';
-export { CryptoAccountCreateEntitySchema } from './account/schema/crypto/crypto-account-create-entity.schema';
-
-export { StocksAccountEntitySchema } from './account/schema/stocks/stocks-account-entity.schema';
-export { StocksAccountCreateEntitySchema } from './account/schema/stocks/stocks-account-create-entity.schema';
-
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
-
-export type { CashAccountEntityInterface } from './account/entity/cash/cash-account-entity.interface';
-export type { CashAccountCreateEntityInterface } from './account/entity/cash/cash-account-create-entity.interface';
-
-export type { BankAccountEntityInterface } from './account/entity/bank/bank-account-entity.interface';
-export type { BankAccountCreateEntityInterface } from './account/entity/bank/bank-account-create-entity.interface';
-
-export type { CryptoAccountEntityInterface } from './account/entity/crypto/crypto-account-entity.interface';
-export type { CryptoAccountCreateEntityInterface } from './account/entity/crypto/crypto-account-create-entity.interface';
-
-export type { StocksAccountEntityInterface } from './account/entity/stocks/stocks-account-entity.interface';
-export type { StocksAccountCreateEntityInterface } from './account/entity/stocks/stocks-account-create-entity.interface';
+export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
@@ -108,29 +85,26 @@ export { TransactionEntryToTagCreateEntitySchema } from './transaction-entry-to-
 export type { TransactionEntryToTagEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-entity.interface';
 export type { TransactionEntryToTagCreateEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-create-entity.interface';
 
-export { ExpenseTransactionEntitySchema } from './transaction/schema/expense/expense-transaction-entity.schema';
-export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense/expense-transaction-create-entity.schema';
+export { ExpenseTransactionEntitySchema } from './transaction/schema/expense-transaction-entity.schema';
+export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense-transaction-create-entity.schema';
 
-export { IncomeTransactionEntitySchema } from './transaction/schema/income/income-transaction-entity.schema';
-export { IncomeTransactionCreateEntitySchema } from './transaction/schema/income/income-transaction-create-entity.schema';
+export { IncomeTransactionEntitySchema } from './transaction/schema/income-transaction-entity.schema';
+export { IncomeTransactionCreateEntitySchema } from './transaction/schema/income-transaction-create-entity.schema';
 
-export { TransferTransactionEntitySchema } from './transaction/schema/transfer/transfer-transaction-entity.schema';
-export { TransferTransactionCreateEntitySchema } from './transaction/schema/transfer/transfer-transaction-create-entity.schema';
+export { TransferTransactionEntitySchema } from './transaction/schema/transfer-transaction-entity.schema';
+export { TransferTransactionCreateEntitySchema } from './transaction/schema/transfer-transaction-create-entity.schema';
 
-export { IncomeAssetTransactionEntitySchema } from './transaction/schema/income-asset/income-asset-transaction-entity.schema';
-export { IncomeAssetTransactionCreateEntitySchema } from './transaction/schema/income-asset/income-asset-transaction-create-entity.schema';
+export { IncomeAssetTransactionEntitySchema } from './transaction/schema/income-asset-transaction-entity.schema';
+export { IncomeAssetTransactionCreateEntitySchema } from './transaction/schema/income-asset-transaction-create-entity.schema';
 
-export { ExpenseAssetTransactionEntitySchema } from './transaction/schema/expense-asset/expense-asset-transaction-entity.schema';
-export { ExpenseAssetTransactionCreateEntitySchema } from './transaction/schema/expense-asset/expense-asset-transaction-create-entity.schema';
+export { ExpenseAssetTransactionEntitySchema } from './transaction/schema/expense-asset-transaction-entity.schema';
+export { ExpenseAssetTransactionCreateEntitySchema } from './transaction/schema/expense-asset-transaction-create-entity.schema';
 
-export { BuyAssetTransactionEntitySchema } from './transaction/schema/buy-asset/buy-asset-transaction-entity.schema';
-export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset/buy-asset-transaction-create-entity.schema';
+export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
+export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 
-export { SellAssetTransactionEntitySchema } from './transaction/schema/sell-asset/sell-asset-transaction-entity.schema';
-export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset/sell-asset-transaction-create-entity.schema';
-
-export { TransferAssetTransactionEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-entity.schema';
-export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset/transfer-asset-transaction-create-entity.schema';
+export { TransferAssetTransactionEntitySchema } from './transaction/schema/transfer-asset-transaction-entity.schema';
+export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
 
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
