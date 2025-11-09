@@ -3,8 +3,8 @@ import { transferTransactionRefine } from '../refines/transfer-transaction.refin
 import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
 
 export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
-    ({ entries, exchangeRate }, context) => {
-        transferTransactionRefine(entries, exchangeRate, context, {
+    (transaction, context) => {
+        transferTransactionRefine(transaction, context, {
             sameAccount: false,
             sameInstrument: true,
             stableExchangeRate: true
