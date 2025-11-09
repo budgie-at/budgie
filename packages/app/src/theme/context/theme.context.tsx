@@ -12,7 +12,7 @@ import { ColorSchemaEnum } from '../enum/color-schema.enum';
 import type { OnEventFn } from '@rnw-community/shared';
 import type { ReactNode } from 'react';
 
-export interface ThemeContextInterface {
+interface ThemeContextInterface {
     isDarkColorSchema: boolean;
     colorScheme: ColorSchemaEnum;
     toggleColorSchema: OnEventFn;
