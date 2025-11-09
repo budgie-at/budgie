@@ -28,8 +28,8 @@ export const CreateTransactionCard = ({ title, description, type, icon }: Props)
         <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={iconVariant[type]} />
 
         <View className="mr-auto">
-            <Text className="text-primary text-[16px] font-medium">{title}</Text>
-            <Text className="text-secondary-foreground text-[14px]">{description}</Text>
+            <Text className="text-primary text-md font-medium">{title}</Text>
+            <Text className="text-secondary-foreground text-sm">{description}</Text>
         </View>
 
         <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
