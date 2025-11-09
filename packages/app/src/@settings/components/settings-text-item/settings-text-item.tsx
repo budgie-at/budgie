@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { IconName, ICONS } from '../../../@generic/constant/icons.constant';
+import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { CircleIconVariant } from '../../../@generic/type/circle-icon-variant.type';
 
 interface Props {
