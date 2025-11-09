@@ -11,8 +11,12 @@ export const TransactionEntityTable = sqliteTable(
         type: text('type', { enum: convertEnumToDrizzleEnum(TransactionTypeEnum) })
             .$type<TransactionTypeEnum>()
             .notNull(),
+        title: text('title').notNull(),
         externalId: text('external_id'),
         operatedAt: text('operated_at').notNull(),
+        comment: text('comment').default('').notNull(),
+        toAccountId: int('to_account_id', { mode: 'number' }),
+        fromAccountId: int('from_account_id', { mode: 'number' }),
         exchangeRate: int('exchange_rate', { mode: 'number' }).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
     })
