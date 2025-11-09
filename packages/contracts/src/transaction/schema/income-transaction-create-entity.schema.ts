@@ -7,14 +7,8 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { IncomeTransactionEntitySchema } from './income-transaction-entity.schema';
 
 export const IncomeTransactionCreateEntitySchema = convertToCreateEntitySchema(IncomeTransactionEntitySchema)
-    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).length(1) })
+    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(1) })
     .superRefine(({ entries }, context) => {
-        if (entries.length !== 1) {
-            context.addIssue({ code: 'custom', path: ['entries'], message: 'income requires exactly 1 entry' });
-
-            return;
-        }
-
         const [entry] = entries;
 
         if (entry.amount <= 0) {

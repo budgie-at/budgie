@@ -37,14 +37,6 @@ export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.in
 export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
-export { HoldingEntityTable } from './holding/table/holding-entity.table';
-
-export { HoldingEntitySchema } from './holding/schema/holding-entity.schema';
-export { HoldingCreateEntitySchema } from './holding/schema/holding-create-entity.schema';
-
-export type { HoldingEntityInterface } from './holding/entity/holding-entity.interface';
-export type { HoldingCreateEntityInterface } from './holding/entity/holding-create-entity.interface';
-
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
@@ -75,28 +67,31 @@ export { TransactionEntityRelations } from './transaction/relations/transaction-
 
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 
-export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense/expense-transaction-entity.interface';
-export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense/expense-transaction-create-entity.interface';
+export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
+export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense-transaction-create-entity.interface';
 
-export type { IncomeTransactionEntityInterface } from './transaction/entity/income/income-transaction-entity.interface';
-export type { IncomeTransactionCreateEntityInterface } from './transaction/entity/income/income-transaction-create-entity.interface';
+export type { IncomeTransactionEntityInterface } from './transaction/entity/income-transaction-entity.interface';
+export type { IncomeTransactionCreateEntityInterface } from './transaction/entity/income-transaction-create-entity.interface';
 
-export type { TransferTransactionEntityInterface } from './transaction/entity/transfer/transfer-transaction-entity.interface';
-export type { TransferTransactionCreateEntityInterface } from './transaction/entity/transfer/transfer-transaction-create-entity.interface';
+export type { TransferTransactionEntityInterface } from './transaction/entity/transfer-transaction-entity.interface';
+export type { TransferTransactionCreateEntityInterface } from './transaction/entity/transfer-transaction-create-entity.interface';
+
+export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction/constant/transaction-comment-max-length.constant';
+export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction/constant/transaction-title-max-length.constant';
 
 export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
 export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
 
-export { TransactionEntryToTagAssociationEnum } from './transaction-entry-to-tag/enum/transaction-entry-to-tag-association.enum';
+export { TransactionToTagAssociationEnum } from './transaction-to-tag/enum/transaction-to-tag-association.enum';
 
-export { TransactionEntryToTagEntityTable } from './transaction-entry-to-tag/table/transaction-entry-to-tag-entity.table';
-export { TransactionEntryToTagEntityRelations } from './transaction-entry-to-tag/relations/transaction-entry-to-tag-entity.relations';
+export { TransactionToTagEntityTable } from './transaction-to-tag/table/transaction-to-tag-entity.table';
+export { TransactionToTagEntityRelations } from './transaction-to-tag/relations/transaction-to-tag-entity.relations';
 
-export { TransactionEntryToTagEntitySchema } from './transaction-entry-to-tag/schema/transaction-entry-to-tag-entity.schema';
-export { TransactionEntryToTagCreateEntitySchema } from './transaction-entry-to-tag/schema/transaction-entry-to-tag-create-entity.schema';
+export { TransactionToTagEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-entity.schema';
+export { TransactionToTagCreateEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-create-entity.schema';
 
-export type { TransactionEntryToTagEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-entity.interface';
-export type { TransactionEntryToTagCreateEntityInterface } from './transaction-entry-to-tag/entity/transaction-entry-to-tag-create-entity.interface';
+export type { TransactionToTagEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-entity.interface';
+export type { TransactionToTagCreateEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-create-entity.interface';
 
 export { ExpenseTransactionEntitySchema } from './transaction/schema/expense-transaction-entity.schema';
 export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense-transaction-create-entity.schema';
@@ -110,9 +105,6 @@ export { TransferTransactionCreateEntitySchema } from './transaction/schema/tran
 export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
-
-export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction-entry/constant/transaction-entry-comment-max-length.constant';
-export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction-entry/constant/transaction-entry-title-max-length.constant';
 
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 

@@ -1,3 +1,4 @@
 export enum TransactionAssociationEnum {
-    ENTRIES = 'entries'
+    ENTRIES = 'entries',
+    TRANSACTION_TO_TAGS = 'transactionToTags',
 }
