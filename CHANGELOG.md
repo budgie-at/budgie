@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.57.0](https://github.com/budgie-at/budgie/compare/v1.56.0...v1.57.0) (2025-11-09)
+
+### Bug Fixes
+
+- deadcode ([e7c3eff](https://github.com/budgie-at/budgie/commit/e7c3eff0c9cad903b3c02f7b8ff79b1d203881a3))
+- update padding,margin,font-size ([6a5f8b7](https://github.com/budgie-at/budgie/commit/6a5f8b79edc70c9d00d5d0ed85482cc54292f0bd))
+
+### Features
+
+- add settings screen with theme switch ([e0d3b95](https://github.com/budgie-at/budgie/commit/e0d3b9592cf7a86dc9e00f99b0d8883e3a3f6924))
+
 # [1.56.0](https://github.com/budgie-at/budgie/compare/v1.55.2...v1.56.0) (2025-11-07)
 
 ### Bug Fixes
