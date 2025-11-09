@@ -7,5 +7,5 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { TransferTransactionEntitySchema } from './transfer-transaction-entity.schema';
 
 export const BaseTransferTransactionCreateEntitySchema = convertToCreateEntitySchema(TransferTransactionEntitySchema).extend({
-    [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).length(2)
+    [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(2)
 });
