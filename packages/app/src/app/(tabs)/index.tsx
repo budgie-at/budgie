@@ -1,43 +1,42 @@
-import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { ImpactFeedbackStyle } from 'expo-haptics';
+import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView, Text } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { AccountList } from '../../@account/components/account-list/account-list';
-import { createAccountMutation } from '../../@account/mutation/create-account.mutation';
 import { useGetAccountsQuery } from '../../@account/query/use-get-accounts.query';
-import { Card } from '../../@generic/components/card/card';
+import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
-import { useVibration } from '../../@generic/hooks/use-vibration.hook';
+import { ICONS } from '../../@generic/constant/icons.constant';
+import { formatMoney } from '../../@generic/utils/format-money.util';
+
+const MOCK_BALANCE = 1_300;
 
 export default function HomePage() {
     const { data } = useGetAccountsQuery();
-    const [, hapticImpact] = useVibration();
-    const { t } = useLingui();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
-    const handleCardPress = async () => {
-        await createAccountMutation({
-            balance: 0,
-            title: 'example',
-            currency: CurrencyEnum.UAH,
-            type: AccountTypeEnum.CASH
-        });
-        hapticImpact(ImpactFeedbackStyle.Light);
-    };
+    const balance = formatMoney(MOCK_BALANCE);
+
+    const navigateToSettings = () => void router.push('/settings');
 
     return (
         <Page>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <Text className="text-primary">{t`Home Screen`}</Text>
+                <Pressable className="items-end p-md" onPress={navigateToSettings}>
+                    <Icon className="text-primary" icon={ICONS.Settings} size={16} />
+                </Pressable>
 
-                <Card onPress={handleCardPress}>
-                    <Text className="text-primary">{t`Create Account`}</Text>
-                </Card>
+                <View className="items-center gap-y-md mb-5xl">
+                    <Text className="uppercase text-xs text-secondary-foreground">
+                        <Trans>Total Balance</Trans>
+                    </Text>
+
+                    <Text className="text-8xl text-primary font-extralight">{balance}</Text>
+                </View>
 
                 <AccountList accounts={data} />
             </ScrollView>
