@@ -1,0 +1,60 @@
+import { createExpenseTransactionInput } from '../../test-utils/create-expense-transaction-input.util';
+import { createTransactionEntryInput } from '../../test-utils/create-transaction-entry-input.util';
+import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
+import { getZodIssuePaths } from '../../test-utils/get-zod-paths.util';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+
+import { ExpenseTransactionCreateEntitySchema } from './expense-transaction-create-entity.schema';
+
+describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique categoryId, min 1)', () => {
+    it("any entry that isn't 'credit' is rejected", () => {
+        const payload = createExpenseTransactionInput({
+            [TransactionAssociationEnum.ENTRIES]: [
+                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 600_000, 101),
+                createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 400_000, 102)
+            ]
+        });
+
+        const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain("expense entry must be 'credit'");
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
+    });
+
+    it('duplicate categoryId across entries', () => {
+        const payload = createExpenseTransactionInput({
+            [TransactionAssociationEnum.ENTRIES]: [
+                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 700_000, 101),
+                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 300_000, 101)
+            ]
+        });
+
+        const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('categoryId must be unique');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'categoryId']);
+    });
+
+    it('zero entries (min 1 enforced)', () => {
+        const payload = createExpenseTransactionInput({
+            [TransactionAssociationEnum.ENTRIES]: []
+        });
+
+        const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('Too small: expected array to have >=1 items');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+
+    it('amount must be positive (delegated to entry schema)', () => {
+        const payload = createExpenseTransactionInput({
+            [TransactionAssociationEnum.ENTRIES]: [createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 0, 101)]
+        });
+
+        const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'amount']);
+    });
+});
