@@ -1,0 +1,189 @@
+import { createEntryInput } from '../../test-utils/create-transaction-entry-input.util';
+import { createTransactionInput } from '../../test-utils/create-transaction-input.util';
+import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
+import { getZodIssuePaths } from '../../test-utils/get-zod-paths.util';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
+import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+
+import { TransferAssetTransactionCreateEntitySchema } from './transfer-asset-transaction-create-entity.schema';
+
+describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
+    const fromAccountId = 11;
+    const toAccountId = 22;
+    const feeAccountId = 33;
+
+    it('entries do not balance (beyond tolerance)', () => {
+        const toMicro = 2_000_000;
+        const feeMicro = 300_000;
+        const extra = TOLERANCE_MICRO + 5;
+        const fromMicro = toMicro + feeMicro + extra;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
+                createEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('do not balance');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+
+    it('exchangeRate !== 1', () => {
+        const amount = 1_000;
+
+        const payload = createTransactionInput({
+            exchangeRate: 2,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, amount),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, amount)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('must be equal to 1');
+        expect(getZodIssuePaths(result)).toContainEqual(['exchangeRate']);
+    });
+
+    it('fromAccountId === toAccountId', () => {
+        const amount = 100;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId: fromAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, amount),
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, amount)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('must be different');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+
+    it('duplicate account ids in entries', () => {
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, 50),
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, 50)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('each account may appear at most once');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+
+    it("from-entry must be 'credit'", () => {
+        const amount = 1_000;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, amount),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, amount)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain("from-entry must be 'credit'");
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'type']);
+    });
+
+    it("to-entry must be 'debit'", () => {
+        const amount = 1_000;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, amount),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.CREDIT, amount)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain("to-entry must be 'debit'");
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
+    });
+
+    it("fee entry must be 'debit' when present", () => {
+        const toMicro = 1_000_000;
+        const feeMicro = 10_000;
+        const fromMicro = toMicro + feeMicro;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
+                createEntryInput(feeAccountId, TransactionEntryTypeEnum.CREDIT, feeMicro)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain("fee-entry must be 'debit'");
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 2, 'type']);
+    });
+
+    it('too few entries (min 2)', () => {
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100)]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('Too small: expected array to have >=2 items');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+
+    it('too many entries (max 3)', () => {
+        const mockAccountId = 44;
+
+        const payload = createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            [TransactionAssociationEnum.ENTRIES]: [
+                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100),
+                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, 90),
+                createEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, 10),
+                createEntryInput(mockAccountId, TransactionEntryTypeEnum.DEBIT, 1)
+            ]
+        });
+
+        const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
+        expect(result.success).toBe(false);
+        expect(getZodIssueMessages(result).join(' ')).toContain('Too big: expected array to have <=3 items');
+        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+    });
+});
