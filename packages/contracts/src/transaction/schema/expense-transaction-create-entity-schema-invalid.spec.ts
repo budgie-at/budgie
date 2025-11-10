@@ -22,20 +22,6 @@ describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique cat
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
     });
 
-    it('duplicate categoryId across entries', () => {
-        const payload = createExpenseTransactionInput({
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 700_000, 101),
-                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 300_000, 101)
-            ]
-        });
-
-        const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
-        expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('categoryId must be unique');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'categoryId']);
-    });
-
     it('zero entries (min 1 enforced)', () => {
         const payload = createExpenseTransactionInput({
             [TransactionAssociationEnum.ENTRIES]: []

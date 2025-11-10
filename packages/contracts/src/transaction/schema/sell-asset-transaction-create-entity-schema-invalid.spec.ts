@@ -1,4 +1,4 @@
-import { convertFromToMicro } from '../../test-utils/convert-from-to-micro.util';
+import { baseMicroToQuoteMicro } from '../../test-utils/base-micro-to-quote-micro.util';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
@@ -17,7 +17,7 @@ describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it('entries do not balance (beyond tolerance)', () => {
         const exchangeRate = 50_000.5;
         const fromAmountMicro = 1_000_000;
-        const convertedFromToMicro = convertFromToMicro(fromAmountMicro, exchangeRate);
+        const convertedFromToMicro = baseMicroToQuoteMicro(fromAmountMicro, exchangeRate);
         const feeMicro = Math.max(1, Math.floor(convertedFromToMicro / 5));
 
         const toAmountMicro = convertedFromToMicro - feeMicro + (TOLERANCE_MICRO + 5);
@@ -94,7 +94,7 @@ describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it("wrong direction: from-entry must be 'credit'", () => {
         const exchangeRate = 2;
         const fromAmountMicro = 1_000_000;
-        const toAmountMicro = convertFromToMicro(fromAmountMicro, exchangeRate);
+        const toAmountMicro = baseMicroToQuoteMicro(fromAmountMicro, exchangeRate);
 
         const payload = createTransferTransactionInput({
             exchangeRate,
@@ -115,7 +115,7 @@ describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it("wrong direction: to-entry must be 'debit'", () => {
         const exchangeRate = 2;
         const fromAmountMicro = 1_000_000;
-        const toAmountMicro = convertFromToMicro(fromAmountMicro, exchangeRate);
+        const toAmountMicro = baseMicroToQuoteMicro(fromAmountMicro, exchangeRate);
 
         const payload = createTransferTransactionInput({
             exchangeRate,
@@ -136,7 +136,7 @@ describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it("fee entry must be 'debit' when present", () => {
         const exchangeRate = 2;
         const fromAmountMicro = 1_000_000;
-        const convertedFromToMicro = convertFromToMicro(fromAmountMicro, exchangeRate);
+        const convertedFromToMicro = baseMicroToQuoteMicro(fromAmountMicro, exchangeRate);
         const feeMicro = Math.max(1, Math.floor(convertedFromToMicro / 10));
         const toAmountMicro = convertedFromToMicro - feeMicro;
 

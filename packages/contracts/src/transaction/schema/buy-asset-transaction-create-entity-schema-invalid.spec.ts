@@ -1,8 +1,8 @@
-import { convertToFromMicro } from '../../test-utils/convert-to-from-micro.util';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
 import { getZodIssuePaths } from '../../test-utils/get-zod-paths.util';
+import { quoteMicroToBaseMicro } from '../../test-utils/quote-micro-to-base-micro.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -18,7 +18,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const exchangeRate = 50_000.5;
         const toAmountMicro = 1_000_000;
         const feeMicro = 5_000_000;
-        const convertedToInFromMicro = convertToFromMicro(toAmountMicro, exchangeRate);
+        const convertedToInFromMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
         const fromAmountMicro = convertedToInFromMicro + feeMicro - (TOLERANCE_MICRO + 5);
 
         const payload = createTransferTransactionInput({
@@ -94,7 +94,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it("wrong direction: from-entry must be 'credit'", () => {
         const exchangeRate = 2;
         const toAmountMicro = 1_000_000;
-        const fromAmountMicro = convertToFromMicro(toAmountMicro, exchangeRate);
+        const fromAmountMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
 
         const payload = createTransferTransactionInput({
             exchangeRate,
@@ -115,7 +115,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     it("wrong direction: to-entry must be 'debit'", () => {
         const exchangeRate = 2;
         const toAmountMicro = 1_000_000;
-        const fromAmountMicro = convertToFromMicro(toAmountMicro, exchangeRate);
+        const fromAmountMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
 
         const payload = createTransferTransactionInput({
             exchangeRate,
@@ -137,7 +137,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const exchangeRate = 2;
         const toAmountMicro = 1_000_000;
         const feeMicro = 10_000_000;
-        const fromAmountMicro = convertToFromMicro(toAmountMicro, exchangeRate) + feeMicro;
+        const fromAmountMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate) + feeMicro;
 
         const payload = createTransferTransactionInput({
             exchangeRate,
