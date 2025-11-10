@@ -15,6 +15,13 @@
       "when": 1762458740495,
       "tag": "0001_category-parent",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762807421118,
+      "tag": "0002_transactions",
+      "breakpoints": true
     }
   ]
 }
