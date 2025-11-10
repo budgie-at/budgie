@@ -59,7 +59,7 @@ describe('TransferTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         expect(result.success).toBe(true);
     });
 
-    it(`within tolerance (±${TOLERANCE_MICRO} micro)`, () => {
+    it(`within tolerance (±${TOLERANCE_MICRO.toString()} micro)`, () => {
         const exchangeRate = 7_777.777777;
         const toAmountMicro = 10_000_000;
         const feeMicro = 1_000_000;

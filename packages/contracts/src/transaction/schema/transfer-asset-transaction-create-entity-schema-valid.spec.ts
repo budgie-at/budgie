@@ -47,7 +47,7 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         expect(result.success).toBe(true);
     });
 
-    it(`within tolerance (±${TOLERANCE_MICRO})`, () => {
+    it(`within tolerance (±${TOLERANCE_MICRO.toString()})`, () => {
         const toMicro = 1_000_000;
         const feeMicro = 500_000;
         const fromMicro = toMicro + feeMicro - TOLERANCE_MICRO;

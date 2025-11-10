@@ -55,7 +55,7 @@ describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         expect(result.success).toBe(true);
     });
 
-    it(`within tolerance (±${TOLERANCE_MICRO} micro)`, () => {
+    it(`within tolerance (±${TOLERANCE_MICRO.toString()} micro)`, () => {
         const exchangeRate = 7_777.777777;
         const fromAmountMicro = 10_000_000;
         const convertedFromToMicro = convertFromToMicro(fromAmountMicro, exchangeRate);
