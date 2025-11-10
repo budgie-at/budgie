@@ -1,5 +1,5 @@
-import { createEntryInput } from '../../test-utils/create-transaction-entry-input.util';
-import { createTransactionInput } from '../../test-utils/create-transaction-input.util';
+import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
+import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -13,13 +13,13 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
     it('2 entries (no fee), balances exactly (from = to), exchangeRate = 1', () => {
         const amount = 5_000_000;
-        const payload = createTransactionInput({
+        const payload = createTransferTransactionInput({
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, amount),
-                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, amount)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, amount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, amount)
             ]
         });
 
@@ -32,14 +32,14 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const feeMicro = 100_000;
         const fromMicro = toMicro + feeMicro;
 
-        const payload = createTransactionInput({
+        const payload = createTransferTransactionInput({
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
-                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
-                createEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
             ]
         });
 
@@ -52,14 +52,14 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const feeMicro = 500_000;
         const fromMicro = toMicro + feeMicro - TOLERANCE_MICRO;
 
-        const payload = createTransactionInput({
+        const payload = createTransferTransactionInput({
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
-                createEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
-                createEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
             ]
         });
 
