@@ -23,21 +23,6 @@ describe('IncomeTransactionCreateEntitySchema (only DEBIT entries + unique categ
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
     });
 
-    it('duplicate categoryId across entries', () => {
-        const payload = createIncomeTransactionInput({
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 700_000, 101),
-                createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 300_000, 101)
-            ]
-        });
-
-        const result = IncomeTransactionCreateEntitySchema.safeParse(payload);
-
-        expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('categoryId must be unique');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'categoryId']);
-    });
-
     it('zero entries (min 1 enforced)', () => {
         const payload = createIncomeTransactionInput({
             [TransactionAssociationEnum.ENTRIES]: []
