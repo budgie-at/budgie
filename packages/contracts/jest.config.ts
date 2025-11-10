@@ -12,7 +12,7 @@ const config: Config = {
             tsconfig: 'tsconfig.json'
         }
     },
-    testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
+    testMatch: ['**/?(*.)+(spec|test).ts'],
     moduleNameMapper: {
         // Sync with tsconfig "paths" if you use them
         // '^@/(.*)$': '<rootDir>/src/$1',

@@ -107,7 +107,7 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("from-entry must be 'credit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"from" entry must be "credit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'type']);
     });
 
@@ -126,7 +126,7 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("to-entry must be 'debit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"to" entry must be "debit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
     });
 
@@ -148,7 +148,7 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("fee-entry must be 'debit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"fee" entry must be "debit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 2, 'type']);
     });
 

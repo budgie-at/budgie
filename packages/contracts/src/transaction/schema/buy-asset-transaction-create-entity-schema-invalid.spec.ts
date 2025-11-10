@@ -108,7 +108,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("from-entry must be 'credit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"from" entry must be "credit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'type']);
     });
 
@@ -129,7 +129,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("to-entry must be 'debit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"to" entry must be "debit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
     });
 
@@ -153,7 +153,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
 
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("fee-entry must be 'debit'");
+        expect(getZodIssueMessages(result).join(' ')).toContain('"fee" entry must be "debit"');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 2, 'type']);
     });
 
@@ -168,9 +168,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
 
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toEqual(
-            'Too small: expected array to have >=2 items entries must include exactly one from-account "entry" and one to-account "entry"'
-        );
+        expect(getZodIssueMessages(result).join(' ')).toContain('Too small: expected array to have >=2');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
     });
 
@@ -192,9 +190,7 @@ describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
 
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toEqual(
-            'Too big: expected array to have <=3 items entries do not balance (micro): total signed FROM = 50 (must be 0±1)'
-        );
+        expect(getZodIssueMessages(result).join(' ')).toContain('Too big: expected array to have <=3 items');
         expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
     });
 });

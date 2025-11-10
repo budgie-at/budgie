@@ -1,3 +1,4 @@
+import { convertFromToMicro } from '../../test-utils/convert-from-to-micro.util';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -5,7 +6,6 @@ import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { SellAssetTransactionCreateEntitySchema } from './sell-asset-transaction-create-entity.schema';
-import { convertFromToMicro } from '../../test-utils/convert-from-to-micro.util';
 
 describe('SellAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
     const fromAccountId = 11;
