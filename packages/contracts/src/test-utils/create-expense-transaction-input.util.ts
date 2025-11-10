@@ -1,22 +1,22 @@
 import { ExternalSourceEnum } from '../account/enum/external-source.enum';
-import { BuyAssetTransactionCreateEntityInterface } from '../transaction/entity/buy-asset-transaction-create-entity.interface';
+import { ExpenseTransactionCreateEntityInterface } from '../transaction/entity/expense-transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../transaction/enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../transaction/enum/transaction-type.enum';
 
 const [externalSource] = Object.values(ExternalSourceEnum);
 
-export const createTransactionInput = (
-    input: Partial<BuyAssetTransactionCreateEntityInterface>
-): BuyAssetTransactionCreateEntityInterface => ({
-    type: TransactionTypeEnum.TRANSFER,
-    title: 'Test',
+export const createExpenseTransactionInput = (
+    input: Partial<ExpenseTransactionCreateEntityInterface>
+): ExpenseTransactionCreateEntityInterface => ({
+    type: TransactionTypeEnum.EXPENSE,
+    title: 'Expense',
     comment: '',
     externalId: null,
     operatedAt: new Date().toISOString(),
-    exchangeRate: 2,
+    exchangeRate: 1,
     externalSource,
-    toAccountId: 2,
-    fromAccountId: 1,
+    toAccountId: null,
+    fromAccountId: 42,
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });
