@@ -229,6 +229,13 @@ export default defineConfig(
         }
     },
     {
+        files: ['**/*.spec.ts'],
+        extends: [tseslint.configs.strictTypeChecked],
+        rules: {
+            '@typescript-eslint/no-magic-numbers': 'warn'
+        }
+    },
+    {
         languageOptions: {
             parserOptions: {
                 projectService: true
