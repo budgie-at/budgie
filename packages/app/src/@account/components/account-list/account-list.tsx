@@ -1,8 +1,8 @@
+import { AccountEntityInterface, CurrencyEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { AccountCard } from '../account-card/account-card';
 
-import { AccountEntityInterface, CurrencyEnum } from '@budgie/contracts';
 
 interface Props {
     readonly accounts: AccountEntityInterface[];
