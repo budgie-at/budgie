@@ -7,7 +7,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 
 import { ExpenseTransactionCreateEntitySchema } from './expense-transaction-create-entity.schema';
 
-describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique categoryId, min 1)', () => {
+describe('ExpenseTransactionCreateEntitySchema – valid cases', () => {
     it('single credit entry with unique category', () => {
         const payload = createExpenseTransactionInput({
             [TransactionAssociationEnum.ENTRIES]: [createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, 1_000_000, 101)]

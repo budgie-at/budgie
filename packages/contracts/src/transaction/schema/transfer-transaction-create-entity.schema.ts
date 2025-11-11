@@ -25,7 +25,7 @@ export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCrea
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, fromEntryIndex, 'type'],
-                message: "from-entry must be 'credit' (funds leave the from account)"
+                message: '"from" entry must be "credit" (funds leave the "from" account)'
             });
 
             return;
@@ -35,7 +35,7 @@ export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCrea
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, toEntryIndex, 'type'],
-                message: "to-entry must be 'debit' (funds enter the to account)"
+                message: '"to" entry must be "debit" (funds enter the "to" account)'
             });
 
             return;
@@ -45,7 +45,7 @@ export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCrea
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, feeEntryIndex, 'type'],
-                message: "fee-entry must be 'debit' (fee increases FROM-currency outflow)"
+                message: '"fee" entry must be "debit" (fee increases FROM-currency outflow)'
             });
 
             return;

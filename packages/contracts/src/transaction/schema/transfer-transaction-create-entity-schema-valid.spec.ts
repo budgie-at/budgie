@@ -15,7 +15,7 @@ const convertToFromMicro = (toAmountMicro: number, exchangeRate: number): number
     return Math.round((toAmountMicro * rateScaledInteger) / PRECISION);
 };
 
-describe('TransferTransactionCreateEntitySchema (Zod, end-to-end)', () => {
+describe('TransferTransactionCreateEntitySchema – valid cases', () => {
     const fromAccountId = 11;
     const toAccountId = 22;
     const feeAccountId = 33;

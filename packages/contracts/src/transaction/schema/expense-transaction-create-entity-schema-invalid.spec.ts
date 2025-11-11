@@ -1,15 +1,16 @@
 import { describe, expect, it } from '@jest/globals';
+import { prettifyError } from 'zod';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { createExpenseTransactionInput } from '../../test-utils/create-expense-transaction-input.util';
 import { createTransactionEntryInput } from '../../test-utils/create-transaction-entry-input.util';
-import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
-import { getZodIssuePaths } from '../../test-utils/get-zod-paths.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { ExpenseTransactionCreateEntitySchema } from './expense-transaction-create-entity.schema';
 
-describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique categoryId, min 1)', () => {
+describe('ExpenseTransactionCreateEntitySchema – invalid cases', () => {
     it("any entry that isn't 'credit' is rejected", () => {
         const payload = createExpenseTransactionInput({
             [TransactionAssociationEnum.ENTRIES]: [
@@ -20,8 +21,11 @@ describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique cat
 
         const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain("expense entry must be 'credit'");
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain("expense entry must be 'credit'");
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}[1].type`);
     });
 
     it('zero entries (min 1 enforced)', () => {
@@ -31,8 +35,11 @@ describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique cat
 
         const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('Too small: expected array to have >=1 items');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('Too small: expected array to have >=1 items');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
     it('amount must be positive (delegated to entry schema)', () => {
@@ -43,6 +50,9 @@ describe('ExpenseTransactionCreateEntitySchema (only CREDIT entries + unique cat
         const result = ExpenseTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
 
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'amount']);
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('Too small: expected number to be >0');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}[0].amount`);
     });
 });
