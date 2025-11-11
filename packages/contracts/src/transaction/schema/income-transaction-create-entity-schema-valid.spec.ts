@@ -7,7 +7,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 
 import { IncomeTransactionCreateEntitySchema } from './income-transaction-create-entity.schema';
 
-describe('IncomeTransactionCreateEntitySchema (only DEBIT entries + unique categoryId)', () => {
+describe('IncomeTransactionCreateEntitySchema – valid cases', () => {
     it('single debit entry with unique category', () => {
         const payload = createIncomeTransactionInput({
             [TransactionAssociationEnum.ENTRIES]: [createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 1_000_000, 101)]
