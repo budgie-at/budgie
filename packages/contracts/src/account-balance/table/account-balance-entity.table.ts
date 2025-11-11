@@ -7,7 +7,6 @@ export const AccountBalanceEntityTable = sqliteTable(
     withBaseEntityTableColumns({
         parentAccountId: int('parent_account_id', { mode: 'number' }),
         accountId: int('account_id', { mode: 'number' }).notNull(),
-        instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
         amount: int('amount', { mode: 'number' }).notNull()
     })
 );
