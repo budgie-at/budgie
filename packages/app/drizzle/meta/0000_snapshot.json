@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "99a62a28-5b6c-45cd-941b-7ce9bbf43f7b",
+  "id": "8fa5c91e-ff99-4972-b2bd-a83fd6d9b7d0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -46,13 +46,6 @@
         },
         "account_id": {
           "name": "account_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "instrument_id": {
-          "name": "instrument_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
