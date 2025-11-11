@@ -9,7 +9,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 
 import { BuyAssetTransactionCreateEntitySchema } from './buy-asset-transaction-create-entity.schema';
 
-describe('BuyAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
+describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
     const fromAccountId = 11;
     const toAccountId = 22;
     const feeAccountId = 33;
