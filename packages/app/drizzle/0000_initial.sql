@@ -5,7 +5,6 @@ CREATE TABLE `account_balances` (
 	`deletedAt` integer,
 	`parent_account_id` integer,
 	`account_id` integer NOT NULL,
-	`instrument_id` integer NOT NULL,
 	`amount` integer NOT NULL
 );
 --> statement-breakpoint
