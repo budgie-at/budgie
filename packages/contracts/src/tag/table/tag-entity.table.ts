@@ -5,6 +5,6 @@ import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-
 export const TagEntityTable = sqliteTable(
     'tags',
     withBaseEntityTableColumns({
-        title: text().default('').notNull()
+        title: text().notNull()
     })
 );
