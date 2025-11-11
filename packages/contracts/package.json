@@ -22,9 +22,13 @@
         "clear": "run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
-        "ts": "run -T tsc -p ."
+        "ts": "run -T tsc -p .",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:cov": "jest --coverage"
     },
     "dependencies": {
+        "@rnw-community/shared": "^1.8.2",
         "drizzle-orm": "^0.44.7",
         "drizzle-zod": "^0.8.3",
         "expo-sqlite": "^16.0.8",

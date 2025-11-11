@@ -1,6 +1,8 @@
 export enum AccountTypeEnum {
-    BANK = 'BANK',
+    DEBT = 'DEBT',
     CASH = 'CASH',
+    BANK = 'BANK',
     CRYPTO = 'CRYPTO',
     STOCKS = 'STOCKS',
+    SAVINGS = 'SAVINGS',
 }
