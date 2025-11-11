@@ -1,4 +1,4 @@
-import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
@@ -13,8 +13,5 @@ export const InstrumentEntityTable = sqliteTable(
         code: text('code').notNull(),
         name: text('name').notNull(),
         symbol: text('symbol').notNull()
-    }),
-    columns => ({
-        uidxCode: uniqueIndex('u_idx_instruments_code').on(columns.code)
     })
 );

@@ -1,4 +1,4 @@
-import { index, int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
@@ -27,10 +27,5 @@ export const AccountEntityTable = sqliteTable(
         externalId: text('external_id'),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()
-    }),
-    columns => ({
-        idxParent: index('idx_accounts_parent').on(columns.parentId),
-        idxInstrument: index('idx_accounts_instrument').on(columns.instrumentId),
-        uidxExternal: uniqueIndex('u_idx_accounts_external').on(columns.externalSource, columns.externalId)
     })
 );
