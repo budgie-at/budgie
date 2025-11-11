@@ -1,0 +1,1 @@
+export const CATEGORY_TITLE_MIN_LENGTH = 1;

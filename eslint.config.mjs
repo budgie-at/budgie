@@ -380,7 +380,8 @@ export default defineConfig(
             'max-lines': 'off',
             'max-statements': 'off',
             'func-names': 'off',
-            'promise/no-nesting': 'off'
+            'promise/no-nesting': 'off',
+            '@typescript-eslint/no-magic-numbers': 'warn'
         }
     }
 );

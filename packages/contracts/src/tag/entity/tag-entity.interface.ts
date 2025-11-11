@@ -1,4 +1,4 @@
 import type { TagEntitySchema } from '../schema/tag-entity.schema';
-import type { z } from 'zod';
+import type { infer } from 'zod';
 
-export interface TagEntityInterface extends z.infer<typeof TagEntitySchema> {}
+export interface TagEntityInterface extends infer<typeof TagEntitySchema> {}
