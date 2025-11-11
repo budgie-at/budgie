@@ -1,14 +1,5 @@
+import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+
 import { TransactionEntitySchema } from './transaction-entity.schema';
 
-export const TransactionCreateEntitySchema = TransactionEntitySchema.pick({
-    type: true,
-    title: true,
-    amount: true,
-    comment: true,
-    accountId: true,
-    categoryId: true,
-    operatedAt: true
-}).partial({
-    comment: true,
-    operatedAt: true
-});
+export const TransactionCreateEntitySchema = convertToCreateEntitySchema(TransactionEntitySchema);
