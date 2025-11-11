@@ -7,6 +7,5 @@ export const AccountBalanceEntitySchema = createSelectSchema(AccountBalanceEntit
     ...BaseEntityFields,
     amount: schema => schema.describe('The account balance.'),
     accountId: schema => schema.positive().describe('The id of the account.'),
-    instrumentId: schema => schema.positive().describe('The id of the instrument.'),
     parentAccountId: schema => schema.positive().describe('The id of the parent account.')
 });
