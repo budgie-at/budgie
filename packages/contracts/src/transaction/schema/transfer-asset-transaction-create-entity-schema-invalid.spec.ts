@@ -1,16 +1,17 @@
 import { describe, expect, it } from '@jest/globals';
+import { prettifyError } from 'zod';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
-import { getZodIssueMessages } from '../../test-utils/get-zod-messages.util';
-import { getZodIssuePaths } from '../../test-utils/get-zod-paths.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { TransferAssetTransactionCreateEntitySchema } from './transfer-asset-transaction-create-entity.schema';
 
-describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
+describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     const fromAccountId = 11;
     const toAccountId = 22;
     const feeAccountId = 33;
@@ -34,8 +35,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('do not balance');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('do not balance');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
     it('exchangeRate !== 1', () => {
@@ -53,8 +57,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('must be equal to 1');
-        expect(getZodIssuePaths(result)).toContainEqual(['exchangeRate']);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('must be equal to 1');
+        expect(error).toContain(`at exchangeRate`);
     });
 
     it('fromAccountId === toAccountId', () => {
@@ -72,8 +79,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('must be different');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('must be different');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
     it('duplicate account ids in entries', () => {
@@ -90,8 +100,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('each account may appear at most once');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('each account may appear at most once');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
     it("from-entry must be 'credit'", () => {
@@ -109,8 +122,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('"from" entry must be "credit"');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 0, 'type']);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('"from" entry must be "credit"');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}[0].type`);
     });
 
     it("to-entry must be 'debit'", () => {
@@ -128,8 +144,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('"to" entry must be "debit"');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 1, 'type']);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('"to" entry must be "debit"');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}[1].type`);
     });
 
     it("fee entry must be 'debit' when present", () => {
@@ -150,8 +169,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('"fee" entry must be "debit"');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES, 2, 'type']);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('"fee" entry must be "debit"');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}[2].type`);
     });
 
     it('too few entries (min 2)', () => {
@@ -164,8 +186,11 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('Too small: expected array to have >=2 items');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('Too small: expected array to have >=2 items');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
     it('too many entries (max 3)', () => {
@@ -185,7 +210,10 @@ describe('TransferAssetTransactionCreateEntitySchema (Zod, end-to-end)', () => {
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
         expect(result.success).toBe(false);
-        expect(getZodIssueMessages(result).join(' ')).toContain('Too big: expected array to have <=3 items');
-        expect(getZodIssuePaths(result)).toContainEqual([TransactionAssociationEnum.ENTRIES]);
+
+        const error = isDefined(result.error) ? prettifyError(result.error) : '';
+
+        expect(error).toContain('Too big: expected array to have <=3 items');
+        expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 });
