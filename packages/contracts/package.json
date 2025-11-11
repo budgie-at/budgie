@@ -33,9 +33,5 @@
         "drizzle-zod": "^0.8.3",
         "expo-sqlite": "^16.0.8",
         "zod": "^4.1.12"
-    },
-    "devDependencies": {
-        "@types/jest": "^30.0.0",
-        "jest": "^30.2.0"
     }
 }
