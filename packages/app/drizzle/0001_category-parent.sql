@@ -1,1 +1,0 @@
-ALTER TABLE `categories` ADD `parent_id` integer;
