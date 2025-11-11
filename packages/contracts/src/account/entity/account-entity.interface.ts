@@ -1,4 +1,5 @@
-import type { AccountEntitySchema } from '../schema/account-entity.schema';
-import type { z } from 'zod';
+import { AccountEntitySchema } from '../schema/account-entity.schema';
 
-export interface AccountEntityInterface extends z.infer<typeof AccountEntitySchema> {}
+import type { infer } from 'zod';
+
+export interface AccountEntityInterface extends infer<typeof AccountEntitySchema> {}
