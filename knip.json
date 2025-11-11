@@ -4,7 +4,7 @@
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
-        "packages/generator/babel.config.js",
+        "packages/contracts/babel.config.js",
         "jest.config.js",
         "metro.config.js",
         "tsconfig.json",
