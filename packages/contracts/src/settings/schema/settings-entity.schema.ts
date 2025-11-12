@@ -10,6 +10,6 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     language: zodEnum(LanguageEnum).describe('The language for the application.'),
     locale: schema => schema.describe('The locale for the application.'),
     hideCents: schema => schema.describe('Determines whether to hide cents in the application.'),
-    defaultAccountId: schema => schema.positive().describe('The default account id for new transactions.'),
-    defaultInstrumentId: schema => schema.positive().describe('The default instrument id for new transactions and accounts.')
+    defaultAccountId: schema => schema.positive().describe('Id of the default account for new transactions.'),
+    defaultInstrumentId: schema => schema.positive().describe('Id of the default instrument for new transactions and accounts.')
 });
