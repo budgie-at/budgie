@@ -13,5 +13,5 @@ export const SettingsEntityRelations = relations(SettingsEntityTable, ({ one }) 
     [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: one(InstrumentEntityTable, {
         fields: [SettingsEntityTable.defaultInstrumentId],
         references: [InstrumentEntityTable.id]
-    }),
-}))
+    })
+}));
