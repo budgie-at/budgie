@@ -1,15 +1,22 @@
 import * as Haptics from 'expo-haptics';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 
-// TODO add "hasVibration" to the settings table
+import { useGetSettingsQuery } from '../../@settings/query/use-get-settings.query';
 
 export const useVibration = (): [notification: (type: NotificationFeedbackType) => void, impact: (style: ImpactFeedbackStyle) => void] => {
+    const { settings } = useGetSettingsQuery();
+    const { isVibrationEnabled } = settings;
+
     const hapticNotification = (type: NotificationFeedbackType = NotificationFeedbackType.Success) => {
-        void Haptics.notificationAsync(type);
+        if (isVibrationEnabled) {
+            void Haptics.notificationAsync(type);
+        }
     };
 
     const hapticImpact = (style: ImpactFeedbackStyle = ImpactFeedbackStyle.Medium) => {
-        void Haptics.impactAsync(style);
+        if (isVibrationEnabled) {
+            void Haptics.impactAsync(style);
+        }
     };
 
     return [hapticNotification, hapticImpact] as const;
