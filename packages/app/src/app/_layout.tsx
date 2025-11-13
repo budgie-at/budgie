@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-max-depth */
 import { i18n } from '@lingui/core';
 import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -8,11 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
 import { enableFreeze, enableScreens } from 'react-native-screens';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 
 import migrations from '../../drizzle/migrations';
-import { appRootPersistor, appRootStore } from '../@generic/app-root.store';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
@@ -51,22 +47,18 @@ export default function RootLayout() {
     }
 
     return (
-        <Provider store={appRootStore}>
-            <PersistGate loading={null} persistor={appRootPersistor}>
-                <I18nProvider i18n={i18n}>
-                    <ThemeProvider>
-                        <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                            <BottomSheetsProvider>
-                                <Stack screenOptions={stackOptions}>
-                                    <Stack.Screen name="(tabs)" options={tabsOptions} />
+        <I18nProvider i18n={i18n}>
+            <ThemeProvider>
+                <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+                    <BottomSheetsProvider>
+                        <Stack screenOptions={stackOptions}>
+                            <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                                    <Stack.Screen name="ai" options={aiScreenOptions} />
-                                </Stack>
-                            </BottomSheetsProvider>
-                        </SQLiteProvider>
-                    </ThemeProvider>
-                </I18nProvider>
-            </PersistGate>
-        </Provider>
+                            <Stack.Screen name="ai" options={aiScreenOptions} />
+                        </Stack>
+                    </BottomSheetsProvider>
+                </SQLiteProvider>
+            </ThemeProvider>
+        </I18nProvider>
     );
 }
