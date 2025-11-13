@@ -14,6 +14,7 @@ import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
 import { db } from '../drizzle/db/db';
+import { runInitialSeed } from '../drizzle/db/seed';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
@@ -38,7 +39,7 @@ export default function RootLayout() {
 
     useEffect(() => {
         if (success) {
-            void SplashScreen.hideAsync();
+            void runInitialSeed(db).finally(() => void SplashScreen.hideAsync());
         }
     }, [success]);
 
