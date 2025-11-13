@@ -1,5 +1,6 @@
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
+export { LanguageEnum } from './generic/enum/language.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
 export { AccountTypeEnum } from './account/enum/account-type.enum';
