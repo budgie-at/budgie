@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.59.0](https://github.com/budgie-at/budgie/compare/v1.58.0...v1.59.0) (2025-11-13)
+
+### Bug Fixes
+
+- update migration ([1c11729](https://github.com/budgie-at/budgie/commit/1c1172906f940a821a30871b4108fb5d92bd89f3))
+
+### Features
+
+- add settings contracts ([3ab59b0](https://github.com/budgie-at/budgie/commit/3ab59b050f7f8a70a2b6243489e47e364d564ebb))
+- add settings contracts ([1f07738](https://github.com/budgie-at/budgie/commit/1f0773820bce634a5292306b734889db1e875c23))
+- update language enum ([f159b49](https://github.com/budgie-at/budgie/commit/f159b49b8a9a45dea913fd3858e0a90cce4a1288))
+
 # [1.58.0](https://github.com/budgie-at/budgie/compare/v1.57.1...v1.58.0) (2025-11-11)
 
 ### Bug Fixes
