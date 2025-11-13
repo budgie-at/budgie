@@ -1,3 +1,4 @@
+export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
@@ -127,3 +128,14 @@ export { ExchangeRateCreateEntitySchema } from './exchange-rate/schema/exchange-
 
 export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchange-rate-entity.interface';
 export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';
+
+export { SettingsAssociationEnum } from './settings/enum/settings-association.enum';
+
+export { SettingsEntityTable } from './settings/table/settings-entity.table';
+export { SettingsEntityRelations } from './settings/relations/settings-entity.relations';
+
+export { SettingsEntitySchema } from './settings/schema/settings-entity.schema';
+export { SettingsCreateEntitySchema } from './settings/schema/settings-create-entity.schema';
+
+export type { SettingsEntityInterface } from './settings/entity/settings-entity.interface';
+export type { SettingsCreateEntityInterface } from './settings/entity/settings-create-entity.interface';

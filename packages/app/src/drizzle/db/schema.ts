@@ -14,5 +14,7 @@ export {
     ExchangeRateEntityTable,
     ExchangeRateEntityRelations,
     InstrumentEntityTable,
-    InstrumentEntityRelations
+    InstrumentEntityRelations,
+    SettingsEntityTable,
+    SettingsEntityRelations,
 } from '@budgie/contracts';
