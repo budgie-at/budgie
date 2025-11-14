@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.60.0](https://github.com/budgie-at/budgie/compare/v1.59.0...v1.60.0) (2025-11-14)
+
+### Bug Fixes
+
+- add LanguageEnum export from contracts ([c6f718b](https://github.com/budgie-at/budgie/commit/c6f718b9bec53de8edff28fd8a6ce8e48f00c258))
+- remove async-storage ([4e24b77](https://github.com/budgie-at/budgie/commit/4e24b779ca63ed3903ab2e560d4816d466033f1c))
+- remove redux ([d0f80dd](https://github.com/budgie-at/budgie/commit/d0f80dd6bb4090a3c4057ba19b61a533b9d59f0d))
+
+### Features
+
+- add isVibrationEnabled to the settings table ([70d58dc](https://github.com/budgie-at/budgie/commit/70d58dcc5f465d46ba33f9a1bb374ae7f1eb6d45))
+- add settings update logic ([0b87997](https://github.com/budgie-at/budgie/commit/0b879975cfba44864a5f2819e7f0ab3587a4a7dc))
+
 # [1.59.0](https://github.com/budgie-at/budgie/compare/v1.58.0...v1.59.0) (2025-11-13)
 
 ### Bug Fixes
