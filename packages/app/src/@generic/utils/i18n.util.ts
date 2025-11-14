@@ -1,3 +1,4 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { getLocales } from 'expo-localization';
 
@@ -8,9 +9,6 @@ import { messages as enMessages } from '../../locales/en/messages';
 import { messages as esMessages } from '../../locales/es/messages';
 import { messages as frMessages } from '../../locales/fr/messages';
 import { messages as ukMessages } from '../../locales/uk/messages';
-import { Languages } from '../../settings/constant/languages.constant';
-
-import type { SettingsState } from '../../settings/store/settings.state';
 
 i18n.load({
     en: enMessages,
@@ -20,16 +18,16 @@ i18n.load({
     es: esMessages
 });
 
-export const i18nGetOSLocale = (): SettingsState['language'] => {
+export const i18nGetOSLocale = (): LanguageEnum => {
     const locales = getLocales();
 
     for (const locale of locales) {
-        const languageCode = locale.languageCode?.toLowerCase() as SettingsState['language'];
+        const languageCode = locale.languageCode?.toLowerCase() as LanguageEnum;
 
-        if (isNotEmptyString(languageCode) && Languages.includes(languageCode)) {
+        if (isNotEmptyString(languageCode) && Object.values(LanguageEnum).includes(languageCode)) {
             return languageCode;
         }
     }
 
-    return 'en';
+    return LanguageEnum.EN;
 };

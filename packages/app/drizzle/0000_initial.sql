@@ -68,7 +68,8 @@ CREATE TABLE `settings` (
 	`default_account_id` integer,
 	`default_instrument_id` integer,
 	`theme` text DEFAULT 'SYSTEM' NOT NULL,
-	`hide_cents` integer DEFAULT false NOT NULL,
+	`show_cents` integer DEFAULT true NOT NULL,
+	`is_vibration_enabled` integer DEFAULT true NOT NULL,
 	FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`default_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
 );

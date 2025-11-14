@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d9c06464-a0fd-4157-b3e2-98944de641e6",
+  "id": "f6801b8d-a943-461e-9aa7-dd263f13fb0b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -454,13 +454,21 @@
           "autoincrement": false,
           "default": "'SYSTEM'"
         },
-        "hide_cents": {
-          "name": "hide_cents",
+        "show_cents": {
+          "name": "show_cents",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": false
+          "default": true
+        },
+        "is_vibration_enabled": {
+          "name": "is_vibration_enabled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
         }
       },
       "indexes": {},
