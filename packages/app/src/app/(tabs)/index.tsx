@@ -4,12 +4,12 @@ import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
-import { AccountList } from '../../@account/components/account-list/account-list';
-import { useGetAccountsQuery } from '../../@account/query/use-get-accounts.query';
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { formatMoney } from '../../@generic/utils/format-money.util';
+import { AccountList } from '../../account/components/account-list/account-list';
+import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
 const MOCK_BALANCE = 1_300;
 

@@ -4,8 +4,8 @@ import { Appearance, Platform, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { updateSettingsMutation } from '../../@settings/mutation/update-settings.mutation';
-import { useGetSettingsQuery } from '../../@settings/query/use-get-settings.query';
+import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
+import { useGetSettingsQuery } from '../../settings/query/use-get-settings.query';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
 import type { OnEventFn } from '@rnw-community/shared';

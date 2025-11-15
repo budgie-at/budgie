@@ -1,7 +1,7 @@
 import { SettingsEntityTable } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { db } from '../../drizzle/db/db';
+import { db } from '../../@generic/drizzle/db/db';
 import { DEFAULT_SETTINGS } from '../constants/default-settings.constant';
 
 export const useGetSettingsQuery = () => {

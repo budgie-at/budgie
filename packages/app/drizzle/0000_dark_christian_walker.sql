@@ -47,6 +47,7 @@ CREATE TABLE `exchange_rates` (
 	`rate` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `exchange_rates_base_instrument_id_quote_instrument_id_unique` ON `exchange_rates` (`base_instrument_id`,`quote_instrument_id`);--> statement-breakpoint
 CREATE TABLE `instruments` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
@@ -102,3 +103,44 @@ CREATE TABLE `transaction_tags` (
 	`tag_id` integer NOT NULL,
 	PRIMARY KEY(`transaction_id`, `tag_id`)
 );
+--> statement-breakpoint
+-- Seed common fiat currencies into instruments table
+INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
+-- Major currencies
+('FIAT', 'USD', 'United States Dollar', '$'),
+('FIAT', 'EUR', 'Euro', '€'),
+('FIAT', 'GBP', 'British Pound Sterling', '£'),
+('FIAT', 'JPY', 'Japanese Yen', '¥'),
+('FIAT', 'CHF', 'Swiss Franc', 'CHF'),
+('FIAT', 'CAD', 'Canadian Dollar', 'C$'),
+('FIAT', 'AUD', 'Australian Dollar', 'A$'),
+('FIAT', 'NZD', 'New Zealand Dollar', 'NZ$'),
+('FIAT', 'CNY', 'Chinese Yuan', '¥'),
+('FIAT', 'INR', 'Indian Rupee', '₹'),
+('FIAT', 'SEK', 'Swedish Krona', 'kr'),
+('FIAT', 'NOK', 'Norwegian Krone', 'kr'),
+('FIAT', 'DKK', 'Danish Krone', 'kr'),
+('FIAT', 'SGD', 'Singapore Dollar', 'S$'),
+('FIAT', 'HKD', 'Hong Kong Dollar', 'HK$'),
+('FIAT', 'KRW', 'South Korean Won', '₩'),
+('FIAT', 'MXN', 'Mexican Peso', 'MX$'),
+('FIAT', 'BRL', 'Brazilian Real', 'R$'),
+('FIAT', 'ZAR', 'South African Rand', 'R'),
+('FIAT', 'RUB', 'Russian Ruble', '₽'),
+('FIAT', 'TRY', 'Turkish Lira', '₺'),
+('FIAT', 'PLN', 'Polish Złoty', 'zł'),
+('FIAT', 'THB', 'Thai Baht', '฿'),
+('FIAT', 'IDR', 'Indonesian Rupiah', 'Rp'),
+('FIAT', 'MYR', 'Malaysian Ringgit', 'RM'),
+('FIAT', 'PHP', 'Philippine Peso', '₱'),
+('FIAT', 'CZK', 'Czech Koruna', 'Kč'),
+('FIAT', 'ILS', 'Israeli New Shekel', '₪'),
+('FIAT', 'CLP', 'Chilean Peso', 'CLP$'),
+('FIAT', 'AED', 'United Arab Emirates Dirham', 'د.إ'),
+('FIAT', 'SAR', 'Saudi Riyal', '﷼'),
+('FIAT', 'ARS', 'Argentine Peso', 'ARS$'),
+('FIAT', 'UAH', 'Ukrainian Hryvnia', '₴');
+--> statement-breakpoint
+-- Seed default settings
+INSERT INTO `settings` (`locale`, `language`, `default_account_id`, `default_instrument_id`, `theme`, `show_cents`, `is_vibration_enabled`) VALUES
+('en-US', 'en', null, 1, 'SYSTEM', true, true);
