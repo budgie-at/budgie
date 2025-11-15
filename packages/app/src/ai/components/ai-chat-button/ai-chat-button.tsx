@@ -6,9 +6,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '../../../@generic/components/icon/icon';
 
 export const AiChatButton = () => {
-    const navigateToAiPage = () => {
-        void router.push('/ai');
-    };
+    const navigateToAiPage = () => void router.push('/ai');
 
     return (
         <View>
@@ -16,7 +14,7 @@ export const AiChatButton = () => {
                 <Icon className="text-primary-reverse" icon={Mic} size={16} />
             </Pressable>
 
-            <Text className="text-primary text-center">
+            <Text className="text-secondary-foreground text-center -translate-y-4 text-xxs">
                 <Trans>AI</Trans>
             </Text>
         </View>
