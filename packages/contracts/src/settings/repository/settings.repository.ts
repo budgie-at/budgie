@@ -1,25 +1,20 @@
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import { isDefined } from '@rnw-community/shared';
+
+import * as schema from '../../schema';
 
 import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
-import { SettingsEntityTable } from '../table/settings-entity.table';
+import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class SettingsRepository {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    constructor(private db: ExpoSQLiteDatabase<any>) {}
+    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    async getSettings(): Promise<SettingsEntityInterface | null> {
-        try {
-            const [settings] = await this.db.select().from(SettingsEntityTable).limit(1);
+    async getSettings(): Promise<SettingsEntityInterface> {
+        const settings = await this.db.query.SettingsEntityTable.findFirst();
 
-            return settings ?? null;
-        } catch {
-            return null;
+        if (!isDefined(settings)) {
+            throw new Error('Settings not found');
         }
-    }
 
-    async getDefaultInstrumentId(): Promise<number | null> {
-        const settings = await this.getSettings();
-
-        return settings?.defaultInstrumentId ?? null;
+        return settings;
     }
 }

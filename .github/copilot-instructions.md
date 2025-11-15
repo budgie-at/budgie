@@ -36,15 +36,15 @@
 3. **TypeScript check**: `yarn turbo ts` (~10s)
    - Validates TypeScript across all packages
    - No output files generated (cache warning is expected)
-   
+
 4. **Linting**: `yarn turbo lint` (~18s)
    - ESLint with strict configuration
    - Current codebase has ~55 warnings (empty interfaces, magic numbers) - these are acceptable
-   
+
 5. **Deadcode detection**: `yarn turbo deadcode` (~5s)
    - Uses Knip to find unused code and dependencies
    - Clean codebase should show "no issues found"
-   
+
 6. **Copy/paste detection**: `yarn turbo cpd` (~2s)
    - Uses jscpd to detect code duplication
    - Reports saved to report/jscpd/html/
@@ -55,7 +55,7 @@
 
 ### Package-Specific Commands
 - **Contracts package**: `cd packages/contracts && yarn test` (schema validation tests)
-- **App package**: 
+- **App package**:
   - `cd packages/app && yarn start` (starts Expo dev server with dev client)
   - `yarn ios` (runs iOS app) / `yarn android` (runs Android app)
   - `yarn web` (starts web version)
@@ -63,7 +63,7 @@
   - `yarn db:generate` (generates Drizzle migrations)
   - `yarn i18n:extract` (extracts i18n strings) / `yarn i18n:compile` (compiles catalogs)
   - `yarn i18n:sync` (extracts and compiles in one command)
-- **Landing package**: 
+- **Landing package**:
   - `cd packages/landing && yarn start` (starts Next.js dev server on port 3000)
   - `yarn i18n:sync` (extracts and compiles Lingui translations)
 
@@ -86,13 +86,13 @@
    - Runs `yarn turbo cpd` (jscpd)
    - Runs `yarn test:coverage` (Jest with coverage)
    - Uploads coverage to Codecov
-   
+
 2. **eas-deploy** (requires code-quality to pass):
    - Creates Expo EAS update for development channel
    - Builds and deploys web app to Vercel
    - Posts deployment URL as PR comment
    - Creates GitHub deployment environment
-   
+
 3. **e2e-ios** & **e2e-android** (currently disabled with `if: false`):
    - Would run Maestro E2E tests on iOS and Android
    - Uses EAS local builds with e2e profile
@@ -100,11 +100,11 @@
 ### Main Branch Workflow (.github/workflows/main.yml)
 **Triggered on**: Push to main or manual workflow_dispatch
 **Jobs**:
-1. **release**: 
+1. **release**:
    - Publishes releases using Lerna with conventional commits
    - Requires `PUSH_TO_PROTECTED_TOKEN` secret
    - Creates GitHub releases automatically
-   
+
 2. **eas-update**:
    - Publishes EAS update to production channel
 
@@ -163,7 +163,7 @@
   - Ignores: .next, .turbo, .expo, dist, node_modules, drizzle
   - Complexity limit: 25
   - Warns on empty interfaces (common in contracts package)
-  
+
 - **.prettierrc.js**: Prettier configuration (applied via lint-staged)
 - **.lintstagedrc.js**: Pre-commit hooks run `eslint --fix`, `prettier --write`, `sort-package-json`
 
@@ -211,7 +211,7 @@
 **Solution**: Expected. TypeScript check doesn't produce artifacts, only validates types.
 
 **Issue**: Build fails after dependency update
-**Solution**: 
+**Solution**:
 1. Run `yarn dedupe` to resolve version conflicts
 2. Run `yarn build:force` to bypass stale Turbo cache
 3. Clear node_modules: `rm -rf node_modules && yarn install`
@@ -272,6 +272,8 @@
 
 ## Coding Standards and Best Practices
 
+**IMPORTANT**: Never write comments!
+
 ### TypeScript Best Practices
 - **Never use `any` type**: Everything must be properly typed
 - **Maximize TypeScript usage**: Leverage TypeScript's type system to its fullest extent
@@ -297,13 +299,13 @@
 - **Structure**: Create expert OOP classes following singleton pattern
 - **Instantiation**: Export singleton instances in `packages/app/src/@[module]/repository/` that inject `db`
 - **Dependency injection**: Repositories accept `db` instance in constructor
-- **Database typing**: Use `ExpoSQLiteDatabase<any>` with eslint-disable for db parameter (this is the only acceptable use of `any`)
+- **Database typing**: Use `ExpoSQLiteDatabase<typeof schema>` with eslint-disable for db parameter (this is the only acceptable use of `any`)
   ```typescript
+  import * as schema from '../../schema';
   import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-  
+
   export class MyRepository {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      constructor(private db: ExpoSQLiteDatabase<any>) {}
+      constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
   }
   ```
 
@@ -315,8 +317,8 @@
   - `isPositiveNumber()` for numeric validation
 
 ### Drizzle ORM Best Practices
+- **Query**: Use `db.query.[EntityName].findMany/findFirst` instead of `db.select().from(...)`
 - **Upsert operations**: Use `.onConflictDoUpdate()` instead of select-then-update pattern
-- **Query API**: Use array destructuring with `.limit(1)` for single record queries
 
 ### Service Layer
 - **Structure**: Create service classes (not functions) for business logic
@@ -351,9 +353,9 @@
 
 7. **Expo app requires secrets**: Cannot build native apps locally without EXPO_TOKEN. Use `yarn start` for local dev.
 
-8. **Build times**: 
+8. **Build times**:
    - Clean build: ~15s
-   - TypeScript check: ~10s  
+   - TypeScript check: ~10s
    - Lint: ~18s
    - Tests: ~4s
    - Full CI run: ~2-3 minutes
