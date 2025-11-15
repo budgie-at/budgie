@@ -9,14 +9,14 @@ import { useEffect } from 'react';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
-import '../@exchange-rate/task/exchange-rate-sync.task';
-import { exchangeRatesService } from '../@exchange-rate/service/exchange-rates-sync.service';
+import '../exchange-rate/task/exchange-rate-sync.task';
+import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
-import { DB_NAME } from '../drizzle/constant/db-name.constant';
-import { db } from '../drizzle/db/db';
-import { runInitialSeed } from '../drizzle/db/seed';
+import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
+import { db } from '../@generic/drizzle/db/db';
+import { runInitialSeed } from '../@generic/drizzle/db/seed';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();

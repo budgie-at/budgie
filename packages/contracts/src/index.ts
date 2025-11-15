@@ -1,3 +1,5 @@
+export { PRECISION } from './generic/constant/precision.constant';
+
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';

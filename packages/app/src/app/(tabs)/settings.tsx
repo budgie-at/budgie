@@ -3,9 +3,9 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
-import { SettingsGroup } from '../../@settings/components/settings-group/settings-group';
-import { SettingsTextItem } from '../../@settings/components/settings-text-item/settings-text-item';
-import { ThemeSwitch } from '../../@settings/components/theme-switch/theme-switch';
+import { SettingsGroup } from '../../settings/components/settings-group/settings-group';
+import { SettingsTextItem } from '../../settings/components/settings-text-item/settings-text-item';
+import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch';
 
 export default function SettingsPage() {
     const { t } = useLingui();
