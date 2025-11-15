@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.61.1](https://github.com/budgie-at/budgie/compare/v1.61.0...v1.61.1) (2025-11-15)
+
+### Bug Fixes
+
+- **app:** fix AI bottom tab text ([2f1b93f](https://github.com/budgie-at/budgie/commit/2f1b93f1f1154ed54f03d71968ab0be95f1c055e))
+- **app:** fix AI bottom tab text ([a8171a3](https://github.com/budgie-at/budgie/commit/a8171a3b0110a33b83447814b61cd12c02163340))
+
 # [1.61.0](https://github.com/budgie-at/budgie/compare/v1.60.1...v1.61.0) (2025-11-15)
 
 ### Bug Fixes
