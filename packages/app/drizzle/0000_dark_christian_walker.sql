@@ -47,6 +47,7 @@ CREATE TABLE `exchange_rates` (
 	`rate` integer NOT NULL
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `exchange_rates_base_instrument_id_quote_instrument_id_unique` ON `exchange_rates` (`base_instrument_id`,`quote_instrument_id`);--> statement-breakpoint
 CREATE TABLE `instruments` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
@@ -59,20 +60,20 @@ CREATE TABLE `instruments` (
 );
 --> statement-breakpoint
 CREATE TABLE `settings` (
-    `id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-    `createdAt` integer DEFAULT (unixepoch()) NOT NULL,
-    `updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
-    `deletedAt` integer,
-    `locale` text NOT NULL,
-    `language` text DEFAULT 'en' NOT NULL,
-    `default_account_id` integer,
-    `default_instrument_id` integer,
-    `theme` text DEFAULT 'SYSTEM' NOT NULL,
-    `show_cents` integer DEFAULT true NOT NULL,
-    `is_vibration_enabled` integer DEFAULT true NOT NULL,
-    FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
-    FOREIGN KEY (`default_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
-    );
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
+	`updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
+	`deletedAt` integer,
+	`locale` text NOT NULL,
+	`language` text DEFAULT 'en' NOT NULL,
+	`default_account_id` integer,
+	`default_instrument_id` integer,
+	`theme` text DEFAULT 'SYSTEM' NOT NULL,
+	`show_cents` integer DEFAULT true NOT NULL,
+	`is_vibration_enabled` integer DEFAULT true NOT NULL,
+	FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`default_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
+);
 --> statement-breakpoint
 CREATE TABLE `tags` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -102,7 +103,7 @@ CREATE TABLE `transaction_tags` (
 	`tag_id` integer NOT NULL,
 	PRIMARY KEY(`transaction_id`, `tag_id`)
 );
-
+--> statement-breakpoint
 -- Seed common fiat currencies into instruments table
 INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 -- Major currencies

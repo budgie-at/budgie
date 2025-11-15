@@ -129,12 +129,12 @@
 
 ### packages/app/ (React Native App)
 **Main directories**:
-- `src/@account/` - Account management components/queries
-- `src/@ai/` - AI chat components
 - `src/@generic/` - Reusable UI components (chip, icon, etc.)
-- `src/@settings/` - Settings screens and logic
+- `src/@generic/drizzle/` - Database schema and migrations
+- `src/account/` - Account management components/queries
+- `src/ai/` - AI chat components
+- `src/settings/` - Settings screens and logic
 - `src/app/` - Expo Router app directory (screens)
-- `src/drizzle/` - Database schema and migrations
 - `src/locales/` - i18n translations (en, fr, es, uk, de)
 - `src/theme/` - Theme configuration and context
 
