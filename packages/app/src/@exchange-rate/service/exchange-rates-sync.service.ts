@@ -18,13 +18,9 @@ class ExchangeRatesService {
     private EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest/USD';
 
     async sync(): Promise<void> {
-        const apiData = await this.fetch();
-        if (!isDefined(apiData)) {
-            return;
-        }
+        const [apiData, baseInstrument] = await Promise.all([this.fetch(), this.getBaseInstrument()]);
 
-        const baseInstrument = await this.getBaseInstrument();
-        if (!isPositiveNumber(baseInstrument)) {
+        if (!isDefined(apiData) || !isPositiveNumber(baseInstrument)) {
             return;
         }
 
