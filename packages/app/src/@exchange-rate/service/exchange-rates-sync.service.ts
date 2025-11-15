@@ -1,66 +1,104 @@
  
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { settingsRepository } from '../../@settings/repository/settings.repository';
 import { exchangeRatesFetchApi } from '../api/exchange-rates-fetch-api';
+import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
+import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { RATE_PRECISION_MULTIPLIER } from '../constant/rate-precision-multiplier.constant';
 import { exchangeRateRepository } from '../repository/exchange-rate.repository';
 import { instrumentRepository } from '../repository/instrument.repository';
 
-const getBaseCurrencyCode = (): string =>
-    // TODO: Fetch from settings table when implemented
-    'USD';
+class ExchangeRatesService {
+    async sync(): Promise<void> {
+        try {
+            const apiData = await exchangeRatesFetchApi();
 
-const updateInstrumentRate = async (
-    baseInstrumentId: number,
-    instrument: { id: number; code: string },
-    rates: Record<string, number>
-): Promise<void> => {
-    const rate = rates[instrument.code];
+            if (!isDefined(apiData)) {
+                return;
+            }
 
-    if (!isDefined(rate) || !isPositiveNumber(rate)) {
-        return;
+            const baseInstrumentId = await this.getBaseCurrencyInstrumentId();
+
+            if (!isDefined(baseInstrumentId) || !isPositiveNumber(baseInstrumentId)) {
+                return;
+            }
+
+            // Get the base instrument to determine its code
+            const baseInstrument = await instrumentRepository.findById(baseInstrumentId);
+            const baseCurrencyCode = baseInstrument?.code ?? 'USD';
+
+            await this.processInstrumentUpdates(baseInstrumentId, baseCurrencyCode, apiData.rates);
+        } catch {
+            // Ignore errors
+        }
     }
 
-    const rateInteger = Math.round(rate * RATE_PRECISION_MULTIPLIER);
+    async registerBackgroundTask(): Promise<void> {
+        try {
+            const isRegistered = await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK);
 
-    try {
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
-    } catch {
-        // Ignore errors for individual instruments
+            if (isRegistered) {
+                return;
+            }
+
+            await BackgroundFetch.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+                minimumInterval: ONE_HOUR_IN_SECONDS,
+                stopOnTerminate: false,
+                startOnBoot: true
+            });
+        } catch {
+            // Ignore errors
+        }
     }
-};
 
-const processInstrumentUpdates = async (baseInstrumentId: number, baseCurrencyCode: string, rates: Record<string, number>): Promise<void> => {
-    const instruments = await instrumentRepository.getAll();
+    private async getBaseCurrencyInstrumentId(): Promise<number | null> {
+        const defaultInstrumentId = await settingsRepository.getDefaultInstrumentId();
 
-    if (!isNotEmptyArray(instruments)) {
-        return;
+        if (isDefined(defaultInstrumentId)) {
+            return defaultInstrumentId;
+        }
+
+        // Fallback to USD if no default instrument is set
+        return await instrumentRepository.getIdByCode('USD');
     }
 
-    const updates = instruments
-        .filter((instrument) => instrument.code !== baseCurrencyCode)
-        .map(async (instrument) => updateInstrumentRate(baseInstrumentId, instrument, rates));
+    private async updateInstrumentRate(
+        baseInstrumentId: number,
+        instrument: { id: number; code: string },
+        rates: Record<string, number>
+    ): Promise<void> {
+        const rate = rates[instrument.code];
 
-    await Promise.all(updates);
-};
-
-export const exchangeRatesSyncService = async (): Promise<void> => {
-    try {
-        const apiData = await exchangeRatesFetchApi();
-
-        if (!isDefined(apiData)) {
+        if (!isDefined(rate) || !isPositiveNumber(rate)) {
             return;
         }
 
-        const baseCurrencyCode = getBaseCurrencyCode();
-        const baseInstrumentId = await instrumentRepository.getIdByCode(baseCurrencyCode);
+        const rateInteger = Math.round(rate * RATE_PRECISION_MULTIPLIER);
 
-        if (!isDefined(baseInstrumentId) || !isPositiveNumber(baseInstrumentId)) {
+        try {
+            await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
+        } catch {
+            // Ignore errors for individual instruments
+        }
+    }
+
+    private async processInstrumentUpdates(baseInstrumentId: number, baseCurrencyCode: string, rates: Record<string, number>): Promise<void> {
+        const instruments = await instrumentRepository.getAll();
+
+        if (!isNotEmptyArray(instruments)) {
             return;
         }
 
-        await processInstrumentUpdates(baseInstrumentId, baseCurrencyCode, apiData.rates);
-    } catch {
-        // Ignore errors
+        const updates = instruments
+            .filter((instrument) => instrument.code !== baseCurrencyCode)
+            .map(async (instrument) => this.updateInstrumentRate(baseInstrumentId, instrument, rates));
+
+        await Promise.all(updates);
     }
-};
+}
+
+export const exchangeRatesService = new ExchangeRatesService();
