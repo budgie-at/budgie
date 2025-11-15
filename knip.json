@@ -19,7 +19,6 @@
         "packages/app/src/@generic/components/chip/chip.tsx"
     ],
     "ignoreDependencies": [
-        "@jest/globals",
         "husky",
         "@lingui/cli",
         "react-native-worklets",
@@ -29,16 +28,10 @@
         "react-compiler-runtime",
         "babel-jest",
         "date-fns",
-        "postcss",
         "tsx",
-        "react-native-css",
         "babel-plugin-inline-import",
-        "autoprefixer",
-        "tailwindcss-animate",
         "babel-plugin-react-compiler",
-        "@tailwindcss/postcss",
-        "@lingui/babel-plugin-lingui-macro",
         "eas-build-cache-provider"
     ],
-    "ignoreBinaries": ["run", "expo"]
+    "ignoreBinaries": ["run"]
 }
