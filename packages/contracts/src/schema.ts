@@ -13,6 +13,7 @@ export { SettingsEntityRelations } from './settings/relations/settings-entity.re
 export { TagEntityTable } from './tag/table/tag-entity.table';
 export { TagEntityRelations } from './tag/relations/tag-entity.relations';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
+export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionToTagEntityTable } from './transaction-to-tag/table/transaction-to-tag-entity.table';
 export { TransactionToTagEntityRelations } from './transaction-to-tag/relations/transaction-to-tag-entity.relations';
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
