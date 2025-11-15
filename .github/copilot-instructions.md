@@ -55,8 +55,23 @@
 
 ### Package-Specific Commands
 - **Contracts package**: `cd packages/contracts && yarn test` (schema validation tests)
-- **App package**: `cd packages/app && yarn start` (starts Expo dev server)
-- **Landing package**: `cd packages/landing && yarn start` (starts Next.js dev server on port 3000)
+- **App package**: 
+  - `cd packages/app && yarn start` (starts Expo dev server with dev client)
+  - `yarn ios` (runs iOS app) / `yarn android` (runs Android app)
+  - `yarn web` (starts web version)
+  - `yarn prebuild` (generates native iOS/Android projects)
+  - `yarn db:generate` (generates Drizzle migrations)
+  - `yarn i18n:extract` (extracts i18n strings) / `yarn i18n:compile` (compiles catalogs)
+  - `yarn i18n:sync` (extracts and compiles in one command)
+- **Landing package**: 
+  - `cd packages/landing && yarn start` (starts Next.js dev server on port 3000)
+  - `yarn i18n:sync` (extracts and compiles Lingui translations)
+
+### Utility Scripts (Root)
+- `yarn format` - Format all TypeScript/TSX files with Prettier
+- `yarn deps:check` - Check dependency version consistency across workspace
+- `yarn deps:dedupe` - Deduplicate dependencies
+- `yarn deps:update` - Check for dependency updates with npm-check-updates
 
 ## CI/CD Pipelines
 
