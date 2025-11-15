@@ -1,4 +1,4 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 
@@ -9,5 +9,6 @@ export const ExchangeRateEntityTable = sqliteTable(
         baseInstrumentId: int('base_instrument_id', { mode: 'number' }).notNull(),
         quoteInstrumentId: int('quote_instrument_id', { mode: 'number' }).notNull(),
         rate: int('rate', { mode: 'number' }).notNull()
-    })
+    }),
+    t => [unique().on(t.baseInstrumentId, t.quoteInstrumentId)]
 );
