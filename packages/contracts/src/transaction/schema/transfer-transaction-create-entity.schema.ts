@@ -2,7 +2,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
-import { PRECISION } from '../constant/precision.constant';
+import { PRECISION } from '../../generic/constant/precision.constant';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 

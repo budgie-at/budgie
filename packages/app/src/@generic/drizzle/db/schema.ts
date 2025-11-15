@@ -1,5 +1,7 @@
 export {
     AccountEntityTable,
+    TransactionEntityTable,
+    TransactionEntityRelations,
     TransactionEntryEntityTable,
     TransactionToTagEntityTable,
     TagEntityTable,
@@ -16,5 +18,5 @@ export {
     InstrumentEntityTable,
     InstrumentEntityRelations,
     SettingsEntityTable,
-    SettingsEntityRelations,
+    SettingsEntityRelations
 } from '@budgie/contracts';

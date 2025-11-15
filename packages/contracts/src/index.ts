@@ -1,3 +1,5 @@
+export { PRECISION } from './generic/constant/precision.constant';
+
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
@@ -49,6 +51,8 @@ export { InstrumentCreateEntitySchema } from './instrument/schema/instrument-cre
 
 export type { InstrumentEntityInterface } from './instrument/entity/instrument-entity.interface';
 export type { InstrumentCreateEntityInterface } from './instrument/entity/instrument-create-entity.interface';
+
+export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
@@ -130,6 +134,8 @@ export { ExchangeRateCreateEntitySchema } from './exchange-rate/schema/exchange-
 export type { ExchangeRateEntityInterface } from './exchange-rate/entity/exchange-rate-entity.interface';
 export type { ExchangeRateCreateEntityInterface } from './exchange-rate/entity/exchange-rate-create-entity.interface';
 
+export { ExchangeRateRepository } from './exchange-rate/repository/exchange-rate.repository';
+
 export { SettingsAssociationEnum } from './settings/enum/settings-association.enum';
 
 export { SettingsEntityTable } from './settings/table/settings-entity.table';
@@ -140,3 +146,7 @@ export { SettingsCreateEntitySchema } from './settings/schema/settings-create-en
 
 export type { SettingsEntityInterface } from './settings/entity/settings-entity.interface';
 export type { SettingsCreateEntityInterface } from './settings/entity/settings-create-entity.interface';
+
+export { SettingsRepository } from './settings/repository/settings.repository';
+
+export * as schema from './schema';
