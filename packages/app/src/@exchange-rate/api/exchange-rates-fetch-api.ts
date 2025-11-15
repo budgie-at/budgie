@@ -1,9 +1,9 @@
  
 import { EXCHANGE_RATE_API_URL } from '../constant/exchange-rate-api-url.constant';
 
-import type { ExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
+import type { ExchangeRateApiResponseInterface } from '../interface/exchange-rate-api-response.interface';
 
-export const fetchExchangeRatesFromApi = async (): Promise<ExchangeRateApiResponse | null> => {
+export const exchangeRatesFetchApi = async (): Promise<ExchangeRateApiResponseInterface | null> => {
     try {
         const response = await fetch(EXCHANGE_RATE_API_URL);
 
@@ -11,7 +11,7 @@ export const fetchExchangeRatesFromApi = async (): Promise<ExchangeRateApiRespon
             return null;
         }
 
-        const data = (await response.json()) as ExchangeRateApiResponse;
+        const data = (await response.json()) as ExchangeRateApiResponseInterface;
 
         return data;
     } catch {
