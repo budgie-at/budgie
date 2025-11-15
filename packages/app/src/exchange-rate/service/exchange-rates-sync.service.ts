@@ -1,9 +1,10 @@
+import { PRECISION } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../drizzle/db/db';
+import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
@@ -11,8 +12,6 @@ import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesService {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    private RATE_PRECISION_MULTIPLIER = 1_000_000;
     private EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest/USD';
 
     async sync(): Promise<void> {
@@ -69,7 +68,7 @@ class ExchangeRatesService {
             return;
         }
 
-        const rateInteger = Math.round(rate * this.RATE_PRECISION_MULTIPLIER);
+        const rateInteger = Math.round(rate * PRECISION);
 
         await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
     }
