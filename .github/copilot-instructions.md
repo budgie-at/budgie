@@ -270,6 +270,71 @@
 - No dedicated integration test suite currently
 - Consider adding for database migrations and API integration
 
+## Coding Standards and Best Practices
+
+### TypeScript Best Practices
+- **Never use `any` type**: Everything must be properly typed
+- **Maximize TypeScript usage**: Leverage TypeScript's type system to its fullest extent
+- **Strict typing**: Use strict TypeScript settings and avoid type assertions unless absolutely necessary
+- **Proper database typing**: Repository classes must use `ExpoSQLiteDatabase<Record<string, never>>` for db parameter, never `any`
+- **Type inference**: Let TypeScript infer types when possible, but be explicit for public APIs
+- **No type circumvention**: Never use `as any` or `@ts-ignore` to bypass type checking
+
+### Module Structure and Organization
+- **Follow modular architecture**: Separate concerns into distinct folders (api/, repository/, service/, constant/, interface/, enum/)
+- **Single Responsibility Principle**: Each file exports one entity with one clear responsibility
+- **No barrel exports**: Avoid index.ts re-exports; import directly from specific files
+- **File naming**: Use kebab-case matching the exported entity name, ending with file type (`.service.ts`, `.repository.ts`, `.constant.ts`)
+
+### Naming Conventions
+- **Interfaces**: Must end with `Interface` suffix (e.g., `ExchangeRateApiResponseInterface`)
+- **Enums**: Must end with `Enum` suffix (e.g., `ThemeEnum`)
+- **Functions**: Use module name as prefix for simple functions (e.g., `exchangeRatesFetchApi`)
+- **Classes**: Use PascalCase (e.g., `ExchangeRateRepository`)
+
+### Repository Pattern
+- **Location**: Repository classes should be in `packages/contracts/src/[entity]/repository/`
+- **Structure**: Create expert OOP classes following singleton pattern
+- **Instantiation**: Export singleton instances in `packages/app/src/@[module]/repository/` that inject `db`
+- **Dependency injection**: Repositories accept `db` instance in constructor
+- **Database typing**: Use `ExpoSQLiteDatabase<any>` with eslint-disable for db parameter (this is the only acceptable use of `any`)
+  ```typescript
+  import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+  
+  export class MyRepository {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      constructor(private db: ExpoSQLiteDatabase<any>) {}
+  }
+  ```
+
+### Type Guards and Validation
+- **Always use typeguards from `@rnw-community/shared`**:
+  - `isDefined()` for nullish checks (never use `!== null`, `!== undefined`, or `??`)
+  - `isNotEmptyArray()` for array validation
+  - `isNotEmptyString()` for string validation
+  - `isPositiveNumber()` for numeric validation
+
+### Drizzle ORM Best Practices
+- **Upsert operations**: Use `.onConflictDoUpdate()` instead of select-then-update pattern
+- **Query API**: Use array destructuring with `.limit(1)` for single record queries
+
+### Service Layer
+- **Structure**: Create service classes (not functions) for business logic
+- **Pattern**: Export singleton instances (e.g., `export const exchangeRatesService = new ExchangeRatesService()`)
+- **Methods**: Public methods first, then private methods (follow `@typescript-eslint/member-ordering`)
+- **Composition**: Services compose API and repository layers
+
+### Background Tasks (Expo)
+- **Task files**: Name with `.task.ts` suffix (e.g., `exchange-rate-sync.task.ts`)
+- **Registration**: Background task registration logic should be part of the service class, not separate files
+- **Import task definitions**: Import task definition files directly in app entry point to ensure TaskManager.defineTask runs
+
+### Separation of Concerns
+- **API layer**: Handle external service communication (e.g., fetching from third-party APIs)
+- **Repository layer**: Manage all database operations (read/write to SQLite)
+- **Service layer**: Orchestrate business logic by composing API and repository
+- **Task layer**: Manage background job registration and execution
+
 ## Important Notes for Agents
 
 1. **Trust these instructions**: Only search the codebase if information here is incomplete or incorrect. These instructions are comprehensive and validated.
