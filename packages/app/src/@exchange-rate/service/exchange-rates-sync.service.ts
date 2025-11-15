@@ -6,10 +6,10 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { settingsRepository } from '../../@settings/repository/settings.repository';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
+import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { exchangeRateRepository } from '../repository/exchange-rate.repository';
 import { instrumentRepository } from '../repository/instrument.repository';
 
-import type { ExchangeRateApiResponseInterface } from '../interface/exchange-rate-api-response.interface';
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesService {
@@ -20,7 +20,7 @@ class ExchangeRatesService {
     async sync(): Promise<void> {
         const [apiData, baseInstrument] = await Promise.all([this.fetch(), this.getBaseInstrument()]);
 
-        if (!isDefined(apiData) || !isPositiveNumber(baseInstrument)) {
+        if (!isPositiveNumber(baseInstrument)) {
             return;
         }
 
@@ -44,18 +44,14 @@ class ExchangeRatesService {
         });
     }
 
-    private async fetch(): Promise<ExchangeRateApiResponseInterface | null> {
-        try {
-            const response = await fetch(this.EXCHANGE_RATE_API_URL);
+    private async fetch(): Promise<ExchangeRateApiResponseInterface> {
+        const response = await fetch(this.EXCHANGE_RATE_API_URL);
 
-            if (!response.ok) {
-                return null;
-            }
-
-            return (await response.json()) as ExchangeRateApiResponseInterface;
-        } catch {
-            return null;
+        if (!response.ok) {
+            return emptyExchangeRateApiResponse;
         }
+
+        return (await response.json().catch(() => emptyExchangeRateApiResponse)) as ExchangeRateApiResponseInterface;
     }
 
     private async getBaseInstrument(): Promise<InstrumentEntityInterface | undefined> {
