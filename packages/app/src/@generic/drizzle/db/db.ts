@@ -16,5 +16,3 @@ export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb
 export const settingsRepository = new SettingsRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
-
-export type DB = typeof db;
