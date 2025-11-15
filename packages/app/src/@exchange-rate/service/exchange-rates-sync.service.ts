@@ -4,7 +4,6 @@ import * as TaskManager from 'expo-task-manager';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { settingsRepository } from '../../@settings/repository/settings.repository';
-import { EXCHANGE_RATE_API_URL } from '../constant/exchange-rate-api-url.constant';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { exchangeRateRepository } from '../repository/exchange-rate.repository';
@@ -16,6 +15,7 @@ import type { InstrumentEntityInterface } from '@budgie/contracts';
 class ExchangeRatesService {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private RATE_PRECISION_MULTIPLIER = 1_000_000;
+    private EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest/USD';
 
     async sync(): Promise<void> {
         const apiData = await this.fetch();
@@ -37,9 +37,7 @@ class ExchangeRatesService {
     }
 
     async registerBackgroundTask(): Promise<void> {
-        const isRegistered = await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK);
-
-        if (isRegistered) {
+        if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
             return;
         }
 
@@ -52,7 +50,7 @@ class ExchangeRatesService {
 
     private async fetch(): Promise<ExchangeRateApiResponseInterface | null> {
         try {
-            const response = await fetch(EXCHANGE_RATE_API_URL);
+            const response = await fetch(this.EXCHANGE_RATE_API_URL);
 
             if (!response.ok) {
                 return null;
