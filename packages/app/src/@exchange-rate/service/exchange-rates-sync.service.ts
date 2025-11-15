@@ -1,4 +1,4 @@
-import * as BackgroundFetch from 'expo-background-fetch';
+import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -35,10 +35,8 @@ class ExchangeRatesService {
             return;
         }
 
-        await BackgroundFetch.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
-            minimumInterval: ONE_HOUR_IN_SECONDS,
-            stopOnTerminate: false,
-            startOnBoot: true
+        await BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+            minimumInterval: ONE_HOUR_IN_SECONDS
         });
     }
 

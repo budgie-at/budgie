@@ -1459,7 +1459,7 @@ __metadata:
     drizzle-orm: "npm:^0.44.7"
     eas-build-cache-provider: "npm:^16.4.2"
     expo: "npm:^54.0.21"
-    expo-background-fetch: "npm:^14.0.7"
+    expo-background-task: "npm:^1.0.8"
     expo-constants: "npm:~18.0.10"
     expo-dev-client: "npm:~6.0.16"
     expo-drizzle-studio-plugin: "npm:^0.2.1"
@@ -10776,14 +10776,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-background-fetch@npm:^14.0.7":
-  version: 14.0.7
-  resolution: "expo-background-fetch@npm:14.0.7"
+"expo-background-task@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "expo-background-task@npm:1.0.8"
   dependencies:
     expo-task-manager: "npm:~14.0.7"
   peerDependencies:
     expo: "*"
-  checksum: 10/5bda669ed79e2c2cb7dd540844625a116f326428c66c6be0eb2eaa9496c9c6786cf9c9688f209de5bd82573debff876e72bdcb86d31197cd423bcba8f3e3327b
+  checksum: 10/f42592f7ddb55176cca2e872b9eff2b5819965dd9cae27bcef8885d9ee85dc35d5216becedad8d35e535c6556d1b1e1b8763bf437ea37193cee189e7553570c2
   languageName: node
   linkType: hard
 
