@@ -89,6 +89,7 @@ export default ({ config }) => ({
     },
     plugins: [
         'expo-sqlite',
+        'expo-background-task',
         [
             'expo-splash-screen',
             {

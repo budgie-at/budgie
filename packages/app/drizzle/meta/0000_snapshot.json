@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "f6801b8d-a943-461e-9aa7-dd263f13fb0b",
+  "id": "11f27a04-8ebc-4cbd-b6b6-7792dd0e802a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -310,7 +310,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "exchange_rates_base_instrument_id_quote_instrument_id_unique": {
+          "name": "exchange_rates_base_instrument_id_quote_instrument_id_unique",
+          "columns": [
+            "base_instrument_id",
+            "quote_instrument_id"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
