@@ -1,1 +1,1 @@
-export const DB_NAME = 'budgie7.db'
+export const DB_NAME = 'budgie.db'
