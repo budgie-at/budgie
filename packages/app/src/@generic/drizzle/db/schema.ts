@@ -1,5 +1,7 @@
 export {
     AccountEntityTable,
+    TransactionEntityTable,
+    TransactionEntityRelations,
     TransactionEntryEntityTable,
     TransactionToTagEntityTable,
     TagEntityTable,
