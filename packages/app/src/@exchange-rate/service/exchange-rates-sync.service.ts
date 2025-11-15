@@ -1,4 +1,3 @@
- 
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 
@@ -22,12 +21,10 @@ class ExchangeRatesService {
             }
 
             const baseInstrumentId = await this.getBaseCurrencyInstrumentId();
-
             if (!isDefined(baseInstrumentId) || !isPositiveNumber(baseInstrumentId)) {
                 return;
             }
 
-            // Get the base instrument to determine its code
             const baseInstrument = await instrumentRepository.findById(baseInstrumentId);
             const baseCurrencyCode = baseInstrument?.code ?? 'USD';
 
@@ -56,14 +53,12 @@ class ExchangeRatesService {
     }
 
     private async getBaseCurrencyInstrumentId(): Promise<number | null> {
-        const defaultInstrumentId = await settingsRepository.getDefaultInstrumentId();
-
-        if (isDefined(defaultInstrumentId)) {
-            return defaultInstrumentId;
+        const settings = await settingsRepository.getSettings();
+        if (isDefined(settings)) {
+            return settings.defaultInstrumentId;
         }
 
-        // Fallback to USD if no default instrument is set
-        return await instrumentRepository.getIdByCode('USD');
+        return (await instrumentRepository.findByCode('USD'))?.id ?? null;
     }
 
     private async updateInstrumentRate(
@@ -86,7 +81,11 @@ class ExchangeRatesService {
         }
     }
 
-    private async processInstrumentUpdates(baseInstrumentId: number, baseCurrencyCode: string, rates: Record<string, number>): Promise<void> {
+    private async processInstrumentUpdates(
+        baseInstrumentId: number,
+        baseCurrencyCode: string,
+        rates: Record<string, number>
+    ): Promise<void> {
         const instruments = await instrumentRepository.getAll();
 
         if (!isNotEmptyArray(instruments)) {
@@ -94,8 +93,8 @@ class ExchangeRatesService {
         }
 
         const updates = instruments
-            .filter((instrument) => instrument.code !== baseCurrencyCode)
-            .map(async (instrument) => this.updateInstrumentRate(baseInstrumentId, instrument, rates));
+            .filter(instrument => instrument.code !== baseCurrencyCode)
+            .map(async instrument => this.updateInstrumentRate(baseInstrumentId, instrument, rates));
 
         await Promise.all(updates);
     }
