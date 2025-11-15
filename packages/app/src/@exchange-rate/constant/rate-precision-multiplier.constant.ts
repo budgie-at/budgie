@@ -1,0 +1,1 @@
+export const RATE_PRECISION_MULTIPLIER = 1_000_000;
