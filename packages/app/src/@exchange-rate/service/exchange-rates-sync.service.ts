@@ -1,64 +1,77 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { settingsRepository } from '../../@settings/repository/settings.repository';
-import { exchangeRatesFetchApi } from '../api/exchange-rates-fetch-api';
+import { EXCHANGE_RATE_API_URL } from '../constant/exchange-rate-api-url.constant';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
-import { RATE_PRECISION_MULTIPLIER } from '../constant/rate-precision-multiplier.constant';
 import { exchangeRateRepository } from '../repository/exchange-rate.repository';
 import { instrumentRepository } from '../repository/instrument.repository';
 
+import type { ExchangeRateApiResponseInterface } from '../interface/exchange-rate-api-response.interface';
+import type { InstrumentEntityInterface } from '@budgie/contracts';
+
 class ExchangeRatesService {
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    private RATE_PRECISION_MULTIPLIER = 1_000_000;
+
     async sync(): Promise<void> {
-        try {
-            const apiData = await exchangeRatesFetchApi();
+        const apiData = await this.fetch();
+        if (!isDefined(apiData)) {
+            return;
+        }
 
-            if (!isDefined(apiData)) {
-                return;
+        const baseInstrument = await this.getBaseInstrument();
+        if (!isPositiveNumber(baseInstrument)) {
+            return;
+        }
+
+        for (const instrument of await instrumentRepository.getAll()) {
+            if (instrument.code !== baseInstrument.code) {
+                // eslint-disable-next-line no-await-in-loop
+                await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
             }
-
-            const baseInstrumentId = await this.getBaseCurrencyInstrumentId();
-            if (!isDefined(baseInstrumentId) || !isPositiveNumber(baseInstrumentId)) {
-                return;
-            }
-
-            const baseInstrument = await instrumentRepository.findById(baseInstrumentId);
-            const baseCurrencyCode = baseInstrument?.code ?? 'USD';
-
-            await this.processInstrumentUpdates(baseInstrumentId, baseCurrencyCode, apiData.rates);
-        } catch {
-            // Ignore errors
         }
     }
 
     async registerBackgroundTask(): Promise<void> {
-        try {
-            const isRegistered = await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK);
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK);
 
-            if (isRegistered) {
-                return;
+        if (isRegistered) {
+            return;
+        }
+
+        await BackgroundFetch.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+            minimumInterval: ONE_HOUR_IN_SECONDS,
+            stopOnTerminate: false,
+            startOnBoot: true
+        });
+    }
+
+    private async fetch(): Promise<ExchangeRateApiResponseInterface | null> {
+        try {
+            const response = await fetch(EXCHANGE_RATE_API_URL);
+
+            if (!response.ok) {
+                return null;
             }
 
-            await BackgroundFetch.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
-                minimumInterval: ONE_HOUR_IN_SECONDS,
-                stopOnTerminate: false,
-                startOnBoot: true
-            });
+            return (await response.json()) as ExchangeRateApiResponseInterface;
         } catch {
-            // Ignore errors
+            return null;
         }
     }
 
-    private async getBaseCurrencyInstrumentId(): Promise<number | null> {
+    private async getBaseInstrument(): Promise<InstrumentEntityInterface | undefined> {
         const settings = await settingsRepository.getSettings();
-        if (isDefined(settings)) {
-            return settings.defaultInstrumentId;
+
+        if (isDefined(settings.defaultInstrumentId)) {
+            return await instrumentRepository.findById(settings.defaultInstrumentId);
         }
 
-        return (await instrumentRepository.findByCode('USD'))?.id ?? null;
+        return await instrumentRepository.findByCode('USD');
     }
 
     private async updateInstrumentRate(
@@ -67,36 +80,13 @@ class ExchangeRatesService {
         rates: Record<string, number>
     ): Promise<void> {
         const rate = rates[instrument.code];
-
-        if (!isDefined(rate) || !isPositiveNumber(rate)) {
+        if (!isPositiveNumber(rate)) {
             return;
         }
 
-        const rateInteger = Math.round(rate * RATE_PRECISION_MULTIPLIER);
+        const rateInteger = Math.round(rate * this.RATE_PRECISION_MULTIPLIER);
 
-        try {
-            await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
-        } catch {
-            // Ignore errors for individual instruments
-        }
-    }
-
-    private async processInstrumentUpdates(
-        baseInstrumentId: number,
-        baseCurrencyCode: string,
-        rates: Record<string, number>
-    ): Promise<void> {
-        const instruments = await instrumentRepository.getAll();
-
-        if (!isNotEmptyArray(instruments)) {
-            return;
-        }
-
-        const updates = instruments
-            .filter(instrument => instrument.code !== baseCurrencyCode)
-            .map(async instrument => this.updateInstrumentRate(baseInstrumentId, instrument, rates));
-
-        await Promise.all(updates);
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
     }
 }
 
