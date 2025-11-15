@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `exchange_rates_base_instrument_id_quote_instrument_id_unique` ON `exchange_rates` (`base_instrument_id`,`quote_instrument_id`);
