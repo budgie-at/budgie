@@ -17,8 +17,7 @@ class ExchangeRatesService {
 
     async sync(): Promise<void> {
         const [apiData, baseInstrument] = await Promise.all([this.fetch(), this.getBaseInstrument()]);
-
-        if (!isPositiveNumber(baseInstrument)) {
+        if (!isDefined(baseInstrument)) {
             return;
         }
 
@@ -53,7 +52,7 @@ class ExchangeRatesService {
     private async getBaseInstrument(): Promise<InstrumentEntityInterface | undefined> {
         const settings = await settingsRepository.getSettings();
 
-        if (isDefined(settings.defaultInstrumentId)) {
+        if (isPositiveNumber(settings.defaultInstrumentId)) {
             return await instrumentRepository.findById(settings.defaultInstrumentId);
         }
 
