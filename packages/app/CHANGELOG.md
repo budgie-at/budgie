@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.60.1](https://github.com/budgie-at/budgie/compare/v1.60.0...v1.60.1) (2025-11-15)
+
+### Bug Fixes
+
+- **app:** added i18n ([8dee090](https://github.com/budgie-at/budgie/commit/8dee09064acdf160f0264c429635e3b63cfa1c29))
+
 # [1.60.0](https://github.com/budgie-at/budgie/compare/v1.59.0...v1.60.0) (2025-11-14)
 
 ### Bug Fixes
