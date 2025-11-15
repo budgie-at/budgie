@@ -42,6 +42,7 @@ export default function RootLayout() {
     useEffect(() => {
         if (success) {
             void runInitialSeed(db).finally(() => {
+                void exchangeRatesService.sync();
                 void exchangeRatesService.registerBackgroundTask();
                 void SplashScreen.hideAsync();
             });
