@@ -10,13 +10,12 @@ import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
 import '../exchange-rate/task/exchange-rate-sync.task';
-import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
-import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
-import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
-import { runInitialSeed } from '../@generic/drizzle/db/seed';
+import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
+import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
+import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
@@ -41,11 +40,9 @@ export default function RootLayout() {
 
     useEffect(() => {
         if (success) {
-            void runInitialSeed(db).finally(() => {
-                void exchangeRatesService.sync();
-                void exchangeRatesService.registerBackgroundTask();
-                void SplashScreen.hideAsync();
-            });
+            void exchangeRatesService.sync();
+            void exchangeRatesService.registerBackgroundTask();
+            void SplashScreen.hideAsync();
         }
     }, [success]);
 
