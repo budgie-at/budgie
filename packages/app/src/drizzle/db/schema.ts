@@ -1,1 +1,20 @@
-export { schema } from '@budgie/contracts';
+export {
+    AccountEntityTable,
+    TransactionEntryEntityTable,
+    TransactionToTagEntityTable,
+    TagEntityTable,
+    AccountEntityRelations,
+    TransactionEntryEntityRelations,
+    TagEntityRelations,
+    CategoryEntityTable,
+    CategoryEntityRelations,
+    TransactionToTagEntityRelations,
+    AccountBalanceEntityTable,
+    AccountBalanceEntityRelations,
+    ExchangeRateEntityTable,
+    ExchangeRateEntityRelations,
+    InstrumentEntityTable,
+    InstrumentEntityRelations,
+    SettingsEntityTable,
+    SettingsEntityRelations
+} from '@budgie/contracts';
