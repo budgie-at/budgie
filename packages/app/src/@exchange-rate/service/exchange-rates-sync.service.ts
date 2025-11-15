@@ -3,12 +3,10 @@ import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { settingsRepository } from '../../@settings/repository/settings.repository';
+import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
-import { exchangeRateRepository } from '../repository/exchange-rate.repository';
-import { instrumentRepository } from '../repository/instrument.repository';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
