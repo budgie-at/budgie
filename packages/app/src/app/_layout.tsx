@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
-import { registerExchangeRateSyncTask } from '../@exchange-rate/task/exchange-rate-background-task';
+import { registerExchangeRateSyncTask } from '../@exchange-rate/task';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import '../global.css';
