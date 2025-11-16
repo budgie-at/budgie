@@ -1,5 +1,6 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { styled } from 'nativewind';
+import React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/components/tab-button/tab-button';
@@ -7,11 +8,11 @@ import { ICONS } from '../../@generic/constant/icons.constant';
 import { AiChatButton } from '../../ai/components/ai-chat-button/ai-chat-button';
 import { CreateTransactionTab } from '../../transaction/components/create-transaction-tab/create-transaction-tab';
 
-const Wrapper = styled(Tabs);
-
 export default function TabsLayout() {
+    const invisibleTriggerStyle = { display: 'none' } satisfies StyleProp<ViewStyle>;
+
     return (
-        <Wrapper className="bg-primary-reverse flex-1">
+        <Tabs>
             <TabSlot />
 
             <TabList asChild>
@@ -19,23 +20,26 @@ export default function TabsLayout() {
                     <TabTrigger asChild href="/" name="index">
                         <TabButton icon={ICONS.Home} />
                     </TabTrigger>
+
                     <TabTrigger asChild href="/transactions" name="transactions">
                         <TabButton icon={ICONS.Receipt} />
                     </TabTrigger>
 
-                    <AiChatButton />
+                    <TabTrigger asChild href="/ai" name="ai">
+                        <AiChatButton />
+                    </TabTrigger>
 
                     <TabTrigger asChild href="/analytics" name="analytics">
                         <TabButton icon={ICONS.ChartNoAxesColumn} />
                     </TabTrigger>
 
-                    <CreateTransactionTab />
+                    <TabTrigger asChild href="/transactions/create" name="create-transaction">
+                        <CreateTransactionTab />
+                    </TabTrigger>
+
+                    <TabTrigger style={invisibleTriggerStyle} href="/settings" name="settings" />
                 </BottomTabs>
             </TabList>
-
-            <TabList className={'hidden'}>
-                <TabTrigger href="/settings" name="settings" />
-            </TabList>
-        </Wrapper>
+        </Tabs>
     );
 }
