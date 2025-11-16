@@ -1,4 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
+import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
