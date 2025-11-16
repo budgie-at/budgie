@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.61.1](https://github.com/budgie-at/budgie/compare/v1.61.0...v1.61.1) (2025-11-15)
+
+### Bug Fixes
+
+- **app:** fix AI bottom tab text ([2f1b93f](https://github.com/budgie-at/budgie/commit/2f1b93f1f1154ed54f03d71968ab0be95f1c055e))
+- **app:** fix AI bottom tab text ([a8171a3](https://github.com/budgie-at/budgie/commit/a8171a3b0110a33b83447814b61cd12c02163340))
+
+# [1.61.0](https://github.com/budgie-at/budgie/compare/v1.60.1...v1.61.0) (2025-11-15)
+
+### Bug Fixes
+
+- add transaction-relations export ([0196945](https://github.com/budgie-at/budgie/commit/0196945bfc9182415a10e7f66a05060b13c30f03))
+- **app:** background task ([6e0bdf5](https://github.com/budgie-at/budgie/commit/6e0bdf5cf93b5c99e56539bf6a64f186b47a474a))
+- **app:** background task ([d7c642b](https://github.com/budgie-at/budgie/commit/d7c642ba954d9b6c1bcad6401a9dfc6bc2dbefb7))
+- **app:** background task ([af88990](https://github.com/budgie-at/budgie/commit/af8899078b0810c5344851712d5dba5a79014ecf))
+- **app:** background task ([e0b697b](https://github.com/budgie-at/budgie/commit/e0b697b62da6d33d86991841f4725edf6a4667e4))
+- **app:** background task ([93f503f](https://github.com/budgie-at/budgie/commit/93f503f67a067a7c8d9d6aff17c340d719c81e24))
+- **app:** db init ([3108ffc](https://github.com/budgie-at/budgie/commit/3108ffc8776a1efceba3b7510f7aaa8a19f7fd94))
+- **app:** db init ([8a9aaf9](https://github.com/budgie-at/budgie/commit/8a9aaf90cbc8ab3b2d2719d7f58fa78845e95c11))
+- **app:** db init ([56faa0c](https://github.com/budgie-at/budgie/commit/56faa0c94b83b7a8b1bab9689e23047545da0066))
+- **app:** db init ([2422bd9](https://github.com/budgie-at/budgie/commit/2422bd9d98fd2070d83026fbc19d83345e50fdea))
+- **app:** db init ([a47d1ad](https://github.com/budgie-at/budgie/commit/a47d1ad88666859033e2aa83510ae0ac8545bb20))
+- **app:** db init ([586d05b](https://github.com/budgie-at/budgie/commit/586d05b7941922fb55526b5e10048abab7131180))
+- remove unused type ([c9e3eb1](https://github.com/budgie-at/budgie/commit/c9e3eb18bd4561c2d4948c5f4a5f4d0941b9f4c7))
+- update with main ([08c60a5](https://github.com/budgie-at/budgie/commit/08c60a5b4f9034a1bdb4307fc5a64ec53238f2f2))
+
+### Features
+
+- add default settings creation to the migration ([763927a](https://github.com/budgie-at/budgie/commit/763927a7964a145df88081edc9bdf9aaac598acb))
+- refactor repositories to contracts, add settings repo, improve typing ([ef33fc4](https://github.com/budgie-at/budgie/commit/ef33fc4d420191aefc4c4a941c87a2bdd45346ce))
+
 ## [1.60.1](https://github.com/budgie-at/budgie/compare/v1.60.0...v1.60.1) (2025-11-15)
 
 ### Bug Fixes
