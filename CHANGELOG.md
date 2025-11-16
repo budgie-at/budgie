@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.61.2](https://github.com/budgie-at/budgie/compare/v1.61.1...v1.61.2) (2025-11-16)
+
+### Bug Fixes
+
+- **app:** fix bottom tabs layout, bump deps ([8c6af4d](https://github.com/budgie-at/budgie/commit/8c6af4d1243172b4414b997ff219f7c947d7d112))
+- **app:** tabs layout ([f440ef5](https://github.com/budgie-at/budgie/commit/f440ef519ab63df761b4f9ad8174b7dc9b331490))
+
 ## [1.61.1](https://github.com/budgie-at/budgie/compare/v1.61.0...v1.61.1) (2025-11-15)
 
 ### Bug Fixes
