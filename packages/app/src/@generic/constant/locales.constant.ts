@@ -9,7 +9,7 @@ export interface LocaleInfoWithDetailsInterface extends LocaleInfoInterface {
     emoji: string;
 }
 
-export const DEFAULT_LOCALE: LocaleInfoWithDetailsInterface = {
+const DEFAULT_LOCALE: LocaleInfoWithDetailsInterface = {
     name: msg`English (United States)`,
     emoji: '🇺🇸',
     languageTag: 'en-US',
