@@ -33,9 +33,7 @@ export default function TabsLayout() {
                         <TabButton icon={ICONS.ChartNoAxesColumn} />
                     </TabTrigger>
 
-                    <TabTrigger asChild href="/transactions/create" name="create-transaction">
-                        <CreateTransactionTab />
-                    </TabTrigger>
+                    <CreateTransactionTab />
 
                     <TabTrigger style={invisibleTriggerStyle} href="/settings" name="settings" />
                 </BottomTabs>
