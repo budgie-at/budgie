@@ -1,9 +1,9 @@
 import { describe, expect, it } from '@jest/globals';
 
+import { PRECISION } from '../../generic/constant/precision.constant';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { PRECISION } from '../../generic/constant/precision.constant';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 

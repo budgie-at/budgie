@@ -1,5 +1,4 @@
 import { i18n } from '@lingui/core';
-import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
@@ -14,8 +13,10 @@ import '../global.css';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
-import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
+import { LanguageProvider } from '../i18n/provider/language.provider';
+import { i18nGetOSLocale } from '../i18n/util/i18n.util';
+import { SettingsProvider } from '../settings/provider/settings.provider';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
@@ -51,18 +52,20 @@ export default function RootLayout() {
     }
 
     return (
-        <I18nProvider i18n={i18n}>
-            <ThemeProvider>
-                <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                    <BottomSheetsProvider>
-                        <Stack screenOptions={stackOptions}>
-                            <Stack.Screen name="(tabs)" options={tabsOptions} />
+        <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+            <SettingsProvider>
+                <LanguageProvider>
+                    <ThemeProvider>
+                        <BottomSheetsProvider>
+                            <Stack screenOptions={stackOptions}>
+                                <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                            <Stack.Screen name="ai" options={aiScreenOptions} />
-                        </Stack>
-                    </BottomSheetsProvider>
-                </SQLiteProvider>
-            </ThemeProvider>
-        </I18nProvider>
+                                <Stack.Screen name="ai" options={aiScreenOptions} />
+                            </Stack>
+                        </BottomSheetsProvider>
+                    </ThemeProvider>
+                </LanguageProvider>
+            </SettingsProvider>
+        </SQLiteProvider>
     );
 }

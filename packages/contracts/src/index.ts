@@ -41,6 +41,7 @@ export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.in
 export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
 
+export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
 
 export { InstrumentEntityTable } from './instrument/table/instrument-entity.table';
@@ -146,6 +147,8 @@ export { SettingsCreateEntitySchema } from './settings/schema/settings-create-en
 
 export type { SettingsEntityInterface } from './settings/entity/settings-entity.interface';
 export type { SettingsCreateEntityInterface } from './settings/entity/settings-create-entity.interface';
+
+export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/entity/settings-with-default-instrument-entity.interface'
 
 export { SettingsRepository } from './settings/repository/settings.repository';
 
