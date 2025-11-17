@@ -1,8 +1,7 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DEFAULT_DECIMAL_PLACES } from '../constant/default-decimal-places.constant';
-
-import { useLocaleInfo } from './use-locale-info.hook';
+import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
+import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 
 export const useFormatDigits = (decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
     const { languageCode, regionCode } = useLocaleInfo();
