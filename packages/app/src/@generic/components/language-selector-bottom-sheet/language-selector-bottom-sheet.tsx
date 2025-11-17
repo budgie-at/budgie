@@ -1,40 +1,41 @@
+import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
-import { LOCALES, LocaleInfoWithDetailsInterface } from '../../constant/locales.constant';
+import { LANGUAGES } from '../../constant/languages.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { LanguageInterface } from '../../interface/language.interface';
 import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { SelectorCard } from '../selector-card/selector-card';
 
 interface Props {
-    readonly locale: string;
-    readonly onSelect: (locale: string) => void;
+    readonly language: LanguageEnum;
+    readonly onSelect: (language: LanguageEnum) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
 const snapPoints = ['70%'];
 
-export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
+export const LanguageSelectorBottomSheet = ({ ref, language, onSelect }: Props) => {
     const [search, setSearch] = useState('');
     const { t, i18n } = useLingui();
 
-    const filteredLocales = LOCALES.filter(
-        ({ name, languageTag }) =>
-            i18n.t(name).toLowerCase().includes(search.toLowerCase()) || languageTag.toLowerCase().includes(search.toLowerCase())
+    const filteredLanguages = LANGUAGES.filter(
+        ({ name, code }) => i18n.t(name).toLowerCase().includes(search.toLowerCase()) || code.toLowerCase().includes(search.toLowerCase())
     );
 
-    const handleSelect = (locale: string) => {
-        onSelect(locale);
+    const handleSelect = (language: LanguageEnum) => {
+        onSelect(language);
         ref.current?.close();
     };
 
-    const keyExtractor = (item: LocaleInfoWithDetailsInterface) => item.languageTag;
+    const keyExtractor = (item: LanguageInterface) => item.code;
 
-    const renderItem = ({ item }: { item: LocaleInfoWithDetailsInterface }) => (
+    const renderItem = ({ item }: { item: LanguageInterface }) => (
         <SelectorCard
-            key={item.languageTag}
-            isSelected={item.languageTag === locale}
-            code={item.languageTag}
+            key={item.code}
+            isSelected={item.code === language}
+            code={item.code}
             emoji={item.emoji}
             name={i18n.t(item.name)}
             onSelect={handleSelect}
@@ -48,18 +49,19 @@ export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
 
     return (
         <SearchableListBottomSheet
+            index={1}
             ref={ref}
             snapPoints={snapPoints}
-            title={t`Select Locale`}
-            description={t`Choose your preferred locale for date and number formatting`}
+            title={t`Select Language`}
+            description={t`Choose your preferred language for date and number formatting`}
             onSearchChange={setSearch}
-            searchPlaceholder={t`Search locales...`}
+            searchPlaceholder={t`Search languages...`}
             search={search}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             emptyDescription={t`Try a different search term`}
-            emptyTitle={t`No locales found`}
-            data={filteredLocales}
+            emptyTitle={t`No languages found`}
+            data={filteredLanguages}
             flatListProps={flatListProps}
         />
     );

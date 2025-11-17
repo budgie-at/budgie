@@ -1,5 +1,4 @@
 import { i18n } from '@lingui/core';
-import { I18nProvider } from '@lingui/react';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
@@ -14,6 +13,7 @@ import '../global.css';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
+import { LanguageProvider } from '../@generic/providers/language.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
@@ -54,7 +54,7 @@ export default function RootLayout() {
     return (
         <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
             <SettingsProvider>
-                <I18nProvider i18n={i18n}>
+                <LanguageProvider>
                     <ThemeProvider>
                         <BottomSheetsProvider>
                             <Stack screenOptions={stackOptions}>
@@ -64,7 +64,7 @@ export default function RootLayout() {
                             </Stack>
                         </BottomSheetsProvider>
                     </ThemeProvider>
-                </I18nProvider>
+                </LanguageProvider>
             </SettingsProvider>
         </SQLiteProvider>
     );
