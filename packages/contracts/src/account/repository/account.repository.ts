@@ -1,6 +1,7 @@
 import { and, eq, isNull, sql } from 'drizzle-orm';
 
-import { AccountBalanceEntityTable } from '../../account-balance/table/account-balance-entity.table';
+import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
+import { PRECISION } from '../../generic/constant/precision.constant';
 import { DB, TX } from '../../generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
@@ -53,13 +54,31 @@ export class AccountRepository {
         });
     }
 
-    calculateTotalBalance() {
+    calculateTotalBalanceInDefaultCurrency(defaultInstrumentId: number) {
         return this.db
             .select({
-                total: sql<number>`coalesce(sum(${AccountBalanceEntityTable.amount}), 0)`
+                total: sql<number>`
+                    coalesce(
+                        sum(
+                            case
+                                when ${AccountEntityTable.instrumentId} = ${defaultInstrumentId} then ${AccountEntityTable.currentBalance}
+                                when ${ExchangeRateEntityTable.rate} is not null then
+                                    cast(${AccountEntityTable.currentBalance} as real) * ${PRECISION} / cast(${ExchangeRateEntityTable.rate} as real)
+                                else ${AccountEntityTable.currentBalance}
+                            end
+                        ),
+                        0
+                    )
+                `
             })
-            .from(AccountBalanceEntityTable)
-            .innerJoin(AccountEntityTable, eq(AccountBalanceEntityTable.accountId, AccountEntityTable.id))
-            .where(isNull(AccountEntityTable.deletedAt));
+            .from(AccountEntityTable)
+            .leftJoin(
+                ExchangeRateEntityTable,
+                and(
+                    eq(ExchangeRateEntityTable.baseInstrumentId, defaultInstrumentId),
+                    eq(ExchangeRateEntityTable.quoteInstrumentId, AccountEntityTable.instrumentId)
+                )
+            )
+            .where(and(isNull(AccountEntityTable.parentId), eq(AccountEntityTable.includeInNetWorth, true)));
     }
 }
