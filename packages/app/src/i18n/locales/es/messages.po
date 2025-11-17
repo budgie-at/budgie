@@ -61,7 +61,7 @@ msgstr "BudgetAI"
 msgid "Choose a type to get started"
 msgstr "Elige un tipo para comenzar"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:61
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Choose your main currency"
 msgstr "Elige tu moneda principal"
 
@@ -133,7 +133,7 @@ msgstr "Ingreso"
 msgid "Italian (Italy)"
 msgstr "Italiano (Italia)"
 
-#: src/settings/components/language-selector/language-selector.tsx:46
+#: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
 msgstr "Idioma"
 
@@ -141,7 +141,7 @@ msgstr "Idioma"
 msgid "Loans & credit cards"
 msgstr "Préstamos y tarjetas de crédito"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:44
+#: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Configuración regional"
 
@@ -165,7 +165,7 @@ msgstr "Mover entre cuentas"
 msgid "New Transaction"
 msgstr "Nueva Transacción"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:68
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
 msgid "No currencies found"
 msgstr "No se encontraron monedas"
 
@@ -189,7 +189,7 @@ msgstr "Portugués (Portugal)"
 msgid "Privacy"
 msgstr "Privacidad"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:63
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
 msgid "Search currencies..."
 msgstr "Buscar monedas..."
 
@@ -201,7 +201,7 @@ msgstr "Buscar idiomas..."
 msgid "Search locales..."
 msgstr "Buscar configuraciones regionales..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 msgid "Select Currency"
 msgstr "Seleccionar moneda"
 
@@ -245,7 +245,7 @@ msgstr "Página de Transacciones"
 msgid "Transfer"
 msgstr "Transferencia"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:66
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
 #: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
 msgid "Try a different search term"
