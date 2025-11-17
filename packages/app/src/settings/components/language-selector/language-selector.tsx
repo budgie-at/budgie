@@ -7,10 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/components/icon/icon';
-import { LanguageSelectorBottomSheet } from '../../../@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { LANGUAGES } from '../../../@generic/constant/languages.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { LanguageSelectorBottomSheet } from '../../../i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
+import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
