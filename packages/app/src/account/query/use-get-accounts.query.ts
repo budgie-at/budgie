@@ -1,10 +1,21 @@
-import { AccountEntityTable } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { db } from '../../@generic/drizzle/db/db';
+import { accountRepository } from '../../@generic/drizzle/db/db';
 
-import type { UseQueryResultInterface } from '../../@generic/drizzle/interface/use-query-result.interface';
-import type { AccountEntityInterface } from '@budgie/contracts';
+type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithInstrumentEntityInterface[]>>;
 
-export const useGetAccountsQuery = (): UseQueryResultInterface<AccountEntityInterface[]> =>
-    useLiveQuery(db.select().from(AccountEntityTable));
+export const useGetAccountsQuery = () => {
+    const { data, ...rest } = useLiveQuery(accountRepository.getAll());
+
+    return {
+        accounts: data.reduce<AccountGroups>(
+            (acc, curr) => ({
+                ...acc,
+                [curr.type]: [...(acc[curr.type] ?? []), curr]
+            }),
+            {}
+        ),
+        ...rest
+    };
+};
