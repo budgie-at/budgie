@@ -15,6 +15,13 @@ interface Props {
 
 const snapPoints = ['70%'];
 
+const keyExtractor = (item: InstrumentEntityInterface) => item.code;
+
+const flatListProps = {
+    className: 'pt-3 px-xl',
+    contentContainerClassName: 'gap-y-lg'
+};
+
 export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelect }: Props) => {
     const [search, setSearch] = useState('');
     const { instruments, isLoading } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
@@ -29,8 +36,6 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
         ref.current?.close();
     };
 
-    const keyExtractor = (item: InstrumentEntityInterface) => item.code;
-
     const renderItem = ({ item }: { item: InstrumentEntityInterface }) => (
         <CurrencySelectorCard
             key={item.code}
@@ -42,11 +47,6 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
             onSelect={handleSelect}
         />
     );
-
-    const flatListProps = {
-        className: 'pt-3 px-xl',
-        contentContainerClassName: 'gap-y-lg'
-    };
 
     if (isLoading) {
         return null;
