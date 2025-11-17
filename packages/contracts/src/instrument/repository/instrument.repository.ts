@@ -14,7 +14,11 @@ export class InstrumentRepository {
         return await this.db.query.InstrumentEntityTable.findMany();
     }
 
-    async findById(id: number): Promise<InstrumentEntityInterface | undefined> {
+    findById(id: number) {
+        return this.db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) });
+    }
+
+    async findByIdAsync(id: number): Promise<InstrumentEntityInterface | undefined> {
         return await this.db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) });
     }
 

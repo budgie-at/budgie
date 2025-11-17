@@ -4,23 +4,30 @@ import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { Pressable, ScrollView } from 'react-native';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { TotalBalance } from '../../@generic/components/total-balance/total-balance';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { AccountList } from '../../account/components/account-list/account-list';
+import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
+import { AccountList } from '../../account/component/account-list/account-list';
+import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
+import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
 const MOCK_BALANCE = 1_123_213.12 * PRECISION;
 
 export default function HomePage() {
-    const { data } = useGetAccountsQuery();
+    const { accounts } = useGetAccountsQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
     const navigateToSettings = () => void router.push('/settings');
+
+    const accountEntries = typedObjectEntries(accounts);
 
     return (
         <Page>
@@ -30,8 +37,13 @@ export default function HomePage() {
                 </Pressable>
 
                 <TotalBalance balance={MOCK_BALANCE} />
+                <AccountsHeading />
 
-                <AccountList accounts={data} />
+                {isNotEmptyArray(accountEntries) ? (
+                    accountEntries.map(([key, value]) => <AccountList type={key} accounts={value ?? []} key={key} />)
+                ) : (
+                    <AccountsEmptyState />
+                )}
             </ScrollView>
         </Page>
     );

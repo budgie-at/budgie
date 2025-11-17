@@ -5,9 +5,9 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
-import type { CircleIconVariant } from '../../../@generic/type/circle-icon-variant.type';
 
 interface Props {
     readonly title: string;
@@ -16,7 +16,7 @@ interface Props {
     readonly type: TransactionTypeEnum;
 }
 
-const iconVariant: Record<TransactionTypeEnum, CircleIconVariant> = {
+const iconVariant: Record<TransactionTypeEnum, ColorPaletteVariant> = {
     [TransactionTypeEnum.TRANSFER]: 'default',
     [TransactionTypeEnum.DEBT]: 'warning',
     [TransactionTypeEnum.INCOME]: 'positive',
