@@ -1,26 +1,26 @@
-import { ACCOUNT_TITLE_MAX_LENGTH } from '@budgie/contracts';
+import { ACCOUNT_TITLE_MAX_LENGTH, AccountCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { Input } from '../../../@generic/components/input/input';
 import { Shake } from '../../../@generic/components/shake/shake';
 
 interface Props {
-    readonly fieldState: { invalid: boolean; error?: { message?: string } };
-    readonly field: { onChange: (value: string) => void; value?: string };
+    control: Control<AccountCreateEntityInterface>;
 }
 
-export const CreateAccountTitle = ({ field: { onChange, value }, fieldState: { invalid, error } }: Props) => {
+export const UpdateAccountTitleField = ({ control }: Props) => {
     const { t } = useLingui();
 
-    const variant = invalid ? 'destructive' : 'default';
+    const renderAccountTitle = ({
+        field: { value, onChange },
+        fieldState: { error, invalid }
+    }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
+        const variant = invalid ? 'destructive' : 'default';
 
-    return (
-        <FormItem label={t`Account Name & Icon`} error={error?.message}>
-            <View className="flex-row gap-x-xl">
-                {/*<Controller name="icon" control={control} render={renderIconSelector} />*/}
-
+        return (
+            <FormItem label={t`Account Name`} error={error?.message}>
                 <Shake isEnabled={invalid}>
                     <Input
                         size="lg"
@@ -32,7 +32,9 @@ export const CreateAccountTitle = ({ field: { onChange, value }, fieldState: { i
                         placeholder={t`e.g. Savings Account`}
                     />
                 </Shake>
-            </View>
-        </FormItem>
-    );
+            </FormItem>
+        );
+    };
+
+    return <Controller control={control} name='title' render={renderAccountTitle} />;
 };
