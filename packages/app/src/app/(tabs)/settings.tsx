@@ -11,6 +11,7 @@ import { LocaleSelector } from '../../settings/components/locale-selector/locale
 import { SettingsCard } from '../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch';
+import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 
 export default function SettingsPage() {
     const { t } = useLingui();
@@ -40,6 +41,7 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Appearance`}>
                         <ThemeSwitch />
+                        <CentsSwitch />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`About`}>
