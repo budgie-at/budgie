@@ -1,10 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
-import { LOCALES, LocaleInfoWithDetailsInterface } from '../../constant/locales.constant';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { SelectorCard } from '../../../@generic/components/selector-card/selector-card';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { LOCALES, LocaleInfoWithDetailsInterface } from '../../constant/locales.constant';
 
 interface Props {
     readonly locale: string;
