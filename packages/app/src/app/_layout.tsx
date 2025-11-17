@@ -13,9 +13,9 @@ import '../global.css';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
-import { LanguageProvider } from '../@generic/providers/language.provider';
-import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
+import { LanguageProvider } from '../i18n/provider/language.provider';
+import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { ThemeProvider } from '../theme/context/theme.context';
 
