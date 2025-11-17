@@ -28,12 +28,11 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 
-const stackOptions = { headerShown: false, gestureEnabled: false };
+const stackOptions = { headerShown: false };
 const tabsOptions = { headerShown: false };
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     headerShown: false,
     presentation: 'modal',
-    gestureEnabled: true
 };
 
 export default function RootLayout() {

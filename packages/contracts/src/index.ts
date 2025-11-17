@@ -6,6 +6,7 @@ export { LanguageEnum } from './generic/enum/language.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant'
+export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant'
 
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';

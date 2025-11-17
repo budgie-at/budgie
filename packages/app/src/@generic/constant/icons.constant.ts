@@ -1,27 +1,30 @@
 import {
+    Archive,
     ArrowRightLeft,
+    Bitcoin,
     ChartNoAxesColumn,
     Check,
+    ChevronLeft,
     ChevronRight,
+    Coins,
     CreditCard,
     Database,
     DollarSign,
+    EllipsisVertical,
     Globe,
     Home,
     Lock,
     MapPinIcon,
     Moon,
-    Sparkles,
     Plus,
     Receipt,
     Settings,
-    EllipsisVertical,
     Shield,
+    Sparkles,
     TrendingDown,
-    X,
-    ChevronLeft,
     TrendingUp,
-    Wallet
+    Wallet,
+    X
 } from 'lucide-react-native';
 
 import type { LucideIcon } from 'lucide-react-native';
@@ -29,27 +32,31 @@ import type { LucideIcon } from 'lucide-react-native';
 export const ICONS = {
     Home,
     Receipt,
-    Sparkles,
+    Archive,
     ChartNoAxesColumn,
-    ChevronLeft,
     Settings,
     TrendingDown,
-    EllipsisVertical,
-    MapPinIcon,
-    Check,
     ArrowRightLeft,
+    X,
+    DollarSign,
     TrendingUp,
     Moon,
     Plus,
-    DollarSign,
+    Sparkles,
     Wallet,
+    EllipsisVertical,
     ChevronRight,
-    X,
-    Database,
+    ChevronLeft,
     CreditCard,
+    Bitcoin,
+    Check,
+    MapPinIcon,
+    Database,
     Shield,
     Lock,
-    Globe
+    Globe,
+    Coins
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
+export type IconType = (typeof ICONS)[IconName];

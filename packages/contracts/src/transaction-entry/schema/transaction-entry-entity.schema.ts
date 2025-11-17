@@ -1,5 +1,5 @@
 import { createSelectSchema } from 'drizzle-zod';
-import { enum as zodEnum } from 'zod';
+import { number, enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
@@ -14,5 +14,5 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     instrumentId: schema => schema.describe('Id of the instrument the entry belongs to'),
     parentAccountId: schema => schema.describe('Id of the parent-account the entry belongs to'),
     type: zodEnum(TransactionEntryTypeEnum).describe('Type of the entry'),
-    amount: schema => schema.positive().describe('Amount of the entry')
+    amount: number().positive().describe('Amount of the entry')
 });

@@ -37,6 +37,7 @@ export default function TabsLayout() {
             <TabList className="hidden">
                 <TabTrigger name="settings" href="/(tabs)/settings" />
                 <TabTrigger name="account" href="/(tabs)/account/[id]" />
+                <TabTrigger name="edit-account" href="/(tabs)/edit-account/[id]" />
             </TabList>
         </Tabs>
     );
