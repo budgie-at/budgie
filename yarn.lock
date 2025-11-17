@@ -1440,6 +1440,7 @@ __metadata:
     "@budgie/contracts": "npm:^1.62.0"
     "@expo/fingerprint": "npm:~0.15.3"
     "@gorhom/bottom-sheet": "npm:^5.2.6"
+    "@hookform/resolvers": "npm:^5.2.2"
     "@libsql/client": "npm:^0.15.15"
     "@lingui/babel-plugin-lingui-macro": "npm:^5.5.2"
     "@lingui/core": "npm:^5.5.2"
@@ -1480,6 +1481,7 @@ __metadata:
     react: "npm:19.1.0"
     react-compiler-runtime: "npm:19.0.0-beta-63e3235-20250105"
     react-dom: "npm:19.1.0"
+    react-hook-form: "npm:^7.66.0"
     react-native: "npm:0.81.5"
     react-native-css: "npm:^3.0.1"
     react-native-gesture-handler: "npm:~2.28.0"
@@ -1487,6 +1489,7 @@ __metadata:
     react-native-safe-area-context: "npm:~5.6.0"
     react-native-screens: "npm:~4.16.0"
     react-native-svg: "npm:15.12.1"
+    react-native-toast-message: "npm:^2.3.3"
     react-native-web: "npm:^0.21.0"
     react-native-worklets: "npm:^0.5.1"
     tailwind-merge: "npm:^3.3.1"
@@ -3146,6 +3149,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/e0fa06be88b850cccdc6a1417a86e5ac21d82e3bfd1cec7eb05eccf7f3b595babe305541f278fdcbde34f3a9db465097dca2c785445c28bafb83b744e235da0c
+  languageName: node
+  linkType: hard
+
+"@hookform/resolvers@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "@hookform/resolvers@npm:5.2.2"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
+  peerDependencies:
+    react-hook-form: ^7.55.0
+  checksum: 10/93447287dc89827c517c72dc61e3be0217d3a5d9cbdb532317e5f5fd176c3eedb2ccd62d3c51fb403812939c9b7a4ebcaca35659a9bfb90e16ec38a2092d13a2
   languageName: node
   linkType: hard
 
@@ -6033,6 +6047,13 @@ __metadata:
   dependencies:
     "@sinonjs/commons": "npm:^3.0.0"
   checksum: 10/da08032b67a090b8844b2a2be7b299da1f6f48fa0b86f74e5add9d545bb8cc23aed2ed8d0cde43fca5e486b29004e31f65cbe205fd892213d5ada0c1ce9005c1
+  languageName: node
+  linkType: hard
+
+"@standard-schema/utils@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@standard-schema/utils@npm:0.3.0"
+  checksum: 10/7084f875d322792f2e0a5904009434c8374b9345b09ba89828b68fd56fa3c2b366d35bf340d9e8c72736ef01793c2f70d350c372ed79845dc3566c58d34b4b51
   languageName: node
   linkType: hard
 
@@ -18213,6 +18234,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.66.0":
+  version: 7.66.0
+  resolution: "react-hook-form@npm:7.66.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10/7342e7148419f0ab455ee1018c8f9ad39f1adda6be45122f885c2b26e237bde846a35724800a3be5cb96f264446474795c1b4c8f807ebf779640ccfcb9f4a1b4
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -18325,6 +18355,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/aa7b3a54cf2eb52aeb1322ba4a3f63176d4da0725ea4b9ec0051a59df0a511dc189fd101abf7993e94676c1cdea736e4abb207a0aea6f3083b5982c48e4648ac
+  languageName: node
+  linkType: hard
+
+"react-native-toast-message@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "react-native-toast-message@npm:2.3.3"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/9a61a8f3d4aad8245b87c3018c0d56b5ca9a2e5a500c2c4734e12f4314d2c0648b4bfe4b90a063b482b81efddec5b3cef82864d04261886224abf960230e08b5
   languageName: node
   linkType: hard
 
