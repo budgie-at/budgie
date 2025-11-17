@@ -1,4 +1,3 @@
-import { PRECISION } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -15,12 +14,11 @@ import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
-
-// eslint-disable-next-line @typescript-eslint/no-magic-numbers
-const MOCK_BALANCE = 1_123_213.12 * PRECISION;
+import { useGetTotalBalanceQuery } from '../../account/query/use-get-total-balance.query';
 
 export default function HomePage() {
     const { accounts } = useGetAccountsQuery();
+    const balance = useGetTotalBalanceQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -36,7 +34,7 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <TotalBalance balance={MOCK_BALANCE} />
+                <TotalBalance balance={balance} />
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (

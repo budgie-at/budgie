@@ -1,7 +1,6 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { useGetTotalBalanceQuery } from '../../../account/query/use-get-total-balance.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FormattedMoney } from '../formatted-money/formatted-money';
 
@@ -11,7 +10,6 @@ interface Props {
 
 export const TotalBalance = ({ balance }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const balance = useGetTotalBalanceQuery();
 
     return (
         <View className="items-center gap-y-md mb-5xl">

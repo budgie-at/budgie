@@ -3,8 +3,8 @@ import { TextInput } from 'react-native';
 
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { useFormatDigits } from '../../hooks/use-format-digits.hook';
-import { useLocaleInfo } from '../../hooks/use-locale-info.hook';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
