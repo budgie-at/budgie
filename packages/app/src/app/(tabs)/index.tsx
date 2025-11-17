@@ -10,6 +10,7 @@ import { TotalBalance } from '../../@generic/components/total-balance/total-bala
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { AccountList } from '../../account/components/account-list/account-list';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
+import { formatMoney } from '../../i18n/util/format-money.util';
 
 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
 const MOCK_BALANCE = 1_123_213.12 * PRECISION;
