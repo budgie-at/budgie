@@ -35,7 +35,8 @@ const wrapperVariants = cva<{
             sm: 'w-7 h-7',
             md: 'w-8 h-8',
             lg: 'w-8.5 h-8.5',
-            xl: 'w-9 h-9'
+            xl: 'w-9 h-9',
+            '1_5xl': 'w-[40px] h-[40px]',
         },
         border: {
             true: 'border',
@@ -61,7 +62,8 @@ const iconSize: Record<CircleIconSize, number> = {
     sm: 14,
     md: 16,
     lg: 18,
-    xl: 20
+    xl: 20,
+    '1_5xl': 20,
 };
 
 export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: Props) => (

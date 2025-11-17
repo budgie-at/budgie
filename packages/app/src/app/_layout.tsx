@@ -16,6 +16,7 @@ import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { i18nGetOSLocale } from '../@generic/utils/i18n.util';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
+import { SettingsProvider } from '../settings/provider/settings.provider';
 import { ThemeProvider } from '../theme/context/theme.context';
 
 enableScreens();
@@ -51,18 +52,20 @@ export default function RootLayout() {
     }
 
     return (
-        <I18nProvider i18n={i18n}>
-            <ThemeProvider>
-                <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                    <BottomSheetsProvider>
-                        <Stack screenOptions={stackOptions}>
-                            <Stack.Screen name="(tabs)" options={tabsOptions} />
+        <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+            <SettingsProvider>
+                <I18nProvider i18n={i18n}>
+                    <ThemeProvider>
+                        <BottomSheetsProvider>
+                            <Stack screenOptions={stackOptions}>
+                                <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                            <Stack.Screen name="ai" options={aiScreenOptions} />
-                        </Stack>
-                    </BottomSheetsProvider>
-                </SQLiteProvider>
-            </ThemeProvider>
-        </I18nProvider>
+                                <Stack.Screen name="ai" options={aiScreenOptions} />
+                            </Stack>
+                        </BottomSheetsProvider>
+                    </ThemeProvider>
+                </I18nProvider>
+            </SettingsProvider>
+        </SQLiteProvider>
     );
 }
