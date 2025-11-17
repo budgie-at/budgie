@@ -3,13 +3,13 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { CreateTransactionCard } from '../create-transaction-card/create-transaction-card';
 
-import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { Ref } from 'react';
 
 interface Props {
-    readonly ref: Ref<BottomSheetModal>;
+    readonly ref: Ref<BottomSheetInterface | null>;
 }
 
 export const CreateTransactionBottomSheet = ({ ref }: Props) => {

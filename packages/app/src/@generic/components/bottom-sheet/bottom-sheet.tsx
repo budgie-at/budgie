@@ -1,19 +1,18 @@
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import React from 'react';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
+import React, { ComponentProps, PropsWithChildren, Ref, useImperativeHandle, useRef } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
+import { BottomSheetBackdrop } from '../bottom-sheet-backdrop/bottom-sheet-backdrop';
 
-import { BottomSheetBackdrop } from './bottom-sheet-backdrop';
+import type { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 
-import type { PropsWithChildren, Ref } from 'react';
-
-interface Props {
+interface Props extends Omit<ComponentProps<typeof BottomSheetModal>, 'ref'> {
+    readonly index?: number;
     readonly className?: string;
     readonly handleClassName?: string;
-    readonly contentClassName?: string;
-    readonly ref: Ref<BottomSheetModal>;
+    readonly ref: Ref<BottomSheetInterface | null>;
 }
 
 const Modal = styled(BottomSheetModal, {
@@ -23,22 +22,40 @@ const Modal = styled(BottomSheetModal, {
     handleIndicatorClassName: 'handleIndicatorStyle'
 });
 
-const Content = styled(BottomSheetView);
+export const BottomSheet = ({
+    ref,
+    index,
+    children,
+    className,
+    snapPoints,
+    handleClassName,
+    enableDynamicSizing,
+    ...rest
+}: PropsWithChildren<Props>) => {
+    const modalRef = useRef<BottomSheetModal | null>(null);
+    const { top } = useSafeAreaInsets();
 
-const edges: Edges = ['bottom'];
+    const open = () => void modalRef.current?.present();
+    const close = () => void modalRef.current?.close();
 
-export const BottomSheet = ({ ref, children, className, handleClassName, contentClassName }: PropsWithChildren<Props>) => (
-    <Modal
-        backdropComponent={BottomSheetBackdrop}
-        backgroundClassName="bg-primary-reverse"
-        className={cn('shadow-primary shadow-2xl rounded-t-3xl', className)}
-        enablePanDownToClose
-        handleClassName={cn('bg-primary-reverse rounded-t-3xl', handleClassName)}
-        handleIndicatorClassName="bg-primary"
-        ref={ref}
-    >
-        <Content className={cn('bg-primary-reverse pt-4 px-6 pb-6', contentClassName)}>
-            <SafeAreaView edges={edges}>{children}</SafeAreaView>
-        </Content>
-    </Modal>
-);
+    useImperativeHandle(ref, (): BottomSheetInterface => ({ open, close }));
+
+    return (
+        <Modal
+            className={cn('shadow-primary shadow-2xl rounded-t-3xl', className)}
+            handleClassName={cn('bg-primary-reverse rounded-t-3xl', handleClassName)}
+            enableDynamicSizing={enableDynamicSizing}
+            backgroundClassName="bg-primary-reverse"
+            backdropComponent={BottomSheetBackdrop}
+            handleIndicatorClassName="bg-primary"
+            snapPoints={snapPoints}
+            enablePanDownToClose
+            ref={modalRef}
+            topInset={top}
+            index={index}
+            {...rest}
+        >
+            {children}
+        </Modal>
+    );
+};
