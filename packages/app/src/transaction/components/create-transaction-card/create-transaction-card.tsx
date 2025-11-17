@@ -17,9 +17,9 @@ interface Props {
 }
 
 const iconVariant: Record<TransactionTypeEnum, ColorPaletteVariant> = {
-    [TransactionTypeEnum.TRANSFER]: 'default',
     [TransactionTypeEnum.DEBT]: 'warning',
     [TransactionTypeEnum.INCOME]: 'positive',
+    [TransactionTypeEnum.TRANSFER]: 'default',
     [TransactionTypeEnum.EXPENSE]: 'destructive',
 }
 
