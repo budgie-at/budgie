@@ -22,16 +22,8 @@ const Modal = styled(BottomSheetModal, {
     handleIndicatorClassName: 'handleIndicatorStyle'
 });
 
-export const BottomSheet = ({
-    ref,
-    index,
-    children,
-    className,
-    snapPoints,
-    handleClassName,
-    enableDynamicSizing,
-    ...rest
-}: PropsWithChildren<Props>) => {
+export const BottomSheet = (props: PropsWithChildren<Props>) => {
+    const { ref, index, children, className, snapPoints, handleClassName, enableDynamicSizing, ...rest } = props;
     const modalRef = useRef<BottomSheetModal | null>(null);
     const { top } = useSafeAreaInsets();
 
