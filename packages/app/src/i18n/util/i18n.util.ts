@@ -4,11 +4,11 @@ import { getLocales } from 'expo-localization';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { messages as deMessages } from '../../locales/de/messages';
-import { messages as enMessages } from '../../locales/en/messages';
-import { messages as esMessages } from '../../locales/es/messages';
-import { messages as frMessages } from '../../locales/fr/messages';
-import { messages as ukMessages } from '../../locales/uk/messages';
+import { messages as deMessages } from '../locales/de/messages';
+import { messages as enMessages } from '../locales/en/messages';
+import { messages as esMessages } from '../locales/es/messages';
+import { messages as frMessages } from '../locales/fr/messages';
+import { messages as ukMessages } from '../locales/uk/messages';
 
 i18n.load({
     en: enMessages,
