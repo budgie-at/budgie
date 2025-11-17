@@ -5,13 +5,13 @@ import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
 import { ICONS } from '../../@generic/constant/icons.constant';
+import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../settings/components/locale-selector/locale-selector';
 import { SettingsCard } from '../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch';
-import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 
 export default function SettingsPage() {
     const { t } = useLingui();
