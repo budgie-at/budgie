@@ -6,7 +6,6 @@ import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 import { useFormatDigits } from '../../hooks/use-format-digits.hook';
 import { useLocaleInfo } from '../../hooks/use-locale-info.hook';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
-import { groupNumericByThousands } from '../../utils/group-numeric-by-thousands.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
 
@@ -20,11 +19,16 @@ interface Props {
 export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder }: Props) => {
     const formatDigits = useFormatDigits();
     const localeInfo = useLocaleInfo();
+    const { decimalSeparator, digitGroupingSeparator, languageTag } = localeInfo;
 
     const [displayValue, setDisplayValue] = useState(formatDigits(value === 0 ? '' : value.toString()));
 
+    const intl = new Intl.NumberFormat(languageTag, {
+        useGrouping: true,
+        maximumFractionDigits: 0
+    });
+
     const handleChangeText = (text: string) => {
-        const { decimalSeparator, digitGroupingSeparator } = localeInfo;
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
 
         if (isEmptyString(cleaned)) {
@@ -38,7 +42,7 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder 
 
         const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric);
 
-        const formattedInteger = groupNumericByThousands(integerPart, digitGroupingSeparator);
+        const formattedInteger = isNotEmptyString(integerPart) ? intl.format(Number(integerPart)) : '';
 
         const displayValue = hasDecimal ? `${formattedInteger}${decimalSeparator}${decimalPart}` : formattedInteger;
 
