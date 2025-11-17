@@ -4,7 +4,7 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { formatMoney } from '../../../@generic/utils/format-money.util';
+import { formatMoney } from '../../../i18n/util/format-money.util';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
 import type { CurrencyEnum } from '@budgie/contracts';
