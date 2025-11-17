@@ -1,3 +1,4 @@
+import { PRECISION } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -9,6 +10,9 @@ import { TotalBalance } from '../../@generic/components/total-balance/total-bala
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { AccountList } from '../../account/components/account-list/account-list';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
+
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+const MOCK_BALANCE = 1_123_213.12 * PRECISION;
 
 export default function HomePage() {
     const { data } = useGetAccountsQuery();
@@ -25,7 +29,7 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <TotalBalance />
+                <TotalBalance balance={MOCK_BALANCE} />
 
                 <AccountList accounts={data} />
             </ScrollView>
