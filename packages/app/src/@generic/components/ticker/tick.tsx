@@ -12,7 +12,9 @@ interface Props {
     readonly index: number;
 }
 
-const numZeroToNine: number[] = [...Array(10).keys()];
+const NUM_FROM_ZERO_TO_NINE = [...Array(10).keys()];
+const DURATION = 500;
+const DELAY = 80;
 
 export const Tick = ({ num, textSize, textStyle, index }: Props) => {
     const previous = usePrevious(num);
@@ -21,9 +23,9 @@ export const Tick = ({ num, textSize, textStyle, index }: Props) => {
     useEffect(() => {
         translateY.set(
             withDelay(
-                80 * index,
+                DELAY * index,
                 withTiming(-textSize * num, {
-                    duration: 500
+                    duration: DURATION
                 })
             )
         );
@@ -39,7 +41,7 @@ export const Tick = ({ num, textSize, textStyle, index }: Props) => {
     return (
         <View style={style}>
             <Animated.View style={animatedStyle}>
-                {numZeroToNine.map((number, index) => (
+                {NUM_FROM_ZERO_TO_NINE.map((number, index) => (
                     <Text key={index} style={textStyles}>
                         {number}
                     </Text>
