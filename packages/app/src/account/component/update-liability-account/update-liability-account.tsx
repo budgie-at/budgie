@@ -1,7 +1,6 @@
-import { AccountEntityInterface, AccountUpdateEntityInterface } from '@budgie/contracts';
+import { AccountCreateEntityInterface, AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Controller } from 'react-hook-form';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -14,10 +13,10 @@ import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { CreateAccountBalanceField } from '../create-account-balance-field/create-account-balance-field';
-import { CreateAccountIconSelector } from '../create-account-icon-selector/create-account-icon-selector';
-import { CreateAccountTitle } from '../create-account-title/create-account-title';
+import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
+import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountHeader } from '../update-account-header/update-account-header';
+import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -31,7 +30,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         currentBalance: convertFromMicroUnits(account.currentBalance)
     });
 
-    const handleUpdate = async (values: AccountUpdateEntityInterface) => {
+    const handleUpdate = async (values: AccountCreateEntityInterface) => {
         try {
             await accountService.updateById(account.id, prepareSubmitData(values));
 
@@ -69,12 +68,12 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     };
 
     return (
-        <FullPage header={<UpdateAccountHeader onGoBack={goBack} accountType={account.type} />}>
-            <CreateAccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
+        <FullPage header={<UpdateAccountHeader onGoBack={goBack} accountType={account.type} icon={account.icon} />}>
+            <AccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup className="mb-8xl">
-                <Controller control={control} name="title" render={CreateAccountTitle} />
-                <Controller control={control} name="icon" render={CreateAccountIconSelector} />
+                <UpdateAccountTitleField control={control} />
+                <UpdateAccountIconField control={control} />
             </FormLayoutGroup>
 
             <View className="gap-y-xl">

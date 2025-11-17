@@ -16,7 +16,6 @@ import { Icon } from '../icon/icon';
 interface Props {
     readonly icon: UserIconNameEnum;
     readonly className?: string;
-    readonly name: string;
     readonly onPress: EmptyFn;
     readonly variant?: ColorPaletteVariant;
 }
@@ -34,12 +33,12 @@ const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     }
 });
 
-export const IconSelectorCardBig = ({ className, name, icon, onPress, variant = 'default' }: Props) => (
+export const IconSelectorCardBig = ({ className, icon, onPress, variant = 'default' }: Props) => (
     <HapticPressable onPress={onPress} className={cn(cardVariants({ variant }), className)}>
         <CircleIcon size="2_5xl" icon={ICONS[icon]} variant={variant} className="rounded-5xl" />
 
         <View className="gap-y-xs flex-1">
-            <Text className="text-primary font-medium text-sm">{name}</Text>
+            <Text className="text-primary font-medium text-sm">{icon}</Text>
             <Text className="text-sm text-secondary-foreground">
                 <Trans>Tap to change icon</Trans>
             </Text>

@@ -1,22 +1,21 @@
 import { AccountCreateEntityInterface, AccountNatureEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Controller } from 'react-hook-form';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
+import { CreateAccountCurrencyField } from '../../../@generic/components/create-account-currency-field/create-account-currency-field';
+import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
+import { FullPage } from '../../../@generic/components/page/full-page';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { CreateAccountBalanceField } from '../create-account-balance-field/create-account-balance-field';
-import { CreateAccountCurrencySelector } from '../create-account-currency-selector/create-account-currency-selector';
+import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { CreateAccountHeader } from '../create-account-header/create-account-header';
-import { CreateAccountTitle } from '../create-account-title/create-account-title';
-import { FullPage } from '../../../@generic/components/page/full-page';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
@@ -70,11 +69,11 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
                 </View>
             }
         >
-            <CreateAccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
+            <AccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>
-                <Controller control={control} name="title" render={CreateAccountTitle} />
-                <Controller control={control} name="instrumentId" render={CreateAccountCurrencySelector} />
+                <CreateAccountDetailsField control={control} />
+                <CreateAccountCurrencyField control={control} />
             </FormLayoutGroup>
         </FullPage>
     );
