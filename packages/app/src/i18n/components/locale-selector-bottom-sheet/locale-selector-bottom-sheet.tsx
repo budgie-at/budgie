@@ -14,6 +14,13 @@ interface Props {
 
 const snapPoints = ['70%'];
 
+const keyExtractor = (item: LocaleInfoWithDetailsInterface) => item.languageTag;
+
+const flatListProps = {
+    className: 'pt-3 px-xl',
+    contentContainerClassName: 'gap-y-lg'
+};
+
 export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
     const [search, setSearch] = useState('');
     const { t, i18n } = useLingui();
@@ -28,8 +35,6 @@ export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
         ref.current?.close();
     };
 
-    const keyExtractor = (item: LocaleInfoWithDetailsInterface) => item.languageTag;
-
     const renderItem = ({ item }: { item: LocaleInfoWithDetailsInterface }) => (
         <SelectorCard
             key={item.languageTag}
@@ -40,11 +45,6 @@ export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
             onSelect={handleSelect}
         />
     );
-
-    const flatListProps = {
-        className: 'pt-3 px-xl',
-        contentContainerClassName: 'gap-y-lg'
-    };
 
     return (
         <SearchableListBottomSheet
