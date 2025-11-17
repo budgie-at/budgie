@@ -1,19 +1,15 @@
 import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { LanguageSelectorBottomSheet } from '../../../@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
-import { ICONS } from '../../../@generic/constant/icons.constant';
-import { LANGUAGES } from '../../../@generic/constant/languages.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { LanguageSelectorBottomSheet } from '../../../i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
+import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { SettingsCard } from '../settings-card/settings-card';
+import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
 
 export const LanguageSelector = () => {
     const ref = useRef<BottomSheetInterface | null>(null);
@@ -35,15 +31,11 @@ export const LanguageSelector = () => {
 
     return (
         <>
-            <SettingsCard
-                right={
-                    <View className="ml-auto">
-                        <Icon className="text-primary" icon={ICONS.ChevronRight} />
-                    </View>
-                }
-                left={<CircleIcon icon={ICONS.Globe} variant='default' size='1_5xl' border={false} />}
-                onPress={handleOpen}
+            <GenericSelectorCard
+                icon='Globe'
                 title={t`Language`}
+                onPress={handleOpen}
+                iconVariant='default'
                 description={`${selectedLanguage.emoji} ${i18n.t(selectedLanguage.name)}`}
             />
 
