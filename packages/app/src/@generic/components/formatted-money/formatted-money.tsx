@@ -2,7 +2,7 @@ import { CurrencyEnum } from '@budgie/contracts';
 import * as React from 'react';
 import { ComponentProps } from 'react';
 
-import { useFormatMoney } from '../../hooks/use-format-money.hook';
+import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
 

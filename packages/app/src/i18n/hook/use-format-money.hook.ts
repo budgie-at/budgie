@@ -2,7 +2,7 @@ import { CurrencyEnum } from '@budgie/contracts';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { convertFromMicroUnits } from '../utils/convert-from-micro-units.util';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
 import { useLocaleInfo } from './use-locale-info.hook';
 
