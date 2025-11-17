@@ -6,10 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/components/icon/icon';
-import { LocaleSelectorBottomSheet } from '../../../@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { LOCALES } from '../../../@generic/constant/locales.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { LocaleSelectorBottomSheet } from '../../../i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet';
+import { LOCALES } from '../../../i18n/constant/locales.constant';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';

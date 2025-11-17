@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { formatMoney } from '../../@generic/utils/format-money.util';
+import { formatMoney } from '../../i18n/util/format-money.util';
 import { AccountList } from '../../account/components/account-list/account-list';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
