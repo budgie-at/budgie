@@ -1,15 +1,15 @@
-import { SettingsEntityTable } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { db } from '../../@generic/drizzle/db/db';
-import { DEFAULT_SETTINGS } from '../constants/default-settings.constant';
+import { isDefined } from '@rnw-community/shared';
+
+import { settingsRepository } from '../../@generic/drizzle/db/db';
 
 export const useGetSettingsQuery = () => {
-    const { data, ...rest } = useLiveQuery(db.select().from(SettingsEntityTable).limit(1))
-    const settings = data.at(0)
+    const { data, updatedAt, error } = useLiveQuery(settingsRepository.findSettings());
 
-    return {
-        settings: settings ?? DEFAULT_SETTINGS,
-        ...rest
+    if (!isDefined(updatedAt)) {
+        return { isLoading: true, settings: null, updatedAt: null, error };
     }
-}
+
+    return { settings: data, isLoading: false, updatedAt, error };
+};
