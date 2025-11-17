@@ -61,7 +61,7 @@ msgstr "BudgetAI"
 msgid "Choose a type to get started"
 msgstr "Choose a type to get started"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:61
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Choose your main currency"
 msgstr "Choose your main currency"
 
@@ -133,7 +133,7 @@ msgstr "Income"
 msgid "Italian (Italy)"
 msgstr "Italian (Italy)"
 
-#: src/settings/components/language-selector/language-selector.tsx:46
+#: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
 msgstr "Language"
 
@@ -141,7 +141,7 @@ msgstr "Language"
 msgid "Loans & credit cards"
 msgstr "Loans & credit cards"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:44
+#: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Locale"
 
@@ -165,7 +165,7 @@ msgstr "Move between accounts"
 msgid "New Transaction"
 msgstr "New Transaction"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:68
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
 msgid "No currencies found"
 msgstr "No currencies found"
 
@@ -189,7 +189,7 @@ msgstr "Portuguese (Portugal)"
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:63
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
@@ -201,7 +201,7 @@ msgstr "Search languages..."
 msgid "Search locales..."
 msgstr "Search locales..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 msgid "Select Currency"
 msgstr "Select Currency"
 
@@ -245,7 +245,7 @@ msgstr "Transactions Page"
 msgid "Transfer"
 msgstr "Transfer"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:66
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
 #: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
 msgid "Try a different search term"
