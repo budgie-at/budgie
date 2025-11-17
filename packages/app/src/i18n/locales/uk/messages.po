@@ -61,7 +61,7 @@ msgstr "BudgetAI"
 msgid "Choose a type to get started"
 msgstr "Оберіть тип, щоб розпочати"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:61
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Choose your main currency"
 msgstr "Оберіть основну валюту"
 
@@ -133,7 +133,7 @@ msgstr "Дохід"
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
 
-#: src/settings/components/language-selector/language-selector.tsx:46
+#: src/settings/components/language-selector/language-selector.tsx:36
 msgid "Language"
 msgstr "Мова"
 
@@ -141,7 +141,7 @@ msgstr "Мова"
 msgid "Loans & credit cards"
 msgstr "Кредити та кредитні картки"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:44
+#: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Локаль"
 
@@ -165,7 +165,7 @@ msgstr "Переміщення між рахунками"
 msgid "New Transaction"
 msgstr "Нова транзакція"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:68
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
 msgid "No currencies found"
 msgstr "Валют не знайдено"
 
@@ -189,7 +189,7 @@ msgstr "Португальська (Португалія)"
 msgid "Privacy"
 msgstr "Конфіденційність"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:63
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
@@ -201,7 +201,7 @@ msgstr "Пошук мов..."
 msgid "Search locales..."
 msgstr "Пошук локалей..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 msgid "Select Currency"
 msgstr "Обрати валюту"
 
@@ -245,7 +245,7 @@ msgstr "Сторінка транзакцій"
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:66
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
 #: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
 msgid "Try a different search term"
