@@ -1,8 +1,8 @@
 import { CurrencyEnum } from '@budgie/contracts';
 import { ReactNode } from 'react';
 
-import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { isEnumValue } from '../../@generic/type-guard/is-enum-value.type-guard';
+import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { DEFAULT_INSTRUMENT } from '../constants/default-instrument.constant';
 import { DEFAULT_SETTINGS } from '../constants/default-settings.constant';
 import { SettingsContext } from '../context/settings.context';
