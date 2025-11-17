@@ -59,15 +59,15 @@ msgstr "Оберіть тип, щоб розпочати"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:61
 msgid "Choose your main currency"
-msgstr ""
+msgstr "Оберіть основну валюту"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:56
 msgid "Choose your preferred language for date and number formatting"
-msgstr ""
+msgstr "Оберіть бажану мову для форматування дат і чисел"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:54
 msgid "Choose your preferred locale for date and number formatting"
-msgstr ""
+msgstr "Оберіть бажану локаль для форматування дат і чисел"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:24
 msgid "Dark Mode"
@@ -79,19 +79,19 @@ msgstr "Борг"
 
 #: src/@generic/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
-msgstr ""
+msgstr "Нідерландська (Нідерланди)"
 
 #: src/@generic/constant/languages.constant.ts:8
 msgid "English"
-msgstr ""
+msgstr "Англійська"
 
 #: src/@generic/constant/locales.constant.ts:34
 msgid "English (United Kingdom)"
-msgstr ""
+msgstr "Англійська (Велика Британія)"
 
 #: src/@generic/constant/locales.constant.ts:13
 msgid "English (United States)"
-msgstr ""
+msgstr "Англійська (США)"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Expense"
@@ -99,11 +99,11 @@ msgstr "Витрата"
 
 #: src/@generic/constant/languages.constant.ts:16
 msgid "French"
-msgstr ""
+msgstr "Французька"
 
 #: src/@generic/constant/locales.constant.ts:88
 msgid "French (France)"
-msgstr ""
+msgstr "Французька (Франція)"
 
 #: src/app/(tabs)/settings.tsx:35
 msgid "General"
@@ -111,11 +111,11 @@ msgstr "Загальні"
 
 #: src/@generic/constant/languages.constant.ts:26
 msgid "German"
-msgstr ""
+msgstr "Німецька"
 
 #: src/@generic/constant/locales.constant.ts:70
 msgid "German (Germany)"
-msgstr ""
+msgstr "Німецька (Німеччина)"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:41
 msgid "Income"
@@ -123,11 +123,11 @@ msgstr "Дохід"
 
 #: src/@generic/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
-msgstr ""
+msgstr "Італійська (Італія)"
 
 #: src/settings/components/language-selector/language-selector.tsx:49
 msgid "Language"
-msgstr ""
+msgstr "Мова"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:51
 msgid "Loans & credit cards"
@@ -135,11 +135,11 @@ msgstr "Кредити та кредитні картки"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:44
 msgid "Locale"
-msgstr ""
+msgstr "Локаль"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:29
 msgid "Main Currency"
-msgstr ""
+msgstr "Основна валюта"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you earn"
@@ -159,23 +159,23 @@ msgstr "Нова транзакція"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:68
 msgid "No currencies found"
-msgstr ""
+msgstr "Валют не знайдено"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:63
 msgid "No languages found"
-msgstr ""
+msgstr "Мов не знайдено"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:61
 msgid "No locales found"
-msgstr ""
+msgstr "Локалей не знайдено"
 
 #: src/@generic/constant/locales.constant.ts:142
 msgid "Polish (Poland)"
-msgstr ""
+msgstr "Польська (Польща)"
 
 #: src/@generic/constant/locales.constant.ts:160
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Португальська (Португалія)"
 
 #: src/app/(tabs)/settings.tsx:26
 msgid "Privacy"
@@ -183,27 +183,27 @@ msgstr "Конфіденційність"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:63
 msgid "Search currencies..."
-msgstr ""
+msgstr "Пошук валют..."
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:58
 msgid "Search languages..."
-msgstr ""
+msgstr "Пошук мов..."
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:56
 msgid "Search locales..."
-msgstr ""
+msgstr "Пошук локалей..."
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Select Currency"
-msgstr ""
+msgstr "Обрати валюту"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:55
 msgid "Select Language"
-msgstr ""
+msgstr "Обрати мову"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:53
 msgid "Select Locale"
-msgstr ""
+msgstr "Обрати локаль"
 
 #: src/app/(tabs)/settings.tsx:21
 msgid "Settings"
@@ -211,11 +211,11 @@ msgstr "Налаштування"
 
 #: src/@generic/constant/languages.constant.ts:31
 msgid "Spanish"
-msgstr ""
+msgstr "Іспанська"
 
 #: src/@generic/constant/locales.constant.ts:106
 msgid "Spanish (Spain)"
-msgstr ""
+msgstr "Іспанська (Іспанія)"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:25
 msgid "Switch between light and dark themes"
@@ -237,9 +237,9 @@ msgstr "Переказ"
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
 msgid "Try a different search term"
-msgstr ""
+msgstr "Спробуйте інший пошуковий запит"
 
 #: src/@generic/constant/languages.constant.ts:21
 #: src/@generic/constant/locales.constant.ts:52
 msgid "Ukrainian"
-msgstr ""
+msgstr "Українська"

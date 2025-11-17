@@ -59,15 +59,15 @@ msgstr "Elige un tipo para comenzar"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:61
 msgid "Choose your main currency"
-msgstr ""
+msgstr "Elige tu moneda principal"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:56
 msgid "Choose your preferred language for date and number formatting"
-msgstr ""
+msgstr "Elige tu idioma preferido para el formato de fechas y números"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:54
 msgid "Choose your preferred locale for date and number formatting"
-msgstr ""
+msgstr "Elige tu configuración regional preferida para el formato de fechas y números"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:24
 msgid "Dark Mode"
@@ -79,19 +79,19 @@ msgstr "Deuda"
 
 #: src/@generic/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
-msgstr ""
+msgstr "Neerlandés (Países Bajos)"
 
 #: src/@generic/constant/languages.constant.ts:8
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 #: src/@generic/constant/locales.constant.ts:34
 msgid "English (United Kingdom)"
-msgstr ""
+msgstr "Inglés (Reino Unido)"
 
 #: src/@generic/constant/locales.constant.ts:13
 msgid "English (United States)"
-msgstr ""
+msgstr "Inglés (Estados Unidos)"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Expense"
@@ -99,11 +99,11 @@ msgstr "Gasto"
 
 #: src/@generic/constant/languages.constant.ts:16
 msgid "French"
-msgstr ""
+msgstr "Francés"
 
 #: src/@generic/constant/locales.constant.ts:88
 msgid "French (France)"
-msgstr ""
+msgstr "Francés (Francia)"
 
 #: src/app/(tabs)/settings.tsx:35
 msgid "General"
@@ -111,11 +111,11 @@ msgstr "General"
 
 #: src/@generic/constant/languages.constant.ts:26
 msgid "German"
-msgstr ""
+msgstr "Alemán"
 
 #: src/@generic/constant/locales.constant.ts:70
 msgid "German (Germany)"
-msgstr ""
+msgstr "Alemán (Alemania)"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:41
 msgid "Income"
@@ -123,11 +123,11 @@ msgstr "Ingreso"
 
 #: src/@generic/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
-msgstr ""
+msgstr "Italiano (Italia)"
 
 #: src/settings/components/language-selector/language-selector.tsx:49
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:51
 msgid "Loans & credit cards"
@@ -135,11 +135,11 @@ msgstr "Préstamos y tarjetas de crédito"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:44
 msgid "Locale"
-msgstr ""
+msgstr "Configuración regional"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:29
 msgid "Main Currency"
-msgstr ""
+msgstr "Moneda principal"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you earn"
@@ -159,23 +159,23 @@ msgstr "Nueva Transacción"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:68
 msgid "No currencies found"
-msgstr ""
+msgstr "No se encontraron monedas"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:63
 msgid "No languages found"
-msgstr ""
+msgstr "No se encontraron idiomas"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:61
 msgid "No locales found"
-msgstr ""
+msgstr "No se encontraron configuraciones regionales"
 
 #: src/@generic/constant/locales.constant.ts:142
 msgid "Polish (Poland)"
-msgstr ""
+msgstr "Polaco (Polonia)"
 
 #: src/@generic/constant/locales.constant.ts:160
 msgid "Portuguese (Portugal)"
-msgstr ""
+msgstr "Portugués (Portugal)"
 
 #: src/app/(tabs)/settings.tsx:26
 msgid "Privacy"
@@ -183,27 +183,27 @@ msgstr "Privacidad"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:63
 msgid "Search currencies..."
-msgstr ""
+msgstr "Buscar monedas..."
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:58
 msgid "Search languages..."
-msgstr ""
+msgstr "Buscar idiomas..."
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:56
 msgid "Search locales..."
-msgstr ""
+msgstr "Buscar configuraciones regionales..."
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Select Currency"
-msgstr ""
+msgstr "Seleccionar moneda"
 
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:55
 msgid "Select Language"
-msgstr ""
+msgstr "Seleccionar idioma"
 
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:53
 msgid "Select Locale"
-msgstr ""
+msgstr "Seleccionar configuración regional"
 
 #: src/app/(tabs)/settings.tsx:21
 msgid "Settings"
@@ -211,11 +211,11 @@ msgstr "Configuración"
 
 #: src/@generic/constant/languages.constant.ts:31
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
 
 #: src/@generic/constant/locales.constant.ts:106
 msgid "Spanish (Spain)"
-msgstr ""
+msgstr "Español (España)"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:25
 msgid "Switch between light and dark themes"
@@ -237,9 +237,9 @@ msgstr "Transferencia"
 #: src/@generic/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
 #: src/@generic/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
 msgid "Try a different search term"
-msgstr ""
+msgstr "Intenta con un término de búsqueda diferente"
 
 #: src/@generic/constant/languages.constant.ts:21
 #: src/@generic/constant/locales.constant.ts:52
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ucraniano"
