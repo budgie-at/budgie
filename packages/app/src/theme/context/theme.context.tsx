@@ -4,8 +4,8 @@ import { Appearance, Platform, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
-import { useGetSettingsQuery } from '../../settings/query/use-get-settings.query';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
 import type { OnEventFn } from '@rnw-community/shared';
@@ -28,7 +28,7 @@ export const ThemeContext = createContext<ThemeContextInterface>({
 });
 
 export const ThemeProvider = ({ children }: Props) => {
-    const { settings } = useGetSettingsQuery();
+    const { settings } = useSettingsContext();
 
     const isDarkColorSchema = settings.theme === ThemeEnum.DARK;
 

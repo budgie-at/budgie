@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import * as schema from '../../schema';
+import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
 import type { InstrumentEntityInterface } from '../entity/instrument-entity.interface';
@@ -19,5 +20,9 @@ export class InstrumentRepository {
 
     async findByCode(code: string): Promise<InstrumentEntityInterface | undefined> {
         return await this.db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.code, code) });
+    }
+
+    findByType(type: InstrumentTypeEnum) {
+        return this.db.query.InstrumentEntityTable.findMany({ where: eq(InstrumentEntityTable.type, type) });
     }
 }

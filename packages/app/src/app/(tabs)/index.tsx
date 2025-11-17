@@ -1,25 +1,24 @@
-import { Trans } from '@lingui/react/macro';
+import { PRECISION } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView } from 'react-native';
 
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
+import { TotalBalance } from '../../@generic/components/total-balance/total-balance';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { formatMoney } from '../../@generic/utils/format-money.util';
 import { AccountList } from '../../account/components/account-list/account-list';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
-const MOCK_BALANCE = 1_300;
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+const MOCK_BALANCE = 1_123_213.12 * PRECISION;
 
 export default function HomePage() {
     const { data } = useGetAccountsQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
-
-    const balance = formatMoney(MOCK_BALANCE);
 
     const navigateToSettings = () => void router.push('/settings');
 
@@ -30,13 +29,7 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <View className="items-center gap-y-md mb-5xl">
-                    <Text className="uppercase text-xs text-secondary-foreground">
-                        <Trans>Total Balance</Trans>
-                    </Text>
-
-                    <Text className="text-8xl text-primary font-extralight">{balance}</Text>
-                </View>
+                <TotalBalance balance={MOCK_BALANCE} />
 
                 <AccountList accounts={data} />
             </ScrollView>
