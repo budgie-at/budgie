@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.62.0](https://github.com/budgie-at/budgie/compare/v1.61.3...v1.62.0) (2025-11-17)
+
+### Bug Fixes
+
+- add git a ([e98da5a](https://github.com/budgie-at/budgie/commit/e98da5ac1605b70dbea8f0edc63b67d50056ed6f))
+- remove index ([3a7bf71](https://github.com/budgie-at/budgie/commit/3a7bf71cd2ac602f158421adef66b9d295e91fa3))
+- remove props ([560afab](https://github.com/budgie-at/budgie/commit/560afabc04c4606da75591bf148a9ee7a86b4f47))
+- resolve cpd ([6722333](https://github.com/budgie-at/budgie/commit/672233313d1ad54feb1f0cd389704b672e7cc62a))
+- resolve review comment ([8086d5b](https://github.com/budgie-at/budgie/commit/8086d5bc4cd4b31c13be0bbaee62ce21a9c9ae1f))
+- resolve review comments ([29f9525](https://github.com/budgie-at/budgie/commit/29f9525e7a288060c9d3d00fede1e5ba73c13ee3))
+- resolve review comments ([b5be133](https://github.com/budgie-at/budgie/commit/b5be1337bba80f7b3d6c7314c05f00cff97a7232))
+- resolve ts issues ([ab9427e](https://github.com/budgie-at/budgie/commit/ab9427e2039b2dbd4d632068fe48ad04b576de11))
+- ts ([837ddeb](https://github.com/budgie-at/budgie/commit/837ddeb28b911206010b9004019d75541d2ac774))
+- update translations ([e52cebf](https://github.com/budgie-at/budgie/commit/e52cebf14a90aea4f81d399e1fbb89a7f06bcb1c))
+
+### Features
+
+- add bottom-sheet searchable list ([9e0f06a](https://github.com/budgie-at/budgie/commit/9e0f06acc1937797211d149a79ace9056b860637))
+- add cents setting ([61e9028](https://github.com/budgie-at/budgie/commit/61e90289e541a0e2bb518cdc64524019c586d742))
+- add currency setting ([1192113](https://github.com/budgie-at/budgie/commit/119211365b687496b97e67d4907ccf4417aa8033))
+- add currency setting ([d9f4038](https://github.com/budgie-at/budgie/commit/d9f4038e09de11f0b8f0ae32e3d25d927b5a0244))
+- add language setting ([e27f7a4](https://github.com/budgie-at/budgie/commit/e27f7a475e4926896fb2f53a0f7eb905e2e03bf0))
+- add locale setting ([672dda1](https://github.com/budgie-at/budgie/commit/672dda18cacbb83e2633ce6b45409c8941fa4b84))
+- add money formatting with animation ([2b58b90](https://github.com/budgie-at/budgie/commit/2b58b9085c56ad7dd46a387c456dd5408dfb8aa8))
+- create constants ([e89b30a](https://github.com/budgie-at/budgie/commit/e89b30a601ce5bee2b9d61ed740f8f59dffbe51f))
+- create i18n module ([239a99b](https://github.com/budgie-at/budgie/commit/239a99b90677cb0b2277ae103225faaa970d8e9c))
+- provide missing translations ([4784b22](https://github.com/budgie-at/budgie/commit/4784b222b985efd230a4a6a770d8019954c84331))
+- update translations ([04ce511](https://github.com/budgie-at/budgie/commit/04ce5110376f51b0ec9ca7f9085feae642bf7ce2))
+
 ## [1.61.3](https://github.com/budgie-at/budgie/compare/v1.61.2...v1.61.3) (2025-11-17)
 
 ### Bug Fixes
