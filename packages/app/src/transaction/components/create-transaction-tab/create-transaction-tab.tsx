@@ -2,15 +2,13 @@ import { useRef } from 'react';
 
 import { TabButton } from '../../../@generic/components/tab-button/tab-button';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { CreateTransactionBottomSheet } from '../create-transaction-bottom-sheet/create-transaction-bottom-sheet';
 
-import type { BottomSheetModal } from '@gorhom/bottom-sheet';
-
-
 export const CreateTransactionTab = () => {
-    const ref = useRef<BottomSheetModal>(null);
+    const ref = useRef<BottomSheetInterface | null>(null);
 
-    const handleOpen = () => void ref.current?.present();
+    const handleOpen = () => void ref.current?.open();
 
     return (
         <>
