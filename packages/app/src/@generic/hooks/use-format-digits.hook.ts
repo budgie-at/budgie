@@ -6,6 +6,13 @@ import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 export const useFormatDigits = (decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
     const { languageCode, regionCode } = useLocaleInfo();
 
+    const intl = new Intl.NumberFormat(`${languageCode}-${regionCode}`, {
+        style: 'decimal',
+        useGrouping: true,
+        minimumFractionDigits: decimalPlaces,
+        maximumFractionDigits: decimalPlaces
+    });
+
     return (rawNumeric: string) => {
         if (!isNotEmptyString(rawNumeric)) {
             return '';
@@ -16,13 +23,6 @@ export const useFormatDigits = (decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
         if (Number.isNaN(num)) {
             return '';
         }
-
-        const intl = new Intl.NumberFormat(`${languageCode}-${regionCode}`, {
-            style: 'decimal',
-            useGrouping: true,
-            minimumFractionDigits: decimalPlaces,
-            maximumFractionDigits: decimalPlaces
-        });
 
         return intl.format(num);
     };
