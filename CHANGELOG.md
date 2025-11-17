@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.61.3](https://github.com/budgie-at/budgie/compare/v1.61.2...v1.61.3) (2025-11-17)
+
+### Bug Fixes
+
+- resolve review comment ([bdc576a](https://github.com/budgie-at/budgie/commit/bdc576a2b25ccb04a1658d3c4cbc8efb7d0f22da))
+- update bottom-sheet ([5c01e6a](https://github.com/budgie-at/budgie/commit/5c01e6addd9d78500f5993dd272f155223242895))
+- update create-transaction bottom-sheet ([65c52af](https://github.com/budgie-at/budgie/commit/65c52af6abde3475caa08108d9c09ee428cd9e7c))
+
 ## [1.61.2](https://github.com/budgie-at/budgie/compare/v1.61.1...v1.61.2) (2025-11-16)
 
 ### Bug Fixes
