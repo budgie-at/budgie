@@ -5,7 +5,9 @@ import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
 import { ICONS } from '../../@generic/constant/icons.constant';
+import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
+import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../settings/components/locale-selector/locale-selector';
 import { SettingsCard } from '../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../settings/components/settings-group/settings-group';
@@ -16,12 +18,12 @@ export default function SettingsPage() {
 
     return (
         <Page>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <Text className="text-primary text-6xl mb-lg">{t`Settings`}</Text>
 
                 <Separator />
 
-                <View className={'pt-5xl gap-y-7xl'}>
+                <View className={'py-5xl gap-y-7xl'}>
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
                             className="items-baseline"
@@ -32,9 +34,14 @@ export default function SettingsPage() {
                     </SettingsGroup>
 
                     <SettingsGroup title={t`General`}>
-                        <ThemeSwitch />
+                        <LanguageSelector />
                         <DefaultCurrencySelector />
                         <LocaleSelector />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Appearance`}>
+                        <ThemeSwitch />
+                        <CentsSwitch />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`About`}>
