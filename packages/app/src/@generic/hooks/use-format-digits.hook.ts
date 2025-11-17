@@ -20,10 +20,6 @@ export const useFormatDigits = (decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
 
         const num = Number.parseFloat(rawNumeric);
 
-        if (Number.isNaN(num)) {
-            return '';
-        }
-
-        return intl.format(num);
+        return Number.isNaN(num) ? '' : intl.format(num);
     };
 };
