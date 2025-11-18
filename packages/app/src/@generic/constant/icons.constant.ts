@@ -11,6 +11,7 @@ import {
     Database,
     DollarSign,
     EllipsisVertical,
+    Folder,
     Globe,
     Home,
     Lock,
@@ -18,6 +19,7 @@ import {
     Moon,
     Plus,
     Receipt,
+    Search,
     Settings,
     Shield,
     Sparkles,
@@ -28,13 +30,16 @@ import {
 } from 'lucide-react-native';
 
 import type { LucideIcon } from 'lucide-react-native';
+import { USER_ICONS } from './user-icons.constant';
 
 export const ICONS = {
     Home,
     Receipt,
+    Search,
     Archive,
     ChartNoAxesColumn,
     Settings,
+    Folder,
     TrendingDown,
     ArrowRightLeft,
     X,
@@ -55,7 +60,8 @@ export const ICONS = {
     Shield,
     Lock,
     Globe,
-    Coins
+    Coins,
+    ...USER_ICONS
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
