@@ -7,18 +7,16 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
-import { TotalBalance } from '../../@generic/components/total-balance/total-balance';
+import { NetWorth } from '../../@generic/components/total-balance/net-worth';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
-import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
 export default function HomePage() {
     const { accounts } = useGetAccountsQuery();
-    const netWorth = useNetWorthQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -34,7 +32,7 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <TotalBalance balance={netWorth} />
+                <NetWorth />
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (
