@@ -1,15 +1,13 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FormattedMoney } from '../formatted-money/formatted-money';
 
-interface Props {
-    readonly balance: number;
-}
-
-export const TotalBalance = ({ balance }: Props) => {
+export const NetWorth = () => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
+    const netWorth = useNetWorthQuery();
 
     return (
         <View className="items-center gap-y-md mb-5xl">
@@ -18,7 +16,7 @@ export const TotalBalance = ({ balance }: Props) => {
             </Text>
 
             <FormattedMoney decimalPlaces={decimalPlaces} minFontSize={24} maxFontSize={60} currency={defaultCurrency}>
-                {balance}
+                {netWorth}
             </FormattedMoney>
         </View>
     );
