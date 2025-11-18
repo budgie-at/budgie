@@ -11,7 +11,7 @@ interface Props {
 
 export const AccountBalanceInput = ({ value, onChange, textClassName }: Props) => {
     const { decimalPlaces } = useSettingsContext();
-    const { format } = useFormatDigits(decimalPlaces);
+    const format = useFormatDigits(decimalPlaces);
 
     return (
         <AmountInput
