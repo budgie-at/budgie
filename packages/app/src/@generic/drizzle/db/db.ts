@@ -1,6 +1,12 @@
 import * as SQLite from 'expo-sqlite';
 import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-import { ExchangeRateRepository, InstrumentRepository, SettingsRepository } from '@budgie/contracts';
+import {
+    ExchangeRateRepository,
+    InstrumentRepository,
+    SettingsRepository,
+    AccountRepository,
+    AccountBalanceRepository
+} from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema'
 
@@ -13,6 +19,8 @@ const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.open
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
+export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
+export const accountBalanceRepository = new AccountBalanceRepository(db);

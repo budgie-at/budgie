@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import { LayoutChangeEvent, View } from 'react-native';
 
 import { calculateOptimalTextSize } from '../../utils/calculate-optimal-text-size.util';
+import { cn } from '../../utils/cn.util';
 
 import { StaticChar } from './static-char';
 import { Tick } from './tick';
@@ -12,13 +13,14 @@ interface Props {
     readonly textClassName?: string;
     readonly minFontSize?: number;
     readonly maxFontSize?: number;
+    readonly className?: string;
     readonly fontSize?: number;
 }
 
 const TickItem = styled(Tick, { textClassName: 'textStyle' });
 const StaticCharItem = styled(StaticChar, { textClassName: 'textStyle' });
 
-export const Ticker = ({ number, textClassName, fontSize = 24, minFontSize = 10, maxFontSize = 200 }: Props) => {
+export const Ticker = ({ number, textClassName, className, fontSize = 24, minFontSize = 10, maxFontSize = 200 }: Props) => {
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
@@ -63,7 +65,7 @@ export const Ticker = ({ number, textClassName, fontSize = 24, minFontSize = 10,
 
     return (
         <View className="w-full" onLayout={handleLayout}>
-            <View className="flex-row justify-center">{elements}</View>
+            <View className={cn('flex-row justify-center', className)}>{elements}</View>
         </View>
     );
 };

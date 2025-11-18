@@ -1,11 +1,11 @@
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
 
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 import type { CircleIconSize } from '../../type/circle-icon-size.type';
-import type { CircleIconVariant } from '../../type/circle-icon-variant.type';
 import type { ClassValue } from 'clsx';
 import type { LucideIcon } from 'lucide-react-native';
 
@@ -13,12 +13,13 @@ interface Props {
     readonly size?: CircleIconSize;
     readonly border?: boolean;
     readonly icon: LucideIcon;
-    readonly variant?: CircleIconVariant;
     readonly className?: string;
+    readonly iconClassName?: string;
+    readonly variant?: ColorPaletteVariant;
 }
 
 const wrapperVariants = cva<{
-    variant: Record<CircleIconVariant, ClassValue>;
+    variant: Record<ColorPaletteVariant, ClassValue>;
     size: Record<CircleIconSize, ClassValue>;
     border: Record<'true' | 'false', string>;
 }>('rounded-full border block items-center justify-center', {
@@ -27,6 +28,7 @@ const wrapperVariants = cva<{
             positive: 'border-positive-corner bg-positive-background',
             destructive: 'border-destructive-corner bg-destructive-background',
             warning: 'border-warning-corner bg-warning-background',
+            'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
             default: 'border-default-corner bg-default-background',
             ghost: 'border-ghost-corner bg-ghost-background'
         },
@@ -37,6 +39,9 @@ const wrapperVariants = cva<{
             lg: 'w-8.5 h-8.5',
             xl: 'w-9 h-9',
             '1_5xl': 'w-[40px] h-[40px]',
+            '2xl': 'w-[52px] h-[52px]',
+            '2_5xl': 'w-[52px] h-[52px]',
+            '3xl': 'w-[62px] h-[62px]'
         },
         border: {
             true: 'border',
@@ -45,12 +50,13 @@ const wrapperVariants = cva<{
     }
 });
 
-const iconVariants = cva<{ variant: Record<CircleIconVariant, ClassValue> }>('', {
+const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
     variants: {
         variant: {
             positive: 'text-positive-foreground',
             destructive: 'text-destructive-foreground',
             warning: 'text-warning-foreground',
+            'dark-warning': 'text-dark-warning-foreground',
             default: 'text-default-foreground',
             ghost: 'text-ghost-foreground'
         }
@@ -64,10 +70,13 @@ const iconSize: Record<CircleIconSize, number> = {
     lg: 18,
     xl: 20,
     '1_5xl': 20,
+    '2xl': 24,
+    '2_5xl': 28,
+    '3xl': 28
 };
 
-export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className }: Props) => (
+export const CircleIcon = ({ size = 'md', icon, variant = 'positive', border = true, className, iconClassName }: Props) => (
     <View className={cn(wrapperVariants({ variant, size, border }), className)}>
-        <Icon className={iconVariants({ variant })} icon={icon} size={iconSize[size]} />
+        <Icon className={cn(iconVariants({ variant }), iconClassName)} icon={icon} size={iconSize[size]} />
     </View>
 );

@@ -1,6 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/components/tab-button/tab-button';
@@ -9,8 +8,6 @@ import { AiChatButton } from '../../ai/components/ai-chat-button/ai-chat-button'
 import { CreateTransactionTab } from '../../transaction/components/create-transaction-tab/create-transaction-tab';
 
 export default function TabsLayout() {
-    const invisibleTriggerStyle = { display: 'none' } satisfies StyleProp<ViewStyle>;
-
     return (
         <Tabs>
             <TabSlot />
@@ -34,9 +31,13 @@ export default function TabsLayout() {
                     </TabTrigger>
 
                     <CreateTransactionTab />
-
-                    <TabTrigger style={invisibleTriggerStyle} href="/settings" name="settings" />
                 </BottomTabs>
+            </TabList>
+
+            <TabList className="hidden">
+                <TabTrigger name="settings" href="/(tabs)/settings" />
+                <TabTrigger name="account" href="/(tabs)/account/[id]" />
+                <TabTrigger name="edit-account" href="/(tabs)/edit-account/[id]" />
             </TabList>
         </Tabs>
     );

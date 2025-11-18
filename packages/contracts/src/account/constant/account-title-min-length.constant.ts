@@ -1,0 +1,1 @@
+export const ACCOUNT_TITLE_MIN_LENGTH = 1;
