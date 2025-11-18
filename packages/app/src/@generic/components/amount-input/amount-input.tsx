@@ -3,7 +3,9 @@ import { TextInput } from 'react-native';
 
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
+import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useFormatDigits } from '../../hooks/use-format-digits.hook';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
@@ -17,16 +19,12 @@ interface Props {
 }
 
 export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder }: Props) => {
-    const formatDigits = useFormatDigits();
-    const localeInfo = useLocaleInfo();
-    const { decimalSeparator, digitGroupingSeparator, languageTag } = localeInfo;
+    const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
+    const { decimalPlaces } = useSettingsContext();
+    const { format: formatDigits } = useFormatDigits(decimalPlaces);
+    const { intl } = useI18nContext();
 
     const [displayValue, setDisplayValue] = useState(formatDigits(value === 0 ? '' : value.toString()));
-
-    const intl = new Intl.NumberFormat(languageTag, {
-        useGrouping: true,
-        maximumFractionDigits: 0
-    });
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
@@ -42,7 +40,9 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder 
 
         const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric);
 
-        const formattedInteger = isNotEmptyString(integerPart) ? intl.format(Number(integerPart)) : '';
+        const formattedInteger = isNotEmptyString(integerPart)
+            ? intl.formatNumber(Number(integerPart), { useGrouping: true, maximumFractionDigits: 0 })
+            : '';
 
         const displayValue = hasDecimal ? `${formattedInteger}${decimalSeparator}${decimalPart}` : formattedInteger;
 
@@ -55,7 +55,7 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder 
             return;
         }
 
-        const cleaned = displayValue.split(localeInfo.digitGroupingSeparator).join('').replace(localeInfo.decimalSeparator, '.');
+        const cleaned = displayValue.split(digitGroupingSeparator).join('').replace(decimalSeparator, '.');
 
         const formatted = formatDigits(cleaned);
 
