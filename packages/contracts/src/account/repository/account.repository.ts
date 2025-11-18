@@ -54,7 +54,7 @@ export class AccountRepository {
         });
     }
 
-    getTotalBalance(defaultInstrumentId: number) {
+    getNetWorth(defaultInstrumentId: number) {
         return this.db
             .select({
                 total: sql<number>`
