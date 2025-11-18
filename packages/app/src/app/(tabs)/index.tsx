@@ -13,12 +13,12 @@ import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.ut
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
-import { useAccountTotalBalanceQuery } from '../../account/query/use-account-total-balance.query';
+import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
 
 export default function HomePage() {
     const { accounts } = useGetAccountsQuery();
-    const balance = useAccountTotalBalanceQuery();
+    const netWorth = useNetWorthQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -34,7 +34,7 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
                 </Pressable>
 
-                <TotalBalance balance={balance} />
+                <TotalBalance balance={netWorth} />
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (
