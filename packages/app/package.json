@@ -28,6 +28,7 @@
         "@libsql/client": "^0.15.15",
         "@lingui/core": "^5.5.2",
         "@lingui/react": "^5.5.2",
+        "@react-native-async-storage/async-storage": "^2.2.0",
         "@rnw-community/shared": "^1.8.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
