@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.63.0](https://github.com/budgie-at/budgie/compare/v1.62.0...v1.63.0) (2025-11-18)
+
+### Bug Fixes
+
+- "use" instead of "useContext" ([17eb34e](https://github.com/budgie-at/budgie/commit/17eb34e9f113c62a6f1e14740870c6e9eecb70f8))
+- add separate theme provider file ([ead94fc](https://github.com/budgie-at/budgie/commit/ead94fcff35c4b191f8982350a128c36658394ab))
+- change import path ([f4c55f7](https://github.com/budgie-at/budgie/commit/f4c55f7b2c1fd35dcfda5420192ac1845a9de295))
+- move intl outside of a format function ([deca9b6](https://github.com/budgie-at/budgie/commit/deca9b631358023d32dfe4fb6b9bf59a1849e359))
+- move intl outside of a format function ([bb41782](https://github.com/budgie-at/budgie/commit/bb417826269ef89331c81781b1f63b36205c4bcc))
+- remove useless util function ([bee58b6](https://github.com/budgie-at/budgie/commit/bee58b6f76474841c97163886fb200cc87310503))
+- rename total-balance to net worth ([745e8ef](https://github.com/budgie-at/budgie/commit/745e8ef34b02b716637762529d3ce31be4eac801))
+- rename total-balance to net worth ([5b57996](https://github.com/budgie-at/budgie/commit/5b5799630c42b40e1d3c61b4667f87673dd39830))
+- resolve comments ([0ce7f44](https://github.com/budgie-at/budgie/commit/0ce7f449de56c600364547d0cf2f68fd3141b4d3))
+- resolve conflicts ([db9c2f2](https://github.com/budgie-at/budgie/commit/db9c2f2f9d37c56fb30f52768d71919891d24496))
+- resolve issues from review ([73e98ad](https://github.com/budgie-at/budgie/commit/73e98ad36d6bc701f75d577a7d5d0a61c8a1ceb4))
+
+### Features
+
+- add account details screen ([406ad01](https://github.com/budgie-at/budgie/commit/406ad010ab0a0fca6aad189e3380257b3ac535c2))
+- add liability account update logic ([6f382ca](https://github.com/budgie-at/budgie/commit/6f382cae2a3999f0d1876078e909e9c838a23728))
+- add liability-account creaion ([8022c52](https://github.com/budgie-at/budgie/commit/8022c52a359de602414658ea1870eaa2e1948ad3))
+- wip ([e56db17](https://github.com/budgie-at/budgie/commit/e56db179107842c86ff689ec0e0d7657d17ae3d4))
+
 # [1.62.0](https://github.com/budgie-at/budgie/compare/v1.61.3...v1.62.0) (2025-11-17)
 
 ### Bug Fixes
