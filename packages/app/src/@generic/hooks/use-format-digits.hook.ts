@@ -5,7 +5,7 @@ import { useI18nContext } from '../../i18n/context/i18n.context';
 export const useFormatDigits = (decimalPlaces: number) => {
     const { intl } = useI18nContext();
 
-    const format = (rawNumeric: string) => {
+    return (rawNumeric: string) => {
         if (!isNotEmptyString(rawNumeric)) {
             return '';
         }
@@ -22,6 +22,4 @@ export const useFormatDigits = (decimalPlaces: number) => {
             maximumFractionDigits: decimalPlaces
         });
     };
-
-    return { format };
 };
