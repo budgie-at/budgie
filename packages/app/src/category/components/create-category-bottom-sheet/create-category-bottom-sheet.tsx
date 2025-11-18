@@ -105,24 +105,21 @@ export const CreateCategoryBottomSheet = ({ ref }: Props) => {
                             <Trans>Icon</Trans>
                         </Text>
 
-                        <IconSelector icon={icon} onSelect={setIcon} />
+                        <IconSelector size={'md'} icon={icon} onSelect={setIcon} />
                     </View>
 
-                    <View className="gap-y-xs">
-                        <Text className={'uppercase text-secondary-foreground text-xs'}>
-                            <Trans>Preview</Trans>
-                        </Text>
 
-                        <Card className={'flex-row items-center gap-x-xl text-sm'}>
-                            <CircleIcon size={'xl'} icon={ICONS.Home} variant={'default'} />
-
-                            <Text className={'text-primary flex-1'}>{title}</Text>
-
-                            <Text className={'text-secondary-foreground text-xs'}>
-                                <Trans>Change</Trans>
+                        <Card className={'gap-y-lg'}>
+                            <Text className={'uppercase text-secondary-foreground text-xs'}>
+                                <Trans>Preview</Trans>
                             </Text>
+
+                            <View className={'flex-row items-center gap-x-xl'}>
+                                <CircleIcon size={'1_5xl'} icon={ICONS[icon]} variant={'default'} />
+
+                                <Text className={'text-primary flex-1'}>{title}</Text>
+                            </View>
                         </Card>
-                    </View>
 
                     <View className={'flex-row gap-x-md pt-md'}>
                         <Pressable className={'bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner'}>
