@@ -1,6 +1,7 @@
 import { AmountInput } from '../../../@generic/components/amount-input/amount-input';
 import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly value: number;
@@ -9,7 +10,8 @@ interface Props {
 }
 
 export const AccountBalanceInput = ({ value, onChange, textClassName }: Props) => {
-    const format = useFormatDigits();
+    const { decimalPlaces } = useSettingsContext();
+    const { format } = useFormatDigits(decimalPlaces);
 
     return (
         <AmountInput

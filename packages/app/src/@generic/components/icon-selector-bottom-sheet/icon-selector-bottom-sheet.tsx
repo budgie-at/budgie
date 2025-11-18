@@ -6,7 +6,7 @@ import { USER_ICONS, UserIcon } from '../../constant/user-icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { FlatListDataItem, mapToFlatListData } from '../../utils/map-to-flatlist-data.util';
+import { FlatListDataItem, padFlatListData } from '../../utils/map-to-flatlist-data.util';
 import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { IconSelectorCard } from '../icon-selector-card/icon-selector-card';
 
@@ -27,7 +27,7 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const { t } = useLingui();
 
     const filteredIcons = USER_ICONS.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
-    const data = mapToFlatListData(filteredIcons);
+    const data = padFlatListData(filteredIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
         onSelect(icon);
