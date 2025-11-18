@@ -3,21 +3,12 @@ import { CurrencyEnum } from '@budgie/contracts';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-
-import { useLocaleInfo } from './use-locale-info.hook';
+import { useI18nContext } from '../context/i18n.context';
 
 export const useFormatMoney = (decimalPlaces: number, currency: CurrencyEnum) => {
-    const { languageCode, regionCode } = useLocaleInfo();
+    const { intl } = useI18nContext();
 
-    const intl = new Intl.NumberFormat(`${languageCode}-${regionCode}`, {
-        currency,
-        style: 'currency',
-        useGrouping: true,
-        minimumFractionDigits: decimalPlaces,
-        maximumFractionDigits: decimalPlaces
-    });
-
-    return (rawAmount: number) => {
+    const format = (rawAmount: number) => {
         const amount = convertFromMicroUnits(rawAmount).toString();
 
         if (!isNotEmptyString(amount)) {
@@ -29,6 +20,13 @@ export const useFormatMoney = (decimalPlaces: number, currency: CurrencyEnum) =>
             return '';
         }
 
-        return intl.format(num);
+        return intl.formatNumber(num, {
+            currency,
+            style: 'currency',
+            maximumFractionDigits: decimalPlaces,
+            minimumFractionDigits: decimalPlaces
+        });
     };
+
+    return { format }
 };
