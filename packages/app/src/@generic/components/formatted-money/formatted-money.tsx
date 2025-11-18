@@ -10,10 +10,11 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
     readonly children: number;
     readonly className?: string;
     readonly decimalPlaces: number;
+    readonly textClassName?: string;
     readonly currency: CurrencyEnum;
 }
 
-export const FormattedMoney = ({ children, className, decimalPlaces, currency, ...rest }: Props) => {
+export const FormattedMoney = ({ children, className, textClassName, decimalPlaces, currency, ...rest }: Props) => {
     const format = useFormatMoney(decimalPlaces, currency);
 
     const formatted = format(children);
