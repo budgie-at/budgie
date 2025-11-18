@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { USER_ICONS, UserIcon } from '../../constant/user-icons.constant';
+import { USER_ICONS_LIST, UserIcon } from '../../constant/user-icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -26,7 +26,7 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const [search, setSearch] = useState('');
     const { t } = useLingui();
 
-    const filteredIcons = USER_ICONS.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
+    const filteredIcons = USER_ICONS_LIST.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
     const data = padFlatListData(filteredIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
