@@ -73,9 +73,13 @@ export { CategoryEntityRelations } from './category/relations/category-entity.re
 
 export type { CategoryEntityInterface } from './category/entity/category-entity.interface';
 export type { CategoryCreateEntityInterface } from './category/entity/category-create-entity.interface';
+export type { CategoryUpdateEntityInterface } from './category/entity/category-update-entity.interface';
 
 export { CategoryEntitySchema } from './category/schema/category-entity.schema';
 export { CategoryCreateEntitySchema } from './category/schema/category-create-entity.schema';
+export { CategoryUpdateEntitySchema } from './category/schema/category-update-entity.schema';
+
+export { CategoryRepository } from './category/repository/category.repository';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
