@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
 
 export const useGetInstrumentsByTypeQuery = (type: InstrumentTypeEnum) => {
-    const { data, updatedAt, error } = useLiveQuery(instrumentRepository.findByType(type));
+    const { data, updatedAt, error } = useLiveQuery(instrumentRepository.findByType(type), [type]);
 
     if (!isDefined(updatedAt)) {
         return {
