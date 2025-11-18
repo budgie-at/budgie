@@ -8,7 +8,7 @@ import { useI18nContext } from '../context/i18n.context';
 export const useFormatMoney = (decimalPlaces: number, currency: CurrencyEnum) => {
     const { intl } = useI18nContext();
 
-    const format = (rawAmount: number) => {
+    return (rawAmount: number) => {
         const amount = convertFromMicroUnits(rawAmount).toString();
 
         if (!isNotEmptyString(amount)) {
@@ -27,6 +27,4 @@ export const useFormatMoney = (decimalPlaces: number, currency: CurrencyEnum) =>
             minimumFractionDigits: decimalPlaces
         });
     };
-
-    return { format }
 };
