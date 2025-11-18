@@ -19,7 +19,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | '
 
 export const AccountCard = ({ icon, title, currentBalance, className, id, instrumentSymbol }: Props) => {
     const { decimalPlaces } = useSettingsContext();
-    const { format } = useFormatDigits(decimalPlaces);
+    const format = useFormatDigits(decimalPlaces);
 
     const navigateToAccount = () => void router.push(`/account/${id}`);
     const navigateToEditAccount = () => void router.push(`/edit-account/${id}`);

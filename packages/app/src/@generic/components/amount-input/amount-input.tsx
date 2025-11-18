@@ -21,7 +21,7 @@ interface Props {
 export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
-    const { format: formatDigits } = useFormatDigits(decimalPlaces);
+    const formatDigits = useFormatDigits(decimalPlaces);
     const { intl } = useI18nContext();
 
     const [displayValue, setDisplayValue] = useState(formatDigits(value === 0 ? '' : value.toString()));

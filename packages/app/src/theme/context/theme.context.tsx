@@ -1,5 +1,5 @@
 import { ThemeEnum } from '@budgie/contracts';
-import React, { createContext } from 'react';
+import React, { createContext, use } from 'react';
 import { Appearance, Platform, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -26,6 +26,8 @@ export const ThemeContext = createContext<ThemeContextInterface>({
     toggleColorSchema: emptyFn,
     isDarkColorSchema: false
 });
+
+export const useThemeContext = () => use(ThemeContext);
 
 export const ThemeProvider = ({ children }: Props) => {
     const { settings } = useSettingsContext();
