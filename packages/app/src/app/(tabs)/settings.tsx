@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 
 import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
@@ -7,6 +8,7 @@ import { Separator } from '../../@generic/components/separator/separator';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
+import { GenericSelectorCard } from '../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../settings/components/locale-selector/locale-selector';
 import { SettingsCard } from '../../settings/components/settings-card/settings-card';
@@ -15,6 +17,8 @@ import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch
 
 export default function SettingsPage() {
     const { t } = useLingui();
+
+    const navigateToCategories = void router.push('/categories');
 
     return (
         <Page>
@@ -37,6 +41,16 @@ export default function SettingsPage() {
                         <LanguageSelector />
                         <DefaultCurrencySelector />
                         <LocaleSelector />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Organization`}>
+                        <GenericSelectorCard
+                            onPress={navigateToCategories}
+                            title={t`Manage Categories`}
+                            description={t`View and delete custom categories`}
+                            icon="Folder"
+                            iconVariant="default"
+                        />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Appearance`}>

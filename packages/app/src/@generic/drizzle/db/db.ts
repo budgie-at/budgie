@@ -1,14 +1,15 @@
 import * as SQLite from 'expo-sqlite';
 import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import {
+    AccountBalanceRepository,
+    AccountRepository,
+    CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
-    SettingsRepository,
-    AccountRepository,
-    AccountBalanceRepository
+    SettingsRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
-import * as schema from './schema'
+import * as schema from './schema';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
@@ -16,11 +17,11 @@ declare global {
 }
 
 const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
-
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
 export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
+export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
