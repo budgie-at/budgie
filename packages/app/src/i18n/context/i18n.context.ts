@@ -1,5 +1,5 @@
 import { IntlShape, createIntl } from '@formatjs/intl';
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 
 import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
 
@@ -11,4 +11,4 @@ export const I18nContext = createContext<I18nContextInterface>({
     intl: createIntl({ locale: DEFAULT_LOCALE.languageTag }),
 });
 
-export const useI18nContext = () => useContext(I18nContext);
+export const useI18nContext = () => use(I18nContext);
