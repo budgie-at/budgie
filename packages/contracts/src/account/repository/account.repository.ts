@@ -54,7 +54,7 @@ export class AccountRepository {
         });
     }
 
-    calculateTotalBalanceInDefaultCurrency(defaultInstrumentId: number) {
+    getTotalBalance(defaultInstrumentId: number) {
         return this.db
             .select({
                 total: sql<number>`

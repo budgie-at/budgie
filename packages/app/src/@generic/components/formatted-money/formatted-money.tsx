@@ -15,7 +15,7 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
 }
 
 export const FormattedMoney = ({ children, className, textClassName, decimalPlaces, currency, ...rest }: Props) => {
-    const format = useFormatMoney(decimalPlaces, currency);
+    const { format } = useFormatMoney(decimalPlaces, currency);
 
     const formatted = format(children);
 
