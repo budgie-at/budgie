@@ -10,6 +10,7 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | 'currentBalance'> {
     readonly className?: string;
@@ -17,7 +18,8 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | '
 }
 
 export const AccountCard = ({ icon, title, currentBalance, className, id, instrumentSymbol }: Props) => {
-    const format = useFormatDigits();
+    const { decimalPlaces } = useSettingsContext();
+    const { format } = useFormatDigits(decimalPlaces);
 
     const navigateToAccount = () => void router.push(`/account/${id}`);
     const navigateToEditAccount = () => void router.push(`/edit-account/${id}`);
