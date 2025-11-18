@@ -5,6 +5,9 @@ export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
+export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant'
+export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant'
+
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';
 export { ExternalSourceEnum } from './account/enum/external-source.enum';
@@ -18,6 +21,10 @@ export { AccountCreateEntitySchema } from './account/schema/account-create-entit
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
+export type { AccountUpdateEntityInterface } from './account/entity/account-update-entity.interface';
+export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
+
+export { AccountRepository } from './account/repository/account.repository';
 
 export { AccountBalanceAssociationEnum } from './account-balance/enum/account-balance-association.enum';
 
@@ -26,9 +33,13 @@ export { AccountBalanceEntityRelations } from './account-balance/relations/accou
 
 export { AccountBalanceEntitySchema } from './account-balance/schema/account-balance-entity.schema';
 export { AccountBalanceCreateEntitySchema } from './account-balance/schema/account-balance-create-entity.schema';
+export { AccountBalanceUpdateEntitySchema } from './account-balance/schema/account-balance-update-entity.schema';
 
 export type { AccountBalanceEntityInterface } from './account-balance/entity/account-balance-entity.interface';
 export type { AccountBalanceCreateEntityInterface } from './account-balance/entity/account-balance-create-entity.interface';
+export type { AccountBalanceUpdateEntityInterface } from './account-balance/entity/account-balance-update-entity.interface';
+
+export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 

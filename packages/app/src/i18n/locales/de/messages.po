@@ -17,9 +17,33 @@ msgstr ""
 msgid "100% Offline & Private"
 msgstr "100% Offline & Privat"
 
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
+msgid "22 icons available"
+msgstr ""
+
 #: src/app/(tabs)/settings.tsx:47
 msgid "About"
 msgstr "Über"
+
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:23
+msgid "Account Name"
+msgstr ""
+
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:26
+msgid "Account Name & Icon"
+msgstr ""
+
+#: src/account/component/update-account-header/update-account-header.tsx:42
+msgid "Account Settings"
+msgstr ""
+
+#: src/account/component/accounts-heading/accounts-heading.tsx:12
+msgid "Accounts"
+msgstr ""
+
+#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
+msgid "Add your first account to start tracking your finances"
+msgstr ""
 
 #: src/app/(tabs)/add-account.tsx:11
 msgid "AddAccount Page"
@@ -53,13 +77,42 @@ msgstr "Analyse Seite"
 msgid "Appearance"
 msgstr "Darstellung"
 
+#: src/account/component/update-liability-account/update-liability-account.tsx:81
+msgid "Archive Account"
+msgstr ""
+
+#: src/account/constant/account-type.constant.ts:6
+msgid "Bank"
+msgstr ""
+
+#: src/@generic/components/currency-selector/currency-selector.tsx:50
+msgid "Base currency"
+msgstr ""
+
 #: src/app/(tabs)/settings.tsx:49
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
+#: src/account/constant/account-type.constant.ts:7
+msgid "Cash"
+msgstr ""
+
+#: src/account/component/create-bank-account/create-bank-account.tsx:9
+#: src/app/(main)/create-account/index.tsx:35
+msgid "Checking Account"
+msgstr ""
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:27
 msgid "Choose a type to get started"
 msgstr "Wählen Sie einen Typ aus, um zu beginnen"
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
+msgid "Choose Icon"
+msgstr ""
+
+#: src/app/(main)/create-account/index.tsx:28
+msgid "Choose the type of account you want to add"
+msgstr ""
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "Choose your main currency"
@@ -73,10 +126,23 @@ msgstr "Wählen Sie Ihre bevorzugte Sprache für Datums- und Zahlenformatierung"
 msgid "Choose your preferred locale for date and number formatting"
 msgstr "Wählen Sie Ihr bevorzugtes Gebietsschema für Datums- und Zahlenformatierung"
 
+#: src/account/constant/account-type.constant.ts:9
+msgid "Crypto"
+msgstr ""
+
+#: src/@generic/components/create-account-currency-field/create-account-currency-field.tsx:16
+msgid "Currency"
+msgstr ""
+
+#: src/account/component/account-balance/account-balance.tsx:19
+msgid "Current Balance"
+msgstr ""
+
 #: src/settings/components/theme-switch/theme-switch.tsx:16
 msgid "Dark Mode"
 msgstr "Dunkler Modus"
 
+#: src/account/constant/account-type.constant.ts:8
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Debt"
 msgstr "Schuld"
@@ -84,6 +150,15 @@ msgstr "Schuld"
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Niederländisch (Niederlande)"
+
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:38
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:32
+msgid "e.g. Savings Account"
+msgstr ""
+
+#: src/app/(main)/create-account/index.tsx:39
+msgid "Emergency fund and savings goals"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -97,9 +172,17 @@ msgstr "Englisch (Vereinigtes Königreich)"
 msgid "English (United States)"
 msgstr "Englisch (Vereinigte Staaten)"
 
+#: src/app/(main)/create-account/index.tsx:33
+msgid "Everyday transactions and spending"
+msgstr ""
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Expense"
 msgstr "Ausgabe"
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:65
+msgid "Fill in the account details"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -124,6 +207,10 @@ msgstr "Deutsch (Deutschland)"
 #: src/settings/components/cents-switch/cents-switch.tsx:20
 msgid "Hide Cents"
 msgstr "Cents ausblenden"
+
+#: src/account/component/create-account-icon-field/update-account-icon-field.tsx:16
+msgid "Icon"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:41
 msgid "Income"
@@ -161,13 +248,29 @@ msgstr "Geld, das Sie ausgeben"
 msgid "Move between accounts"
 msgstr "Zwischen Konten verschieben"
 
+#: src/app/(main)/create-account/index.tsx:21
+msgid "New Account"
+msgstr ""
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:24
 msgid "New Transaction"
 msgstr "Neue Transaktion"
 
+#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:14
+msgid "No accounts yet"
+msgstr ""
+
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
 msgid "No currencies found"
 msgstr "Keine Währungen gefunden"
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
+msgid "No icons"
+msgstr ""
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:70
+msgid "No icons found"
+msgstr ""
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:63
 msgid "No languages found"
@@ -176,6 +279,12 @@ msgstr "Keine Sprachen gefunden"
 #: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:61
 msgid "No locales found"
 msgstr "Keine Gebietsschemata gefunden"
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:53
+#: src/account/component/update-liability-account/update-liability-account.tsx:42
+#: src/account/component/update-liability-account/update-liability-account.tsx:56
+msgid "Please try again later"
+msgstr ""
 
 #: src/i18n/constant/locales.constant.ts:142
 msgid "Polish (Poland)"
@@ -189,9 +298,22 @@ msgstr "Portugiesisch (Portugal)"
 msgid "Privacy"
 msgstr "Datenschutz"
 
+#: src/account/constant/account-type.constant.ts:11
+msgid "Savings"
+msgstr ""
+
+#: src/account/component/create-cash-account/create-cash-account.tsx:9
+#: src/app/(main)/create-account/index.tsx:41
+msgid "Savings Account"
+msgstr ""
+
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
 msgid "Search currencies..."
 msgstr "Währungen durchsuchen..."
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
+msgid "Search icons (e.g., money, travel, food)..."
+msgstr ""
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:58
 msgid "Search languages..."
@@ -221,6 +343,12 @@ msgstr "Einstellungen"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "$1.234,56 statt $1.235 anzeigen"
 
+#: src/account/component/create-liability-account/create-liability-account.tsx:52
+#: src/account/component/update-liability-account/update-liability-account.tsx:41
+#: src/account/component/update-liability-account/update-liability-account.tsx:55
+msgid "Something went wrong"
+msgstr ""
+
 #: src/i18n/constant/languages.constant.ts:31
 msgid "Spanish"
 msgstr "Spanisch"
@@ -229,11 +357,23 @@ msgstr "Spanisch"
 msgid "Spanish (Spain)"
 msgstr "Spanisch (Spanien)"
 
+#: src/account/constant/account-type.constant.ts:10
+msgid "Stocks"
+msgstr ""
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:68
+msgid "Submit"
+msgstr ""
+
 #: src/settings/components/theme-switch/theme-switch.tsx:17
 msgid "Switch between light and dark themes"
 msgstr "Zwischen hellem und dunklem Thema wechseln"
 
-#: src/app/(tabs)/index.tsx:35
+#: src/@generic/components/icon-selector-card-big/icon-selector-card-big.tsx:43
+msgid "Tap to change icon"
+msgstr ""
+
+#: src/@generic/components/total-balance/total-balance.tsx:17
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
 
@@ -255,3 +395,7 @@ msgstr "Versuchen Sie einen anderen Suchbegriff"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Ukrainisch"
+
+#: src/account/component/update-liability-account/update-liability-account.tsx:80
+msgid "Update Account"
+msgstr ""

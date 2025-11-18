@@ -1,14 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
-import { useContext } from 'react';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { ThemedSwitch } from '../../../@generic/components/themed-switch/themed-switch';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { ThemeContext } from '../../../theme/context/theme.context';
+import { useThemeContext } from '../../../theme/context/theme.context';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const ThemeSwitch = () => {
-    const { toggleColorSchema, isDarkColorSchema } = useContext(ThemeContext);
+    const { toggleColorSchema, isDarkColorSchema } = useThemeContext();
     const { t } = useLingui();
 
     return (
