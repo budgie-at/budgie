@@ -1,13 +1,13 @@
-import { TagCreateEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, TagCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { FormBottomSheet } from '../../../@generic/components/form-bottom-sheet/form-bottom-sheet';
+import { FormBottomSheetTitleField } from '../../../@generic/components/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
-import { TagFormTitleField } from '../tag-form-title-field/tag-form-title-field';
 import { TagPreview } from '../tag-preview/tag-preview';
 
 interface Props {
@@ -55,7 +55,12 @@ export const TagFormBottomSheet = ({ ref, tag }: Props) => {
             description={t`Add a new tag to organize your transactions`}
             ref={ref}
         >
-            <TagFormTitleField control={control} />
+            <FormBottomSheetTitleField
+                placeholder={t`e.g., Business, Personal, Vacation`}
+                maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                label={t`Tag Name`}
+                control={control}
+            />
 
             <TagPreview title={title} />
         </FormBottomSheet>
