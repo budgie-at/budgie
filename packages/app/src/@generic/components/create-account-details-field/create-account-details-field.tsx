@@ -16,7 +16,7 @@ export const CreateAccountDetailsField = ({ control }: Props) => {
     const { t } = useLingui();
 
     const renderIconField = ({ field: iconField }: UseControllerReturn<AccountCreateEntityInterface, 'icon'>) => (
-        <IconSelector size={'sm'} icon={iconField.value} onSelect={iconField.onChange} />
+        <IconSelector size="sm" icon={iconField.value} onSelect={iconField.onChange} />
     );
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
