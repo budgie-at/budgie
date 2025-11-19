@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const CategoryBottomSheetFooter = ({onSubmit, onCancel}: Props) => (
-    <View className="flex-row gap-x-md pt-md">
+    <View className="flex-row gap-x-md pt-md px-[20px]">
         <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
             <Text className="text-primary text-center">
                 <Trans>Cancel</Trans>
