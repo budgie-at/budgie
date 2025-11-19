@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.64.0](https://github.com/budgie-at/budgie/compare/v1.63.0...v1.64.0) (2025-11-19)
+
+### Bug Fixes
+
+- remove unused import ([1b41797](https://github.com/budgie-at/budgie/commit/1b417970cdf7c7f577d44510a6ef42cdf92ca6e3))
+- remove useless components ([b5f0aeb](https://github.com/budgie-at/budgie/commit/b5f0aeb4f7b8cd1c98753b59e88811641b0e2d09))
+- remove useless method ([fe31e9f](https://github.com/budgie-at/budgie/commit/fe31e9f738cbdc8bb5d7ef509c35855360e7fa7e))
+- resolve ci ([7100c78](https://github.com/budgie-at/budgie/commit/7100c7843fe694fca878ce4dc1b5f386cc067ce2))
+- resolve review comments ([2cdeeda](https://github.com/budgie-at/budgie/commit/2cdeedaded0a88aa40ebc3bee6e085e24280e45f))
+- update translations ([da0d56d](https://github.com/budgie-at/budgie/commit/da0d56ddc9fef56cbbbf34b395dcd5f2f3872839))
+
+### Features
+
+- add categories screen ([91f270e](https://github.com/budgie-at/budgie/commit/91f270ea2dd6adeaca9e66f0badbf96f1a5b3d32))
+- add categories screen ([a62b130](https://github.com/budgie-at/budgie/commit/a62b130224557664f59dd950fadd333ed6923985))
+- add categories screen ([871f2ad](https://github.com/budgie-at/budgie/commit/871f2adb83a918a0128e1a16b1ebdc4dd6983802))
+- add categories screen ([d5d7bce](https://github.com/budgie-at/budgie/commit/d5d7bce0d677950756f3fda02d17cab73b4e550f))
+- update translations ([6578169](https://github.com/budgie-at/budgie/commit/6578169fe6cc7cf1a9ee67ee167ab2535bb405e0))
+
 # [1.63.0](https://github.com/budgie-at/budgie/compare/v1.62.0...v1.63.0) (2025-11-18)
 
 ### Bug Fixes
