@@ -1,4 +1,4 @@
-import { eq, ilike } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -13,7 +13,7 @@ export class CategoryRepository {
 
     findBySearchQuery(search: string): Promise<CategoryEntityInterface[]> {
         return this.db.query.CategoryEntityTable.findMany({
-            where: ilike(CategoryEntityTable.title, `%${search}%`)
+            where: sql`LOWER(${CategoryEntityTable.title}) LIKE ${`%${ search.toLowerCase()}%`}`
         });
     }
 
