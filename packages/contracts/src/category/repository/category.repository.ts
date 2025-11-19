@@ -19,10 +19,6 @@ export class CategoryRepository {
         });
     }
 
-    findUserCategories(): Promise<CategoryEntityInterface | undefined> {
-        return this.db.query.CategoryEntityTable.findFirst({ where: eq(CategoryEntityTable.isDefault, false) });
-    }
-
     async create(input: CategoryCreateEntityInterface): Promise<CategoryEntityInterface> {
         const [category] = await this.db.insert(CategoryEntityTable).values([input]).returning();
 
