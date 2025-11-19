@@ -4,12 +4,12 @@ import { TextInput } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 
-interface Props extends ComponentProps<typeof TextInput> {
+export interface InputProps extends ComponentProps<typeof TextInput> {
     readonly variant?: 'default' | 'destructive';
     readonly size?: 'sm' | 'md' | 'lg';
 }
 
-const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
+export const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     variants: {
         size: {
             sm: 'h-[36px] px-xl text-md/1',
@@ -23,6 +23,6 @@ const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl', {
     }
 });
 
-export const Input = ({ size = 'sm', variant = 'default', style, ...rest }: Props) => (
+export const Input = ({ size = 'sm', variant = 'default', style, ...rest }: InputProps) => (
     <TextInput {...rest} className={cn(inputVariant({ size, variant }))} />
 );

@@ -1,5 +1,5 @@
 import { CategoryCreateEntityInterface } from '@budgie/contracts';
-import { BottomSheetFooter as GorhomBottomSheetFooter } from '@gorhom/bottom-sheet';
+import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { ComponentProps, RefObject } from 'react';
 import { View } from 'react-native';
@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { BottomSheetFooter } from '../../../@generic/components/bottom-sheet-footer/bottom-sheet-footer';
 import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetView } from '../../../@generic/components/bottom-sheet-view/bottom-sheet-view';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
@@ -45,7 +44,7 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
         }
     };
 
-    const renderFooter = (props: ComponentProps<typeof GorhomBottomSheetFooter>) => (
+    const renderFooter = (props: ComponentProps<typeof BottomSheetFooter>) => (
         <BottomSheetFooter {...props}>
             <CategoryBottomSheetFooter onCancel={handleCancel} onSubmit={handleSubmit(createCategory)} />
         </BottomSheetFooter>
@@ -53,27 +52,29 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
 
     return (
         <BottomSheet footerComponent={renderFooter} onDismiss={reset} ref={ref}>
-            <BottomSheetView className="px-5xl pb-[70px]">
-                <View className="bg-secondary-background p-xl rounded-3xl mx-auto mb-3xl border border-secondary-corner">
-                    <Icon icon={ICONS.FolderOpen} className="text-primary" size={28} />
-                </View>
+            <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+                <View className="px-5xl pb-[100px]">
+                    <View className="bg-secondary-background p-xl rounded-3xl mx-auto mb-3xl border border-secondary-corner">
+                        <Icon icon={ICONS.FolderOpen} className="text-primary" size={28} />
+                    </View>
 
-                <View className="mb-10">
-                    <BottomSheetHeader
-                        size="lg"
-                        align="center"
-                        title={t`Create Category`}
-                        description={t`Add a new category to organize your transactions`}
-                    />
-                </View>
+                    <View className="mb-10">
+                        <BottomSheetHeader
+                            size="lg"
+                            align="center"
+                            title={t`Create Category`}
+                            description={t`Add a new category to organize your transactions`}
+                        />
+                    </View>
 
-                <View className="gap-y-3xl">
-                    <CategoryFormTitleField control={control} />
-                    <CategoryFormIconField control={control} />
+                    <View className="gap-y-3xl">
+                        <CategoryFormTitleField control={control} />
+                        <CategoryFormIconField control={control} />
 
-                    <CategoryPreview icon={icon} title={title} />
+                        <CategoryPreview icon={icon} title={title} />
+                    </View>
                 </View>
-            </BottomSheetView>
+            </BottomSheetScrollView>
         </BottomSheet>
     );
 };
