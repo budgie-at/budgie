@@ -66,6 +66,9 @@ export type { InstrumentCreateEntityInterface } from './instrument/entity/instru
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
+export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant'
+export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant'
+
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
 export { CategoryEntityTable } from './category/table/category-entity.table';

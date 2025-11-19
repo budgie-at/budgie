@@ -5,8 +5,8 @@ import { Keyboard, View } from 'react-native';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IconSelectorBottomSheet } from '../icon-selector-bottom-sheet/icon-selector-bottom-sheet';
 import { IconSelectorCardBig } from '../icon-selector-card-big/icon-selector-card-big';
-import { IconSelectorCardSmall } from '../icon-selector-card-small/icon-selector-card-small';
 import { IconSelectorCardMedium } from '../icon-selector-card-medium/icon-selector-card-medium';
+import { IconSelectorCardSmall } from '../icon-selector-card-small/icon-selector-card-small';
 
 interface Props {
     readonly size: 'sm' | 'md' | 'lg';
