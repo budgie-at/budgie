@@ -1,17 +1,15 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { CategoryEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { RefObject, useState } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../@generic/components/icon/icon';
-import { Page } from '../../@generic/components/page/page';
-import { ICONS } from '../../@generic/constant/icons.constant';
-import { CategoriesList } from '../../category/components/categories-list/categories-list';
-import { CreateCategory } from '../../category/components/create-category/create-category';
-import { CustomCategoriesEmptyState } from '../../category/components/custom-categories-empty-state/custom-categories-empty-state';
+import { DeletableRow } from '../../@generic/components/deletable-row/deletable-row';
+import { SearchablePage } from '../../@generic/components/searchable-page/searchable-page';
+import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
+import { CategoryCard } from '../../category/components/category-card/category-card';
+import { CategoryFormBottomSheet } from '../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
 import { useGetCategoriesLiveQuery } from '../../category/query/use-get-categories.live-query';
 
 export default function Categories() {
@@ -19,34 +17,35 @@ export default function Categories() {
     const [search, setSearch] = useState('');
     const { categories } = useGetCategoriesLiveQuery(search, false);
 
-    const goBack = () => void router.back();
+    const handleDeleteCategory = async (id: number) => {
+        await categoryRepository.deleteById(id);
+    };
+
+    const renderCard = (category: CategoryEntityInterface, onOpen: (category: CategoryEntityInterface) => void) => (
+        <DeletableRow id={category.id} onDelete={handleDeleteCategory}>
+            <CategoryCard onOpen={onOpen} category={category} />
+        </DeletableRow>
+    );
+
+    const renderBottomSheet = (category: CategoryEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => <CategoryFormBottomSheet ref={ref} category={category} />
+
+    const icon = isNotEmptyString(search) ? 'Search' : 'Folder';
+    const title = isNotEmptyString(search) ? t`No Results` : t`No Custom Categories`;
+    const description = isNotEmptyString(search) ? t`No categories match your search` : t`Custom categories you create will appear here`;
 
     return (
-        <Page
-            header={
-                <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
-                    <View className="flex-row items-center justify-between mb-7xl">
-                        <Text className="text-6xl text-primary">
-                            <Trans>Categories</Trans>
-                        </Text>
-
-                        <HapticPressable onPress={goBack}>
-                            <Icon icon={ICONS.X} />
-                        </HapticPressable>
-                    </View>
-
-                    <TextInput
-                        value={search}
-                        onChangeText={setSearch}
-                        placeholder={t`Search categories...`}
-                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                </View>
-            }
-        >
-            {isNotEmptyArray(categories) ? <CategoriesList categories={categories} /> : <CustomCategoriesEmptyState search={search} />}
-
-            <CreateCategory />
-        </Page>
+        <SearchablePage
+            onDelete={handleDeleteCategory}
+            title={t`Categories`}
+            searchPlaceholder={t`Search categories...`}
+            data={categories}
+            renderBottomSheet={renderBottomSheet}
+            renderCard={renderCard}
+            search={search}
+            onSearchChange={setSearch}
+            emptyStateTitle={title}
+            emptyStateIcon={icon}
+            emptyStateDescription={description}
+        />
     );
 }
