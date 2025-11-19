@@ -1,24 +1,51 @@
 import {
+    AlertTriangle,
     ArrowRightLeft,
+    Baby,
+    Banknote,
     Bitcoin,
+    Briefcase,
+    Building2,
+    Bus,
+    Car,
     ChartNoAxesColumn,
     ChevronRight,
+    CircleDot,
     CreditCard,
+    Dumbbell,
+    FileText,
+    Gift,
+    GraduationCap,
+    HeartPulse,
     Home,
+    Landmark,
     LucideIcon,
+    PawPrint,
+    PiggyBank,
+    Plane,
     Plus,
+    Popcorn,
     Receipt,
+    Repeat,
     Settings,
+    ShieldCheck,
+    Shirt,
+    ShoppingBag,
+    ShoppingBasket,
+    Smartphone,
+    Sparkles,
     TrendingDown,
     TrendingUp,
-    Wallet
+    Utensils,
+    Wallet,
+    Wrench
 } from 'lucide-react-native';
 
 import { typedObjectEntries } from '../utils/typed-object-entries.util';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
-const icons: Record<UserIconNameEnum, LucideIcon> = {
+const USER_ICONS: Record<UserIconNameEnum, LucideIcon> = {
     Home,
     Receipt,
     ChartNoAxesColumn,
@@ -30,10 +57,37 @@ const icons: Record<UserIconNameEnum, LucideIcon> = {
     ChevronRight,
     CreditCard,
     Bitcoin,
-    Wallet
+    Wallet,
+    ShoppingBasket,
+    Utensils,
+    Bus,
+    Car,
+    HeartPulse,
+    ShieldCheck,
+    PiggyBank,
+    Banknote,
+    Briefcase,
+    ShoppingBag,
+    Repeat,
+    Popcorn,
+    GraduationCap,
+    Gift,
+    Baby,
+    PawPrint,
+    Sparkles,
+    Plane,
+    Building2,
+    FileText,
+    Landmark,
+    Wrench,
+    Smartphone,
+    Dumbbell,
+    Shirt,
+    CircleDot,
+    AlertTriangle,
 };
 
-export const USER_ICONS: UserIcon[] = typedObjectEntries(icons).map(([name, icon]) => ({ name, icon }));
+export const USER_ICONS_LIST: UserIcon[] = typedObjectEntries(USER_ICONS).map(([name, icon]) => ({ name, icon }));
 
 export interface UserIcon {
     name: UserIconNameEnum;

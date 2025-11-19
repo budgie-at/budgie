@@ -33,7 +33,8 @@ CREATE TABLE `categories` (
 	`deletedAt` integer,
 	`title` text DEFAULT '' NOT NULL,
 	`icon` text NOT NULL,
-	`parent_id` integer
+	`parent_id` integer,
+	`is_default` integer DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `exchange_rates` (
@@ -81,6 +82,22 @@ CREATE TABLE `tags` (
 	`updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
 	`deletedAt` integer,
 	`title` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `transactions` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`createdAt` integer DEFAULT (unixepoch()) NOT NULL,
+	`updatedAt` integer DEFAULT (unixepoch()) NOT NULL,
+	`deletedAt` integer,
+	`type` text NOT NULL,
+	`title` text NOT NULL,
+	`external_id` text,
+	`operated_at` text NOT NULL,
+	`comment` text DEFAULT '' NOT NULL,
+	`to_account_id` integer,
+	`from_account_id` integer,
+	`exchange_rate` real NOT NULL,
+	`external_source` text
 );
 --> statement-breakpoint
 CREATE TABLE `transaction_entries` (
@@ -143,4 +160,38 @@ INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 --> statement-breakpoint
 -- Seed default settings
 INSERT INTO `settings` (`locale`, `language`, `default_account_id`, `default_instrument_id`, `theme`, `show_cents`, `is_vibration_enabled`) VALUES
-('en-US', 'en', null, 1, 'SYSTEM', true, true);
+    ('en-US', 'en', null, 1, 'SYSTEM', true, true);
+--> statement-breakpoint
+-- Seed default categories
+INSERT INTO `categories` (`is_default`, `title`, `icon`, `parent_id`)
+VALUES
+    (true, 'Housing & Utilities',        'Home',                 NULL),
+    (true, 'Groceries',                  'ShoppingBasket',       NULL),
+    (true, 'Restaurants & Cafes',        'Utensils',             NULL),
+    (true, 'Transportation',             'Bus',                  NULL),
+    (true, 'Car & Fuel',                 'Car',                  NULL),
+    (true, 'Health & Medical',           'HeartPulse',           NULL),
+    (true, 'Insurance',                  'ShieldCheck',          NULL),
+    (true, 'Debt Payments',              'CreditCard',           NULL),
+    (true, 'Savings',                    'PiggyBank',            NULL),
+    (true, 'Investments',                'TrendingUp',           NULL),
+    (true, 'Salary & Wages',             'Banknote',             NULL),
+    (true, 'Freelance & Side Hustle',    'Briefcase',            NULL),
+    (true, 'Shopping',                   'ShoppingBag',          NULL),
+    (true, 'Subscriptions',              'Repeat',               NULL),
+    (true, 'Entertainment',              'Popcorn',              NULL),
+    (true, 'Education',                  'GraduationCap',        NULL),
+    (true, 'Gifts & Donations',          'Gift',                 NULL),
+    (true, 'Family & Kids',              'Baby',                 NULL),
+    (true, 'Pets',                       'PawPrint',             NULL),
+    (true, 'Travel',                     'Plane',                NULL),
+    (true, 'Business Expenses',          'Building2',            NULL),
+    (true, 'Taxes',                      'FileText',             NULL),
+    (true, 'Bank Fees & Charges',        'Landmark',             NULL),
+    (true, 'Home Maintenance',           'Wrench',               NULL),
+    (true, 'Personal Care',              'Sparkles',             NULL),
+    (true, 'Electronics & Gadgets',      'Smartphone',           NULL),
+    (true, 'Sport & Fitness',            'Dumbbell',             NULL),
+    (true, 'Clothing & Accessories',     'Shirt',                NULL),
+    (true, 'Other',                      'CircleDot',            NULL),
+    (true, 'Emergency Fund',             'AlertTriangle',        NULL);

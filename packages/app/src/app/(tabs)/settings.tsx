@@ -1,12 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { View } from 'react-native';
 
+import { AnimatedHeaderedScrollView } from '../../@generic/components/animated-headered-scroll-view/animated-headered-scroll-view';
 import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
 import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
+import { GenericSelectorCard } from '../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../settings/components/locale-selector/locale-selector';
 import { SettingsCard } from '../../settings/components/settings-card/settings-card';
@@ -16,14 +19,14 @@ import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch
 export default function SettingsPage() {
     const { t } = useLingui();
 
+    const navigateToCategories = () => void router.push('/(main)/categories');
+
     return (
         <Page>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Text className="text-primary text-6xl mb-lg">{t`Settings`}</Text>
-
+            <AnimatedHeaderedScrollView title={t`Settings`}>
                 <Separator />
 
-                <View className={'py-5xl gap-y-7xl'}>
+                <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
                             className="items-baseline"
@@ -37,6 +40,16 @@ export default function SettingsPage() {
                         <LanguageSelector />
                         <DefaultCurrencySelector />
                         <LocaleSelector />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Organization`}>
+                        <GenericSelectorCard
+                            onPress={navigateToCategories}
+                            title={t`Manage Categories`}
+                            description={t`View and delete custom categories`}
+                            icon="Folder"
+                            iconVariant="default"
+                        />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Appearance`}>
@@ -53,7 +66,7 @@ export default function SettingsPage() {
                         />
                     </SettingsGroup>
                 </View>
-            </ScrollView>
+            </AnimatedHeaderedScrollView>
         </Page>
     );
 }

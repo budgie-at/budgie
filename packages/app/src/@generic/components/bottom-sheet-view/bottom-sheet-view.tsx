@@ -1,24 +1,21 @@
 import { BottomSheetView as GorhomBottomSheetView } from '@gorhom/bottom-sheet';
-import { styled } from 'nativewind';
 import { ComponentProps } from 'react';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props extends ComponentProps<typeof GorhomBottomSheetView> {
     readonly className?: string;
+    readonly hasFooter?: boolean;
 }
 
-const Wrapper = styled(GorhomBottomSheetView, {
-    className: 'style'
-});
-
-export const BottomSheetView = ({ children, ...rest }: Props) => {
+export const BottomSheetView = ({ children, hasFooter, className, ...rest }: Props) => {
     const { bottom } = useSafeAreaInsets();
 
-    const style = { paddingBottom: bottom, paddingInline: 20 };
+    const style = { paddingBottom: bottom };
 
     return (
-        <Wrapper style={style} {...rest}>
-            {children}
-        </Wrapper>
+        <GorhomBottomSheetView style={style} {...rest}>
+            <View className={className}>{children}</View>
+        </GorhomBottomSheetView>
     );
 };

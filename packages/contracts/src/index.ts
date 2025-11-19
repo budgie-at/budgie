@@ -66,6 +66,9 @@ export type { InstrumentCreateEntityInterface } from './instrument/entity/instru
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
+export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant'
+export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant'
+
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
 export { CategoryEntityTable } from './category/table/category-entity.table';
@@ -73,9 +76,13 @@ export { CategoryEntityRelations } from './category/relations/category-entity.re
 
 export type { CategoryEntityInterface } from './category/entity/category-entity.interface';
 export type { CategoryCreateEntityInterface } from './category/entity/category-create-entity.interface';
+export type { CategoryUpdateEntityInterface } from './category/entity/category-update-entity.interface';
 
 export { CategoryEntitySchema } from './category/schema/category-entity.schema';
 export { CategoryCreateEntitySchema } from './category/schema/category-create-entity.schema';
+export { CategoryUpdateEntitySchema } from './category/schema/category-update-entity.schema';
+
+export { CategoryRepository } from './category/repository/category.repository';
 
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';

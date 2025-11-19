@@ -1,9 +1,9 @@
+import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+
 import { CategoryEntitySchema } from './category-entity.schema';
 
-export const CategoryCreateEntitySchema = CategoryEntitySchema.pick({
-    parentId: true,
-    title: true,
-    icon: true
+export const CategoryCreateEntitySchema = convertToCreateEntitySchema(CategoryEntitySchema).omit({
+    isDefault: true
 }).partial({
-    parentId: true
+    parentId: true,
 });
