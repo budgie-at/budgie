@@ -4,6 +4,7 @@ import { ClassValue } from 'clsx';
 import { Text, View } from 'react-native';
 
 import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
+import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -31,14 +32,7 @@ const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondar
 
 const iconVariant = cva<{ variant: Record<ColorPaletteVariant, ClassValue>; isSelected: Record<'false', ClassValue> }>('', {
     variants: {
-        variant: {
-            positive: 'text-positive-foreground',
-            destructive: 'text-destructive-foreground',
-            warning: 'text-warning-foreground',
-            'dark-warning': 'text-dark-warning-foreground',
-            default: 'text-default-foreground',
-            ghost: 'text-ghost-foreground'
-        },
+        variant: BACKGROUND_COLOR_PALETTE,
         isSelected: { false: 'text-primary' }
     },
     compoundVariants: [
