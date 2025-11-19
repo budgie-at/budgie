@@ -1,10 +1,11 @@
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { Pressable, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { HapticPressable } from '../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { NetWorth } from '../../@generic/components/total-balance/net-worth';
@@ -28,9 +29,9 @@ export default function HomePage() {
     return (
         <Page>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <Pressable className="items-end p-md" onPress={navigateToSettings}>
+                <HapticPressable className="items-end p-md" onPress={navigateToSettings}>
                     <Icon className="text-primary" icon={ICONS.Settings} size={16} />
-                </Pressable>
+                </HapticPressable>
 
                 <NetWorth />
                 <AccountsHeading />
