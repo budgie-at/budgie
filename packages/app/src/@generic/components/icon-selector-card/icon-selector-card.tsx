@@ -20,7 +20,7 @@ interface Props {
     readonly icon: IconType;
 }
 
-const selectorVariants = cva(`flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md`, {
+const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md', {
     variants: {
         isSelected: {
             true: 'bg-secondary-background border-secondary-corner',

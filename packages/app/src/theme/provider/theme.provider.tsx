@@ -1,6 +1,6 @@
 import { ThemeEnum } from '@budgie/contracts';
 import React from 'react';
-import { Appearance, Platform, View } from 'react-native';
+import { Appearance, Platform, StatusBar, View } from 'react-native';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
@@ -19,6 +19,8 @@ export const ThemeProvider = ({ children }: Props) => {
     const isDarkColorSchema = settings.theme === ThemeEnum.DARK;
 
     const colorScheme = isDarkColorSchema ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+
+    const barStyle = isDarkColorSchema ? 'light-content' : 'dark-content';
 
     const toggleColorSchema = async () => {
         const newColorScheme = colorScheme === ColorSchemaEnum.Dark ? ColorSchemaEnum.Light : ColorSchemaEnum.Dark;
@@ -39,6 +41,7 @@ export const ThemeProvider = ({ children }: Props) => {
 
     return (
         <ThemeContext.Provider value={contextValue}>
+            <StatusBar barStyle={barStyle} />
             <View className={`flex-1 ${isDarkColorSchema ? 'dark' : 'light'}`}>{children}</View>
         </ThemeContext.Provider>
     );
