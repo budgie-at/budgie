@@ -57,7 +57,7 @@ export const IconDisplayCard = (props: Props) => {
 
             {size === 'sm' ? null : (
                 <>
-                    <View className="gap-y-xs flex-1">
+                    <View className={'gap-y-xs flex-1'}>
                         <Text className="text-primary font-medium text-sm">{icon}</Text>
 
                         {isNotEmptyString(description) && <Text className="text-sm text-secondary-foreground">{description}</Text>}
