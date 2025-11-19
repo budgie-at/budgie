@@ -26,7 +26,7 @@ export const CreateTag = () => {
                 </Animated.View>
             </View>
 
-            <TagFormBottomSheet ref={ref} category={null} />
+            <TagFormBottomSheet ref={ref} tag={null} />
         </>
     );
 };

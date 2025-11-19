@@ -14,8 +14,8 @@ export const TagPreview = ({ title }: Props) => (
         </Text>
 
         <View className="flex-row items-center gap-x-xl">
-            <View className={'h-[40px] w-[40px] rounded-full bg-destructive-background border-2 border-destructive-corner items-center justify-center'}>
-                <View className={'w-[12px] h-[12px] rounded-full bg-destructive-foreground'} />
+            <View className="h-[40px] w-[40px] rounded-full bg-destructive-background border-2 border-destructive-corner items-center justify-center">
+                <View className="w-[12px] h-[12px] rounded-full bg-destructive-foreground" />
             </View>
 
             <Text className="text-primary flex-1">{title}</Text>

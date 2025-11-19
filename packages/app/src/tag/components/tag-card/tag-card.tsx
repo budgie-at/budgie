@@ -14,8 +14,8 @@ export const TagCard = ({ onOpen, tag }: Props) => {
 
     return (
         <Card onPress={handleOpen} className="flex-row gap-x-xl items-center">
-            <View className={'h-[40px] w-[40px] rounded-full bg-destructive-background border-2 border-destructive-corner items-center justify-center'}>
-                <View className={'w-[12px] h-[12px] rounded-full bg-destructive-foreground'} />
+            <View className="h-[40px] w-[40px] rounded-full bg-destructive-background border-2 border-destructive-corner items-center justify-center">
+                <View className="w-[12px] h-[12px] rounded-full bg-destructive-foreground" />
             </View>
 
             <Text className="text-primary text-sm">{tag.title}</Text>
