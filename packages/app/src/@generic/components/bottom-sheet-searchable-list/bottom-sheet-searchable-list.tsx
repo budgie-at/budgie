@@ -3,6 +3,7 @@ import { JSX, RefObject } from 'react';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFlatList } from '../bottom-sheet-flat-list/bottom-sheet-flat-list';
@@ -18,6 +19,7 @@ interface SearchableListBottomSheetProps<T> {
     readonly title: string;
     readonly description: string;
     readonly search: string;
+    readonly align?: BottomSheetHeaderAlign;
     readonly onSearchChange: (value: string) => void;
     readonly searchPlaceholder: string;
 
@@ -38,6 +40,7 @@ interface SearchableListBottomSheetProps<T> {
 
 export const SearchableListBottomSheet = <T,>({
     ref,
+    align,
     snapPoints,
     index,
     title,
@@ -56,7 +59,7 @@ export const SearchableListBottomSheet = <T,>({
 
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
-            <BottomSheetHeader title={title} description={description} />
+            <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
             <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
 

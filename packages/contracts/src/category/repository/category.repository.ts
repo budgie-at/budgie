@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -11,9 +11,11 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class CategoryRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    findBySearchQuery(search: string): Promise<CategoryEntityInterface[]> {
+    findBySearchQuery(search: string, includeDefault: boolean) {
+        const searchQuery = sql`LOWER (${CategoryEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`;
+
         return this.db.query.CategoryEntityTable.findMany({
-            where: sql`LOWER(${CategoryEntityTable.title}) LIKE ${`%${ search.toLowerCase()}%`}`
+            where: includeDefault ? searchQuery : and(searchQuery, eq(CategoryEntityTable.isDefault, false))
         });
     }
 

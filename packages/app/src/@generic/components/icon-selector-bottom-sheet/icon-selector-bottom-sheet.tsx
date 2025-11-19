@@ -59,7 +59,6 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
         <SearchableListBottomSheet
             ref={ref}
             snapPoints={snapPoints}
-            index={1}
             title={t`Choose Icon`}
             description={t`22 icons available`}
             onSearchChange={setSearch}

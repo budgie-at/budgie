@@ -1,7 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { AnimatedHeaderedScrollView } from '../../@generic/components/animated-headered-scroll-view/animated-headered-scroll-view';
 import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
@@ -18,16 +19,14 @@ import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch
 export default function SettingsPage() {
     const { t } = useLingui();
 
-    const navigateToCategories = void router.push('/categories');
+    const navigateToCategories = () => void router.push('/(main)/categories');
 
     return (
         <Page>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Text className="text-primary text-6xl mb-lg">{t`Settings`}</Text>
-
+            <AnimatedHeaderedScrollView title={t`Settings`}>
                 <Separator />
 
-                <View className={'py-5xl gap-y-7xl'}>
+                <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
                             className="items-baseline"
@@ -67,7 +66,7 @@ export default function SettingsPage() {
                         />
                     </SettingsGroup>
                 </View>
-            </ScrollView>
+            </AnimatedHeaderedScrollView>
         </Page>
     );
 }

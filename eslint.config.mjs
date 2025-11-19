@@ -337,7 +337,13 @@ export default defineConfig(
         },
         rules: {
             '@rnw-community/no-complex-jsx-logic': 'error',
-
+            'react/jsx-curly-brace-presence': [
+                'error',
+                {
+                    props: 'never',
+                    children: 'never',
+                }
+            ],
             'react/react-in-jsx-scope': 'off',
             'react/jsx-curly-newline': 'off',
             'react/display-name': 'off',

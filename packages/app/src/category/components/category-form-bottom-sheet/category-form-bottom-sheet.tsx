@@ -1,10 +1,11 @@
-import { CategoryCreateEntitySchema, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryCreateEntitySchema } from '@budgie/contracts';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { RefObject } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { prettifyError } from 'zod';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
@@ -17,44 +18,36 @@ import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { CategoryBottomSheetFooter } from '../category-bottom-sheet-footer/category-bottom-sheet-footer';
 import { CategoryPreview } from '../category-preview/category-preview';
+import { useCategoryForm } from '../../hooks/use-category-form.hook';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly category: CategoryEntityInterface | null;
+    readonly category: CategoryCreateEntityInterface | null;
 }
 
-export const CreateCategoryBottomSheet = ({ ref, category }: Props) => {
+export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
     const { t } = useLingui();
-    const [icon, setIcon] = useState(category?.icon ?? UserIconNameEnum.Home);
-    const [title, setTitle] = useState(category?.title ?? '');
+
+    const { control, handleSubmit, reset, icon, title } = useCategoryForm(category);
 
     const handleCancel = () => void ref.current?.close();
 
-    const handleSubmit = async () => {
-        const parsed = CategoryCreateEntitySchema.safeParse({
-            title,
-            icon: 'Home'
-        });
-
-        if (parsed.success) {
-            await categoryRepository.create(parsed.data);
-
-            setTitle('');
-
+    const createCategory = async (values: CategoryCreateEntityInterface) => {
+        try {
+            await categoryRepository.create(values);
+            reset();
             ref.current?.close();
-        } else {
+        } catch {
             Toast.show({
                 type: 'error',
                 text1: t`Could not create category`,
-                text2: prettifyError(parsed.error)
+                text2: t`Please try again later`
             });
         }
     };
 
-    const handleDismiss = () => void setTitle('');
-
     return (
-        <BottomSheet onDismiss={handleDismiss} ref={ref}>
+        <BottomSheet onDismiss={reset} ref={ref}>
             <BottomSheetView>
                 <View className="bg-secondary-background p-xl rounded-3xl mx-auto mb-3xl border border-secondary-corner">
                     <Icon icon={ICONS.FolderOpen} className="text-primary" size={28} />
@@ -70,22 +63,35 @@ export const CreateCategoryBottomSheet = ({ ref, category }: Props) => {
                 </View>
 
                 <View className="gap-y-3xl">
-                    <FormItem label={t`Category Name`}>
-                        <BottomSheetTextInput
-                            value={title}
-                            onChangeText={setTitle}
-                            placeholder={t`Search categories...`}
-                            className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                        />
-                    </FormItem>
+                    <Controller
+                        name="title"
+                        control={control}
+                        render={({ field: { value, onChange }, fieldState: { error } }) => (
+                            <FormItem label={t`Category Name`} error={error?.message}>
+                                <BottomSheetTextInput
+                                    value={value}
+                                    onChangeText={onChange}
+                                    placeholder={t`Category name`}
+                                    maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                                    className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                                />
+                            </FormItem>
+                        )}
+                    />
 
-                    <FormItem label={t`Icon`}>
-                        <IconSelector size="md" icon={icon} onSelect={setIcon} />
-                    </FormItem>
+                    <Controller
+                        name="icon"
+                        control={control}
+                        render={({ field: { value, onChange }, fieldState: { error } }) => (
+                            <FormItem label={t`Icon`} error={error?.message}>
+                                <IconSelector size="md" icon={value} onSelect={onChange} />
+                            </FormItem>
+                        )}
+                    />
 
                     <CategoryPreview icon={icon} title={title} />
 
-                    <CategoryBottomSheetFooter onCancel={handleCancel} onSubmit={handleSubmit} />
+                    <CategoryBottomSheetFooter onCancel={handleCancel} onSubmit={handleSubmit(createCategory)} />
                 </View>
             </BottomSheetView>
         </BottomSheet>
