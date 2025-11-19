@@ -13,8 +13,7 @@
         "start": "expo start --dev-client -c",
         "ts": "run -T tsc -p .",
         "web": "expo start --web",
-        "db:generate": "drizzle-kit generate",
-        "db:reset": "drizzle-kit reset"
+        "db:generate": "drizzle-kit generate"
     },
     "resolutions": {
         "lightningcss": "1.30.1"
