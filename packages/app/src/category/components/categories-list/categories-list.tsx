@@ -18,6 +18,8 @@ interface Props {
 const safeEdges = ['bottom'] as const;
 const listFooter = <SafeAreaView edges={safeEdges} />;
 
+const keyExtractor = (category: CategoryEntityInterface) => category.id.toString();
+
 export const CategoriesList = ({ categories }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const [category, setCategory] = useState<CategoryEntityInterface | null>(null);
@@ -39,8 +41,6 @@ export const CategoriesList = ({ categories }: Props) => {
         </DeletableRow>
     );
 
-    const keyExtractor = (category: CategoryEntityInterface) => category.id.toString();
-
     const style = { paddingTop: 30, rowGap: 20 };
 
     return (
@@ -51,7 +51,7 @@ export const CategoriesList = ({ categories }: Props) => {
                 contentContainerStyle={style}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
-                listFooterComponent={listFooter}
+                ListFooterComponent={listFooter}
             />
 
             <CategoryFormBottomSheet category={category} ref={ref} />
