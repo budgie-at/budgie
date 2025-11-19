@@ -16,20 +16,22 @@ export default function Categories() {
     const { categories } = useGetCategoriesLiveQuery(search, false);
 
     return (
-        <Page>
-            <View className="pb-7xl border-b border-b-secondary-corner">
-                <Text className="text-6xl text-primary mb-7xl">
-                    <Trans>Categories</Trans>
-                </Text>
+        <Page
+            header={
+                <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
+                    <Text className="text-6xl text-primary mb-7xl">
+                        <Trans>Categories</Trans>
+                    </Text>
 
-                <TextInput
-                    value={search}
-                    onChangeText={setSearch}
-                    placeholder={t`Search categories...`}
-                    className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                />
-            </View>
-
+                    <TextInput
+                        value={search}
+                        onChangeText={setSearch}
+                        placeholder={t`Search categories...`}
+                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                    />
+                </View>
+            }
+        >
             {isNotEmptyArray(categories) ? <CategoriesList categories={categories} /> : <CustomCategoriesEmptyState search={search} />}
 
             <CreateCategory />
