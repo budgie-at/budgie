@@ -1,4 +1,5 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
@@ -17,6 +18,9 @@ export const CategoryCard = ({ onOpen, category }: Props) => {
         <Card onPress={handleOpen} className="flex-row gap-x-xl items-center">
             <CircleIcon icon={ICONS[category.icon]} size="xl" variant="default" />
             <Text className="text-primary text-sm">{category.title}</Text>
+            <Text className="text-secondary-foreground font-medium text-xs ml-auto">
+                <Trans>Swipe left</Trans>
+            </Text>
         </Card>
     );
 };

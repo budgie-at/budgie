@@ -1,8 +1,8 @@
 import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface } from '@budgie/contracts';
-import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
+import { BottomSheetTextInput } from '../../../@generic/components/bottom-sheet-input/bottom-sheet-view';
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { Shake } from '../../../@generic/components/shake/shake';
 
