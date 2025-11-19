@@ -5,8 +5,8 @@ export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
-export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant'
-export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant'
+export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
+export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
 
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';
@@ -48,9 +48,13 @@ export { TagEntityRelations } from './tag/relations/tag-entity.relations';
 
 export type { TagEntityInterface } from './tag/entity/tag-entity.interface';
 export type { TagCreateEntityInterface } from './tag/entity/tag-create-entity.interface';
+export type { TagUpdateEntityInterface } from './tag/entity/tag-update-entity.interface';
 
 export { TagEntitySchema } from './tag/schema/tag-entity.schema';
 export { TagCreateEntitySchema } from './tag/schema/tag-create-entity.schema';
+export { TagUpdateEntitySchema } from './tag/schema/tag-update-entity.schema';
+
+export { TagRepository } from './tag/repository/tag.repository';
 
 export { InstrumentTypeEnum } from './instrument/enum/instrument-type.enum';
 export { InstrumentAssociationEnum } from './instrument/enum/instrument-association.enum';
@@ -66,8 +70,8 @@ export type { InstrumentCreateEntityInterface } from './instrument/entity/instru
 
 export { InstrumentRepository } from './instrument/repository/instrument.repository';
 
-export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant'
-export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant'
+export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
+export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 
 export { CategoryAssociationEnum } from './category/enum/category-association.enum';
 
@@ -166,7 +170,7 @@ export { SettingsCreateEntitySchema } from './settings/schema/settings-create-en
 export type { SettingsEntityInterface } from './settings/entity/settings-entity.interface';
 export type { SettingsCreateEntityInterface } from './settings/entity/settings-create-entity.interface';
 
-export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/entity/settings-with-default-instrument-entity.interface'
+export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/entity/settings-with-default-instrument-entity.interface';
 
 export { SettingsRepository } from './settings/repository/settings.repository';
 
