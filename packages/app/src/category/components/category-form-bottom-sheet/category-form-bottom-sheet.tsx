@@ -1,14 +1,14 @@
-import { CategoryCreateEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { FormBottomSheet } from '../../../@generic/components/form-bottom-sheet/form-bottom-sheet';
+import { FormBottomSheetTitleField } from '../../../@generic/components/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
-import { CategoryFormTitleField } from '../category-form-title-field/category-form-title-field';
 import { CategoryPreview } from '../category-preview/category-preview';
 
 interface Props {
@@ -56,7 +56,12 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
             description={t`Add a new category to organize your transactions`}
             ref={ref}
         >
-            <CategoryFormTitleField control={control} />
+            <FormBottomSheetTitleField
+                placeholder={t`e.g., Groceries, Salary, Rent`}
+                maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                label={t`Category Name`}
+                control={control}
+            />
             <CategoryFormIconField control={control} />
 
             <CategoryPreview icon={icon} title={title} />
