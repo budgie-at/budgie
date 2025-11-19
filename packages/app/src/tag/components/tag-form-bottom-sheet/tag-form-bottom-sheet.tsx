@@ -14,7 +14,6 @@ import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { TagBottomSheetFooter } from '../tag-bottom-sheet-footer/tag-bottom-sheet-footer';
-import { TagFormIconField } from '../tag-form-icon-field/tag-form-icon-field';
 import { TagFormTitleField } from '../tag-form-title-field/tag-form-title-field';
 import { TagPreview } from '../tag-preview/tag-preview';
 

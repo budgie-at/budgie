@@ -9,9 +9,9 @@ import { HapticPressable } from '../../@generic/components/haptic-pressable/hapt
 import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { TagsList } from '../../tag/components/tags-list/tags-list';
 import { CreateTag } from '../../tag/components/create-tag/create-tag';
 import { CustomTagsEmptyState } from '../../tag/components/custom-tags-empty-state/custom-tags-empty-state';
+import { TagsList } from '../../tag/components/tags-list/tags-list';
 import { useGetTagsLiveQuery } from '../../tag/query/use-get-tags.live-query';
 
 export default function Tags() {
