@@ -10,7 +10,7 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-export const TagBottomSheetFooter = ({onSubmit, onCancel}: Props) => (
+export const BottomSheetFormFooter = ({onSubmit, onCancel}: Props) => (
     <View className="flex-row gap-x-md pt-md px-[20px]">
         <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
             <Text className="text-primary text-center">

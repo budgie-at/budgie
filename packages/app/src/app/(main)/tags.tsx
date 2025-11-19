@@ -1,17 +1,15 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { TagEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { RefObject, useState } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../@generic/components/icon/icon';
-import { Page } from '../../@generic/components/page/page';
-import { ICONS } from '../../@generic/constant/icons.constant';
-import { CreateTag } from '../../tag/components/create-tag/create-tag';
-import { CustomTagsEmptyState } from '../../tag/components/custom-tags-empty-state/custom-tags-empty-state';
-import { TagsList } from '../../tag/components/tags-list/tags-list';
+import { DeletableRow } from '../../@generic/components/deletable-row/deletable-row';
+import { SearchablePage } from '../../@generic/components/searchable-page/searchable-page';
+import { tagRepository } from '../../@generic/drizzle/db/db';
+import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
+import { TagCard } from '../../tag/components/tag-card/tag-card';
+import { TagFormBottomSheet } from '../../tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet';
 import { useGetTagsLiveQuery } from '../../tag/query/use-get-tags.live-query';
 
 export default function Tags() {
@@ -19,34 +17,36 @@ export default function Tags() {
     const [search, setSearch] = useState('');
     const { tags } = useGetTagsLiveQuery(search);
 
-    const goBack = () => void router.back();
+    const handleDeleteTag = async (id: number) => {
+        await tagRepository.deleteById(id);
+    };
+
+    const renderCard = (tag: TagEntityInterface, onOpen: (tag: TagEntityInterface) => void) => (
+        <DeletableRow id={tag.id} onDelete={handleDeleteTag}>
+            <TagCard onOpen={onOpen} tag={tag} />
+        </DeletableRow>
+    );
+
+    const renderBottomSheet = (tag: TagEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => <TagFormBottomSheet ref={ref} tag={tag} />
+
+
+    const emptyStateIcon = isNotEmptyString(search) ? 'Search' : 'Tag';
+    const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Tags Yet`;
+    const emptyStateDescription = isNotEmptyString(search) ? t`No tags match your search` : t`Create tags to organize your transactions`;
 
     return (
-        <Page
-            header={
-                <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
-                    <View className="flex-row items-center justify-between mb-7xl">
-                        <Text className="text-6xl text-primary">
-                            <Trans>Tags</Trans>
-                        </Text>
-
-                        <HapticPressable onPress={goBack}>
-                            <Icon icon={ICONS.X} />
-                        </HapticPressable>
-                    </View>
-
-                    <TextInput
-                        value={search}
-                        onChangeText={setSearch}
-                        placeholder={t`Search tags...`}
-                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                </View>
-            }
-        >
-            {isNotEmptyArray(tags) ? <TagsList tags={tags} /> : <CustomTagsEmptyState search={search} />}
-
-            <CreateTag />
-        </Page>
+        <SearchablePage
+            onDelete={handleDeleteTag}
+            title={t`Tags`}
+            searchPlaceholder={t`Search tags...`}
+            data={tags}
+            emptyStateIcon={emptyStateIcon}
+            emptyStateTitle={emptyStateTitle}
+            emptyStateDescription={emptyStateDescription}
+            renderBottomSheet={renderBottomSheet}
+            renderCard={renderCard}
+            search={search}
+            onSearchChange={setSearch}
+        />
     );
 }
