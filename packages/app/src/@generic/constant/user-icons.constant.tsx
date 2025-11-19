@@ -45,7 +45,7 @@ import { typedObjectEntries } from '../utils/typed-object-entries.util';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
-export const USER_ICONS: Record<UserIconNameEnum, LucideIcon> = {
+const USER_ICONS: Record<UserIconNameEnum, LucideIcon> = {
     Home,
     Receipt,
     ChartNoAxesColumn,
