@@ -5,8 +5,6 @@ import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SharedValue } from 'react-native-reanimated';
 
-import { EmptyFn } from '@rnw-community/shared';
-
 import { DeletableRowAction } from './deletable-row-action';
 
 interface Props {
