@@ -105,7 +105,9 @@
     --color-ghost-corner: rgba(0, 0, 0, 0.2);
     --color-ghost-background: rgba(10, 10, 10, 0.05);
 
-    --color-pink-foreground: rgba(246, 51, 154, 0.70);
+    --color-pink-foreground: rgba(246, 51, 154, 0.7);
+    --color-pink-corner: rgba(246, 51, 154, 0.2);
+    --color-pink-background: rgba(246, 51, 154, 0.1);
 
     --color-corner: rgba(229, 229, 229, 1);
     --color-separator: linear-gradient(90deg, rgba(0, 0, 0, 0.40) 0%, rgba(255, 255, 255, 0.00) 100%);
@@ -149,7 +151,9 @@
     --color-ghost-corner: rgba(255, 255, 255, 0.2);
     --color-ghost-background: rgba(255, 255, 255, 0.05);
 
-    --color-pink-foreground: rgba(246, 51, 154, 0.70);
+    --color-pink-foreground: rgba(246, 51, 154, 0.7);
+    --color-pink-corner: rgba(246, 51, 154, 0.2);
+    --color-pink-background: rgba(246, 51, 154, 0.1);
 
     --color-corner: rgba(34, 34, 34, 1);
     --color-separator: linear-gradient(90deg, rgba(255, 255, 255, 0.40) 0%, rgba(0, 0, 0, 0.00) 100%);
