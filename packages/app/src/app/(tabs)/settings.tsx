@@ -20,6 +20,7 @@ export default function SettingsPage() {
     const { t } = useLingui();
 
     const navigateToCategories = () => void router.push('/(main)/categories');
+    const navigateToTags = () => void router.push('/(main)/tags');
 
     return (
         <Page>
@@ -49,6 +50,13 @@ export default function SettingsPage() {
                             description={t`View and delete custom categories`}
                             icon="Folder"
                             iconVariant="default"
+                        />
+                        <GenericSelectorCard
+                            onPress={navigateToTags}
+                            title={t`Manage Tags`}
+                            description={t`Create and organize transaction tags`}
+                            icon="Tag"
+                            iconVariant="pink"
                         />
                     </SettingsGroup>
 

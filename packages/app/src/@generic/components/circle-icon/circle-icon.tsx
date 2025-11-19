@@ -30,7 +30,8 @@ const wrapperVariants = cva<{
             warning: 'border-warning-corner bg-warning-background',
             'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
             default: 'border-default-corner bg-default-background',
-            ghost: 'border-ghost-corner bg-ghost-background'
+            ghost: 'border-ghost-corner bg-ghost-background',
+            pink: 'border-pink-corner bg-pink-background',
         },
         size: {
             xs: 'w-6.5 h-6.5',
@@ -59,6 +60,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
             warning: 'text-warning-foreground',
             'dark-warning': 'text-dark-warning-foreground',
             default: 'text-default-foreground',
+            pink: 'text-pink-foreground',
             ghost: 'text-ghost-foreground'
         }
     }
