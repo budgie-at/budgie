@@ -51,23 +51,16 @@ const textVariants = cva<{
     }
 });
 
-export const Button = ({
-    content,
-    onPress,
-    disabled,
-    leftIcon,
-    rightIcon,
-    textClassName,
-    className,
-    variant = 'ghost',
-    size = 'md',
-    ...rest
-}: Props) => (
-    <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
-        {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[leftIcon]} /> : null}
+export const Button = (props: Props) => {
+    const { content, onPress, disabled, leftIcon, rightIcon, textClassName, className, variant = 'ghost', size = 'md', ...rest } = props;
 
-        <Text className={cn(textVariants({ variant }), textClassName)}>{content}</Text>
+    return (
+        <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
+            {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[leftIcon]} /> : null}
 
-        {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[rightIcon]} /> : null}
-    </HapticPressable>
-);
+            <Text className={cn(textVariants({ variant }), textClassName)}>{content}</Text>
+
+            {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[rightIcon]} /> : null}
+        </HapticPressable>
+    );
+};
