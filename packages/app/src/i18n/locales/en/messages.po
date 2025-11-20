@@ -13,15 +13,16 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/app/(tabs)/settings.tsx:33
+#. placeholder {0}: filteredIcons.length
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
+msgid "{0} icons available"
+msgstr "{0} icons available"
+
+#: src/app/(tabs)/settings.tsx:34
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
-msgid "22 icons available"
-msgstr "22 icons available"
-
-#: src/app/(tabs)/settings.tsx:60
+#: src/app/(tabs)/settings.tsx:68
 msgid "About"
 msgstr "About"
 
@@ -41,9 +42,13 @@ msgstr "Account Settings"
 msgid "Accounts"
 msgstr "Accounts"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:66
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+msgid "Add a new tag to organize your transactions"
+msgstr "Add a new tag to organize your transactions"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
@@ -61,7 +66,7 @@ msgstr "AI"
 msgid "Ai Page"
 msgstr "Ai Page"
 
-#: src/app/(tabs)/settings.tsx:64
+#: src/app/(tabs)/settings.tsx:72
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -69,7 +74,7 @@ msgstr ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
 
-#: src/app/(tabs)/settings.tsx:34
+#: src/app/(tabs)/settings.tsx:35
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -77,7 +82,7 @@ msgstr "All your financial data is stored locally on your device. No cloud sync,
 msgid "Analytics Page"
 msgstr "Analytics Page"
 
-#: src/app/(tabs)/settings.tsx:55
+#: src/app/(tabs)/settings.tsx:63
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -101,12 +106,12 @@ msgstr "Base currency"
 msgid "Browse"
 msgstr "Browse"
 
-#: src/app/(tabs)/settings.tsx:62
+#: src/app/(tabs)/settings.tsx:70
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
+#: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:17
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
-#: src/category/components/category-bottom-sheet-footer/category-bottom-sheet-footer.tsx:17
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -114,15 +119,11 @@ msgstr "Cancel"
 msgid "Cash"
 msgstr "Cash"
 
-#: src/app/(main)/categories.tsx:30
+#: src/app/(main)/categories.tsx:39
 msgid "Categories"
 msgstr "Categories"
 
-#: src/category/components/category-form-title-field/category-form-title-field.tsx:29
-msgid "Category name"
-msgstr "Category name"
-
-#: src/category/components/category-form-title-field/category-form-title-field.tsx:23
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -159,13 +160,29 @@ msgstr "Choose your preferred language for date and number formatting"
 msgid "Choose your preferred locale for date and number formatting"
 msgstr "Choose your preferred locale for date and number formatting"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:41
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
+msgid "Could not create tag"
+msgstr "Could not create tag"
+
+#: src/app/(tabs)/settings.tsx:57
+msgid "Create and organize transaction tags"
+msgstr "Create and organize transaction tags"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Create Category"
 msgstr "Create Category"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:54
+msgid "Create Tag"
+msgstr "Create Tag"
+
+#: src/app/(main)/tags.tsx:35
+msgid "Create tags to organize your transactions"
+msgstr "Create tags to organize your transactions"
 
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
@@ -179,7 +196,7 @@ msgstr "Currency"
 msgid "Current Balance"
 msgstr "Current Balance"
 
-#: src/category/components/custom-categories-empty-state/custom-categories-empty-state.tsx:18
+#: src/app/(main)/categories.tsx:34
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
@@ -204,6 +221,14 @@ msgstr "Dutch (Netherlands)"
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:32
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:59
+msgid "e.g., Business, Personal, Vacation"
+msgstr "e.g., Business, Personal, Vacation"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:60
+msgid "e.g., Groceries, Salary, Rent"
+msgstr "e.g., Groceries, Salary, Rent"
 
 #: src/app/(main)/create-account/index.tsx:39
 msgid "Emergency fund and savings goals"
@@ -241,7 +266,7 @@ msgstr "French"
 msgid "French (France)"
 msgstr "French (France)"
 
-#: src/app/(tabs)/settings.tsx:39
+#: src/app/(tabs)/settings.tsx:40
 msgid "General"
 msgstr "General"
 
@@ -286,9 +311,13 @@ msgstr "Locale"
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings.tsx:48
+#: src/app/(tabs)/settings.tsx:49
 msgid "Manage Categories"
 msgstr "Manage Categories"
+
+#: src/app/(tabs)/settings.tsx:56
+msgid "Manage Tags"
+msgstr "Manage Tags"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you earn"
@@ -314,7 +343,7 @@ msgstr "New Transaction"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/category/components/custom-categories-empty-state/custom-categories-empty-state.tsx:18
+#: src/app/(main)/categories.tsx:34
 msgid "No categories match your search"
 msgstr "No categories match your search"
 
@@ -322,7 +351,7 @@ msgstr "No categories match your search"
 msgid "No currencies found"
 msgstr "No currencies found"
 
-#: src/category/components/custom-categories-empty-state/custom-categories-empty-state.tsx:17
+#: src/app/(main)/categories.tsx:33
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
 
@@ -342,18 +371,28 @@ msgstr "No languages found"
 msgid "No locales found"
 msgstr "No locales found"
 
-#: src/category/components/custom-categories-empty-state/custom-categories-empty-state.tsx:17
+#: src/app/(main)/categories.tsx:33
+#: src/app/(main)/tags.tsx:34
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/(tabs)/settings.tsx:45
+#: src/app/(main)/tags.tsx:35
+msgid "No tags match your search"
+msgstr "No tags match your search"
+
+#: src/app/(main)/tags.tsx:34
+msgid "No Tags Yet"
+msgstr "No Tags Yet"
+
+#: src/app/(tabs)/settings.tsx:46
 msgid "Organization"
 msgstr "Organization"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:53
 #: src/account/component/update-liability-account/update-liability-account.tsx:42
 #: src/account/component/update-liability-account/update-liability-account.tsx:56
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:42
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -366,10 +405,11 @@ msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
 #: src/category/components/category-preview/category-preview.tsx:17
+#: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
 msgstr "Preview"
 
-#: src/app/(tabs)/settings.tsx:30
+#: src/app/(tabs)/settings.tsx:31
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -382,7 +422,7 @@ msgstr "Savings"
 msgid "Savings Account"
 msgstr "Savings Account"
 
-#: src/app/(main)/categories.tsx:41
+#: src/app/(main)/categories.tsx:40
 msgid "Search categories..."
 msgstr "Search categories..."
 
@@ -402,6 +442,10 @@ msgstr "Search languages..."
 msgid "Search locales..."
 msgstr "Search locales..."
 
+#: src/app/(main)/tags.tsx:41
+msgid "Search tags..."
+msgstr "Search tags..."
+
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 msgid "Select Currency"
 msgstr "Select Currency"
@@ -414,7 +458,7 @@ msgstr "Select Language"
 msgid "Select Locale"
 msgstr "Select Locale"
 
-#: src/app/(tabs)/settings.tsx:26
+#: src/app/(tabs)/settings.tsx:27
 msgid "Settings"
 msgstr "Settings"
 
@@ -440,18 +484,27 @@ msgstr "Spanish (Spain)"
 msgid "Stocks"
 msgstr "Stocks"
 
+#: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:28
 #: src/account/component/create-liability-account/create-liability-account.tsx:68
-#: src/category/components/category-bottom-sheet-footer/category-bottom-sheet-footer.tsx:28
 msgid "Submit"
 msgstr "Submit"
 
 #: src/category/components/category-card/category-card.tsx:22
+#: src/tag/components/tag-card/tag-card.tsx:23
 msgid "Swipe left"
 msgstr "Swipe left"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:16
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
+msgid "Tag Name"
+msgstr "Tag Name"
+
+#: src/app/(main)/tags.tsx:40
+msgid "Tags"
+msgstr "Tags"
 
 #: src/@generic/components/icon-selector/icon-selector.tsx:26
 msgid "Tap to change icon"
@@ -488,6 +541,6 @@ msgstr "Ukrainian"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/app/(tabs)/settings.tsx:49
+#: src/app/(tabs)/settings.tsx:50
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
