@@ -6,7 +6,8 @@ import {
     CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
-    SettingsRepository
+    SettingsRepository,
+    TagRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -19,6 +20,7 @@ declare global {
 const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
+export const tagRepository = new TagRepository(db);
 export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const categoryRepository = new CategoryRepository(db);
