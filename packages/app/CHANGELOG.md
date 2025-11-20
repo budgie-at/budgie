@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.65.0](https://github.com/budgie-at/budgie/compare/v1.64.0...v1.65.0) (2025-11-20)
+
+### Features
+
+- add reusable colors constants ([c2df952](https://github.com/budgie-at/budgie/commit/c2df952ada2ab99f360cfc4d6d7d3aec2b986d45))
+- add tags screen ([8ccf82c](https://github.com/budgie-at/budgie/commit/8ccf82c6d5e3fcb6d21d8fc2aa781f2fcffed683))
+- add tags screen ([dcce279](https://github.com/budgie-at/budgie/commit/dcce2797aec7a4178ad0cdf4844ccf8befb97d93))
+- add tags screen ([a254706](https://github.com/budgie-at/budgie/commit/a254706a5e9e624254fcd7e4fbbd225e0e5c9373))
+- move to const ([42d0703](https://github.com/budgie-at/budgie/commit/42d0703d972a7013ed87bfdc8b377b824983592a))
+- update translations ([db74ef1](https://github.com/budgie-at/budgie/commit/db74ef1cc49e65a4bb46cda7e46ef3b91dabb275))
+- update translations ([defa0eb](https://github.com/budgie-at/budgie/commit/defa0eb09b8cb0575c15fb0bb6deaaa742e1117d))
+
 # [1.64.0](https://github.com/budgie-at/budgie/compare/v1.63.0...v1.64.0) (2025-11-19)
 
 ### Bug Fixes
