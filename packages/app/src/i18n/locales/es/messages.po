@@ -11,16 +11,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. placeholder {0}: filteredIcons.length
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
-msgid "{0} icons available"
-msgstr "{0} iconos disponibles"
+#: src/app/(main)/archived.tsx:27
+msgid "{archivedAccountsCount} account"
+msgstr "{archivedAccountsCount} cuenta"
 
-#: src/app/(tabs)/settings.tsx:34
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+msgid "{iconsCount} icons available"
+msgstr "{iconsCount} iconos disponibles"
+
+#: src/app/(tabs)/settings.tsx:35
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(tabs)/settings.tsx:68
+#: src/app/(tabs)/settings.tsx:76
 msgid "About"
 msgstr "Acerca de"
 
@@ -28,17 +31,21 @@ msgstr "Acerca de"
 msgid "Account Name"
 msgstr "Nombre de la cuenta"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:26
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:28
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
-#: src/account/component/update-account-header/update-account-header.tsx:42
+#: src/account/component/update-account-header/update-account-header.tsx:43
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:12
 msgid "Accounts"
 msgstr "Cuentas"
+
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:16
+msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
+msgstr "Las cuentas que archives aparecerán aquí. No se incluirán en tus totales ni en la vista principal."
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 msgid "Add a new category to organize your transactions"
@@ -64,7 +71,7 @@ msgstr "IA"
 msgid "Ai Page"
 msgstr "Página de IA"
 
-#: src/app/(tabs)/settings.tsx:72
+#: src/app/(tabs)/settings.tsx:80
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -72,7 +79,7 @@ msgstr ""
 "Aplicación de presupuesto con IA y privacidad completa. Todo el procesamiento de datos ocurre localmente en tu dispositivo.\n"
 "Versión 1.0.0"
 
-#: src/app/(tabs)/settings.tsx:35
+#: src/app/(tabs)/settings.tsx:36
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
@@ -80,13 +87,18 @@ msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. S
 msgid "Analytics Page"
 msgstr "Página de análisis"
 
-#: src/app/(tabs)/settings.tsx:63
+#: src/app/(tabs)/settings.tsx:71
 msgid "Appearance"
 msgstr "Apariencia"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx:81
 msgid "Archive Account"
 msgstr "Archivar cuenta"
+
+#: src/app/(main)/archived.tsx:27
+#: src/app/(tabs)/settings.tsx:64
+msgid "Archived Accounts"
+msgstr "Cuentas archivadas"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
@@ -100,16 +112,17 @@ msgstr "Banco"
 msgid "Base currency"
 msgstr "Moneda base"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:31
+#: src/@generic/components/icon-selector/icon-selector.tsx:33
 msgid "Browse"
 msgstr "Explorar"
 
-#: src/app/(tabs)/settings.tsx:70
+#: src/app/(tabs)/settings.tsx:78
 msgid "BudgetAI"
 msgstr "PresupuestoIA"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:17
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:57
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -125,7 +138,7 @@ msgstr "Categorías"
 msgid "Category Name"
 msgstr "Nombre de la categoría"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:30
+#: src/@generic/components/icon-selector/icon-selector.tsx:32
 msgid "Change"
 msgstr "Cambiar"
 
@@ -138,7 +151,7 @@ msgstr "Cuenta corriente"
 msgid "Choose a type to get started"
 msgstr "Elige un tipo para comenzar"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
 msgid "Choose Icon"
 msgstr "Elegir icono"
 
@@ -166,7 +179,11 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
-#: src/app/(tabs)/settings.tsx:57
+#: src/account/component/archived-account-card/archived-account-card.tsx:37
+msgid "Could not restore account."
+msgstr "No se pudo restaurar la cuenta."
+
+#: src/app/(tabs)/settings.tsx:58
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -215,7 +232,7 @@ msgstr "Eliminar"
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:38
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:40
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:32
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
@@ -252,7 +269,7 @@ msgstr "Transacciones y gastos diarios"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:65
+#: src/account/component/create-liability-account/create-liability-account.tsx:63
 msgid "Fill in the account details"
 msgstr "Completa los detalles de la cuenta"
 
@@ -264,7 +281,7 @@ msgstr "Francés"
 msgid "French (France)"
 msgstr "Francés (Francia)"
 
-#: src/app/(tabs)/settings.tsx:40
+#: src/app/(tabs)/settings.tsx:41
 msgid "General"
 msgstr "General"
 
@@ -309,11 +326,11 @@ msgstr "Configuración regional"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(tabs)/settings.tsx:49
+#: src/app/(tabs)/settings.tsx:50
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(tabs)/settings.tsx:56
+#: src/app/(tabs)/settings.tsx:57
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
@@ -341,6 +358,10 @@ msgstr "Nueva transacción"
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
 
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:13
+msgid "No archived accounts"
+msgstr "No hay cuentas archivadas"
+
 #: src/app/(main)/categories.tsx:34
 msgid "No categories match your search"
 msgstr "No hay categorías que coincidan con tu búsqueda"
@@ -353,11 +374,11 @@ msgstr "No se encontraron monedas"
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:70
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
 msgid "No icons"
 msgstr "Sin iconos"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:69
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
 msgid "No icons found"
 msgstr "No se encontraron iconos"
 
@@ -382,11 +403,11 @@ msgstr "No hay etiquetas que coincidan con tu búsqueda"
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
 
-#: src/app/(tabs)/settings.tsx:46
+#: src/app/(tabs)/settings.tsx:47
 msgid "Organization"
 msgstr "Organización"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:53
+#: src/account/component/create-liability-account/create-liability-account.tsx:54
 #: src/account/component/update-liability-account/update-liability-account.tsx:42
 #: src/account/component/update-liability-account/update-liability-account.tsx:56
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
@@ -407,9 +428,17 @@ msgstr "Portugués (Portugal)"
 msgid "Preview"
 msgstr "Vista previa"
 
-#: src/app/(tabs)/settings.tsx:31
+#: src/app/(tabs)/settings.tsx:32
 msgid "Privacy"
 msgstr "Privacidad"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:51
+msgid "Restore"
+msgstr "Restaurar"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:39
+msgid "Restore Account?"
+msgstr "¿Restaurar cuenta?"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -428,7 +457,7 @@ msgstr "Buscar categorías..."
 msgid "Search currencies..."
 msgstr "Buscar monedas..."
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 
@@ -456,7 +485,7 @@ msgstr "Seleccionar idioma"
 msgid "Select Locale"
 msgstr "Seleccionar configuración regional"
 
-#: src/app/(tabs)/settings.tsx:27
+#: src/app/(tabs)/settings.tsx:28
 msgid "Settings"
 msgstr "Configuración"
 
@@ -464,11 +493,15 @@ msgstr "Configuración"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:52
+#: src/account/component/create-liability-account/create-liability-account.tsx:53
 #: src/account/component/update-liability-account/update-liability-account.tsx:41
 #: src/account/component/update-liability-account/update-liability-account.tsx:55
 msgid "Something went wrong"
 msgstr "Algo salió mal"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:38
+msgid "Something went wrong. Please try again later."
+msgstr "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
 
 #: src/i18n/constant/languages.constant.ts:31
 msgid "Spanish"
@@ -483,7 +516,7 @@ msgid "Stocks"
 msgstr "Acciones"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:28
-#: src/account/component/create-liability-account/create-liability-account.tsx:68
+#: src/account/component/create-liability-account/create-liability-account.tsx:66
 msgid "Submit"
 msgstr "Enviar"
 
@@ -504,7 +537,7 @@ msgstr "Nombre de la etiqueta"
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:26
+#: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Toca para cambiar el icono"
 
@@ -539,6 +572,14 @@ msgstr "Ucraniano"
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
-#: src/app/(tabs)/settings.tsx:50
+#: src/app/(tabs)/settings.tsx:51
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
+
+#: src/app/(tabs)/settings.tsx:65
+msgid "View and restore archived accounts"
+msgstr "Ver y restaurar cuentas archivadas"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:44
+msgid "will be restored to your main view and included in totals."
+msgstr "se restaurará a tu vista principal y se incluirá en los totales."
