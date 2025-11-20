@@ -1,14 +1,17 @@
-import { useRef } from 'react';
+import { ComponentProps, useRef } from 'react';
 import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
+import { ICONS } from '../../constant/icons.constant';
+import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { IdInterface } from '../../interface/id.interface';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
+import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
-export const CreateCategory = () => {
+export const SearchablePageCreate = <T extends IdInterface>({
+    renderBottomSheet
+}: Pick<ComponentProps<typeof SearchablePageList<T>>, 'renderBottomSheet'>) => {
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => void ref.current?.open();
@@ -26,7 +29,7 @@ export const CreateCategory = () => {
                 </Animated.View>
             </View>
 
-            <CategoryFormBottomSheet ref={ref} category={null} />
+            {renderBottomSheet(null, ref)}
         </>
     );
 };

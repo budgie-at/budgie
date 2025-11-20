@@ -1,0 +1,52 @@
+import { TagEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { RefObject, useState } from 'react';
+
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { DeletableRow } from '../../@generic/components/deletable-row/deletable-row';
+import { SearchablePage } from '../../@generic/components/searchable-page/searchable-page';
+import { tagRepository } from '../../@generic/drizzle/db/db';
+import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
+import { TagCard } from '../../tag/components/tag-card/tag-card';
+import { TagFormBottomSheet } from '../../tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet';
+import { useGetTagsLiveQuery } from '../../tag/query/use-get-tags.live-query';
+
+export default function Tags() {
+    const { t } = useLingui();
+    const [search, setSearch] = useState('');
+    const { tags } = useGetTagsLiveQuery(search);
+
+    const handleDeleteTag = async (id: number) => {
+        await tagRepository.deleteById(id);
+    };
+
+    const renderCard = (tag: TagEntityInterface, onOpen: (tag: TagEntityInterface) => void) => (
+        <DeletableRow id={tag.id} onDelete={handleDeleteTag}>
+            <TagCard onOpen={onOpen} tag={tag} />
+        </DeletableRow>
+    );
+
+    const renderBottomSheet = (tag: TagEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => <TagFormBottomSheet ref={ref} tag={tag} />
+
+
+    const emptyStateIcon = isNotEmptyString(search) ? 'Search' : 'Tag';
+    const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Tags Yet`;
+    const emptyStateDescription = isNotEmptyString(search) ? t`No tags match your search` : t`Create tags to organize your transactions`;
+
+    return (
+        <SearchablePage
+            onDelete={handleDeleteTag}
+            title={t`Tags`}
+            searchPlaceholder={t`Search tags...`}
+            data={tags}
+            emptyStateIcon={emptyStateIcon}
+            emptyStateTitle={emptyStateTitle}
+            emptyStateDescription={emptyStateDescription}
+            renderBottomSheet={renderBottomSheet}
+            renderCard={renderCard}
+            search={search}
+            onSearchChange={setSearch}
+        />
+    );
+}

@@ -5,6 +5,8 @@ import { Text } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
+import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -27,14 +29,7 @@ const buttonVariants = cva<{
 }>('flex-row items-center gap-x-xl justify-center border', {
     variants: {
         disabled: { true: 'opacity-50' },
-        variant: {
-            default: 'bg-default-background border-default-corner',
-            destructive: 'bg-destructive-background border-destructive-corner',
-            'dark-warning': 'bg-dark-warning-background border-dark-warning-corner',
-            positive: 'bg-positive-background border-positive-corner',
-            warning: 'bg-warning-background border-warning-corner',
-            ghost: 'bg-ghost-background border-ghost-corner'
-        },
+        variant: BACKGROUND_COLOR_PALETTE,
         size: {
             sm: 'rounded-2xl p-2xl',
             md: 'rounded-3xl p-3xl'
@@ -42,20 +37,16 @@ const buttonVariants = cva<{
     }
 });
 
-const textVariants = cva('', {
+const textVariants = cva<{
+    size: Record<ButtonSizeType, ClassValue>;
+    variant: Record<ColorPaletteVariant, ClassValue>;
+}>('', {
     variants: {
         size: {
             sm: 'font-medium text-sm',
             md: 'font-semibold text-md'
         },
-        variant: {
-            default: 'text-default-foreground',
-            destructive: 'text-destructive-foreground',
-            positive: 'text-positive-foreground',
-            warning: 'text-warning-foreground',
-            'dark-warning': 'text-dark-warning-foreground',
-            ghost: 'text-ghost-foreground'
-        }
+        variant: FOREGROUND_COLOR_PALETTE
     }
 });
 

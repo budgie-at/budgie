@@ -1,6 +1,8 @@
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
 
+import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
+import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -24,14 +26,7 @@ const wrapperVariants = cva<{
     border: Record<'true' | 'false', string>;
 }>('rounded-full border block items-center justify-center', {
     variants: {
-        variant: {
-            positive: 'border-positive-corner bg-positive-background',
-            destructive: 'border-destructive-corner bg-destructive-background',
-            warning: 'border-warning-corner bg-warning-background',
-            'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
-            default: 'border-default-corner bg-default-background',
-            ghost: 'border-ghost-corner bg-ghost-background'
-        },
+        variant: BACKGROUND_COLOR_PALETTE,
         size: {
             xs: 'w-6.5 h-6.5',
             sm: 'w-7 h-7',
@@ -53,14 +48,7 @@ const wrapperVariants = cva<{
 
 const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
     variants: {
-        variant: {
-            positive: 'text-positive-foreground',
-            destructive: 'text-destructive-foreground',
-            warning: 'text-warning-foreground',
-            'dark-warning': 'text-dark-warning-foreground',
-            default: 'text-default-foreground',
-            ghost: 'text-ghost-foreground'
-        }
+        variant: FOREGROUND_COLOR_PALETTE
     }
 });
 
