@@ -84,7 +84,6 @@
     --color-positive-foreground: rgba(16, 185, 129, 1);
     --color-positive-corner: rgba(16, 185, 129, 0.2);
     --color-positive-background: rgba(16, 185, 129, 0.1);
-    --color-positive-gradient: linear-gradient(135deg, #00C950 0%, #00BC7D 100%);
 
     --color-destructive-foreground: rgba(239, 68, 68, 1);
     --color-destructive-corner: rgba(239, 68, 68, 0.2);
@@ -131,7 +130,6 @@
     --color-positive-foreground: rgba(0, 255, 136, 1);
     --color-positive-corner: rgba(1, 255, 136, 0.20);
     --color-positive-background: rgba(1, 255, 136, 0.10);
-    --color-positive-gradient: linear-gradient(135deg, #00C950 0%, #00BC7D 100%);
 
     --color-destructive-foreground: rgba(255, 68, 68, 1);
     --color-destructive-corner: rgba(255, 107, 107, 0.20);
