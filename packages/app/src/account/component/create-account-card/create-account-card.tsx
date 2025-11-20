@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/components/icon/icon';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const iconVariant = cva('', {
-    variants: { type: ACCOUNT_COLOR }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 export const CreateAccountCard = ({ title, description, type, icon }: Props) => {
@@ -31,7 +32,7 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
                 border={false}
                 className="rounded-5xl w-[52px] h-[52px]"
                 icon={ICONS[icon]}
-                iconClassName={iconVariant({ type })}
+                iconClassName={iconVariant({ variant: ACCOUNT_COLOR[type] })}
                 size="xl"
                 variant="ghost"
             />
