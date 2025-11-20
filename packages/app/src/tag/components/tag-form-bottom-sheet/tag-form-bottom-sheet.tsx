@@ -1,23 +1,22 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, TagCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { FormBottomSheet } from '../../../@generic/components/form-bottom-sheet/form-bottom-sheet';
 import { FormBottomSheetTitleField } from '../../../@generic/components/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
-import { categoryRepository } from '../../../@generic/drizzle/db/db';
+import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useCategoryForm } from '../../hooks/use-category-form.hook';
-import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
-import { CategoryPreview } from '../category-preview/category-preview';
+import { useTagForm } from '../../hooks/use-tag-form.hook';
+import { TagPreview } from '../tag-preview/tag-preview';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly category: CategoryCreateEntityInterface | null;
+    readonly tag: TagCreateEntityInterface | null;
 }
 
-export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
-    const { handleSubmit, reset, control, title, icon } = useCategoryForm(category);
+export const TagFormBottomSheet = ({ ref, tag }: Props) => {
+    const { handleSubmit, reset, control, title } = useTagForm(tag);
     const { t } = useLingui();
 
     const handleCancel = () => {
@@ -25,16 +24,16 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
         reset();
     };
 
-    const createCategory = useCallback(
-        async (values: CategoryCreateEntityInterface) => {
+    const createTag = useCallback(
+        async (values: TagCreateEntityInterface) => {
             try {
-                await categoryRepository.create(values);
+                await tagRepository.create(values);
                 reset();
                 ref.current?.close();
             } catch {
                 Toast.show({
                     type: 'error',
-                    text1: t`Could not create category`,
+                    text1: t`Could not create tag`,
                     text2: t`Please try again later`
                 });
             }
@@ -43,28 +42,27 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
     );
 
     const onSubmit = useCallback(() => {
-        void handleSubmit(createCategory)();
-    }, [handleSubmit, createCategory]);
+        void handleSubmit(createTag)();
+    }, [handleSubmit, createTag]);
 
     return (
         <FormBottomSheet
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon="Folder"
-            title={t`Create Category`}
-            description={t`Add a new category to organize your transactions`}
+            icon="Tag"
+            title={t`Create Tag`}
+            description={t`Add a new tag to organize your transactions`}
             ref={ref}
         >
             <FormBottomSheetTitleField
-                placeholder={t`e.g., Groceries, Salary, Rent`}
+                placeholder={t`e.g., Business, Personal, Vacation`}
                 maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                label={t`Category Name`}
+                label={t`Tag Name`}
                 control={control}
             />
-            <CategoryFormIconField control={control} />
 
-            <CategoryPreview icon={icon} title={title} />
+            <TagPreview title={title} />
         </FormBottomSheet>
     );
 };

@@ -55,12 +55,14 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
         numColumns: 4,
     };
 
+    const iconsCount = filteredIcons.length
+
     return (
         <SearchableListBottomSheet
             ref={ref}
             snapPoints={snapPoints}
             title={t`Choose Icon`}
-            description={t`22 icons available`}
+            description={t`${iconsCount} icons available`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search icons (e.g., money, travel, food)...`}
             search={search}

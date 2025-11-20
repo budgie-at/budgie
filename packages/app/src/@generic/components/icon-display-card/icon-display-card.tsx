@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
+import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { ICONS } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { IconDisplayCardSize } from '../../type/icon-display-card-size.type';
@@ -28,14 +29,7 @@ interface Props {
 
 const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('rounded-3xl border p-3xl flex-row gap-x-xl items-center', {
     variants: {
-        variant: {
-            default: 'border-default-corner bg-default-background',
-            destructive: 'border-destructive-corner bg-destructive-background',
-            positive: 'border-positive-corner bg-positive-background',
-            warning: 'border-warning-corner bg-warning-background',
-            'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
-            ghost: 'border-secondary-corner'
-        }
+        variant: BACKGROUND_COLOR_PALETTE
     }
 });
 
@@ -57,7 +51,7 @@ export const IconDisplayCard = (props: Props) => {
 
             {size === 'sm' ? null : (
                 <>
-                    <View className={'gap-y-xs flex-1'}>
+                    <View className="gap-y-xs flex-1">
                         <Text className="text-primary font-medium text-sm">{icon}</Text>
 
                         {isNotEmptyString(description) && <Text className="text-sm text-secondary-foreground">{description}</Text>}
