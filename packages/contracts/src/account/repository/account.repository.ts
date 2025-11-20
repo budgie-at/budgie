@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { PRECISION } from '../../generic/constant/precision.constant';
@@ -26,30 +26,42 @@ export class AccountRepository {
         return account;
     }
 
+    async restoreById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
+    }
+
     async deleteById(id: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
+        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
     }
 
     getAll() {
         return this.db.query.AccountEntityTable.findMany({
-            where: isNull(AccountEntityTable.parentId),
+            where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
+    getAllArchived() {
+        return this.db.query.AccountEntityTable.findMany({
+            where: and(isNull(AccountEntityTable.parentId), isNotNull(AccountEntityTable.deletedAt))
         });
     }
 
     findByType(type: AccountTypeEnum) {
         return this.db.query.AccountEntityTable.findMany({
-            where: and(eq(AccountEntityTable.type, type), isNull(AccountEntityTable.parentId))
+            where: and(eq(AccountEntityTable.type, type), isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt))
         });
     }
 
     async findByParentId(id: number) {
-        return await this.db.query.AccountEntityTable.findMany({ where: eq(AccountEntityTable.parentId, id) });
+        return await this.db.query.AccountEntityTable.findMany({
+            where: and(eq(AccountEntityTable.parentId, id), isNull(AccountEntityTable.deletedAt))
+        });
     }
 
     findById(id: number) {
         return this.db.query.AccountEntityTable.findFirst({
-            where: eq(AccountEntityTable.id, id),
+            where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
     }
@@ -79,6 +91,12 @@ export class AccountRepository {
                     eq(ExchangeRateEntityTable.quoteInstrumentId, AccountEntityTable.instrumentId)
                 )
             )
-            .where(and(isNull(AccountEntityTable.parentId), eq(AccountEntityTable.includeInNetWorth, true)));
+            .where(
+                and(
+                    isNull(AccountEntityTable.parentId),
+                    isNull(AccountEntityTable.deletedAt),
+                    eq(AccountEntityTable.includeInNetWorth, true)
+                )
+            );
     }
 }

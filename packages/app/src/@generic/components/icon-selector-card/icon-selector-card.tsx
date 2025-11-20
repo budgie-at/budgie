@@ -3,8 +3,8 @@ import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View } from 'react-native';
 
-import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
+import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -32,19 +32,19 @@ const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondar
 
 const iconVariant = cva<{ variant: Record<ColorPaletteVariant, ClassValue>; isSelected: Record<'false', ClassValue> }>('', {
     variants: {
-        variant: BACKGROUND_COLOR_PALETTE,
+        variant: FOREGROUND_COLOR_PALETTE,
         isSelected: { false: 'text-primary' }
     },
     compoundVariants: [
         {
             isSelected: true,
             variant: 'default',
-            className: ACCOUNT_COLOR.BANK
+            className: FOREGROUND_COLOR_PALETTE.default
         },
         {
             isSelected: true,
             variant: 'positive',
-            className: ACCOUNT_COLOR.CASH
+            className: FOREGROUND_COLOR_PALETTE.positive
         }
     ]
 });

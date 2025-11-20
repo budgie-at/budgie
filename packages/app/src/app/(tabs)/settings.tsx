@@ -20,6 +20,7 @@ export default function SettingsPage() {
     const { t } = useLingui();
 
     const navigateToCategories = () => void router.push('/(main)/categories');
+    const navigateToArchived = () => void router.push('/(main)/archived');
     const navigateToTags = () => void router.push('/(main)/tags');
 
     return (
@@ -57,6 +58,13 @@ export default function SettingsPage() {
                             description={t`Create and organize transaction tags`}
                             icon="Tag"
                             iconVariant="pink"
+                        />
+                        <GenericSelectorCard
+                            onPress={navigateToArchived}
+                            title={t`Archived Accounts`}
+                            description={t`View and restore archived accounts`}
+                            icon="Archive"
+                            iconVariant="dark-warning"
                         />
                     </SettingsGroup>
 
