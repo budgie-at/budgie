@@ -3,7 +3,6 @@ import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View } from 'react-native';
 
-import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';

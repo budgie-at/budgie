@@ -17,6 +17,7 @@ import { AccountBalanceField } from '../create-account-balance-field/account-bal
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountHeader } from '../update-account-header/update-account-header';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -58,6 +59,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         }
     };
 
+    const variant = ACCOUNT_COLOR[account.type]
+
     if (!isDefined(instrument)) {
         return null;
     }
@@ -69,11 +72,11 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     return (
         <FullPage header={<UpdateAccountHeader onGoBack={goBack} accountType={account.type} icon={account.icon} />}>
-            <AccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
+            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup className="mb-8xl">
                 <UpdateAccountTitleField control={control} />
-                <UpdateAccountIconField control={control} />
+                <UpdateAccountIconField variant={variant} control={control} />
             </FormLayoutGroup>
 
             <View className="gap-y-xl">
