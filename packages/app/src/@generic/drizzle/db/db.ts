@@ -7,7 +7,9 @@ import {
     ExchangeRateRepository,
     InstrumentRepository,
     SettingsRepository,
-    TagRepository
+    TagRepository,
+    TransactionEntryRepository,
+    TransactionRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -25,5 +27,7 @@ export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const categoryRepository = new CategoryRepository(db);
 export const instrumentRepository = new InstrumentRepository(db);
+export const transactionRepository = new TransactionRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
+export const transactionEntryRepository = new TransactionEntryRepository(db);

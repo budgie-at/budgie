@@ -4,15 +4,13 @@ import { RefObject, useState } from 'react';
 import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { SelectorCard } from '../../../@generic/components/selector-card/selector-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { LOCALES, LocaleInfoWithDetailsInterface } from '../../constant/locales.constant';
+import { LocaleInfoWithDetailsInterface, LOCALES } from '../../constant/locales.constant';
 
 interface Props {
     readonly locale: string;
     readonly onSelect: (locale: string) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
-
-const snapPoints = ['70%'];
 
 const keyExtractor = (item: LocaleInfoWithDetailsInterface) => item.languageTag;
 
@@ -49,7 +47,6 @@ export const LocaleSelectorBottomSheet = ({ ref, locale, onSelect }: Props) => {
     return (
         <SearchableListBottomSheet
             ref={ref}
-            snapPoints={snapPoints}
             title={t`Select Locale`}
             description={t`Choose your preferred locale for date and number formatting`}
             onSearchChange={setSearch}

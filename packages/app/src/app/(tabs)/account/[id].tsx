@@ -12,7 +12,7 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { AccountBalance } from '../../../account/component/account-balance/account-balance';
-import { AccountHeader } from '../../../account/component/account-header/account-header';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../account/constant/account-type.constant';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -42,7 +42,7 @@ export default function Account() {
     return (
         <Page
             header={
-                <AccountHeader
+                <PageHeader
                     showBackBtn
                     title={title}
                     icon={icon}

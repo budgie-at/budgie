@@ -1,6 +1,6 @@
 import { Control, Controller, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 
-import { BottomSheetTextInput } from '../bottom-sheet-input/bottom-sheet-view';
+import { BottomSheetTextInput } from '../bottom-sheet-input/bottom-sheet-input';
 import { FormItem } from '../form-item/form-item';
 import { Shake } from '../shake/shake';
 

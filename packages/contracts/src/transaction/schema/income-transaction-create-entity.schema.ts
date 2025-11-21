@@ -9,7 +9,7 @@ import { IncomeTransactionEntitySchema } from './income-transaction-entity.schem
 
 export const IncomeTransactionCreateEntitySchema = convertToCreateEntitySchema(IncomeTransactionEntitySchema)
     .extend({
-        [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(1)
+        [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
     .superRefine(({ entries }, context) => {
         entries.forEach((transactionEntry, entryIndex) => {

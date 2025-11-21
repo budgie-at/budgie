@@ -1,0 +1,73 @@
+import { AccountEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { RefObject, useState } from 'react';
+import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
+import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useSearchAccountsQuery } from '../../query/use-search-accounts.query';
+import { isNotEmptyString } from '@rnw-community/shared';
+
+interface Props {
+    readonly emptyStateDescription?: string;
+    readonly onSelect: (accountId: number) => void;
+    readonly ref: RefObject<BottomSheetInterface | null>;
+    readonly selectedAccount: AccountEntityInterface | null;
+}
+
+const keyExtractor = (item: AccountEntityInterface) => item.id.toString();
+
+const flatListProps = {
+    className: 'pt-3 px-xl',
+    contentContainerClassName: 'gap-y-lg'
+};
+
+export const AccountSelectorBottomSheet = ({ ref, selectedAccount, onSelect, emptyStateDescription }: Props) => {
+    const [search, setSearch] = useState('');
+    const { accounts } = useSearchAccountsQuery(search);
+    const { t } = useLingui();
+
+    const handleSelect = (accountId: number) => {
+        onSelect(accountId);
+        ref.current?.close();
+    };
+
+    const renderItem = ({ item }: { item: AccountEntityInterface }) => (
+        <AccountSelectorCard
+            isSelected={item.id === selectedAccount?.id}
+            currentBalance={item.currentBalance}
+            onSelect={handleSelect}
+            title={item.title}
+            icon={item.icon}
+            type={item.type}
+            key={item.id}
+            id={item.id}
+        />
+    );
+
+    const emptyIcon = isNotEmptyString(search) ? 'Search' : 'Wallet';
+
+    const emptyTitle = isNotEmptyString(search) ? t`No accounts found` : t`No accounts yet`;
+
+    const emptyDescription = isNotEmptyString(search)
+        ? t`Try a different search term`
+        : (emptyStateDescription ?? t`Create one to get started.`);
+
+    return (
+        <SearchableListBottomSheet
+            ref={ref}
+            index={1}
+            emptyIcon={emptyIcon}
+            title={t`Select Account`}
+            description={t`Choose your main account`}
+            onSearchChange={setSearch}
+            searchPlaceholder={t`Search accounts...`}
+            search={search}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            emptyDescription={emptyDescription}
+            emptyTitle={emptyTitle}
+            data={accounts}
+            flatListProps={flatListProps}
+        />
+    );
+};

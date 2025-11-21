@@ -13,8 +13,6 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
-const snapPoints = ['70%'];
-
 const keyExtractor = (item: InstrumentEntityInterface) => item.code;
 
 const flatListProps = {
@@ -55,7 +53,6 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
     return (
         <SearchableListBottomSheet
             ref={ref}
-            snapPoints={snapPoints}
             title={t`Select Currency`}
             description={t`Choose your main currency`}
             onSearchChange={setSearch}
