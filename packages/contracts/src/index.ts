@@ -95,6 +95,8 @@ export { TransactionEntityTable } from './transaction/table/transaction-entity.t
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
+export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
+export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 
 export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
 export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense-transaction-create-entity.interface';
@@ -110,6 +112,8 @@ export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction/constant/transaction
 
 export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
 export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
+
+export { TransactionRepository } from './transaction/repository/transaction.repository';
 
 export { TransactionToTagAssociationEnum } from './transaction-to-tag/enum/transaction-to-tag-association.enum';
 
@@ -135,6 +139,7 @@ export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
 
+export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
@@ -145,6 +150,9 @@ export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/t
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
+export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
+
+export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
 
 export { ExchangeRateAssociationEnum } from './exchange-rate/enum/exchange-rate-association.enum';
 

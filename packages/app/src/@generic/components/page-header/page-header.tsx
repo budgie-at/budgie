@@ -4,12 +4,12 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { cn } from '../../../@generic/utils/cn.util';
+import { ICONS, IconName } from '../../constant/icons.constant';
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { cn } from '../../utils/cn.util';
+import { CircleIcon } from '../circle-icon/circle-icon';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
 
 interface Props {
     readonly title: string;
@@ -24,7 +24,7 @@ interface Props {
     readonly iconVariant?: ColorPaletteVariant;
 }
 
-export const AccountHeader = (props: Props) => {
+export const PageHeader = (props: Props) => {
     const { title, description, iconVariant = 'default', descriptionClassName, icon, className, onGoBack, right, showBackBtn } = props;
 
     const goBack = () => {
@@ -42,7 +42,7 @@ export const AccountHeader = (props: Props) => {
 
             {isNotEmptyString(icon) ? <CircleIcon icon={ICONS[icon]} variant={iconVariant} size="2xl" className="rounded-3xl" /> : null}
 
-            <View className="gap-y-xs">
+            <View className="gap-y-xs mr-auto">
                 <Text className="text-primary font-medium text-3xl">{title}</Text>
                 <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>
             </View>

@@ -14,7 +14,7 @@ import { FullPage } from '../../../@generic/components/page/full-page';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { AccountHeader } from '../account-header/account-header';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
@@ -60,7 +60,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     return (
         <FullPage
-            header={<AccountHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
+            header={<PageHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
             footer={
                 <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner">
                     <Button variant="default" onPress={handleSubmit(handleCreate)} content={t`Submit`} />

@@ -9,11 +9,13 @@ import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFlatList } from '../bottom-sheet-flat-list/bottom-sheet-flat-list';
 import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetSearch } from '../bottom-sheet-search/bottom-sheet-search';
+import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { EmptyState } from '../empty-state/empty-state';
+import { IconName } from '../../constant/icons.constant';
 
 interface SearchableListBottomSheetProps<T> {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly snapPoints: BottomSheetSnapPoints;
+    readonly snapPoints?: BottomSheetSnapPoints;
     readonly index?: number;
 
     readonly title: string;
@@ -28,6 +30,7 @@ interface SearchableListBottomSheetProps<T> {
     readonly renderItem: ({ item }: { item: T }) => JSX.Element;
 
     readonly emptyTitle: string;
+    readonly emptyIcon?: IconName;
     readonly emptyDescription: string;
 
     readonly flatListProps?: {
@@ -38,10 +41,12 @@ interface SearchableListBottomSheetProps<T> {
     };
 }
 
+const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
+
 export const SearchableListBottomSheet = <T,>({
     ref,
     align,
-    snapPoints,
+    snapPoints = DEFAULT_SNAP_POINTS,
     index,
     title,
     description,
@@ -54,29 +59,32 @@ export const SearchableListBottomSheet = <T,>({
     emptyTitle,
     emptyDescription,
     flatListProps,
+    emptyIcon
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
 
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
-            <BottomSheetHeader align={align} size="md" title={title} description={description} />
+            <BottomSheetView>
+                <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
-            <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
+                <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
 
-            {isNotEmptyArray(data) ? (
-                <BottomSheetFlatList
-                    className={className}
-                    contentContainerClassName={contentContainerClassName}
-                    columnWrapperClassName={columnWrapperClassName}
-                    data={data}
-                    keyExtractor={keyExtractor}
-                    numColumns={numColumns}
-                    renderItem={renderItem}
-                    showsVerticalScrollIndicator={false}
-                />
-            ) : (
-                <EmptyState title={emptyTitle} description={emptyDescription} />
-            )}
+                {isNotEmptyArray(data) ? (
+                    <BottomSheetFlatList
+                        className={className}
+                        contentContainerClassName={contentContainerClassName}
+                        columnWrapperClassName={columnWrapperClassName}
+                        data={data}
+                        keyExtractor={keyExtractor}
+                        numColumns={numColumns}
+                        renderItem={renderItem}
+                        showsVerticalScrollIndicator={false}
+                    />
+                ) : (
+                    <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
+                )}
+            </BottomSheetView>
         </BottomSheet>
     );
 };

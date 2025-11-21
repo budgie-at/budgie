@@ -16,7 +16,7 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     externalId: schema => schema.describe('The external id of the transaction.'),
     operatedAt: schema => schema.describe('The date when the transaction was operated.'),
     exchangeRate: schema => schema.positive().describe('The exchange rate of the transaction.'),
-    externalSource: zodEnum(ExternalSourceEnum).describe('The external source of the transaction.'),
+    externalSource: zodEnum(ExternalSourceEnum).nullable().describe('The external source of the transaction.'),
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.')
 });

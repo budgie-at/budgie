@@ -14,8 +14,6 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
-const snapPoints = ['70%'];
-
 const keyExtractor = (item: LanguageInterface) => item.code;
 
 const flatListProps = {
@@ -51,7 +49,6 @@ export const LanguageSelectorBottomSheet = ({ ref, language, onSelect }: Props) 
         <SearchableListBottomSheet
             index={1}
             ref={ref}
-            snapPoints={snapPoints}
             title={t`Select Language`}
             description={t`Choose your preferred language for date and number formatting`}
             onSearchChange={setSearch}
