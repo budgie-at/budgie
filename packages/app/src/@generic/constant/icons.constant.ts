@@ -1,6 +1,7 @@
 import {
     AlertTriangle,
     Archive,
+    ArrowRightIcon,
     ArrowRightLeft,
     Baby,
     Banknote,
@@ -51,6 +52,7 @@ import {
     ShoppingBasket,
     Smartphone,
     Sparkles,
+    SplitIcon,
     Tag,
     Trash,
     TrendingDown,
@@ -64,8 +66,10 @@ import {
 export const ICONS = {
     Trash,
     Search,
+    ArrowRightIcon,
     Archive,
     Folder,
+    SplitIcon,
     FolderOpen,
     Calendar,
     X,

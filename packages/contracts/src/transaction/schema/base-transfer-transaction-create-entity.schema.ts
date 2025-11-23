@@ -11,7 +11,7 @@ import { findCoreTransactionEntries } from '../util/find-core-transaction-entrie
 import { TransferTransactionEntitySchema } from './transfer-transaction-entity.schema';
 
 export const BaseTransferTransactionCreateEntitySchema = convertToCreateEntitySchema(TransferTransactionEntitySchema)
-    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(2).max(3) })
+    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({transactionId: true})).min(2).max(3) })
     .superRefine(({ fromAccountId, toAccountId, entries }, context) => {
         if (!isDefined(fromAccountId) || !isDefined(toAccountId)) {
             context.addIssue({

@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
 
 import { DB, TX } from '../../generic/type/db.type';
+import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -21,9 +22,20 @@ export class TransactionRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    getAll() {
+    getAll(limit = 20) {
         return this.db.query.TransactionEntityTable.findMany({
-            with: { [TransactionAssociationEnum.ENTRIES]: true }
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.ACCOUNT]: true,
+                        [TransactionEntryAssociationEnum.CATEGORY]: true
+                    }
+                },
+                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+                [TransactionAssociationEnum.TO_ACCOUNT]: true
+            },
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)],
+            limit
         });
     }
 
@@ -36,7 +48,13 @@ export class TransactionRepository {
     findById(id: number) {
         return this.db.query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
-            with: { [TransactionAssociationEnum.ENTRIES]: true }
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: {
+                        [TransactionEntryAssociationEnum.CATEGORY]: true
+                    }
+                }
+            }
         });
     }
 }

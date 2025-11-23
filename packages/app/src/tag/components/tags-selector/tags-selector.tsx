@@ -11,10 +11,18 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useGetTagByIdsQuery } from '../../query/use-get-tag-by-ids.query';
 import { TagsSelectorBottomSheet } from '../tags-selector-bottom-sheet/tags-selector-bottom-sheet';
+import { cva } from 'class-variance-authority';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
 }
+
+const iconVariants = cva('', {
+    variants: {
+        variant: FOREGROUND_COLOR_PALETTE
+    }
+});
 
 export const TagsSelector = ({ variant }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
@@ -30,14 +38,13 @@ export const TagsSelector = ({ variant }: Props) => {
     };
 
     const handleRemoveSelection = (id: number) => {
-        console.log({ id });
         setTagIds(prev => prev.filter(tagId => tagId !== id));
     };
 
     return (
         <>
             <Card onPress={handleOpen} className="flex-row items-center gap-x-xl">
-                <Icon size={16} icon={ICONS.Tag} className="text-positive-foreground" />
+                <Icon size={16} icon={ICONS.Tag} className={iconVariants({ variant })} />
 
                 {isNotEmptyArray(selectedTags) ? (
                     <View className="mr-auto flex-row items-baseline">

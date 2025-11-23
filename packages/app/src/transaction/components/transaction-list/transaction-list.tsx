@@ -1,31 +1,31 @@
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { styled } from 'nativewind';
 import React from 'react';
 import { SectionList, Text, View } from 'react-native';
 
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useGetTransactionEntriesQuery } from '../../query/use-get-transaction-entries.query';
-import { TransactionEntryCard } from '../transaction-entry-card/transaction-entry-card';
+import { useGetTransactionsQuery } from '../../../transaction-entry/query/use-get-transactions.query';
+import { TransactionCard } from '../transaction-card/transaction-card';
 
-const SectionHeader = ({ date }: { date: string }) => {
-    const { formatMonthAndYear } = useFormatDate();
+const List = styled(SectionList, {
+    className: 'style'
+});
 
-    return (
-        <View className="bg-primary-reverse">
-            <Text className="text-secondary-foreground uppercase text-xs">{formatMonthAndYear(date)}</Text>
-        </View>
-    );
-};
-
-export const TransactionEntryList = () => {
-    const { sections, loadMore } = useGetTransactionEntriesQuery();
+export const TransactionList = () => {
+    const { sections, loadMore } = useGetTransactionsQuery();
     const { t } = useLingui();
 
-    const listSections = sections.map(s => ({ title: s.date, data: s.entries }));
+    const listSections = sections.map(({ date, transactions }) => ({ title: date, data: transactions }));
 
-    const renderItem = ({ item }: { item: TransactionEntryEntityInterface }) => <TransactionEntryCard entry={item} />;
-    const keyExtractor = (item: TransactionEntryEntityInterface) => item.id.toString();
-    const renderSectionHeader = ({ section }: { section: { title: string } }) => <SectionHeader date={section.title} />;
+    const renderItem = ({ item }: { item: TransactionWithRelationsEntityInterface }) => <TransactionCard transaction={item} />;
+    const keyExtractor = (item: TransactionWithRelationsEntityInterface) => item.id.toString();
+
+    const renderSectionHeader = ({ section }: { section: { title: string } }) => (
+        <View className="bg-primary-reverse">
+            <Text className="text-secondary-foreground uppercase text-xs">{section.title}</Text>
+        </View>
+    );
 
     const listEmptyState = (
         <EmptyState
@@ -38,9 +38,9 @@ export const TransactionEntryList = () => {
     );
 
     return (
-        <SectionList
+        <List
+            className='mt-5xl'
             showsVerticalScrollIndicator={false}
-            style={{ marginTop: 20 }}
             contentContainerClassName="pt-5xl gap-y-xl"
             sections={listSections}
             keyExtractor={keyExtractor}
