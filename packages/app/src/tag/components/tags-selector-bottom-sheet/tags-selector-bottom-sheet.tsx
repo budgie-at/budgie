@@ -29,11 +29,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
 
     const selectedTags = tags.filter(tag => selectedTagIds.includes(tag.id));
 
-    const handleSelect = (tagId: number) => {
-        onSelect(tagId);
-        // ref.current?.close();
-    };
-
     const tagsCount = tags.length;
 
     return (
@@ -77,7 +72,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                             {tags.map(({ id, title }) => (
                                 <TagsSelectorCard
                                     isSelected={selectedTagIds.includes(id)}
-                                    onSelect={handleSelect}
+                                    onSelect={onSelect}
                                     variant="static"
                                     title={title}
                                     key={id}
@@ -97,7 +92,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 </View>
             </BottomSheetScrollView>
 
-            <View className={'pt-3xl border-t border-t-secondary-corner px-5xl'}>
+            <View className="pt-3xl border-t border-t-secondary-corner px-5xl">
                 <Button
                     className="bg-primary border-primary"
                     textClassName="text-primary-reverse font-medium"

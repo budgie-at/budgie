@@ -1,14 +1,17 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
+
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
-import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchAccountsQuery } from '../../query/use-search-accounts.query';
-import { isNotEmptyString } from '@rnw-community/shared';
+import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 
 interface Props {
     readonly emptyStateDescription?: string;
+    readonly excludeAccountId: number | null;
     readonly onSelect: (accountId: number) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly selectedAccount: AccountEntityInterface | null;
@@ -21,7 +24,7 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg'
 };
 
-export const AccountSelectorBottomSheet = ({ ref, selectedAccount, onSelect, emptyStateDescription }: Props) => {
+export const AccountSelectorBottomSheet = ({ ref, selectedAccount, excludeAccountId, onSelect, emptyStateDescription }: Props) => {
     const [search, setSearch] = useState('');
     const { accounts } = useSearchAccountsQuery(search);
     const { t } = useLingui();
@@ -52,6 +55,8 @@ export const AccountSelectorBottomSheet = ({ ref, selectedAccount, onSelect, emp
         ? t`Try a different search term`
         : (emptyStateDescription ?? t`Create one to get started.`);
 
+    const accountsWithoutExcluded = accounts.filter(account => account.id !== excludeAccountId);
+
     return (
         <SearchableListBottomSheet
             ref={ref}
@@ -66,7 +71,7 @@ export const AccountSelectorBottomSheet = ({ ref, selectedAccount, onSelect, emp
             renderItem={renderItem}
             emptyDescription={emptyDescription}
             emptyTitle={emptyTitle}
-            data={accounts}
+            data={accountsWithoutExcluded}
             flatListProps={flatListProps}
         />
     );

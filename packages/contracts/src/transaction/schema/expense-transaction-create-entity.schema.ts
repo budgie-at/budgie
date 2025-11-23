@@ -8,7 +8,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { ExpenseTransactionEntitySchema } from './expense-transaction-entity.schema';
 
 export const ExpenseTransactionCreateEntitySchema = convertToCreateEntitySchema(ExpenseTransactionEntitySchema)
-    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(1) })
+    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1) })
     .superRefine(({ entries }, context) => {
         entries.forEach((transactionEntry, entryIndex) => {
             if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {

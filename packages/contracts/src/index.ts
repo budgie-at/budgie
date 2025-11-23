@@ -98,6 +98,12 @@ export type { TransactionEntityInterface } from './transaction/entity/transactio
 export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 
+export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
+export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';
+export type { TransactionTransferWithRelationsEntityInterface } from './transaction/entity/transaction-transfer-with-relations-entity.interface';
+
+export type { AnyTransactionWithRelationsEntityType } from './transaction/type/any-transaction-with-relations-entity.type';
+
 export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
 export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense-transaction-create-entity.interface';
 
@@ -138,6 +144,10 @@ export { TransferTransactionCreateEntitySchema } from './transaction/schema/tran
 export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
+
+export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
+export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
+export { isTransferTransaction } from './transaction/type-guard/is-transfer-transaction.type-guard';
 
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';

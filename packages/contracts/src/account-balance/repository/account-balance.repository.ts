@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../generic/type/db.type';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -16,7 +16,11 @@ export class AccountBalanceRepository {
         return accountBalance;
     }
 
-    async updateByAccountId(accountId: number, input: AccountBalanceUpdateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    async updateByAccountId(
+        accountId: number,
+        input: AccountBalanceUpdateEntityInterface,
+        tx?: TX
+    ): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .update(AccountBalanceEntityTable)
             .set(input)
@@ -24,6 +28,30 @@ export class AccountBalanceRepository {
             .returning();
 
         return accountBalance;
+    }
+
+    async increaseByAccountId(accountId: number, amount: number, tx?: TX): Promise<AccountBalanceEntityInterface> {
+        const [balance] = await (tx ?? this.db)
+            .update(AccountBalanceEntityTable)
+            .set({
+                amount: sql`${AccountBalanceEntityTable.amount} + ${amount}`
+            })
+            .where(eq(AccountBalanceEntityTable.accountId, accountId))
+            .returning();
+
+        return balance;
+    }
+
+    async decreaseByAccountId(accountId: number, amount: number, tx?: TX): Promise<AccountBalanceEntityInterface> {
+        const [balance] = await (tx ?? this.db)
+            .update(AccountBalanceEntityTable)
+            .set({
+                amount: sql`${AccountBalanceEntityTable.amount} - ${amount}`
+            })
+            .where(eq(AccountBalanceEntityTable.accountId, accountId))
+            .returning();
+
+        return balance;
     }
 
     findByAccountId(id: number): Promise<AccountBalanceEntityInterface | undefined> {

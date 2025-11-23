@@ -2,7 +2,7 @@ import { TransactionEntryCreateEntityInterface } from '../../transaction-entry/e
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
 
 export const getTotalSignedEntryMicroUnits = (
-    entries: TransactionEntryCreateEntityInterface[],
+    entries: Omit<TransactionEntryCreateEntityInterface, 'transactionId'>[],
     accountId: number,
     rateScaled: number,
     convert: (value: number, rateScaled: number) => number

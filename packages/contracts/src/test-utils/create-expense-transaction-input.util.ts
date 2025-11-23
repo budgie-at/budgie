@@ -17,6 +17,7 @@ export const createExpenseTransactionInput = (
     externalSource,
     toAccountId: null,
     fromAccountId: 42,
+    amount: 0,
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });

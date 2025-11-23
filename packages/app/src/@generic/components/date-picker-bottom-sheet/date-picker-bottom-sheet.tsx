@@ -1,9 +1,12 @@
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
+import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { Card } from '../card/card';
@@ -14,10 +17,17 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly date: Date;
+    readonly variant: ColorPaletteVariant;
     readonly onChange: (date: Date) => void;
 }
 
-export const DatePickerBottomSheet = ({date,onChange}: Props) => {
+const iconVariants = cva('', {
+    variants: {
+        variant: FOREGROUND_COLOR_PALETTE
+    }
+});
+
+export const DatePickerBottomSheet = ({ date, onChange, variant }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => void ref.current?.open();
@@ -26,7 +36,7 @@ export const DatePickerBottomSheet = ({date,onChange}: Props) => {
     return (
         <>
             <Card onPress={handleOpen} className="flex-row items-center gap-x-xl">
-                <Icon icon={ICONS.Calendar} size={16} className="text-positive-foreground" />
+                <Icon icon={ICONS.Calendar} size={16} className={iconVariants({ variant })} />
 
                 <Text className="text-sm font-medium text-primary">{date.toLocaleDateString()}</Text>
             </Card>

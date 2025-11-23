@@ -1,11 +1,37 @@
+import { cva } from 'class-variance-authority';
 import { styled } from 'nativewind';
 import { Text, View } from 'react-native';
-import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
-import { CalendarComponents } from 'react-native-ui-datepicker/src/types';
+import DateTimePicker, { CalendarComponents, DateType } from 'react-native-ui-datepicker';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { Icon } from '../icon/icon';
+
+const dayVariants = cva('', {
+    variants: {
+        isSelected: {
+            true: 'bg-primary w-full h-full items-center justify-center rounded-full',
+            false: ''
+        }
+    }
+});
+
+const dayTextVariants = cva('', {
+    variants: {
+        isSelected: {
+            true: 'text-sm text-primary-reverse',
+            false: 'text-sm text-primary font-medium'
+        }
+    }
+});
+
+const Day = ({ text, isSelected }: { text: string; isSelected: boolean }) => (
+    <View className={dayVariants({ isSelected })}>
+        <Text className={dayTextVariants({ isSelected })}>{text}</Text>
+    </View>
+);
 
 const components: CalendarComponents = {
     IconNext: <Icon icon={ICONS.ChevronRight} className="text-primary" size={24} />,
@@ -13,16 +39,12 @@ const components: CalendarComponents = {
     Weekday: ({ name }) => <Text className="text-primary">{name.short}</Text>,
     Month: ({ name }) => <Text className="text-primary">{name.full}</Text>,
     Year: ({ text }) => <Text className="text-primary">{text}</Text>,
-    Day: ({ text, isSelected }) => (
-        <View className={isSelected ? 'bg-primary w-full h-full items-center justify-center rounded-full' : ''}>
-            <Text className={isSelected ? 'text-sm text-primary-reverse' : 'text-sm text-primary font-medium'}>{text}</Text>
-        </View>
-    )
+    Day
 };
 
 interface Props {
-    readonly date: DateType;
-    readonly onChange: (date: DateType) => void;
+    readonly date: Date;
+    readonly onChange: (date: Date) => void;
 }
 
 const Picker = styled(DateTimePicker, {
@@ -33,7 +55,11 @@ const Picker = styled(DateTimePicker, {
 export const DatePicker = ({ date, onChange }: Props) => {
     const { settings } = useSettingsContext();
 
-    const handleDateChange = ({ date }: { date: DateType }) => void onChange(date);
+    const handleDateChange = ({ date }: { date: DateType }) => {
+        if (isDefined(date)) {
+            void onChange(new Date(date.toString()));
+        }
+    };
 
     return (
         <Picker

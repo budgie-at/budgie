@@ -17,6 +17,7 @@ export const createIncomeTransactionInput = (
     externalSource,
     toAccountId: 42,
     fromAccountId: null,
+    amount: 0,
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });
