@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.66.0](https://github.com/budgie-at/budgie/compare/v1.65.0...v1.66.0) (2025-11-24)
+
+### Bug Fixes
+
+- resolve review comments ([d276b5e](https://github.com/budgie-at/budgie/commit/d276b5e8f69a733fb86ace1e94c7d9b4e6140e61))
+
+### Features
+
+- add archived accounts screen ([a07267a](https://github.com/budgie-at/budgie/commit/a07267a2538de0d12b52ef29f938863368fd6506))
+- add archived accounts screen ([9621e82](https://github.com/budgie-at/budgie/commit/9621e82361d4935fbc99d2a863cc032eaae80f47))
+- add archived accounts screen ([456d9a6](https://github.com/budgie-at/budgie/commit/456d9a6d4a44c575524d51627085b866226b9ff9))
+- add archived accounts screen ([89c8fb6](https://github.com/budgie-at/budgie/commit/89c8fb6b257266880e8a21058f929d399406777d))
+- add archived accounts screen ([005e81b](https://github.com/budgie-at/budgie/commit/005e81ba8093eb84c477944f33460cffd6239110))
+- update translations ([bc1b70e](https://github.com/budgie-at/budgie/commit/bc1b70e866d94ce42195cff2c5c958e3bb0dce59))
+
 # [1.65.0](https://github.com/budgie-at/budgie/compare/v1.64.0...v1.65.0) (2025-11-20)
 
 ### Features
