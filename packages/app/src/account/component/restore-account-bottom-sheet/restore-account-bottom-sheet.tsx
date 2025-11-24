@@ -45,17 +45,8 @@ export const RestoreAccountBottomSheet = ({ title, ref, onRestore }: Props) => {
                 </Text>
 
                 <View className="gap-y-md">
-                    <Button
-                        className="bg-positive-foreground border-2 border-positive-foreground"
-                        textClassName="text-white font-semibold"
-                        content={t`Restore`}
-                        onPress={onRestore}
-                    />
-                    <Button
-                        onPress={handleCancel}
-                        className="text-primary font-semibold bg-transparent border-2 border-secondary-corner"
-                        content={t`Cancel`}
-                    />
+                    <Button content={t`Restore`} onPress={onRestore} variant="positive" size="md" />
+                    <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" />
                 </View>
             </BottomSheetView>
         </BottomSheet>
