@@ -2,6 +2,7 @@ import { JSX, RefObject } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
@@ -11,7 +12,6 @@ import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetSearch } from '../bottom-sheet-search/bottom-sheet-search';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { EmptyState } from '../empty-state/empty-state';
-import { IconName } from '../../constant/icons.constant';
 
 interface SearchableListBottomSheetProps<T> {
     readonly ref: RefObject<BottomSheetInterface | null>;
