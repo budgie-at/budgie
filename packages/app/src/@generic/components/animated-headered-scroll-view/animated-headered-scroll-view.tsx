@@ -38,7 +38,7 @@ export const AnimatedHeaderedScrollView = ({ children, title }: Props) => {
         );
 
         return {
-            transform: [{ scale }, { translateY }]
+            transform: [{ scale }, { translateY }],
         };
     });
 

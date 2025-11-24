@@ -8,6 +8,7 @@ import { EmptyFn } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
@@ -22,7 +23,7 @@ interface Props {
 
 const accountTypeVariants = cva('text-sm uppercase font-medium', {
     variants: {
-        accountType: ACCOUNT_COLOR
+        variant: FOREGROUND_COLOR_PALETTE
     }
 });
 
@@ -42,7 +43,7 @@ export const UpdateAccountHeader = ({ className, accountType, icon, onGoBack }: 
                     <Trans>Account Settings</Trans>
                 </Text>
 
-                <Text className={accountTypeVariants({ accountType })}>{i18n.t(ACCOUNT_TYPE[accountType])}</Text>
+                <Text className={accountTypeVariants({ variant: ACCOUNT_COLOR[accountType] })}>{i18n.t(ACCOUNT_TYPE[accountType])}</Text>
             </View>
         </View>
     );
