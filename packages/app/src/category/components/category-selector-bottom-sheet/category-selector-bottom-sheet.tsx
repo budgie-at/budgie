@@ -25,7 +25,6 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
 
 const flatListProps = {
     numColumns: 2,
-    // className: 'pt-3 px-xl',
     columnWrapperClassName: 'gap-x-lg',
     contentContainerClassName: 'gap-y-lg px-6 pt-xl'
 };
