@@ -4,19 +4,21 @@ import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { IconSelector } from '../../../@generic/components/icon-selector/icon-selector';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
     readonly control: Control<AccountCreateEntityInterface>;
+    readonly variant: ColorPaletteVariant;
 }
 
-export const UpdateAccountIconField = ({ control }: Props) => {
+export const UpdateAccountIconField = ({ control, variant }: Props) => {
     const { t } = useLingui();
 
     const renderIconSelector = ({ field: { value, onChange } }: UseControllerReturn<AccountCreateEntityInterface, 'icon'>) => (
         <FormItem label={t`Icon`}>
-            <IconSelector size='lg' icon={value} onSelect={onChange} />
+            <IconSelector size="lg" icon={value} onSelect={onChange} variant={variant} />
         </FormItem>
     );
 
-    return <Controller control={control} name='icon' render={renderIconSelector} />;
+    return <Controller control={control} name="icon" render={renderIconSelector} />;
 };

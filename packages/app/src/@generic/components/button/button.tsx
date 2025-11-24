@@ -10,7 +10,6 @@ import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palett
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -46,16 +45,23 @@ const textVariants = cva<{
             sm: 'font-medium text-sm',
             md: 'font-semibold text-md'
         },
-        variant: FOREGROUND_COLOR_PALETTE
+        variant: {
+            ...FOREGROUND_COLOR_PALETTE,
+            positive: 'text-white'
+        }
     }
 });
 
-export const Button = ({ content, onPress, disabled, leftIcon, rightIcon, className, variant = 'ghost', size = 'md', ...rest }: Props) => (
-    <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
-        {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[leftIcon]} /> : null}
+export const Button = (props: Props) => {
+    const { content, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
 
-        <Text className={textVariants({ variant })}>{content}</Text>
+    return (
+        <HapticPressable onPress={onPress} className={buttonVariants({ disabled, size, variant })} {...rest}>
+            {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[leftIcon]} /> : null}
 
-        {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[rightIcon]} /> : null}
-    </HapticPressable>
-);
+            <Text className={textVariants({ variant })}>{content}</Text>
+
+            {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[rightIcon]} /> : null}
+        </HapticPressable>
+    );
+};
