@@ -7,7 +7,6 @@ import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormItem } from '../form-item/form-item';
 import { IconSelector } from '../icon-selector/icon-selector';
 import { Input } from '../input/input';
-import { Shake } from '../shake/shake';
 
 interface Props {
     readonly control: Control<AccountCreateEntityInterface>;
@@ -29,17 +28,15 @@ export const CreateAccountDetailsField = ({ control, variant }: Props) => {
                 <View className="flex-row gap-x-xl">
                     <Controller control={control} name={'icon' as const} render={renderIconField} />
 
-                    <Shake isEnabled={fieldState.invalid}>
-                        <Input
-                            size="lg"
-                            value={field.value}
-                            variant={variant}
-                            onChangeText={field.onChange}
-                            className="text-ellipsis flex-1"
-                            maxLength={ACCOUNT_TITLE_MAX_LENGTH}
-                            placeholder={t`e.g. Savings Account`}
-                        />
-                    </Shake>
+                    <Input
+                        size="lg"
+                        value={field.value}
+                        variant={variant}
+                        onChangeText={field.onChange}
+                        className="text-ellipsis flex-1"
+                        maxLength={ACCOUNT_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Savings Account`}
+                    />
                 </View>
             </FormItem>
         );

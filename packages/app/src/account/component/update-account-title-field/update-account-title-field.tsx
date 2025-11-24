@@ -4,7 +4,6 @@ import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { Input } from '../../../@generic/components/input/input';
-import { Shake } from '../../../@generic/components/shake/shake';
 
 interface Props {
     readonly control: Control<AccountCreateEntityInterface>;
@@ -21,20 +20,18 @@ export const UpdateAccountTitleField = ({ control }: Props) => {
 
         return (
             <FormItem label={t`Account Name`} error={error?.message}>
-                <Shake isEnabled={invalid}>
-                    <Input
-                        size="lg"
-                        value={value}
-                        variant={variant}
-                        onChangeText={onChange}
-                        className="text-ellipsis flex-1"
-                        maxLength={ACCOUNT_TITLE_MAX_LENGTH}
-                        placeholder={t`e.g. Savings Account`}
-                    />
-                </Shake>
+                <Input
+                    size="lg"
+                    value={value}
+                    variant={variant}
+                    onChangeText={onChange}
+                    className="text-ellipsis flex-1"
+                    maxLength={ACCOUNT_TITLE_MAX_LENGTH}
+                    placeholder={t`e.g. Savings Account`}
+                />
             </FormItem>
         );
     };
 
-    return <Controller control={control} name='title' render={renderAccountTitle} />;
+    return <Controller control={control} name="title" render={renderAccountTitle} />;
 };

@@ -11,13 +11,13 @@ import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountHeader } from '../update-account-header/update-account-header';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -74,7 +74,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         <FullPage header={<UpdateAccountHeader onGoBack={goBack} accountType={account.type} icon={account.icon} />}>
             <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-            <FormLayoutGroup className="mb-8xl">
+            <FormLayoutGroup className="mb-8xl border">
                 <UpdateAccountTitleField control={control} />
                 <UpdateAccountIconField variant={variant} control={control} />
             </FormLayoutGroup>
