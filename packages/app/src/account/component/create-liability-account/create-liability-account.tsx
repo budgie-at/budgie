@@ -14,8 +14,9 @@ import { FullPage } from '../../../@generic/components/page/full-page';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
+import { AccountHeader } from '../account-header/account-header';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
-import { CreateAccountHeader } from '../create-account-header/create-account-header';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
@@ -55,24 +56,21 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         }
     };
 
-    const goBack = () => {
-        reset();
-        void router.back();
-    };
+    const variant = ACCOUNT_COLOR[type]
 
     return (
         <FullPage
-            header={<CreateAccountHeader onGoBack={goBack} title={title} description={t`Fill in the account details`} />}
+            header={<AccountHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
             footer={
                 <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner">
                     <Button variant="default" onPress={handleSubmit(handleCreate)} content={t`Submit`} />
                 </View>
             }
         >
-            <AccountBalanceField instrumentSymbol={instrument.symbol} control={control} />
+            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
             <FormLayoutGroup>
-                <CreateAccountDetailsField control={control} />
+                <CreateAccountDetailsField variant={variant} control={control} />
                 <CreateAccountCurrencyField control={control} />
             </FormLayoutGroup>
         </FullPage>
