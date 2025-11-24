@@ -1,5 +1,6 @@
 import { TransactionEntryTypeEnum, TransactionTypeEnum, TransferTransactionCreateEntitySchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { prettifyError } from 'zod';
@@ -8,6 +9,7 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { DatePickerBottomSheet } from '../../../@generic/components/date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
+import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { AccountBalanceInput } from '../../../account/component/account-balance-input/account-balance-input';
@@ -25,6 +27,13 @@ export const CreateTransferTransaction = () => {
     const [amount, setAmount] = useState(0);
     const { t } = useLingui();
 
+    const handleSwitchAccounts = () => {
+        const temp = fromAccountId;
+
+        setFromAccountId(toAccountId);
+        setToAccountId(temp);
+    }
+
     const handleSubmit = async () => {
         const parsed = TransferTransactionCreateEntitySchema.safeParse({
             exchangeRate: 1,
@@ -36,6 +45,7 @@ export const CreateTransferTransaction = () => {
             operatedAt: date.toString(),
             title: '',
             comment: '',
+            amount: convertToMicroUnits(amount),
             entries: [
                 {
                     categoryId: null,
@@ -60,6 +70,7 @@ export const CreateTransferTransaction = () => {
 
         if (parsed.success) {
             await transactionService.createInternal(parsed.data);
+            router.back()
         } else {
             console.log({ error: prettifyError(parsed.error) });
         }
@@ -85,7 +96,9 @@ export const CreateTransferTransaction = () => {
                     emptyStateDescription={t`Create your first account to start tracking transactions`}
                 />
 
-                <CircleIcon size="xxs" variant="ghost" icon={ICONS.ArrowRightIcon} />
+                <HapticPressable onPress={handleSwitchAccounts}>
+                    <CircleIcon size="xxs" variant="ghost" icon={ICONS.ArrowRightIcon} />
+                </HapticPressable>
 
                 <AccountSelectorSquare
                     className="flex-1"

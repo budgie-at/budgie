@@ -1,9 +1,8 @@
 import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { RefObject } from 'react';
 
-import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
-import { SelectorCard } from '../../../@generic/components/selector-card/selector-card';
+import { SearchableSelectorBottomSheet } from '../../../@generic/components/searchable-selector-bottom-sheet/searchable-selector-bottom-sheet';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { LANGUAGES } from '../../constant/languages.constant';
 import { LanguageInterface } from '../../interface/language.interface';
@@ -14,52 +13,25 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
-const keyExtractor = (item: LanguageInterface) => item.code;
-
-const flatListProps = {
-    className: 'pt-3 px-xl',
-    contentContainerClassName: 'gap-y-lg'
-};
+const getItemKey = (item: LanguageInterface) => item.code;
 
 export const LanguageSelectorBottomSheet = ({ ref, language, onSelect }: Props) => {
-    const [search, setSearch] = useState('');
-    const { t, i18n } = useLingui();
-
-    const filteredLanguages = LANGUAGES.filter(
-        ({ name, code }) => i18n.t(name).toLowerCase().includes(search.toLowerCase()) || code.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const handleSelect = (language: LanguageEnum) => {
-        onSelect(language);
-        ref.current?.close();
-    };
-
-    const renderItem = ({ item }: { item: LanguageInterface }) => (
-        <SelectorCard
-            key={item.code}
-            isSelected={item.code === language}
-            code={item.code}
-            emoji={item.emoji}
-            name={i18n.t(item.name)}
-            onSelect={handleSelect}
-        />
-    );
+    const { t } = useLingui();
 
     return (
-        <SearchableListBottomSheet
-            index={1}
+        <SearchableSelectorBottomSheet
             ref={ref}
+            selectedValue={language}
+            onSelect={onSelect}
+            data={LANGUAGES}
             title={t`Select Language`}
             description={t`Choose your preferred language for date and number formatting`}
-            onSearchChange={setSearch}
             searchPlaceholder={t`Search languages...`}
-            search={search}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyDescription={t`Try a different search term`}
             emptyTitle={t`No languages found`}
-            data={filteredLanguages}
-            flatListProps={flatListProps}
+            emptyDescription={t`Try a different search term`}
+            getItemKey={getItemKey}
+            getItemCode={getItemKey}
+            index={1}
         />
     );
 };

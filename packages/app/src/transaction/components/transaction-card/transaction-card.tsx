@@ -46,7 +46,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                 {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
 
                 <View className="gap-y-md">
-                    <View className="flex-row items-center gap-x-sm">
+                    <View className="flex-row items-center gap-x-sm flex-wrap">
                         <Text className="text-xs text-secondary-foreground">{formatMonthAndDay(transaction.operatedAt)}</Text>
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>

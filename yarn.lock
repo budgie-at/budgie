@@ -1485,7 +1485,7 @@ __metadata:
     react-dom: "npm:19.1.0"
     react-hook-form: "npm:^7.66.0"
     react-native: "npm:0.81.5"
-    react-native-css: "npm:^3.0.1"
+    react-native-css: "patch:react-native-css@3.0.1#patches/react-native-css.patch"
     react-native-gesture-handler: "npm:~2.28.0"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"
@@ -18351,7 +18351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-css@npm:^3.0.1":
+"react-native-css@npm:3.0.1":
   version: 3.0.1
   resolution: "react-native-css@npm:3.0.1"
   dependencies:
@@ -18365,6 +18365,23 @@ __metadata:
     react: ">=19"
     react-native: ">=0.81"
   checksum: 10/0b4c98a05599bd41d634a62625bcace954b94875d7ee72996a4b07f48e63c2188a670d451e7193ee634312dd585d46749330d431bcc821263242d654d607a563
+  languageName: node
+  linkType: hard
+
+"react-native-css@patch:react-native-css@3.0.1#patches/react-native-css.patch::locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp":
+  version: 3.0.1
+  resolution: "react-native-css@patch:react-native-css@npm%3A3.0.1#patches/react-native-css.patch::version=3.0.1&hash=5621ce&locator=%40budgie-at%2Fapp%40workspace%3Apackages%2Fapp"
+  dependencies:
+    babel-plugin-react-compiler: "npm:^19.1.0-rc.2"
+    colorjs.io: "npm:0.6.0-alpha.1"
+    comment-json: "npm:^4.2.5"
+    debug: "npm:^4.4.1"
+  peerDependencies:
+    "@expo/metro-config": ">=54"
+    lightningcss: ">=1.27.0"
+    react: ">=19"
+    react-native: ">=0.81"
+  checksum: 10/74c8c023b7fe7921d56bced501b8cf5a714a1cf196c04e0f090a431866f96b1415ec4f78e3cb16ccd383e428dfcb91155de59861f7afb5873b3ba1d9f0268930
   languageName: node
   linkType: hard
 
