@@ -1,7 +1,4 @@
-import { cva } from 'class-variance-authority';
-import { styled } from 'nativewind';
-import { Text, View } from 'react-native';
-import DateTimePicker, { CalendarComponents, DateType } from 'react-native-ui-datepicker';
+import DateTimePicker, { CalendarComponents, DateType, useDefaultClassNames } from 'react-native-ui-datepicker';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,37 +6,9 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { Icon } from '../icon/icon';
 
-const dayVariants = cva('', {
-    variants: {
-        isSelected: {
-            true: 'bg-primary w-full h-full items-center justify-center rounded-full',
-            false: ''
-        }
-    }
-});
-
-const dayTextVariants = cva('', {
-    variants: {
-        isSelected: {
-            true: 'text-sm text-primary-reverse',
-            false: 'text-sm text-primary font-medium'
-        }
-    }
-});
-
-const Day = ({ text, isSelected }: { text: string; isSelected: boolean }) => (
-    <View className={dayVariants({ isSelected })}>
-        <Text className={dayTextVariants({ isSelected })}>{text}</Text>
-    </View>
-);
-
 const components: CalendarComponents = {
     IconNext: <Icon icon={ICONS.ChevronRight} className="text-primary" size={24} />,
-    IconPrev: <Icon icon={ICONS.ChevronLeft} className="text-primary" size={24} />,
-    Weekday: ({ name }) => <Text className="text-primary">{name.short}</Text>,
-    Month: ({ name }) => <Text className="text-primary">{name.full}</Text>,
-    Year: ({ text }) => <Text className="text-primary">{text}</Text>,
-    Day
+    IconPrev: <Icon icon={ICONS.ChevronLeft} className="text-primary" size={24} />
 };
 
 interface Props {
@@ -47,13 +16,9 @@ interface Props {
     readonly onChange: (date: Date) => void;
 }
 
-const Picker = styled(DateTimePicker, {
-    month_selector_label_className: 'styles.month_selector_label',
-    year_selector_label_className: 'styles.year_selector_label'
-});
-
 export const DatePicker = ({ date, onChange }: Props) => {
     const { settings } = useSettingsContext();
+    const defaultClassNames = useDefaultClassNames();
 
     const handleDateChange = ({ date }: { date: DateType }) => {
         if (isDefined(date)) {
@@ -61,14 +26,37 @@ export const DatePicker = ({ date, onChange }: Props) => {
         }
     };
 
+    const classNames = {
+        ...defaultClassNames,
+        today: 'bg-primary/10',
+        today_label: 'text-primary',
+        header: 'py-xl px-xl',
+        month: 'bg-primary-reverse',
+        month_label: 'text-primary text-sm font-medium',
+        selected_month: 'bg-primary rounded-full',
+        selected_month_label: 'text-primary-reverse',
+        day: 'text-white',
+        year: 'bg-primary-reverse',
+        year_label: 'text-primary text-sm font-medium',
+        selected_year: 'bg-primary rounded-full',
+        selected_year_label: 'text-primary-reverse',
+        year_selector_label: 'text-secondary-foreground text-sm font-medium',
+        month_selector_label: 'text-primary text-lg font-semibold',
+        day_label: 'text-primary',
+        day_cell: 'bg-primary-reverse rounded-full overflow-hidden',
+        selected: 'bg-primary',
+        selected_label: 'text-primary-reverse',
+        weekday: 'bg-primary-reverse',
+        weekday_label: 'text-xs text-secondary-foreground font-semibold'
+    };
+
     return (
-        <Picker
-            month_selector_label_className="text-primary"
-            year_selector_label_className="text-primary"
+        <DateTimePicker
+            classNames={classNames}
             locale={settings.locale}
             date={date}
-            onChange={handleDateChange}
             components={components}
+            onChange={handleDateChange}
             mode="single"
         />
     );

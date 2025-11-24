@@ -1,4 +1,3 @@
-import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
@@ -11,7 +10,6 @@ import { HapticPressable } from '../../../@generic/components/haptic-pressable/h
 import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
@@ -26,12 +24,6 @@ interface Props {
 }
 
 const safeEdges = ['bottom'] as const;
-
-const buttonVariants = cva('', {
-    variants: {
-        variant: BACKGROUND_COLOR_PALETTE
-    }
-});
 
 export const TransactionFormLayout = ({ title, description, icon, variant, buttonText, onSubmit, children }: Props) => {
     const goBack = () => void router.back();
@@ -56,8 +48,7 @@ export const TransactionFormLayout = ({ title, description, icon, variant, butto
                     <SafeAreaView edges={safeEdges}>
                         <Button
                             onPress={onSubmit}
-                            className={buttonVariants({ variant })}
-                            textClassName="text-white"
+                            variant={variant}
                             content={buttonText}
                         />
                     </SafeAreaView>

@@ -11,12 +11,12 @@ import { CreateAccountCurrencyField } from '../../../@generic/components/create-
 import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { FullPage } from '../../../@generic/components/page/full-page';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
@@ -63,7 +63,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             header={<PageHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
             footer={
                 <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner">
-                    <Button variant="default" onPress={handleSubmit(handleCreate)} content={t`Submit`} />
+                    <Button variant={variant} onPress={handleSubmit(handleCreate)} content={t`Submit`} />
                 </View>
             }
         >
