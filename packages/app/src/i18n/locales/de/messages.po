@@ -11,16 +11,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. placeholder {0}: filteredIcons.length
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
-msgid "{0} icons available"
-msgstr "{0} Symbole verfügbar"
+#: src/app/(main)/archived.tsx:27
+msgid "{archivedAccountsCount} account"
+msgstr "{archivedAccountsCount} Konto"
 
-#: src/app/(tabs)/settings.tsx:34
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+msgid "{iconsCount} icons available"
+msgstr "{iconsCount} Symbole verfügbar"
+
+#: src/app/(tabs)/settings.tsx:35
 msgid "100% Offline & Private"
 msgstr "100% Offline & Privat"
 
-#: src/app/(tabs)/settings.tsx:68
+#: src/app/(tabs)/settings.tsx:76
 msgid "About"
 msgstr "Über"
 
@@ -28,17 +31,21 @@ msgstr "Über"
 msgid "Account Name"
 msgstr "Kontoname"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:26
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:28
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
 
-#: src/account/component/update-account-header/update-account-header.tsx:42
+#: src/account/component/update-account-header/update-account-header.tsx:43
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:12
 msgid "Accounts"
 msgstr "Konten"
+
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:16
+msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
+msgstr "Archivierte Konten werden hier angezeigt. Sie werden nicht in Ihren Gesamtsummen oder der Hauptansicht berücksichtigt."
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 msgid "Add a new category to organize your transactions"
@@ -64,7 +71,7 @@ msgstr "KI"
 msgid "Ai Page"
 msgstr "KI-Seite"
 
-#: src/app/(tabs)/settings.tsx:72
+#: src/app/(tabs)/settings.tsx:80
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -72,7 +79,7 @@ msgstr ""
 "KI-gestützte Budgetierungs-App mit vollständiger Privatsphäre. Alle Datenverarbeitung erfolgt lokal auf Ihrem Gerät.\n"
 "Version 1.0.0"
 
-#: src/app/(tabs)/settings.tsx:35
+#: src/app/(tabs)/settings.tsx:36
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine Cloud-Synchronisierung, kein Tracking, keine Datenweitergabe."
 
@@ -80,13 +87,18 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Analytics Page"
 msgstr "Analyse-Seite"
 
-#: src/app/(tabs)/settings.tsx:63
+#: src/app/(tabs)/settings.tsx:71
 msgid "Appearance"
 msgstr "Erscheinungsbild"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx:81
 msgid "Archive Account"
 msgstr "Konto archivieren"
+
+#: src/app/(main)/archived.tsx:27
+#: src/app/(tabs)/settings.tsx:64
+msgid "Archived Accounts"
+msgstr "Archivierte Konten"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
@@ -100,16 +112,17 @@ msgstr "Bank"
 msgid "Base currency"
 msgstr "Basiswährung"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:31
+#: src/@generic/components/icon-selector/icon-selector.tsx:33
 msgid "Browse"
 msgstr "Durchsuchen"
 
-#: src/app/(tabs)/settings.tsx:70
+#: src/app/(tabs)/settings.tsx:78
 msgid "BudgetAI"
 msgstr "BudgetKI"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:17
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:57
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -125,7 +138,7 @@ msgstr "Kategorien"
 msgid "Category Name"
 msgstr "Kategoriename"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:30
+#: src/@generic/components/icon-selector/icon-selector.tsx:32
 msgid "Change"
 msgstr "Ändern"
 
@@ -138,7 +151,7 @@ msgstr "Girokonto"
 msgid "Choose a type to get started"
 msgstr "Wählen Sie einen Typ, um zu beginnen"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
 msgid "Choose Icon"
 msgstr "Symbol auswählen"
 
@@ -166,7 +179,11 @@ msgstr "Kategorie konnte nicht erstellt werden"
 msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
-#: src/app/(tabs)/settings.tsx:57
+#: src/account/component/archived-account-card/archived-account-card.tsx:37
+msgid "Could not restore account."
+msgstr "Konto konnte nicht wiederhergestellt werden."
+
+#: src/app/(tabs)/settings.tsx:58
 msgid "Create and organize transaction tags"
 msgstr "Transaktions-Tags erstellen und organisieren"
 
@@ -215,7 +232,7 @@ msgstr "Löschen"
 msgid "Dutch (Netherlands)"
 msgstr "Niederländisch (Niederlande)"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:38
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:40
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:32
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
@@ -252,7 +269,7 @@ msgstr "Alltägliche Transaktionen und Ausgaben"
 msgid "Expense"
 msgstr "Ausgabe"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:65
+#: src/account/component/create-liability-account/create-liability-account.tsx:63
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
 
@@ -264,7 +281,7 @@ msgstr "Französisch"
 msgid "French (France)"
 msgstr "Französisch (Frankreich)"
 
-#: src/app/(tabs)/settings.tsx:40
+#: src/app/(tabs)/settings.tsx:41
 msgid "General"
 msgstr "Allgemein"
 
@@ -309,11 +326,11 @@ msgstr "Gebietsschema"
 msgid "Main Currency"
 msgstr "Hauptwährung"
 
-#: src/app/(tabs)/settings.tsx:49
+#: src/app/(tabs)/settings.tsx:50
 msgid "Manage Categories"
 msgstr "Kategorien verwalten"
 
-#: src/app/(tabs)/settings.tsx:56
+#: src/app/(tabs)/settings.tsx:57
 msgid "Manage Tags"
 msgstr "Tags verwalten"
 
@@ -341,6 +358,10 @@ msgstr "Neue Transaktion"
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
+#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:13
+msgid "No archived accounts"
+msgstr "Keine archivierten Konten"
+
 #: src/app/(main)/categories.tsx:34
 msgid "No categories match your search"
 msgstr "Keine Kategorien entsprechen Ihrer Suche"
@@ -353,11 +374,11 @@ msgstr "Keine Währungen gefunden"
 msgid "No Custom Categories"
 msgstr "Keine benutzerdefinierten Kategorien"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:70
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
 msgid "No icons"
 msgstr "Keine Symbole"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:69
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
 msgid "No icons found"
 msgstr "Keine Symbole gefunden"
 
@@ -382,11 +403,11 @@ msgstr "Keine Tags entsprechen Ihrer Suche"
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
 
-#: src/app/(tabs)/settings.tsx:46
+#: src/app/(tabs)/settings.tsx:47
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:53
+#: src/account/component/create-liability-account/create-liability-account.tsx:54
 #: src/account/component/update-liability-account/update-liability-account.tsx:42
 #: src/account/component/update-liability-account/update-liability-account.tsx:56
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
@@ -407,9 +428,17 @@ msgstr "Portugiesisch (Portugal)"
 msgid "Preview"
 msgstr "Vorschau"
 
-#: src/app/(tabs)/settings.tsx:31
+#: src/app/(tabs)/settings.tsx:32
 msgid "Privacy"
 msgstr "Privatsphäre"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:51
+msgid "Restore"
+msgstr "Wiederherstellen"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:39
+msgid "Restore Account?"
+msgstr "Konto wiederherstellen?"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -428,7 +457,7 @@ msgstr "Kategorien durchsuchen..."
 msgid "Search currencies..."
 msgstr "Währungen durchsuchen..."
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
 
@@ -456,7 +485,7 @@ msgstr "Sprache auswählen"
 msgid "Select Locale"
 msgstr "Gebietsschema auswählen"
 
-#: src/app/(tabs)/settings.tsx:27
+#: src/app/(tabs)/settings.tsx:28
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -464,11 +493,15 @@ msgstr "Einstellungen"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "$1.234,56 statt $1.235 anzeigen"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:52
+#: src/account/component/create-liability-account/create-liability-account.tsx:53
 #: src/account/component/update-liability-account/update-liability-account.tsx:41
 #: src/account/component/update-liability-account/update-liability-account.tsx:55
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:38
+msgid "Something went wrong. Please try again later."
+msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 
 #: src/i18n/constant/languages.constant.ts:31
 msgid "Spanish"
@@ -483,7 +516,7 @@ msgid "Stocks"
 msgstr "Aktien"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:28
-#: src/account/component/create-liability-account/create-liability-account.tsx:68
+#: src/account/component/create-liability-account/create-liability-account.tsx:66
 msgid "Submit"
 msgstr "Absenden"
 
@@ -504,7 +537,7 @@ msgstr "Tag-Name"
 msgid "Tags"
 msgstr "Tags"
 
-#: src/@generic/components/icon-selector/icon-selector.tsx:26
+#: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Tippen Sie, um das Symbol zu ändern"
 
@@ -539,6 +572,14 @@ msgstr "Ukrainisch"
 msgid "Update Account"
 msgstr "Konto aktualisieren"
 
-#: src/app/(tabs)/settings.tsx:50
+#: src/app/(tabs)/settings.tsx:51
 msgid "View and delete custom categories"
 msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
+
+#: src/app/(tabs)/settings.tsx:65
+msgid "View and restore archived accounts"
+msgstr "Archivierte Konten anzeigen und wiederherstellen"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:44
+msgid "will be restored to your main view and included in totals."
+msgstr "wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."

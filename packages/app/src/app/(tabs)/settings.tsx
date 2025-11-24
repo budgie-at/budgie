@@ -19,7 +19,8 @@ import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch
 export default function SettingsPage() {
     const { t } = useLingui();
 
-    const navigateToCategories = () => void router.push('/(main)/categories');
+    const handleNavigateToCategories = () => void router.push('/(main)/categories');
+    const handleNavigateToArchived = () => void router.push('/(main)/archived');
     const navigateToTags = () => void router.push('/(main)/tags');
 
     return (
@@ -45,7 +46,7 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Organization`}>
                         <GenericSelectorCard
-                            onPress={navigateToCategories}
+                            onPress={handleNavigateToCategories}
                             title={t`Manage Categories`}
                             description={t`View and delete custom categories`}
                             icon="Folder"
@@ -57,6 +58,13 @@ export default function SettingsPage() {
                             description={t`Create and organize transaction tags`}
                             icon="Tag"
                             iconVariant="pink"
+                        />
+                        <GenericSelectorCard
+                            onPress={handleNavigateToArchived}
+                            title={t`Archived Accounts`}
+                            description={t`View and restore archived accounts`}
+                            icon="Archive"
+                            iconVariant="dark-warning"
                         />
                     </SettingsGroup>
 

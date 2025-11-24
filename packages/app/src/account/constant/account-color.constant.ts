@@ -1,10 +1,12 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 
-export const ACCOUNT_COLOR: Record<AccountTypeEnum, string> = {
-    [AccountTypeEnum.BANK]: 'text-default-foreground',
-    [AccountTypeEnum.CASH]: 'text-positive-foreground',
-    [AccountTypeEnum.CRYPTO]: 'text-warning-foreground',
-    [AccountTypeEnum.STOCKS]: 'text-pink-foreground',
-    [AccountTypeEnum.DEBT]: 'text-default-foreground',
-    [AccountTypeEnum.SAVINGS]: 'text-positive-foreground',
+import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
+
+export const ACCOUNT_COLOR: Record<AccountTypeEnum, ColorPaletteVariant> = {
+    [AccountTypeEnum.BANK]: 'default',
+    [AccountTypeEnum.CASH]: 'positive',
+    [AccountTypeEnum.CRYPTO]: 'warning',
+    [AccountTypeEnum.STOCKS]: 'pink',
+    [AccountTypeEnum.DEBT]: 'dark-warning',
+    [AccountTypeEnum.SAVINGS]: 'positive'
 };

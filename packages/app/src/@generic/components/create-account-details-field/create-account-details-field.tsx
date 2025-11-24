@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormItem } from '../form-item/form-item';
 import { IconSelector } from '../icon-selector/icon-selector';
 import { Input } from '../input/input';
@@ -10,13 +11,14 @@ import { Shake } from '../shake/shake';
 
 interface Props {
     readonly control: Control<AccountCreateEntityInterface>;
+    readonly variant: ColorPaletteVariant;
 }
 
-export const CreateAccountDetailsField = ({ control }: Props) => {
+export const CreateAccountDetailsField = ({ control, variant }: Props) => {
     const { t } = useLingui();
 
     const renderIconField = ({ field: iconField }: UseControllerReturn<AccountCreateEntityInterface, 'icon'>) => (
-        <IconSelector size="sm" icon={iconField.value} onSelect={iconField.onChange} />
+        <IconSelector size="sm" icon={iconField.value} variant={variant} onSelect={iconField.onChange} />
     );
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
