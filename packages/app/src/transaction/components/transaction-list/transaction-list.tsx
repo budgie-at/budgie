@@ -1,16 +1,11 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { styled } from 'nativewind';
 import React from 'react';
 import { SectionList, Text, View } from 'react-native';
 
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
 import { useGetTransactionsQuery } from '../../../transaction-entry/query/use-get-transactions.query';
 import { TransactionCard } from '../transaction-card/transaction-card';
-
-const List = styled(SectionList, {
-    className: 'style'
-});
 
 export const TransactionList = () => {
     const { sections, loadMore } = useGetTransactionsQuery();
@@ -38,8 +33,8 @@ export const TransactionList = () => {
     );
 
     return (
-        <List
-            className='mt-5xl'
+        <SectionList
+            style={{ marginTop: 20 }}
             showsVerticalScrollIndicator={false}
             contentContainerClassName="pt-5xl gap-y-xl"
             sections={listSections}
