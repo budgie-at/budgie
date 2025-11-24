@@ -2,7 +2,6 @@ import { Control, Controller, FieldValues, Path, UseControllerReturn } from 'rea
 
 import { BottomSheetTextInput } from '../bottom-sheet-input/bottom-sheet-input';
 import { FormItem } from '../form-item/form-item';
-import { Shake } from '../shake/shake';
 
 interface Props<T extends FieldValues> {
     readonly control: Control<T>;
@@ -24,16 +23,14 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
 
         return (
             <FormItem label={label} error={error?.message}>
-                <Shake isEnabled={invalid}>
-                    <BottomSheetTextInput
-                        value={value}
-                        variant={variant}
-                        maxLength={maxLength}
-                        onChangeText={onChange}
-                        placeholder={placeholder}
-                        className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                </Shake>
+                <BottomSheetTextInput
+                    value={value}
+                    variant={variant}
+                    maxLength={maxLength}
+                    onChangeText={onChange}
+                    placeholder={placeholder}
+                    className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                />
             </FormItem>
         );
     };
