@@ -7,7 +7,7 @@ import { Input } from '../../../@generic/components/input/input';
 import { Shake } from '../../../@generic/components/shake/shake';
 
 interface Props {
-    control: Control<AccountCreateEntityInterface>;
+    readonly control: Control<AccountCreateEntityInterface>;
 }
 
 export const UpdateAccountTitleField = ({ control }: Props) => {

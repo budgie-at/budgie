@@ -1,44 +1,53 @@
-import { AccountEntityInterface } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
+
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
-import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | 'type'> {
+interface Props {
+    readonly title: string;
+    readonly icon?: IconName;
+    readonly right?: ReactNode;
+    readonly onGoBack?: EmptyFn;
     readonly className?: string;
+    readonly description: string;
     readonly showBackBtn?: boolean;
+    readonly titleClassName?: string;
+    readonly descriptionClassName?: string;
+    readonly iconVariant?: ColorPaletteVariant;
 }
 
-export const AccountHeader = ({ title, icon, type, className, showBackBtn, id }: Props) => {
-    const { i18n } = useLingui();
+export const AccountHeader = (props: Props) => {
+    const { title, description, iconVariant = 'default', descriptionClassName, icon, className, onGoBack, right, showBackBtn } = props;
 
-    const goBack = () => void router.back();
-    const navigateToEdit = () => void router.push(`/edit-account/${id}`);
+    const goBack = () => {
+        void router.back();
+        onGoBack?.();
+    };
 
     return (
-        <View className={cn('flex-row items-center gap-x-xl px-5xl', className)}>
+        <View className={cn('flex-row items-center gap-x-xl px-5xl pb-7xl border-b border-b-secondary-corner', className)}>
             {showBackBtn ? (
                 <HapticPressable className="p-md" onPress={goBack}>
                     <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
                 </HapticPressable>
             ) : null}
 
-            <CircleIcon icon={ICONS[icon]} variant="default" size="2xl" className="rounded-3xl" />
+            {isNotEmptyString(icon) ? <CircleIcon icon={ICONS[icon]} variant={iconVariant} size="2xl" className="rounded-3xl" /> : null}
 
             <View className="gap-y-xs">
                 <Text className="text-primary font-medium text-3xl">{title}</Text>
-                <Text className="uppercase text-default-foreground font-medium text-xs">{i18n.t(ACCOUNT_TYPE[type])}</Text>
+                <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>
             </View>
 
-            <HapticPressable className="ml-auto" onPress={navigateToEdit}>
-                <CircleIcon icon={ICONS.EllipsisVertical} variant="ghost" size="lg" border={false} />
-            </HapticPressable>
+            {right}
         </View>
     );
 };
