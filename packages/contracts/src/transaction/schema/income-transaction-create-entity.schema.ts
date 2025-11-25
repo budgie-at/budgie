@@ -11,7 +11,17 @@ export const IncomeTransactionCreateEntitySchema = convertToCreateEntitySchema(I
     .extend({
         [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
-    .superRefine(({ entries }, context) => {
+    .superRefine(({ entries, amount }, context) => {
+        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
+
+        if (totalAmount !== amount) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: `Total amount of income entries (${totalAmount}) does not match the income amount (${amount}).`
+            });
+        }
+
         entries.forEach((transactionEntry, entryIndex) => {
             if (transactionEntry.type !== TransactionEntryTypeEnum.DEBIT) {
                 context.addIssue({
