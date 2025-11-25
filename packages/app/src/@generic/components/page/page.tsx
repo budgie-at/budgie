@@ -1,5 +1,5 @@
 import { styled } from 'nativewind';
-import { View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
@@ -20,7 +20,11 @@ const DEFAULT_SAFE_EDGES: Edges = ['top'];
 export const Page = ({ className, header, footer, children, safeEdges = DEFAULT_SAFE_EDGES, contentClassName, ...rest }: Props) => (
     <Wrapper {...rest} className={cn('bg-primary-reverse flex-1', className)} edges={safeEdges}>
         {header}
-        <View className={cn('bg-primary-reverse px-5xl flex-1', contentClassName)}>{children}</View>
+        <View className={cn('bg-primary-reverse px-5xl flex-1', contentClassName)}>
+            <KeyboardAvoidingView className="flex-1" behavior={Platform.OS ? 'padding' : undefined}>
+                {children}
+            </KeyboardAvoidingView>
+        </View>
         {footer}
     </Wrapper>
 );

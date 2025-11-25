@@ -23,6 +23,6 @@ export const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl
     }
 });
 
-export const Input = ({ size = 'sm', variant = 'default', style, ...rest }: InputProps) => (
-    <TextInput {...rest} className={cn(inputVariant({ size, variant }))} />
+export const Input = ({ size = 'sm', variant = 'default', className, ...rest }: InputProps) => (
+    <TextInput {...rest} className={cn(inputVariant({ size, variant }), className)} />
 );
