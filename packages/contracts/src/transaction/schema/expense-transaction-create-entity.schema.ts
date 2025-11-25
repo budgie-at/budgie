@@ -9,7 +9,17 @@ import { ExpenseTransactionEntitySchema } from './expense-transaction-entity.sch
 
 export const ExpenseTransactionCreateEntitySchema = convertToCreateEntitySchema(ExpenseTransactionEntitySchema)
     .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1) })
-    .superRefine(({ entries }, context) => {
+    .superRefine(({ entries, amount }, context) => {
+        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
+
+        if (totalAmount !== amount) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: `Total amount of expense entries (${totalAmount}) does not match the expense amount (${amount}).`
+            });
+        }
+
         entries.forEach((transactionEntry, entryIndex) => {
             if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {
                 context.addIssue({

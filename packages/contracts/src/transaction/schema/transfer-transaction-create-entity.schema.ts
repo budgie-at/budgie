@@ -9,7 +9,7 @@ import { TransactionAssociationEnum } from '../enum/transaction-association.enum
 import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
 
 export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
-    ({ entries, exchangeRate, fromAccountId, toAccountId }, context) => {
+    ({ entries, exchangeRate, fromAccountId, toAccountId, amount }, context) => {
         const fromEntryIndex = entries.findIndex(transactionEntry => transactionEntry.accountId === fromAccountId);
         const toEntryIndex = entries.findIndex(transactionEntry => transactionEntry.accountId === toAccountId);
 
@@ -73,6 +73,16 @@ export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCrea
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES],
                 message: `entries do not balance (micro): total signed FROM = ${totalSignedFromMicroUnits} (must be 0±${TOLERANCE_MICRO})`
+            });
+        }
+
+        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
+
+        if (totalAmount !== amount) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: `Total amount of transfer entries (${totalAmount}) does not match the transfer amount (${amount}).`
             });
         }
     }
