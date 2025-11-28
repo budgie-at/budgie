@@ -32,7 +32,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const tagsCount = tags.length;
 
     return (
-        <BottomSheet index={1} snapPoints={snapPoints} ref={ref}>
+        <BottomSheet snapPoints={snapPoints} ref={ref}>
             <BottomSheetHeader
                 className="border-b border-b-secondary-corner"
                 size="md"
@@ -93,12 +93,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
             </BottomSheetScrollView>
 
             <View className="pt-3xl border-t border-t-secondary-corner px-5xl">
-                <Button
-                    className="bg-primary border-primary"
-                    textClassName="text-primary-reverse font-medium"
-                    content={t`Done`}
-                    onPress={() => ref.current?.close()}
-                />
+                <Button size="md" variant="ghost" content={t`Done`} onPress={() => ref.current?.close()} />
             </View>
 
             <SafeAreaView edges={['bottom']} />

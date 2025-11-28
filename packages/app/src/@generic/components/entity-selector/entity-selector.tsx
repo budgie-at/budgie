@@ -1,11 +1,14 @@
+import { cva } from 'class-variance-authority';
+import { ClassValue } from 'clsx';
 import { ReactNode, RefObject, useRef } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { FormFieldStatus } from '../../type/form-field-status.type';
 import { cn } from '../../utils/cn.util';
 import { Card } from '../card/card';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -16,21 +19,35 @@ interface Props {
     readonly icon: IconName;
     readonly emptyStateText: string;
     readonly title?: string;
+    readonly error?: string;
+    readonly status?: FormFieldStatus;
     readonly subtitle?: ReactNode | null;
     readonly renderBottomSheet: (ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
 
-export const EntitySelector = ({ variant, className, icon, emptyStateText, title, subtitle, renderBottomSheet }: Props) => {
+const cardVariants = cva<{ status: Record<FormFieldStatus, ClassValue> }>('flex-row items-center gap-x-xl', {
+    variants: {
+        status: {
+            default: '',
+            error: 'bg-destructive-background/5 border-destructive-corner'
+        }
+    }
+});
+
+export const EntitySelector = (props: Props) => {
+    const { variant, className, icon, emptyStateText, title, subtitle, renderBottomSheet, status = 'default', error } = props;
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => ref.current?.open();
 
     const hasSelection = isDefined(title);
 
+    const iconVariant = isNotEmptyString(error) ? 'destructive' : variant;
+
     return (
         <>
-            <Card onPress={handleOpen} className={cn('flex-row items-center gap-x-xl', className)}>
-                <CircleIcon size="lg" icon={ICONS[icon]} variant={variant} />
+            <Card onPress={handleOpen} className={cn(cardVariants({ status }), className)}>
+                <CircleIcon size="lg" icon={ICONS[icon]} variant={iconVariant} />
 
                 {hasSelection ? (
                     <View className="mr-auto">
@@ -43,6 +60,8 @@ export const EntitySelector = ({ variant, className, icon, emptyStateText, title
 
                 <CircleIcon icon={ICONS.ChevronRight} className="bg-transparent border-0" variant="ghost" />
             </Card>
+
+            {isNotEmptyString(error) ? <Text className="text-xs text-destructive-foreground">* {error}</Text> : null}
 
             {renderBottomSheet(ref)}
         </>

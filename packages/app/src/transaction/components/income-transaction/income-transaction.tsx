@@ -12,7 +12,7 @@ import { PageHeader } from '../../../@generic/components/page-header/page-header
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { AccountBalanceInput } from '../../../account/component/account-balance-input/account-balance-input';
+import { FormAmountInput } from '../../../@generic/components/form-amount-input/form-amount-input';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -53,7 +53,7 @@ export const IncomeTransaction = ({ transaction }: Props) => {
             <View className="flex-row items-center justify-center pt-[40px] pb-7xl">
                 <Text className={textVariants({ variant: 'positive' })}>{instrumentSymbol} </Text>
 
-                <AccountBalanceInput variant="positive" instrumentSymbol={instrumentSymbol} value={amount} onChange={setAmount} />
+                <FormAmountInput variant="positive" instrumentSymbol={instrumentSymbol} value={amount} onChange={setAmount} />
             </View>
         </Page>
     );

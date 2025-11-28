@@ -22,7 +22,7 @@ const flatListProps = {
 
 export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelect }: Props) => {
     const [search, setSearch] = useState('');
-    const { instruments, isLoading } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const { t } = useLingui();
 
     const filteredCurrencies = instruments.filter(
@@ -45,10 +45,6 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
             onSelect={handleSelect}
         />
     );
-
-    if (isLoading) {
-        return null;
-    }
 
     return (
         <SearchableListBottomSheet

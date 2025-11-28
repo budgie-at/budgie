@@ -12,7 +12,7 @@ import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { AccountBalanceInput } from '../../../account/component/account-balance-input/account-balance-input';
+import { FormAmountInput } from '../../../@generic/components/form-amount-input/form-amount-input';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TagsSelector } from '../../../tag/components/tags-selector/tags-selector';
@@ -111,7 +111,7 @@ export const CreateTransferTransaction = () => {
                 />
             </View>
 
-            <AccountBalanceInput instrumentSymbol={defaultInstrument.symbol} variant="default" value={amount} onChange={setAmount} />
+            <FormAmountInput instrumentSymbol={defaultInstrument.symbol} variant="default" value={amount} onChange={setAmount} />
 
             <FormLayoutGroup>
                 <FormLayoutGroup variant="horizontal">

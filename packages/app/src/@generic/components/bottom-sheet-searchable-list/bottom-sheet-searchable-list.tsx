@@ -1,4 +1,5 @@
 import { JSX, RefObject } from 'react';
+import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -43,6 +44,9 @@ interface SearchableListBottomSheetProps<T> {
 
 const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
 
+const safeEdges: Edges = ['bottom'];
+const listFooter = <SafeAreaView edges={safeEdges} />;
+
 export const SearchableListBottomSheet = <T,>({
     ref,
     align,
@@ -65,26 +69,27 @@ export const SearchableListBottomSheet = <T,>({
 
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
-            <BottomSheetView>
-                <BottomSheetHeader align={align} size="md" title={title} description={description} />
+            <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
-                <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
+            <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
 
-                {isNotEmptyArray(data) ? (
-                    <BottomSheetFlatList
-                        className={className}
-                        contentContainerClassName={contentContainerClassName}
-                        columnWrapperClassName={columnWrapperClassName}
-                        data={data}
-                        keyExtractor={keyExtractor}
-                        numColumns={numColumns}
-                        renderItem={renderItem}
-                        showsVerticalScrollIndicator={false}
-                    />
-                ) : (
+            {isNotEmptyArray(data) ? (
+                <BottomSheetFlatList
+                    className={className}
+                    contentContainerClassName={contentContainerClassName}
+                    columnWrapperClassName={columnWrapperClassName}
+                    data={data}
+                    keyExtractor={keyExtractor}
+                    numColumns={numColumns}
+                    renderItem={renderItem}
+                    ListFooterComponent={listFooter}
+                    showsVerticalScrollIndicator={false}
+                />
+            ) : (
+                <BottomSheetView>
                     <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
-                )}
-            </BottomSheetView>
+                </BottomSheetView>
+            )}
         </BottomSheet>
     );
 };
