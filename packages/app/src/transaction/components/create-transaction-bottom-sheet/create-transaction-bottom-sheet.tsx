@@ -21,10 +21,10 @@ export const CreateTransactionBottomSheet = ({ ref }: Props) => {
     const handleNavigate = (type: TransactionTypeEnum) => {
         ref.current?.close();
         void router.push(`/create-transaction/${type}`);
-    }
+    };
 
     return (
-        <BottomSheet ref={ref}>
+        <BottomSheet enableDynamicSizing ref={ref}>
             <BottomSheetView>
                 <BottomSheetHeader size="md" title={t`New Transaction`} description={t`Choose a type to get started`} />
 
@@ -49,13 +49,6 @@ export const CreateTransactionBottomSheet = ({ ref }: Props) => {
                         title={t`Transfer`}
                         onNavigate={handleNavigate}
                         type={TransactionTypeEnum.TRANSFER}
-                    />
-                    <CreateTransactionCard
-                        description={t`Loans & credit cards`}
-                        icon="CreditCard"
-                        title={t`Debt`}
-                        onNavigate={handleNavigate}
-                        type={TransactionTypeEnum.DEBT}
                     />
                 </View>
             </BottomSheetView>

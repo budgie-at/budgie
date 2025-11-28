@@ -1,10 +1,10 @@
 import { TransactionAssociationEnum, TransactionCreateEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Control, useFieldArray, useWatch } from 'react-hook-form';
+import { Control, FieldErrorsImpl, useFieldArray, useWatch } from 'react-hook-form';
 import { Switch, Text, View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
 import { Icon } from '../../../@generic/components/icon/icon';
@@ -12,15 +12,16 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntriesAmount } from '../../../transaction-entry/utils/sum-entries-amount.util';
 import { TransactionEntry } from '../transaction-entry/transaction-entry';
 
 interface Props {
-    readonly control: Control<Pick<TransactionCreateEntityInterface, TransactionAssociationEnum.ENTRIES>>;
+    readonly error?: FieldErrorsImpl<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateEntityInterface>;
     readonly variant: ColorPaletteVariant;
-    readonly amount: number;
 }
 
 const iconVariants = cva('', {
@@ -53,14 +54,18 @@ const summaryTextVariants = cva('text-xs', {
     }
 });
 
-export const TransactionSplit = ({ control, variant, amount }: Props) => {
+export const TransactionSplit = ({ control, variant, error }: Props) => {
+    const { defaultCurrency, decimalPlaces } = useSettingsContext();
+    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+
+    console.log({ error });
+
     const { fields, append, remove } = useFieldArray({
         control,
         name: TransactionAssociationEnum.ENTRIES
     });
-    const entries = useWatch({ control, name: TransactionAssociationEnum.ENTRIES });
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const [entries, amount] = useWatch({ control, name: [TransactionAssociationEnum.ENTRIES, 'amount'] });
+
     const { t } = useLingui();
 
     const entriesAmount = sumEntriesAmount(entries);
@@ -68,7 +73,9 @@ export const TransactionSplit = ({ control, variant, amount }: Props) => {
     const isOverAllocated = entriesAmount > amount;
     const isUnderAllocated = entriesAmount < amount;
 
-    const amountToAllocate = Math.abs(amount - entriesAmount);
+    const amountToAllocate = convertToMicroUnits(Math.abs(amount - entriesAmount));
+
+    const showSummary = amount !== 0 || entriesAmount !== 0;
 
     const handleInsert = () => {
         append({
@@ -78,9 +85,26 @@ export const TransactionSplit = ({ control, variant, amount }: Props) => {
             categoryId: null,
             parentAccountId: 0,
             parentCategoryId: 0,
-            type: TransactionEntryTypeEnum.DEBIT,
+            type: TransactionEntryTypeEnum.DEBIT
         });
     };
+
+    const handleToggleSplits = (checked: boolean) => {
+        if (checked) {
+            handleInsert();
+
+            return;
+        }
+
+        const firstEntry = fields.at(0);
+        remove();
+
+        if (isDefined(firstEntry)) {
+            append(firstEntry);
+        }
+    };
+
+    const hasEntries = entries.length > 1;
 
     return (
         <View>
@@ -91,39 +115,45 @@ export const TransactionSplit = ({ control, variant, amount }: Props) => {
                     <Trans>Split by Category</Trans>
                 </Text>
 
-                <Switch />
+                <Switch value={hasEntries} onValueChange={handleToggleSplits} />
             </View>
 
-            <View className="gap-y-md mb-lg">
-                {fields.map((field, index) => (
-                    <TransactionEntry key={field.id} variant={variant} control={control} index={index} onRemove={remove} />
-                ))}
-            </View>
+            {hasEntries ? (
+                <>
+                    <View className="gap-y-md mb-lg">
+                        {fields.map((field, index) => (
+                            <TransactionEntry key={field.id} variant={variant} control={control} index={index} onRemove={remove} />
+                        ))}
+                    </View>
 
-            <View className="mb-lg">
-                <Button
-                    className="py-sm bg-transparent"
-                    size="sm"
-                    variant="ghost"
-                    leftIcon="Plus"
-                    content={t`Add Split`}
-                    onPress={handleInsert}
-                />
-            </View>
+                    <View className="mb-lg">
+                        <Button
+                            className="py-sm bg-transparent"
+                            size="sm"
+                            variant="ghost"
+                            leftIcon="Plus"
+                            content={t`Add Split`}
+                            onPress={handleInsert}
+                        />
+                    </View>
 
-            <View className={summaryVariants({ valid: isAllAllocated })}>
-                {isAllAllocated ? <Icon icon={ICONS.Check} size={14} className="text-positive-foreground" /> : null}
+                    {showSummary ? (
+                        <View className={summaryVariants({ valid: isAllAllocated })}>
+                            {isAllAllocated ? <Icon icon={ICONS.Check} size={14} className="text-positive-foreground" /> : null}
 
-                <Text className={cn(summaryTextVariants({ valid: isAllAllocated }), 'flex-1')}>
-                    {isAllAllocated ? <Trans>Allocated</Trans> : null}
-                    {isOverAllocated ? <Trans>Over:</Trans> : null}
-                    {isUnderAllocated ? <Trans>Remaining:</Trans> : null}
-                </Text>
+                            <Text className={cn(summaryTextVariants({ valid: isAllAllocated }), 'flex-1')}>
+                                {isAllAllocated ? <Trans>Allocated</Trans> : null}
+                                {isOverAllocated ? <Trans>Over:</Trans> : null}
+                                {isUnderAllocated ? <Trans>Remaining:</Trans> : null}
+                            </Text>
 
-                {isPositiveNumber(amountToAllocate) ? (
-                    <Text className={summaryTextVariants({ valid: isAllAllocated })}>{formatMoney(amountToAllocate)}</Text>
-                ) : null}
-            </View>
+                            {isPositiveNumber(amountToAllocate) ? (
+                                <Text className={summaryTextVariants({ valid: isAllAllocated })}>{formatMoney(amountToAllocate)}</Text>
+                            ) : null}
+                        </View>
+                    ) : null}
+                </>
+            ) : null}
         </View>
     );
 };

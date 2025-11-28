@@ -21,7 +21,7 @@ export const CreateAccountDetailsField = ({ control, variant }: Props) => {
     );
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
-        const variant = fieldState.invalid ? 'destructive' : 'default';
+        const status = fieldState.invalid ? 'error' : 'default';
 
         return (
             <FormItem label={t`Account Name & Icon`} error={fieldState.error?.message}>
@@ -30,8 +30,8 @@ export const CreateAccountDetailsField = ({ control, variant }: Props) => {
 
                     <Input
                         size="lg"
+                        status={status}
                         value={field.value}
-                        variant={variant}
                         onChangeText={field.onChange}
                         className="text-ellipsis flex-1"
                         maxLength={ACCOUNT_TITLE_MAX_LENGTH}
@@ -42,5 +42,5 @@ export const CreateAccountDetailsField = ({ control, variant }: Props) => {
         );
     };
 
-    return <Controller control={control} name={'title' as const} render={renderTitleField} />;
+    return <Controller control={control} name="title" render={renderTitleField} />;
 };

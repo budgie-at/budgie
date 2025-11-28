@@ -12,7 +12,7 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     ...BaseEntityFields,
     title: schema => schema.max(TRANSACTION_TITLE_MAX_LENGTH).describe('Title of the entry'),
     comment: schema => schema.max(TRANSACTION_COMMENT_MAX_LENGTH).describe('Comment of the entry'),
-    amount: number().positive().describe('Amount of the transaction.'),
+    amount: number().describe('Amount of the transaction.'),
     type: zodEnum(TransactionTypeEnum).describe('The type of the transaction.'),
     externalId: schema => schema.describe('The external id of the transaction.'),
     operatedAt: schema => schema.describe('The date when the transaction was operated.'),

@@ -12,6 +12,18 @@ export const IncomeTransactionCreateEntitySchema = convertToCreateEntitySchema(I
         [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
     .superRefine(({ entries, amount }, context) => {
+        if (entries.length === 1) {
+            entries[0].amount = amount
+        }
+
+        if (amount === 0) {
+            context.addIssue({
+                code: 'custom',
+                path: ['amount'],
+                message: 'Amount must not be equal to 0.'
+            });
+        }
+
         const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
 
         if (totalAmount !== amount) {

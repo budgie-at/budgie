@@ -60,7 +60,6 @@ export const AccountSelectorBottomSheet = ({ ref, selectedAccount, excludeAccoun
     return (
         <SearchableListBottomSheet
             ref={ref}
-            index={1}
             emptyIcon={emptyIcon}
             title={t`Select Account`}
             description={t`Choose your main account`}

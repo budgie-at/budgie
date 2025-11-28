@@ -10,15 +10,18 @@ import { useFormatDigits } from '../../hooks/use-format-digits.hook';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
+import { FormFieldStatus } from '../../type/form-field-status.type';
+import { Input } from '../input/input';
 
 interface Props {
     readonly value: number;
     readonly placeholder?: string;
     readonly inputClassName?: string;
+    readonly status?: FormFieldStatus;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder }: Props) => {
+export const AmountInput = ({ value, onChangeValue, inputClassName, status, placeholder }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -63,7 +66,8 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder 
     };
 
     return (
-        <TextInput
+        <Input
+            status={status}
             value={displayValue}
             onChangeText={handleChangeText}
             onBlur={handleBlur}

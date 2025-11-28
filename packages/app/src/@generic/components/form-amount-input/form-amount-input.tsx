@@ -1,12 +1,12 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { AmountInput } from '../../../@generic/components/amount-input/amount-input';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { cn } from '../../../@generic/utils/cn.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { useFormatDigits } from '../../hooks/use-format-digits.hook';
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { cn } from '../../utils/cn.util';
+import { AmountInput } from '../amount-input/amount-input';
 
 interface Props {
     readonly value: number;
@@ -22,7 +22,7 @@ const textVariants = cva('text-[72px]', {
     }
 });
 
-export const AccountBalanceInput = ({ value, onChange, variant, textClassName, instrumentSymbol }: Props) => {
+export const FormAmountInput = ({ value, onChange, variant, textClassName, instrumentSymbol }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const format = useFormatDigits(decimalPlaces);
 
@@ -33,7 +33,7 @@ export const AccountBalanceInput = ({ value, onChange, variant, textClassName, i
             <AmountInput
                 value={value}
                 onChangeValue={onChange}
-                inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground', textClassName)}
+                inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
                 placeholder={format('0.00')}
             />
         </View>

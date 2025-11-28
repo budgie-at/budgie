@@ -25,7 +25,7 @@ export const UpdateAccountTitleField = ({ control }: Props) => {
                     value={value}
                     variant={variant}
                     onChangeText={onChange}
-                    className="text-ellipsis flex-1"
+                    className="text-ellipsis"
                     maxLength={ACCOUNT_TITLE_MAX_LENGTH}
                     placeholder={t`e.g. Savings Account`}
                 />
