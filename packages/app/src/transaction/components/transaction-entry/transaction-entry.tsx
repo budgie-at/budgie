@@ -18,15 +18,14 @@ interface Props {
     readonly index: number;
 }
 
-export const TransactionEntry = (props: Props) => {
-    const { variant, control, index, onRemove } = props;
+export const TransactionEntry = ({ variant, control, index, onRemove }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
 
     const handleRemove = () => void onRemove(index);
 
     const renderCategorySelector = ({
-        field: { onChange, value },
+        field: { value, onChange },
         fieldState: { invalid }
     }: UseControllerReturn<TransactionCreateEntityInterface, `entries.${number}.categoryId`>) => {
         const status = invalid ? 'error' : 'default';

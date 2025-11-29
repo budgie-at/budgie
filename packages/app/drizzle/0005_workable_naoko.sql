@@ -1,0 +1,1 @@
+ALTER TABLE `transaction_entries` DROP COLUMN `parent_account_id`;

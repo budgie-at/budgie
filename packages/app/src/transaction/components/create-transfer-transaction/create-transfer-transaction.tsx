@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { prettifyError } from 'zod';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { DatePickerBottomSheet } from '../../../@generic/components/date-picker-bottom-sheet/date-picker-bottom-sheet';
@@ -18,6 +17,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TagsSelector } from '../../../tag/components/tags-selector/tags-selector';
 import { transactionService } from '../../service/transaction.service';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
+import Toast from 'react-native-toast-message';
 
 export const CreateTransferTransaction = () => {
     const [fromAccountId, setFromAccountId] = useState<number | null>(null);
@@ -32,7 +32,7 @@ export const CreateTransferTransaction = () => {
 
         setFromAccountId(toAccountId);
         setToAccountId(temp);
-    }
+    };
 
     const handleSubmit = async () => {
         const parsed = TransferTransactionCreateEntitySchema.safeParse({
@@ -70,9 +70,13 @@ export const CreateTransferTransaction = () => {
 
         if (parsed.success) {
             await transactionService.createInternal(parsed.data);
-            router.back()
+            router.back();
         } else {
-            console.log({ error: prettifyError(parsed.error) });
+            Toast.show({
+                type: 'error',
+                text1: t`Something went wrong.`,
+                text2: t`Could not create transaction. Please try again later.`
+            });
         }
     };
 

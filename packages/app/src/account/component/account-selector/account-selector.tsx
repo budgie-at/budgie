@@ -19,11 +19,10 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (accountId: number) => void;
     readonly className?: string;
-    readonly error?: string;
     readonly status?: FormFieldStatus;
 }
 
-export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, variant, className, error, status }: Props) => {
+export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, variant, className, status }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
     const { t } = useLingui();
@@ -54,7 +53,6 @@ export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, va
             variant={variant}
             className={className}
             icon={icon}
-            error={error}
             status={status}
             emptyStateText={t`Select account`}
             title={selectedAccount?.title}

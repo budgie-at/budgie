@@ -1,5 +1,6 @@
 export enum CategoryAssociationEnum {
     TRANSACTION_ENTRIES = 'transactionEntries',
     CHILDREN = 'children',
-    PARENT = 'parent'
+    PARENT = 'parent',
+    ROOT = 'root'
 }

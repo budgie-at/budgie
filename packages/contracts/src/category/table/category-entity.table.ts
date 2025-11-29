@@ -11,6 +11,7 @@ export const CategoryEntityTable = sqliteTable(
         icon: text({ enum: convertEnumToDrizzleEnum(UserIconNameEnum) })
             .$type<UserIconNameEnum>()
             .notNull(),
+        rootId: int('root_id', { mode: 'number' }),
         parentId: int('parent_id', { mode: 'number' }),
         isDefault: int('is_default', { mode: 'boolean' }).default(false).notNull()
     })

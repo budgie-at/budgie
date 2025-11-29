@@ -10,16 +10,18 @@ import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { transactionService } from '../../service/transaction.service';
 import { TransactionForm } from '../transaction-form/transaction-form';
 
 export const CreateExpenseTransaction = () => {
     const { t } = useLingui();
+    const { defaultInstrument } = useSettingsContext();
 
     const {
         control,
         handleSubmit: submit,
-        formState
+        setValue
     } = useForm({
         mode: 'onSubmit',
         resolver: zodResolver(ExpenseTransactionCreateEntitySchema),
@@ -28,8 +30,8 @@ export const CreateExpenseTransaction = () => {
             exchangeRate: 1,
             externalId: null,
             externalSource: null,
-            fromAccountId: null,
-            toAccountId: 0,
+            fromAccountId: 0,
+            toAccountId: null,
             operatedAt: new Date().toString(),
             type: TransactionTypeEnum.EXPENSE,
             title: '',
@@ -39,18 +41,12 @@ export const CreateExpenseTransaction = () => {
                     amount: 0,
                     accountId: 0,
                     categoryId: 0,
-                    instrumentId: 0,
-                    parentAccountId: 0,
-                    parentCategoryId: 0,
+                    instrumentId: defaultInstrument.id,
                     type: TransactionEntryTypeEnum.CREDIT
                 }
             ]
         }
     });
-
-    const {errors} = formState
-
-    console.log(JSON.stringify({ errors }, null, 4));
 
     const handleSubmit = async (data: ExpenseTransactionCreateEntityInterface) => {
         try {
@@ -59,8 +55,8 @@ export const CreateExpenseTransaction = () => {
         } catch {
             Toast.show({
                 type: 'error',
-                text1: t`Error`,
-                text2: t`Something went wrong`
+                text1: t`Something went wrong.`,
+                text2: t`Could not create transaction. Please try again later.`
             });
         }
     };
@@ -69,6 +65,7 @@ export const CreateExpenseTransaction = () => {
         <TransactionForm
             accountFieldName="fromAccountId"
             control={control}
+            setValue={setValue}
             onSubmit={submit(handleSubmit)}
             variant="destructive"
             icon="TrendingUp"

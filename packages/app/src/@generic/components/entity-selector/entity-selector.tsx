@@ -3,7 +3,7 @@ import { ClassValue } from 'clsx';
 import { ReactNode, RefObject, useRef } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
@@ -19,7 +19,6 @@ interface Props {
     readonly icon: IconName;
     readonly emptyStateText: string;
     readonly title?: string;
-    readonly error?: string;
     readonly status?: FormFieldStatus;
     readonly subtitle?: ReactNode | null;
     readonly renderBottomSheet: (ref: RefObject<BottomSheetInterface | null>) => ReactNode;
@@ -35,14 +34,14 @@ const cardVariants = cva<{ status: Record<FormFieldStatus, ClassValue> }>('flex-
 });
 
 export const EntitySelector = (props: Props) => {
-    const { variant, className, icon, emptyStateText, title, subtitle, renderBottomSheet, status = 'default', error } = props;
+    const { variant, className, icon, emptyStateText, title, subtitle, renderBottomSheet, status = 'default' } = props;
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => ref.current?.open();
 
     const hasSelection = isDefined(title);
 
-    const iconVariant = isNotEmptyString(error) ? 'destructive' : variant;
+    const iconVariant = status === 'error' ? 'destructive' : variant;
 
     return (
         <>
@@ -60,8 +59,6 @@ export const EntitySelector = (props: Props) => {
 
                 <CircleIcon icon={ICONS.ChevronRight} className="bg-transparent border-0" variant="ghost" />
             </Card>
-
-            {isNotEmptyString(error) ? <Text className="text-xs text-destructive-foreground">* {error}</Text> : null}
 
             {renderBottomSheet(ref)}
         </>
