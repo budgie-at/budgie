@@ -6,15 +6,17 @@ import {
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { transactionService } from '../../service/transaction.service';
 import { TransactionForm } from '../transaction-form/transaction-form';
-import { router } from 'expo-router';
 
 export const CreateIncomeTransaction = () => {
     const { t } = useLingui();
+    const { defaultInstrument } = useSettingsContext();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -35,9 +37,7 @@ export const CreateIncomeTransaction = () => {
                     amount: 0,
                     accountId: 0,
                     categoryId: 0,
-                    instrumentId: 0,
-                    parentAccountId: 0,
-                    parentCategoryId: 0,
+                    instrumentId: defaultInstrument.id,
                     type: TransactionEntryTypeEnum.DEBIT
                 }
             ]
@@ -51,8 +51,8 @@ export const CreateIncomeTransaction = () => {
         } catch {
             Toast.show({
                 type: 'error',
-                text1: t`Error`,
-                text2: t`Something went wrong`
+                text1: t`Something went wrong.`,
+                text2: t`Could not create transaction. Please try again later.`
             });
         }
     };
@@ -63,6 +63,7 @@ export const CreateIncomeTransaction = () => {
                 accountFieldName="toAccountId"
                 control={form.control}
                 onSubmit={form.handleSubmit(handleSubmit)}
+                setValue={form.setValue}
                 variant="positive"
                 icon="TrendingUp"
                 title={t`New Income`}

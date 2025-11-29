@@ -13,10 +13,9 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (categoryId: number) => void;
     readonly status?: FormFieldStatus;
-    readonly error?: string
 }
 
-export const CategorySelector = ({ variant, categoryId, onSelect, status, error }: Props) => {
+export const CategorySelector = ({ variant, categoryId, onSelect, status }: Props) => {
     const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { t } = useLingui();
 
@@ -31,7 +30,6 @@ export const CategorySelector = ({ variant, categoryId, onSelect, status, error 
             variant={variant}
             icon={icon}
             status={status}
-            error={error}
             emptyStateText={t`Select category`}
             title={selectedCategory?.title}
             renderBottomSheet={renderBottomSheet}

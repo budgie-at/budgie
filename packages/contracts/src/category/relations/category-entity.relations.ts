@@ -10,5 +10,9 @@ export const CategoryEntityRelations = relations(CategoryEntityTable, ({ many, o
     [CategoryAssociationEnum.PARENT]: one(CategoryEntityTable, {
         fields: [CategoryEntityTable.parentId],
         references: [CategoryEntityTable.id]
+    }),
+    [CategoryAssociationEnum.ROOT]: one(CategoryEntityTable, {
+        fields: [CategoryEntityTable.rootId],
+        references: [CategoryEntityTable.id]
     })
 }));

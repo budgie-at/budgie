@@ -1,4 +1,9 @@
-import { TransactionCreateEntityInterface, TransactionEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
 import {
     accountBalanceRepository,
@@ -7,6 +12,7 @@ import {
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -21,7 +27,8 @@ class TransactionService {
                     operatedAt: input.operatedAt,
                     toAccountId: input.toAccountId,
                     exchangeRate: input.exchangeRate,
-                    fromAccountId: input.fromAccountId
+                    fromAccountId: input.fromAccountId,
+                    amount: convertToMicroUnits(input.amount),
                 },
                 tx
             );
@@ -38,13 +45,11 @@ class TransactionService {
         const entry = await transactionEntryRepository.create(
             {
                 type: input.type,
-                amount: input.amount,
                 accountId: input.accountId,
                 categoryId: input.categoryId,
                 instrumentId: input.instrumentId,
-                parentAccountId: input.accountId,
                 transactionId: input.transactionId,
-                parentCategoryId: input.categoryId
+                amount: convertToMicroUnits(input.amount),
             },
             tx
         );

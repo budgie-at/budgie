@@ -1,7 +1,7 @@
 import { TransactionAssociationEnum, TransactionCreateEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Control, FieldErrorsImpl, useFieldArray, useWatch } from 'react-hook-form';
+import { Control, useFieldArray, useWatch } from 'react-hook-form';
 import { Switch, Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -19,7 +19,6 @@ import { sumEntriesAmount } from '../../../transaction-entry/utils/sum-entries-a
 import { TransactionEntry } from '../transaction-entry/transaction-entry';
 
 interface Props {
-    readonly error?: FieldErrorsImpl<TransactionCreateEntityInterface>;
     readonly control: Control<TransactionCreateEntityInterface>;
     readonly variant: ColorPaletteVariant;
 }
@@ -54,17 +53,15 @@ const summaryTextVariants = cva('text-xs', {
     }
 });
 
-export const TransactionSplit = ({ control, variant, error }: Props) => {
+export const TransactionSplit = ({ control, variant }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
-
-    console.log({ error });
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: TransactionAssociationEnum.ENTRIES
     });
-    const [entries, amount] = useWatch({ control, name: [TransactionAssociationEnum.ENTRIES, 'amount'] });
+    const [entries, amount] = useWatch({ control, name: ['entries', 'amount'] });
 
     const { t } = useLingui();
 
@@ -81,10 +78,9 @@ export const TransactionSplit = ({ control, variant, error }: Props) => {
         append({
             amount: 0,
             accountId: 0,
+            categoryId: 0,
             instrumentId: 0,
-            categoryId: null,
             parentAccountId: 0,
-            parentCategoryId: 0,
             type: TransactionEntryTypeEnum.DEBIT
         });
     };
