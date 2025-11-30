@@ -1,0 +1,674 @@
+diff --git a/dist/commonjs/native/styles/index.js b/dist/commonjs/native/styles/index.js
+index 6512ed54c117efaa85d9024e090942ea714f08ba..88b24b099158affa59054b884a6e74f1551470b0 100644
+--- a/dist/commonjs/native/styles/index.js
++++ b/dist/commonjs/native/styles/index.js
+@@ -11,6 +11,87 @@ var _reactivity = require("../reactivity.js");
+ var _calculateProps = require("./calculate-props.js");
+ /* eslint-disable */
+
++/**
++ * Checks if two style objects have non-overlapping properties
++ */
++function hasNonOverlappingProperties(left, right) {
++  // Null safety check
++  if (!left || !right) {
++    return false;
++  }
++
++  // Only check own properties to avoid prototype pollution
++  for (const key in left) {
++    if (Object.prototype.hasOwnProperty.call(left, key)) {
++      if (!Object.prototype.hasOwnProperty.call(right, key)) {
++        return true;
++      }
++    }
++  }
++  return false;
++}
++
++/**
++ * Flattens a style array into a single object, with rightmost values taking precedence
++ */
++function flattenStyleArray(styleArray) {
++  // Check if we can flatten to a single object (all items are plain objects)
++  for (const item of styleArray) {
++    // Use explicit null check instead of !item to allow falsy values like 0 or false
++    if (item == null || typeof item !== "object" || Array.isArray(item) || Object.prototype.hasOwnProperty.call(item, _reactivity.VAR_SYMBOL)) {
++      return styleArray;
++    }
++  }
++
++  // Use reduce to avoid spread operator performance issues with large arrays
++  return styleArray.reduce((acc, item) => Object.assign(acc, item), {});
++}
++
++/**
++ * Recursively filters out CSS variable objects (with VAR_SYMBOL) from style values
++ */
++function filterCssVariables(value, depth = 0) {
++  // Prevent stack overflow on deeply nested structures
++  if (depth > 100) {
++    return value;
++  }
++  if (value === null || value === undefined) {
++    return value;
++  }
++  if (Array.isArray(value)) {
++    // Single-pass filter with map operation
++    const filtered = [];
++    for (const item of value) {
++      const filteredItem = filterCssVariables(item, depth + 1);
++      if (filteredItem !== undefined && !(typeof filteredItem === "object" && filteredItem !== null && Object.prototype.hasOwnProperty.call(filteredItem, _reactivity.VAR_SYMBOL))) {
++        filtered.push(filteredItem);
++      }
++    }
++    return filtered.length > 0 ? filtered : undefined;
++  }
++  if (typeof value === "object") {
++    // If the object itself has VAR_SYMBOL, filter it out (check own property only)
++    if (Object.prototype.hasOwnProperty.call(value, _reactivity.VAR_SYMBOL)) {
++      return undefined;
++    }
++
++    // Otherwise, filter VAR_SYMBOL properties from nested objects
++    const filtered = {};
++    let hasProperties = false;
++
++    // Use Object.keys to only iterate own string properties (not inherited, not Symbols)
++    // This intentionally filters out Symbol properties for React Native compatibility
++    for (const key of Object.keys(value)) {
++      const filteredValue = filterCssVariables(value[key], depth + 1);
++      if (filteredValue !== undefined) {
++        filtered[key] = filteredValue;
++        hasProperties = true;
++      }
++    }
++    return hasProperties ? filtered : undefined;
++  }
++  return value;
++}
+ const stylesFamily = exports.stylesFamily = (0, _reactivity.family)((hash, rules) => {
+   const sortedRules = Array.from(rules).sort(_utilities.specificityCompareFn);
+   const obs = (0, _reactivity.observable)(read => (0, _calculateProps.calculateProps)(read, sortedRules));
+@@ -66,9 +147,86 @@ function deepMergeConfig(config, left, right, rightIsInline = false) {
+       ...left
+     };
+   }
+-  let result = config.target ? Object.assign({}, left, right) : {
+-    ...left
+-  };
++
++  // Handle style merging to support both className and inline style props
++  let result;
++  if (config.target) {
++    if (Array.isArray(config.target) && config.target.length === 1 && config.target[0] === "style") {
++      // Special handling for style target when we have inline styles
++      result = {
++        ...left,
++        ...right
++      };
++
++      // Handle null/undefined inline styles
++      if (right?.style === null || right?.style === undefined) {
++        if (left?.style) {
++          result.style = left.style;
++        }
++      } else if (rightIsInline && right?.style) {
++        // Filter inline styles if rightIsInline is true
++        const filteredRightStyle = filterCssVariables(right.style);
++        if (left?.style) {
++          if (!filteredRightStyle) {
++            // All inline styles were CSS variables, only use left
++            result.style = left.style;
++          } else {
++            const leftStyle = left.style;
++
++            // For arrays or objects, check if we need to create a style array
++            const leftIsObject = typeof leftStyle === "object" && !Array.isArray(leftStyle);
++            const rightIsObject = typeof filteredRightStyle === "object" && !Array.isArray(filteredRightStyle);
++            if (leftIsObject && rightIsObject) {
++              if (hasNonOverlappingProperties(leftStyle, filteredRightStyle)) {
++                result.style = [leftStyle, filteredRightStyle];
++              } else {
++                // All left properties are in right, right overrides
++                result.style = filteredRightStyle;
++              }
++            } else {
++              // One or both are arrays, merge them
++              result.style = [leftStyle, filteredRightStyle];
++            }
++          }
++        } else {
++          // No left style, just use filtered right
++          if (filteredRightStyle) {
++            result.style = filteredRightStyle;
++          } else {
++            // All filtered out, remove style prop
++            delete result.style;
++          }
++        }
++      } else if (!rightIsInline && right?.style) {
++        // Merging non-inline styles (e.g., important styles)
++        if (left?.style) {
++          // If left.style is an array, append right.style
++          if (Array.isArray(left.style)) {
++            const combined = [...left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          } else if (typeof left.style === "object" && typeof right.style === "object") {
++            // Both are objects, check for overlaps
++            if (hasNonOverlappingProperties(left.style, right.style)) {
++              result.style = flattenStyleArray([left.style, right.style]);
++            } else {
++              // All left properties are overridden by right
++              result.style = right.style;
++            }
++          } else {
++            // One or both are arrays/mixed types
++            const combined = [left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          }
++        }
++      }
++    } else {
++      result = Object.assign({}, left, right);
++    }
++  } else {
++    result = {
++      ...left
++    };
++  }
+   if (right && rightIsInline && config.source in right && config.target !== config.source) {
+     delete result[config.source];
+   }
+@@ -96,18 +254,8 @@ function deepMergeConfig(config, left, right, rightIsInline = false) {
+   let rightValue = right?.[target];
+
+   // Strip any inline variables from the target
+-  if (rightIsInline && rightValue) {
+-    if (Array.isArray(rightValue)) {
+-      rightValue = rightValue.filter(v => {
+-        return typeof v !== "object" || !(v && _reactivity.VAR_SYMBOL in v);
+-      });
+-      if (rightValue.length === 0) {
+-        rightValue = undefined;
+-      }
+-    } else if (typeof rightValue === "object" && rightValue && _reactivity.VAR_SYMBOL in rightValue) {
+-      rightValue = undefined;
+-      delete result[target][_reactivity.VAR_SYMBOL];
+-    }
++  if (rightIsInline && rightValue !== undefined) {
++    rightValue = filterCssVariables(rightValue);
+   }
+   if (rightValue !== undefined) {
+     result[target] = left && target in left ? [left[target], rightValue] : rightValue;
+diff --git a/dist/commonjs/native/styles/index.js.map b/dist/commonjs/native/styles/index.js.map
+index 45c65dbf57118876027bee069cd17a9ec084c4f7..acd2b3fb6c6970358b6721191d39a6f30c25e980 100644
+--- a/dist/commonjs/native/styles/index.js.map
++++ b/dist/commonjs/native/styles/index.js.map
+@@ -1 +1 @@
+-{"version":3,"names":["_utilities","require","_interaction","_reactivity","_calculateProps","stylesFamily","exports","family","hash","rules","sortedRules","Array","from","sort","specificityCompareFn","obs","observable","read","calculateProps","Object","assign","cleanup","effect","observers","delete","size","getStyledProps","state","inline","result","styledProps","stylesObs","get","styleEffect","config","configs","deepMergeConfig","nativeStyleMapping","normal","important","hoverFamily","has","ruleEffectGetter","onHoverIn","getInteractionHandler","onHoverOut","activeFamily","onPress","onPressIn","onPressOut","focusFamily","onBlur","onFocus","containerLayoutFamily","onLayout","left","right","rightIsInline","target","source","isArray","i","length","key","undefined","slice","rightValue","filter","v","VAR_SYMBOL","props","tokens","lastToken","pop","token","path","entries","styleValue","split"],"sourceRoot":"../../../../src","sources":["native/styles/index.ts"],"mappings":";;;;;;;AAEA,IAAAA,UAAA,GAAAC,OAAA;AAEA,IAAAC,YAAA,GAAAD,OAAA;AAEA,IAAAE,WAAA,GAAAF,OAAA;AAWA,IAAAG,eAAA,GAAAH,OAAA;AAjBA;;AAmBO,MAAMI,YAAY,GAAAC,OAAA,CAAAD,YAAA,GAAG,IAAAE,kBAAM,EAChC,CACEC,IAAY,EACZC,KAA6D,KAC1D;EACH,MAAMC,WAAW,GAAGC,KAAK,CAACC,IAAI,CAACH,KAAK,CAAC,CAACI,IAAI,CAACC,+BAAoB,CAAC;EAEhE,MAAMC,GAAG,GAAG,IAAAC,sBAAU,EAAEC,IAAI,IAAK,IAAAC,8BAAc,EAACD,IAAI,EAAEP,WAAW,CAAC,CAAC;;EAEnE;AACJ;AACA;EACI,OAAOS,MAAM,CAACC,MAAM,CAACL,GAAG,EAAE;IACxBM,OAAO,EAAGC,MAAc,IAAK;MAC3BP,GAAG,CAACQ,SAAS,CAACC,MAAM,CAACF,MAAM,CAAC;MAC5B,IAAIP,GAAG,CAACQ,SAAS,CAACE,IAAI,KAAK,CAAC,EAAE;QAC5BpB,YAAY,CAACmB,MAAM,CAAChB,IAAI,CAAC;MAC3B;IACF;EACF,CAAC,CAAC;AACJ,CACF,CAAC;AAEM,SAASkB,cAAcA,CAC5BC,KAAqB,EACrBC,MAA8C,EAC9C;EACA,IAAIC,MAAuC;EAE3C,MAAMC,WAAW,GAAGH,KAAK,CAACI,SAAS,EAAEC,GAAG,CAACL,KAAK,CAACM,WAAW,CAAC;EAE3D,KAAK,MAAMC,MAAM,IAAIP,KAAK,CAACQ,OAAO,EAAE;IAClCN,MAAM,GAAGO,eAAe,CACtBF,MAAM,EACNG,kBAAkB,CAACH,MAAM,EAAEJ,WAAW,EAAEQ,MAAM,CAAC,EAC/CV,MAAM,EACN,IACF,CAAC;IAED,IAAIE,WAAW,EAAES,SAAS,EAAE;MAC1BV,MAAM,GAAGO,eAAe,CACtBF,MAAM,EACNL,MAAM,EACNQ,kBAAkB,CAACH,MAAM,EAAEJ,WAAW,CAACS,SAAS,CAClD,CAAC;IACH;;IAEA;IACA,IAAIC,uBAAW,CAACC,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC3Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACc,SAAS,GAAG,IAAAC,kCAAqB,EACtCjB,KAAK,CAACe,gBAAgB,EACtB,WAAW,EACXd,MAAM,EAAEe,SACV,CAAC;MACDd,MAAM,CAACgB,UAAU,GAAG,IAAAD,kCAAqB,EACvCjB,KAAK,CAACe,gBAAgB,EACtB,YAAY,EACZd,MAAM,EAAEiB,UACV,CAAC;IACH;IAEA,IAAIC,wBAAY,CAACL,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC5Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACkB,OAAO,GAAG,IAAAH,kCAAqB,EACpCjB,KAAK,CAACe,gBAAgB,EACtB,SAAS,EACTd,MAAM,EAAEmB,OACV,CAAC;MACDlB,MAAM,CAACmB,SAAS,GAAG,IAAAJ,kCAAqB,EACtCjB,KAAK,CAACe,gBAAgB,EACtB,WAAW,EACXd,MAAM,EAAEoB,SACV,CAAC;MACDnB,MAAM,CAACoB,UAAU,GAAG,IAAAL,kCAAqB,EACvCjB,KAAK,CAACe,gBAAgB,EACtB,YAAY,EACZd,MAAM,EAAEqB,UACV,CAAC;IACH;IAEA,IAAIC,uBAAW,CAACT,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC3Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACsB,MAAM,GAAG,IAAAP,kCAAqB,EACnCjB,KAAK,CAACe,gBAAgB,EACtB,QAAQ,EACRd,MAAM,EAAEuB,MACV,CAAC;MACDtB,MAAM,CAACuB,OAAO,GAAG,IAAAR,kCAAqB,EACpCjB,KAAK,CAACe,gBAAgB,EACtB,SAAS,EACTd,MAAM,EAAEwB,OACV,CAAC;IACH;IAEA,IAAIC,iCAAqB,CAACZ,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MACrDb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACyB,QAAQ,GAAG,IAAAV,kCAAqB,EACrCjB,KAAK,CAACe,gBAAgB,EACtB,UAAU,EACVd,MAAM,EAAE0B,QACV,CAAC;IACH;EACF;EAEA,OAAOzB,MAAM;AACf;AAEA,SAASO,eAAeA,CACtBF,MAAc,EACdqB,IAAqC,EACrCC,KAA6C,EAC7CC,aAAa,GAAG,KAAK,EACrB;EACA,IAAI,CAACD,KAAK,EAAE;IACV,OAAO;MAAE,GAAGD;IAAK,CAAC;EACpB;EAEA,IAAI1B,MAAM,GAAGK,MAAM,CAACwB,MAAM,GAAGvC,MAAM,CAACC,MAAM,CAAC,CAAC,CAAC,EAAEmC,IAAI,EAAEC,KAAK,CAAC,GAAG;IAAE,GAAGD;EAAK,CAAC;EAEzE,IACEC,KAAK,IACLC,aAAa,IACbvB,MAAM,CAACyB,MAAM,IAAIH,KAAK,IACtBtB,MAAM,CAACwB,MAAM,KAAKxB,MAAM,CAACyB,MAAM,EAC/B;IACA,OAAO9B,MAAM,CAACK,MAAM,CAACyB,MAAM,CAAC;EAC9B;;EAEA;AACF;AACA;EACE,IAAIhD,KAAK,CAACiD,OAAO,CAAC1B,MAAM,CAACwB,MAAM,CAAC,EAAE;IAChC,KAAK,IAAIG,CAAC,GAAG,CAAC,EAAEA,CAAC,GAAG3B,MAAM,CAACwB,MAAM,CAACI,MAAM,GAAG,CAAC,EAAED,CAAC,EAAE,EAAE;MACjD,MAAME,GAAG,GAAG7B,MAAM,CAACwB,MAAM,CAACG,CAAC,CAAC;MAE5B,IAAIE,GAAG,KAAKC,SAAS,EAAE;QACrB,OAAOnC,MAAM;MACf;MAEAA,MAAM,CAACkC,GAAG,CAAC,GAAG3B,eAAe,CAC3B;QAAEuB,MAAM,EAAEzB,MAAM,CAACyB,MAAM;QAAED,MAAM,EAAExB,MAAM,CAACwB,MAAM,CAACO,KAAK,CAACJ,CAAC,GAAG,CAAC;MAAE,CAAC,EAC7DN,IAAI,GAAGQ,GAAG,CAAC,EACXP,KAAK,GAAGO,GAAG,CAAC,EACZN,aACF,CAAC;IACH;IAEA,OAAO5B,MAAM;EACf;EAEA,MAAM6B,MAAM,GAAGxB,MAAM,CAACwB,MAAM;EAE5B,IAAIA,MAAM,KAAKM,SAAS,IAAIN,MAAM,KAAK,KAAK,EAAE;IAC5C,OAAO7B,MAAM;EACf;EAEA,IAAIqC,UAAU,GAAGV,KAAK,GAAGE,MAAM,CAAC;;EAEhC;EACA,IAAID,aAAa,IAAIS,UAAU,EAAE;IAC/B,IAAIvD,KAAK,CAACiD,OAAO,CAACM,UAAU,CAAC,EAAE;MAC7BA,UAAU,GAAGA,UAAU,CAACC,MAAM,CAAEC,CAAC,IAAK;QACpC,OAAO,OAAOA,CAAC,KAAK,QAAQ,IAAI,EAAEA,CAAC,IAAIC,sBAAU,IAAID,CAAC,CAAC;MACzD,CAAC,CAAC;MAEF,IAAIF,UAAU,CAACJ,MAAM,KAAK,CAAC,EAAE;QAC3BI,UAAU,GAAGF,SAAS;MACxB;IACF,CAAC,MAAM,IACL,OAAOE,UAAU,KAAK,QAAQ,IAC9BA,UAAU,IACVG,sBAAU,IAAIH,UAAU,EACxB;MACAA,UAAU,GAAGF,SAAS;MACtB,OAAOnC,MAAM,CAAC6B,MAAM,CAAC,CAACW,sBAAU,CAAC;IACnC;EACF;EAEA,IAAIH,UAAU,KAAKF,SAAS,EAAE;IAC5BnC,MAAM,CAAC6B,MAAM,CAAC,GACZH,IAAI,IAAIG,MAAM,IAAIH,IAAI,GAAG,CAACA,IAAI,CAACG,MAAM,CAAC,EAAEQ,UAAU,CAAC,GAAGA,UAAU;EACpE;EAEA,OAAOrC,MAAM;AACf;AAEA,SAASQ,kBAAkBA,CACzBH,MAAc,EACdoC,KAAsC,EACtC;EACA,IAAI,CAACpC,MAAM,CAACG,kBAAkB,IAAI,CAACiC,KAAK,EAAE;IACxC,OAAOA,KAAK;EACd;EAEA,IAAIX,MAAuC;EAE3C,IAAI,OAAOzB,MAAM,CAACwB,MAAM,KAAK,QAAQ,EAAE;IACrCC,MAAM,GAAGW,KAAK,CAACpC,MAAM,CAACwB,MAAM,CAAC;EAC/B,CAAC,MAAM,IAAIxB,MAAM,CAACwB,MAAM,KAAK,KAAK,EAAE;IAClCC,MAAM,GAAGW,KAAK,CAAC,OAAO,CAAC;EACzB,CAAC,MAAM;IACL,MAAMC,MAAM,GAAG,CAAC,GAAGrC,MAAM,CAACwB,MAAM,CAAC;IACjC,MAAMc,SAAS,GAAGD,MAAM,CAACE,GAAG,CAAC,CAAE;IAE/Bd,MAAM,GAAGW,KAAK;IACd,KAAK,MAAMI,KAAK,IAAIH,MAAM,EAAE;MAC1BZ,MAAM,GAAGA,MAAM,CAACe,KAAK,CAAC;MACtB,IAAI,CAACf,MAAM,EAAE;QACX,OAAOW,KAAK;MACd;IACF;IAEAX,MAAM,GAAGA,MAAM,CAACa,SAAS,CAAC;EAC5B;EAEA,IAAI,CAACb,MAAM,EAAE;IACX,OAAOW,KAAK;EACd;EAEA,KAAK,MAAM,CAACP,GAAG,EAAEY,IAAI,CAAC,IAAIxD,MAAM,CAACyD,OAAO,CAAC1C,MAAM,CAACG,kBAAkB,CAAC,EAAE;IACnE,MAAMwC,UAAU,GAAGlB,MAAM,CAACI,GAAG,CAAC;IAE9B,OAAOJ,MAAM,CAACI,GAAG,CAAC;IAElB,IAAIc,UAAU,KAAKb,SAAS,EAAE;MAC5B;IACF;IAEA,IAAIN,MAAM,GAAGY,KAAK;IAClB,MAAMC,MAAM,GAAGI,IAAI,CAACG,KAAK,CAAC,GAAG,CAAC;IAC9B,MAAMN,SAAS,GAAGD,MAAM,CAACE,GAAG,CAAC,CAAC;IAC9B,KAAK,MAAMC,KAAK,IAAIH,MAAM,EAAE;MAC1Bb,MAAM,CAACgB,KAAK,CAAC,KAAK,CAAC,CAAC;MACpBhB,MAAM,GAAGA,MAAM,CAACgB,KAAK,CAAC;IACxB;IAEAhB,MAAM,CAACc,SAAS,CAAE,GAAGK,UAAU;EACjC;EAEA,OAAOP,KAAK;AACd","ignoreList":[]}
++{"version":3,"names":["_utilities","require","_interaction","_reactivity","_calculateProps","hasNonOverlappingProperties","left","right","key","Object","prototype","hasOwnProperty","call","flattenStyleArray","styleArray","item","Array","isArray","VAR_SYMBOL","reduce","acc","assign","filterCssVariables","value","depth","undefined","filtered","filteredItem","push","length","hasProperties","keys","filteredValue","stylesFamily","exports","family","hash","rules","sortedRules","from","sort","specificityCompareFn","obs","observable","read","calculateProps","cleanup","effect","observers","delete","size","getStyledProps","state","inline","result","styledProps","stylesObs","get","styleEffect","config","configs","deepMergeConfig","nativeStyleMapping","normal","important","hoverFamily","has","ruleEffectGetter","onHoverIn","getInteractionHandler","onHoverOut","activeFamily","onPress","onPressIn","onPressOut","focusFamily","onBlur","onFocus","containerLayoutFamily","onLayout","rightIsInline","target","style","filteredRightStyle","leftStyle","leftIsObject","rightIsObject","combined","source","i","slice","rightValue","props","tokens","lastToken","pop","token","path","entries","styleValue","split"],"sourceRoot":"../../../../src","sources":["native/styles/index.ts"],"mappings":";;;;;;;AAEA,IAAAA,UAAA,GAAAC,OAAA;AAEA,IAAAC,YAAA,GAAAD,OAAA;AAEA,IAAAE,WAAA,GAAAF,OAAA;AAWA,IAAAG,eAAA,GAAAH,OAAA;AAjBA;;AAmBA;AACA;AACA;AACA,SAASI,2BAA2BA,CAClCC,IAAyB,EACzBC,KAA0B,EACjB;EACT;EACA,IAAI,CAACD,IAAI,IAAI,CAACC,KAAK,EAAE;IACnB,OAAO,KAAK;EACd;;EAEA;EACA,KAAK,MAAMC,GAAG,IAAIF,IAAI,EAAE;IACtB,IAAIG,MAAM,CAACC,SAAS,CAACC,cAAc,CAACC,IAAI,CAACN,IAAI,EAAEE,GAAG,CAAC,EAAE;MACnD,IAAI,CAACC,MAAM,CAACC,SAAS,CAACC,cAAc,CAACC,IAAI,CAACL,KAAK,EAAEC,GAAG,CAAC,EAAE;QACrD,OAAO,IAAI;MACb;IACF;EACF;EACA,OAAO,KAAK;AACd;;AAEA;AACA;AACA;AACA,SAASK,iBAAiBA,CAACC,UAAiB,EAAO;EACjD;EACA,KAAK,MAAMC,IAAI,IAAID,UAAU,EAAE;IAC7B;IACA,IACEC,IAAI,IAAI,IAAI,IACZ,OAAOA,IAAI,KAAK,QAAQ,IACxBC,KAAK,CAACC,OAAO,CAACF,IAAI,CAAC,IACnBN,MAAM,CAACC,SAAS,CAACC,cAAc,CAACC,IAAI,CAACG,IAAI,EAAEG,sBAAU,CAAC,EACtD;MACA,OAAOJ,UAAU;IACnB;EACF;;EAEA;EACA,OAAOA,UAAU,CAACK,MAAM,CAAC,CAACC,GAAG,EAAEL,IAAI,KAAKN,MAAM,CAACY,MAAM,CAACD,GAAG,EAAEL,IAAI,CAAC,EAAE,CAAC,CAAC,CAAC;AACvE;;AAEA;AACA;AACA;AACA,SAASO,kBAAkBA,CAACC,KAAU,EAAEC,KAAK,GAAG,CAAC,EAAO;EACtD;EACA,IAAIA,KAAK,GAAG,GAAG,EAAE;IACf,OAAOD,KAAK;EACd;EAEA,IAAIA,KAAK,KAAK,IAAI,IAAIA,KAAK,KAAKE,SAAS,EAAE;IACzC,OAAOF,KAAK;EACd;EAEA,IAAIP,KAAK,CAACC,OAAO,CAACM,KAAK,CAAC,EAAE;IACxB;IACA,MAAMG,QAAe,GAAG,EAAE;IAE1B,KAAK,MAAMX,IAAI,IAAIQ,KAAK,EAAE;MACxB,MAAMI,YAAY,GAAGL,kBAAkB,CAACP,IAAI,EAAES,KAAK,GAAG,CAAC,CAAC;MACxD,IACEG,YAAY,KAAKF,SAAS,IAC1B,EACE,OAAOE,YAAY,KAAK,QAAQ,IAChCA,YAAY,KAAK,IAAI,IACrBlB,MAAM,CAACC,SAAS,CAACC,cAAc,CAACC,IAAI,CAACe,YAAY,EAAET,sBAAU,CAAC,CAC/D,EACD;QACAQ,QAAQ,CAACE,IAAI,CAACD,YAAY,CAAC;MAC7B;IACF;IAEA,OAAOD,QAAQ,CAACG,MAAM,GAAG,CAAC,GAAGH,QAAQ,GAAGD,SAAS;EACnD;EAEA,IAAI,OAAOF,KAAK,KAAK,QAAQ,EAAE;IAC7B;IACA,IAAId,MAAM,CAACC,SAAS,CAACC,cAAc,CAACC,IAAI,CAACW,KAAK,EAAEL,sBAAU,CAAC,EAAE;MAC3D,OAAOO,SAAS;IAClB;;IAEA;IACA,MAAMC,QAA6B,GAAG,CAAC,CAAC;IACxC,IAAII,aAAa,GAAG,KAAK;;IAEzB;IACA;IACA,KAAK,MAAMtB,GAAG,IAAIC,MAAM,CAACsB,IAAI,CAACR,KAAK,CAAC,EAAE;MACpC,MAAMS,aAAa,GAAGV,kBAAkB,CAACC,KAAK,CAACf,GAAG,CAAC,EAAEgB,KAAK,GAAG,CAAC,CAAC;MAC/D,IAAIQ,aAAa,KAAKP,SAAS,EAAE;QAC/BC,QAAQ,CAAClB,GAAG,CAAC,GAAGwB,aAAa;QAC7BF,aAAa,GAAG,IAAI;MACtB;IACF;IAEA,OAAOA,aAAa,GAAGJ,QAAQ,GAAGD,SAAS;EAC7C;EAEA,OAAOF,KAAK;AACd;AAEO,MAAMU,YAAY,GAAAC,OAAA,CAAAD,YAAA,GAAG,IAAAE,kBAAM,EAChC,CACEC,IAAY,EACZC,KAA6D,KAC1D;EACH,MAAMC,WAAW,GAAGtB,KAAK,CAACuB,IAAI,CAACF,KAAK,CAAC,CAACG,IAAI,CAACC,+BAAoB,CAAC;EAEhE,MAAMC,GAAG,GAAG,IAAAC,sBAAU,EAAEC,IAAI,IAAK,IAAAC,8BAAc,EAACD,IAAI,EAAEN,WAAW,CAAC,CAAC;;EAEnE;AACJ;AACA;EACI,OAAO7B,MAAM,CAACY,MAAM,CAACqB,GAAG,EAAE;IACxBI,OAAO,EAAGC,MAAc,IAAK;MAC3BL,GAAG,CAACM,SAAS,CAACC,MAAM,CAACF,MAAM,CAAC;MAC5B,IAAIL,GAAG,CAACM,SAAS,CAACE,IAAI,KAAK,CAAC,EAAE;QAC5BjB,YAAY,CAACgB,MAAM,CAACb,IAAI,CAAC;MAC3B;IACF;EACF,CAAC,CAAC;AACJ,CACF,CAAC;AAEM,SAASe,cAAcA,CAC5BC,KAAqB,EACrBC,MAA8C,EAC9C;EACA,IAAIC,MAAuC;EAE3C,MAAMC,WAAW,GAAGH,KAAK,CAACI,SAAS,EAAEC,GAAG,CAACL,KAAK,CAACM,WAAW,CAAC;EAE3D,KAAK,MAAMC,MAAM,IAAIP,KAAK,CAACQ,OAAO,EAAE;IAClCN,MAAM,GAAGO,eAAe,CACtBF,MAAM,EACNG,kBAAkB,CAACH,MAAM,EAAEJ,WAAW,EAAEQ,MAAM,CAAC,EAC/CV,MAAM,EACN,IACF,CAAC;IAED,IAAIE,WAAW,EAAES,SAAS,EAAE;MAC1BV,MAAM,GAAGO,eAAe,CACtBF,MAAM,EACNL,MAAM,EACNQ,kBAAkB,CAACH,MAAM,EAAEJ,WAAW,CAACS,SAAS,CAClD,CAAC;IACH;;IAEA;IACA,IAAIC,uBAAW,CAACC,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC3Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACc,SAAS,GAAG,IAAAC,kCAAqB,EACtCjB,KAAK,CAACe,gBAAgB,EACtB,WAAW,EACXd,MAAM,EAAEe,SACV,CAAC;MACDd,MAAM,CAACgB,UAAU,GAAG,IAAAD,kCAAqB,EACvCjB,KAAK,CAACe,gBAAgB,EACtB,YAAY,EACZd,MAAM,EAAEiB,UACV,CAAC;IACH;IAEA,IAAIC,wBAAY,CAACL,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC5Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACkB,OAAO,GAAG,IAAAH,kCAAqB,EACpCjB,KAAK,CAACe,gBAAgB,EACtB,SAAS,EACTd,MAAM,EAAEmB,OACV,CAAC;MACDlB,MAAM,CAACmB,SAAS,GAAG,IAAAJ,kCAAqB,EACtCjB,KAAK,CAACe,gBAAgB,EACtB,WAAW,EACXd,MAAM,EAAEoB,SACV,CAAC;MACDnB,MAAM,CAACoB,UAAU,GAAG,IAAAL,kCAAqB,EACvCjB,KAAK,CAACe,gBAAgB,EACtB,YAAY,EACZd,MAAM,EAAEqB,UACV,CAAC;IACH;IAEA,IAAIC,uBAAW,CAACT,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MAC3Cb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACsB,MAAM,GAAG,IAAAP,kCAAqB,EACnCjB,KAAK,CAACe,gBAAgB,EACtB,QAAQ,EACRd,MAAM,EAAEuB,MACV,CAAC;MACDtB,MAAM,CAACuB,OAAO,GAAG,IAAAR,kCAAqB,EACpCjB,KAAK,CAACe,gBAAgB,EACtB,SAAS,EACTd,MAAM,EAAEwB,OACV,CAAC;IACH;IAEA,IAAIC,iCAAqB,CAACZ,GAAG,CAACd,KAAK,CAACe,gBAAgB,CAAC,EAAE;MACrDb,MAAM,KAAK,CAAC,CAAC;MACbA,MAAM,CAACyB,QAAQ,GAAG,IAAAV,kCAAqB,EACrCjB,KAAK,CAACe,gBAAgB,EACtB,UAAU,EACVd,MAAM,EAAE0B,QACV,CAAC;IACH;EACF;EAEA,OAAOzB,MAAM;AACf;AAEA,SAASO,eAAeA,CACtBF,MAAc,EACdrD,IAAqC,EACrCC,KAA6C,EAC7CyE,aAAa,GAAG,KAAK,EACrB;EACA,IAAI,CAACzE,KAAK,EAAE;IACV,OAAO;MAAE,GAAGD;IAAK,CAAC;EACpB;;EAEA;EACA,IAAIgD,MAA2B;EAC/B,IAAIK,MAAM,CAACsB,MAAM,EAAE;IACjB,IACEjE,KAAK,CAACC,OAAO,CAAC0C,MAAM,CAACsB,MAAM,CAAC,IAC5BtB,MAAM,CAACsB,MAAM,CAACpD,MAAM,KAAK,CAAC,IAC1B8B,MAAM,CAACsB,MAAM,CAAC,CAAC,CAAC,KAAK,OAAO,EAC5B;MACA;MACA3B,MAAM,GAAG;QAAE,GAAGhD,IAAI;QAAE,GAAGC;MAAM,CAAC;;MAE9B;MACA,IAAIA,KAAK,EAAE2E,KAAK,KAAK,IAAI,IAAI3E,KAAK,EAAE2E,KAAK,KAAKzD,SAAS,EAAE;QACvD,IAAInB,IAAI,EAAE4E,KAAK,EAAE;UACf5B,MAAM,CAAC4B,KAAK,GAAG5E,IAAI,CAAC4E,KAAK;QAC3B;MACF,CAAC,MAAM,IAAIF,aAAa,IAAIzE,KAAK,EAAE2E,KAAK,EAAE;QACxC;QACA,MAAMC,kBAAkB,GAAG7D,kBAAkB,CAACf,KAAK,CAAC2E,KAAK,CAAC;QAE1D,IAAI5E,IAAI,EAAE4E,KAAK,EAAE;UACf,IAAI,CAACC,kBAAkB,EAAE;YACvB;YACA7B,MAAM,CAAC4B,KAAK,GAAG5E,IAAI,CAAC4E,KAAK;UAC3B,CAAC,MAAM;YACL,MAAME,SAAS,GAAG9E,IAAI,CAAC4E,KAAK;;YAE5B;YACA,MAAMG,YAAY,GAChB,OAAOD,SAAS,KAAK,QAAQ,IAAI,CAACpE,KAAK,CAACC,OAAO,CAACmE,SAAS,CAAC;YAC5D,MAAME,aAAa,GACjB,OAAOH,kBAAkB,KAAK,QAAQ,IACtC,CAACnE,KAAK,CAACC,OAAO,CAACkE,kBAAkB,CAAC;YAEpC,IAAIE,YAAY,IAAIC,aAAa,EAAE;cACjC,IAAIjF,2BAA2B,CAAC+E,SAAS,EAAED,kBAAkB,CAAC,EAAE;gBAC9D7B,MAAM,CAAC4B,KAAK,GAAG,CAACE,SAAS,EAAED,kBAAkB,CAAC;cAChD,CAAC,MAAM;gBACL;gBACA7B,MAAM,CAAC4B,KAAK,GAAGC,kBAAkB;cACnC;YACF,CAAC,MAAM;cACL;cACA7B,MAAM,CAAC4B,KAAK,GAAG,CAACE,SAAS,EAAED,kBAAkB,CAAC;YAChD;UACF;QACF,CAAC,MAAM;UACL;UACA,IAAIA,kBAAkB,EAAE;YACtB7B,MAAM,CAAC4B,KAAK,GAAGC,kBAAkB;UACnC,CAAC,MAAM;YACL;YACA,OAAO7B,MAAM,CAAC4B,KAAK;UACrB;QACF;MACF,CAAC,MAAM,IAAI,CAACF,aAAa,IAAIzE,KAAK,EAAE2E,KAAK,EAAE;QACzC;QACA,IAAI5E,IAAI,EAAE4E,KAAK,EAAE;UACf;UACA,IAAIlE,KAAK,CAACC,OAAO,CAACX,IAAI,CAAC4E,KAAK,CAAC,EAAE;YAC7B,MAAMK,QAAQ,GAAG,CAAC,GAAGjF,IAAI,CAAC4E,KAAK,EAAE3E,KAAK,CAAC2E,KAAK,CAAC;YAC7C5B,MAAM,CAAC4B,KAAK,GAAGrE,iBAAiB,CAAC0E,QAAQ,CAAC;UAC5C,CAAC,MAAM,IACL,OAAOjF,IAAI,CAAC4E,KAAK,KAAK,QAAQ,IAC9B,OAAO3E,KAAK,CAAC2E,KAAK,KAAK,QAAQ,EAC/B;YACA;YACA,IAAI7E,2BAA2B,CAACC,IAAI,CAAC4E,KAAK,EAAE3E,KAAK,CAAC2E,KAAK,CAAC,EAAE;cACxD5B,MAAM,CAAC4B,KAAK,GAAGrE,iBAAiB,CAAC,CAACP,IAAI,CAAC4E,KAAK,EAAE3E,KAAK,CAAC2E,KAAK,CAAC,CAAC;YAC7D,CAAC,MAAM;cACL;cACA5B,MAAM,CAAC4B,KAAK,GAAG3E,KAAK,CAAC2E,KAAK;YAC5B;UACF,CAAC,MAAM;YACL;YACA,MAAMK,QAAQ,GAAG,CAACjF,IAAI,CAAC4E,KAAK,EAAE3E,KAAK,CAAC2E,KAAK,CAAC;YAC1C5B,MAAM,CAAC4B,KAAK,GAAGrE,iBAAiB,CAAC0E,QAAQ,CAAC;UAC5C;QACF;MACF;IACF,CAAC,MAAM;MACLjC,MAAM,GAAG7C,MAAM,CAACY,MAAM,CAAC,CAAC,CAAC,EAAEf,IAAI,EAAEC,KAAK,CAAC;IACzC;EACF,CAAC,MAAM;IACL+C,MAAM,GAAG;MAAE,GAAGhD;IAAK,CAAC;EACtB;EAEA,IACEC,KAAK,IACLyE,aAAa,IACbrB,MAAM,CAAC6B,MAAM,IAAIjF,KAAK,IACtBoD,MAAM,CAACsB,MAAM,KAAKtB,MAAM,CAAC6B,MAAM,EAC/B;IACA,OAAOlC,MAAM,CAACK,MAAM,CAAC6B,MAAM,CAAC;EAC9B;;EAEA;AACF;AACA;EACE,IAAIxE,KAAK,CAACC,OAAO,CAAC0C,MAAM,CAACsB,MAAM,CAAC,EAAE;IAChC,KAAK,IAAIQ,CAAC,GAAG,CAAC,EAAEA,CAAC,GAAG9B,MAAM,CAACsB,MAAM,CAACpD,MAAM,GAAG,CAAC,EAAE4D,CAAC,EAAE,EAAE;MACjD,MAAMjF,GAAG,GAAGmD,MAAM,CAACsB,MAAM,CAACQ,CAAC,CAAC;MAE5B,IAAIjF,GAAG,KAAKiB,SAAS,EAAE;QACrB,OAAO6B,MAAM;MACf;MAEAA,MAAM,CAAC9C,GAAG,CAAC,GAAGqD,eAAe,CAC3B;QAAE2B,MAAM,EAAE7B,MAAM,CAAC6B,MAAM;QAAEP,MAAM,EAAEtB,MAAM,CAACsB,MAAM,CAACS,KAAK,CAACD,CAAC,GAAG,CAAC;MAAE,CAAC,EAC7DnF,IAAI,GAAGE,GAAG,CAAC,EACXD,KAAK,GAAGC,GAAG,CAAC,EACZwE,aACF,CAAC;IACH;IAEA,OAAO1B,MAAM;EACf;EAEA,MAAM2B,MAAM,GAAGtB,MAAM,CAACsB,MAAM;EAE5B,IAAIA,MAAM,KAAKxD,SAAS,IAAIwD,MAAM,KAAK,KAAK,EAAE;IAC5C,OAAO3B,MAAM;EACf;EAEA,IAAIqC,UAAU,GAAGpF,KAAK,GAAG0E,MAAM,CAAC;;EAEhC;EACA,IAAID,aAAa,IAAIW,UAAU,KAAKlE,SAAS,EAAE;IAC7CkE,UAAU,GAAGrE,kBAAkB,CAACqE,UAAU,CAAC;EAC7C;EAEA,IAAIA,UAAU,KAAKlE,SAAS,EAAE;IAC5B6B,MAAM,CAAC2B,MAAM,CAAC,GACZ3E,IAAI,IAAI2E,MAAM,IAAI3E,IAAI,GAAG,CAACA,IAAI,CAAC2E,MAAM,CAAC,EAAEU,UAAU,CAAC,GAAGA,UAAU;EACpE;EAEA,OAAOrC,MAAM;AACf;AAEA,SAASQ,kBAAkBA,CACzBH,MAAc,EACdiC,KAAsC,EACtC;EACA,IAAI,CAACjC,MAAM,CAACG,kBAAkB,IAAI,CAAC8B,KAAK,EAAE;IACxC,OAAOA,KAAK;EACd;EAEA,IAAIJ,MAAuC;EAE3C,IAAI,OAAO7B,MAAM,CAACsB,MAAM,KAAK,QAAQ,EAAE;IACrCO,MAAM,GAAGI,KAAK,CAACjC,MAAM,CAACsB,MAAM,CAAC;EAC/B,CAAC,MAAM,IAAItB,MAAM,CAACsB,MAAM,KAAK,KAAK,EAAE;IAClCO,MAAM,GAAGI,KAAK,CAAC,OAAO,CAAC;EACzB,CAAC,MAAM;IACL,MAAMC,MAAM,GAAG,CAAC,GAAGlC,MAAM,CAACsB,MAAM,CAAC;IACjC,MAAMa,SAAS,GAAGD,MAAM,CAACE,GAAG,CAAC,CAAE;IAE/BP,MAAM,GAAGI,KAAK;IACd,KAAK,MAAMI,KAAK,IAAIH,MAAM,EAAE;MAC1BL,MAAM,GAAGA,MAAM,CAACQ,KAAK,CAAC;MACtB,IAAI,CAACR,MAAM,EAAE;QACX,OAAOI,KAAK;MACd;IACF;IAEAJ,MAAM,GAAGA,MAAM,CAACM,SAAS,CAAC;EAC5B;EAEA,IAAI,CAACN,MAAM,EAAE;IACX,OAAOI,KAAK;EACd;EAEA,KAAK,MAAM,CAACpF,GAAG,EAAEyF,IAAI,CAAC,IAAIxF,MAAM,CAACyF,OAAO,CAACvC,MAAM,CAACG,kBAAkB,CAAC,EAAE;IACnE,MAAMqC,UAAU,GAAGX,MAAM,CAAChF,GAAG,CAAC;IAE9B,OAAOgF,MAAM,CAAChF,GAAG,CAAC;IAElB,IAAI2F,UAAU,KAAK1E,SAAS,EAAE;MAC5B;IACF;IAEA,IAAIwD,MAAM,GAAGW,KAAK;IAClB,MAAMC,MAAM,GAAGI,IAAI,CAACG,KAAK,CAAC,GAAG,CAAC;IAC9B,MAAMN,SAAS,GAAGD,MAAM,CAACE,GAAG,CAAC,CAAC;IAC9B,KAAK,MAAMC,KAAK,IAAIH,MAAM,EAAE;MAC1BZ,MAAM,CAACe,KAAK,CAAC,KAAK,CAAC,CAAC;MACpBf,MAAM,GAAGA,MAAM,CAACe,KAAK,CAAC;IACxB;IAEAf,MAAM,CAACa,SAAS,CAAE,GAAGK,UAAU;EACjC;EAEA,OAAOP,KAAK;AACd","ignoreList":[]}
+diff --git a/dist/module/native/styles/index.js b/dist/module/native/styles/index.js
+index 6e52ce002e9fe6369e27ebd8226285b66e65a107..a2c48dbfae356979676328500f543a7ada0902ac 100644
+--- a/dist/module/native/styles/index.js
++++ b/dist/module/native/styles/index.js
+@@ -6,6 +6,88 @@ import { specificityCompareFn } from "react-native-css/utilities";
+ import { getInteractionHandler } from "../react/interaction.js";
+ import { activeFamily, containerLayoutFamily, family, focusFamily, hoverFamily, observable, VAR_SYMBOL } from "../reactivity.js";
+ import { calculateProps } from "./calculate-props.js";
++
++/**
++ * Checks if two style objects have non-overlapping properties
++ */
++function hasNonOverlappingProperties(left, right) {
++  // Null safety check
++  if (!left || !right) {
++    return false;
++  }
++
++  // Only check own properties to avoid prototype pollution
++  for (const key in left) {
++    if (Object.prototype.hasOwnProperty.call(left, key)) {
++      if (!Object.prototype.hasOwnProperty.call(right, key)) {
++        return true;
++      }
++    }
++  }
++  return false;
++}
++
++/**
++ * Flattens a style array into a single object, with rightmost values taking precedence
++ */
++function flattenStyleArray(styleArray) {
++  // Check if we can flatten to a single object (all items are plain objects)
++  for (const item of styleArray) {
++    // Use explicit null check instead of !item to allow falsy values like 0 or false
++    if (item == null || typeof item !== "object" || Array.isArray(item) || Object.prototype.hasOwnProperty.call(item, VAR_SYMBOL)) {
++      return styleArray;
++    }
++  }
++
++  // Use reduce to avoid spread operator performance issues with large arrays
++  return styleArray.reduce((acc, item) => Object.assign(acc, item), {});
++}
++
++/**
++ * Recursively filters out CSS variable objects (with VAR_SYMBOL) from style values
++ */
++function filterCssVariables(value, depth = 0) {
++  // Prevent stack overflow on deeply nested structures
++  if (depth > 100) {
++    return value;
++  }
++  if (value === null || value === undefined) {
++    return value;
++  }
++  if (Array.isArray(value)) {
++    // Single-pass filter with map operation
++    const filtered = [];
++    for (const item of value) {
++      const filteredItem = filterCssVariables(item, depth + 1);
++      if (filteredItem !== undefined && !(typeof filteredItem === "object" && filteredItem !== null && Object.prototype.hasOwnProperty.call(filteredItem, VAR_SYMBOL))) {
++        filtered.push(filteredItem);
++      }
++    }
++    return filtered.length > 0 ? filtered : undefined;
++  }
++  if (typeof value === "object") {
++    // If the object itself has VAR_SYMBOL, filter it out (check own property only)
++    if (Object.prototype.hasOwnProperty.call(value, VAR_SYMBOL)) {
++      return undefined;
++    }
++
++    // Otherwise, filter VAR_SYMBOL properties from nested objects
++    const filtered = {};
++    let hasProperties = false;
++
++    // Use Object.keys to only iterate own string properties (not inherited, not Symbols)
++    // This intentionally filters out Symbol properties for React Native compatibility
++    for (const key of Object.keys(value)) {
++      const filteredValue = filterCssVariables(value[key], depth + 1);
++      if (filteredValue !== undefined) {
++        filtered[key] = filteredValue;
++        hasProperties = true;
++      }
++    }
++    return hasProperties ? filtered : undefined;
++  }
++  return value;
++}
+ export const stylesFamily = family((hash, rules) => {
+   const sortedRules = Array.from(rules).sort(specificityCompareFn);
+   const obs = observable(read => calculateProps(read, sortedRules));
+@@ -61,9 +143,86 @@ function deepMergeConfig(config, left, right, rightIsInline = false) {
+       ...left
+     };
+   }
+-  let result = config.target ? Object.assign({}, left, right) : {
+-    ...left
+-  };
++
++  // Handle style merging to support both className and inline style props
++  let result;
++  if (config.target) {
++    if (Array.isArray(config.target) && config.target.length === 1 && config.target[0] === "style") {
++      // Special handling for style target when we have inline styles
++      result = {
++        ...left,
++        ...right
++      };
++
++      // Handle null/undefined inline styles
++      if (right?.style === null || right?.style === undefined) {
++        if (left?.style) {
++          result.style = left.style;
++        }
++      } else if (rightIsInline && right?.style) {
++        // Filter inline styles if rightIsInline is true
++        const filteredRightStyle = filterCssVariables(right.style);
++        if (left?.style) {
++          if (!filteredRightStyle) {
++            // All inline styles were CSS variables, only use left
++            result.style = left.style;
++          } else {
++            const leftStyle = left.style;
++
++            // For arrays or objects, check if we need to create a style array
++            const leftIsObject = typeof leftStyle === "object" && !Array.isArray(leftStyle);
++            const rightIsObject = typeof filteredRightStyle === "object" && !Array.isArray(filteredRightStyle);
++            if (leftIsObject && rightIsObject) {
++              if (hasNonOverlappingProperties(leftStyle, filteredRightStyle)) {
++                result.style = [leftStyle, filteredRightStyle];
++              } else {
++                // All left properties are in right, right overrides
++                result.style = filteredRightStyle;
++              }
++            } else {
++              // One or both are arrays, merge them
++              result.style = [leftStyle, filteredRightStyle];
++            }
++          }
++        } else {
++          // No left style, just use filtered right
++          if (filteredRightStyle) {
++            result.style = filteredRightStyle;
++          } else {
++            // All filtered out, remove style prop
++            delete result.style;
++          }
++        }
++      } else if (!rightIsInline && right?.style) {
++        // Merging non-inline styles (e.g., important styles)
++        if (left?.style) {
++          // If left.style is an array, append right.style
++          if (Array.isArray(left.style)) {
++            const combined = [...left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          } else if (typeof left.style === "object" && typeof right.style === "object") {
++            // Both are objects, check for overlaps
++            if (hasNonOverlappingProperties(left.style, right.style)) {
++              result.style = flattenStyleArray([left.style, right.style]);
++            } else {
++              // All left properties are overridden by right
++              result.style = right.style;
++            }
++          } else {
++            // One or both are arrays/mixed types
++            const combined = [left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          }
++        }
++      }
++    } else {
++      result = Object.assign({}, left, right);
++    }
++  } else {
++    result = {
++      ...left
++    };
++  }
+   if (right && rightIsInline && config.source in right && config.target !== config.source) {
+     delete result[config.source];
+   }
+@@ -91,18 +250,8 @@ function deepMergeConfig(config, left, right, rightIsInline = false) {
+   let rightValue = right?.[target];
+
+   // Strip any inline variables from the target
+-  if (rightIsInline && rightValue) {
+-    if (Array.isArray(rightValue)) {
+-      rightValue = rightValue.filter(v => {
+-        return typeof v !== "object" || !(v && VAR_SYMBOL in v);
+-      });
+-      if (rightValue.length === 0) {
+-        rightValue = undefined;
+-      }
+-    } else if (typeof rightValue === "object" && rightValue && VAR_SYMBOL in rightValue) {
+-      rightValue = undefined;
+-      delete result[target][VAR_SYMBOL];
+-    }
++  if (rightIsInline && rightValue !== undefined) {
++    rightValue = filterCssVariables(rightValue);
+   }
+   if (rightValue !== undefined) {
+     result[target] = left && target in left ? [left[target], rightValue] : rightValue;
+diff --git a/dist/module/native/styles/index.js.map b/dist/module/native/styles/index.js.map
+index 7c8be1d90d1624b063a1dc41d956260155be06fa..21d515b55917bca3c06e4c83bdada5b8f3f7d35b 100644
+--- a/dist/module/native/styles/index.js.map
++++ b/dist/module/native/styles/index.js.map
+@@ -1 +1 @@
+-{"version":3,"names":["specificityCompareFn","getInteractionHandler","activeFamily","containerLayoutFamily","family","focusFamily","hoverFamily","observable","VAR_SYMBOL","calculateProps","stylesFamily","hash","rules","sortedRules","Array","from","sort","obs","read","Object","assign","cleanup","effect","observers","delete","size","getStyledProps","state","inline","result","styledProps","stylesObs","get","styleEffect","config","configs","deepMergeConfig","nativeStyleMapping","normal","important","has","ruleEffectGetter","onHoverIn","onHoverOut","onPress","onPressIn","onPressOut","onBlur","onFocus","onLayout","left","right","rightIsInline","target","source","isArray","i","length","key","undefined","slice","rightValue","filter","v","props","tokens","lastToken","pop","token","path","entries","styleValue","split"],"sourceRoot":"../../../../src","sources":["native/styles/index.ts"],"mappings":"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","ignoreList":[]}
++{"version":3,"names":["specificityCompareFn","getInteractionHandler","activeFamily","containerLayoutFamily","family","focusFamily","hoverFamily","observable","VAR_SYMBOL","calculateProps","hasNonOverlappingProperties","left","right","key","Object","prototype","hasOwnProperty","call","flattenStyleArray","styleArray","item","Array","isArray","reduce","acc","assign","filterCssVariables","value","depth","undefined","filtered","filteredItem","push","length","hasProperties","keys","filteredValue","stylesFamily","hash","rules","sortedRules","from","sort","obs","read","cleanup","effect","observers","delete","size","getStyledProps","state","inline","result","styledProps","stylesObs","get","styleEffect","config","configs","deepMergeConfig","nativeStyleMapping","normal","important","has","ruleEffectGetter","onHoverIn","onHoverOut","onPress","onPressIn","onPressOut","onBlur","onFocus","onLayout","rightIsInline","target","style","filteredRightStyle","leftStyle","leftIsObject","rightIsObject","combined","source","i","slice","rightValue","props","tokens","lastToken","pop","token","path","entries","styleValue","split"],"sourceRoot":"../../../../src","sources":["native/styles/index.ts"],"mappings":"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","ignoreList":[]}
+diff --git a/dist/typescript/commonjs/src/native/styles/index.d.ts.map b/dist/typescript/commonjs/src/native/styles/index.d.ts.map
+index 4719b612372158d5ae76a68c11b906e876eef9c2..f9acd09445ecaca5c0d454252210c6563fb0c55d 100644
+--- a/dist/typescript/commonjs/src/native/styles/index.d.ts.map
++++ b/dist/typescript/commonjs/src/native/styles/index.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../../src/native/styles/index.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,cAAc,EAAE,SAAS,EAAE,MAAM,2BAA2B,CAAC;AAI3E,OAAO,KAAK,EAAE,cAAc,EAAU,MAAM,uBAAuB,CAAC;AACpE,OAAO,EAQL,KAAK,MAAM,EACX,KAAK,oBAAoB,EAC1B,MAAM,eAAe,CAAC;AAGvB,eAAO,MAAM,YAAY;;;;;;;;;sBAaD,MAAM;;;;CAQ7B,CAAC;AAEF,wBAAgB,cAAc,CAC5B,KAAK,EAAE,cAAc,EACrB,MAAM,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,SAAS,GAAG,IAAI,mCAiF/C"}
+\ No newline at end of file
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../../src/native/styles/index.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,cAAc,EAAE,SAAS,EAAE,MAAM,2BAA2B,CAAC;AAI3E,OAAO,KAAK,EAAE,cAAc,EAAU,MAAM,uBAAuB,CAAC;AACpE,OAAO,EAQL,KAAK,MAAM,EACX,KAAK,oBAAoB,EAC1B,MAAM,eAAe,CAAC;AA2GvB,eAAO,MAAM,YAAY;;;;;;;;;sBAaD,MAAM;;;;CAQ7B,CAAC;AAEF,wBAAgB,cAAc,CAC5B,KAAK,EAAE,cAAc,EACrB,MAAM,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,SAAS,GAAG,IAAI,mCAiF/C"}
+\ No newline at end of file
+diff --git a/dist/typescript/module/src/native/styles/index.d.ts.map b/dist/typescript/module/src/native/styles/index.d.ts.map
+index 4719b612372158d5ae76a68c11b906e876eef9c2..f9acd09445ecaca5c0d454252210c6563fb0c55d 100644
+--- a/dist/typescript/module/src/native/styles/index.d.ts.map
++++ b/dist/typescript/module/src/native/styles/index.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../../src/native/styles/index.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,cAAc,EAAE,SAAS,EAAE,MAAM,2BAA2B,CAAC;AAI3E,OAAO,KAAK,EAAE,cAAc,EAAU,MAAM,uBAAuB,CAAC;AACpE,OAAO,EAQL,KAAK,MAAM,EACX,KAAK,oBAAoB,EAC1B,MAAM,eAAe,CAAC;AAGvB,eAAO,MAAM,YAAY;;;;;;;;;sBAaD,MAAM;;;;CAQ7B,CAAC;AAEF,wBAAgB,cAAc,CAC5B,KAAK,EAAE,cAAc,EACrB,MAAM,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,SAAS,GAAG,IAAI,mCAiF/C"}
+\ No newline at end of file
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../../../../src/native/styles/index.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,cAAc,EAAE,SAAS,EAAE,MAAM,2BAA2B,CAAC;AAI3E,OAAO,KAAK,EAAE,cAAc,EAAU,MAAM,uBAAuB,CAAC;AACpE,OAAO,EAQL,KAAK,MAAM,EACX,KAAK,oBAAoB,EAC1B,MAAM,eAAe,CAAC;AA2GvB,eAAO,MAAM,YAAY;;;;;;;;;sBAaD,MAAM;;;;CAQ7B,CAAC;AAEF,wBAAgB,cAAc,CAC5B,KAAK,EAAE,cAAc,EACrB,MAAM,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,SAAS,GAAG,IAAI,mCAiF/C"}
+\ No newline at end of file
+diff --git a/src/native/styles/index.ts b/src/native/styles/index.ts
+index 09ab073edc5d73eec0940f38b016c862004a4b87..6cc7ba86370cc216204fc9bb1a3873dfa5612789 100644
+--- a/src/native/styles/index.ts
++++ b/src/native/styles/index.ts
+@@ -17,6 +17,110 @@ import {
+ } from "../reactivity";
+ import { calculateProps } from "./calculate-props";
+
++/**
++ * Checks if two style objects have non-overlapping properties
++ */
++function hasNonOverlappingProperties(
++  left: Record<string, any>,
++  right: Record<string, any>,
++): boolean {
++  // Null safety check
++  if (!left || !right) {
++    return false;
++  }
++
++  // Only check own properties to avoid prototype pollution
++  for (const key in left) {
++    if (Object.prototype.hasOwnProperty.call(left, key)) {
++      if (!Object.prototype.hasOwnProperty.call(right, key)) {
++        return true;
++      }
++    }
++  }
++  return false;
++}
++
++/**
++ * Flattens a style array into a single object, with rightmost values taking precedence
++ */
++function flattenStyleArray(styleArray: any[]): any {
++  // Check if we can flatten to a single object (all items are plain objects)
++  for (const item of styleArray) {
++    // Use explicit null check instead of !item to allow falsy values like 0 or false
++    if (
++      item == null ||
++      typeof item !== "object" ||
++      Array.isArray(item) ||
++      Object.prototype.hasOwnProperty.call(item, VAR_SYMBOL)
++    ) {
++      return styleArray;
++    }
++  }
++
++  // Use reduce to avoid spread operator performance issues with large arrays
++  return styleArray.reduce((acc, item) => Object.assign(acc, item), {});
++}
++
++/**
++ * Recursively filters out CSS variable objects (with VAR_SYMBOL) from style values
++ */
++function filterCssVariables(value: any, depth = 0): any {
++  // Prevent stack overflow on deeply nested structures
++  if (depth > 100) {
++    return value;
++  }
++
++  if (value === null || value === undefined) {
++    return value;
++  }
++
++  if (Array.isArray(value)) {
++    // Single-pass filter with map operation
++    const filtered: any[] = [];
++
++    for (const item of value) {
++      const filteredItem = filterCssVariables(item, depth + 1);
++      if (
++        filteredItem !== undefined &&
++        !(
++          typeof filteredItem === "object" &&
++          filteredItem !== null &&
++          Object.prototype.hasOwnProperty.call(filteredItem, VAR_SYMBOL)
++        )
++      ) {
++        filtered.push(filteredItem);
++      }
++    }
++
++    return filtered.length > 0 ? filtered : undefined;
++  }
++
++  if (typeof value === "object") {
++    // If the object itself has VAR_SYMBOL, filter it out (check own property only)
++    if (Object.prototype.hasOwnProperty.call(value, VAR_SYMBOL)) {
++      return undefined;
++    }
++
++    // Otherwise, filter VAR_SYMBOL properties from nested objects
++    const filtered: Record<string, any> = {};
++    let hasProperties = false;
++
++    // Use Object.keys to only iterate own string properties (not inherited, not Symbols)
++    // This intentionally filters out Symbol properties for React Native compatibility
++    for (const key of Object.keys(value)) {
++      const filteredValue = filterCssVariables(value[key], depth + 1);
++      if (filteredValue !== undefined) {
++        filtered[key] = filteredValue;
++        hasProperties = true;
++      }
++    }
++
++    return hasProperties ? filtered : undefined;
++  }
++
++  return value;
++}
++
+ export const stylesFamily = family(
+   (
+     hash: string,
+@@ -135,7 +239,92 @@ function deepMergeConfig(
+     return { ...left };
+   }
+
+-  let result = config.target ? Object.assign({}, left, right) : { ...left };
++  // Handle style merging to support both className and inline style props
++  let result: Record<string, any>;
++  if (config.target) {
++    if (
++      Array.isArray(config.target) &&
++      config.target.length === 1 &&
++      config.target[0] === "style"
++    ) {
++      // Special handling for style target when we have inline styles
++      result = { ...left, ...right };
++
++      // Handle null/undefined inline styles
++      if (right?.style === null || right?.style === undefined) {
++        if (left?.style) {
++          result.style = left.style;
++        }
++      } else if (rightIsInline && right?.style) {
++        // Filter inline styles if rightIsInline is true
++        const filteredRightStyle = filterCssVariables(right.style);
++
++        if (left?.style) {
++          if (!filteredRightStyle) {
++            // All inline styles were CSS variables, only use left
++            result.style = left.style;
++          } else {
++            const leftStyle = left.style;
++
++            // For arrays or objects, check if we need to create a style array
++            const leftIsObject =
++              typeof leftStyle === "object" && !Array.isArray(leftStyle);
++            const rightIsObject =
++              typeof filteredRightStyle === "object" &&
++              !Array.isArray(filteredRightStyle);
++
++            if (leftIsObject && rightIsObject) {
++              if (hasNonOverlappingProperties(leftStyle, filteredRightStyle)) {
++                result.style = [leftStyle, filteredRightStyle];
++              } else {
++                // All left properties are in right, right overrides
++                result.style = filteredRightStyle;
++              }
++            } else {
++              // One or both are arrays, merge them
++              result.style = [leftStyle, filteredRightStyle];
++            }
++          }
++        } else {
++          // No left style, just use filtered right
++          if (filteredRightStyle) {
++            result.style = filteredRightStyle;
++          } else {
++            // All filtered out, remove style prop
++            delete result.style;
++          }
++        }
++      } else if (!rightIsInline && right?.style) {
++        // Merging non-inline styles (e.g., important styles)
++        if (left?.style) {
++          // If left.style is an array, append right.style
++          if (Array.isArray(left.style)) {
++            const combined = [...left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          } else if (
++            typeof left.style === "object" &&
++            typeof right.style === "object"
++          ) {
++            // Both are objects, check for overlaps
++            if (hasNonOverlappingProperties(left.style, right.style)) {
++              result.style = flattenStyleArray([left.style, right.style]);
++            } else {
++              // All left properties are overridden by right
++              result.style = right.style;
++            }
++          } else {
++            // One or both are arrays/mixed types
++            const combined = [left.style, right.style];
++            result.style = flattenStyleArray(combined);
++          }
++        }
++      }
++    } else {
++      result = Object.assign({}, left, right);
++    }
++  } else {
++    result = { ...left };
++  }
+
+   if (
+     right &&
+@@ -177,23 +366,8 @@ function deepMergeConfig(
+   let rightValue = right?.[target];
+
+   // Strip any inline variables from the target
+-  if (rightIsInline && rightValue) {
+-    if (Array.isArray(rightValue)) {
+-      rightValue = rightValue.filter((v) => {
+-        return typeof v !== "object" || !(v && VAR_SYMBOL in v);
+-      });
+-
+-      if (rightValue.length === 0) {
+-        rightValue = undefined;
+-      }
+-    } else if (
+-      typeof rightValue === "object" &&
+-      rightValue &&
+-      VAR_SYMBOL in rightValue
+-    ) {
+-      rightValue = undefined;
+-      delete result[target][VAR_SYMBOL];
+-    }
++  if (rightIsInline && rightValue !== undefined) {
++    rightValue = filterCssVariables(rightValue);
+   }
+
+   if (rightValue !== undefined) {
