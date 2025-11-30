@@ -13,8 +13,6 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
-const snapPoints = ['70%'];
-
 const keyExtractor = (item: InstrumentEntityInterface) => item.code;
 
 const flatListProps = {
@@ -24,7 +22,7 @@ const flatListProps = {
 
 export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelect }: Props) => {
     const [search, setSearch] = useState('');
-    const { instruments, isLoading } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const { t } = useLingui();
 
     const filteredCurrencies = instruments.filter(
@@ -48,14 +46,9 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
         />
     );
 
-    if (isLoading) {
-        return null;
-    }
-
     return (
         <SearchableListBottomSheet
             ref={ref}
-            snapPoints={snapPoints}
             title={t`Select Currency`}
             description={t`Choose your main currency`}
             onSearchChange={setSearch}
