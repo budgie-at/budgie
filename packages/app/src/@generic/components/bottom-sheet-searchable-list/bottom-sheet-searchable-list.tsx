@@ -67,13 +67,17 @@ export const SearchableListBottomSheet = <T,>({
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
 
-    return (
-        <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
+    const header = (
+        <>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
-
             <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
+        </>
+    );
 
-            {isNotEmptyArray(data) ? (
+    if (isNotEmptyArray(data)) {
+        return (
+            <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
+                {header}
                 <BottomSheetFlatList
                     className={className}
                     contentContainerClassName={contentContainerClassName}
@@ -85,11 +89,16 @@ export const SearchableListBottomSheet = <T,>({
                     ListFooterComponent={listFooter}
                     showsVerticalScrollIndicator={false}
                 />
-            ) : (
-                <BottomSheetView>
-                    <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
-                </BottomSheetView>
-            )}
+            </BottomSheet>
+        );
+    }
+
+    return (
+        <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
+            <BottomSheetView>
+                {header}
+                <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
+            </BottomSheetView>
         </BottomSheet>
     );
 };

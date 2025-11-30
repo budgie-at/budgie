@@ -11,13 +11,13 @@ import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountHeader } from '../update-account-header/update-account-header';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly account: AccountEntityInterface;
