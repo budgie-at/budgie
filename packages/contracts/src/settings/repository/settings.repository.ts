@@ -21,7 +21,7 @@ export class SettingsRepository {
 
     findSettings() {
         return this.db.query.SettingsEntityTable.findFirst({
-            with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true }
+            with: { [SettingsAssociationEnum.DEFAULT_INSTRUMENT]: true, [SettingsAssociationEnum.DEFAULT_ACCOUNT]: true }
         });
     }
 }

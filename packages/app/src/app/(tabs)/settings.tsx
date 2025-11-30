@@ -8,6 +8,7 @@ import { Page } from '../../@generic/components/page/page';
 import { Separator } from '../../@generic/components/separator/separator';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
+import { DefaultAccountSelector } from '../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
 import { GenericSelectorCard } from '../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
@@ -42,6 +43,7 @@ export default function SettingsPage() {
                         <LanguageSelector />
                         <DefaultCurrencySelector />
                         <LocaleSelector />
+                        <DefaultAccountSelector />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Organization`}>
