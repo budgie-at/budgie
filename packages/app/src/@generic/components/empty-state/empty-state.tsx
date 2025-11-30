@@ -5,6 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { cn } from '../../utils/cn.util';
+import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
 
 interface Props {
@@ -12,12 +13,13 @@ interface Props {
     readonly icon?: IconName;
     readonly className?: string;
     readonly description: string;
+    readonly circleIcon?: IconName;
     readonly iconClassName?: string;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
 }
 
-const wrapperVariants = cva('items-center justify-center ', {
+const wrapperVariants = cva('items-center justify-center', {
     variants: {
         hasIcon: {
             true: 'py-[30px]',
@@ -26,11 +28,25 @@ const wrapperVariants = cva('items-center justify-center ', {
     }
 });
 
-export const EmptyState = ({ title, description, className, titleClassName, descriptionClassName, icon, iconClassName }: Props) => (
-    <View className={cn(wrapperVariants({ hasIcon: isNotEmptyString(icon) }), className)}>
-        {isNotEmptyString(icon) && <Icon icon={ICONS[icon]} className={cn('text-secondary-foreground mb-xl', iconClassName)} size={48} />}
+export const EmptyState = (props: Props) => {
+    const { title, description, className, circleIcon, titleClassName, descriptionClassName, icon, iconClassName } = props;
 
-        <Text className={cn('text-secondary-foreground text-md mb-sm', titleClassName)}>{title}</Text>
-        <Text className={cn('text-secondary-foreground/70 text-xs', descriptionClassName)}>{description}</Text>
-    </View>
-);
+    return (
+        <View className={cn(wrapperVariants({ hasIcon: isNotEmptyString(icon) }), className)}>
+            {isNotEmptyString(icon) && (
+                <Icon icon={ICONS[icon]} className={cn('text-secondary-foreground mb-xl', iconClassName)} size={48} />
+            )}
+            {isNotEmptyString(circleIcon) && (
+                <CircleIcon
+                    icon={ICONS[circleIcon]}
+                    size="3xl"
+                    variant="ghost"
+                    className={cn('text-secondary-foreground mb-xl rounded-5xl', iconClassName)}
+                />
+            )}
+
+            <Text className={cn('text-secondary-foreground text-md mb-sm', titleClassName)}>{title}</Text>
+            <Text className={cn('text-secondary-foreground/70 text-xs', descriptionClassName)}>{description}</Text>
+        </View>
+    );
+};

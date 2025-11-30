@@ -1,4 +1,4 @@
-import { CurrencyEnum, InstrumentEntityInterface, SettingsEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, CurrencyEnum, InstrumentEntityInterface, SettingsEntityInterface } from '@budgie/contracts';
 import { createContext, use } from 'react';
 
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
@@ -7,6 +7,7 @@ import { DEFAULT_SETTINGS } from '../constants/default-settings.constant';
 
 interface SettingsContextInterface {
     defaultInstrument: InstrumentEntityInterface;
+    defaultAccount: AccountEntityInterface | null;
     settings: SettingsEntityInterface;
     defaultCurrency: CurrencyEnum;
     decimalPlaces: number;
@@ -16,7 +17,8 @@ export const SettingsContext = createContext<SettingsContextInterface>({
     settings: DEFAULT_SETTINGS,
     defaultCurrency: CurrencyEnum.USD,
     defaultInstrument: DEFAULT_INSTRUMENT,
-    decimalPlaces: DEFAULT_DECIMAL_PLACES
+    decimalPlaces: DEFAULT_DECIMAL_PLACES,
+    defaultAccount: null
 });
 
 export const useSettingsContext = () => use(SettingsContext);

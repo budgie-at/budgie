@@ -4,7 +4,6 @@ import { View } from 'react-native';
 
 import { USER_ICONS_LIST, UserIcon } from '../../constant/user-icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
-import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../utils/map-to-flatlist-data.util';
 import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/bottom-sheet-searchable-list';
@@ -20,7 +19,13 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const snapPoints: BottomSheetSnapPoints = ['70%'];
+const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
+
+const flatListProps = {
+    contentContainerClassName: 'gap-y-lg px-6 pt-[30px]',
+    columnWrapperClassName: 'gap-x-lg',
+    numColumns: 4
+};
 
 export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }: Props) => {
     const [search, setSearch] = useState('');
@@ -33,8 +38,6 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
         onSelect(icon);
         ref.current?.close();
     };
-
-    const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
 
     const renderItem = ({ item }: { item: FlatListDataItem<UserIcon> }) =>
         item.isEmpty ? (
@@ -49,18 +52,11 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
             />
         );
 
-    const flatListProps = {
-        contentContainerClassName: 'gap-y-lg px-6 pt-[30px]',
-        columnWrapperClassName: 'gap-x-lg',
-        numColumns: 4,
-    };
-
-    const iconsCount = filteredIcons.length
+    const iconsCount = filteredIcons.length;
 
     return (
         <SearchableListBottomSheet
             ref={ref}
-            snapPoints={snapPoints}
             title={t`Choose Icon`}
             description={t`${iconsCount} icons available`}
             onSearchChange={setSearch}
