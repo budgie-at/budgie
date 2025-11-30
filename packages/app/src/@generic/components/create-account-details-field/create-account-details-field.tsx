@@ -7,7 +7,6 @@ import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormItem } from '../form-item/form-item';
 import { IconSelector } from '../icon-selector/icon-selector';
 import { Input } from '../input/input';
-import { Shake } from '../shake/shake';
 
 interface Props {
     readonly control: Control<AccountCreateEntityInterface>;
@@ -22,28 +21,26 @@ export const CreateAccountDetailsField = ({ control, variant }: Props) => {
     );
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
-        const variant = fieldState.invalid ? 'destructive' : 'default';
+        const status = fieldState.invalid ? 'error' : 'default';
 
         return (
             <FormItem label={t`Account Name & Icon`} error={fieldState.error?.message}>
                 <View className="flex-row gap-x-xl">
-                    <Controller control={control} name={'icon' as const} render={renderIconField} />
+                    <Controller control={control} name="icon" render={renderIconField} />
 
-                    <Shake isEnabled={fieldState.invalid}>
-                        <Input
-                            size="lg"
-                            value={field.value}
-                            variant={variant}
-                            onChangeText={field.onChange}
-                            className="text-ellipsis flex-1"
-                            maxLength={ACCOUNT_TITLE_MAX_LENGTH}
-                            placeholder={t`e.g. Savings Account`}
-                        />
-                    </Shake>
+                    <Input
+                        size="lg"
+                        status={status}
+                        value={field.value}
+                        onChangeText={field.onChange}
+                        className="text-ellipsis flex-1"
+                        maxLength={ACCOUNT_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Savings Account`}
+                    />
                 </View>
             </FormItem>
         );
     };
 
-    return <Controller control={control} name={'title' as const} render={renderTitleField} />;
+    return <Controller control={control} name="title" render={renderTitleField} />;
 };
