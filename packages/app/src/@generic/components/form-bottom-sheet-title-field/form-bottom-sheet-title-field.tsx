@@ -1,8 +1,7 @@
 import { Control, Controller, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 
-import { BottomSheetTextInput } from '../bottom-sheet-input/bottom-sheet-view';
+import { BottomSheetTextInput } from '../bottom-sheet-text-input/bottom-sheet-text-input';
 import { FormItem } from '../form-item/form-item';
-import { Shake } from '../shake/shake';
 
 interface Props<T extends FieldValues> {
     readonly control: Control<T>;
@@ -20,20 +19,18 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
     maxLength
 }: Props<T>) => {
     const render = ({ field: { value, onChange }, fieldState: { error, invalid } }: UseControllerReturn<T>) => {
-        const variant = invalid ? 'destructive' : 'default';
+        const status = invalid ? 'error' : 'default';
 
         return (
             <FormItem label={label} error={error?.message}>
-                <Shake isEnabled={invalid}>
-                    <BottomSheetTextInput
-                        value={value}
-                        variant={variant}
-                        maxLength={maxLength}
-                        onChangeText={onChange}
-                        placeholder={placeholder}
-                        className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                </Shake>
+                <BottomSheetTextInput
+                    value={value}
+                    status={status}
+                    maxLength={maxLength}
+                    onChangeText={onChange}
+                    placeholder={placeholder}
+                    className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                />
             </FormItem>
         );
     };
