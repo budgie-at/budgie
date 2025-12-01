@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { TextInput } from 'react-native';
 
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
@@ -7,18 +6,21 @@ import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useFormatDigits } from '../../hooks/use-format-digits.hook';
+import { FormFieldStatus } from '../../type/form-field-status.type';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
+import { Input } from '../input/input';
 
 interface Props {
     readonly value: number;
     readonly placeholder?: string;
     readonly inputClassName?: string;
+    readonly status?: FormFieldStatus;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder }: Props) => {
+export const AmountInput = ({ value, onChangeValue, inputClassName, status, placeholder }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -63,7 +65,8 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, placeholder 
     };
 
     return (
-        <TextInput
+        <Input
+            status={status}
             value={displayValue}
             onChangeText={handleChangeText}
             onBlur={handleBlur}

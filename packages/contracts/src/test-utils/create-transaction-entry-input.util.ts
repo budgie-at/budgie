@@ -12,6 +12,4 @@ export const createTransactionEntryInput = (
     accountId: 0,
     instrumentId: 0,
     transactionId: 0,
-    parentCategoryId: 0,
-    parentAccountId: null
 });

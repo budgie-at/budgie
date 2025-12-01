@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
@@ -10,6 +10,12 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class TagRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    findByIds(ids: number[]) {
+        return this.db.query.TagEntityTable.findMany({
+            where: inArray(TagEntityTable.id, ids)
+        });
+    }
 
     findBySearchQuery(search: string) {
         return this.db.query.TagEntityTable.findMany({

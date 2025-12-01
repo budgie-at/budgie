@@ -4,7 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
 
-export const useGetTagsLiveQuery = (query: string) => {
+export const useGetTagsLiveQuery = (query = '') => {
     const { data, error, updatedAt } = useLiveQuery(tagRepository.findBySearchQuery(query), [query]);
 
     if (!isDefined(updatedAt)) {
