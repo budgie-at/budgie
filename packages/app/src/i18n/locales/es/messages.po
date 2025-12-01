@@ -15,23 +15,35 @@ msgstr ""
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} cuenta"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+#: src/account/component/account-selector/account-selector.tsx:37
+msgid "{currentBalance} available"
+msgstr "{currentBalance} disponible"
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} iconos disponibles"
 
-#: src/app/(tabs)/settings.tsx:35
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:34
+msgid "{tagsCount} tags available"
+msgstr "{tagsCount} etiquetas disponibles"
+
+#: src/app/(tabs)/settings.tsx:36
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(tabs)/settings.tsx:76
+#: src/app/(tabs)/settings.tsx:78
 msgid "About"
 msgstr "Acerca de"
 
-#: src/account/component/update-account-title-field/update-account-title-field.tsx:23
+#: src/transaction/components/transaction-form/transaction-form.tsx:45
+msgid "Account"
+msgstr "Cuenta"
+
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:22
 msgid "Account Name"
 msgstr "Nombre de la cuenta"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:28
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:27
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
@@ -55,6 +67,14 @@ msgstr "Agrega una nueva categoría para organizar tus transacciones"
 msgid "Add a new tag to organize your transactions"
 msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:70
+msgid "Add Income"
+msgstr "Agregar ingreso"
+
+#: src/transaction/components/transaction-split/transaction-split.tsx:130
+msgid "Add Split"
+msgstr "Agregar división"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
@@ -71,7 +91,7 @@ msgstr "IA"
 msgid "Ai Page"
 msgstr "Página de IA"
 
-#: src/app/(tabs)/settings.tsx:80
+#: src/app/(tabs)/settings.tsx:82
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -79,24 +99,28 @@ msgstr ""
 "Aplicación de presupuesto con IA y privacidad completa. Todo el procesamiento de datos ocurre localmente en tu dispositivo.\n"
 "Versión 1.0.0"
 
-#: src/app/(tabs)/settings.tsx:36
+#: src/app/(tabs)/settings.tsx:37
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
+
+#: src/transaction/components/transaction-split/transaction-split.tsx:140
+msgid "Allocated"
+msgstr "Asignado"
 
 #: src/app/(tabs)/analytics.tsx:11
 msgid "Analytics Page"
 msgstr "Página de análisis"
 
-#: src/app/(tabs)/settings.tsx:71
+#: src/app/(tabs)/settings.tsx:73
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:81
+#: src/account/component/update-liability-account/update-liability-account.tsx:84
 msgid "Archive Account"
 msgstr "Archivar cuenta"
 
 #: src/app/(main)/archived.tsx:27
-#: src/app/(tabs)/settings.tsx:64
+#: src/app/(tabs)/settings.tsx:66
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
@@ -116,13 +140,14 @@ msgstr "Moneda base"
 msgid "Browse"
 msgstr "Explorar"
 
-#: src/app/(tabs)/settings.tsx:78
+#: src/app/(tabs)/settings.tsx:80
 msgid "BudgetAI"
 msgstr "PresupuestoIA"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:17
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:57
+#: src/@generic/components/form-bottom-sheet-footer/form-bottom-sheet-footer.tsx:19
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:49
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -133,6 +158,11 @@ msgstr "Efectivo"
 #: src/app/(main)/categories.tsx:39
 msgid "Categories"
 msgstr "Categorías"
+
+#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
+msgid "Category"
+msgstr "Categoría"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
@@ -147,11 +177,11 @@ msgstr "Cambiar"
 msgid "Checking Account"
 msgstr "Cuenta corriente"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:27
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:31
 msgid "Choose a type to get started"
 msgstr "Elige un tipo para comenzar"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:60
 msgid "Choose Icon"
 msgstr "Elegir icono"
 
@@ -159,17 +189,29 @@ msgstr "Elegir icono"
 msgid "Choose the type of account you want to add"
 msgstr "Elige el tipo de cuenta que deseas agregar"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:71
+msgid "Choose your main account"
+msgstr "Elige tu cuenta principal"
+
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:62
+msgid "Choose your main category"
+msgstr "Elige tu categoría principal"
+
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Choose your main currency"
 msgstr "Elige tu moneda principal"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:56
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
 msgid "Choose your preferred language for date and number formatting"
 msgstr "Elige tu idioma preferido para el formato de fechas y números"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:54
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:26
 msgid "Choose your preferred locale for date and number formatting"
 msgstr "Elige tu configuración regional preferida para el formato de fechas y números"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+msgid "Common Tags"
+msgstr "Etiquetas frecuentes"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
 msgid "Could not create category"
@@ -179,17 +221,25 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:56
+msgid "Could not create transaction. Please try again later."
+msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:37
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/app/(tabs)/settings.tsx:58
+#: src/app/(tabs)/settings.tsx:60
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Create Category"
 msgstr "Crear categoría"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:55
+msgid "Create one to get started."
+msgstr "Crea una para comenzar."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:54
 msgid "Create Tag"
@@ -198,6 +248,14 @@ msgstr "Crear etiqueta"
 #: src/app/(main)/tags.tsx:35
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
+
+#: src/transaction/components/transaction-form/transaction-form.tsx:51
+msgid "Create your first account to start tracking transactions"
+msgstr "Crea tu primera cuenta para empezar a rastrear tus transacciones"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:89
+msgid "Create your first tag above to organize your transactions"
+msgstr "Crea tu primera etiqueta arriba para organizar tus transacciones"
 
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
@@ -219,21 +277,37 @@ msgstr "Las categorías personalizadas que crees aparecerán aquí"
 msgid "Dark Mode"
 msgstr "Modo oscuro"
 
+#: src/transaction/components/transaction-form/transaction-form.tsx:58
+msgid "Date"
+msgstr "Fecha"
+
 #: src/account/constant/account-type.constant.ts:8
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+#: src/transaction/constant/transaction-type.constant.ts:8
 msgid "Debt"
 msgstr "Deuda"
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:24
+msgid "Default Account"
+msgstr "Cuenta predeterminada"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:25
 msgid "Delete"
 msgstr "Eliminar"
 
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:37
+msgid "Done"
+msgstr "Listo"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:37
+msgid "Done ({selectedTagsCount})"
+msgstr "Listo ({selectedTagsCount})"
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:40
-#: src/account/component/update-account-title-field/update-account-title-field.tsx:32
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:38
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:30
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
@@ -265,7 +339,7 @@ msgstr "Inglés (Estados Unidos)"
 msgid "Everyday transactions and spending"
 msgstr "Transacciones y gastos diarios"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Gasto"
 
@@ -281,7 +355,7 @@ msgstr "Francés"
 msgid "French (France)"
 msgstr "Francés (Francia)"
 
-#: src/app/(tabs)/settings.tsx:41
+#: src/app/(tabs)/settings.tsx:42
 msgid "General"
 msgstr "General"
 
@@ -297,12 +371,12 @@ msgstr "Alemán (Alemania)"
 msgid "Hide Cents"
 msgstr "Ocultar centavos"
 
-#: src/account/component/create-account-icon-field/update-account-icon-field.tsx:16
+#: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
 msgid "Icon"
 msgstr "Icono"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:41
+#: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
@@ -314,10 +388,6 @@ msgstr "Italiano (Italia)"
 msgid "Language"
 msgstr "Idioma"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:51
-msgid "Loans & credit cards"
-msgstr "Préstamos y tarjetas de crédito"
-
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Configuración regional"
@@ -326,34 +396,35 @@ msgstr "Configuración regional"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(tabs)/settings.tsx:50
+#: src/app/(tabs)/settings.tsx:52
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(tabs)/settings.tsx:57
+#: src/app/(tabs)/settings.tsx:59
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Money you earn"
 msgstr "Dinero que ganas"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:33
-msgid "Money you spend"
-msgstr "Dinero que gastas"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:45
-msgid "Move between accounts"
-msgstr "Mover entre cuentas"
 
 #: src/app/(main)/create-account/index.tsx:21
 msgid "New Account"
 msgstr "Nueva cuenta"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:24
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:69
+msgid "New Income"
+msgstr "Nuevo ingreso"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:31
 msgid "New Transaction"
 msgstr "Nueva transacción"
 
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
+msgid "No accounts found"
+msgstr "No se encontraron cuentas"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:14
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
@@ -362,11 +433,15 @@ msgstr "Aún no hay cuentas"
 msgid "No archived accounts"
 msgstr "No hay cuentas archivadas"
 
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:69
+msgid "No categories found"
+msgstr "No se encontraron categorías"
+
 #: src/app/(main)/categories.tsx:34
 msgid "No categories match your search"
 msgstr "No hay categorías que coincidan con tu búsqueda"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "No currencies found"
 msgstr "No se encontraron monedas"
 
@@ -374,19 +449,19 @@ msgstr "No se encontraron monedas"
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:68
 msgid "No icons"
 msgstr "Sin iconos"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons found"
 msgstr "No se encontraron iconos"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:63
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:30
 msgid "No languages found"
 msgstr "No se encontraron idiomas"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:61
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:28
 msgid "No locales found"
 msgstr "No se encontraron configuraciones regionales"
 
@@ -399,17 +474,33 @@ msgstr "Sin resultados"
 msgid "No tags match your search"
 msgstr "No hay etiquetas que coincidan con tu búsqueda"
 
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:86
+msgid "No tags yet"
+msgstr "Aún no hay etiquetas"
+
 #: src/app/(main)/tags.tsx:34
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
 
-#: src/app/(tabs)/settings.tsx:47
+#: src/tag/components/tags-selector/tags-selector.tsx:59
+msgid "None"
+msgstr "Ninguno"
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:25
+msgid "None selected"
+msgstr "Ninguna seleccionada"
+
+#: src/app/(tabs)/settings.tsx:49
 msgid "Organization"
 msgstr "Organización"
 
+#: src/transaction/components/transaction-split/transaction-split.tsx:141
+msgid "Over:"
+msgstr "Exceso:"
+
 #: src/account/component/create-liability-account/create-liability-account.tsx:54
-#: src/account/component/update-liability-account/update-liability-account.tsx:42
-#: src/account/component/update-liability-account/update-liability-account.tsx:56
+#: src/account/component/update-liability-account/update-liability-account.tsx:43
+#: src/account/component/update-liability-account/update-liability-account.tsx:57
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
@@ -428,11 +519,15 @@ msgstr "Portugués (Portugal)"
 msgid "Preview"
 msgstr "Vista previa"
 
-#: src/app/(tabs)/settings.tsx:32
+#: src/app/(tabs)/settings.tsx:33
 msgid "Privacy"
 msgstr "Privacidad"
 
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:51
+#: src/transaction/components/transaction-split/transaction-split.tsx:142
+msgid "Remaining:"
+msgstr "Restante:"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:48
 msgid "Restore"
 msgstr "Restaurar"
 
@@ -449,23 +544,28 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
+msgid "Search accounts..."
+msgstr "Buscar cuentas..."
+
 #: src/app/(main)/categories.tsx:40
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:64
 msgid "Search categories..."
 msgstr "Buscar categorías..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
 msgid "Search currencies..."
 msgstr "Buscar monedas..."
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:58
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:56
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:27
 msgid "Search locales..."
 msgstr "Buscar configuraciones regionales..."
 
@@ -473,19 +573,48 @@ msgstr "Buscar configuraciones regionales..."
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/account/component/account-selector/account-selector.tsx:57
+msgid "Select account"
+msgstr "Seleccionar cuenta"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
+msgid "Select Account"
+msgstr "Seleccionar cuenta"
+
+#: src/category/components/category-selector/category-selector.tsx:33
+msgid "Select category"
+msgstr "Seleccionar categoría"
+
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:61
+#: src/transaction/components/transaction-form/transaction-form.tsx:76
+msgid "Select Category"
+msgstr "Seleccionar categoría"
+
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
 msgstr "Seleccionar moneda"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:55
+#: src/@generic/components/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:43
+msgid "Select Date"
+msgstr "Seleccionar fecha"
+
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
 msgstr "Seleccionar idioma"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:53
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:25
 msgid "Select Locale"
 msgstr "Seleccionar configuración regional"
 
-#: src/app/(tabs)/settings.tsx:28
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:41
+msgid "Select Tags"
+msgstr "Seleccionar etiquetas"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:47
+msgid "Selected {selectedTagsCount}"
+msgstr "Seleccionadas: {selectedTagsCount}"
+
+#: src/app/(tabs)/settings.tsx:29
 msgid "Settings"
 msgstr "Configuración"
 
@@ -494,10 +623,14 @@ msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:53
-#: src/account/component/update-liability-account/update-liability-account.tsx:41
-#: src/account/component/update-liability-account/update-liability-account.tsx:55
+#: src/account/component/update-liability-account/update-liability-account.tsx:42
+#: src/account/component/update-liability-account/update-liability-account.tsx:56
 msgid "Something went wrong"
 msgstr "Algo salió mal"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:55
+msgid "Something went wrong."
+msgstr "Algo salió mal."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Something went wrong. Please try again later."
@@ -511,11 +644,16 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
+#: src/transaction/components/transaction-split/transaction-split.tsx:110
+msgid "Split by Category"
+msgstr "Dividir por categoría"
+
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Acciones"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:28
+#: src/@generic/components/form-bottom-sheet-footer/form-bottom-sheet-footer.tsx:27
 #: src/account/component/create-liability-account/create-liability-account.tsx:66
 msgid "Submit"
 msgstr "Enviar"
@@ -534,6 +672,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(main)/tags.tsx:40
+#: src/transaction/components/transaction-form/transaction-form.tsx:64
 msgid "Tags"
 msgstr "Etiquetas"
 
@@ -553,13 +692,15 @@ msgstr "Saldo total"
 msgid "Transactions Page"
 msgstr "Página de transacciones"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:47
+#: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transferencia"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:66
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:52
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
 
@@ -568,15 +709,15 @@ msgstr "Prueba con un término de búsqueda diferente"
 msgid "Ukrainian"
 msgstr "Ucraniano"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:80
+#: src/account/component/update-liability-account/update-liability-account.tsx:83
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
-#: src/app/(tabs)/settings.tsx:51
+#: src/app/(tabs)/settings.tsx:53
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(tabs)/settings.tsx:65
+#: src/app/(tabs)/settings.tsx:67
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 

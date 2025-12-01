@@ -3,7 +3,7 @@ import { RefObject } from 'react';
 import { Text, View } from 'react-native';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
@@ -34,6 +34,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const description = t`${tagsCount} tags available`;
 
     const handleClose = () => ref.current?.close()
+    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`
 
     return (
         <BottomSheet snapPoints={snapPoints} ref={ref}>
@@ -93,7 +94,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
 
             <SafeAreaView edges={safeEdges}>
                 <View className="pt-3xl border-t border-t-secondary-corner px-5xl">
-                    <Button size="md" variant="ghost" content={t`Done`} onPress={handleClose} />
+                    <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
                 </View>
             </SafeAreaView>
         </BottomSheet>
