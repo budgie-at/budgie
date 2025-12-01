@@ -25,7 +25,7 @@ const Modal = styled(BottomSheetModal, {
 });
 
 export const BottomSheet = (props: PropsWithChildren<Props>) => {
-    const { ref, index, children, className, snapPoints, handleClassName, enableDynamicSizing, footerComponent, ...rest } = props;
+    const { ref, index, children, className, snapPoints, handleClassName, enableDynamicSizing = false, footerComponent, ...rest } = props;
     const modalRef = useRef<BottomSheetModal | null>(null);
     const { top } = useSafeAreaInsets();
 
@@ -42,6 +42,7 @@ export const BottomSheet = (props: PropsWithChildren<Props>) => {
             backgroundClassName="bg-primary-reverse"
             backdropComponent={BottomSheetBackdrop}
             handleIndicatorClassName="bg-primary"
+            enableContentPanningGesture={false}
             footerComponent={footerComponent}
             snapPoints={snapPoints}
             enablePanDownToClose
