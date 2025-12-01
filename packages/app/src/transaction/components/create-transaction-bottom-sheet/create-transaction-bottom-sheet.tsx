@@ -1,57 +1,42 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
+import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetView } from '../../../@generic/components/bottom-sheet-view/bottom-sheet-view';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
+import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { CreateTransactionCard } from '../create-transaction-card/create-transaction-card';
 
-import type { Ref } from 'react';
+import type { RefObject } from 'react';
 
 interface Props {
-    readonly ref: Ref<BottomSheetInterface | null>;
+    readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
 export const CreateTransactionBottomSheet = ({ ref }: Props) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
+
+    const handleNavigate = (type: TransactionTypeEnum) => {
+        ref.current?.close();
+        void router.push(`/create-transaction/${type}`);
+    };
 
     return (
-        <BottomSheet ref={ref}>
+        <BottomSheet enableDynamicSizing ref={ref}>
             <BottomSheetView>
-                <View className="gap-y-1 mb-10">
-                    <Text className="text-center text-xl text-primary font-semibold">
-                        <Trans>New Transaction</Trans>
-                    </Text>
-                    <Text className="text-center text-sm text-secondary-foreground">
-                        <Trans>Choose a type to get started</Trans>
-                    </Text>
-                </View>
+                <BottomSheetHeader size="md" title={t`New Transaction`} description={t`Choose a type to get started`} />
 
-                <View className="gap-y-3.5">
-                    <CreateTransactionCard
-                        description={t`Money you spend`}
-                        icon="TrendingDown"
-                        title={t`Expense`}
-                        type={TransactionTypeEnum.EXPENSE}
-                    />
+                <View className="gap-y-3.5 px-5xl">
                     <CreateTransactionCard
                         description={t`Money you earn`}
-                        icon="TrendingUp"
-                        title={t`Income`}
+                        icon={TRANSACTION_ICON.INCOME}
+                        title={i18n.t(TRANSACTION_TYPE.INCOME)}
+                        onNavigate={handleNavigate}
                         type={TransactionTypeEnum.INCOME}
-                    />
-                    <CreateTransactionCard
-                        description={t`Move between accounts`}
-                        icon="ArrowRightLeft"
-                        title={t`Transfer`}
-                        type={TransactionTypeEnum.TRANSFER}
-                    />
-                    <CreateTransactionCard
-                        description={t`Loans & credit cards`}
-                        icon="CreditCard"
-                        title={t`Debt`}
-                        type={TransactionTypeEnum.DEBT}
                     />
                 </View>
             </BottomSheetView>
