@@ -10,12 +10,12 @@ import { categoryRepository } from '../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { CategoryCard } from '../../category/components/category-card/category-card';
 import { CategoryFormBottomSheet } from '../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
-import { useGetCategoriesLiveQuery } from '../../category/query/use-get-categories.live-query';
+import { useGetCategoriesQuery } from '../../category/query/use-get-categories.query';
 
 export default function Categories() {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const { categories } = useGetCategoriesLiveQuery(search, false);
+    const { categories } = useGetCategoriesQuery(search, false);
 
     const handleDeleteCategory = async (id: number) => {
         await categoryRepository.deleteById(id);
