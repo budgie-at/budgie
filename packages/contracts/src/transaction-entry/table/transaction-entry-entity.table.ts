@@ -11,9 +11,7 @@ export const TransactionEntryEntityTable = sqliteTable(
             .$type<TransactionEntryTypeEnum>()
             .notNull(),
         accountId: int('account_id', { mode: 'number' }).notNull(),
-        categoryId: int('category_id', { mode: 'number' }).notNull(),
-        parentCategoryId: int('parent_category_id', { mode: 'number' }).notNull(),
-        parentAccountId: int('parent_account_id', { mode: 'number' }),
+        categoryId: int('category_id', { mode: 'number' }),
         instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
         transactionId: int('transaction_id', { mode: 'number' }).notNull(),
         amount: int('amount', { mode: 'number' }).notNull()
