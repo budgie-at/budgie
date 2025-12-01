@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const FormItem = ({ label, children, className, error }: Props) => (
-    <View className={cn('gap-y-lg w-full', className)}>
+    <View className={cn('gap-y-lg', className)}>
         {isNotEmptyString(label) ? <Text className="text-secondary-foreground uppercase text-xs">{label}</Text> : null}
 
         {children}
