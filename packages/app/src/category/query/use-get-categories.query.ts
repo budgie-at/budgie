@@ -4,7 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
 
-export const useGetCategoriesLiveQuery = (query: string, includeDefault: boolean) => {
+export const useGetCategoriesQuery = (query: string, includeDefault: boolean) => {
     const { data, error, updatedAt } = useLiveQuery(categoryRepository.findBySearchQuery(query, includeDefault), [query, includeDefault]);
 
     if (!isDefined(updatedAt)) {
