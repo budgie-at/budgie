@@ -11,6 +11,6 @@ const TextInput = styled(GorhomBottomSheetTextInput, {
     className: 'style'
 });
 
-export const BottomSheetTextInput = ({ className, size = 'sm', variant = 'default', ...rest }: Props) => (
-    <TextInput className={cn(inputVariant({ size, variant }), className)} {...rest} />
+export const BottomSheetTextInput = ({ className, size = 'sm', status = 'default', ...rest }: Props) => (
+    <TextInput className={cn(inputVariant({ size, status }), className)} {...rest} />
 );

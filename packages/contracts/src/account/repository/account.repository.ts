@@ -34,6 +34,17 @@ export class AccountRepository {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
     }
 
+    findBySearchQuery(search: string) {
+        return this.db.query.AccountEntityTable.findMany({
+            where: and(
+                isNull(AccountEntityTable.parentId),
+                isNull(AccountEntityTable.deletedAt),
+                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`
+            ),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
     getAll() {
         return this.db.query.AccountEntityTable.findMany({
             where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),

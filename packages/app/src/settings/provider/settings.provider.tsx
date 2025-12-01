@@ -17,9 +17,11 @@ export const SettingsProvider = ({ children }: Props) => {
 
     const showCents = result.settings?.showCents ?? DEFAULT_SETTINGS.showCents;
 
+    const defaultAccount = result.settings?.defaultAccount ?? null;
     const defaultInstrument = result.settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
 
     const value = {
+        defaultAccount,
         defaultInstrument,
         settings: result.settings ?? DEFAULT_SETTINGS,
         decimalPlaces: showCents ? DEFAULT_DECIMAL_PLACES : 0,
