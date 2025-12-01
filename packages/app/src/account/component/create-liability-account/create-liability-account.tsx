@@ -12,11 +12,11 @@ import { CreateAccountDetailsField } from '../../../@generic/components/create-a
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountHeader } from '../account-header/account-header';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
