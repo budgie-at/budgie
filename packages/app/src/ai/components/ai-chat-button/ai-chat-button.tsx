@@ -10,11 +10,11 @@ export const AiChatButton = () => {
 
     return (
         <View>
-            <Pressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-4" onPress={navigateToAiPage}>
+            <Pressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-[30px]" onPress={navigateToAiPage}>
                 <Icon className="text-primary-reverse" icon={Mic} size={16} />
             </Pressable>
 
-            <Text className="text-secondary-foreground text-center -translate-y-4 text-xxs">
+            <Text className="text-secondary-foreground text-center -translate-y-6 text-xxs">
                 <Trans>AI</Trans>
             </Text>
         </View>
