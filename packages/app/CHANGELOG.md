@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.67.0](https://github.com/budgie-at/budgie/compare/v1.66.0...v1.67.0) (2025-12-01)
+
+### Bug Fixes
+
+- apply patch for react-native-css ([c804b96](https://github.com/budgie-at/budgie/commit/c804b963ab9302ae90c3e356d51cc799e9972025))
+
+### Features
+
+- add default account selector ([103f987](https://github.com/budgie-at/budgie/commit/103f987026cab493d4305ecb8bdba6d78043df4c))
+- add default account selector ([dafb0e7](https://github.com/budgie-at/budgie/commit/dafb0e7e80d48c59830a33e467084261faa04f8c))
+
 # [1.66.0](https://github.com/budgie-at/budgie/compare/v1.65.0...v1.66.0) (2025-11-24)
 
 ### Bug Fixes
