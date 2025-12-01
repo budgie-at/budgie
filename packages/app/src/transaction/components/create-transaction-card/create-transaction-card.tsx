@@ -5,7 +5,7 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
 
@@ -14,24 +14,22 @@ interface Props {
     readonly icon: IconName;
     readonly description: string;
     readonly type: TransactionTypeEnum;
+    readonly onNavigate: (type: TransactionTypeEnum) => void;
 }
 
-const iconVariant: Record<TransactionTypeEnum, ColorPaletteVariant> = {
-    [TransactionTypeEnum.DEBT]: 'warning',
-    [TransactionTypeEnum.INCOME]: 'positive',
-    [TransactionTypeEnum.TRANSFER]: 'default',
-    [TransactionTypeEnum.EXPENSE]: 'destructive',
-}
+export const CreateTransactionCard = ({ title, description, type, icon, onNavigate }: Props) => {
+    const handleNavigate = () => void onNavigate(type);
 
-export const CreateTransactionCard = ({ title, description, type, icon }: Props) => (
-    <Card className="p-5xl items-center gap-x-4 flex-row" key={title}>
-        <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={iconVariant[type]} />
+    return (
+        <Card onPress={handleNavigate} className="p-5xl items-center gap-x-4 flex-row" key={title}>
+            <CircleIcon border={false} className="rounded-5xl w-12 h-12" icon={ICONS[icon]} size="xl" variant={TRANSACTION_COLOR[type]} />
 
-        <View className="mr-auto">
-            <Text className="text-primary text-md font-medium">{title}</Text>
-            <Text className="text-secondary-foreground text-sm">{description}</Text>
-        </View>
+            <View className="mr-auto">
+                <Text className="text-primary text-md font-medium">{title}</Text>
+                <Text className="text-secondary-foreground text-sm">{description}</Text>
+            </View>
 
-        <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
-    </Card>
-);
+            <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
+        </Card>
+    );
+};
