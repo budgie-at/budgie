@@ -3,6 +3,7 @@ export { PRECISION } from './generic/constant/precision.constant';
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
+export { DatePeriodEnum } from './generic/enum/date-period.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
@@ -139,6 +140,8 @@ export { TransferTransactionCreateEntitySchema } from './transaction/schema/tran
 export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
+
+export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 

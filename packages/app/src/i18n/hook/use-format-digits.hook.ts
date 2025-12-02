@@ -1,6 +1,6 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useI18nContext } from '../../i18n/context/i18n.context';
+import { useI18nContext } from '../context/i18n.context';
 
 export const useFormatDigits = (decimalPlaces: number) => {
     const { intl } = useI18nContext();
