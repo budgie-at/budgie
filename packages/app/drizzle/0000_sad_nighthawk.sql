@@ -92,12 +92,15 @@ CREATE TABLE `transactions` (
 	`type` text NOT NULL,
 	`title` text NOT NULL,
 	`external_id` text,
-	`operated_at` text NOT NULL,
+	`operated_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`comment` text DEFAULT '' NOT NULL,
+	`amount` integer DEFAULT 0 NOT NULL,
 	`to_account_id` integer,
 	`from_account_id` integer,
 	`exchange_rate` real NOT NULL,
-	`external_source` text
+	`external_source` text,
+	FOREIGN KEY (`to_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`from_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `transaction_entries` (
@@ -107,20 +110,11 @@ CREATE TABLE `transaction_entries` (
 	`deletedAt` integer,
 	`type` text NOT NULL,
 	`account_id` integer NOT NULL,
-	`category_id` integer NOT NULL,
-	`parent_category_id` integer NOT NULL,
-	`parent_account_id` integer,
+	`category_id` integer,
 	`instrument_id` integer NOT NULL,
 	`transaction_id` integer NOT NULL,
 	`amount` integer NOT NULL
 );
---> statement-breakpoint
-CREATE TABLE `transaction_tags` (
-	`transaction_id` integer NOT NULL,
-	`tag_id` integer NOT NULL,
-	PRIMARY KEY(`transaction_id`, `tag_id`)
-);
---> statement-breakpoint
 -- Seed common fiat currencies into instruments table
 INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 -- Major currencies
