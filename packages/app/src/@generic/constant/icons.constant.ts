@@ -25,6 +25,7 @@ import {
     FileText,
     Folder,
     FolderOpen,
+    Funnel,
     Gift,
     Globe,
     GraduationCap,
@@ -66,6 +67,7 @@ import {
 export const ICONS = {
     Trash,
     Search,
+    Funnel,
     Archive,
     SplitIcon,
     BadgePlus,

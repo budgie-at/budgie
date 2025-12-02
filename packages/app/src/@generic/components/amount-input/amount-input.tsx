@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useFormatDigits } from '../../hooks/use-format-digits.hook';
 import { FormFieldStatus } from '../../type/form-field-status.type';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
 import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
