@@ -1,4 +1,4 @@
-export enum TransactionToTagAssociationEnum {
+export enum TransactionTagsAssociationEnum {
     TRANSACTION = 'transaction',
     TAG = 'tag'
 }
