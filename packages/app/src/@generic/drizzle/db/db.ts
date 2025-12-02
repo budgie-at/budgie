@@ -10,7 +10,7 @@ import {
     TagRepository,
     TransactionEntryRepository,
     TransactionRepository,
-    TransactionToTagRepository
+    TransactionTagsRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -31,7 +31,6 @@ export const instrumentRepository = new InstrumentRepository(db);
 export const transactionRepository = new TransactionRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
-export const transactionToTagRepository = new TransactionToTagRepository(db);
+export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
 
-export type TX = Parameters<Parameters<ExpoSQLiteDatabase<typeof schema>['transaction']>[0]>[0];

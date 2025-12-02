@@ -9,15 +9,16 @@ import {
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
-    TX,
     accountBalanceRepository,
     accountRepository,
     db,
     transactionEntryRepository,
     transactionRepository,
-    transactionToTagRepository
+    transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+
+import type { Transaction } from '../../@generic/type/transaction.type';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -47,7 +48,7 @@ class TransactionService {
 
             if (isNotEmptyArray(input.tagIds)) {
                 await Promise.all(
-                    input.tagIds.map(async id => transactionToTagRepository.create({ transactionId: transaction.id, tagId: id }, tx))
+                    input.tagIds.map(async id => transactionTagsRepository.create({ transactionId: transaction.id, tagId: id }, tx))
                 );
             }
 
@@ -55,13 +56,13 @@ class TransactionService {
         });
     }
 
-    private async createEntries(entries: TransactionEntryCreateEntityInterface[], tx: TX): Promise<void> {
+    private async createEntries(entries: TransactionEntryCreateEntityInterface[], tx: Transaction): Promise<void> {
         const created = await Promise.all(entries.map(entry => transactionEntryRepository.create(entry, tx)));
 
         await Promise.all(created.map(entry => this.applyEntry(entry, tx)));
     }
 
-    private async applyEntry(input: TransactionEntryEntityInterface, tx: TX): Promise<void> {
+    private async applyEntry(input: TransactionEntryEntityInterface, tx: Transaction): Promise<void> {
         const entry = isDefined(input.id)
             ? { ...input, id: input.id }
             : await transactionEntryRepository.create(

@@ -1,8 +1,8 @@
 import { createSelectSchema } from 'drizzle-zod';
 
-import { TransactionToTagEntityTable } from '../table/transaction-to-tag-entity.table';
+import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
-export const TransactionToTagEntitySchema = createSelectSchema(TransactionToTagEntityTable, {
+export const TransactionTagsEntitySchema = createSelectSchema(TransactionTagsEntityTable, {
     transactionId: schema => schema.describe('The id of the transaction.'),
     tagId: schema => schema.describe('The id of the tag.')
 });

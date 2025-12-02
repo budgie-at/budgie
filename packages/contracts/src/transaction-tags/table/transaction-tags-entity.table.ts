@@ -3,7 +3,7 @@ import { int, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
-export const TransactionToTagEntityTable = sqliteTable(
+export const TransactionTagsEntityTable = sqliteTable(
     'transaction_tags',
     {
         transactionId: int('transaction_id', { mode: 'number' }).references(() => TransactionEntityTable.id).notNull(),

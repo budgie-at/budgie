@@ -63,8 +63,5 @@
     "packageManager": "yarn@4.10.3",
     "engines": {
         "node": ">=22.0.0"
-    },
-    "dependencies": {
-        "react-native-ui-datepicker": "^3.1.2"
     }
 }
