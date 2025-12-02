@@ -116,18 +116,18 @@ export { TransactionCreateEntitySchema } from './transaction/schema/transaction-
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
-export { TransactionToTagAssociationEnum } from './transaction-to-tag/enum/transaction-to-tag-association.enum';
+export { TransactionTagsAssociationEnum } from './transaction-tags/enum/transaction-tags-association.enum';
 
-export { TransactionToTagEntityTable } from './transaction-to-tag/table/transaction-to-tag-entity.table';
-export { TransactionToTagEntityRelations } from './transaction-to-tag/relations/transaction-to-tag-entity.relations';
+export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
+export { TransactionTagsEntityRelations } from './transaction-tags/relations/transaction-tags-entity.relations';
 
-export { TransactionToTagEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-entity.schema';
-export { TransactionToTagCreateEntitySchema } from './transaction-to-tag/schema/transaction-to-tag-create-entity.schema';
+export { TransactionTagsEntitySchema } from './transaction-tags/schema/transaction-tags-entity.schema';
+export { TransactionTagsCreateEntitySchema } from './transaction-tags/schema/transaction-tags-create-entity.schema';
 
-export type { TransactionToTagEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-entity.interface';
-export type { TransactionToTagCreateEntityInterface } from './transaction-to-tag/entity/transaction-to-tag-create-entity.interface';
+export type { TransactionTagsEntityInterface } from './transaction-tags/entity/transaction-tags-entity.interface';
+export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
-export { TransactionToTagRepository } from './transaction-to-tag/repository/transaction-to-tag.repository';
+export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
 
 export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense-transaction-create-entity.schema';
 
@@ -183,5 +183,3 @@ export type { SettingsCreateEntityInterface } from './settings/entity/settings-c
 export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/entity/settings-with-default-instrument-entity.interface';
 
 export { SettingsRepository } from './settings/repository/settings.repository';
-
-export * as schema from './schema';
