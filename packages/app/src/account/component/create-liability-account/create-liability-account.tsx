@@ -29,6 +29,8 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
+    console.log({defaultInstrument});
+
     const { control, handleSubmit, reset, instrument, prepareSubmitData } = useAccountForm({
         type,
         title: '',
@@ -37,6 +39,8 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         instrumentId: defaultInstrument.id,
         nature: AccountNatureEnum.LIABILITY
     });
+
+    console.log({instrument});
 
     if (!isDefined(instrument)) {
         return null;
@@ -56,7 +60,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         }
     };
 
-    const variant = ACCOUNT_COLOR[type]
+    const variant = ACCOUNT_COLOR[type];
 
     return (
         <FullPage
