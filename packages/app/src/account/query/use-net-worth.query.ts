@@ -6,7 +6,7 @@ import { useSettingsContext } from '../../settings/context/settings.context';
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
     const { data } = useLiveQuery(accountRepository.getNetWorth(defaultInstrument.id));
-    const { total } = data.at(0) ?? { total: 0 };
+    const { netWorth } = data.at(0) ?? { netWorth: 0 };
 
-    return total;
+    return netWorth;
 };
