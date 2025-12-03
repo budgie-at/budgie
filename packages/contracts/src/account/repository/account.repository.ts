@@ -3,6 +3,7 @@ import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { PRECISION } from '../../generic/constant/precision.constant';
 import { DB, TX } from '../../generic/type/db.type';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
@@ -11,7 +12,6 @@ import { AccountTypeEnum } from '../enum/account-type.enum';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 
 export class AccountRepository {
     constructor(private db: DB) {}
@@ -83,62 +83,38 @@ export class AccountRepository {
         return this.db
             .select({
                 netWorth: sql<number>`
-        COALESCE(
-          SUM(
-            (
-              ${AccountEntityTable.currentBalance} +
-              COALESCE(
-                (
-                  SELECT SUM(
-                    CASE
-                      WHEN ${TransactionEntryEntityTable.type} = '${TransactionEntryTypeEnum.DEBIT}'
-                      THEN ${TransactionEntryEntityTable.amount}
-                      WHEN ${TransactionEntryEntityTable.type} = '${TransactionEntryTypeEnum.CREDIT}'
-                      THEN -${TransactionEntryEntityTable.amount}
-                    END
-                  )
-                  FROM ${TransactionEntryEntityTable}
-                  WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id}
-                ),
-                0
-              )
-            ) *
-            CASE
-              WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId} THEN 1.0
-              ELSE COALESCE(
-                (
-                  SELECT
-                    CASE
-                      WHEN ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                      THEN CAST(${ExchangeRateEntityTable.rate} AS REAL) / ${PRECISION}
-                      ELSE ${PRECISION} / CAST(${ExchangeRateEntityTable.rate} AS REAL)
-                    END
-                  FROM ${ExchangeRateEntityTable}
-                  WHERE (
-                    (${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
-                     AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId})
-                    OR
-                    (${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                     AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${AccountEntityTable.instrumentId})
-                  )
-                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-                  LIMIT 1
-                ),
-                1.0
-              )
-            END
-          ) / ${PRECISION},
-          0
-        )
-      `.as('net_worth')
+                    COALESCE
+                    ( CAST(SUM(
+                        ${AccountEntityTable.currentBalance} *
+                        CASE
+                        WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId} THEN ${PRECISION}
+                        ELSE COALESCE (
+                        (
+                        SELECT ${ExchangeRateEntityTable.rate}
+                        FROM ${ExchangeRateEntityTable}
+                        WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
+                        AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
+                        AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                        ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                        LIMIT 1
+                        ),
+                        (
+                        SELECT CAST(${PRECISION} AS REAL) / ${ExchangeRateEntityTable.rate}
+                        FROM ${ExchangeRateEntityTable}
+                        WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
+                        AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${AccountEntityTable.instrumentId}
+                        AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                        ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                        LIMIT 1
+                        )
+                        )
+                        END
+                        ) / ${PRECISION} AS INTEGER),
+                        0)
+                `.as('net_worth')
             })
             .from(AccountEntityTable)
-            .where(
-                and(
-                    eq(AccountEntityTable.includeInNetWorth, true),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            );
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
     getNetWorthByAccountId(accountId: number) {
