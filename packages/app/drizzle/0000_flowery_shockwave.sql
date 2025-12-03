@@ -115,6 +115,7 @@ CREATE TABLE `transaction_entries` (
 	`transaction_id` integer NOT NULL,
 	`amount` integer NOT NULL
 );
+--> statement-breakpoint
 -- Seed common fiat currencies into instruments table
 INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 -- Major currencies
