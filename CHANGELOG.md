@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.68.0](https://github.com/budgie-at/budgie/compare/v1.67.0...v1.68.0) (2025-12-04)
+
+### Features
+
+- add keyboard provider ([87d2f70](https://github.com/budgie-at/budgie/commit/87d2f70d2aae1044936d54845a1a0cedba16f528))
+
 # [1.67.0](https://github.com/budgie-at/budgie/compare/v1.66.0...v1.67.0) (2025-12-01)
 
 ### Bug Fixes
