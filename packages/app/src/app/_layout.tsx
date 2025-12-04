@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-max-depth */
 import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
@@ -5,6 +6,7 @@ import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackC
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
@@ -32,7 +34,7 @@ const stackOptions = { headerShown: false };
 const tabsOptions = { headerShown: false };
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     headerShown: false,
-    presentation: 'modal',
+    presentation: 'modal'
 };
 
 export default function RootLayout() {
@@ -54,15 +56,17 @@ export default function RootLayout() {
         <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
             <SettingsProvider>
                 <I18nProvider>
-                    <ThemeProvider>
-                        <BottomSheetsProvider>
-                            <Stack screenOptions={stackOptions}>
-                                <Stack.Screen name="(tabs)" options={tabsOptions} />
+                    <KeyboardProvider>
+                        <ThemeProvider>
+                            <BottomSheetsProvider>
+                                <Stack screenOptions={stackOptions}>
+                                    <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                                <Stack.Screen name="ai" options={aiScreenOptions} />
-                            </Stack>
-                        </BottomSheetsProvider>
-                    </ThemeProvider>
+                                    <Stack.Screen name="ai" options={aiScreenOptions} />
+                                </Stack>
+                            </BottomSheetsProvider>
+                        </ThemeProvider>
+                    </KeyboardProvider>
                 </I18nProvider>
             </SettingsProvider>
         </SQLiteProvider>
