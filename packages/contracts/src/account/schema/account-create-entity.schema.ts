@@ -17,6 +17,5 @@ export const AccountCreateEntitySchema = AccountEntitySchema.pick({
     parentId: true,
     externalId: true,
     externalSource: true,
-    currentBalance: true,
     includeInNetWorth: true
 });
