@@ -6,8 +6,12 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 export const TransactionTagsEntityTable = sqliteTable(
     'transaction_tags',
     {
-        transactionId: int('transaction_id', { mode: 'number' }).references(() => TransactionEntityTable.id).notNull(),
-        tagId: int('tag_id', { mode: 'number' }).references(() => TagEntityTable.id).notNull()
+        transactionId: int('transaction_id', { mode: 'number' })
+            .references(() => TransactionEntityTable.id, { onDelete: 'cascade' })
+            .notNull(),
+        tagId: int('tag_id', { mode: 'number' })
+            .references(() => TagEntityTable.id, { onDelete: 'cascade' })
+            .notNull()
     },
     ({ transactionId, tagId }) => [primaryKey({ columns: [transactionId, tagId] })]
 );
