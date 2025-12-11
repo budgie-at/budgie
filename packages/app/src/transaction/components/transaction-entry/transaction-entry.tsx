@@ -6,6 +6,7 @@ import { AmountInput } from '../../../@generic/components/amount-input/amount-in
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { ZERO_AMOUNT } from '../../../@generic/constant/zero-amount.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
@@ -44,7 +45,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove }: Props) =
                 value={value}
                 status={status}
                 onChangeValue={onChange}
-                placeholder={formatMoney(0)}
+                placeholder={formatMoney(ZERO_AMOUNT)}
                 inputClassName="text-sm/1 h-full flex-1 text-primary placeholder:text-secondary-foreground rounded-5xl px-lg"
             />
         );

@@ -7,4 +7,5 @@ export const TRANSACTION_TYPE: Record<TransactionTypeEnum, MessageDescriptor> = 
     [TransactionTypeEnum.INCOME]: msg`Income`,
     [TransactionTypeEnum.DEBT]: msg`Debt`,
     [TransactionTypeEnum.EXPENSE]: msg`Expense`,
+    [TransactionTypeEnum.ADJUSTMENT]: msg`Adjustment`,
 };

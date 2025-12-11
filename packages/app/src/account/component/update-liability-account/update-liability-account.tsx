@@ -13,6 +13,7 @@ import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
+import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
@@ -26,9 +27,10 @@ interface Props {
 export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { t } = useLingui();
 
+    const { balance } = useAccountBalanceQuery(account.id);
     const { control, handleSubmit, reset, instrument, prepareSubmitData } = useAccountForm({
         ...account,
-        currentBalance: convertFromMicroUnits(account.currentBalance)
+        currentBalance: convertFromMicroUnits(balance)
     });
 
     const handleUpdate = async (values: AccountCreateEntityInterface) => {
@@ -59,7 +61,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         }
     };
 
-    const variant = ACCOUNT_COLOR[account.type]
+    const variant = ACCOUNT_COLOR[account.type];
 
     if (!isDefined(instrument)) {
         return null;

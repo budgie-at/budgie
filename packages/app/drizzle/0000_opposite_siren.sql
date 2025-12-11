@@ -23,7 +23,8 @@ CREATE TABLE `accounts` (
 	`current_balance` integer DEFAULT 0 NOT NULL,
 	`external_id` text,
 	`external_source` text,
-	`include_in_net_worth` integer DEFAULT true NOT NULL
+	`include_in_net_worth` integer DEFAULT true NOT NULL,
+	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `categories` (
@@ -99,8 +100,8 @@ CREATE TABLE `transactions` (
 	`from_account_id` integer,
 	`exchange_rate` real NOT NULL,
 	`external_source` text,
-	FOREIGN KEY (`to_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`from_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`to_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`from_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE TABLE `transaction_entries` (
@@ -113,7 +114,19 @@ CREATE TABLE `transaction_entries` (
 	`category_id` integer,
 	`instrument_id` integer NOT NULL,
 	`transaction_id` integer NOT NULL,
-	`amount` integer NOT NULL
+	`amount` integer NOT NULL,
+	FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`transaction_id`) REFERENCES `transactions`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
+CREATE TABLE `transaction_tags` (
+	`transaction_id` integer NOT NULL,
+	`tag_id` integer NOT NULL,
+	PRIMARY KEY(`transaction_id`, `tag_id`),
+	FOREIGN KEY (`transaction_id`) REFERENCES `transactions`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 -- Seed common fiat currencies into instruments table

@@ -1,6 +1,6 @@
 import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
+import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { ScrollView } from 'react-native';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
@@ -8,6 +8,7 @@ import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TagsSelector } from '../../../tag/components/tags-selector/tags-selector';
 import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
@@ -29,6 +30,10 @@ interface Props {
 export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
+
+    const accountId = useWatch({ control, name: accountFieldName });
+    const { account } = useGetAccountByIdQuery(accountId ?? 0);
+    const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleAccountChange = (accountId: number) => {
         setValue(accountFieldName, accountId);
@@ -76,12 +81,7 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
             description={t`Select Category`}
         >
             <ScrollView contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                <TransactionFormAmount
-                    setValue={setValue}
-                    instrumentSymbol={defaultInstrument.symbol}
-                    control={control}
-                    variant={variant}
-                />
+                <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} />
 
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name={accountFieldName} control={control} />

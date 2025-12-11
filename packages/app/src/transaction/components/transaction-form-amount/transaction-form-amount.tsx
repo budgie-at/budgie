@@ -18,10 +18,10 @@ export const TransactionFormAmount = ({ variant, setValue, control, instrumentSy
     const entries = useWatch({ control, name: 'entries' });
 
     const handleAmountChange = (amount: number) => {
-        setValue('amount', amount);
+        setValue('amount', amount, { shouldValidate: true });
 
         if (entries.length === 1) {
-            setValue('entries.0.amount', amount)
+            setValue('entries.0.amount', amount, { shouldValidate: true });
         }
     };
 

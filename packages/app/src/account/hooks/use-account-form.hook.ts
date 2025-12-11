@@ -21,7 +21,7 @@ export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
 
     const prepareSubmitData = (values: AccountCreateEntityInterface) => ({
         ...values,
-        currentBalance: convertToMicroUnits(values.currentBalance)
+        currentBalance: Number(convertToMicroUnits(values.currentBalance))
     });
 
     return {

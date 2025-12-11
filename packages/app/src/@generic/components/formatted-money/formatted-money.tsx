@@ -1,4 +1,4 @@
-import { CurrencyEnum } from '@budgie/contracts';
+import { CurrencyEnum, MicroUnitType } from '@budgie/contracts';
 import * as React from 'react';
 import { ComponentProps } from 'react';
 
@@ -7,7 +7,7 @@ import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
 
 interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
-    readonly children: number;
+    readonly children: MicroUnitType;
     readonly className?: string;
     readonly decimalPlaces: number;
     readonly textClassName?: string;

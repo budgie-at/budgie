@@ -10,6 +10,7 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../query/use-get-account-by-id.query';
 import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
 
@@ -24,12 +25,13 @@ interface Props {
 
 export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, variant, className, status }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
     const { t } = useLingui();
 
     const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
+    const { balance } = useAccountBalanceQuery(accountId ?? 0);
+    const formatMoney = useFormatMoney(decimalPlaces, selectedAccount?.instrument.code ?? defaultCurrency);
 
-    const currentBalance = isDefined(selectedAccount) ? formatMoney(selectedAccount.currentBalance) : '';
+    const currentBalance = isDefined(selectedAccount) ? formatMoney(balance) : '';
     const icon = selectedAccount?.icon ?? 'Wallet';
 
     const subtitle = isDefined(selectedAccount) ? (

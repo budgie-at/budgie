@@ -1,11 +1,13 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, PRECISION } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { cn } from '../../utils/cn.util';
@@ -20,16 +22,24 @@ interface Props {
 }
 
 export const CurrencySelector = ({ instrumentId, onChange, className }: Props) => {
+    const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
+
     const ref = useRef<BottomSheetInterface>(null);
 
     const selectedCurrency = instruments.find(({ id }) => id === instrumentId);
+
+    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
 
     const handleOpen = () => void ref.current?.open();
 
     if (!isDefined(selectedCurrency)) {
         return null;
     }
+
+    const selectedCurrencyCode = selectedCurrency.code;
+    const defaultInstrumentCode = defaultInstrument.code;
 
     return (
         <>
@@ -46,8 +56,15 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
                         {selectedCurrency.name}
                         <Text> {selectedCurrency.code}</Text>
                     </Text>
+
                     <Text className="text-sm text-secondary-foreground">
-                        <Trans>Base currency</Trans>
+                        {isDefined(rate) ? (
+                            <Trans>
+                                1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}
+                            </Trans>
+                        ) : (
+                            <Trans>Base currency</Trans>
+                        )}
                     </Text>
                 </View>
 

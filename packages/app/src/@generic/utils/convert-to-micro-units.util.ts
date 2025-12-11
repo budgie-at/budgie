@@ -1,3 +1,3 @@
-import { PRECISION } from '@budgie/contracts';
+import { MicroUnitType, PRECISION } from '@budgie/contracts';
 
-export const convertToMicroUnits = (normalized: number) => normalized * PRECISION;
+export const convertToMicroUnits = (value: number): MicroUnitType => BigInt(Math.round(value * PRECISION));
