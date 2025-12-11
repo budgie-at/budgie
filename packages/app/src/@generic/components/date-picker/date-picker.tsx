@@ -5,18 +5,14 @@ import { isDefined } from '@rnw-community/shared';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { Icon } from '../icon/icon';
+import { DatePickerRangeProps, DatePickerSingleProps } from 'react-native-ui-datepicker/lib/typescript/datetime-picker';
 
 const components: CalendarComponents = {
     IconNext: <Icon icon={ICONS.ChevronRight} className="text-primary" size={24} />,
     IconPrev: <Icon icon={ICONS.ChevronLeft} className="text-primary" size={24} />
 };
 
-interface Props {
-    readonly date: Date;
-    readonly onChange: (date: Date) => void;
-}
-
-export const DatePicker = ({ date, onChange }: Props) => {
+export const DatePicker = ({ date, onChange, mode, startDate, endDate }: DatePickerSingleProps | DatePickerRangeProps) => {
     const { settings } = useSettingsContext();
     const defaultClassNames = useDefaultClassNames();
 
@@ -44,9 +40,14 @@ export const DatePicker = ({ date, onChange }: Props) => {
         year_selector_label: 'text-secondary-foreground text-sm font-medium',
         month_selector_label: 'text-primary text-lg font-semibold',
         day_label: 'text-primary',
-        day_cell: 'bg-primary-reverse rounded-full overflow-hidden',
+        // day_cell: 'bg-primary-reverse rounded-full overflow-hidden',
+        day_cell: 'bg-primary-reverse overflow-hidden',
         selected: 'bg-primary',
         selected_label: 'text-primary-reverse',
+        range_middle: 'bg-secondary-corner',
+        range_middle_label: 'text-primary',
+        range_start: 'rounded-l-full',
+        range_end: 'rounded-r-full',
         weekday: 'bg-primary-reverse',
         weekday_label: 'text-xs text-secondary-foreground font-semibold'
     };
@@ -57,9 +58,11 @@ export const DatePicker = ({ date, onChange }: Props) => {
             classNames={classNames}
             locale={settings.locale}
             date={date}
+            startDate={startDate}
+            endDate={endDate}
             components={components}
-            onChange={handleDateChange}
-            mode="single"
+            onChange={onChange}
+            mode={mode}
         />
     );
 };

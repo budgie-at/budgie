@@ -6,6 +6,8 @@ export { LanguageEnum } from './generic/enum/language.enum';
 export { DatePeriodEnum } from './generic/enum/date-period.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
+export type { DateFilterInterface } from './generic/interface/date-filter.interface';
+
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
 

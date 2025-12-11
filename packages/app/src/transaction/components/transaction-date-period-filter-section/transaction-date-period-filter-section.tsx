@@ -6,7 +6,7 @@ import { TransactionFilterSectionHeader } from '../transaction-filter-section-he
 import { TransactionPeriodFilterItem } from '../transaction-pediod-filter-item/transaction-period-filter-item';
 
 interface Props {
-    readonly selectedPeriod: DatePeriodEnum;
+    readonly selectedPeriod: DatePeriodEnum | null;
     readonly onPeriodChange: (period: DatePeriodEnum) => void;
 }
 

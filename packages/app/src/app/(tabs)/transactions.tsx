@@ -14,7 +14,7 @@ export default function TransactionsPage() {
 
             <Separator />
 
-            <View className='mt-5xl'>
+            <View className="mt-5xl">
                 <TransactionList accountId={null} />
             </View>
         </Page>

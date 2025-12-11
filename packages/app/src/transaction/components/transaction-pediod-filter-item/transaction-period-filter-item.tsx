@@ -7,7 +7,7 @@ import { TransactionFilterCard } from '../transaction-filter-card/transaction-fi
 
 interface Props {
     readonly period: DatePeriodEnum;
-    readonly selectedPeriod: DatePeriodEnum;
+    readonly selectedPeriod: DatePeriodEnum | null;
     readonly onPeriodChange: (period: DatePeriodEnum) => void;
 }
 

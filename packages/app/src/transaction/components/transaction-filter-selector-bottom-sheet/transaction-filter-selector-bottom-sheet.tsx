@@ -21,7 +21,7 @@ interface Props {
 export const TransactionFilterSelectorBottomSheet = ({ ref, selectedFilters, onFiltersChange }: Props) => {
     const { t } = useLingui();
 
-    const { localFilters, handleTypeChange, handlePeriodChange, handleCancel, handleApply } = useTransactionFilters(
+    const { localFilters, handleTypeChange, handlePeriodChange, handleCancel, handleApply, selectedPeriod } = useTransactionFilters(
         selectedFilters,
         onFiltersChange,
         ref
@@ -45,7 +45,7 @@ export const TransactionFilterSelectorBottomSheet = ({ ref, selectedFilters, onF
 
                     <View className="h-[1px] bg-secondary-background my-7xl" />
 
-                    <TransactionDatePeriodFilterSection selectedPeriod={localFilters.period} onPeriodChange={handlePeriodChange} />
+                    <TransactionDatePeriodFilterSection selectedPeriod={selectedPeriod} onPeriodChange={handlePeriodChange} />
                 </View>
 
                 <TransactionFilterActions onCancel={handleCancel} onApply={handleApply} />
