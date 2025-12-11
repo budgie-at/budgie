@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
@@ -12,11 +12,11 @@ export class ExchangeRateRepository {
         return this.db.query.ExchangeRateEntityTable.findMany();
     }
 
-    findByBaseAndQuoteIds(baseInstrumentId: number, quoteInstrumentIds: number[]) {
-        return this.db.query.ExchangeRateEntityTable.findMany({
+    findByBaseAndQuoteIds(baseInstrumentId: number, quoteInstrumentId: number) {
+        return this.db.query.ExchangeRateEntityTable.findFirst({
             where: and(
                 eq(ExchangeRateEntityTable.baseInstrumentId, baseInstrumentId),
-                inArray(ExchangeRateEntityTable.quoteInstrumentId, quoteInstrumentIds)
+                eq(ExchangeRateEntityTable.quoteInstrumentId, quoteInstrumentId)
             )
         });
     }

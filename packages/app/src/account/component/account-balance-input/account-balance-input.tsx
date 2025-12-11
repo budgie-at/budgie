@@ -17,7 +17,7 @@ export const AccountBalanceInput = ({ value, onChange, textClassName }: Props) =
         <AmountInput
             value={value}
             onChangeValue={onChange}
-            inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground', textClassName)}
+            inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground border-0 h-full', textClassName)}
             placeholder={format('0.00')}
         />
     )
