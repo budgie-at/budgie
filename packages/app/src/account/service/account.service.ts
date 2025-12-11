@@ -61,7 +61,7 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
-        const latest = await accountBalanceRepository.getLatestSnapshots([accountId]);
+        const latest = await accountBalanceRepository.getAccountBalanceSnapshots([accountId]);
         const lastBalance = latest[0]?.amount ?? 0;
         const target = convertToMicroUnits(targetBalance);
         const delta = target - lastBalance;
@@ -103,7 +103,7 @@ class AccountService {
             tx
         );
 
-        await accountBalanceRepository.insertSnapshots([{ accountId, amount: absDelta, parentAccountId: accountId }], tx);
+        await accountBalanceRepository.insertSnapshots([{ accountId, amount: absDelta }], tx);
     }
 }
 
