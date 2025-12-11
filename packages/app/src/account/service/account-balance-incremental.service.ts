@@ -1,4 +1,9 @@
-import { AccountBalanceEntityInterface, TransactionEntryEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    AccountBalanceEntityInterface,
+    AccountEntityInterface,
+    TransactionEntryEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -18,7 +23,7 @@ class AccountBalanceIncrementalService {
         const accountIds = accounts.map(({ id }) => id);
 
         const [latestSnapshots, newEntries] = await Promise.all([
-            accountBalanceRepository.getLatestSnapshots(accountIds),
+            accountBalanceRepository.getAccountBalanceSnapshots(accountIds),
             accountBalanceRepository.getNewTransactionEntries(accountIds)
         ]);
 
@@ -60,15 +65,14 @@ class AccountBalanceIncrementalService {
         }, new Map<number, number>());
     }
 
-    private buildNewSnapshots(accounts: Array<{ id: number }>, snapshotMap: Map<number, number>, deltaMap: Map<number, number>) {
+    private buildNewSnapshots(accounts: AccountEntityInterface[], snapshotMap: Map<number, number>, deltaMap: Map<number, number>) {
         return accounts.map(account => {
             const base = snapshotMap.get(account.id) ?? 0;
             const delta = deltaMap.get(account.id) ?? 0;
 
             return {
                 amount: base + delta,
-                accountId: account.id,
-                parentAccountId: account.id,
+                accountId: account.id
             };
         });
     }
