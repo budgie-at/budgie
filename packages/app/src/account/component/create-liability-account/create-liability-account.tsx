@@ -29,7 +29,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
-    const { control, handleSubmit, reset, instrument, prepareSubmitData } = useAccountForm({
+    const { control, handleSubmit, reset, instrument } = useAccountForm({
         type,
         title: '',
         currentBalance: 0,
@@ -44,7 +44,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     const handleCreate = async (values: AccountCreateEntityInterface) => {
         try {
-            await accountService.create(prepareSubmitData(values));
+            await accountService.create(values);
 
             void router.dismissAll();
         } catch {
