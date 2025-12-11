@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
@@ -57,22 +58,24 @@ export default function RootLayout() {
     }
 
     return (
-        <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-            <SettingsProvider>
-                <I18nProvider>
-                    <KeyboardProvider>
-                        <ThemeProvider>
-                            <BottomSheetsProvider>
-                                <Stack screenOptions={stackOptions}>
-                                    <Stack.Screen name="(tabs)" options={tabsOptions} />
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+            <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+                <SettingsProvider>
+                    <I18nProvider>
+                        <KeyboardProvider>
+                            <ThemeProvider>
+                                <BottomSheetsProvider>
+                                    <Stack screenOptions={stackOptions}>
+                                        <Stack.Screen name="(tabs)" options={tabsOptions} />
 
-                                    <Stack.Screen name="ai" options={aiScreenOptions} />
-                                </Stack>
-                            </BottomSheetsProvider>
-                        </ThemeProvider>
-                    </KeyboardProvider>
-                </I18nProvider>
-            </SettingsProvider>
-        </SQLiteProvider>
+                                        <Stack.Screen name="ai" options={aiScreenOptions} />
+                                    </Stack>
+                                </BottomSheetsProvider>
+                            </ThemeProvider>
+                        </KeyboardProvider>
+                    </I18nProvider>
+                </SettingsProvider>
+            </SQLiteProvider>
+        </SafeAreaProvider>
     );
 }
