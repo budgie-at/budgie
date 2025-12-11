@@ -8,5 +8,5 @@ export const TRANSACTION_ICON: Record<TransactionTypeEnum, IconName> = {
     [TransactionTypeEnum.INCOME]: 'TrendingUp',
     [TransactionTypeEnum.DEBT]: 'CreditCard',
     [TransactionTypeEnum.EXPENSE]: 'TrendingDown',
-    [TransactionTypeEnum.ADJUSTMENT]: 'Coins',
+    [TransactionTypeEnum.ADJUSTMENT]: 'BadgePlus'
 };
