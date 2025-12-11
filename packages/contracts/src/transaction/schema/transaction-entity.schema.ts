@@ -20,12 +20,4 @@ export const TransactionEntitySchema = createSelectSchema(TransactionEntityTable
     externalSource: zodEnum(ExternalSourceEnum).nullable().describe('The external source of the transaction.'),
     toAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is sent to.'),
     fromAccountId: schema => schema.positive().nullable().describe('The id of the account the transaction is received from.')
-}).superRefine(({ amount }, context) => {
-    if (amount === 0) {
-        context.addIssue({
-            code: 'custom',
-            path: ['amount'],
-            message: 'Amount must not be equal to 0.'
-        });
-    }
 });

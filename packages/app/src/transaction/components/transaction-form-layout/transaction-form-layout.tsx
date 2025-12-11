@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -44,15 +45,13 @@ export const TransactionFormLayout = ({ title, description, icon, variant, butto
                 />
             }
             footer={
-                <View className="border-t border-t-secondary-corner pt-5xl px-5xl">
-                    <SafeAreaView edges={safeEdges}>
-                        <Button
-                            onPress={onSubmit}
-                            variant={variant}
-                            content={buttonText}
-                        />
-                    </SafeAreaView>
-                </View>
+                <KeyboardStickyView>
+                    <View className="border-t border-t-secondary-corner pt-5xl px-5xl bg-primary-reverse">
+                        <SafeAreaView edges={safeEdges}>
+                            <Button onPress={onSubmit} variant={variant} content={buttonText} />
+                        </SafeAreaView>
+                    </View>
+                </KeyboardStickyView>
             }
         >
             {children}

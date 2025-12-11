@@ -25,14 +25,15 @@ const Modal = styled(BottomSheetModal, {
 });
 
 export const BottomSheet = (props: PropsWithChildren<Props>) => {
-    const { ref, index, children, className, snapPoints, handleClassName, enableDynamicSizing = false, footerComponent, ...rest } = props;
+    const { ref, index, children, className, snapPoints, handleClassName, footerComponent, enableDynamicSizing = false, ...rest } = props;
     const modalRef = useRef<BottomSheetModal | null>(null);
     const { top } = useSafeAreaInsets();
 
-    const open = () => void modalRef.current?.present();
     const close = () => void modalRef.current?.close();
+    const open = () => void modalRef.current?.present();
+    const dismiss = () => void modalRef.current?.dismiss();
 
-    useImperativeHandle(ref, (): BottomSheetInterface => ({ open, close }));
+    useImperativeHandle(ref, (): BottomSheetInterface => ({ open, close, dismiss }));
 
     return (
         <Modal
@@ -45,6 +46,7 @@ export const BottomSheet = (props: PropsWithChildren<Props>) => {
             enableContentPanningGesture={false}
             footerComponent={footerComponent}
             snapPoints={snapPoints}
+            stackBehavior='switch'
             enablePanDownToClose
             ref={modalRef}
             topInset={top}

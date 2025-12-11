@@ -34,8 +34,8 @@ export const CategorySelectorBottomSheet = ({ ref, selectedCategory, variant, on
     const { t } = useLingui();
 
     const handleSelect = (categoryId: number) => {
+        void ref.current?.dismiss();
         onSelect(categoryId);
-        ref.current?.close();
     };
 
     const data = isNotEmptyArray(categories) ? padFlatListData(categories) : [];
