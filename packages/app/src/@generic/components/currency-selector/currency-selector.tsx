@@ -30,16 +30,16 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
 
     const selectedCurrency = instruments.find(({ id }) => id === instrumentId);
 
-    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
-
-    const handleOpen = () => void ref.current?.open();
-
     if (!isDefined(selectedCurrency)) {
         return null;
     }
 
-    const selectedCurrencyCode = selectedCurrency.code;
-    const defaultInstrumentCode = defaultInstrument.code;
+    const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
+    const { code: defaultInstrumentCode } = defaultInstrument;
+    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
+    const isBaseCurrency = !isDefined(rate);
+
+    const handleOpen = () => ref.current?.open();
 
     return (
         <>
@@ -48,22 +48,21 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
                 onPress={handleOpen}
             >
                 <View className="rounded-5xl bg-secondary-background p-lg w-[48px] h-[48px] items-center justify-center">
-                    <Text className="text-primary text-4xl">{selectedCurrency.symbol}</Text>
+                    <Text className="text-primary text-4xl">{symbol}</Text>
                 </View>
 
                 <View className="gap-y-xs flex-1">
                     <Text className="text-primary font-medium text-sm">
-                        {selectedCurrency.name}
-                        <Text> {selectedCurrency.code}</Text>
+                        {name} <Text className="text-primary">{selectedCurrencyCode}</Text>
                     </Text>
 
                     <Text className="text-sm text-secondary-foreground">
-                        {isDefined(rate) ? (
+                        {isBaseCurrency ? (
+                            <Trans>Base currency</Trans>
+                        ) : (
                             <Trans>
                                 1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}
                             </Trans>
-                        ) : (
-                            <Trans>Base currency</Trans>
                         )}
                     </Text>
                 </View>
