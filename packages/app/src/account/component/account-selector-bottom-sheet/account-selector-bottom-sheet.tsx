@@ -30,8 +30,8 @@ export const AccountSelectorBottomSheet = ({ ref, selectedAccount, excludeAccoun
     const { t } = useLingui();
 
     const handleSelect = (accountId: number) => {
+        void ref.current?.dismiss();
         onSelect(accountId);
-        ref.current?.close();
     };
 
     const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (

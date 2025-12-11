@@ -1,7 +1,7 @@
 import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
-import { ScrollView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
@@ -80,7 +80,7 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
             buttonText={buttonText}
             description={t`Select Category`}
         >
-            <ScrollView contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
                 <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} />
 
                 <FormLayoutGroup>
@@ -94,7 +94,7 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
                         <Controller render={renderTagsSelector} name="tagIds" control={control} />
                     </FormLayoutGroup>
                 </FormLayoutGroup>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         </TransactionFormLayout>
     );
 };
