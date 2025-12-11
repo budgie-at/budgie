@@ -21,7 +21,7 @@ class TransactionService {
                     toAccountId: input.toAccountId,
                     exchangeRate: input.exchangeRate,
                     fromAccountId: input.fromAccountId,
-                    amount: Number(convertToMicroUnits(input.amount))
+                    amount: convertToMicroUnits(input.amount)
                 },
                 tx
             );
@@ -29,7 +29,7 @@ class TransactionService {
             await Promise.all(
                 input.entries.map(async entry =>
                     transactionEntryRepository.create(
-                        { ...entry, amount: Number(convertToMicroUnits(entry.amount)), transactionId: transaction.id },
+                        { ...entry, amount: convertToMicroUnits(entry.amount), transactionId: transaction.id },
                         tx
                     )
                 )

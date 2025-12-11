@@ -6,9 +6,8 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isDefined, isNumber } from '@rnw-community/shared';
+import { isNumber, isPositiveNumber } from '@rnw-community/shared';
 
-import { ZERO_AMOUNT } from '../../@generic/constant/zero-amount.constant';
 import {
     accountBalanceRepository,
     accountRepository,
@@ -20,38 +19,41 @@ import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 class AccountService {
-    async create({ currentBalance, ...input }: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
+    async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
             const account = await accountRepository.create(
                 {
                     ...input,
-                    currentBalance: Number(convertToMicroUnits(currentBalance))
+                    currentBalance: convertToMicroUnits(input.currentBalance)
                 },
                 tx
             );
 
-            if (isNumber(currentBalance) && currentBalance !== 0) {
-                await this.adjustBalanceTo(account.id, account.instrumentId, currentBalance, tx);
+            if (input.currentBalance !== 0) {
+                await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
             }
 
             return account;
         });
     }
 
-    async updateById(id: number, { currentBalance, ...input }: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const [{ balance }] = await accountRepository.getAccountBalance(id);
+            const [{ balance: currentBalanceMicro }] = await accountRepository.getAccountBalance(id);
+
             const account = await accountRepository.updateById(
                 id,
                 {
                     ...input,
-                    ...(isDefined(currentBalance) ? { currentBalance: Number(convertToMicroUnits(currentBalance)) } : {})
+                    ...(isNumber(input.currentBalance) && {
+                        currentBalance: convertToMicroUnits(input.currentBalance)
+                    })
                 },
                 tx
             );
 
-            if (isNumber(currentBalance) && convertToMicroUnits(currentBalance) !== balance) {
-                await this.adjustBalanceTo(account.id, account.instrumentId, currentBalance, tx);
+            if (isNumber(input.currentBalance) && convertToMicroUnits(input.currentBalance) !== currentBalanceMicro) {
+                await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
             }
 
             return account;
@@ -59,33 +61,32 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
-        const [latestSnapshot] = await accountBalanceRepository.getLatestSnapshots([accountId]);
-        const lastBalance = isDefined(latestSnapshot) ? BigInt(latestSnapshot.amount) : ZERO_AMOUNT;
-        const targetInSmallestUnits = convertToMicroUnits(targetBalance);
+        const latest = await accountBalanceRepository.getLatestSnapshots([accountId]);
+        const lastBalance = latest[0]?.amount ?? 0;
+        const target = convertToMicroUnits(targetBalance);
+        const delta = target - lastBalance;
+        const absDelta = Math.abs(delta);
 
-        const delta = targetInSmallestUnits - lastBalance;
-
-        if (delta === ZERO_AMOUNT) {
+        if (delta === 0) {
             return;
         }
 
-        const isDebit = delta > ZERO_AMOUNT;
-        const absDelta = Math.abs(Number(delta));
+        const isDebit = isPositiveNumber(delta);
 
         const transaction = await transactionRepository.create(
             {
                 type: TransactionTypeEnum.ADJUSTMENT,
                 title: '',
-                tagIds: [],
-                entries: [],
                 comment: '',
-                exchangeRate: 1,
                 externalId: null,
-                amount: absDelta,
                 externalSource: null,
                 operatedAt: new Date(),
-                toAccountId: isDebit ? accountId : null,
-                fromAccountId: isDebit ? null : accountId
+                amount: absDelta,
+                exchangeRate: 1,
+                tagIds: [],
+                entries: [],
+                fromAccountId: isDebit ? null : accountId,
+                toAccountId: isDebit ? accountId : null
             },
             tx
         );
@@ -94,24 +95,15 @@ class AccountService {
             {
                 accountId,
                 instrumentId,
+                transactionId: transaction.id,
                 categoryId: null,
                 amount: absDelta,
-                transactionId: transaction.id,
                 type: isDebit ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
             },
             tx
         );
 
-        await accountBalanceRepository.insertSnapshots(
-            [
-                {
-                    accountId,
-                    amount: absDelta,
-                    parentAccountId: accountId
-                }
-            ],
-            tx
-        );
+        await accountBalanceRepository.insertSnapshots([{ accountId, amount: absDelta, parentAccountId: accountId }], tx);
     }
 }
 
