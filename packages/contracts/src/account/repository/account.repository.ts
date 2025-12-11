@@ -1,8 +1,11 @@
 import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
+import { AccountBalanceEntityTable } from '../../account-balance/table/account-balance-entity.table';
+import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { PRECISION } from '../../generic/constant/precision.constant';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -85,121 +88,120 @@ export class AccountRepository {
         return this.db
             .select({
                 netWorth: sql<bigint>`
-                COALESCE(
-                    CAST(
-                        SUM(
-                            COALESCE(
-                                (
-                                    SELECT "amount"
-                                    FROM "account_balances"
-                                    WHERE "account_id" = "accounts"."id"
-                                    ORDER BY "createdAt" DESC
-                                    LIMIT 1
-                                ),
-                                "accounts"."current_balance"
-                            )
-                            +
-                            COALESCE(
-                                (
-                                    SELECT SUM(
-                                        CASE
-                                            WHEN "type" = ${TransactionEntryTypeEnum.DEBIT}  THEN "amount"
-                                            WHEN "type" = ${TransactionEntryTypeEnum.CREDIT} THEN -"amount"
-                                            ELSE 0
-                                        END
-                                    )
-                                    FROM "transaction_entries"
-                                    WHERE "transaction_entries"."account_id" = "accounts"."id"
-                                      AND "transaction_entries"."deletedAt" IS NULL
-                                      AND "transaction_entries"."createdAt" > (
-                                        SELECT COALESCE(MAX("createdAt"), '1970-01-01')
-                                        FROM "account_balances"
-                                        WHERE "account_id" = "accounts"."id"
-                                      )
-                                ),
-                                0
-                            )
-                            *
-                            COALESCE(
-                                (
-                                    SELECT "rate" * 1.0 / ${PRECISION}
-                                    FROM "exchange_rates"
-                                    WHERE "base_instrument_id"  = "accounts"."instrument_id"
-                                      AND "quote_instrument_id" = ${defaultInstrumentId}
-                                      AND "deletedAt" IS NULL
-                                    ORDER BY "createdAt" DESC
-                                    LIMIT 1
-                                ),
-                                (
-                                    SELECT ${PRECISION} * 1.0 / "rate"
-                                    FROM "exchange_rates"
-                                    WHERE "base_instrument_id"  = ${defaultInstrumentId}
-                                      AND "quote_instrument_id" = "accounts"."instrument_id"
-                                      AND "deletedAt" IS NULL
-                                    ORDER BY "createdAt" DESC
-                                    LIMIT 1
-                                ),
-                                1.0
-                            )
-                        ) AS BIGINT
-                    ),
-                    0
-                )
-            `
-            })
-            .from(AccountEntityTable)
-            .where(sql`"include_in_net_worth" = 1 AND "deletedAt" IS NULL`);
+        COALESCE(
+          CAST(
+            SUM(
+              COALESCE(
+                (
+                  SELECT ${AccountBalanceEntityTable.amount}
+                  FROM ${AccountBalanceEntityTable}
+                  WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+                  ORDER BY ${AccountBalanceEntityTable.createdAt} DESC
+                  LIMIT 1
+                ),
+                accounts.current_balance
+              )
+              +
+              COALESCE(
+                (
+                  SELECT SUM(
+                    CASE
+                      WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                        THEN ${TransactionEntryEntityTable.amount}
+                      WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                        THEN -${TransactionEntryEntityTable.amount}
+                      ELSE 0
+                    END
+                  )
+                  FROM ${TransactionEntryEntityTable}
+                  WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
+                    AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                    AND ${TransactionEntryEntityTable.createdAt} > (
+                      SELECT COALESCE(MAX(${AccountBalanceEntityTable.createdAt}), '1970-01-01')
+                      FROM ${AccountBalanceEntityTable}
+                      WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+                    )
+                ),
+                0
+              )
+              *
+              COALESCE(
+                (
+                  SELECT ${ExchangeRateEntityTable.rate} * 1.0 / ${PRECISION}
+                  FROM ${ExchangeRateEntityTable}
+                  WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
+                    AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
+                    AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                  ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                  LIMIT 1
+                ),
+                (
+                  SELECT ${PRECISION} * 1.0 / ${ExchangeRateEntityTable.rate}
+                  FROM ${ExchangeRateEntityTable}
+                  WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
+                    AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
+                    AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                  ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                  LIMIT 1
+                ),
+                1.0
+              )
+            ) AS BIGINT
+          ),
+          0
+        )
+      `
+        })
+        .from(AccountEntityTable)
+        .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
-    getAccountBalance(accountId: number) {
-        return this.db
-            .select({
-                balance: sql<bigint>`
+    getAccountBalance(accountId: number) {return this.db
+        .select({
+            balance: sql<bigint>`
                 COALESCE(
-                    COALESCE(
-                        (
-                            SELECT "amount"
-                            FROM "account_balances"
-                            WHERE "account_id" = ${accountId}
-                            ORDER BY "createdAt" DESC
-                            LIMIT 1
-                        ),
-                        "accounts"."current_balance"
-                    )
-                    +
-                    COALESCE(
-                        (
-                            SELECT SUM(
-                                CASE
-                                    WHEN "type" = ${TransactionEntryTypeEnum.DEBIT}  THEN "amount"
-                                    WHEN "type" = ${TransactionEntryTypeEnum.CREDIT} THEN -"amount"
+                    CAST(
+                        COALESCE(
+                            (
+                                SELECT ${AccountBalanceEntityTable.amount}
+                                FROM ${AccountBalanceEntityTable}
+                                WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+                                ORDER BY ${AccountBalanceEntityTable.createdAt} DESC
+                                LIMIT 1
+                            ),
+                            accounts.current_balance
+                        )
+                        +
+                        COALESCE(
+                            (
+                                SELECT SUM(
+                                    CASE
+                                    WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                                    THEN ${TransactionEntryEntityTable.amount}
+                                    WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                                    THEN -${TransactionEntryEntityTable.amount}
                                     ELSE 0
-                                END
-                            )
-                            FROM "transaction_entries"
-                            WHERE "transaction_entries"."account_id" = ${accountId}
-                              AND "transaction_entries"."deletedAt" IS NULL
-
-                              AND "transaction_entries"."createdAt" > (
-                                SELECT COALESCE(MAX("createdAt"), '1970-01-01')
-                                FROM "account_balances"
-                                WHERE "account_id" = ${accountId}
-                              )
-                        ),
-                        0
+                                    END
+                                )
+                                FROM ${TransactionEntryEntityTable}
+                                WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
+                                AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                                AND ${TransactionEntryEntityTable.createdAt} > (
+                                    SELECT COALESCE(MAX(${AccountBalanceEntityTable.createdAt}), '1970-01-01')
+                                    FROM ${AccountBalanceEntityTable}
+                                    WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+                                )
+                            ),
+                            0
+                        )
+                        AS BIGINT
                     ),
                     0
                 )
             `
-            })
-            .from(AccountEntityTable)
-            .where(
-                and(
-                    eq(AccountEntityTable.id, accountId),
-                    eq(AccountEntityTable.includeInNetWorth, true),
-                    isNull(AccountEntityTable.deletedAt)
-                )
-            )
-            .limit(1);
+        })
+        .from(AccountEntityTable)
+        .where(and(eq(AccountEntityTable.id, accountId), isNull(AccountEntityTable.deletedAt)))
+        .limit(1);
     }
 }

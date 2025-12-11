@@ -18,12 +18,17 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { transactionService } from '../../transaction/service/transaction.service';
 
 class AccountService {
     async create({ currentBalance, ...input }: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const account = await accountRepository.create(input, tx);
+            const account = await accountRepository.create(
+                {
+                    ...input,
+                    currentBalance: Number(convertToMicroUnits(currentBalance))
+                },
+                tx
+            );
 
             if (isNumber(currentBalance) && currentBalance !== 0) {
                 await this.adjustBalanceTo(account.id, account.instrumentId, currentBalance, tx);
@@ -35,9 +40,17 @@ class AccountService {
 
     async updateById(id: number, { currentBalance, ...input }: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const account = await accountRepository.updateById(id, input, tx);
+            const [{ balance }] = await accountRepository.getAccountBalance(id);
+            const account = await accountRepository.updateById(
+                id,
+                {
+                    ...input,
+                    ...(isDefined(currentBalance) ? { currentBalance: Number(convertToMicroUnits(currentBalance)) } : {})
+                },
+                tx
+            );
 
-            if (isNumber(currentBalance) && currentBalance !== account.currentBalance) {
+            if (isNumber(currentBalance) && convertToMicroUnits(currentBalance) !== balance) {
                 await this.adjustBalanceTo(account.id, account.instrumentId, currentBalance, tx);
             }
 
@@ -58,29 +71,6 @@ class AccountService {
 
         const isDebit = delta > ZERO_AMOUNT;
         const absDelta = Math.abs(Number(delta));
-
-        await transactionService.createInternal({
-            type: TransactionTypeEnum.ADJUSTMENT,
-            title: '',
-            tagIds: [],
-            entries: [
-                {
-                    accountId,
-                    instrumentId,
-                    categoryId: null,
-                    amount: absDelta,
-                    type: isDebit ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
-                }
-            ],
-            comment: '',
-            exchangeRate: 1,
-            externalId: null,
-            amount: absDelta,
-            externalSource: null,
-            operatedAt: new Date(),
-            toAccountId: isDebit ? accountId : null,
-            fromAccountId: isDebit ? null : accountId
-        });
 
         const transaction = await transactionRepository.create(
             {
@@ -109,6 +99,17 @@ class AccountService {
                 transactionId: transaction.id,
                 type: isDebit ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
             },
+            tx
+        );
+
+        await accountBalanceRepository.insertSnapshots(
+            [
+                {
+                    accountId,
+                    amount: absDelta,
+                    parentAccountId: accountId
+                }
+            ],
             tx
         );
     }

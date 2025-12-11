@@ -28,14 +28,14 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { t } = useLingui();
 
     const { balance } = useAccountBalanceQuery(account.id);
-    const { control, handleSubmit, reset, instrument, prepareSubmitData } = useAccountForm({
+    const { control, handleSubmit, reset, instrument } = useAccountForm({
         ...account,
         currentBalance: convertFromMicroUnits(balance)
     });
 
     const handleUpdate = async (values: AccountCreateEntityInterface) => {
         try {
-            await accountService.updateById(account.id, prepareSubmitData(values));
+            await accountService.updateById(account.id, values);
 
             void router.back();
         } catch {

@@ -1,7 +1,7 @@
 import { ThemeEnum } from '@budgie/contracts';
-import React from 'react';
 import { Appearance, Platform, StatusBar, View } from 'react-native';
 
+import { useSystemTheme } from '../../@generic/hooks/use-system-theme.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { ThemeContext } from '../context/theme.context';
@@ -15,34 +15,48 @@ interface Props {
 
 export const ThemeProvider = ({ children }: Props) => {
     const { settings } = useSettingsContext();
+    const systemScheme = useSystemTheme();
+    const isSystemDark = systemScheme === 'dark';
 
-    const isDarkColorSchema = settings.theme === ThemeEnum.DARK;
+    const isManuallyDark = settings.theme === ThemeEnum.DARK;
+    const isSystemTheme = settings.theme === ThemeEnum.SYSTEM;
 
-    const colorScheme = isDarkColorSchema ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+    const shouldUseDarkTheme = isManuallyDark || (isSystemTheme && isSystemDark);
 
-    const barStyle = isDarkColorSchema ? 'light-content' : 'dark-content';
+    const colorScheme = shouldUseDarkTheme ? ColorSchemaEnum.Dark : ColorSchemaEnum.Light;
+    const barStyle = shouldUseDarkTheme ? 'light-content' : 'dark-content';
+    const rootClass = shouldUseDarkTheme ? 'dark' : 'light';
 
-    const toggleColorSchema = async () => {
-        const newColorScheme = colorScheme === ColorSchemaEnum.Dark ? ColorSchemaEnum.Light : ColorSchemaEnum.Dark;
-
-        if (newColorScheme !== colorScheme) {
-            await updateSettingsMutation({ theme: isDarkColorSchema ? ThemeEnum.LIGHT : ThemeEnum.DARK });
-
-            // HINT: https://reactnavigation.org/docs/themes/?config=static#keeping-the-native-theme-in-sync
-            if (Platform.OS === 'web') {
-                document.documentElement.style.colorScheme = newColorScheme;
-            } else {
-                Appearance.setColorScheme(newColorScheme);
-            }
+    const getNextTheme = (): ThemeEnum => {
+        if (isSystemTheme) {
+            return shouldUseDarkTheme ? ThemeEnum.LIGHT : ThemeEnum.DARK;
         }
+
+        return isManuallyDark ? ThemeEnum.LIGHT : ThemeEnum.DARK;
     };
 
-    const contextValue = { colorScheme, toggleColorSchema, isDarkColorSchema };
+    const toggleColorSchema = async () => {
+        const nextTheme = getNextTheme();
+        await updateSettingsMutation({ theme: nextTheme });
+
+        if (nextTheme === ThemeEnum.SYSTEM || Platform.OS === 'web') {
+            return;
+        }
+
+        const nativeScheme = nextTheme === ThemeEnum.DARK ? 'dark' : 'light';
+        Appearance.setColorScheme(nativeScheme);
+    };
+
+    const contextValue = {
+        colorScheme,
+        isDarkColorSchema: shouldUseDarkTheme,
+        toggleColorSchema
+    };
 
     return (
         <ThemeContext.Provider value={contextValue}>
             <StatusBar barStyle={barStyle} />
-            <View className={`flex-1 ${isDarkColorSchema ? 'dark' : 'light'}`}>{children}</View>
+            <View className={`flex-1 ${rootClass}`}>{children}</View>
         </ThemeContext.Provider>
     );
 };
