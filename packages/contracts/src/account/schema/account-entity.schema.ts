@@ -1,5 +1,5 @@
 import { createSelectSchema } from 'drizzle-zod';
-import { number, enum as zodEnum } from 'zod';
+import { enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
@@ -22,5 +22,4 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     externalSource: zodEnum(ExternalSourceEnum).nullable().default(null).describe('The external source of the account.'),
     instrumentId: schema => schema.positive().describe('The id of the instrument.'),
     parentId: schema => schema.positive().nullable().default(null).describe('The id of the parent account.'),
-    currentBalance: number().describe('The current balance of the account.')
 });

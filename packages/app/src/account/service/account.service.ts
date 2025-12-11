@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isNumber, isPositiveNumber } from '@rnw-community/shared';
+import { isNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -39,7 +39,7 @@ class AccountService {
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const [{ balance: currentBalanceMicro }] = await accountRepository.getAccountBalance(id);
+            const [{ balance: currentBalanceMicro }] = await accountBalanceRepository.getAccountBalance(id);
 
             const account = await accountRepository.updateById(
                 id,
@@ -61,17 +61,20 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
-        const latest = await accountBalanceRepository.getAccountBalanceSnapshots([accountId]);
-        const lastBalance = latest[0]?.amount ?? 0;
-        const target = convertToMicroUnits(targetBalance);
-        const delta = target - lastBalance;
-        const absDelta = Math.abs(delta);
+        const snapshots = await accountBalanceRepository.getAccountBalanceSnapshots([accountId]);
+        const snapshot = snapshots.at(0);
+
+        const currentBalance = snapshot?.amount ?? 0;
+
+        const targetBalanceMicro = convertToMicroUnits(targetBalance);
+        const delta = targetBalanceMicro - currentBalance;
 
         if (delta === 0) {
             return;
         }
 
-        const isDebit = isPositiveNumber(delta);
+        const isDebit = delta > 0;
+        const absDelta = Math.abs(delta);
 
         const transaction = await transactionRepository.create(
             {
@@ -103,7 +106,7 @@ class AccountService {
             tx
         );
 
-        await accountBalanceRepository.insertSnapshots([{ accountId, amount: absDelta }], tx);
+        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
     }
 }
 
