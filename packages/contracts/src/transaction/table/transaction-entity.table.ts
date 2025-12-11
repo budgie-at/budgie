@@ -18,8 +18,8 @@ export const TransactionEntityTable = sqliteTable(
         operatedAt: int('operated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP),
         comment: text('comment').default('').notNull(),
         amount: int('amount', { mode: 'number' }).default(0).notNull(),
-        toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id),
-        fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id),
+        toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
+        fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         exchangeRate: real('exchange_rate').notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
     })

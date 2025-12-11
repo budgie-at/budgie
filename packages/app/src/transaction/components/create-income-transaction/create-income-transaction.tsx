@@ -38,7 +38,7 @@ export const CreateIncomeTransaction = () => {
                     amount: 0,
                     categoryId: 0,
                     accountId: defaultAccount?.id ?? 0,
-                    instrumentId: defaultInstrument.id,
+                    instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                     type: TransactionEntryTypeEnum.DEBIT
                 }
             ]
