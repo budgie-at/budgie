@@ -1,8 +1,4 @@
-import {
-    DatePeriodEnum,
-    TransactionFilterInterface,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { TransactionFilterInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import React, { useState } from 'react';
 import { SectionList, Text, View } from 'react-native';
@@ -10,14 +6,14 @@ import { SectionList, Text, View } from 'react-native';
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { TransactionCard } from '../transaction-card/transaction-card';
-import { TransactionFilterSelector } from '../transaction-filter-selector/transaction-filter-selector';
+import { DateFilter } from '../../../@generic/components/date-filter/date-filter';
 
 interface Props {
     readonly accountId: number | null;
 }
 
 export const TransactionList = ({ accountId }: Props) => {
-    const [filters, setFilters] = useState<TransactionFilterInterface>({ accountId, period: DatePeriodEnum.ALL_TIME, type: null });
+    const [filters, setFilters] = useState<TransactionFilterInterface>({ accountId, date: null, type: null });
 
     const { sections, loadMore, totalCount } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
@@ -50,7 +46,8 @@ export const TransactionList = ({ accountId }: Props) => {
                     <Trans>{totalCount} Transactions</Trans>
                 </Text>
 
-                <TransactionFilterSelector selectedFilters={filters} onFiltersChange={setFilters} />
+                {/*<TransactionFilterSelector selectedFilters={filters} onFiltersChange={setFilters} />*/}
+                <DateFilter />
             </View>
 
             <SectionList
