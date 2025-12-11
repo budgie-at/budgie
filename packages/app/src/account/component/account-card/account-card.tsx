@@ -11,20 +11,22 @@ import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook'
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | 'currentBalance'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
 
-export const AccountCard = ({ icon, title, currentBalance, className, id, instrumentSymbol }: Props) => {
+export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const format = useFormatDigits(decimalPlaces);
+    const { balance } = useAccountBalanceQuery(id);
 
     const navigateToAccount = () => void router.push(`/account/${id}`);
     const navigateToEditAccount = () => void router.push(`/edit-account/${id}`);
 
-    const formattedBalance = format(convertFromMicroUnits(currentBalance).toString());
+    const formattedBalance = format(convertFromMicroUnits(balance).toString());
 
     return (
         <Card onPress={navigateToAccount} className={cn('gap-3 active:scale-xs', className)}>
@@ -41,7 +43,10 @@ export const AccountCard = ({ icon, title, currentBalance, className, id, instru
                     {title}
                 </Text>
 
-                <Text className="text-primary">{instrumentSymbol}{formattedBalance}</Text>
+                <Text className="text-primary">
+                    {instrumentSymbol}
+                    {formattedBalance}
+                </Text>
             </View>
         </Card>
     );

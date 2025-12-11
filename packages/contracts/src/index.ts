@@ -1,5 +1,7 @@
 export { PRECISION } from './generic/constant/precision.constant';
 
+export type { MicroUnitType } from './generic/type/micro-unit.type'
+
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
