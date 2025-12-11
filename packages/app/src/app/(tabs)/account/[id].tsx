@@ -17,6 +17,7 @@ import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-gua
 import { AccountBalance } from '../../../account/component/account-balance/account-balance';
 import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../account/constant/account-type.constant';
+import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
@@ -29,6 +30,7 @@ export default function Account() {
     const id = Number(params.id);
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
+    const { balance } = useAccountBalanceQuery(id);
     const { defaultCurrency } = useSettingsContext();
     const { i18n } = useLingui();
 
@@ -42,7 +44,7 @@ export default function Account() {
 
     const navigateToEdit = () => void router.push(`/edit-account/${id}`);
 
-    const { title, icon, currentBalance, type, instrument } = account;
+    const { title, icon, type, instrument } = account;
     const currency = isEnumValue(instrument.code, CurrencyEnum) ? instrument.code : defaultCurrency;
 
     const variant = ACCOUNT_COLOR[type];
@@ -51,9 +53,9 @@ export default function Account() {
         <Page
             header={
                 <PageHeader
+                    icon={icon}
                     showBackBtn
                     title={title}
-                    icon={icon}
                     iconVariant={variant}
                     right={
                         <HapticPressable className="ml-auto" onPress={navigateToEdit}>
@@ -67,7 +69,7 @@ export default function Account() {
             contentClassName="px-0 flex-1"
         >
             <View className="py-[30px]">
-                <AccountBalance currency={currency} balance={currentBalance} />
+                <AccountBalance currency={currency} balance={balance} />
             </View>
         </Page>
     );
