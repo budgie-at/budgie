@@ -18,6 +18,7 @@ import { CircleIcon } from '../circle-icon/circle-icon';
 import { DatePicker } from '../date-picker/date-picker';
 import { FilterChip } from '../filter-chip/filter-chip';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
 
 interface Props {
     readonly value: DateFilterInterface | null;
@@ -44,15 +45,14 @@ const chipTextVariants = cva('font-semibold', {
 
 export const DateFilter = ({ value, onChange }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
-    const [selectedPeriod, setSelectedPeriod] = useState<DatePeriodEnum | null>(null);
     const [localValue, setLocalValue] = useState<DateFilterInterface | null>(() => value);
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
+    const selectedPeriod = getPeriodByDateRange(value);
     const { t, i18n } = useLingui();
 
     const handleOpen = () => ref.current?.open();
     const handlePeriodSelect = (period: DatePeriodEnum) => {
         setLocalValue(getDateFilterByPeriod(period));
-        setSelectedPeriod(period);
     };
 
     const handleDateChange = ({ endDate, startDate }: { endDate?: Date; startDate?: Date }) => {
@@ -60,11 +60,9 @@ export const DateFilter = ({ value, onChange }: Props) => {
             from: isDefined(startDate) ? new Date(startDate) : null,
             to: isDefined(endDate) ? new Date(endDate) : null
         });
-        setSelectedPeriod(null);
     };
 
     const handleClear = () => {
-        setSelectedPeriod(null);
         setLocalValue(null);
         onChange(null);
         ref.current?.close();
