@@ -1,4 +1,4 @@
 export interface DateFilterInterface {
-    from: Date;
-    to: Date;
+    from: Date | null;
+    to: Date | null;
 }
