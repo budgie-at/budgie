@@ -12,10 +12,15 @@ import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class ExchangeRatesService {
-    private EXCHANGE_RATE_API_URL = 'https://api.exchangerate-api.com/v4/latest/USD';
-
     async sync(): Promise<void> {
-        const [apiData, baseInstrument] = await Promise.all([this.fetch(), this.getBaseInstrument()]);
+        const baseInstrument = await this.getBaseInstrument();
+
+        if (!isDefined(baseInstrument)) {
+            return;
+        }
+
+        const apiData = await this.fetch(baseInstrument.code);
+
         if (!isDefined(baseInstrument)) {
             return;
         }
@@ -38,8 +43,8 @@ class ExchangeRatesService {
         });
     }
 
-    private async fetch(): Promise<ExchangeRateApiResponseInterface> {
-        const response = await fetch(this.EXCHANGE_RATE_API_URL);
+    private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
+        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${code}`);
 
         if (!response.ok) {
             return emptyExchangeRateApiResponse;
@@ -64,13 +69,19 @@ class ExchangeRatesService {
         rates: Record<string, number>
     ): Promise<void> {
         const rate = rates[instrument.code];
+
         if (!isPositiveNumber(rate)) {
             return;
         }
 
-        const rateInteger = Math.round(rate * PRECISION);
+        const directInteger = Math.round(rate * PRECISION);
 
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rateInteger, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, directInteger, 'exchangerate-api.com');
+
+        const reverse = 1 / rate;
+        const reverseInteger = Math.round(reverse * PRECISION);
+
+        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseInteger, 'exchangerate-api.com');
     }
 }
 

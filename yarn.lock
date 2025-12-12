@@ -1493,6 +1493,7 @@ __metadata:
     react-native-screens: "npm:~4.16.0"
     react-native-svg: "npm:15.12.1"
     react-native-toast-message: "npm:^2.3.3"
+    react-native-ui-datepicker: "npm:^3.1.2"
     react-native-web: "npm:^0.21.0"
     react-native-worklets: "npm:^0.5.1"
     tailwind-merge: "npm:^3.3.1"
@@ -9243,6 +9244,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:^1.11.13":
+  version: 1.11.19
+  resolution: "dayjs@npm:1.11.19"
+  checksum: 10/185b820d68492b83a3ce2b8ddc7543034edc1dfd1423183f6ae4707b29929a3cc56503a81826309279f9084680c15966b99456e74cf41f7d1f6a2f98f9c7196f
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -13468,6 +13476,13 @@ __metadata:
   bin:
     jake: bin/cli.js
   checksum: 10/3be324708f99f031e0aec49ef8fd872eb4583cbe8a29a0c875f554f6ac638ee4ea5aa759bb63723fd54f77ca6d7db851eaa78353301734ed3700db9cb109a0cd
+  languageName: node
+  linkType: hard
+
+"jalali-plugin-dayjs@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "jalali-plugin-dayjs@npm:1.1.4"
+  checksum: 10/47c2ffcf646bb3735acdf13020f1f03e010161560cd1bedacc6e6ab2975de62f150f9136aa3ee2540554bdceedc5933932b1e7c3fc179b55e955e4948ff44a2e
   languageName: node
   linkType: hard
 
@@ -18471,6 +18486,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-ui-datepicker@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "react-native-ui-datepicker@npm:3.1.2"
+  dependencies:
+    clsx: "npm:^2.1.1"
+    dayjs: "npm:^1.11.13"
+    jalali-plugin-dayjs: "npm:^1.1.4"
+    lodash: "npm:^4.17.21"
+    tailwind-merge: "npm:^3.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/43fc010324f38d3b0c9cf277c0ef146de591d2fddd95d30c8e161a19881dbda1c003cebe85be12d5dc1494121d81a3fc172c473fc2c73b45e3f70e6219ff8d25
+  languageName: node
+  linkType: hard
+
 "react-native-web@npm:^0.21.0":
   version: 0.21.1
   resolution: "react-native-web@npm:0.21.1"
@@ -20402,6 +20433,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10/a9dc19ae2220c952bd2231d08ddeecb1b0328b61e72071ff4000c8384e145cc07c1c0bdb3b5a1cb06e186a7b2790f1dee793418b332f6ddf320de25d9125be7e
+  languageName: node
+  linkType: hard
+
+"tailwind-merge@npm:^3.0.1":
+  version: 3.4.0
+  resolution: "tailwind-merge@npm:3.4.0"
+  checksum: 10/d8caeb40ee3ec0eae2996f8a86d77c82a1751fc9c61a31d6153b4252cb734deaf98d351205aff5c204beee7b73497add8492411e75187acb8506b4d981e4ccc2
   languageName: node
   linkType: hard
 
