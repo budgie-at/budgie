@@ -47,7 +47,7 @@ export default function RootLayout() {
         if (success) {
             void exchangeRatesService.sync();
             void exchangeRatesService.registerBackgroundTask();
-            void accountBalanceIncrementalService.updateAllSnapshots();
+            void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
             void SplashScreen.hideAsync();
         }
