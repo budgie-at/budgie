@@ -1,5 +1,6 @@
-import { getStartOfDay } from './get-start-of-day.util';
 import { DateFilterInterface } from '@budgie/contracts';
+
+import { getStartOfDay } from './get-start-of-day.util';
 
 export const getDateRangeForMonthBeforeDay = (now: Date): DateFilterInterface => {
     const from = getStartOfDay(new Date(now.getFullYear(), now.getMonth(), 1));

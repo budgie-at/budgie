@@ -1,9 +1,11 @@
-import { and, count, eq, gte, lte, or, SQL } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, lte, or } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
 import { DateFilterInterface } from '../../generic/interface/date-filter.interface';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
@@ -20,14 +22,7 @@ export class TransactionRepository {
         return transaction;
     }
 
-    getAll(
-        limit = 20,
-        filters: TransactionFilterInterface = {
-            accountId: null,
-            date: null,
-            type: null
-        }
-    ) {
+    getAll(limit = 20, filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
         const where = this.buildWhere(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
@@ -48,13 +43,7 @@ export class TransactionRepository {
         });
     }
 
-    count(
-        filters: TransactionFilterInterface = {
-            accountId: null,
-            date: null,
-            type: null
-        }
-    ) {
+    count(filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
         const where = this.buildWhere(filters);
 
         if (isDefined(where)) {
@@ -93,6 +82,16 @@ export class TransactionRepository {
     }
 
     private buildDateCondition({ from, to }: DateFilterInterface) {
-        return and(gte(TransactionEntityTable.operatedAt, from), lte(TransactionEntityTable.operatedAt, to));
+        const parts: SQL[] = [];
+
+        if (isDefined(from)) {
+            parts.push(gte(TransactionEntityTable.operatedAt, from));
+        }
+
+        if (isDefined(to)) {
+            parts.push(lte(TransactionEntityTable.operatedAt, to));
+        }
+
+        return isNotEmptyArray(parts) ? and(...parts) : null;
     }
 }
