@@ -28,28 +28,42 @@ export class AccountBalanceRepository {
         return accountBalance;
     }
 
-    async getAccountBalanceSnapshots(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
-        return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
-        }
+    async bulkUpsert(input: AccountBalanceCreateEntityInterface[], tx?: TX): Promise<AccountBalanceEntityInterface[]> {
+        return await (tx ?? this.db)
+            .insert(AccountBalanceEntityTable)
+            .values(input)
+            .onConflictDoUpdate({
+                target: AccountBalanceEntityTable.accountId,
+                set: {
+                    amount: sql`EXCLUDED.amount`,
+                    updatedAt: new Date()
+                }
+            })
+            .returning();
+    }
 
-        async getNewTransactionEntries(accountIds: number[]): Promise<TransactionEntryEntityInterface[]> {
-            return await this.db
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        isNull(TransactionEntryEntityTable.deletedAt),
-                        inArray(TransactionEntryEntityTable.accountId, accountIds),
-                        sql`
+    async getByAccountIds(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
+        return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+    }
+
+    async getNewTransactionEntries(accountIds: number[]): Promise<TransactionEntryEntityInterface[]> {
+        return await this.db
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    sql`
                             ${TransactionEntryEntityTable.createdAt} > (
                                 SELECT COALESCE(MAX(ab."updated_at"), '1970-01-01')
                                 FROM "account_balances" ab
                                 WHERE ab."account_id" = ${TransactionEntryEntityTable.accountId}
                             )
                         `
-                    )
-                );
-        }
+                )
+            );
+    }
 
     getByAccountId(accountId: number) {
         return this.db

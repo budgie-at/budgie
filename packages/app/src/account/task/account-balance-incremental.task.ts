@@ -6,7 +6,7 @@ import { accountBalanceIncrementalService } from '../service/account-balance-inc
 
 TaskManager.defineTask(ACCOUNT_BALANCE_INCREMENTAL_TASK, async () => {
     try {
-        await accountBalanceIncrementalService.updateAllSnapshots();
+        await accountBalanceIncrementalService.updateAllBalances();
     } catch {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }

@@ -14,7 +14,7 @@ import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-in
 import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 class AccountBalanceIncrementalService {
-    async updateAllSnapshots(): Promise<void> {
+    async updateAllBalances(): Promise<void> {
         const accounts = await accountRepository.getAllActiveAccounts();
         if (isEmptyArray(accounts)) {
             return;
@@ -22,18 +22,18 @@ class AccountBalanceIncrementalService {
 
         const accountIds = accounts.map(({ id }) => id);
 
-        const [balanceSnapshots, newEntries] = await Promise.all([
-            accountBalanceRepository.getAccountBalanceSnapshots(accountIds),
+        const [currentBalances, newEntries] = await Promise.all([
+            accountBalanceRepository.getByAccountIds(accountIds),
             accountBalanceRepository.getNewTransactionEntries(accountIds)
         ]);
 
-        const snapshotMap = this.buildSnapshotMap(balanceSnapshots);
+        const balancesMap = this.buildSnapshotMap(currentBalances);
         const deltaMap = this.buildDeltaMap(newEntries);
 
-        const snapshotsToInsert = this.buildNewSnapshots(accounts, snapshotMap, deltaMap);
+        const balancesToInsert = this.buildNewBalances(accounts, balancesMap, deltaMap);
 
-        if (isNotEmptyArray(snapshotsToInsert)) {
-            await Promise.all(snapshotsToInsert.map(async snapshot => accountBalanceRepository.upsert(snapshot)));
+        if (isNotEmptyArray(balancesToInsert)) {
+            await Promise.all(balancesToInsert.map(async snapshot => accountBalanceRepository.upsert(snapshot)));
         }
     }
 
@@ -65,7 +65,7 @@ class AccountBalanceIncrementalService {
         }, new Map<number, number>());
     }
 
-    private buildNewSnapshots(accounts: AccountEntityInterface[], snapshotMap: Map<number, number>, deltaMap: Map<number, number>) {
+    private buildNewBalances(accounts: AccountEntityInterface[], snapshotMap: Map<number, number>, deltaMap: Map<number, number>) {
         return accounts.map(account => {
             const base = snapshotMap.get(account.id) ?? 0;
             const delta = deltaMap.get(account.id) ?? 0;
