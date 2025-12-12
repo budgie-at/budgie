@@ -1,11 +1,13 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, PRECISION } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { cn } from '../../utils/cn.util';
@@ -20,16 +22,24 @@ interface Props {
 }
 
 export const CurrencySelector = ({ instrumentId, onChange, className }: Props) => {
+    const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
+    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
+
     const ref = useRef<BottomSheetInterface>(null);
 
     const selectedCurrency = instruments.find(({ id }) => id === instrumentId);
 
-    const handleOpen = () => void ref.current?.open();
-
     if (!isDefined(selectedCurrency)) {
         return null;
     }
+
+    const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
+    const { code: defaultInstrumentCode } = defaultInstrument;
+    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
+    const isBaseCurrency = !isDefined(rate);
+
+    const handleOpen = () => ref.current?.open();
 
     return (
         <>
@@ -38,16 +48,22 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
                 onPress={handleOpen}
             >
                 <View className="rounded-5xl bg-secondary-background p-lg w-[48px] h-[48px] items-center justify-center">
-                    <Text className="text-primary text-4xl">{selectedCurrency.symbol}</Text>
+                    <Text className="text-primary text-4xl">{symbol}</Text>
                 </View>
 
                 <View className="gap-y-xs flex-1">
                     <Text className="text-primary font-medium text-sm">
-                        {selectedCurrency.name}
-                        <Text> {selectedCurrency.code}</Text>
+                        {name} <Text className="text-primary">{selectedCurrencyCode}</Text>
                     </Text>
+
                     <Text className="text-sm text-secondary-foreground">
-                        <Trans>Base currency</Trans>
+                        {isBaseCurrency ? (
+                            <Trans>Base currency</Trans>
+                        ) : (
+                            <Trans>
+                                1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}
+                            </Trans>
+                        )}
                     </Text>
                 </View>
 

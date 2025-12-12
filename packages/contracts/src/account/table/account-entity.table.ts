@@ -3,6 +3,7 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
+import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
@@ -22,8 +23,9 @@ export const AccountEntityTable = sqliteTable(
         nature: text('nature', { enum: convertEnumToDrizzleEnum(AccountNatureEnum) })
             .$type<AccountNatureEnum>()
             .notNull(),
-        instrumentId: int('instrument_id', { mode: 'number' }).notNull(),
-        currentBalance: int('current_balance', { mode: 'number' }).default(0).notNull(),
+        instrumentId: int('instrument_id', { mode: 'number' })
+            .notNull()
+            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         externalId: text('external_id'),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()

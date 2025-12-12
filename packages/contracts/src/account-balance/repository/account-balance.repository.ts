@@ -1,8 +1,13 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
+import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
+import { PRECISION } from '../../generic/constant/precision.constant';
 import { DB, TX } from '../../generic/type/db.type';
+import { TransactionEntryEntityInterface } from '../../transaction-entry/entity/transaction-entry-entity.interface';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
-import { AccountBalanceUpdateEntityInterface } from '../entity/account-balance-update-entity.interface';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
@@ -10,23 +15,159 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
-    async create(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
-        const [accountBalance] = await (tx ?? this.db).insert(AccountBalanceEntityTable).values([input]).returning();
-
-        return accountBalance;
-    }
-
-    async updateByAccountId(accountId: number, input: AccountBalanceUpdateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    // TODO: change to bulkUpsert when drizzle is updated to the latest version
+    async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
-            .update(AccountBalanceEntityTable)
-            .set(input)
-            .where(eq(AccountBalanceEntityTable.accountId, accountId))
+            .insert(AccountBalanceEntityTable)
+            .values([input])
+            .onConflictDoUpdate({
+                target: AccountBalanceEntityTable.accountId,
+                set: { amount: input.amount, updatedAt: new Date() }
+            })
             .returning();
 
         return accountBalance;
     }
 
-    findByAccountId(id: number): Promise<AccountBalanceEntityInterface | undefined> {
-        return this.db.query.AccountBalanceEntityTable.findFirst({ where: eq(AccountBalanceEntityTable.accountId, id) });
+    async getByAccountIds(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
+        return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
+    }
+
+    async getNewTransactionEntries(accountIds: number[]): Promise<TransactionEntryEntityInterface[]> {
+        return await this.db
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    inArray(TransactionEntryEntityTable.accountId, accountIds),
+                    sql`
+                            ${TransactionEntryEntityTable.createdAt} > (
+                                SELECT COALESCE(MAX(ab."updated_at"), '1970-01-01')
+                                FROM "account_balances" ab
+                                WHERE ab."account_id" = ${TransactionEntryEntityTable.accountId}
+                            )
+                        `
+                )
+            );
+    }
+
+    getByAccountId(accountId: number) {
+        return this.db
+            .select({
+                balance: sql<number>`
+                COALESCE(${this.getAccountBalanceWithTransactionsSql()}, 0)
+            `
+            })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.id, accountId), isNull(AccountEntityTable.deletedAt)))
+            .limit(1);
+    }
+
+    getNetWorth(defaultInstrumentId: number) {
+        return this.db
+            .select({
+                netWorth: sql<number>`
+                COALESCE(
+                    SUM(
+                        ${this.getAccountBalanceWithTransactionsSql()}
+                        *
+                        ${this.getExchangeRateMultiplierSql(defaultInstrumentId)}
+                    ),
+                    0
+                )
+            `
+            })
+            .from(AccountEntityTable)
+            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+    }
+
+    private getAccountBalanceWithTransactionsSql() {
+        return sql`${this.getLatestAccountBalanceSql()} + ${this.getTransactionsSinceLastBalanceSql()}`;
+    }
+
+    private getLatestAccountBalanceSql() {
+        return sql`
+            COALESCE(
+                (
+                    SELECT ${AccountBalanceEntityTable.amount}
+                    FROM ${AccountBalanceEntityTable}
+                    WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+                    LIMIT 1
+                ),
+                0
+            )
+    `;
+    }
+
+    private getTransactionsSinceLastBalanceSql() {
+        return sql`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        CASE
+                            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                                THEN ${TransactionEntryEntityTable.amount}
+                            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                                THEN -${TransactionEntryEntityTable.amount}
+                            ELSE 0
+                        END
+                    )
+                    FROM ${TransactionEntryEntityTable}
+                    WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
+                        AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                        AND ${TransactionEntryEntityTable.createdAt} > ${this.getLastBalanceCreatedAtSql()}
+                ),
+                0
+            )
+    `;
+    }
+
+    private getLastBalanceCreatedAtSql() {
+        return sql`
+        (
+            SELECT COALESCE(MAX(${AccountBalanceEntityTable.createdAt}), '1970-01-01')
+            FROM ${AccountBalanceEntityTable}
+            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+        )
+    `;
+    }
+
+    private getExchangeRateMultiplierSql(defaultInstrumentId: number) {
+        return sql`
+        COALESCE(
+            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
+            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
+            1.0
+        )
+    `;
+    }
+
+    private getDirectExchangeRateSql(defaultInstrumentId: number) {
+        return sql`
+        (
+            SELECT ${ExchangeRateEntityTable.rate} * 1.0 / ${PRECISION}
+            FROM ${ExchangeRateEntityTable}
+            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
+                AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
+                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+            LIMIT 1
+        )
+    `;
+    }
+
+    private getInverseExchangeRateSql(defaultInstrumentId: number) {
+        return sql`
+        (
+            SELECT ${PRECISION} * 1.0 / ${ExchangeRateEntityTable.rate}
+            FROM ${ExchangeRateEntityTable}
+            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
+                AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
+                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+            LIMIT 1
+        )
+    `;
     }
 }

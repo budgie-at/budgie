@@ -5,8 +5,7 @@ import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-
 export const AccountBalanceEntityTable = sqliteTable(
     'account_balances',
     withBaseEntityTableColumns({
-        parentAccountId: int('parent_account_id', { mode: 'number' }),
-        accountId: int('account_id', { mode: 'number' }).notNull(),
+        accountId: int('account_id', { mode: 'number' }).notNull().unique(),
         amount: int('amount', { mode: 'number' }).notNull()
     })
 );

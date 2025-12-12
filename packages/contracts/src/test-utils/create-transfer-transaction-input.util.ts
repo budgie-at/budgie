@@ -12,11 +12,12 @@ export const createTransferTransactionInput = (
     title: 'Test',
     comment: '',
     externalId: null,
-    operatedAt: new Date().toISOString(),
+    operatedAt: new Date(),
     exchangeRate: 2,
     externalSource,
     toAccountId: 2,
     fromAccountId: 1,
+    amount: 0,
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });
