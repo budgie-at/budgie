@@ -27,13 +27,13 @@ class AccountBalanceIncrementalService {
             accountBalanceRepository.getNewTransactionEntries(accountIds)
         ]);
 
-        const balancesMap = this.buildSnapshotMap(currentBalances);
+        const balancesMap = this.buildBalancesMap(currentBalances);
         const deltaMap = this.buildDeltaMap(newEntries);
 
         const balancesToInsert = this.buildNewBalances(accounts, balancesMap, deltaMap);
 
         if (isNotEmptyArray(balancesToInsert)) {
-            await Promise.all(balancesToInsert.map(async snapshot => accountBalanceRepository.upsert(snapshot)));
+            await Promise.all(balancesToInsert.map(async balance => accountBalanceRepository.upsert(balance)));
         }
     }
 
@@ -48,8 +48,8 @@ class AccountBalanceIncrementalService {
         });
     }
 
-    private buildSnapshotMap(balanceSnapshots: AccountBalanceEntityInterface[]) {
-        return balanceSnapshots.reduce((map, { accountId, amount }) => {
+    private buildBalancesMap(balances: AccountBalanceEntityInterface[]) {
+        return balances.reduce((map, { accountId, amount }) => {
             map.set(accountId, amount);
 
             return map;
@@ -65,9 +65,9 @@ class AccountBalanceIncrementalService {
         }, new Map<number, number>());
     }
 
-    private buildNewBalances(accounts: AccountEntityInterface[], snapshotMap: Map<number, number>, deltaMap: Map<number, number>) {
+    private buildNewBalances(accounts: AccountEntityInterface[], balancesMap: Map<number, number>, deltaMap: Map<number, number>) {
         return accounts.map(account => {
-            const base = snapshotMap.get(account.id) ?? 0;
+            const base = balancesMap.get(account.id) ?? 0;
             const delta = deltaMap.get(account.id) ?? 0;
 
             return {
