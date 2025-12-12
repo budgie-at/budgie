@@ -33,7 +33,7 @@ export const FormBottomSheet = (props: Props) => {
     );
 
     return (
-        <BottomSheet footerComponent={renderFooter} onDismiss={onDismiss} ref={ref}>
+        <BottomSheet enableDynamicSizing footerComponent={renderFooter} onDismiss={onDismiss} ref={ref}>
             <BottomSheetScrollView showsVerticalScrollIndicator={false}>
                 <View className="px-5xl pt-5xl pb-[100px]">
                     <View className="bg-secondary-background p-xl rounded-3xl mx-auto mb-3xl border border-secondary-corner">

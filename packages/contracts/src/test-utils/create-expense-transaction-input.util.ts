@@ -12,11 +12,12 @@ export const createExpenseTransactionInput = (
     title: 'Expense',
     comment: '',
     externalId: null,
-    operatedAt: new Date().toISOString(),
+    operatedAt: new Date(),
     exchangeRate: 1,
     externalSource,
     toAccountId: null,
     fromAccountId: 42,
+    amount: 0,
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });

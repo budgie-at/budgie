@@ -15,23 +15,35 @@ msgstr ""
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} рахунок"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
+#: src/account/component/account-selector/account-selector.tsx:37
+msgid "{currentBalance} available"
+msgstr "{currentBalance} доступно"
+
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} іконок доступно"
 
-#: src/app/(tabs)/settings.tsx:35
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:34
+msgid "{tagsCount} tags available"
+msgstr "{tagsCount} тегів доступно"
+
+#: src/app/(tabs)/settings.tsx:36
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(tabs)/settings.tsx:76
+#: src/app/(tabs)/settings.tsx:78
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/account/component/update-account-title-field/update-account-title-field.tsx:23
+#: src/transaction/components/transaction-form/transaction-form.tsx:45
+msgid "Account"
+msgstr "Рахунок"
+
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:22
 msgid "Account Name"
 msgstr "Назва рахунку"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:28
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:27
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
@@ -55,6 +67,14 @@ msgstr "Додайте нову категорію для організації
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:70
+msgid "Add Income"
+msgstr "Додати дохід"
+
+#: src/transaction/components/transaction-split/transaction-split.tsx:130
+msgid "Add Split"
+msgstr "Додати поділ"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
@@ -71,7 +91,7 @@ msgstr "ШІ"
 msgid "Ai Page"
 msgstr "Сторінка ШІ"
 
-#: src/app/(tabs)/settings.tsx:80
+#: src/app/(tabs)/settings.tsx:82
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -79,24 +99,28 @@ msgstr ""
 "Бюджетний застосунок на основі ШІ з повною приватністю. Усі дані обробляються локально на вашому пристрої.\n"
 "Версія 1.0.0"
 
-#: src/app/(tabs)/settings.tsx:36
+#: src/app/(tabs)/settings.tsx:37
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
+
+#: src/transaction/components/transaction-split/transaction-split.tsx:140
+msgid "Allocated"
+msgstr "Розподілено"
 
 #: src/app/(tabs)/analytics.tsx:11
 msgid "Analytics Page"
 msgstr "Сторінка аналітики"
 
-#: src/app/(tabs)/settings.tsx:71
+#: src/app/(tabs)/settings.tsx:73
 msgid "Appearance"
 msgstr "Вигляд"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:81
+#: src/account/component/update-liability-account/update-liability-account.tsx:84
 msgid "Archive Account"
 msgstr "Архівувати рахунок"
 
 #: src/app/(main)/archived.tsx:27
-#: src/app/(tabs)/settings.tsx:64
+#: src/app/(tabs)/settings.tsx:66
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -116,13 +140,14 @@ msgstr "Базова валюта"
 msgid "Browse"
 msgstr "Переглянути"
 
-#: src/app/(tabs)/settings.tsx:78
+#: src/app/(tabs)/settings.tsx:80
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:17
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:57
+#: src/@generic/components/form-bottom-sheet-footer/form-bottom-sheet-footer.tsx:19
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:49
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -133,6 +158,11 @@ msgstr "Готівка"
 #: src/app/(main)/categories.tsx:39
 msgid "Categories"
 msgstr "Категорії"
+
+#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
+msgid "Category"
+msgstr "Категорія"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
@@ -147,11 +177,11 @@ msgstr "Змінити"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:27
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:31
 msgid "Choose a type to get started"
 msgstr "Оберіть тип, щоб почати"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:60
 msgid "Choose Icon"
 msgstr "Обрати іконку"
 
@@ -159,17 +189,29 @@ msgstr "Обрати іконку"
 msgid "Choose the type of account you want to add"
 msgstr "Оберіть тип рахунку, який ви хочете додати"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:71
+msgid "Choose your main account"
+msgstr "Оберіть ваш основний рахунок"
+
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:62
+msgid "Choose your main category"
+msgstr "Оберіть вашу основну категорію"
+
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Choose your main currency"
 msgstr "Оберіть вашу основну валюту"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:56
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
 msgid "Choose your preferred language for date and number formatting"
 msgstr "Оберіть бажану мову для форматування дат і чисел"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:54
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:26
 msgid "Choose your preferred locale for date and number formatting"
 msgstr "Оберіть бажані регіональні налаштування для форматування дат і чисел"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+msgid "Common Tags"
+msgstr "Поширені теги"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
 msgid "Could not create category"
@@ -179,17 +221,25 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:56
+msgid "Could not create transaction. Please try again later."
+msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:37
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/app/(tabs)/settings.tsx:58
+#: src/app/(tabs)/settings.tsx:60
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Create Category"
 msgstr "Створити категорію"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:55
+msgid "Create one to get started."
+msgstr "Створіть один, щоб розпочати."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:54
 msgid "Create Tag"
@@ -198,6 +248,14 @@ msgstr "Створити тег"
 #: src/app/(main)/tags.tsx:35
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
+
+#: src/transaction/components/transaction-form/transaction-form.tsx:51
+msgid "Create your first account to start tracking transactions"
+msgstr "Створіть свій перший рахунок, щоб почати відстежувати транзакції"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:89
+msgid "Create your first tag above to organize your transactions"
+msgstr "Створіть свій перший тег вище, щоб організувати ваші транзакції"
 
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
@@ -219,21 +277,37 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
+#: src/transaction/components/transaction-form/transaction-form.tsx:58
+msgid "Date"
+msgstr "Дата"
+
 #: src/account/constant/account-type.constant.ts:8
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+#: src/transaction/constant/transaction-type.constant.ts:8
 msgid "Debt"
 msgstr "Борг"
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:24
+msgid "Default Account"
+msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:25
 msgid "Delete"
 msgstr "Видалити"
 
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:37
+msgid "Done"
+msgstr "Готово"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:37
+msgid "Done ({selectedTagsCount})"
+msgstr "Готово ({selectedTagsCount})"
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
 
-#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:40
-#: src/account/component/update-account-title-field/update-account-title-field.tsx:32
+#: src/@generic/components/create-account-details-field/create-account-details-field.tsx:38
+#: src/account/component/update-account-title-field/update-account-title-field.tsx:30
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
@@ -265,7 +339,7 @@ msgstr "Англійська (США)"
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
 
@@ -281,7 +355,7 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
-#: src/app/(tabs)/settings.tsx:41
+#: src/app/(tabs)/settings.tsx:42
 msgid "General"
 msgstr "Загальне"
 
@@ -297,12 +371,12 @@ msgstr "Німецька (Німеччина)"
 msgid "Hide Cents"
 msgstr "Приховати копійки"
 
-#: src/account/component/create-account-icon-field/update-account-icon-field.tsx:16
+#: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
 msgid "Icon"
 msgstr "Іконка"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:41
+#: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
@@ -314,10 +388,6 @@ msgstr "Італійська (Італія)"
 msgid "Language"
 msgstr "Мова"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:51
-msgid "Loans & credit cards"
-msgstr "Кредити та кредитні картки"
-
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Регіональні налаштування"
@@ -326,34 +396,35 @@ msgstr "Регіональні налаштування"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings.tsx:50
+#: src/app/(tabs)/settings.tsx:52
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(tabs)/settings.tsx:57
+#: src/app/(tabs)/settings.tsx:59
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Money you earn"
 msgstr "Гроші, які ви заробляєте"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:33
-msgid "Money you spend"
-msgstr "Гроші, які ви витрачаєте"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:45
-msgid "Move between accounts"
-msgstr "Переміщення між рахунками"
 
 #: src/app/(main)/create-account/index.tsx:21
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:24
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:69
+msgid "New Income"
+msgstr "Новий дохід"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:31
 msgid "New Transaction"
 msgstr "Нова транзакція"
 
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
+msgid "No accounts found"
+msgstr "Рахунків не знайдено"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:14
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
@@ -362,11 +433,15 @@ msgstr "Ще немає рахунків"
 msgid "No archived accounts"
 msgstr "Немає архівованих рахунків"
 
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:69
+msgid "No categories found"
+msgstr "Категорій не знайдено"
+
 #: src/app/(main)/categories.tsx:34
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:67
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
@@ -374,19 +449,19 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:68
 msgid "No icons"
 msgstr "Немає іконок"
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:63
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:30
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:61
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:28
 msgid "No locales found"
 msgstr "Регіональні налаштування не знайдено"
 
@@ -399,17 +474,33 @@ msgstr "Немає результатів"
 msgid "No tags match your search"
 msgstr "Жодний тег не відповідає вашому пошуку"
 
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:86
+msgid "No tags yet"
+msgstr "Ще немає тегів"
+
 #: src/app/(main)/tags.tsx:34
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/app/(tabs)/settings.tsx:47
+#: src/tag/components/tags-selector/tags-selector.tsx:59
+msgid "None"
+msgstr "Немає"
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:25
+msgid "None selected"
+msgstr "Нічого не вибрано"
+
+#: src/app/(tabs)/settings.tsx:49
 msgid "Organization"
 msgstr "Організація"
 
+#: src/transaction/components/transaction-split/transaction-split.tsx:141
+msgid "Over:"
+msgstr "Перевищення:"
+
 #: src/account/component/create-liability-account/create-liability-account.tsx:54
-#: src/account/component/update-liability-account/update-liability-account.tsx:42
-#: src/account/component/update-liability-account/update-liability-account.tsx:56
+#: src/account/component/update-liability-account/update-liability-account.tsx:43
+#: src/account/component/update-liability-account/update-liability-account.tsx:57
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
@@ -428,11 +519,15 @@ msgstr "Португальська (Португалія)"
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(tabs)/settings.tsx:32
+#: src/app/(tabs)/settings.tsx:33
 msgid "Privacy"
 msgstr "Конфіденційність"
 
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:51
+#: src/transaction/components/transaction-split/transaction-split.tsx:142
+msgid "Remaining:"
+msgstr "Залишок:"
+
+#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:48
 msgid "Restore"
 msgstr "Відновити"
 
@@ -449,23 +544,28 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
+msgid "Search accounts..."
+msgstr "Пошук рахунків..."
+
 #: src/app/(main)/categories.tsx:40
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:64
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:62
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
+#: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:63
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:58
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:56
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:27
 msgid "Search locales..."
 msgstr "Пошук регіональних налаштувань..."
 
@@ -473,19 +573,48 @@ msgstr "Пошук регіональних налаштувань..."
 msgid "Search tags..."
 msgstr "Пошук тегів..."
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/account/component/account-selector/account-selector.tsx:57
+msgid "Select account"
+msgstr "Виберіть рахунок"
+
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
+msgid "Select Account"
+msgstr "Виберіть рахунок"
+
+#: src/category/components/category-selector/category-selector.tsx:33
+msgid "Select category"
+msgstr "Виберіть категорію"
+
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:61
+#: src/transaction/components/transaction-form/transaction-form.tsx:76
+msgid "Select Category"
+msgstr "Виберіть категорію"
+
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
 msgstr "Виберіть валюту"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:55
+#: src/@generic/components/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:43
+msgid "Select Date"
+msgstr "Виберіть дату"
+
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
 msgstr "Виберіть мову"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:53
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:25
 msgid "Select Locale"
 msgstr "Виберіть регіональні налаштування"
 
-#: src/app/(tabs)/settings.tsx:28
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:41
+msgid "Select Tags"
+msgstr "Виберіть теги"
+
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:47
+msgid "Selected {selectedTagsCount}"
+msgstr "Вибрано {selectedTagsCount}"
+
+#: src/app/(tabs)/settings.tsx:29
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -494,10 +623,14 @@ msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:53
-#: src/account/component/update-liability-account/update-liability-account.tsx:41
-#: src/account/component/update-liability-account/update-liability-account.tsx:55
+#: src/account/component/update-liability-account/update-liability-account.tsx:42
+#: src/account/component/update-liability-account/update-liability-account.tsx:56
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:55
+msgid "Something went wrong."
+msgstr "Щось пішло не так."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Something went wrong. Please try again later."
@@ -511,11 +644,16 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
+#: src/transaction/components/transaction-split/transaction-split.tsx:110
+msgid "Split by Category"
+msgstr "Поділ за категоріями"
+
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Акції"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:28
+#: src/@generic/components/form-bottom-sheet-footer/form-bottom-sheet-footer.tsx:27
 #: src/account/component/create-liability-account/create-liability-account.tsx:66
 msgid "Submit"
 msgstr "Відправити"
@@ -534,6 +672,7 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(main)/tags.tsx:40
+#: src/transaction/components/transaction-form/transaction-form.tsx:64
 msgid "Tags"
 msgstr "Теги"
 
@@ -553,13 +692,15 @@ msgstr "Загальний баланс"
 msgid "Transactions Page"
 msgstr "Сторінка транзакцій"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:47
+#: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:66
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:62
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:60
+#: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:52
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
+#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -568,15 +709,15 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:80
+#: src/account/component/update-liability-account/update-liability-account.tsx:83
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/app/(tabs)/settings.tsx:51
+#: src/app/(tabs)/settings.tsx:53
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(tabs)/settings.tsx:65
+#: src/app/(tabs)/settings.tsx:67
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
