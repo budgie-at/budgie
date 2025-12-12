@@ -1,6 +1,6 @@
 {
     "name": "@budgie/contracts",
-    "version": "1.67.0",
+    "version": "1.69.0",
     "private": true,
     "description": "Contracts",
     "sideEffects": false,

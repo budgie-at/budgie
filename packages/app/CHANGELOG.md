@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.69.0](https://github.com/budgie-at/budgie/compare/v1.68.0...v1.69.0) (2025-12-12)
+
+### Bug Fixes
+
+- change db name ([d63bea5](https://github.com/budgie-at/budgie/commit/d63bea5671dd9d5b6813893e7be6c878253dbd5e))
+- change net-worth calculation ([32f3a29](https://github.com/budgie-at/budgie/commit/32f3a29d912a2c6c744d0ddc6065b34d71b47243))
+- change net-worth calculation ([75d6050](https://github.com/budgie-at/budgie/commit/75d605092ef68059906d08e19906255cbd4e9ce3))
+- rename snapshot to balance ([c277fa6](https://github.com/budgie-at/budgie/commit/c277fa610aec95540d89ba13679b04d91530eff9))
+- rename snapshot to balance ([7911dc7](https://github.com/budgie-at/budgie/commit/7911dc7143ac8ac69768f9f114a27753bded3e7a))
+- resolve review comments ([ec40fd9](https://github.com/budgie-at/budgie/commit/ec40fd909e9742db7669ec7a370393beec2aa70a))
+- resolve review comments ([40888f6](https://github.com/budgie-at/budgie/commit/40888f632889e1894075e01ed9692054cbd9f270))
+- resolve review comments ([e16602e](https://github.com/budgie-at/budgie/commit/e16602eb22726b5974074e9a18c03325673799fe))
+- update migrations ([8533efd](https://github.com/budgie-at/budgie/commit/8533efd0af457692705dff4fa7f80d59444196ae))
+
+### Features
+
+- change "adjustment" transaction icon and color ([1fa8e2d](https://github.com/budgie-at/budgie/commit/1fa8e2d431db1d6f41b61cfa7f0735b3cf44ba47))
+- income transaction creation ([066c2bf](https://github.com/budgie-at/budgie/commit/066c2bfb6ce24aecbd82a513d47f2b1884e53b5f))
+- update translations ([d452aa1](https://github.com/budgie-at/budgie/commit/d452aa13234c0309b050e35ef1418dd24c33fcb5))
+
 # [1.68.0](https://github.com/budgie-at/budgie/compare/v1.67.0...v1.68.0) (2025-12-04)
 
 ### Features
