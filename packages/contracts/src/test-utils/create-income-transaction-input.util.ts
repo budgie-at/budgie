@@ -12,11 +12,13 @@ export const createIncomeTransactionInput = (
     title: 'Income',
     comment: '',
     externalId: null,
-    operatedAt: new Date().toISOString(),
+    operatedAt: new Date(),
     exchangeRate: 1,
     externalSource,
     toAccountId: 42,
     fromAccountId: null,
+    amount: 0,
+    tagIds: [],
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });

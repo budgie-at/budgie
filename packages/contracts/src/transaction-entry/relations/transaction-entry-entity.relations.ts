@@ -20,14 +20,6 @@ export const TransactionEntryEntityRelations = relations(TransactionEntryEntityT
         fields: [TransactionEntryEntityTable.categoryId],
         references: [CategoryEntityTable.id]
     }),
-    [TransactionEntryAssociationEnum.PARENT_CATEGORY]: one(CategoryEntityTable, {
-        fields: [TransactionEntryEntityTable.parentCategoryId],
-        references: [CategoryEntityTable.id]
-    }),
-    [TransactionEntryAssociationEnum.PARENT_ACCOUNT]: one(AccountEntityTable, {
-        fields: [TransactionEntryEntityTable.parentAccountId],
-        references: [AccountEntityTable.id]
-    }),
     [TransactionEntryAssociationEnum.INSTRUMENT]: one(InstrumentEntityTable, {
         fields: [TransactionEntryEntityTable.instrumentId],
         references: [InstrumentEntityTable.id]
