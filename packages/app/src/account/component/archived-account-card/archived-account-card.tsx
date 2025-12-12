@@ -13,6 +13,7 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
+import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { RestoreAccountBottomSheet } from '../restore-account-bottom-sheet/restore-account-bottom-sheet';
 
 interface Props {
@@ -20,6 +21,9 @@ interface Props {
 }
 
 export const ArchivedAccountCard = ({ account }: Props) => {
+    const { icon, title, type, id } = account;
+
+    const { balance } = useAccountBalanceQuery(id);
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
     const ref = useRef<BottomSheetInterface | null>(null);
@@ -40,8 +44,6 @@ export const ArchivedAccountCard = ({ account }: Props) => {
         }
     };
 
-    const { icon, title, type, currentBalance } = account;
-
     return (
         <>
             <Card className="flex-row items-center gap-x-xl">
@@ -52,7 +54,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                     <Text className="text-xs text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                 </View>
 
-                <Text className="text-destructive-foreground text-sm font-semibold">{formatMoney(currentBalance)}</Text>
+                <Text className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</Text>
 
                 <HapticPressable onPress={onRestore}>
                     <CircleIcon variant="positive" icon={ICONS.RotateCcw} />

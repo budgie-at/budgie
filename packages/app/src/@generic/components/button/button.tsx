@@ -10,6 +10,7 @@ import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palett
 import { ICONS, IconName } from '../../constant/icons.constant';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -53,10 +54,10 @@ const textVariants = cva<{
 });
 
 export const Button = (props: Props) => {
-    const { content, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
+    const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
 
     return (
-        <HapticPressable onPress={onPress} className={buttonVariants({ disabled, size, variant })} {...rest}>
+        <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
             {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={ICONS[leftIcon]} /> : null}
 
             <Text className={textVariants({ variant })}>{content}</Text>

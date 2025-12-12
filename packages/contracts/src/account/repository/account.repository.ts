@@ -1,7 +1,5 @@
 import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
-import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
-import { PRECISION } from '../../generic/constant/precision.constant';
 import { DB, TX } from '../../generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
@@ -32,6 +30,10 @@ export class AccountRepository {
 
     async deleteById(id: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
+    }
+
+    async getAllActiveAccounts(): Promise<AccountEntityInterface[]> {
+        return await this.db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
     findBySearchQuery(search: string) {
@@ -75,39 +77,5 @@ export class AccountRepository {
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
-    }
-
-    getNetWorth(defaultInstrumentId: number) {
-        return this.db
-            .select({
-                total: sql<number>`
-                    coalesce(
-                        sum(
-                            case
-                                when ${AccountEntityTable.instrumentId} = ${defaultInstrumentId} then ${AccountEntityTable.currentBalance}
-                                when ${ExchangeRateEntityTable.rate} is not null then
-                                    cast(${AccountEntityTable.currentBalance} as real) * ${PRECISION} / cast(${ExchangeRateEntityTable.rate} as real)
-                                else ${AccountEntityTable.currentBalance}
-                            end
-                        ),
-                        0
-                    )
-                `
-            })
-            .from(AccountEntityTable)
-            .leftJoin(
-                ExchangeRateEntityTable,
-                and(
-                    eq(ExchangeRateEntityTable.baseInstrumentId, defaultInstrumentId),
-                    eq(ExchangeRateEntityTable.quoteInstrumentId, AccountEntityTable.instrumentId)
-                )
-            )
-            .where(
-                and(
-                    isNull(AccountEntityTable.parentId),
-                    isNull(AccountEntityTable.deletedAt),
-                    eq(AccountEntityTable.includeInNetWorth, true)
-                )
-            );
     }
 }

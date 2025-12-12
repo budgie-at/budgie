@@ -1,11 +1,9 @@
-import { CurrencyEnum } from '@budgie/contracts';
-
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useI18nContext } from '../context/i18n.context';
 
-export const useFormatMoney = (decimalPlaces: number, currency: CurrencyEnum) => {
+export const useFormatMoney = (decimalPlaces: number, currency: string) => {
     const { intl } = useI18nContext();
 
     return (rawAmount: number) => {

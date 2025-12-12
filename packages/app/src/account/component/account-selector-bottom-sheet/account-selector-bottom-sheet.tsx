@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -17,7 +17,7 @@ interface Props {
     readonly selectedAccount: AccountEntityInterface | null;
 }
 
-const keyExtractor = (item: AccountEntityInterface) => item.id.toString();
+const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toString();
 
 const flatListProps = {
     className: 'pt-3 px-xl',
@@ -30,14 +30,14 @@ export const AccountSelectorBottomSheet = ({ ref, selectedAccount, excludeAccoun
     const { t } = useLingui();
 
     const handleSelect = (accountId: number) => {
+        void ref.current?.dismiss();
         onSelect(accountId);
-        ref.current?.close();
     };
 
-    const renderItem = ({ item }: { item: AccountEntityInterface }) => (
+    const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
         <AccountSelectorCard
             isSelected={item.id === selectedAccount?.id}
-            currentBalance={item.currentBalance}
+            instrument={item.instrument}
             onSelect={handleSelect}
             title={item.title}
             icon={item.icon}

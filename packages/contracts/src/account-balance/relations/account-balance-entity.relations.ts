@@ -5,10 +5,6 @@ import { AccountBalanceAssociationEnum } from '../enum/account-balance-associati
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 export const AccountBalanceEntityRelations = relations(AccountBalanceEntityTable, ({ one }) => ({
-    [AccountBalanceAssociationEnum.PARENT_ACCOUNT]: one(AccountEntityTable, {
-        fields: [AccountBalanceEntityTable.parentAccountId],
-        references: [AccountEntityTable.id]
-    }),
     [AccountBalanceAssociationEnum.ACCOUNT]: one(AccountEntityTable, {
         fields: [AccountBalanceEntityTable.accountId],
         references: [AccountEntityTable.id]

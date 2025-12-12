@@ -35,8 +35,8 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const data = padFlatListData(filteredIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
+        void ref.current?.dismiss();
         onSelect(icon);
-        ref.current?.close();
     };
 
     const renderItem = ({ item }: { item: FlatListDataItem<UserIcon> }) =>

@@ -2,6 +2,8 @@ import { AccountCreateEntityInterface, AccountNatureEnum, AccountTypeEnum, UserI
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,12 +12,12 @@ import { Button } from '../../../@generic/components/button/button';
 import { CreateAccountCurrencyField } from '../../../@generic/components/create-account-currency-field/create-account-currency-field';
 import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { FullPage } from '../../../@generic/components/page/full-page';
+import { Page } from '../../../@generic/components/page/page';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { AccountHeader } from '../account-header/account-header';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 
 interface Props {
@@ -24,12 +26,13 @@ interface Props {
 }
 
 const DEFAULT_ICON = UserIconNameEnum.Home;
+const safeEdges: Edges = ['bottom'];
 
 export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
-    const { control, handleSubmit, reset, instrument, prepareSubmitData } = useAccountForm({
+    const { control, handleSubmit, reset, instrument } = useAccountForm({
         type,
         title: '',
         currentBalance: 0,
@@ -44,7 +47,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     const handleCreate = async (values: AccountCreateEntityInterface) => {
         try {
-            await accountService.create(prepareSubmitData(values));
+            await accountService.create(values);
 
             void router.dismissAll();
         } catch {
@@ -56,23 +59,29 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         }
     };
 
-    const variant = ACCOUNT_COLOR[type]
+    const variant = ACCOUNT_COLOR[type];
 
     return (
-        <FullPage
-            header={<AccountHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
+        <Page
+            header={<PageHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
             footer={
-                <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner">
-                    <Button variant="default" onPress={handleSubmit(handleCreate)} content={t`Submit`} />
-                </View>
+                <KeyboardStickyView>
+                    <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner bg-primary-reverse pb-safe-offset-1">
+                        <SafeAreaView edges={safeEdges}>
+                            <Button variant={variant} onPress={handleSubmit(handleCreate)} content={t`Submit`} />
+                        </SafeAreaView>
+                    </View>
+                </KeyboardStickyView>
             }
         >
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-            <FormLayoutGroup>
-                <CreateAccountDetailsField variant={variant} control={control} />
-                <CreateAccountCurrencyField control={control} />
-            </FormLayoutGroup>
-        </FullPage>
+                <FormLayoutGroup>
+                    <CreateAccountDetailsField variant={variant} control={control} />
+                    <CreateAccountCurrencyField control={control} />
+                </FormLayoutGroup>
+            </KeyboardAwareScrollView>
+        </Page>
     );
 };

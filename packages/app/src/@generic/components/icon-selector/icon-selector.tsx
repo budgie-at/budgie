@@ -31,7 +31,7 @@ export const IconSelector = ({ onSelect, icon, size, variant }: Props) => {
         sm: '',
         md: t`Change`,
         lg: t`Browse`
-    }
+    };
 
     return (
         <View>

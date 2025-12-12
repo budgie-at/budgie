@@ -31,6 +31,12 @@ export class CategoryRepository {
         return category;
     }
 
+    findById(id: number) {
+        return this.db.query.CategoryEntityTable.findFirst({
+            where: eq(CategoryEntityTable.id, id)
+        });
+    }
+
     async deleteById(id: number): Promise<void> {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
     }
