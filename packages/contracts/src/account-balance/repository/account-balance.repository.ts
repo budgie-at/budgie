@@ -15,6 +15,7 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
+    // TODO: change to bulkUpsert when drizzle is updated to the latest version
     async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
