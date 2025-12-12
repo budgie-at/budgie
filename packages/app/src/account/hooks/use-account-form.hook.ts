@@ -2,8 +2,7 @@ import { AccountCreateEntityInterface, AccountCreateEntitySchema } from '@budgie
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instruments-by-id.query';
+import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
 export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
     const form = useForm({
@@ -19,14 +18,8 @@ export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
 
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
 
-    const prepareSubmitData = (values: AccountCreateEntityInterface) => ({
-        ...values,
-        currentBalance: convertToMicroUnits(values.currentBalance)
-    });
-
     return {
         ...form,
-        instrument,
-        prepareSubmitData
+        instrument
     };
 };
