@@ -28,20 +28,6 @@ export class AccountBalanceRepository {
         return accountBalance;
     }
 
-    async bulkUpsert(input: AccountBalanceCreateEntityInterface[], tx?: TX): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db)
-            .insert(AccountBalanceEntityTable)
-            .values(input)
-            .onConflictDoUpdate({
-                target: AccountBalanceEntityTable.accountId,
-                set: {
-                    amount: sql`EXCLUDED.amount`,
-                    updatedAt: new Date()
-                }
-            })
-            .returning();
-    }
-
     async getByAccountIds(accountIds: number[]): Promise<AccountBalanceEntityInterface[]> {
         return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
