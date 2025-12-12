@@ -44,13 +44,13 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
-        const snapshots = await accountBalanceRepository.getAccountBalanceSnapshots([accountId]);
-        const snapshot = snapshots.at(0);
+        const balances = await accountBalanceRepository.getByAccountIds([accountId]);
+        const balance = balances.at(0);
 
-        const currentBalance = snapshot?.amount ?? 0;
+        const balanceAmount = balance?.amount ?? 0;
 
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
-        const delta = targetBalanceMicro - currentBalance;
+        const delta = targetBalanceMicro - balanceAmount;
 
         if (delta === 0) {
             return;
