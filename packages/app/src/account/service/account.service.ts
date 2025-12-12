@@ -21,17 +21,9 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 class AccountService {
     async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const account = await accountRepository.create(
-                {
-                    ...input,
-                    currentBalance: convertToMicroUnits(input.currentBalance)
-                },
-                tx
-            );
+            const account = await accountRepository.create(input, tx);
 
-            if (input.currentBalance !== 0) {
-                await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
-            }
+            await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
 
             return account;
         });
@@ -39,18 +31,9 @@ class AccountService {
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const [{ balance: currentBalanceMicro }] = await accountBalanceRepository.getAccountBalance(id);
+            const [{ balance: currentBalanceMicro }] = await accountBalanceRepository.getByAccountId(id);
 
-            const account = await accountRepository.updateById(
-                id,
-                {
-                    ...input,
-                    ...(isNumber(input.currentBalance) && {
-                        currentBalance: convertToMicroUnits(input.currentBalance)
-                    })
-                },
-                tx
-            );
+            const account = await accountRepository.updateById(id, input, tx);
 
             if (isNumber(input.currentBalance) && convertToMicroUnits(input.currentBalance) !== currentBalanceMicro) {
                 await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
