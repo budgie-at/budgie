@@ -13,8 +13,8 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';
 import { TransactionFilterRenderItemsArgsType } from '../../type/transaction-filter-render-items-args.type';
 
-import { TransactionFilterControls } from './transaction-filter-controls/transaction-filter-controls';
-import { TransactionFilterHeader } from './transaction-filter-header/transaction-filter-header';
+import { TransactionFilterControls } from '../transaction-filter-controls/transaction-filter-controls';
+import { TransactionFilterHeader } from '../transaction-filter-header/transaction-filter-header';
 
 interface TransactionMultiSelectFilterProps<T extends { id: number }> {
     readonly ref: RefObject<BottomSheetInterface | null>;
