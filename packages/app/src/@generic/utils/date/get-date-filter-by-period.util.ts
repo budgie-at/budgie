@@ -18,6 +18,7 @@ export const getDateFilterByPeriod = (period: DatePeriodEnum): DateRangeInterfac
         case DatePeriodEnum.THIS_YEAR:
             return getDateRangeForYearBeforeDay(now);
         case DatePeriodEnum.ALL_TIME:
+            return { from: null, to: null };
         default:
             return null;
     }
