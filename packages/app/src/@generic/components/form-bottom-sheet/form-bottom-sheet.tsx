@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { IconName, ICONS } from '../../constant/icons.constant';
+import { ICONS, IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';

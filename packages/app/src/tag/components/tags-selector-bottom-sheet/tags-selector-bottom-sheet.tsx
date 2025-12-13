@@ -1,7 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import { Text, View } from 'react-native';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -10,6 +9,7 @@ import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-hea
 import { BottomSheetScrollView } from '../../../@generic/components/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
 import { Button } from '../../../@generic/components/button/button';
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
+import { Footer } from '../../../@generic/components/footer/footer';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchTagsQuery } from '../../query/use-search-tags.query';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
@@ -22,7 +22,6 @@ interface Props {
 }
 
 const snapPoints = ['70%'];
-const safeEdges: Edges = ['bottom']
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
     const { tags } = useSearchTagsQuery();
@@ -33,8 +32,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const selectedTagsCount = selectedTags.length;
     const description = t`${tagsCount} tags available`;
 
-    const handleClose = () => ref.current?.close()
-    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`
+    const handleClose = () => ref.current?.close();
+    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
 
     return (
         <BottomSheet snapPoints={snapPoints} ref={ref}>
@@ -92,11 +91,9 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 </View>
             </BottomSheetScrollView>
 
-            <SafeAreaView edges={safeEdges}>
-                <View className="pt-3xl border-t border-t-secondary-corner px-5xl">
-                    <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
-                </View>
-            </SafeAreaView>
+            <Footer>
+                <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
+            </Footer>
         </BottomSheet>
     );
 };
