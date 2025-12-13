@@ -1,10 +1,10 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { ICONS } from '../../constant/icons.constant';
+import { Footer } from '../footer/footer';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -13,12 +13,9 @@ interface Props {
     readonly onCancel: EmptyFn;
 }
 
-export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => {
-    const { bottom } = useSafeAreaInsets();
-    const style = { paddingBottom: bottom };
-
-    return (
-        <View className="flex-row gap-x-md pt-xl px-7xl border-t border-t-secondary-corner" style={style}>
+export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => (
+    <Footer>
+        <View className="flex-row">
             <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
                 <Text className="text-primary text-center">
                     <Trans>Cancel</Trans>
@@ -36,5 +33,5 @@ export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => {
                 </Text>
             </HapticPressable>
         </View>
-    );
-};
+    </Footer>
+);

@@ -6,10 +6,10 @@ import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
+import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { SingleDatePicker } from '../date-picker/single-date-picker';
-import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
 
 interface Props {
     readonly date: Date;
