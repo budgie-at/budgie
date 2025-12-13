@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const TransactionFilterControls = ({ onSelectAll, onDeselectAll, searchPlaceholder, search, onSearchChange }: Props) => (
-    <View>
+    <View className="gap-y-3xl">
         <BottomSheetTextInput placeholder={searchPlaceholder} value={search} onChangeText={onSearchChange} />
 
         <View className="flex-row gap-x-md">
