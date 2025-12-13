@@ -10,8 +10,8 @@ import { FilterChip } from '../../../@generic/components/filter-chip/filter-chip
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { AccountsGroup } from '../../../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../../../account/query/use-search-accounts-grouped.query';
-import { TransactionMultiSelectFilter } from '../transaction-tag-filter/transaction-base-filter';
-import { TransactionFilterEmptyState } from '../transaction-tag-filter/transaction-filter-empty-state';
+import { TransactionMultiSelectFilter } from '../transaction-base-filter/transaction-base-filter';
+import { TransactionFilterEmptyState } from '../transaction-filter-empty-state/transaction-filter-empty-state';
 
 interface Props {
     readonly value: number[] | null;
