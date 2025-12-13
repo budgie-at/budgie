@@ -1,6 +1,6 @@
 import { SQL, and, gte, inArray, lte, or } from 'drizzle-orm';
 
-import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DateRangeInterface } from '../../generic/interface/date-range.interface';
 import { DB, TX } from '../../generic/type/db.type';
@@ -45,41 +45,19 @@ export class TransactionRepository {
         });
     }
 
-    private buildWhere(filters: TransactionFilterInterface) {
-        const conditions: SQL[] = [];
-
-        if (isNotEmptyArray(filters.types)) {
-            conditions.push(inArray(TransactionEntityTable.type, filters.types));
-        }
-
-        const accountCondition = this.buildAccountCondition(filters);
-        if (isDefined(accountCondition)) {
-            conditions.push(accountCondition);
-        }
-
-        const categoryCondition = this.buildCategoryCondition(filters);
-        if (isDefined(categoryCondition)) {
-            conditions.push(categoryCondition);
-        }
-
-        const tagCondition = this.buildTagCondition(filters);
-        if (isDefined(tagCondition)) {
-            conditions.push(tagCondition);
-        }
-
-        const dateCondition = isDefined(filters.date) ? this.buildDateCondition(filters.date) : null;
-        if (isDefined(dateCondition)) {
-            conditions.push(dateCondition);
-        }
+    private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
+        const conditions: SQL[] = [
+            ...(isNotEmptyArray(types) ? [inArray(TransactionEntityTable.type, types)] : []),
+            ...(isNotEmptyArray(accountIds) ? [this.buildAccountCondition(accountIds)] : []),
+            ...(isNotEmptyArray(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
+            ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
+            ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
+        ].filter(isDefined);
 
         return isNotEmptyArray(conditions) ? and(...conditions) : null;
     }
 
-    private buildCategoryCondition({ categoryIds }: TransactionFilterInterface) {
-        if (!isDefined(categoryIds) || isEmptyArray(categoryIds)) {
-            return null;
-        }
-
+    private buildCategoryCondition(categoryIds: number[]) {
         return inArray(
             TransactionEntityTable.id,
             this.db
@@ -89,11 +67,7 @@ export class TransactionRepository {
         );
     }
 
-    private buildTagCondition({ tagIds }: TransactionFilterInterface) {
-        if (!isDefined(tagIds) || isEmptyArray(tagIds)) {
-            return null;
-        }
-
+    private buildTagCondition(tagIds: number[]) {
         return inArray(
             TransactionEntityTable.id,
             this.db
@@ -103,11 +77,7 @@ export class TransactionRepository {
         );
     }
 
-    private buildAccountCondition({ accountIds }: TransactionFilterInterface) {
-        if (!isDefined(accountIds) || isEmptyArray(accountIds)) {
-            return null;
-        }
-
+    private buildAccountCondition(accountIds: number[]) {
         return or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds));
     }
 

@@ -12,8 +12,8 @@ import { useSearchCategoriesQuery } from '../../../category/query/use-search-cat
 import { TransactionFilterRenderItemsArgsType } from '../../type/transaction-filter-render-items-args.type';
 import { TransactionCategoryFilterItem } from './transaction-category-filter-item';
 
-import { TransactionMultiSelectFilter } from '../transaction-tag-filter/transaction-base-filter';
-import { TransactionFilterEmptyState } from '../transaction-tag-filter/transaction-filter-empty-state';
+import { TransactionMultiSelectFilter } from '../transaction-base-filter/transaction-base-filter';
+import { TransactionFilterEmptyState } from '../transaction-filter-empty-state/transaction-filter-empty-state';
 
 interface Props {
     readonly value: number[] | null;
