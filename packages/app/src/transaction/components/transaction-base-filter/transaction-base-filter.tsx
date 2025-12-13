@@ -1,13 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, RefObject } from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isPositiveNumber } from '@rnw-community/shared';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { BottomSheetView } from '../../../@generic/components/bottom-sheet-view/bottom-sheet-view';
 import { Button } from '../../../@generic/components/button/button';
+import { Footer } from '../../../@generic/components/footer/footer';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';
@@ -33,11 +33,9 @@ export const TransactionBaseFilter = (props: TransactionMultiSelectFilterProps) 
     const { ref, title, icon, children, onApply, selected, hasSelected, onClear, enableDynamicSizing, snapPoints, useBottomSheetView } =
         props;
 
-    const { bottom } = useSafeAreaInsets();
     const { t } = useLingui();
 
     const buttonText = isPositiveNumber(selected) ? t`Apply Filter (${selected})` : t`Apply Filter`;
-    const style = { paddingBottom: bottom };
 
     const Wrapper = useBottomSheetView ? BottomSheetView : View;
 
@@ -48,9 +46,9 @@ export const TransactionBaseFilter = (props: TransactionMultiSelectFilterProps) 
 
                 {children}
 
-                <View className="px-7xl pt-4xl border-t border-t-secondary-corner bg-primary-reverse" style={style}>
+                <Footer>
                     <Button variant="ghost" onPress={onApply} content={buttonText} />
-                </View>
+                </Footer>
             </Wrapper>
         </BottomSheet>
     );
