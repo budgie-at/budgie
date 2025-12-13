@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
+import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionListFilters } from '../transaction-list-filters/transaction-list-filters';
 
@@ -19,9 +20,8 @@ export const TransactionList = ({ accountId }: Props) => {
         ...DEFAULT_TRANSACTION_FILTER,
         accountIds: isDefined(accountId) ? [accountId] : null
     });
-    const hasFiltersSelected =
-        JSON.stringify({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null }) !==
-        JSON.stringify(filters);
+
+    const hasFiltersSelected = checkIfFiltersSelected(accountId, filters);
 
     const { sections, loadMore } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
@@ -32,7 +32,7 @@ export const TransactionList = ({ accountId }: Props) => {
     const keyExtractor = (item: TransactionWithRelationsEntityInterface) => item.id.toString();
 
     const renderSectionHeader = ({ section }: { section: { title: string } }) => (
-        <View className="bg-primary-reverse">
+        <View className="bg-primary-reverse py-sm">
             <Text className="text-secondary-foreground uppercase text-xs">{section.title}</Text>
         </View>
     );
@@ -53,12 +53,12 @@ export const TransactionList = ({ accountId }: Props) => {
     );
 
     return (
-        <>
+        <View className="gap-y-3xl">
             <TransactionListFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
 
             <SectionList
                 showsVerticalScrollIndicator={false}
-                contentContainerClassName="pt-5xl gap-y-xl"
+                contentContainerClassName="gap-y-xl"
                 sections={listSections}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
@@ -68,6 +68,6 @@ export const TransactionList = ({ accountId }: Props) => {
                 onEndReachedThreshold={0.3}
                 ListEmptyComponent={listEmptyState}
             />
-        </>
+        </View>
     );
 };
