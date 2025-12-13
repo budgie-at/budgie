@@ -10,9 +10,9 @@ import { FilterChip } from '../../../@generic/components/filter-chip/filter-chip
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchTagsLiveQuery } from '../../../tag/query/use-search-tags-live.query';
 import { TransactionFilterRenderItemsArgsType } from '../../type/transaction-filter-render-items-args.type';
+import { TransactionMultiSelectFilter } from '../transaction-base-filter/transaction-base-filter';
+import { TransactionFilterEmptyState } from '../transaction-filter-empty-state/transaction-filter-empty-state';
 
-import { TransactionMultiSelectFilter } from './transaction-base-filter';
-import { TransactionFilterEmptyState } from './transaction-filter-empty-state';
 import { TransactionTagFilterItem } from './transaction-tag-filter-item';
 
 interface Props {

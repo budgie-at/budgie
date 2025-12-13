@@ -3,9 +3,9 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../../@generic/components/haptic-pressable/haptic-pressable';
-import { IconName, ICONS } from '../../../../@generic/constant/icons.constant';
+import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { IconName, ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly title: string;
