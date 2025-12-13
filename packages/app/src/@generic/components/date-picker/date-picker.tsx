@@ -10,14 +10,13 @@ const components: CalendarComponents = {
     IconPrev: <Icon icon={ICONS.ChevronLeft} className="text-primary" size={24} />
 };
 
-export const DatePicker = ({ classNames, ...props }: ComponentProps<typeof DateTimePicker>) => {
+export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     const { settings } = useSettingsContext();
     const defaultClassNames = useDefaultClassNames();
 
     /* eslint-disable lingui/no-unlocalized-strings */
-    const className = {
+    const classNames = {
         ...defaultClassNames,
-        ...classNames,
         today: 'bg-primary/20',
         today_label: 'text-primary',
         header: 'py-xl px-xl',
@@ -45,5 +44,5 @@ export const DatePicker = ({ classNames, ...props }: ComponentProps<typeof DateT
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={className} locale={settings.locale} components={components} />;
+    return <DateTimePicker {...props} classNames={classNames} locale={settings.locale} components={components} />;
 };

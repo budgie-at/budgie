@@ -1,10 +1,12 @@
-import { SQL, and, count, eq, gte, lte, or } from 'drizzle-orm';
+import { SQL, and, gte, inArray, lte, or } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { DateFilterInterface } from '../../generic/interface/date-filter.interface';
+import { DateRangeInterface } from '../../generic/interface/date-range.interface';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -33,7 +35,7 @@ export class TransactionRepository {
                         [TransactionEntryAssociationEnum.CATEGORY]: true
                     }
                 },
-                [TransactionAssociationEnum.TRANSACTION_TO_TAGS]: true,
+                [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
                 [TransactionAssociationEnum.FROM_ACCOUNT]: true,
                 [TransactionAssociationEnum.TO_ACCOUNT]: true
             },
@@ -43,26 +45,26 @@ export class TransactionRepository {
         });
     }
 
-    count(filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
-        const where = this.buildWhere(filters);
-
-        if (isDefined(where)) {
-            return this.db.select({ value: count() }).from(TransactionEntityTable).where(where);
-        }
-
-        return this.db.select({ value: count() }).from(TransactionEntityTable);
-    }
-
     private buildWhere(filters: TransactionFilterInterface) {
         const conditions: SQL[] = [];
 
-        if (isDefined(filters.type)) {
-            conditions.push(eq(TransactionEntityTable.type, filters.type));
+        if (isNotEmptyArray(filters.types)) {
+            conditions.push(inArray(TransactionEntityTable.type, filters.types));
         }
 
         const accountCondition = this.buildAccountCondition(filters);
         if (isDefined(accountCondition)) {
             conditions.push(accountCondition);
+        }
+
+        const categoryCondition = this.buildCategoryCondition(filters);
+        if (isDefined(categoryCondition)) {
+            conditions.push(categoryCondition);
+        }
+
+        const tagCondition = this.buildTagCondition(filters);
+        if (isDefined(tagCondition)) {
+            conditions.push(tagCondition);
         }
 
         const dateCondition = isDefined(filters.date) ? this.buildDateCondition(filters.date) : null;
@@ -73,15 +75,43 @@ export class TransactionRepository {
         return isNotEmptyArray(conditions) ? and(...conditions) : null;
     }
 
-    private buildAccountCondition({ accountId }: TransactionFilterInterface) {
-        if (!isDefined(accountId)) {
+    private buildCategoryCondition({ categoryIds }: TransactionFilterInterface) {
+        if (!isDefined(categoryIds) || isEmptyArray(categoryIds)) {
             return null;
         }
 
-        return or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId));
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                .from(TransactionEntryEntityTable)
+                .where(inArray(TransactionEntryEntityTable.categoryId, categoryIds))
+        );
     }
 
-    private buildDateCondition({ from, to }: DateFilterInterface) {
+    private buildTagCondition({ tagIds }: TransactionFilterInterface) {
+        if (!isDefined(tagIds) || isEmptyArray(tagIds)) {
+            return null;
+        }
+
+        return inArray(
+            TransactionEntityTable.id,
+            this.db
+                .select({ transactionId: TransactionTagsEntityTable.transactionId })
+                .from(TransactionTagsEntityTable)
+                .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
+        );
+    }
+
+    private buildAccountCondition({ accountIds }: TransactionFilterInterface) {
+        if (!isDefined(accountIds) || isEmptyArray(accountIds)) {
+            return null;
+        }
+
+        return or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds));
+    }
+
+    private buildDateCondition({ from, to }: DateRangeInterface) {
         const parts: SQL[] = [];
 
         if (isDefined(from)) {

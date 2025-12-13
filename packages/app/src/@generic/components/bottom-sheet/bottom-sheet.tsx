@@ -46,7 +46,7 @@ export const BottomSheet = (props: PropsWithChildren<Props>) => {
             enableContentPanningGesture={false}
             footerComponent={footerComponent}
             snapPoints={snapPoints}
-            stackBehavior='switch'
+            stackBehavior="switch"
             enablePanDownToClose
             ref={modalRef}
             topInset={top}

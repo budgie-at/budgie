@@ -1,23 +1,36 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionEntryWithRelationsEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {
-    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly entries: TransactionEntryWithRelationsEntityInterface[];
+    readonly type: TransactionTypeEnum;
 }
 
-export const TransactionCategoryBadge = ({ transaction }: Props) => {
+const wrapperClassName = 'bg-secondary-corner self-start py-xxs px-md rounded-2xl flex-row';
+const textClassName = 'text-xs font-medium text-primary';
+
+export const TransactionCategoryBadge = ({ entries, type }: Props) => {
     const { t } = useLingui();
 
-    const className = 'bg-secondary-background self-start py-xxs px-md rounded-2xl';
-    const textClassName = 'text-xs font-medium text-primary';
+    const [firstEntry, ...otherEntries] = entries;
 
-    if (transaction.entries.length > 1) {
+    if (type === TransactionTypeEnum.ADJUSTMENT) {
         return (
-            <View className={className}>
+            <View className={wrapperClassName}>
+                <Text className={textClassName}>{t`Balance Adjustment`}</Text>
+            </View>
+        );
+    }
+
+    if (isNotEmptyArray(otherEntries)) {
+        return (
+            <View className={wrapperClassName}>
                 <Icon icon={ICONS.SplitIcon} className="text-primary" size={12} />
 
                 <Text className={textClassName}>{t`Categories`}</Text>
@@ -25,11 +38,9 @@ export const TransactionCategoryBadge = ({ transaction }: Props) => {
         );
     }
 
-    const title = transaction.entries.at(0)?.category?.title ?? '';
-
     return (
-        <View className={className}>
-            <Text className={textClassName}>{title}</Text>
+        <View className={wrapperClassName}>
+            <Text className={textClassName}>{firstEntry.category?.title ?? ''}</Text>
         </View>
     );
 };

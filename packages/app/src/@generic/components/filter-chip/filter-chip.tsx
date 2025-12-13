@@ -3,7 +3,7 @@ import { Text } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { IconName, ICONS } from '../../constant/icons.constant';
+import { ICONS, IconName } from '../../constant/icons.constant';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 

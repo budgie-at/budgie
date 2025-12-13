@@ -6,7 +6,7 @@ export { LanguageEnum } from './generic/enum/language.enum';
 export { DatePeriodEnum } from './generic/enum/date-period.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
 
-export type { DateFilterInterface } from './generic/interface/date-filter.interface';
+export type { DateRangeInterface } from './generic/interface/date-range.interface';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
@@ -159,6 +159,7 @@ export { TransactionEntryEntitySchema } from './transaction-entry/schema/transac
 export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/transaction-entry-create-entity.schema';
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
+export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';

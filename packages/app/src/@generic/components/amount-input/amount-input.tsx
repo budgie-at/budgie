@@ -26,7 +26,10 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, status, plac
     const formatDigits = useFormatDigits(decimalPlaces);
     const { intl } = useI18nContext();
 
-    const [displayValue, setDisplayValue] = useState(formatDigits(value === 0 ? '' : value.toString()));
+    const [displayValue, setDisplayValue] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+
+    const displayedText = isFocused ? displayValue : formatDigits(value === 0 ? '' : value.toString());
 
     const handleChangeText = (text: string) => {
         const cleaned = sanitizeAmountText(text, decimalSeparator, digitGroupingSeparator);
@@ -52,23 +55,22 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, status, plac
         onChangeValue(parseFloat(normalizedNumeric) || 0);
     };
 
+    const handleFocus = () => {
+        setIsFocused(true);
+        setDisplayValue(displayedText);
+    };
+
     const handleBlur = () => {
-        if (!isNotEmptyString(displayValue)) {
-            return;
-        }
-
-        const cleaned = displayValue.split(digitGroupingSeparator).join('').replace(decimalSeparator, '.');
-
-        const formatted = formatDigits(cleaned);
-
-        setDisplayValue(formatted);
+        setIsFocused(false);
+        setDisplayValue('');
     };
 
     return (
         <Input
             status={status}
-            value={displayValue}
+            value={displayedText}
             onChangeText={handleChangeText}
+            onFocus={handleFocus}
             onBlur={handleBlur}
             placeholder={placeholder}
             keyboardType="decimal-pad"

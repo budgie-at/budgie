@@ -36,7 +36,7 @@ export default function Account() {
     const { i18n } = useLingui();
 
     if (isLoading) {
-        return null;
+        return <View />;
     }
 
     if (!isDefined(account)) {

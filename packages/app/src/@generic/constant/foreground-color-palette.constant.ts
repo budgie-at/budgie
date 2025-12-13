@@ -9,5 +9,6 @@ export const FOREGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     pink: 'text-pink-foreground',
     warning: 'text-warning-foreground',
     'dark-warning': 'text-dark-warning-foreground',
-    ghost: 'text-ghost-foreground'
+    ghost: 'text-ghost-foreground',
+    secondary: 'text-secondary-foreground',
 };

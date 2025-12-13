@@ -40,9 +40,6 @@ export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
     const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filters]);
-    const { data: countData } = useLiveQuery(transactionRepository.count(filters), [filters]);
-
-    const totalCount = countData.at(0)?.value ?? 0;
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
@@ -59,6 +56,6 @@ export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
     };
 
     return isDefined(updatedAt)
-        ? { sections, isLoading: false, totalCount, hasMore, loadMore, error: error ?? null }
-        : { sections: [], isLoading: true, totalCount, hasMore: true, loadMore, error: null };
+        ? { sections, isLoading: false, hasMore, loadMore, error: error ?? null }
+        : { sections: [], isLoading: true, hasMore: true, loadMore, error: null };
 };

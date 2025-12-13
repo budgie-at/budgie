@@ -1,8 +1,9 @@
+import { DateRangeInterface } from '@budgie/contracts';
+
 import { getEndOfDay } from './get-end-of-day.util';
 import { getStartOfDay } from './get-start-of-day.util';
-import { DateFilterInterface } from '@budgie/contracts';
 
-export const getDateRangeForWeekBeforeDay = (now: Date): DateFilterInterface => {
+export const getDateRangeForWeekBeforeDay = (now: Date): DateRangeInterface => {
     const from = getStartOfDay(now);
     const day = from.getDay();
 

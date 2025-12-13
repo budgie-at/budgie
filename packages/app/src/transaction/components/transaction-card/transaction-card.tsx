@@ -51,7 +51,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
 
-                    <TransactionCategoryBadge transaction={transaction} />
+                    <TransactionCategoryBadge entries={transaction.entries} type={transaction.type} />
                 </View>
             </View>
 

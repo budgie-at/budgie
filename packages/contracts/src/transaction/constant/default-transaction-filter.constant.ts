@@ -2,6 +2,8 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 
 export const DEFAULT_TRANSACTION_FILTER: TransactionFilterInterface = {
     date: null,
-    type: null,
-    accountId: null
+    types: null,
+    tagIds: null,
+    accountIds: null,
+    categoryIds: null,
 };
