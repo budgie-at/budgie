@@ -1,4 +1,4 @@
-import { SQL, and, gte, inArray, lte, or } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, lte, or, SQL } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -14,6 +14,7 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 
 export class TransactionRepository {
     constructor(private db: DB) {}
@@ -47,8 +48,8 @@ export class TransactionRepository {
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
+            ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [inArray(TransactionEntityTable.type, types)] : []),
-            ...(isNotEmptyArray(accountIds) ? [this.buildAccountCondition(accountIds)] : []),
             ...(isNotEmptyArray(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
@@ -77,8 +78,35 @@ export class TransactionRepository {
         );
     }
 
-    private buildAccountCondition(accountIds: number[]) {
-        return or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds));
+    private buildAccountCondition(accountIds: number[] | null) {
+        const baseConditions = [
+            or(
+                inArray(
+                    TransactionEntityTable.id,
+                    this.db
+                        .select({ transactionId: TransactionEntityTable.id })
+                        .from(TransactionEntityTable)
+                        .innerJoin(AccountEntityTable, eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id))
+                        .where(isNull(AccountEntityTable.deletedAt))
+                ),
+                inArray(
+                    TransactionEntityTable.id,
+                    this.db
+                        .select({ transactionId: TransactionEntityTable.id })
+                        .from(TransactionEntityTable)
+                        .innerJoin(AccountEntityTable, eq(TransactionEntityTable.toAccountId, AccountEntityTable.id))
+                        .where(isNull(AccountEntityTable.deletedAt))
+                )
+            )
+        ];
+
+        if (isNotEmptyArray(accountIds)) {
+            baseConditions.push(
+                or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds))
+            );
+        }
+
+        return baseConditions;
     }
 
     private buildDateCondition({ from, to }: DateRangeInterface) {

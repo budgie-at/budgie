@@ -1,4 +1,4 @@
-import { and, eq, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
@@ -16,6 +16,10 @@ export class AccountRepository {
         const [account] = await (tx ?? this.db).insert(AccountEntityTable).values([input]).returning();
 
         return account;
+    }
+
+    count() {
+        return this.db.select({ count: count() }).from(AccountEntityTable);
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {

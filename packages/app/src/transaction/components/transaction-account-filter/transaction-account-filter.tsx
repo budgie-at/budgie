@@ -1,16 +1,15 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { FilterChip } from '../../../@generic/components/filter-chip/filter-chip';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { AccountsGroup } from '../../../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../../../account/query/use-search-accounts-grouped.query';
-import { TransactionMultiSelectFilter } from '../transaction-base-filter/transaction-base-filter';
+import { useTransactionFilter } from '../../hook/use-transaction-filter.hook';
+import { TransactionFilterRenderItemsArgsInterface } from '../../interface/transaction-filter-render-items-args.interface';
+import { TransactionBaseSearchableFilter } from '../transaction-base-filter/transaction-base-searchable-filter';
+import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFilterEmptyState } from '../transaction-filter-empty-state/transaction-filter-empty-state';
 
 interface Props {
@@ -19,23 +18,15 @@ interface Props {
 }
 
 export const TransactionAccountFilter = ({ value, onChange }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
-    const [search, setSearch] = useState('');
+    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/create-account');
     const { t } = useLingui();
 
-    const { accountsGrouped, accounts } = useSearchAccountsGroupedQuery(search);
-
-    const handleOpen = () => ref.current?.open();
+    const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);
 
     const selectedAccountsCount = value?.length ?? 0;
     const label = isPositiveNumber(selectedAccountsCount) ? t`Accounts (${selectedAccountsCount})` : t`Accounts`;
 
-    const handleNavigateToAccounts = () => {
-        ref.current?.close();
-        void router.push('/create-account');
-    };
-
-    const renderItems = ({ selectedIds, onSelect }: { selectedIds: number[]; onSelect: (...accountIds: number[]) => void }) => (
+    const renderItems = ({ selectedIds, onSelect }: TransactionFilterRenderItemsArgsInterface<AccountEntityInterface>) => (
         <View className="gap-y-lg">
             {isNotEmptyArray(accountsGrouped.BANK) ? (
                 <AccountsGroup
@@ -59,9 +50,10 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <FilterChip isActive={isPositiveNumber(selectedAccountsCount)} icon="Wallet" label={label} onPress={handleOpen} />
+            <TransactionFilterChip isActive={isPositiveNumber(selectedAccountsCount)} icon="Wallet" label={label} onPress={handleOpen} />
 
-            <TransactionMultiSelectFilter
+            <TransactionBaseSearchableFilter
+                total={total}
                 ref={ref}
                 title={t`Accounts`}
                 icon="Wallet"
@@ -77,7 +69,7 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
                         icon="Wallet"
                         buttonText={t`Create accounts`}
                         title={t`No accounts yet`}
-                        onCreate={handleNavigateToAccounts}
+                        onCreate={handleNavigateToCreate}
                         description={t`Create your first account to start tracking your finances`}
                     />
                 }

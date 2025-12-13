@@ -33,7 +33,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
 
     const isSelected = selectedAccountIds.includes(account.id);
 
-    const handleSelect = () => onSelect(account.id);
+    const handleSelect = () => void onSelect(account.id);
 
     return (
         <HapticPressable onPress={handleSelect} className={accountVariants({ isSelected })}>

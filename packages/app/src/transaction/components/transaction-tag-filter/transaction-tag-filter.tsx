@@ -1,16 +1,14 @@
 import { TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { FilterChip } from '../../../@generic/components/filter-chip/filter-chip';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useSearchTagsLiveQuery } from '../../../tag/query/use-search-tags-live.query';
-import { TransactionFilterRenderItemsArgsType } from '../../type/transaction-filter-render-items-args.type';
-import { TransactionMultiSelectFilter } from '../transaction-base-filter/transaction-base-filter';
+import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
+import { useTransactionFilter } from '../../hook/use-transaction-filter.hook';
+import { TransactionFilterRenderItemsArgsInterface } from '../../interface/transaction-filter-render-items-args.interface';
+import { TransactionBaseSearchableFilter } from '../transaction-base-filter/transaction-base-searchable-filter';
+import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFilterEmptyState } from '../transaction-filter-empty-state/transaction-filter-empty-state';
 
 import { TransactionTagFilterItem } from './transaction-tag-filter-item';
@@ -21,23 +19,15 @@ interface Props {
 }
 
 export const TransactionTagFilter = ({ value, onChange }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
-    const [search, setSearch] = useState('');
+    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/tags');
     const { t } = useLingui();
 
-    const { tags } = useSearchTagsLiveQuery(search);
+    const { tags, total } = useSearchTagsQuery(search);
 
     const selectedTagsCount = value?.length ?? 0;
     const label = isPositiveNumber(selectedTagsCount) ? t`Tags (${selectedTagsCount})` : t`Tags`;
 
-    const handleOpen = () => void ref.current?.open();
-
-    const handleNavigateToTags = () => {
-        ref.current?.close();
-        void router.push('/tags');
-    };
-
-    const renderItems = ({ items, onSelect, selectedIds }: TransactionFilterRenderItemsArgsType<TagEntityInterface>) => (
+    const renderItems = ({ items, onSelect, selectedIds }: TransactionFilterRenderItemsArgsInterface<TagEntityInterface>) => (
         <View>
             {items.map((tag, index) => (
                 <TransactionTagFilterItem
@@ -54,11 +44,12 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <FilterChip isActive={isPositiveNumber(selectedTagsCount)} icon="HashIcon" label={label} onPress={handleOpen} />
+            <TransactionFilterChip isActive={isPositiveNumber(selectedTagsCount)} icon="HashIcon" label={label} onPress={handleOpen} />
 
-            <TransactionMultiSelectFilter
+            <TransactionBaseSearchableFilter
                 ref={ref}
                 value={value}
+                total={total}
                 onChange={onChange}
                 search={search}
                 onSearchChange={setSearch}
@@ -71,7 +62,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
                 emptyState={
                     <TransactionFilterEmptyState
                         icon="HashIcon"
-                        onCreate={handleNavigateToTags}
+                        onCreate={handleNavigateToCreate}
                         title={t`No Tags Yet`}
                         buttonText={t`Create Tags`}
                         description={t`Create custom tags in Settings to label and filter your transactions`}

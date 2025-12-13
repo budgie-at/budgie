@@ -4,7 +4,7 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { IconName, ICONS } from '../../../@generic/constant/icons.constant';
+import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly icon: IconName;

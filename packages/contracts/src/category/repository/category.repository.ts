@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, count, eq, sql } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -17,6 +17,14 @@ export class CategoryRepository {
         return this.db.query.CategoryEntityTable.findMany({
             where: includeDefault ? searchQuery : and(searchQuery, eq(CategoryEntityTable.isDefault, false))
         });
+    }
+
+    count(includeDefault: boolean) {
+        if (includeDefault) {
+            return this.db.select({ count: count() }).from(CategoryEntityTable);
+        }
+
+        return this.db.select({ count: count() }).from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, false));
     }
 
     async create(input: CategoryCreateEntityInterface): Promise<CategoryEntityInterface> {

@@ -11,7 +11,7 @@ import { BottomSheetScrollView } from '../../../@generic/components/bottom-sheet
 import { Button } from '../../../@generic/components/button/button';
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useSearchTagsLiveQuery } from '../../query/use-search-tags-live.query';
+import { useSearchTagsQuery } from '../../query/use-search-tags.query';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
 interface Props {
@@ -25,7 +25,7 @@ const snapPoints = ['70%'];
 const safeEdges: Edges = ['bottom']
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
-    const { tags } = useSearchTagsLiveQuery();
+    const { tags } = useSearchTagsQuery();
     const { t } = useLingui();
 
     const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
