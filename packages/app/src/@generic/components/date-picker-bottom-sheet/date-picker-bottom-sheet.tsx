@@ -9,7 +9,7 @@ import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { SingleDatePicker } from '../date-picker/single-date-picker';
-import { FormBottomSheetFooter } from '../form-bottom-sheet-footer/form-bottom-sheet-footer';
+import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
 
 interface Props {
     readonly date: Date;
@@ -44,7 +44,7 @@ export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
 
                 <SingleDatePicker date={date} onChange={setLocalDate} />
 
-                <FormBottomSheetFooter onCancel={handleCancel} onSubmit={handleSubmit} />
+                <BottomSheetFormFooter onCancel={handleCancel} onSubmit={handleSubmit} />
             </BottomSheetView>
         </BottomSheet>
     );

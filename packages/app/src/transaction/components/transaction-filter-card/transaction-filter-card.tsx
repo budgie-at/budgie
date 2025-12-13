@@ -5,7 +5,7 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { IconName, ICONS } from '../../../@generic/constant/icons.constant';
+import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
