@@ -13,7 +13,7 @@ export const AccountBalanceInput = ({ value, onChange, textClassName }: Props) =
     const { decimalPlaces } = useSettingsContext();
     const format = useFormatDigits(decimalPlaces);
 
-    return (
+return (
         <AmountInput
             value={value}
             onChangeValue={onChange}

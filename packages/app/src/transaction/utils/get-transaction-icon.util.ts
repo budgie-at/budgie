@@ -4,6 +4,10 @@ import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@b
 import { IconName } from '../../@generic/constant/icons.constant';
 
 export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): IconName => {
+    if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+        return 'BadgePlus';
+    }
+
     if (transaction.type === TransactionTypeEnum.TRANSFER) {
         return 'ArrowRightLeft';
     }

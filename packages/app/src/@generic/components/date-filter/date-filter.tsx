@@ -1,4 +1,4 @@
-import { DateFilterInterface, DatePeriodEnum } from '@budgie/contracts';
+import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useRef, useState } from 'react';
@@ -11,18 +11,18 @@ import { DATE_PERIOD } from '../../constant/date-period.constant';
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { getDateFilterByPeriod } from '../../utils/date/get-date-filter-by-period.util';
+import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { Button } from '../button/button';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { DatePicker } from '../date-picker/date-picker';
+import { RangeDatePicker } from '../date-picker/range-date-picker';
 import { FilterChip } from '../filter-chip/filter-chip';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
 
 interface Props {
-    readonly value: DateFilterInterface | null;
-    readonly onChange: (value: DateFilterInterface | null) => void;
+    readonly value: DateRangeInterface | null;
+    readonly onChange: (value: DateRangeInterface | null) => void;
 }
 
 const chipVariants = cva('rounded-2xl border border-secondary-corner px-4xl py-md', {
@@ -45,7 +45,7 @@ const chipTextVariants = cva('font-semibold', {
 
 export const DateFilter = ({ value, onChange }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
-    const [localValue, setLocalValue] = useState<DateFilterInterface | null>(() => value);
+    const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => value);
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const selectedPeriod = getPeriodByDateRange(value);
     const { t, i18n } = useLingui();
@@ -53,13 +53,6 @@ export const DateFilter = ({ value, onChange }: Props) => {
     const handleOpen = () => ref.current?.open();
     const handlePeriodSelect = (period: DatePeriodEnum) => {
         setLocalValue(getDateFilterByPeriod(period));
-    };
-
-    const handleDateChange = ({ endDate, startDate }: { endDate?: Date; startDate?: Date }) => {
-        setLocalValue({
-            from: isDefined(startDate) ? new Date(startDate) : null,
-            to: isDefined(endDate) ? new Date(endDate) : null
-        });
     };
 
     const handleClear = () => {
@@ -138,12 +131,7 @@ export const DateFilter = ({ value, onChange }: Props) => {
                             ))}
                         </ScrollView>
 
-                        <DatePicker
-                            mode="range"
-                            startDate={localValue?.from ?? null}
-                            endDate={localValue?.to ?? null}
-                            onChange={handleDateChange}
-                        />
+                        <RangeDatePicker range={localValue} onChange={setLocalValue} />
                     </View>
 
                     <View className="px-7xl pt-4xl border-t border-t-secondary-corner">

@@ -46,10 +46,7 @@ const textVariants = cva<{
             sm: 'font-medium text-sm',
             md: 'font-semibold text-md'
         },
-        variant: {
-            ...FOREGROUND_COLOR_PALETTE,
-            positive: 'text-white'
-        }
+        variant: FOREGROUND_COLOR_PALETTE
     }
 });
 
