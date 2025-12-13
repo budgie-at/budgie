@@ -1,11 +1,11 @@
-import { DateFilterInterface, DatePeriodEnum } from '@budgie/contracts';
+import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
 
+import { getDateRangeForDay } from './get-date-range-for-day.util';
 import { getDateRangeForMonthBeforeDay } from './get-date-range-for-month-before-day.util';
 import { getDateRangeForWeekBeforeDay } from './get-date-range-for-week-before-day.util';
 import { getDateRangeForYearBeforeDay } from './get-date-range-for-year-before-day.util';
-import { getDateRangeForDay } from './get-date-range-for-day.util';
 
-export const getDateFilterByPeriod = (period: DatePeriodEnum): DateFilterInterface | null => {
+export const getDateFilterByPeriod = (period: DatePeriodEnum): DateRangeInterface | null => {
     const now = new Date();
 
     switch (period) {

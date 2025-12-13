@@ -9,7 +9,7 @@ import { SearchableListBottomSheet } from '../../../@generic/components/bottom-s
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
-import { useGetCategoriesQuery } from '../../query/use-get-categories.query';
+import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
 interface Props {
@@ -30,7 +30,7 @@ const flatListProps = {
 
 export const CategorySelectorBottomSheet = ({ ref, selectedCategory, variant, onSelect }: Props) => {
     const [search, setSearch] = useState('');
-    const { categories } = useGetCategoriesQuery(search, true);
+    const { categories } = useSearchCategoriesQuery(search, true);
     const { t } = useLingui();
 
     const handleSelect = (categoryId: number) => {
