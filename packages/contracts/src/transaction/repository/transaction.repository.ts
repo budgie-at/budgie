@@ -1,7 +1,8 @@
-import { and, eq, gte, inArray, isNull, lte, or, SQL } from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNull, lte, or } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DateRangeInterface } from '../../generic/interface/date-range.interface';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -14,7 +15,6 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
-import { AccountEntityTable } from '../../account/table/account-entity.table';
 
 export class TransactionRepository {
     constructor(private db: DB) {}
