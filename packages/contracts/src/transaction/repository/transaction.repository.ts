@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray, isNull, lte, or, SQL } from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNull, lte, or } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
