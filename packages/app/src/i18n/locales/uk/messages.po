@@ -81,7 +81,11 @@ msgstr "Додайте нову категорію для організації
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:70
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
+msgid "Add Expense"
+msgstr ""
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
 msgid "Add Income"
 msgstr "Додати дохід"
 
@@ -269,7 +273,7 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:56
+#: src/transaction/hook/use-transaction-form.hook.ts:72
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
@@ -486,15 +490,23 @@ msgstr "Керування категоріями"
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
 msgstr "Гроші, які ви заробляєте"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+msgid "Money you spend"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:69
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
+msgid "New Expense"
+msgstr ""
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
 msgid "New Income"
 msgstr "Новий дохід"
 
@@ -737,7 +749,7 @@ msgstr "Показувати $1 234,56 замість $1 235"
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:55
+#: src/transaction/hook/use-transaction-form.hook.ts:71
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
 
