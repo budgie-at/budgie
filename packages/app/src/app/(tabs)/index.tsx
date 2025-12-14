@@ -14,17 +14,17 @@ import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.ut
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
-import { useGetAccountsQuery } from '../../account/query/use-get-accounts.query';
+import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
 
 export default function HomePage() {
-    const { accounts } = useGetAccountsQuery();
+    const { accountsGrouped } = useSearchAccountsGroupedQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
     const navigateToSettings = () => void router.push('/settings');
 
-    const accountEntries = typedObjectEntries(accounts);
+    const accountEntries = typedObjectEntries(accountsGrouped);
 
     return (
         <Page>

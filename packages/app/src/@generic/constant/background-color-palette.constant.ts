@@ -10,5 +10,6 @@ export const BACKGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     pink: 'border-pink-corner bg-pink-background',
     warning: 'border-warning-corner bg-warning-background',
     'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
-    ghost: 'border-secondary-corner bg-ghost-background'
+    ghost: 'border-secondary-corner bg-ghost-background',
+    secondary: 'border-secondary-corner bg-ghost-background',
 };

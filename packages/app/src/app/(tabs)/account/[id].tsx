@@ -20,6 +20,7 @@ import { ACCOUNT_TYPE } from '../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionList } from '../../../transaction/components/transaction-list/transaction-list';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
@@ -35,7 +36,7 @@ export default function Account() {
     const { i18n } = useLingui();
 
     if (isLoading) {
-        return null;
+        return <View />;
     }
 
     if (!isDefined(account)) {
@@ -71,6 +72,8 @@ export default function Account() {
             <View className="py-[30px]">
                 <AccountBalance currency={currency} balance={balance} />
             </View>
+
+            <TransactionList accountId={id} />
         </Page>
     );
 }

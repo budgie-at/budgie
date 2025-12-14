@@ -3,7 +3,10 @@ export { PRECISION } from './generic/constant/precision.constant';
 export { ThemeEnum } from './generic/enum/theme.enum';
 export { CurrencyEnum } from './generic/enum/currency.enum';
 export { LanguageEnum } from './generic/enum/language.enum';
+export { DatePeriodEnum } from './generic/enum/date-period.enum';
 export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
+
+export type { DateRangeInterface } from './generic/interface/date-range.interface';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
@@ -91,6 +94,8 @@ export { CategoryRepository } from './category/repository/category.repository';
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
+export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
+
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
@@ -140,6 +145,8 @@ export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
 export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
 
+export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
+
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
@@ -152,6 +159,7 @@ export { TransactionEntryEntitySchema } from './transaction-entry/schema/transac
 export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/transaction-entry-create-entity.schema';
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
+export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
