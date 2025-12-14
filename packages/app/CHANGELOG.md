@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.70.0](https://github.com/budgie-at/budgie/compare/v1.69.0...v1.70.0) (2025-12-14)
+
+### Bug Fixes
+
+- change checkIfFiltersSelected logic ([36618fd](https://github.com/budgie-at/budgie/commit/36618fd1fee2fdd63a6be1d19e97ee02e7234ca5))
+- change db name ([ee8874b](https://github.com/budgie-at/budgie/commit/ee8874bd157f3e978971e3727169837909605876))
+- remove duplications ([c598869](https://github.com/budgie-at/budgie/commit/c598869098104c9390061cc5fa7435147828e638))
+- resolve review comments ([e2703a8](https://github.com/budgie-at/budgie/commit/e2703a82346fdce53697fd05faf398bb637942e1))
+- some fixes ([124611b](https://github.com/budgie-at/budgie/commit/124611bd5c5a921b188d4d9b42ea7de99680f2e5))
+- update translations ([601142c](https://github.com/budgie-at/budgie/commit/601142c870a00c688d39cfe635b5c3b3592fde92))
+
+### Features
+
+- add transactions list ([02b7721](https://github.com/budgie-at/budgie/commit/02b772120a59daa195edba7ad1b8bf45eba79bf8))
+- add transactions screen ([d3ba965](https://github.com/budgie-at/budgie/commit/d3ba9653a95ce5473ec4de6cf59a80a6456a631a))
+- fill empty lingui translations for de, es, fr, uk ([e6341aa](https://github.com/budgie-at/budgie/commit/e6341aa60b31d3d51fcc934c4a50dfc8fc872f0c))
+
 # [1.69.0](https://github.com/budgie-at/budgie/compare/v1.68.0...v1.69.0) (2025-12-12)
 
 ### Bug Fixes
