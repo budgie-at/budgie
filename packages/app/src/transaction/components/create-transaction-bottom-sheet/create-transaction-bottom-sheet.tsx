@@ -36,6 +36,13 @@ export const CreateTransactionBottomSheet = ({ ref }: Props) => {
 
                 <View className="gap-y-3.5 px-5xl">
                     <CreateTransactionCard
+                        description={t`Money you spend`}
+                        icon={TRANSACTION_ICON.EXPENSE}
+                        title={i18n.t(TRANSACTION_TYPE.EXPENSE)}
+                        onNavigate={handleNavigate}
+                        type={TransactionTypeEnum.EXPENSE}
+                    />
+                    <CreateTransactionCard
                         description={t`Money you earn`}
                         icon={TRANSACTION_ICON.INCOME}
                         title={i18n.t(TRANSACTION_TYPE.INCOME)}
