@@ -83,7 +83,7 @@ msgstr "Додайте новий тег для організації ваши�
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
 msgid "Add Expense"
-msgstr ""
+msgstr "Додати витрату"
 
 #: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
 msgid "Add Income"
@@ -496,7 +496,7 @@ msgstr "Гроші, які ви заробляєте"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
-msgstr ""
+msgstr "Гроші, які ви витрачаєте"
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
@@ -504,7 +504,7 @@ msgstr "Новий рахунок"
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
 msgid "New Expense"
-msgstr ""
+msgstr "Нова витрата"
 
 #: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
 msgid "New Income"
