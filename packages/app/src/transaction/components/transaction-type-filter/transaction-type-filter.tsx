@@ -23,7 +23,10 @@ export const TransactionTypeFilter = ({ value, onChange }: Props) => {
     const [localValue, setLocalValue] = useState<TransactionTypeEnum[] | null>(() => value);
     const { t } = useLingui();
 
-    const handleOpen = () => void ref.current?.open();
+    const handleOpen = () => {
+        setLocalValue(value);
+        void ref.current?.open();
+    };
     const handleClear = () => void setLocalValue(null);
 
     const handleApply = () => {

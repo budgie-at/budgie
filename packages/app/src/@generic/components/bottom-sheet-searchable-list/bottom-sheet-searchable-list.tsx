@@ -11,7 +11,6 @@ import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFlatList } from '../bottom-sheet-flat-list/bottom-sheet-flat-list';
 import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetSearch } from '../bottom-sheet-search/bottom-sheet-search';
-import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { EmptyState } from '../empty-state/empty-state';
 
 interface SearchableListBottomSheetProps<T> {
@@ -67,17 +66,12 @@ export const SearchableListBottomSheet = <T,>({
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
 
-    const header = (
-        <>
+    return (
+        <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
             <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
-        </>
-    );
 
-    if (isNotEmptyArray(data)) {
-        return (
-            <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
-                {header}
+            {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
                     className={className}
                     contentContainerClassName={contentContainerClassName}
@@ -87,18 +81,10 @@ export const SearchableListBottomSheet = <T,>({
                     numColumns={numColumns}
                     renderItem={renderItem}
                     ListFooterComponent={listFooter}
-                    showsVerticalScrollIndicator={false}
                 />
-            </BottomSheet>
-        );
-    }
-
-    return (
-        <BottomSheet ref={ref} snapPoints={snapPoints} index={index}>
-            <BottomSheetView>
-                {header}
+            ) : (
                 <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
-            </BottomSheetView>
+            )}
         </BottomSheet>
     );
 };

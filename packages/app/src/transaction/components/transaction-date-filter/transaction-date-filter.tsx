@@ -23,12 +23,15 @@ interface Props {
 
 export const TransactionDateFilter = ({ value, onChange }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
-    const [localValue, setLocalValue] = useState<DateRangeInterface | null>(null);
+    const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => value);
     const selectedPeriod = getPeriodByDateRange(localValue);
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const { t, i18n } = useLingui();
 
-    const handleOpen = () => void ref.current?.open();
+    const handleOpen = () => {
+        setLocalValue(value);
+        void ref.current?.open();
+    };
     const handlePeriodSelect = (period: DatePeriodEnum) => void setLocalValue(getDateFilterByPeriod(period));
 
     const handleClear = () => void setLocalValue(null);
