@@ -1,22 +1,25 @@
-import { array } from 'zod';
-
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { TransactionEntryCreateEntitySchema } from '../../transaction-entry/schema/transaction-entry-create-entity.schema';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-import { ExpenseTransactionEntitySchema } from './expense-transaction-entity.schema';
+import { TransactionCreateEntitySchema } from './transaction-create-entity.schema';
 
-export const ExpenseTransactionCreateEntitySchema = convertToCreateEntitySchema(ExpenseTransactionEntitySchema)
-    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(1) })
-    .superRefine(({ entries }, context) => {
-        entries.forEach((transactionEntry, entryIndex) => {
-            if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {
-                context.addIssue({
-                    code: 'custom',
-                    path: [TransactionAssociationEnum.ENTRIES, entryIndex, 'type'],
-                    message: "expense entry must be 'credit' (outflow)."
-                });
-            }
+export const ExpenseTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(({ entries, type }, context) => {
+    if (type !== TransactionTypeEnum.EXPENSE) {
+        context.addIssue({
+            code: 'custom',
+            path: ['type'],
+            message: `Transaction type must be '${TransactionTypeEnum.EXPENSE}'.`
         });
+    }
+
+    entries.forEach((transactionEntry, entryIndex) => {
+        if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES, entryIndex, 'type'],
+                message: "expense entry must be 'credit' (outflow)."
+            });
+        }
     });
+});
