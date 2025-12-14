@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const TransactionAccountFilter = ({ value, onChange }: Props) => {
-    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/create-account');
+    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/create-account', value);
     const { t } = useLingui();
 
     const { accountsGrouped, accounts, total } = useSearchAccountsGroupedQuery(search);

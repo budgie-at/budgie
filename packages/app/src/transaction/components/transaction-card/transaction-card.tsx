@@ -14,10 +14,10 @@ import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
+import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 import { TransactionCardAccountInfo } from './transaction-card-account-info';
-import { getTransactionType } from '../../utils/get-transaction-type.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
