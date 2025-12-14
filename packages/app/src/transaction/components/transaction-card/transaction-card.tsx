@@ -17,6 +17,7 @@ import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 import { TransactionCardAccountInfo } from './transaction-card-account-info';
+import { getTransactionType } from '../../utils/get-transaction-type.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -37,10 +38,11 @@ export const TransactionCard = ({ transaction }: Props) => {
     const categoryIcon = getTransactionIcon(transaction);
 
     const handleNavigate = () => void router.push(`/transaction/${transaction.id}`);
+    const transactionType = getTransactionType(transaction);
 
     return (
         <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl">
-            <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transaction.type]} />
+            <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transactionType]} />
 
             <View className="flex-1 gap-y-xxs">
                 {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
@@ -55,7 +57,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                 </View>
             </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transaction.type] })}>{formatMoney(amount)}</Text>
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(amount)}</Text>
         </Card>
     );
 };
