@@ -1,6 +1,13 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
+import { TransactionFilterInterface } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-export const checkIfFiltersSelected = (accountId: number | null, filters: TransactionFilterInterface) =>
-    JSON.stringify({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null }) !== JSON.stringify(filters);
+export const checkIfFiltersSelected = (accountId: number | null, filters: TransactionFilterInterface): boolean => {
+    const { date, categoryIds, tagIds, types, accountIds } = filters;
+
+    if (isNotEmptyArray(tagIds) || isNotEmptyArray(categoryIds) || isNotEmptyArray(types) || isDefined(date)) {
+        return true;
+    }
+
+    return isNotEmptyArray(accountIds?.filter(id => id !== accountId));
+};
