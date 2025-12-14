@@ -1,20 +1,20 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
 export const TransactionCardAccountInfo = ({ transaction }: Props) => {
-    const { toAccount } = transaction;
+    const { toAccount, fromAccount } = transaction;
 
-    if (isDefined(toAccount)) {
+    const accountTitle = toAccount?.title ?? fromAccount?.title;
+
+    if (isNotEmptyString(accountTitle)) {
         return (
-            <Text className="text-xs font-medium text-primary py-xxs px-md rounded-2xl border border-secondary-corner">
-                {toAccount.title}
-            </Text>
+            <Text className="text-xs font-medium text-primary py-xxs px-md rounded-2xl border border-secondary-corner">{accountTitle}</Text>
         );
     }
 
