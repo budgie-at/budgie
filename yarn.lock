@@ -1499,6 +1499,7 @@ __metadata:
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.14"
     tsx: "npm:^4.20.6"
+    zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
 
