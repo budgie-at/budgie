@@ -7,4 +7,4 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 export const isPositiveAdjustmentTransaction = (
     transaction: TransactionWithRelationsEntityInterface
 ): transaction is TransactionPositiveAdjustmentWithRelationsEntityInterface =>
-    transaction.type === TransactionTypeEnum.INCOME && isDefined(transaction.toAccount);
+    transaction.type === TransactionTypeEnum.ADJUSTMENT && isDefined(transaction.toAccount);
