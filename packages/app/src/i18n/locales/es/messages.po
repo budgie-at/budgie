@@ -83,7 +83,7 @@ msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
 msgid "Add Expense"
-msgstr ""
+msgstr "Agregar gasto"
 
 #: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
 msgid "Add Income"
@@ -496,7 +496,7 @@ msgstr "Dinero que ganas"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
-msgstr ""
+msgstr "Dinero que gastas"
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
@@ -504,7 +504,7 @@ msgstr "Nueva cuenta"
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
 msgid "New Expense"
-msgstr ""
+msgstr "Nuevo gasto"
 
 #: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
 msgid "New Income"
