@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.71.0](https://github.com/budgie-at/budgie/compare/v1.70.0...v1.71.0) (2025-12-14)
+
+### Bug Fixes
+
+- fix type guards ([f551b28](https://github.com/budgie-at/budgie/commit/f551b2883c666aedb512264103b3bf6279c58161))
+- update yarn.lock ([7816e4c](https://github.com/budgie-at/budgie/commit/7816e4c6c7b6dce2ad28b548fff5da26be50fb9b))
+
+### Features
+
+- add create expense transaction ([8b5ebef](https://github.com/budgie-at/budgie/commit/8b5ebef3a0e9a666da66d8987cbee2bb2fb78e62))
+- fill empty Lingui translations for expense-related strings ([d4665b0](https://github.com/budgie-at/budgie/commit/d4665b07c2674ecb3d68c26bebdfd6ac6bbf6d6e))
+- resolve ts issues ([71434aa](https://github.com/budgie-at/budgie/commit/71434aafd787b1cf18c8f6cfc21deafdb8fea8f0))
+- update translations ([581cae7](https://github.com/budgie-at/budgie/commit/581cae77221958fe643e3fbb6541a65ec3620d17))
+
 # [1.70.0](https://github.com/budgie-at/budgie/compare/v1.69.0...v1.70.0) (2025-12-14)
 
 ### Bug Fixes
