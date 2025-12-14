@@ -81,7 +81,11 @@ msgstr "Ajoutez une nouvelle catégorie pour organiser vos transactions"
 msgid "Add a new tag to organize your transactions"
 msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:70
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
+msgid "Add Expense"
+msgstr "Ajouter une dépense"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
 msgid "Add Income"
 msgstr "Ajouter un revenu"
 
@@ -269,7 +273,7 @@ msgstr "Impossible de créer la catégorie"
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:56
+#: src/transaction/hook/use-transaction-form.hook.ts:72
 msgid "Could not create transaction. Please try again later."
 msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
@@ -486,15 +490,23 @@ msgstr "Gérer les catégories"
 msgid "Manage Tags"
 msgstr "Gérer les étiquettes"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
 msgstr "Argent que vous gagnez"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+msgid "Money you spend"
+msgstr "Argent que vous dépensez"
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:69
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
+msgid "New Expense"
+msgstr "Nouvelle dépense"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
 msgid "New Income"
 msgstr "Nouveau revenu"
 
@@ -737,7 +749,7 @@ msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:55
+#: src/transaction/hook/use-transaction-form.hook.ts:71
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
 

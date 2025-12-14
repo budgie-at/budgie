@@ -1,4 +1,4 @@
-import { SQL, and, eq, gte, inArray, isNull, lte, or } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, lte, or, SQL } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -6,11 +6,13 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DateRangeInterface } from '../../generic/interface/date-range.interface';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
@@ -49,13 +51,36 @@ export class TransactionRepository {
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
         const conditions: SQL[] = [
             ...this.buildAccountCondition(accountIds),
-            ...(isNotEmptyArray(types) ? [inArray(TransactionEntityTable.type, types)] : []),
+            ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
             ...(isNotEmptyArray(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
 
         return isNotEmptyArray(conditions) ? and(...conditions) : null;
+    }
+
+    private buildTypeCondition(types: TransactionTypeEnum[]) {
+        const typeConditions = [
+            inArray(TransactionEntityTable.type, types),
+            ...(types.includes(TransactionTypeEnum.EXPENSE) ? [this.buildAdjustmentCondition(TransactionEntryTypeEnum.CREDIT)] : []),
+            ...(types.includes(TransactionTypeEnum.INCOME) ? [this.buildAdjustmentCondition(TransactionEntryTypeEnum.DEBIT)] : [])
+        ].filter(isDefined);
+
+        return isNotEmptyArray(typeConditions) ? or(...typeConditions) : null;
+    }
+
+    private buildAdjustmentCondition(type: TransactionEntryTypeEnum) {
+        return and(
+            eq(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+            inArray(
+                TransactionEntityTable.id,
+                this.db
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .where(eq(TransactionEntryEntityTable.type, type))
+            )
+        );
     }
 
     private buildCategoryCondition(categoryIds: number[]) {

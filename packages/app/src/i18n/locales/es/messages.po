@@ -81,7 +81,11 @@ msgstr "Agrega una nueva categoría para organizar tus transacciones"
 msgid "Add a new tag to organize your transactions"
 msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:70
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
+msgid "Add Expense"
+msgstr "Agregar gasto"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
 msgid "Add Income"
 msgstr "Agregar ingreso"
 
@@ -269,7 +273,7 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:56
+#: src/transaction/hook/use-transaction-form.hook.ts:72
 msgid "Could not create transaction. Please try again later."
 msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
 
@@ -486,15 +490,23 @@ msgstr "Gestionar categorías"
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
 msgstr "Dinero que ganas"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+msgid "Money you spend"
+msgstr "Dinero que gastas"
 
 #: src/app/(main)/create-account/index.tsx:22
 msgid "New Account"
 msgstr "Nueva cuenta"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:69
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
+msgid "New Expense"
+msgstr "Nuevo gasto"
+
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
 msgid "New Income"
 msgstr "Nuevo ingreso"
 
@@ -737,7 +749,7 @@ msgstr "Mostrar $1.234,56 en lugar de $1.235"
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:55
+#: src/transaction/hook/use-transaction-form.hook.ts:71
 msgid "Something went wrong."
 msgstr "Algo salió mal."
 
