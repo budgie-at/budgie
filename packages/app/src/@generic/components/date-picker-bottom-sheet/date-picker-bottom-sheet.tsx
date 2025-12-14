@@ -42,7 +42,7 @@ export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
                     </Text>
                 </View>
 
-                <SingleDatePicker date={date} onChange={setLocalDate} />
+                <SingleDatePicker date={localDate} onChange={setLocalDate} />
 
                 <BottomSheetFormFooter onCancel={handleCancel} onSubmit={handleSubmit} />
             </BottomSheetView>
