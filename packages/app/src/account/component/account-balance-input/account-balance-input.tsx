@@ -1,6 +1,6 @@
 import { AmountInput } from '../../../@generic/components/amount-input/amount-input';
-import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -20,5 +20,5 @@ export const AccountBalanceInput = ({ value, onChange, textClassName }: Props) =
             inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground border-0 h-full', textClassName)}
             placeholder={format('0.00')}
         />
-    )
+    );
 };
