@@ -33,8 +33,7 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 
-const stackOptions = { headerShown: false };
-const tabsOptions = { headerShown: false };
+const stackOptions: ExtendedStackNavigationOptions = { headerShown: false, animation: 'slide_from_right' };
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     headerShown: false,
     presentation: 'modal'
@@ -66,7 +65,8 @@ export default function RootLayout() {
                             <ThemeProvider>
                                 <BottomSheetsProvider>
                                     <Stack screenOptions={stackOptions}>
-                                        <Stack.Screen name="(tabs)" options={tabsOptions} />
+                                        <Stack.Screen name="(tabs)" options={stackOptions} />
+                                        <Stack.Screen name="(main)" options={stackOptions} />
 
                                         <Stack.Screen name="ai" options={aiScreenOptions} />
                                     </Stack>
