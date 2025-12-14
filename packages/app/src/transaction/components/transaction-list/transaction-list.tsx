@@ -53,7 +53,7 @@ export const TransactionList = ({ accountId }: Props) => {
     );
 
     return (
-        <View className="gap-y-3xl">
+        <View className="gap-y-3xl flex-1">
             <TransactionListFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
 
             <SectionList

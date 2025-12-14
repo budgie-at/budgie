@@ -44,10 +44,7 @@ export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
 
-    const sorted = transactions.sort(
-        (transactionA, transactionB) => new Date(transactionB.operatedAt).getTime() - new Date(transactionA.operatedAt).getTime()
-    );
-    const sections = groupByMonth(sorted, formatMonthAndYear);
+    const sections = groupByMonth(transactions, formatMonthAndYear);
 
     const loadMore = () => {
         if (hasMore) {
