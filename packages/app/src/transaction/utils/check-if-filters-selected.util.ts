@@ -1,13 +1,13 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
-import hash from 'object-hash';
+import { TransactionFilterInterface } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 export const checkIfFiltersSelected = (accountId: number | null, filters: TransactionFilterInterface): boolean => {
-    const defaultFilters = {
-        ...DEFAULT_TRANSACTION_FILTER,
-        accountIds: isDefined(accountId) ? [accountId] : null
-    };
+    const { date, categoryIds, tagIds, types, accountIds } = filters;
 
-    return hash(defaultFilters) !== hash(filters);
+    if (isNotEmptyArray(tagIds) || isNotEmptyArray(categoryIds) || isNotEmptyArray(types) || isDefined(date)) {
+        return true;
+    }
+
+    return isNotEmptyArray(accountIds?.filter(id => id !== accountId));
 };
