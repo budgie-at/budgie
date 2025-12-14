@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { IconName } from '../../../@generic/constant/icons.constant';
@@ -17,7 +19,7 @@ import { TransactionFormDatePicker } from '../transaction-form-date-picker/trans
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 
 interface Props {
-    onSubmit: () => void;
+    onSubmit: EmptyFn;
     control: Control<TransactionCreateEntityInterface>;
     icon: IconName;
     setValue: UseFormSetValue<TransactionCreateEntityInterface>;

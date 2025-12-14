@@ -11,12 +11,22 @@ export const TransactionCreateEntitySchema = convertToCreateEntitySchema(Transac
         tagIds: number().array().describe('Array of tag IDs associated with the transaction'),
         [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
-    .superRefine(({ amount }, context) => {
+    .superRefine(({ amount, entries }, context) => {
         if (amount === 0) {
             context.addIssue({
                 code: 'custom',
                 path: ['amount'],
                 message: 'Amount must not be equal to 0.'
+            });
+        }
+
+        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
+
+        if (totalAmount !== amount) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: `Total amount of transaction entries (${totalAmount}) does not match the transaction amount (${amount}).`
             });
         }
     });

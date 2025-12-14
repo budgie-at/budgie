@@ -104,6 +104,8 @@ export type { TransactionCreateEntityInterface } from './transaction/entity/tran
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
+export type { TransactionPositiveAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-positive-adjustment-with-relations-entity.interface';
+export type { TransactionNegativeAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-negative-adjustment-with-relations-entity.interface';
 
 export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
 export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense-transaction-create-entity.interface';
@@ -148,6 +150,8 @@ export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
+export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-negative-adjustment-transaction.type-guard';
+export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
