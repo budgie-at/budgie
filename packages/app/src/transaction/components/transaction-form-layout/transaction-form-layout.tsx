@@ -1,12 +1,11 @@
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
-import { View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
+import { Footer } from '../../../@generic/components/footer/footer';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
@@ -23,8 +22,6 @@ interface Props {
     readonly onSubmit: EmptyFn;
     readonly children: ReactNode;
 }
-
-const safeEdges = ['bottom'] as const;
 
 export const TransactionFormLayout = ({ title, description, icon, variant, buttonText, onSubmit, children }: Props) => {
     const goBack = () => void router.back();
@@ -46,11 +43,9 @@ export const TransactionFormLayout = ({ title, description, icon, variant, butto
             }
             footer={
                 <KeyboardStickyView>
-                    <View className="border-t border-t-secondary-corner pt-5xl px-5xl bg-primary-reverse">
-                        <SafeAreaView edges={safeEdges}>
-                            <Button onPress={onSubmit} variant={variant} content={buttonText} />
-                        </SafeAreaView>
-                    </View>
+                    <Footer>
+                        <Button onPress={onSubmit} variant={variant} content={buttonText} />
+                    </Footer>
                 </KeyboardStickyView>
             }
         >

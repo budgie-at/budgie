@@ -8,6 +8,7 @@ export const useCategoryForm = (defaultValues: CategoryCreateEntityInterface | n
     const form = useForm({
         resolver: zodResolver(CategoryCreateEntitySchema),
         defaultValues: defaultValues ?? DEFAULT_VALUES,
+        values: defaultValues ?? DEFAULT_VALUES,
         mode: 'onSubmit',
     });
 

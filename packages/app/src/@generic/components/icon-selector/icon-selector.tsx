@@ -25,7 +25,7 @@ export const IconSelector = ({ onSelect, icon, size, variant }: Props) => {
         Keyboard.dismiss();
     };
 
-    const description = size === 'md' ? t`Tap to change icon` : '';
+    const description = size === 'sm' ? '' : t`Tap to change icon`;
 
     const hints = {
         sm: '',

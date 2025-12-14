@@ -2,6 +2,7 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
 import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
@@ -19,15 +20,18 @@ interface Props {
 
 export const CreateTransactionBottomSheet = ({ ref }: Props) => {
     const { t, i18n } = useLingui();
+    const { bottom } = useSafeAreaInsets();
 
     const handleNavigate = (type: TransactionTypeEnum) => {
         ref.current?.close();
         void router.push(`/create-transaction/${type}`);
     };
 
+    const style = { paddingBottom: bottom };
+
     return (
         <BottomSheet enableDynamicSizing ref={ref}>
-            <BottomSheetView>
+            <BottomSheetView style={style}>
                 <BottomSheetHeader size="md" title={t`New Transaction`} description={t`Choose a type to get started`} />
 
                 <View className="gap-y-3.5 px-5xl">

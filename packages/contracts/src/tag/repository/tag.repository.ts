@@ -1,4 +1,4 @@
-import { eq, inArray, sql } from 'drizzle-orm';
+import { count, eq, inArray, sql } from 'drizzle-orm';
 
 import * as schema from '../../schema';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
@@ -21,6 +21,10 @@ export class TagRepository {
         return this.db.query.TagEntityTable.findMany({
             where: sql`LOWER (${TagEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`
         });
+    }
+
+    count() {
+        return this.db.select({ count: count() }).from(TagEntityTable);
     }
 
     async create(input: TagCreateEntityInterface): Promise<TagEntityInterface> {

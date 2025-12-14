@@ -10,12 +10,12 @@ import { tagRepository } from '../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { TagCard } from '../../tag/components/tag-card/tag-card';
 import { TagFormBottomSheet } from '../../tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet';
-import { useGetTagsLiveQuery } from '../../tag/query/use-get-tags.live-query';
+import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 
 export default function Tags() {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
-    const { tags } = useGetTagsLiveQuery(search);
+    const { tags } = useSearchTagsQuery(search);
 
     const handleDeleteTag = async (id: number) => {
         await tagRepository.deleteById(id);

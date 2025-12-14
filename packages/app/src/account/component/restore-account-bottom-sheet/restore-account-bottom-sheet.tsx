@@ -28,11 +28,12 @@ export const RestoreAccountBottomSheet = ({ title, ref, onRestore }: Props) => {
         <BottomSheet
             className="mx-5xl rounded-5xl overflow-hidden shadow-[0px_0px_15px_-8px_rgba(0,_0,_0,_0.75)] border-2 border-positive-corner"
             ref={ref}
+            enableDynamicSizing
             bottomInset={bottom}
             enablePanDownToClose={true}
             detached={true}
         >
-            <BottomSheetView enableFooterMarginAdjustment={true} className="mx-5 bg-transparent pt-xl pb-5xl">
+            <BottomSheetView className="mx-5 bg-transparent pt-xl pb-5xl">
                 <CircleIcon icon={ICONS.RotateCcw} variant="positive" size="2xl" className="mb-8xl self-center rounded-3xl" />
 
                 <Text className="text-primary text-xl font-semibold text-center mb-sm">

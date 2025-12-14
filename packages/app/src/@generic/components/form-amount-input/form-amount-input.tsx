@@ -1,9 +1,9 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { useFormatDigits } from '../../hooks/use-format-digits.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { AmountInput } from '../amount-input/amount-input';
