@@ -8,6 +8,7 @@ import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
+import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
 export default function CreateAccountPage() {
     const { t } = useLingui();
@@ -31,13 +32,13 @@ export default function CreateAccountPage() {
             <ScrollView contentContainerClassName="gap-y-xl">
                 <CreateAccountCard
                     description={t`Everyday transactions and spending`}
-                    icon="CreditCard"
+                    icon={ACCOUNT_ICON.BANK}
                     title={t`Checking Account`}
                     type={AccountTypeEnum.BANK}
                 />
                 <CreateAccountCard
                     description={t`Emergency fund and savings goals`}
-                    icon="Wallet"
+                    icon={ACCOUNT_ICON.CASH}
                     title={t`Savings Account`}
                     type={AccountTypeEnum.CASH}
                 />

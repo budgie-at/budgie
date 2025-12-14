@@ -7,9 +7,9 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { useFormatDigits } from '../../../@generic/hooks/use-format-digits.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
