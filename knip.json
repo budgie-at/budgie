@@ -21,7 +21,6 @@
     "ignoreDependencies": [
         "husky",
         "@lingui/cli",
-        "react-native-worklets",
         "@expo/metro-config",
         "@expo/fingerprint",
         "metro-minify-terser",

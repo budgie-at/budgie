@@ -6,10 +6,10 @@ import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
+import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { DatePicker } from '../date-picker/date-picker';
-import { FormBottomSheetFooter } from '../form-bottom-sheet-footer/form-bottom-sheet-footer';
+import { SingleDatePicker } from '../date-picker/single-date-picker';
 
 interface Props {
     readonly date: Date;
@@ -19,9 +19,7 @@ interface Props {
 }
 
 export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
-    const [localDate, setLocalDate] = useState(date);
-
-    const handleDateChange = (date: Date) => void setLocalDate(date);
+    const [localDate, setLocalDate] = useState<Date>(date);
 
     const handleSubmit = () => {
         void onChange(localDate);
@@ -44,9 +42,9 @@ export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
                     </Text>
                 </View>
 
-                <DatePicker date={date} onChange={handleDateChange} />
+                <SingleDatePicker date={localDate} onChange={setLocalDate} />
 
-                <FormBottomSheetFooter onCancel={handleCancel} onSubmit={handleSubmit} />
+                <BottomSheetFormFooter onCancel={handleCancel} onSubmit={handleSubmit} />
             </BottomSheetView>
         </BottomSheet>
     );

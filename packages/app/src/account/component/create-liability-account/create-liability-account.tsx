@@ -1,9 +1,7 @@
 import { AccountCreateEntityInterface, AccountNatureEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,6 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/components/button/button';
 import { CreateAccountCurrencyField } from '../../../@generic/components/create-account-currency-field/create-account-currency-field';
 import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
+import { Footer } from '../../../@generic/components/footer/footer';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
@@ -26,7 +25,6 @@ interface Props {
 }
 
 const DEFAULT_ICON = UserIconNameEnum.Home;
-const safeEdges: Edges = ['bottom'];
 
 export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
@@ -66,11 +64,9 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             header={<PageHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
             footer={
                 <KeyboardStickyView>
-                    <View className="pt-3xl px-5xl border-t-1 border-t-secondary-corner bg-primary-reverse pb-safe-offset-1">
-                        <SafeAreaView edges={safeEdges}>
-                            <Button variant={variant} onPress={handleSubmit(handleCreate)} content={t`Submit`} />
-                        </SafeAreaView>
-                    </View>
+                    <Footer>
+                        <Button variant={variant} onPress={handleSubmit(handleCreate)} content={t`Submit`} />
+                    </Footer>
                 </KeyboardStickyView>
             }
         >
