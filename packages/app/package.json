@@ -52,7 +52,6 @@
         "expo-updates": "~29.0.12",
         "lucide-react-native": "^0.545.0",
         "nativewind": "^5.0.0-preview.2",
-        "object-hash": "^3.0.0",
         "react": "19.1.0",
         "react-compiler-runtime": "19.0.0-beta-63e3235-20250105",
         "react-dom": "19.1.0",
@@ -74,7 +73,6 @@
     "devDependencies": {
         "@lingui/babel-plugin-lingui-macro": "^5.5.2",
         "@tailwindcss/postcss": "^4.1.14",
-        "@types/object-hash": "^3",
         "@types/react": "~19.1.10",
         "@types/react-dom": "~19.1.7",
         "babel-plugin-inline-import": "^3.0.0",
