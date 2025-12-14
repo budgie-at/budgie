@@ -2,8 +2,8 @@ import { IncomeTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { TransactionForm } from '../transaction-form/transaction-form';
 import { useTransactionForm } from '../../hook/use-transaction-form.hook';
+import { TransactionForm } from '../transaction-form/transaction-form';
 
 export const CreateIncomeTransaction = () => {
     const { t } = useLingui();
@@ -20,7 +20,7 @@ export const CreateIncomeTransaction = () => {
         <TransactionForm
             accountFieldName="toAccountId"
             control={form.control}
-            onSubmit={form.handleSubmit(handleSubmit)}
+            onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="positive"
             icon="TrendingUp"
