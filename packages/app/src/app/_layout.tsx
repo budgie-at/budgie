@@ -75,7 +75,7 @@ export default function RootLayout() {
 
                                         <Stack.Screen name="(main)/transactions/[id]" />
 
-                                        <Stack.Screen name="(main)/settings" />
+                                        <Stack.Screen name="(main)/settings/index" />
                                         <Stack.Screen name="(main)/settings/categories" />
                                         <Stack.Screen name="(main)/settings/tags" />
                                         <Stack.Screen name="(main)/settings/archived" />
