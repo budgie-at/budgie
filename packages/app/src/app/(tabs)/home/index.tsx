@@ -5,16 +5,16 @@ import { ScrollView } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../@generic/components/icon/icon';
-import { Page } from '../../@generic/components/page/page';
-import { NetWorth } from '../../@generic/components/total-balance/net-worth';
-import { ICONS } from '../../@generic/constant/icons.constant';
-import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
-import { AccountList } from '../../account/component/account-list/account-list';
-import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
-import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
-import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
+import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/components/icon/icon';
+import { Page } from '../../../@generic/components/page/page';
+import { NetWorth } from '../../../@generic/components/total-balance/net-worth';
+import { ICONS } from '../../../@generic/constant/icons.constant';
+import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
+import { AccountList } from '../../../account/component/account-list/account-list';
+import { AccountsEmptyState } from '../../../account/component/accounts-empty-state/accounts-empty-state';
+import { AccountsHeading } from '../../../account/component/accounts-heading/accounts-heading';
+import { useSearchAccountsGroupedQuery } from '../../../account/query/use-search-accounts-grouped.query';
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery();
@@ -22,7 +22,7 @@ export default function HomePage() {
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
-    const navigateToSettings = () => void router.push('/settings');
+    const navigateToSettings = () => void router.push('/home/settings');
 
     const accountEntries = typedObjectEntries(accountsGrouped);
 

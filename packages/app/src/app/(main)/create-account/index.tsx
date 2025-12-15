@@ -1,5 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -10,7 +10,7 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
-export default function CreateAccountPage() {
+export default function Index() {
     const { t } = useLingui();
 
     const handleClose = () => void router.back();
@@ -19,14 +19,18 @@ export default function CreateAccountPage() {
         <Page>
             <View className="gap-y-3xl mb-[30px]">
                 <View className="flex-row items-center justify-between">
-                    <Text className="text-primary text-4.5xl font-semibold">{t`New Account`}</Text>
+                    <Text className="text-primary text-4.5xl font-semibold">
+                        <Trans>New Account</Trans>
+                    </Text>
 
                     <HapticPressable onPress={handleClose} className="p-xs">
                         <Icon className="text-primary" icon={ICONS.X} size={16} />
                     </HapticPressable>
                 </View>
 
-                <Text className="text-secondary-foreground text-sm">{t`Choose the type of account you want to add`}</Text>
+                <Text className="text-secondary-foreground text-sm">
+                    <Trans>Choose the type of account you want to add</Trans>
+                </Text>
             </View>
 
             <ScrollView contentContainerClassName="gap-y-xl">

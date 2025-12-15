@@ -37,7 +37,7 @@ export const TransactionCard = ({ transaction }: Props) => {
     const amount = transaction.entries.reduce((acc, curr) => acc + curr.amount, 0);
     const categoryIcon = getTransactionIcon(transaction);
 
-    const handleNavigate = () => void router.push(`/transaction/${transaction.id}`);
+    const handleNavigate = () => void router.push(`/transactions/${transaction.id}`);
     const transactionType = getTransactionType(transaction);
 
     return (

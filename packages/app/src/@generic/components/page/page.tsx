@@ -18,9 +18,9 @@ const Wrapper = styled(SafeAreaView);
 const DEFAULT_SAFE_EDGES: Edges = ['top'];
 
 export const Page = ({ className, header, footer, children, safeEdges = DEFAULT_SAFE_EDGES, contentClassName, ...rest }: Props) => (
-    <Wrapper {...rest} className={cn('bg-primary-reverse flex-1', className)} edges={safeEdges}>
+    <Wrapper {...rest} className={cn('flex-1', className)} edges={safeEdges}>
         {header}
-        <View className={cn('bg-primary-reverse px-5xl flex-1', contentClassName)}>{children}</View>
+        <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
         {footer}
     </Wrapper>
 );
