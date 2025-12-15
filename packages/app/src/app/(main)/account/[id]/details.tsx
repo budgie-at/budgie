@@ -15,6 +15,7 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foregrou
 import { ICONS } from '../../../../@generic/constant/icons.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { isEnumValue } from '../../../../@generic/type-guard/is-enum-value.type-guard';
+import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
@@ -36,6 +37,8 @@ export default function Account() {
     const { defaultCurrency } = useSettingsContext();
     const { i18n } = useLingui();
 
+    const handleGoBack = () => void goBackOrReplace('/');
+
     if (isLoading) {
         return <EmptyScreen />;
     }
@@ -54,7 +57,7 @@ export default function Account() {
             header={
                 <PageHeader
                     icon={icon}
-                    showBackBtn
+                    onGoBack={handleGoBack}
                     title={title}
                     iconVariant={variant}
                     right={
