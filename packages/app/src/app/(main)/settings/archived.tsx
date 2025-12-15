@@ -8,6 +8,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
 import { useGetArchivedAccountsQuery } from '../../../account/query/use-get-archived-accounts.query';
@@ -23,11 +24,13 @@ export default function Archived() {
 
     const renderAccount = ({ item }: ListRenderItemInfo<AccountEntityInterface>) => <ArchivedAccountCard account={item} />;
 
+    const handleGoBack = () => void goBackOrReplace('/settings');
+
     return (
         <Page
             header={
                 <PageHeader
-                    showBackBtn
+                    onGoBack={handleGoBack}
                     iconVariant="dark-warning"
                     description={t`${archivedAccountsCount} account`}
                     icon="Archive"
