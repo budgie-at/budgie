@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
@@ -66,10 +66,16 @@ export default function RootLayout() {
                             <ThemeProvider>
                                 <BottomSheetsProvider>
                                     <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                        <Stack.Screen name="index" />
                                         <Stack.Screen name="(tabs)" />
+
                                         <Stack.Screen name="(main)/create-account" />
+
+                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                        <Stack.Screen name="(main)/account/[id]/details" />
+
                                         <Stack.Screen name="(main)/transactions/[id]" />
+
+                                        <Stack.Screen name="(main)/settings" />
                                         <Stack.Screen name="(main)/settings/categories" />
                                         <Stack.Screen name="(main)/settings/tags" />
                                         <Stack.Screen name="(main)/settings/archived" />

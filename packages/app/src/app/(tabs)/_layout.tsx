@@ -14,7 +14,7 @@ export default function TabsLayout() {
 
             <TabList asChild>
                 <BottomTabs>
-                    <TabTrigger asChild href="/home" name="home">
+                    <TabTrigger asChild href="/" name="home">
                         <TabButton icon={ICONS.Home} />
                     </TabTrigger>
 
