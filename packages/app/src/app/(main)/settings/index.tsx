@@ -30,7 +30,7 @@ export default function SettingsPage() {
     return (
         <Page
             header={
-                <View className="px-5xl flex-row items-center gap-x-2xl">
+                <View className="px-5xl flex-row items-center gap-x-2xl pb-md">
                     <HapticPressable className="p-md" onPress={handleGoBack}>
                         <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
                     </HapticPressable>
