@@ -4,7 +4,7 @@ import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanim
 
 import type { ListRenderItem } from '@react-native/virtualized-lists';
 
-interface Props<T> extends Pick<ComponentProps<typeof FlatList>, 'className' | 'contentContainerStyle' | 'ListFooterComponent'> {
+interface Props<T> extends Pick<ComponentProps<typeof FlatList>, 'className' | 'contentContainerClassName' | 'contentContainerStyle' | 'ListFooterComponent'> {
     readonly data: readonly T[];
     readonly keyExtractor: (item: T, index: number) => string;
     readonly renderItem: (item: T, index: number) => ReactNode;

@@ -41,14 +41,12 @@ export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSh
         </DeletableRow>
     );
 
-    const style = { paddingTop: 30, rowGap: 20 };
-
     return (
         <>
             <AnimatedFlatList
                 className="flex-1"
                 data={data}
-                contentContainerStyle={style}
+                contentContainerClassName='gap-y-5xl pt-5xl'
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 ListFooterComponent={listFooter}
