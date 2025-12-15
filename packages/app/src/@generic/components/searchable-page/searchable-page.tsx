@@ -41,12 +41,12 @@ export const SearchablePage = <T extends IdInterface>({
     <Page
         header={
             <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
-                <View className="flex-row items-center justify-between mb-7xl">
-                    <Text className="text-6xl text-primary">{title}</Text>
-
-                    <HapticPressable onPress={onGoBack}>
-                        <Icon icon={ICONS.X} className="text-primary" />
+                <View className="flex-row items-center gap-x-2xl mb-7xl">
+                    <HapticPressable className="p-md" onPress={onGoBack}>
+                        <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
                     </HapticPressable>
+
+                    <Text className="text-primary text-6xl">{title}</Text>
                 </View>
 
                 <TextInput
