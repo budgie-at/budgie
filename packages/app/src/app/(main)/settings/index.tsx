@@ -41,7 +41,7 @@ export default function SettingsPage() {
                 </View>
             }
         >
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
