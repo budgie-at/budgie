@@ -23,8 +23,8 @@ export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Pr
     const format = useFormatDigits(decimalPlaces);
     const { balance } = useAccountBalanceQuery(id);
 
-    const navigateToAccount = () => void router.push(`/home/account/${id}/details`);
-    const navigateToEditAccount = () => void router.push(`/home/account/${id}/update`);
+    const navigateToAccount = () => void router.push(`/account/${id}/details`);
+    const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
     const formattedBalance = format(convertFromMicroUnits(balance).toString());
 
