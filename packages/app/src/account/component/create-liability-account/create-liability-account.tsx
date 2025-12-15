@@ -9,10 +9,12 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/components/button/button';
 import { CreateAccountCurrencyField } from '../../../@generic/components/create-account-currency-field/create-account-currency-field';
 import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
+import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
 import { Footer } from '../../../@generic/components/footer/footer';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
@@ -30,7 +32,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
-    const { control, handleSubmit, reset, instrument } = useAccountForm({
+    const { control, handleSubmit, instrument } = useAccountForm({
         type,
         title: '',
         currentBalance: 0,
@@ -39,8 +41,10 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         nature: AccountNatureEnum.LIABILITY
     });
 
+    const handleGoBack = () => void goBackOrReplace('/');
+
     if (!isDefined(instrument)) {
-        return null;
+        return <EmptyScreen />;
     }
 
     const handleCreate = async (values: AccountCreateEntityInterface) => {
@@ -61,7 +65,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     return (
         <Page
-            header={<PageHeader showBackBtn onGoBack={reset} title={title} description={t`Fill in the account details`} />}
+            header={<PageHeader onGoBack={handleGoBack} title={title} description={t`Fill in the account details`} />}
             footer={
                 <KeyboardStickyView>
                     <Footer>

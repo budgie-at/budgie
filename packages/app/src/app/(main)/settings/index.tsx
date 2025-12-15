@@ -1,11 +1,10 @@
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CentsSwitch } from '../../../settings/components/cents-switch/cents-switch';
@@ -28,19 +27,7 @@ export default function SettingsPage() {
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <Page
-            header={
-                <View className="px-5xl flex-row items-center gap-x-2xl pb-md">
-                    <HapticPressable className="p-md" onPress={handleGoBack}>
-                        <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
-                    </HapticPressable>
-
-                    <Text className="text-primary text-6xl">
-                        <Trans>Settings</Trans>
-                    </Text>
-                </View>
-            }
-        >
+        <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>

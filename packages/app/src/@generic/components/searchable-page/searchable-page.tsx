@@ -1,13 +1,12 @@
 import { ComponentProps } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName } from '../../constant/icons.constant';
 import { IdInterface } from '../../interface/id.interface';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
 import { Page } from '../page/page';
+import { PageHeader } from '../page-header/page-header';
 import { SearchablePageCreate } from '../searchable-page-create/searchable-page-create';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
@@ -40,22 +39,18 @@ export const SearchablePage = <T extends IdInterface>({
 }: Props<T>) => (
     <Page
         header={
-            <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
-                <View className="flex-row items-center gap-x-2xl mb-7xl">
-                    <HapticPressable className="p-md" onPress={onGoBack}>
-                        <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
-                    </HapticPressable>
-
-                    <Text className="text-primary text-6xl">{title}</Text>
-                </View>
-
-                <TextInput
-                    value={search}
-                    onChangeText={onSearchChange}
-                    placeholder={searchPlaceholder}
-                    className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                />
-            </View>
+            <PageHeader
+                onGoBack={onGoBack}
+                title={title}
+                bottom={
+                    <TextInput
+                        value={search}
+                        onChangeText={onSearchChange}
+                        placeholder={searchPlaceholder}
+                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                    />
+                }
+            />
         }
     >
         {isNotEmptyArray(data) ? (

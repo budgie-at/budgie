@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
@@ -6,12 +5,11 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
 import { Footer } from '../../../@generic/components/footer/footer';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
-import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
+import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 
 interface Props {
     readonly title: string;
@@ -24,23 +22,11 @@ interface Props {
 }
 
 export const TransactionFormLayout = ({ title, description, icon, variant, buttonText, onSubmit, children }: Props) => {
-    const goBack = () => void router.back();
+    const handleGoBack = () => void goBackOrReplace('/');
 
     return (
         <Page
-            header={
-                <PageHeader
-                    right={
-                        <HapticPressable className="p-md rounded-full active:bg-primary/1" onPress={goBack}>
-                            <Icon icon={ICONS.X} size={24} className="text-secondary-foreground" />
-                        </HapticPressable>
-                    }
-                    description={description}
-                    title={title}
-                    icon={icon}
-                    iconVariant={variant}
-                />
-            }
+            header={<PageHeader description={description} title={title} icon={icon} iconVariant={variant} onGoBack={handleGoBack} />}
             footer={
                 <KeyboardStickyView>
                     <Footer>
