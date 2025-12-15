@@ -1,4 +1,4 @@
-import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
+import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
 import React from 'react';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
@@ -14,7 +14,7 @@ export default function TabsLayout() {
 
             <TabList asChild>
                 <BottomTabs>
-                    <TabTrigger asChild href="/" name="index">
+                    <TabTrigger asChild href="/home" name="home">
                         <TabButton icon={ICONS.Home} />
                     </TabTrigger>
 
@@ -22,9 +22,7 @@ export default function TabsLayout() {
                         <TabButton icon={ICONS.Receipt} />
                     </TabTrigger>
 
-                    <TabTrigger asChild href="/ai" name="ai">
-                        <AiChatButton />
-                    </TabTrigger>
+                    <AiChatButton />
 
                     <TabTrigger asChild href="/analytics" name="analytics">
                         <TabButton icon={ICONS.ChartNoAxesColumn} />
@@ -32,12 +30,6 @@ export default function TabsLayout() {
 
                     <CreateTransactionTab />
                 </BottomTabs>
-            </TabList>
-
-            <TabList className="hidden">
-                <TabTrigger name="settings" href="/(tabs)/settings" />
-                <TabTrigger name="account" href="/(tabs)/account/[id]" />
-                <TabTrigger name="edit-account" href="/(tabs)/edit-account/[id]" />
             </TabList>
         </Tabs>
     );
