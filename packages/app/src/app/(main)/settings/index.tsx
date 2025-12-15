@@ -1,12 +1,13 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { AnimatedHeaderedScrollView } from '../../../@generic/components/animated-headered-scroll-view/animated-headered-scroll-view';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
-import { Separator } from '../../../@generic/components/separator/separator';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CentsSwitch } from '../../../settings/components/cents-switch/cents-switch';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
@@ -24,11 +25,23 @@ export default function SettingsPage() {
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const navigateToTags = () => void router.push('/settings/tags');
 
-    return (
-        <Page>
-            <AnimatedHeaderedScrollView title={t`Settings`}>
-                <Separator />
+    const handleGoBack = () => void goBackOrReplace('/');
 
+    return (
+        <Page
+            header={
+                <View className="px-5xl flex-row items-center gap-x-2xl">
+                    <HapticPressable className="p-md" onPress={handleGoBack}>
+                        <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
+                    </HapticPressable>
+
+                    <Text className="text-primary text-6xl">
+                        <Trans>Settings</Trans>
+                    </Text>
+                </View>
+            }
+        >
+            <ScrollView>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
@@ -84,7 +97,7 @@ export default function SettingsPage() {
                         />
                     </SettingsGroup>
                 </View>
-            </AnimatedHeaderedScrollView>
+            </ScrollView>
         </Page>
     );
 }
