@@ -1,4 +1,4 @@
-import { TabList, Tabs, TabSlot, TabTrigger } from 'expo-router/ui';
+import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import React from 'react';
 
 import { BottomTabs } from '../../@generic/components/bottom-tabs/bottom-tabs';
