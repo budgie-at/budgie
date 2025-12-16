@@ -82,7 +82,11 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
             buttonText={buttonText}
             description={t`Select Category`}
         >
-            <KeyboardAwareScrollView contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView
+                keyboardShouldPersistTaps="handled"
+                contentContainerClassName="pb-7xl"
+                showsVerticalScrollIndicator={false}
+            >
                 <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} />
 
                 <FormLayoutGroup>
