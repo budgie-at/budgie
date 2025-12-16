@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
-    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/categories');
+    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/categories', value);
     const { t } = useLingui();
 
     const { categories, total } = useSearchCategoriesQuery(search, true);
