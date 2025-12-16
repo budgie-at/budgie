@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.71.1](https://github.com/budgie-at/budgie/compare/v1.71.0...v1.71.1) (2025-12-16)
+
+### Bug Fixes
+
+- add KeyboardAwareScrollView to the update account screen ([3131d2c](https://github.com/budgie-at/budgie/commit/3131d2c280c71143213553bc1ee7e166b5b5cb4a))
+- add padding to header ([d08140d](https://github.com/budgie-at/budgie/commit/d08140d85a2346c971a02f11b86ba02e876be407))
+- add some general improvements ([03936e0](https://github.com/budgie-at/budgie/commit/03936e09489c2efd8927ccd5ce78dfd73a94571e))
+- change path ([9b3e0bd](https://github.com/budgie-at/budgie/commit/9b3e0bd259fd3ddc1a6df548e6ca9ceee7aec4aa))
+- fix balance adjustment ([6009c1a](https://github.com/budgie-at/budgie/commit/6009c1a386df6c35b3bc6601c1cbbac3a58f2fef))
+- generic improvements ([8f1b976](https://github.com/budgie-at/budgie/commit/8f1b9764f312cebccaa0d73e30136c08eea842c4))
+- hide scroll indicator ([8f7d839](https://github.com/budgie-at/budgie/commit/8f7d839aa62aaf10397475ae394b6b97891fc423))
+- remove deadcode ([7e34c08](https://github.com/budgie-at/budgie/commit/7e34c084cd4231c28ac45654c7836d708d55fccf))
+- remove hidden tabs and tab trigger for ai ([d36771e](https://github.com/budgie-at/budgie/commit/d36771e26ff7e3e221cae25d514b3cf2324d9bfe))
+- remove hidden tabs and tab trigger for ai ([1f22093](https://github.com/budgie-at/budgie/commit/1f2209352ddf921e20ec78bd51f6b78941ad6895))
+- remove useless route ([79202a8](https://github.com/budgie-at/budgie/commit/79202a89dfb82bebad9358400bc297a61152a416))
+- replace SafeAreaView with useSafeAreaInsets ([43f0190](https://github.com/budgie-at/budgie/commit/43f01907294cfad7ab34041076b17039136a4fa9))
+- resolve deadcode ([7cd0606](https://github.com/budgie-at/budgie/commit/7cd060672f1412f53b7707272d9c0dcb04caa1d0))
+- rewrite navigation ([fe2d97d](https://github.com/budgie-at/budgie/commit/fe2d97d1872075684d19330dad719cc83aefe361))
+- update navigation ([022f914](https://github.com/budgie-at/budgie/commit/022f91442e560cf380af13729af608f82ae41cb1))
+
 # [1.71.0](https://github.com/budgie-at/budgie/compare/v1.70.0...v1.71.0) (2025-12-14)
 
 ### Bug Fixes
