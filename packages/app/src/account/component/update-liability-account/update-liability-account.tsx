@@ -2,19 +2,21 @@ import { AccountCreateEntityInterface, AccountEntityInterface } from '@budgie/co
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { router } from 'expo-router';
 import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/components/button/button';
+import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
@@ -48,16 +50,18 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         currentBalance: convertFromMicroUnits(balance)
     });
 
+    const handleGoBack = () => void goBackOrReplace('/');
+
     const handleUpdate = async (values: AccountCreateEntityInterface) => {
         try {
             await accountService.updateById(account.id, values);
 
-            void router.back();
+            handleGoBack();
         } catch {
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong`,
-                text2: t`Please try again later`
+                text2: t`Could not update account. Please try again later`
             });
         }
     };
@@ -66,12 +70,12 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         try {
             await accountRepository.deleteById(account.id);
 
-            void router.back();
+            handleGoBack();
         } catch {
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong`,
-                text2: t`Please try again later`
+                text2: t`Could not archive account. Please try again later`
             });
         }
     };
@@ -79,14 +83,14 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const variant = ACCOUNT_COLOR[account.type];
 
     if (!isDefined(instrument)) {
-        return <View />;
+        return <EmptyScreen />;
     }
 
     return (
         <FullPage
             header={
                 <PageHeader
-                    showBackBtn
+                    onGoBack={handleGoBack}
                     icon={account.icon}
                     iconVariant={variant}
                     title={t`Account Settings`}
@@ -95,17 +99,19 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                 />
             }
         >
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-            <FormLayoutGroup className="mb-8xl">
-                <UpdateAccountTitleField control={control} />
-                <UpdateAccountIconField variant={variant} control={control} />
-            </FormLayoutGroup>
+                <FormLayoutGroup className="mb-8xl">
+                    <UpdateAccountTitleField control={control} />
+                    <UpdateAccountIconField variant={variant} control={control} />
+                </FormLayoutGroup>
 
-            <View className="gap-y-xl">
-                <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
-                <Button onPress={handleArchive} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
-            </View>
+                <View className="gap-y-xl">
+                    <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
+                    <Button onPress={handleArchive} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
+                </View>
+            </KeyboardAwareScrollView>
         </FullPage>
     );
 };

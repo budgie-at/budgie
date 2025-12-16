@@ -7,13 +7,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
+import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
+import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
@@ -33,10 +35,8 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 
-const stackOptions = { headerShown: false };
-const tabsOptions = { headerShown: false };
 const aiScreenOptions: ExtendedStackNavigationOptions = {
-    headerShown: false,
+    ...DEFAULT_STACK_OPTIONS,
     presentation: 'modal'
 };
 
@@ -65,8 +65,20 @@ export default function RootLayout() {
                         <KeyboardProvider>
                             <ThemeProvider>
                                 <BottomSheetsProvider>
-                                    <Stack screenOptions={stackOptions}>
-                                        <Stack.Screen name="(tabs)" options={tabsOptions} />
+                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                        <Stack.Screen name="(tabs)" />
+
+                                        <Stack.Screen name="(main)/create-account" />
+
+                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                        <Stack.Screen name="(main)/account/[id]/details" />
+
+                                        <Stack.Screen name="(main)/transactions/[id]" />
+
+                                        <Stack.Screen name="(main)/settings/index" />
+                                        <Stack.Screen name="(main)/settings/categories" />
+                                        <Stack.Screen name="(main)/settings/tags" />
+                                        <Stack.Screen name="(main)/settings/archived" />
 
                                         <Stack.Screen name="ai" options={aiScreenOptions} />
                                     </Stack>
