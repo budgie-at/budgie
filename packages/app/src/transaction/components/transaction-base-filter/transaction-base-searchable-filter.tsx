@@ -1,19 +1,20 @@
-import { ReactNode, RefObject, useState } from 'react';
+import { ReactNode, RefObject, useImperativeHandle, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { BottomSheetScrollView } from '../../../@generic/components/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';
 import { TransactionFilterRenderItemsArgsInterface } from '../../interface/transaction-filter-render-items-args.interface';
+import { toggleFilterSelection } from '../../utils/toggle-filter-selection.util';
 import { TransactionFilterControls } from '../transaction-filter-controls/transaction-filter-controls';
 
 import { TransactionBaseFilter } from './transaction-base-filter';
 
 interface TransactionMultiSelectFilterProps<T extends { id: number }> {
-    readonly ref: RefObject<BottomSheetInterface | null>;
+    readonly ref: RefObject<BottomSheetInterface<number[]> | null>;
     readonly value: number[] | null;
     readonly onChange: (value: number[] | null) => void;
 
@@ -56,8 +57,9 @@ export const TransactionBaseSearchableFilter = <T extends { id: number }>(props:
     } = props;
 
     const [localValue, setLocalValue] = useState<number[] | null>(() => value);
+    const internalRef = useRef<BottomSheetInterface>(null);
 
-    const close = () => ref.current?.close();
+    const close = () => void ref.current?.close();
 
     const handleClear = () => void setLocalValue(null);
 
@@ -69,25 +71,20 @@ export const TransactionBaseSearchableFilter = <T extends { id: number }>(props:
     const localSelectedCount = localValue?.length ?? 0;
 
     const onSelect = (...selected: number[]) => {
-        setLocalValue(prev => {
-            if (!isDefined(prev)) {
-                return selected;
-            }
-
-            const allSelected = selected.every(id => prev.includes(id));
-
-            if (allSelected) {
-                const next = prev.filter(id => !selected.includes(id));
-
-                return isNotEmptyArray(next) ? next : null;
-            }
-
-            return Array.from(new Set([...prev, ...selected]));
-        });
+        setLocalValue(prev => toggleFilterSelection(prev, selected));
     };
 
     const handleSelectAll = () => void setLocalValue(items.map(item => item.id));
     const handleDeselectAll = () => void setLocalValue(null);
+
+    useImperativeHandle(ref, () => ({
+        open: value => {
+            setLocalValue(value ?? null);
+            internalRef.current?.open();
+        },
+        close: internalRef.current?.close ?? emptyFn,
+        dismiss: internalRef.current?.dismiss ?? emptyFn
+    }));
 
     const empty =
         isNotEmptyString(search) && isPositiveNumber(total) ? (
@@ -105,7 +102,7 @@ export const TransactionBaseSearchableFilter = <T extends { id: number }>(props:
             onApply={handleApply}
             title={title}
             selected={localSelectedCount}
-            ref={ref}
+            ref={internalRef}
             snapPoints={snapPoints}
             hasSelected={isPositiveNumber(localSelectedCount)}
         >

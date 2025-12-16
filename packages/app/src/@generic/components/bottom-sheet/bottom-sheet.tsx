@@ -13,6 +13,7 @@ interface Props extends Omit<ComponentProps<typeof BottomSheetModal>, 'ref'> {
     readonly index?: number;
     readonly className?: string;
     readonly handleClassName?: string;
+    readonly useBottomSheetView?: boolean;
     readonly ref: Ref<BottomSheetInterface | null>;
     readonly footerComponent?: FC<BottomSheetFooterProps>;
 }
@@ -43,8 +44,8 @@ export const BottomSheet = (props: PropsWithChildren<Props>) => {
             backgroundClassName="bg-primary-reverse"
             backdropComponent={BottomSheetBackdrop}
             handleIndicatorClassName="bg-primary"
-            enableContentPanningGesture={false}
             footerComponent={footerComponent}
+            enableContentPanningGesture
             snapPoints={snapPoints}
             stackBehavior="switch"
             enablePanDownToClose
