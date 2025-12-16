@@ -12,4 +12,8 @@ const Wrapper = styled(GorhomBottomSheetFlatList, {
     contentContainerClassName: 'contentContainerStyle'
 });
 
-export const BottomSheetFlatList = ({ children, ...rest }: Props) => <Wrapper {...rest}>{children}</Wrapper>;
+export const BottomSheetFlatList = ({ children, ...rest }: Props) => (
+    <Wrapper showsVerticalScrollIndicator={false} {...rest}>
+        {children}
+    </Wrapper>
+);
