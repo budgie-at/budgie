@@ -1470,8 +1470,10 @@ __metadata:
     expo-haptics: "npm:~15.0.7"
     expo-linear-gradient: "npm:~15.0.7"
     expo-linking: "npm:~8.0.9"
+    expo-local-authentication: "npm:~17.0.8"
     expo-localization: "npm:~17.0.7"
     expo-router: "npm:~6.0.15"
+    expo-secure-store: "npm:~15.0.8"
     expo-splash-screen: "npm:~31.0.11"
     expo-sqlite: "npm:~16.0.9"
     expo-system-ui: "npm:~6.0.8"
@@ -11054,6 +11056,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-local-authentication@npm:~17.0.8":
+  version: 17.0.8
+  resolution: "expo-local-authentication@npm:17.0.8"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/6974cb203f4bf8e90dcc8df52d04cf35df0ed9454caa4dfca3df86fb0f2ca932eb90cd576463e6f8e6c4c80543890eb583ae111ece3a1d6be9a09a09dc300aa5
+  languageName: node
+  linkType: hard
+
 "expo-localization@npm:~17.0.7":
   version: 17.0.7
   resolution: "expo-localization@npm:17.0.7"
@@ -11176,6 +11189,15 @@ __metadata:
     react-server-dom-webpack:
       optional: true
   checksum: 10/4ec87fc4bd07229d8fee8d9b51a8c27bb17af58b9998ddabdfba0169d199f49b78debd52bf635bb9996fbf12ea738f6bd366d3ec637278b458f6293249537c0d
+  languageName: node
+  linkType: hard
+
+"expo-secure-store@npm:~15.0.8":
+  version: 15.0.8
+  resolution: "expo-secure-store@npm:15.0.8"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/822af991ed80b32cf0c37f6f37e8fac30c654492d4074e70fb123361fe6ce0297178b6c7e55108670c75485e5062a39cf089fd8aee415467c3e4a6749c69d65d
   languageName: node
   linkType: hard
 
