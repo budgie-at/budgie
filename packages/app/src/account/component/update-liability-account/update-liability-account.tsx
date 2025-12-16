@@ -16,6 +16,7 @@ import { PageHeader } from '../../../@generic/components/page-header/page-header
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -70,7 +71,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         try {
             await accountRepository.deleteById(account.id);
 
-            handleGoBack();
+            dismissAllOrReplace('/');
         } catch {
             Toast.show({
                 type: 'error',
@@ -99,7 +100,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                 />
             }
         >
-            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
                 <FormLayoutGroup className="mb-8xl">

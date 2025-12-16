@@ -178,6 +178,7 @@ export default ({ config }) => ({
         ]
     ],
     experiments: {
+        typedRoutes: true,
         reactCompiler: true,
         buildCacheProvider: 'eas'
     },
