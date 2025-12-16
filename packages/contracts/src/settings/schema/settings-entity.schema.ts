@@ -12,5 +12,7 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     showCents: schema => schema.describe('Determines whether to show cents in the application.'),
     isVibrationEnabled: schema => schema.describe('Determines whether vibration is enabled in the application.'),
     defaultAccountId: schema => schema.positive().nullable().describe('Id of the default account for new transactions.'),
-    defaultInstrumentId: schema => schema.positive().nullable().describe('Id of the default instrument for new transactions and accounts.')
+    defaultInstrumentId: schema => schema.positive().nullable().describe('Id of the default instrument for new transactions and accounts.'),
+    isBiometricEnabled: schema => schema.describe('Determines whether biometric authentication is enabled in the application.'),
+    isPinEnabled: schema => schema.describe('Determines whether PIN authentication is enabled in the application.')
 });
