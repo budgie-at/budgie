@@ -3,6 +3,7 @@ import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -98,17 +99,19 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                 />
             }
         >
-            <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-            <FormLayoutGroup className="mb-8xl">
-                <UpdateAccountTitleField control={control} />
-                <UpdateAccountIconField variant={variant} control={control} />
-            </FormLayoutGroup>
+                <FormLayoutGroup className="mb-8xl">
+                    <UpdateAccountTitleField control={control} />
+                    <UpdateAccountIconField variant={variant} control={control} />
+                </FormLayoutGroup>
 
-            <View className="gap-y-xl">
-                <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
-                <Button onPress={handleArchive} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
-            </View>
+                <View className="gap-y-xl">
+                    <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
+                    <Button onPress={handleArchive} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
+                </View>
+            </KeyboardAwareScrollView>
         </FullPage>
     );
 };
