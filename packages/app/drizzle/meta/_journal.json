@@ -8,6 +8,13 @@
       "when": 1765492001014,
       "tag": "0000_unknown_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1765866246715,
+      "tag": "0001_icy_iron_fist",
+      "breakpoints": true
     }
   ]
 }

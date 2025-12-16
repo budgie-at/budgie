@@ -6,8 +6,16 @@ import { TabButton } from '../../@generic/components/tab-button/tab-button';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { AiChatButton } from '../../ai/components/ai-chat-button/ai-chat-button';
 import { CreateTransactionTab } from '../../transaction/components/create-transaction-tab/create-transaction-tab';
+import { useAuth } from '../../auth/context/auth.context';
+import { Redirect } from 'expo-router';
 
 export default function TabsLayout() {
+    const { isAuthenticated } = useAuth();
+
+    if (!isAuthenticated) {
+        return <Redirect href="/" />;
+    }
+
     return (
         <Tabs>
             <TabSlot />

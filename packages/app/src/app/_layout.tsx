@@ -25,6 +25,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
+import { AuthProvider } from '../auth/context/auth.context';
 
 enableScreens();
 enableFreeze();
@@ -64,25 +65,29 @@ export default function RootLayout() {
                     <I18nProvider>
                         <KeyboardProvider>
                             <ThemeProvider>
-                                <BottomSheetsProvider>
-                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                        <Stack.Screen name="(tabs)" />
+                                <AuthProvider>
+                                    <BottomSheetsProvider>
+                                        <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                            <Stack.Screen name="index" />
+                                            <Stack.Screen name="(tabs)" />
 
-                                        <Stack.Screen name="(main)/create-account" />
+                                            <Stack.Screen name="(main)/create-account" />
 
-                                        <Stack.Screen name="(main)/account/[id]/update" />
-                                        <Stack.Screen name="(main)/account/[id]/details" />
+                                            <Stack.Screen name="(main)/account/[id]/update" />
+                                            <Stack.Screen name="(main)/account/[id]/details" />
 
-                                        <Stack.Screen name="(main)/transactions/[id]" />
+                                            <Stack.Screen name="(main)/transactions/[id]" />
 
-                                        <Stack.Screen name="(main)/settings/index" />
-                                        <Stack.Screen name="(main)/settings/categories" />
-                                        <Stack.Screen name="(main)/settings/tags" />
-                                        <Stack.Screen name="(main)/settings/archived" />
+                                            <Stack.Screen name="(main)/settings/index" />
+                                            <Stack.Screen name="(main)/settings/categories" />
+                                            <Stack.Screen name="(main)/settings/setup-pin" />
+                                            <Stack.Screen name="(main)/settings/tags" />
+                                            <Stack.Screen name="(main)/settings/archived" />
 
-                                        <Stack.Screen name="ai" options={aiScreenOptions} />
-                                    </Stack>
-                                </BottomSheetsProvider>
+                                            <Stack.Screen name="ai" options={aiScreenOptions} />
+                                        </Stack>
+                                    </BottomSheetsProvider>
+                                </AuthProvider>
                             </ThemeProvider>
                         </KeyboardProvider>
                     </I18nProvider>
