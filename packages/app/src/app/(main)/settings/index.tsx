@@ -1,34 +1,34 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
-import { AnimatedHeaderedScrollView } from '../../@generic/components/animated-headered-scroll-view/animated-headered-scroll-view';
-import { CircleIcon } from '../../@generic/components/circle-icon/circle-icon';
-import { Page } from '../../@generic/components/page/page';
-import { Separator } from '../../@generic/components/separator/separator';
-import { ICONS } from '../../@generic/constant/icons.constant';
-import { CentsSwitch } from '../../settings/components/cents-switch/cents-switch';
-import { DefaultAccountSelector } from '../../settings/components/default-account-selector/default-account-selector';
-import { DefaultCurrencySelector } from '../../settings/components/default-currency-selector/default-currency-selector';
-import { GenericSelectorCard } from '../../settings/components/generic-selector-card/generic-selector-card';
-import { LanguageSelector } from '../../settings/components/language-selector/language-selector';
-import { LocaleSelector } from '../../settings/components/locale-selector/locale-selector';
-import { SettingsCard } from '../../settings/components/settings-card/settings-card';
-import { SettingsGroup } from '../../settings/components/settings-group/settings-group';
-import { ThemeSwitch } from '../../settings/components/theme-switch/theme-switch';
+import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Page } from '../../../@generic/components/page/page';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { ICONS } from '../../../@generic/constant/icons.constant';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { CentsSwitch } from '../../../settings/components/cents-switch/cents-switch';
+import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
+import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
+import { GenericSelectorCard } from '../../../settings/components/generic-selector-card/generic-selector-card';
+import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
+import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
+import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
+import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
 
 export default function SettingsPage() {
     const { t } = useLingui();
 
-    const handleNavigateToCategories = () => void router.push('/(main)/categories');
-    const handleNavigateToArchived = () => void router.push('/(main)/archived');
-    const navigateToTags = () => void router.push('/(main)/tags');
+    const handleNavigateToCategories = () => void router.push('/settings/categories');
+    const handleNavigateToArchived = () => void router.push('/settings/archived');
+    const navigateToTags = () => void router.push('/settings/tags');
+
+    const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <Page>
-            <AnimatedHeaderedScrollView title={t`Settings`}>
-                <Separator />
-
+        <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SettingsCard
@@ -84,7 +84,7 @@ export default function SettingsPage() {
                         />
                     </SettingsGroup>
                 </View>
-            </AnimatedHeaderedScrollView>
+            </ScrollView>
         </Page>
     );
 }
