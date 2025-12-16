@@ -1,12 +1,14 @@
-import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Trans } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
-export default function Ai() {
-    const { t } = useLingui();
+import { Page } from '../@generic/components/page/page';
 
+export default function AiScreen() {
     return (
-        <View>
-            <Text>{t`Ai Page`}</Text>
-        </View>
+        <Page>
+            <Text className="text-primary text-3xl font-semibold">
+                <Trans>AI chat</Trans>
+            </Text>
+        </Page>
     );
 }

@@ -1,35 +1,25 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
 import { Page } from '../../../@generic/components/page/page';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
-export default function CreateAccountPage() {
+export default function Index() {
     const { t } = useLingui();
 
-    const handleClose = () => void router.back();
+    const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <Page>
-            <View className="gap-y-3xl mb-[30px]">
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-primary text-4.5xl font-semibold">{t`New Account`}</Text>
-
-                    <HapticPressable onPress={handleClose} className="p-xs">
-                        <Icon className="text-primary" icon={ICONS.X} size={16} />
-                    </HapticPressable>
-                </View>
-
-                <Text className="text-secondary-foreground text-sm">{t`Choose the type of account you want to add`}</Text>
-            </View>
-
-            <ScrollView contentContainerClassName="gap-y-xl">
+        <Page
+            header={
+                <PageHeader title={t`New Account`} description={t`Choose the type of account you want to add`} onGoBack={handleGoBack} />
+            }
+        >
+            <ScrollView contentContainerClassName="gap-y-xl py-7xl">
                 <CreateAccountCard
                     description={t`Everyday transactions and spending`}
                     icon={ACCOUNT_ICON.BANK}

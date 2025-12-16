@@ -31,11 +31,9 @@ class AccountService {
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const [{ balance: currentBalanceMicro }] = await accountBalanceRepository.getByAccountId(id);
-
             const account = await accountRepository.updateById(id, input, tx);
 
-            if (isNumber(input.currentBalance) && convertToMicroUnits(input.currentBalance) !== currentBalanceMicro) {
+            if (isNumber(input.currentBalance)) {
                 await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
             }
 
@@ -44,13 +42,11 @@ class AccountService {
     }
 
     private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
-        const balances = await accountBalanceRepository.getByAccountIds([accountId]);
-        const balance = balances.at(0);
-
-        const balanceAmount = balance?.amount ?? 0;
+        const result = await accountBalanceRepository.getByAccountId(accountId);
+        const currentBalanceMicro = result.at(0)?.balance ?? 0;
 
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
-        const delta = targetBalanceMicro - balanceAmount;
+        const delta = targetBalanceMicro - currentBalanceMicro;
 
         if (delta === 0) {
             return;

@@ -14,10 +14,10 @@ import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
+import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 import { TransactionCardAccountInfo } from './transaction-card-account-info';
-import { getTransactionType } from '../../utils/get-transaction-type.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -37,7 +37,7 @@ export const TransactionCard = ({ transaction }: Props) => {
     const amount = transaction.entries.reduce((acc, curr) => acc + curr.amount, 0);
     const categoryIcon = getTransactionIcon(transaction);
 
-    const handleNavigate = () => void router.push(`/transaction/${transaction.id}`);
+    const handleNavigate = () => void router.push(`/transactions/${transaction.id}`);
     const transactionType = getTransactionType(transaction);
 
     return (

@@ -4,13 +4,14 @@ import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DeletableRow } from '../../@generic/components/deletable-row/deletable-row';
-import { SearchablePage } from '../../@generic/components/searchable-page/searchable-page';
-import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
-import { CategoryCard } from '../../category/components/category-card/category-card';
-import { CategoryFormBottomSheet } from '../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
-import { useSearchCategoriesQuery } from '../../category/query/use-search-categories.query';
+import { DeletableRow } from '../../../@generic/components/deletable-row/deletable-row';
+import { SearchablePage } from '../../../@generic/components/searchable-page/searchable-page';
+import { categoryRepository } from '../../../@generic/drizzle/db/db';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { CategoryCard } from '../../../category/components/category-card/category-card';
+import { CategoryFormBottomSheet } from '../../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
+import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
 
 export default function Categories() {
     const { t } = useLingui();
@@ -27,14 +28,19 @@ export default function Categories() {
         </DeletableRow>
     );
 
-    const renderBottomSheet = (category: CategoryEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => <CategoryFormBottomSheet ref={ref} category={category} />
+    const renderBottomSheet = (category: CategoryEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => (
+        <CategoryFormBottomSheet ref={ref} category={category} />
+    );
 
     const icon = isNotEmptyString(search) ? 'Search' : 'Folder';
     const title = isNotEmptyString(search) ? t`No Results` : t`No Custom Categories`;
     const description = isNotEmptyString(search) ? t`No categories match your search` : t`Custom categories you create will appear here`;
 
+    const handleGoBack = () => void goBackOrReplace('/settings');
+
     return (
         <SearchablePage
+            onGoBack={handleGoBack}
             onDelete={handleDeleteCategory}
             title={t`Categories`}
             searchPlaceholder={t`Search categories...`}

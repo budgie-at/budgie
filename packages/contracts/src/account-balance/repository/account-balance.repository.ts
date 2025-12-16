@@ -116,17 +116,17 @@ export class AccountBalanceRepository {
                     FROM ${TransactionEntryEntityTable}
                     WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
                         AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-                        AND ${TransactionEntryEntityTable.createdAt} > ${this.getLastBalanceCreatedAtSql()}
+                        AND ${TransactionEntryEntityTable.createdAt} > ${this.getLastBalanceUpdatedAtSql()}
                 ),
                 0
             )
     `;
     }
 
-    private getLastBalanceCreatedAtSql() {
+    private getLastBalanceUpdatedAtSql() {
         return sql`
         (
-            SELECT COALESCE(MAX(${AccountBalanceEntityTable.createdAt}), '1970-01-01')
+            SELECT COALESCE(MAX(${AccountBalanceEntityTable.updatedAt}), '1970-01-01')
             FROM ${AccountBalanceEntityTable}
             WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
         )

@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const TransactionTagFilter = ({ value, onChange }: Props) => {
-    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/tags');
+    const { ref, search, setSearch, handleOpen, handleNavigateToCreate } = useTransactionFilter('/tags', value);
     const { t } = useLingui();
 
     const { tags, total } = useSearchTagsQuery(search);

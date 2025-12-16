@@ -1,14 +1,12 @@
-import { router } from 'expo-router';
 import { ComponentProps } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName } from '../../constant/icons.constant';
 import { IdInterface } from '../../interface/id.interface';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
 import { Page } from '../page/page';
+import { PageHeader } from '../page-header/page-header';
 import { SearchablePageCreate } from '../searchable-page-create/searchable-page-create';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
@@ -17,6 +15,7 @@ interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof Search
     title: string;
     search: string;
     data: T[] | null;
+    onGoBack: EmptyFn;
     searchPlaceholder: string;
     emptyStateTitle: string;
     emptyStateDescription: string;
@@ -35,38 +34,31 @@ export const SearchablePage = <T extends IdInterface>({
     onSearchChange,
     emptyStateTitle,
     emptyStateIcon,
-    emptyStateDescription
-}: Props<T>) => {
-    const goBack = () => void router.back();
-
-    return (
-        <Page
-            header={
-                <View className="pb-7xl px-5xl border-b border-b-secondary-corner">
-                    <View className="flex-row items-center justify-between mb-7xl">
-                        <Text className="text-6xl text-primary">{title}</Text>
-
-                        <HapticPressable onPress={goBack}>
-                            <Icon icon={ICONS.X} />
-                        </HapticPressable>
-                    </View>
-
+    emptyStateDescription,
+    onGoBack
+}: Props<T>) => (
+    <Page
+        header={
+            <PageHeader
+                onGoBack={onGoBack}
+                title={title}
+                bottom={
                     <TextInput
                         value={search}
                         onChangeText={onSearchChange}
                         placeholder={searchPlaceholder}
                         className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
                     />
-                </View>
-            }
-        >
-            {isNotEmptyArray(data) ? (
-                <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard} renderBottomSheet={renderBottomSheet} />
-            ) : (
-                <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
-            )}
+                }
+            />
+        }
+    >
+        {isNotEmptyArray(data) ? (
+            <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard} renderBottomSheet={renderBottomSheet} />
+        ) : (
+            <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
+        )}
 
-            <SearchablePageCreate renderBottomSheet={renderBottomSheet} />
-        </Page>
-    );
-};
+        <SearchablePageCreate renderBottomSheet={renderBottomSheet} />
+    </Page>
+);
