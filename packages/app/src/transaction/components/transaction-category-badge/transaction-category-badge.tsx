@@ -2,7 +2,7 @@ import { TransactionEntryWithRelationsEntityInterface, TransactionTypeEnum } fro
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
@@ -18,7 +18,7 @@ const textClassName = 'text-xs font-medium text-primary';
 export const TransactionCategoryBadge = ({ entries, type }: Props) => {
     const { t } = useLingui();
 
-    const [firstEntry, ...otherEntries] = entries;
+    const [firstEntry, secondEntry] = entries;
 
     if (type === TransactionTypeEnum.ADJUSTMENT) {
         return (
@@ -28,7 +28,7 @@ export const TransactionCategoryBadge = ({ entries, type }: Props) => {
         );
     }
 
-    if (isNotEmptyArray(otherEntries)) {
+    if (isDefined(secondEntry)) {
         return (
             <View className={wrapperClassName}>
                 <Icon icon={ICONS.SplitIcon} className="text-primary" size={12} />

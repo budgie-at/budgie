@@ -1,6 +1,7 @@
 import {
     AlertTriangle,
     Archive,
+    ArrowRightIcon,
     ArrowRightLeft,
     Baby,
     BadgePlus,
@@ -86,6 +87,7 @@ export const ICONS = {
     LockKeyhole,
     Circle,
     LucideScanFace,
+    ArrowRightIcon,
     BadgePlus,
     Folder,
     FolderOpen,
