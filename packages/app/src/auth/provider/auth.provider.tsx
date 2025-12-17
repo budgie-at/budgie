@@ -32,8 +32,7 @@ export const AuthProvider = ({ children }: Props) => {
                 backgroundTimerRef.current = null;
             }
 
-            if (nextAppState === 'active') {
-            } else if ((nextAppState === 'background' || nextAppState === 'inactive') && isPinEnabled && isUnlocked) {
+            if ((nextAppState === 'background' || nextAppState === 'inactive') && isPinEnabled && isUnlocked) {
                 backgroundTimerRef.current = setTimeout(() => {
                     setIsUnlocked(false);
                 }, BACKGROUND_LOCK_DELAY_MS);
