@@ -70,6 +70,7 @@ import {
     TrendingUp,
     Utensils,
     Wallet,
+    LucideScanFace,
     Wrench,
     X
 } from 'lucide-react-native';
