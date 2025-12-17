@@ -63,6 +63,8 @@ export const TransactionSplit = ({ control, variant }: Props) => {
     });
     const [entries, amount] = useWatch({ control, name: ['entries', 'amount'] });
 
+    const selectedCategoryIds = entries.map(entry => entry.categoryId).filter(isDefined);
+
     const { t } = useLingui();
 
     const entriesAmount = sumEntriesAmount(entries);
@@ -117,7 +119,14 @@ export const TransactionSplit = ({ control, variant }: Props) => {
                 <>
                     <View className="gap-y-md mb-lg">
                         {fields.map((field, index) => (
-                            <TransactionEntry key={field.id} variant={variant} control={control} index={index} onRemove={remove} />
+                            <TransactionEntry
+                                selectedCategoryIds={selectedCategoryIds}
+                                key={field.id}
+                                variant={variant}
+                                control={control}
+                                index={index}
+                                onRemove={remove}
+                            />
                         ))}
                     </View>
 

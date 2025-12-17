@@ -19,6 +19,7 @@ interface Props {
     readonly status?: FormFieldStatus;
     readonly categoryId: number | null;
     readonly variant: ColorPaletteVariant;
+    readonly excludeCategoryIds: number[];
     readonly onSelect: (categoryId: number) => void;
 }
 
@@ -34,7 +35,7 @@ const cardVariants = cva<{ status: Record<FormFieldStatus, ClassValue> }>(
     }
 );
 
-export const TransactionEntryCategorySelector = ({ variant, categoryId, onSelect, status }: Props) => {
+export const TransactionEntryCategorySelector = ({ variant, categoryId, excludeCategoryIds, onSelect, status }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
 
@@ -50,7 +51,13 @@ export const TransactionEntryCategorySelector = ({ variant, categoryId, onSelect
                 </Text>
             </Card>
 
-            <CategorySelectorBottomSheet variant={variant} selectedCategory={category} onSelect={onSelect} ref={ref} />
+            <CategorySelectorBottomSheet
+                excludeCategoryIds={excludeCategoryIds}
+                variant={variant}
+                selectedCategory={category}
+                onSelect={onSelect}
+                ref={ref}
+            />
         </>
     );
 };
