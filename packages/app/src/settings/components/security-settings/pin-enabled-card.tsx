@@ -10,6 +10,7 @@ import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { useBiometricAvailability } from '../../../auth/hook/use-biometric-availability.hook';
+import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { useGetSettingsQuery } from '../../query/use-get-settings.query';
 
 const Gradient = styled(LinearGradient);
@@ -24,7 +25,9 @@ export const PinEnabledCard = () => {
 
     const isBiometricEnabled = settings?.isBiometricEnabled === true;
 
-    const handleToggleBiometric = () => {};
+    const handleToggleBiometric = async (value: boolean) => {
+        await updateSettingsMutation({ isBiometricEnabled: value });
+    };
 
     return (
         <View className="rounded-5xl bg-secondary-background p-4xl gap-[40px]">
@@ -64,7 +67,7 @@ export const PinEnabledCard = () => {
                             {!isTouchIdAvailable && isFaceIdAvailable ? <Trans>Face ID</Trans> : null}
                         </Text>
 
-                        <Switch onChange={handleToggleBiometric} value={isBiometricEnabled} />
+                        <Switch onValueChange={handleToggleBiometric} value={isBiometricEnabled} />
                     </View>
                 ) : null}
 
