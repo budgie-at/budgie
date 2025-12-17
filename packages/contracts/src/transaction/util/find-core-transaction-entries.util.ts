@@ -1,7 +1,7 @@
 import { TransactionEntryCreateEntityInterface } from '../../transaction-entry/entity/transaction-entry-create-entity.interface';
 
 export const findCoreTransactionEntries = (
-    entries: TransactionEntryCreateEntityInterface[],
+    entries: Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'type'>[],
     fromAccountId: number | null,
     toAccountId: number | null
 ) => {
