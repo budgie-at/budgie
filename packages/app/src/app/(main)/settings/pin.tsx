@@ -1,6 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import React from 'react';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -44,19 +45,22 @@ export default function PinSetupScreen() {
         <FullPage>
             <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
 
-            {state.step === PinSetupStepEnum.BIOMETRIC ? (
-                <BiometricConfiguration onSubmit={saveAndContinue} />
-            ) : (
-                <PinForm
-                    error={error}
-                    title={i18n.t(title)}
-                    description={i18n.t(description)}
-                    currentInput={state.input}
-                    isLoading={state.isLoading}
-                    onDigitPress={addDigit}
-                    onDeletePress={deleteDigit}
-                />
-            )}
+            <View className="flex-1 justify-center">
+                {state.step === PinSetupStepEnum.BIOMETRIC ? (
+                    <BiometricConfiguration onSubmit={saveAndContinue} />
+                ) : (
+                    <PinForm
+                        error={error}
+                        title={i18n.t(title)}
+                        description={i18n.t(description)}
+                        currentInput={state.input}
+                        error={state.error}
+                        isLoading={state.isLoading}
+                        onDigitPress={addDigit}
+                        onDeletePress={deleteDigit}
+                    />
+                )}
+            </View>
 
             {state.isLoading ? <LoadingOverlay /> : null}
         </FullPage>

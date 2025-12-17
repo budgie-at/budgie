@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS = {
     showCents: true,
     isPinEnabled: true,
     defaultAccountId: 0,
+    isPinEnabled: false,
     createdAt: new Date(),
     updatedAt: new Date(),
     theme: ThemeEnum.DARK,
