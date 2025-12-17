@@ -14,7 +14,7 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
     const { settings } = useSettingsContext();
     const { isPinEnabled } = settings;
-    const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
+    const [isUnlocked, setIsUnlocked] = useState<boolean | null>(() => !isPinEnabled);
     const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useBiometricAvailability();
 
     useEffect(() => {
