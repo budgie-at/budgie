@@ -1,4 +1,4 @@
-import { SQL, and, eq, gte, inArray, isNull, lte, or } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, lte, or, SQL } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -19,6 +19,18 @@ import { TransactionEntityTable } from '../table/transaction-entity.table';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 
 export class TransactionRepository {
+    private transactionRelations = {
+        [TransactionAssociationEnum.ENTRIES]: {
+            with: {
+                [TransactionEntryAssociationEnum.ACCOUNT]: true,
+                [TransactionEntryAssociationEnum.CATEGORY]: true
+            }
+        },
+        [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
+        [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+        [TransactionAssociationEnum.TO_ACCOUNT]: true
+    } as const;
+
     constructor(private db: DB) {}
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
@@ -27,24 +39,31 @@ export class TransactionRepository {
         return transaction;
     }
 
+    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: TX): Promise<TransactionEntityInterface> {
+        const [transaction] = await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set(input)
+            .where(eq(TransactionEntityTable.id, id))
+            .returning();
+
+        return transaction;
+    }
+
     getAll(limit = 20, filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
         const where = this.buildWhere(filters);
 
         return this.db.query.TransactionEntityTable.findMany({
-            with: {
-                [TransactionAssociationEnum.ENTRIES]: {
-                    with: {
-                        [TransactionEntryAssociationEnum.ACCOUNT]: true,
-                        [TransactionEntryAssociationEnum.CATEGORY]: true
-                    }
-                },
-                [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
-                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-                [TransactionAssociationEnum.TO_ACCOUNT]: true
-            },
+            with: this.transactionRelations,
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)],
             limit,
             ...(isDefined(where) ? { where } : {})
+        });
+    }
+
+    getById(id: number) {
+        return this.db.query.TransactionEntityTable.findFirst({
+            where: eq(TransactionEntityTable.id, id),
+            with: this.transactionRelations
         });
     }
 

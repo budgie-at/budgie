@@ -14,7 +14,7 @@ export class TransactionTagsRepository {
         return relation;
     }
 
-    async findByTransactionId(id: number): Promise<TransactionTagsEntityInterface[]> {
-        return await this.db.query.TransactionTagsEntityTable.findMany({ where: eq(TransactionTagsEntityTable.transactionId, id) });
+    async deleteByTransactionId(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id));
     }
 }
