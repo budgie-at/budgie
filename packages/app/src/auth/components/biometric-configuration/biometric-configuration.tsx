@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const BiometricConfiguration = ({ onSubmit }: Props) => {
-    const [enableBiometrics, setEnableBiometrics] = useState(false);
+    const [enableBiometrics, setEnableBiometrics] = useState(true);
     const { t } = useLingui();
 
     const handleContinue = () => void onSubmit(enableBiometrics);

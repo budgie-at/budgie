@@ -1,6 +1,10 @@
 import { Redirect, usePathname } from 'expo-router';
 import { ReactNode } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { EmptyScreen } from '../../@generic/components/empty-screen/empty-screen';
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { useAuthContext } from '../context/auth.context';
 
 interface Props {
@@ -9,14 +13,15 @@ interface Props {
 
 export const AuthGuard = ({ children }: Props) => {
     const { isUnlocked } = useAuthContext();
+    const { isLoading } = useSettingsContext();
     const pathname = usePathname();
+
+    if (!isDefined(isUnlocked) || isLoading) {
+        return <EmptyScreen />;
+    }
 
     if (!isUnlocked && pathname !== '/pin') {
         return <Redirect href="/pin" />;
-    }
-
-    if (isUnlocked && pathname === '/pin') {
-        return <Redirect href="/" />;
     }
 
     return children;
