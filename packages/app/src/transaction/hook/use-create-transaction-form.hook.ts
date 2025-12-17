@@ -21,7 +21,7 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     schema: ZodType<T, T>;
 }
 
-export const useTransactionForm = <T extends TransactionCreateEntityInterface>({
+export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>({
     type,
     schema,
     fromAccountId,
