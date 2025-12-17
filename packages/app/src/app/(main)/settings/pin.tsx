@@ -11,12 +11,12 @@ import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-gua
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BiometricConfiguration } from '../../../auth/components/biometric-configuration/biometric-configuration';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
+import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
 import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
 import { getPinSetupMeta } from '../../../auth/util/get-pin-setup-meta.util';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
-import { useAuthContext } from '../../../auth/context/auth.context';
 
 export default function PinSetupScreen() {
     const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();
@@ -25,9 +25,8 @@ export default function PinSetupScreen() {
 
     const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({
         mode,
-        onSuccess: () => {
-            console.log({mode});
-            void updateSettingsMutation({ isPinEnabled: mode !== PinSetupModeEnum.DISABLE });
+        onSuccess: ({ isBiometricEnabled, isPinEnabled }) => {
+            void updateSettingsMutation({ isPinEnabled, isBiometricEnabled });
             void goBackOrReplace('/settings');
         }
     });
