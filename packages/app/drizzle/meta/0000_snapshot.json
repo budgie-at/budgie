@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "7139c222-5d79-424f-ac0d-c87754834200",
+  "id": "e9a51ba3-f7f0-4776-9152-335a68bb5bd2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -477,6 +477,22 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'SYSTEM'"
+        },
+        "is_pin_enabled": {
+          "name": "is_pin_enabled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "is_biometric_enabled": {
+          "name": "is_biometric_enabled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         },
         "show_cents": {
           "name": "show_cents",
