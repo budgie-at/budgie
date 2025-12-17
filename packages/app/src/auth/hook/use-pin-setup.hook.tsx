@@ -1,18 +1,16 @@
 import { msg } from '@lingui/core/macro';
 
-import { EmptyFn } from '@rnw-community/shared';
-
 import { PIN_LENGTH } from '../constant/pin-length.constant';
+import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupReducerActionEnum } from '../enum/pin-setup-reducer-action.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
 import { usePinSetupReducer } from '../reducer/pin-setup.reducer';
 import { authService } from '../service/auth.service';
-import { useAuthContext } from '../context/auth.context';
 
 interface Params {
     readonly mode: PinSetupModeEnum;
-    readonly onSuccess: EmptyFn;
+    readonly onSuccess: (value: { isPinEnabled: boolean; isBiometricEnabled: boolean }) => void;
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -46,6 +44,11 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         return true;
     };
 
+    const removePinAndContinue = () => {
+        void authService.deletePin();
+        onSuccess({ isPinEnabled: false, isBiometricEnabled: false });
+    };
+
     const handleVerifyOldStep = async () => {
         const success = await verifyOldPin();
 
@@ -54,8 +57,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         }
 
         if (mode === PinSetupModeEnum.DISABLE) {
-            await authService.deletePin();
-            onSuccess();
+            removePinAndContinue();
 
             return;
         }
@@ -65,18 +67,13 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
 
     const handleCreateStep = () => void dispatch({ type: PinSetupReducerActionEnum.STORE_NEW_PIN, pin: state.input });
 
-    const removePinAndContinue = () => {
-        void authService.deletePin();
-        onSuccess();
-    };
-
-    const savePinAndContinue = async (enableBiometric: boolean) => {
+    const savePinAndContinue = async (isBiometricEnabled: boolean) => {
         dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: true });
 
         try {
             await authService.savePin(state.tempNewPin);
 
-            if (enableBiometric && isSomeAvailable) {
+            if (isBiometricEnabled && isSomeAvailable) {
                 const success = await authService.authenticateWithBiometrics();
 
                 if (!success) {
@@ -84,7 +81,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
                 }
             }
 
-            onSuccess();
+            onSuccess({ isPinEnabled: true, isBiometricEnabled });
         } catch {
             dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Failed to save PIN. Please try again.` });
         } finally {
