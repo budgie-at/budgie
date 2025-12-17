@@ -8,8 +8,7 @@ import { PinSetupReducerActionEnum } from '../enum/pin-setup-reducer-action.enum
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
 import { usePinSetupReducer } from '../reducer/pin-setup.reducer';
 import { authService } from '../service/auth.service';
-
-import { useBiometricAvailability } from './use-biometric-availability.hook';
+import { useAuthContext } from '../context/auth.context';
 
 interface Params {
     readonly mode: PinSetupModeEnum;
@@ -18,7 +17,7 @@ interface Params {
 
 // eslint-disable-next-line max-lines-per-function
 export const usePinSetup = ({ mode, onSuccess }: Params) => {
-    const { isLoading: biometricLoading, isSomeAvailable } = useBiometricAvailability();
+    const { isLoading: biometricLoading, isSomeAvailable } = useAuthContext();
 
     const [state, dispatch] = usePinSetupReducer({
         mode,
