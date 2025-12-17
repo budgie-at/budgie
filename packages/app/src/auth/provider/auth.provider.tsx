@@ -1,7 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { AppState } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { AppState, AppStateStatus } from 'react-native';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { AuthContext } from '../context/auth.context';
@@ -12,18 +10,21 @@ interface Props {
 }
 
 export const AuthProvider = ({ children }: Props) => {
-    const { settings } = useSettingsContext();
-    const { isPinEnabled } = settings;
-    const [isUnlocked, setIsUnlocked] = useState<boolean | null>(() => !isPinEnabled);
+    const { settings, isLoading: settingsLoading } = useSettingsContext();
     const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useBiometricAvailability();
+    const { isPinEnabled } = settings;
+
+    const [isUnlocked, setIsUnlocked] = useState(false);
+
+    const shouldAutoUnlock = !settingsLoading && !isPinEnabled;
+
+    if (shouldAutoUnlock && !isUnlocked) {
+        setIsUnlocked(true);
+    }
 
     useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
-            if (!isPinEnabled) {
-                setIsUnlocked(true);
-            }
-
-            if (nextAppState === 'background' || nextAppState === 'inactive') {
+        const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+            if ((nextAppState === 'background' || nextAppState === 'inactive') && isPinEnabled) {
                 setIsUnlocked(false);
             }
         });
@@ -31,11 +32,15 @@ export const AuthProvider = ({ children }: Props) => {
         return () => void subscription.remove();
     }, [isPinEnabled]);
 
-    if (!isDefined(isUnlocked) && isPinEnabled) {
-        setIsUnlocked(false);
-    }
-
-    const value = { isUnlocked, setIsUnlocked, isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable };
+    const value = {
+        isUnlocked,
+        setIsUnlocked,
+        isFaceIdAvailable,
+        isTouchIdAvailable,
+        isSomeAvailable,
+        isPinEnabled,
+        isLoading: settingsLoading
+    };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
