@@ -5,13 +5,12 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName, ICONS } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
+import { GoBackBtn } from '../go-back-btn/go-back-btn';
 
 interface Props {
     readonly title: string;
@@ -50,11 +49,7 @@ export const PageHeader = ({
 }: Props) => (
     <View className={cn(headerVariant({ size }), className)}>
         <View className="flex-row items-center gap-x-xl">
-            {isDefined(onGoBack) ? (
-                <HapticPressable className="p-md" onPress={onGoBack}>
-                    <Icon className="text-primary" icon={ICONS.ChevronLeft} size={24} />
-                </HapticPressable>
-            ) : null}
+            {isDefined(onGoBack) ? <GoBackBtn onPress={onGoBack} /> : null}
 
             {isNotEmptyString(icon) ? <CircleIcon icon={ICONS[icon]} variant={iconVariant} size="2xl" className="rounded-3xl" /> : null}
 
