@@ -15,5 +15,9 @@ export const AuthGuard = ({ children }: Props) => {
         return <Redirect href="/pin" />;
     }
 
+    if (isUnlocked && pathname === '/pin') {
+        return <Redirect href="/" />;
+    }
+
     return children;
 };

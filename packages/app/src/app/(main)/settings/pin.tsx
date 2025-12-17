@@ -26,6 +26,7 @@ export default function PinSetupScreen() {
     const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({
         mode,
         onSuccess: () => {
+            console.log({mode});
             void updateSettingsMutation({ isPinEnabled: mode !== PinSetupModeEnum.DISABLE });
             void goBackOrReplace('/settings');
         }
