@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { msg } from '@lingui/core/macro';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -18,7 +18,6 @@ interface Params {
 
 // eslint-disable-next-line max-lines-per-function
 export const usePinSetup = ({ mode, onSuccess }: Params) => {
-    const { t } = useLingui();
     const { isLoading: biometricLoading, isSomeAvailable } = useBiometricAvailability();
 
     const [state, dispatch] = usePinSetupReducer({
@@ -39,7 +38,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
         const isCorrect = await authService.verifyPin(state.input);
 
         if (!isCorrect) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: t`Incorrect PIN` });
+            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Incorrect PIN` });
             dispatch({ type: PinSetupReducerActionEnum.RESET_INPUT });
 
             return false;
@@ -82,13 +81,13 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
                 const success = await authService.authenticateWithBiometrics();
 
                 if (!success) {
-                    throw new Error(t`Biometric enrollment failed`);
+                    throw new Error();
                 }
             }
 
             onSuccess();
         } catch {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: t`Failed to save PIN. Please try again.` });
+            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Failed to save PIN. Please try again.` });
         } finally {
             dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: false });
         }
@@ -96,7 +95,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
 
     const handleConfirmStep = async () => {
         if (state.input !== state.tempNewPin) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: t`PINs do not match` });
+            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`PINs do not match` });
             dispatch({ type: PinSetupReducerActionEnum.RESET });
 
             return;
@@ -117,7 +116,7 @@ export const usePinSetup = ({ mode, onSuccess }: Params) => {
 
     const handleSubmit = async () => {
         if (state.input.length < PIN_LENGTH) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: t`PIN must be ${PIN_LENGTH} digits` });
+            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`PIN must be ${PIN_LENGTH} digits` });
 
             return;
         }
