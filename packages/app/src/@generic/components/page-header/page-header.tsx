@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName, ICONS } from '../../constant/icons.constant';
+import { ICONS, IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';

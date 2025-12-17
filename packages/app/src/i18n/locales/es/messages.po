@@ -496,11 +496,11 @@ msgstr ""
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr ""
 
-#: src/app/(main)/pin.tsx:111
+#: src/app/(main)/pin.tsx:102
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr ""
 
-#: src/app/(main)/pin.tsx:110
+#: src/app/(main)/pin.tsx:101
 msgid "Enter your PIN"
 msgstr ""
 
@@ -521,7 +521,7 @@ msgstr ""
 msgid "Face ID / Touch ID"
 msgstr ""
 
-#: src/auth/hook/use-pin-setup.hook.tsx:90
+#: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
 msgstr ""
 
@@ -562,8 +562,8 @@ msgstr "Icono"
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/app/(main)/pin.tsx:74
-#: src/auth/hook/use-pin-setup.hook.tsx:41
+#: src/app/(main)/pin.tsx:67
+#: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr ""
 
@@ -713,12 +713,12 @@ msgstr "Organización"
 msgid "Over:"
 msgstr "Exceso:"
 
-#: src/app/(main)/pin.tsx:58
-#: src/auth/hook/use-pin-setup.hook.tsx:119
+#: src/app/(main)/pin.tsx:52
+#: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr ""
 
-#: src/auth/hook/use-pin-setup.hook.tsx:98
+#: src/auth/hook/use-pin-setup.hook.tsx:94
 msgid "PINs do not match"
 msgstr ""
 
