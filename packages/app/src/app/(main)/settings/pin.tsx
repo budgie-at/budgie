@@ -3,6 +3,8 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { FullPage } from '../../../@generic/components/page/full-page';
@@ -38,6 +40,8 @@ export default function PinSetupScreen() {
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
+    const error = isDefined(state.error) ? i18n.t(state.error) : null;
+
     return (
         <FullPage>
             <View className="flex-1">
@@ -50,10 +54,10 @@ export default function PinSetupScreen() {
                         <BiometricConfiguration onSubmit={saveAndContinue} />
                     ) : (
                         <PinForm
+                            error={error}
                             title={i18n.t(title)}
                             description={i18n.t(description)}
                             currentInput={state.input}
-                            error={state.error}
                             isLoading={state.isLoading}
                             onDigitPress={addDigit}
                             onDeletePress={deleteDigit}
