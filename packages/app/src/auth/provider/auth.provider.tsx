@@ -1,8 +1,11 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { AuthContext } from '../context/auth.context';
+import { useBiometricAvailability } from '../hook/use-biometric-availability.hook';
 
 interface Props {
     readonly children: ReactNode;
@@ -11,7 +14,8 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
     const { settings } = useSettingsContext();
     const { isPinEnabled } = settings;
-    const [isUnlocked, setIsUnlocked] = useState(!isPinEnabled);
+    const [isUnlocked, setIsUnlocked] = useState<boolean | null>(null);
+    const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useBiometricAvailability();
 
     useEffect(() => {
         const subscription = AppState.addEventListener('change', nextAppState => {
@@ -27,7 +31,11 @@ export const AuthProvider = ({ children }: Props) => {
         return () => void subscription.remove();
     }, [isPinEnabled]);
 
-    const value = { isUnlocked, setIsUnlocked };
+    if (!isDefined(isUnlocked) && isPinEnabled) {
+        setIsUnlocked(false);
+    }
+
+    const value = { isUnlocked, setIsUnlocked, isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

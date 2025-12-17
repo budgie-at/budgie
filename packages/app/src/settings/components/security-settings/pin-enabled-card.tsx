@@ -8,8 +8,8 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
-import { useBiometricAvailability } from '../../../auth/hook/use-biometric-availability.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { useGetSettingsQuery } from '../../query/use-get-settings.query';
 
@@ -21,7 +21,7 @@ const end = { x: 1, y: 1 };
 
 export const PinEnabledCard = () => {
     const { settings } = useGetSettingsQuery();
-    const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useBiometricAvailability();
+    const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useAuthContext();
 
     const isBiometricEnabled = settings?.isBiometricEnabled === true;
 

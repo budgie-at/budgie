@@ -1,14 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
-import { useBiometricAvailability } from '../../auth/hook/use-biometric-availability.hook';
 import { authService } from '../../auth/service/auth.service';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
 
 interface AuthFormStateInterface {
     input: string;
@@ -21,7 +21,7 @@ export default function PinScreen() {
     const { t } = useLingui();
     const { setIsUnlocked } = useAuthContext();
     const { settings } = useSettingsContext();
-    const { isFaceIdAvailable } = useBiometricAvailability();
+    const { isFaceIdAvailable } = useAuthContext();
 
     const { isBiometricEnabled } = settings;
     const canUseBiometric = isFaceIdAvailable && isBiometricEnabled;
@@ -39,18 +39,12 @@ export default function PinScreen() {
 
     const addDigit = (digit: string) => {
         if (formState.input.length < PIN_LENGTH) {
-            updateForm({
-                input: formState.input + digit,
-                error: null
-            });
+            updateForm({ input: formState.input + digit, error: null });
         }
     };
 
     const deleteDigit = () => {
-        updateForm({
-            input: formState.input.slice(0, -1),
-            error: null
-        });
+        updateForm({ input: formState.input.slice(0, -1), error: null });
     };
 
     const handlePinSubmit = async () => {
@@ -70,10 +64,7 @@ export default function PinScreen() {
             setIsUnlocked(true);
             router.replace('/');
         } else {
-            updateForm({
-                error: t`Incorrect PIN`,
-                input: ''
-            });
+            updateForm({ error: t`Incorrect PIN`, input: '' });
         }
     };
 
@@ -118,11 +109,7 @@ export default function PinScreen() {
                     canScan={canUseBiometric}
                 />
 
-                {formState.isLoading && (
-                    <View className="absolute inset-0 bg-primary-reverse/80 justify-center items-center">
-                        <ActivityIndicator size="large" color="var(--color-primary)" />
-                    </View>
-                )}
+                {formState.isLoading ? <LoadingOverlay /> : null}
             </View>
         </View>
     );
