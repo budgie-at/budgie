@@ -75,7 +75,7 @@ msgstr "Accounts ({selectedAccountsCount})"
 msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
 msgstr "Accounts you archive will appear here. They won't be included in your totals or main view."
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx:50
+#: src/settings/components/security-settings/pin-enabled-card.tsx:53
 msgid "Active"
 msgstr "Active"
 
@@ -140,7 +140,7 @@ msgid "Analytics Page"
 msgstr "Analytics Page"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:18
-#: src/settings/components/security-settings/pin-enabled-card.tsx:44
+#: src/settings/components/security-settings/pin-enabled-card.tsx:47
 msgid "App Lock"
 msgstr "App Lock"
 
@@ -185,10 +185,6 @@ msgstr "Base currency"
 msgid "Biometric Authentication"
 msgstr "Biometric Authentication"
 
-#: src/auth/hook/use-pin-setup.hook.tsx:85
-msgid "Biometric enrollment failed"
-msgstr "Biometric enrollment failed"
-
 #: src/@generic/components/icon-selector/icon-selector.tsx:33
 msgid "Browse"
 msgstr "Browse"
@@ -231,7 +227,7 @@ msgstr "Category Name"
 msgid "Change"
 msgstr "Change"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx:76
+#: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
 msgstr "Change PIN"
 
@@ -284,7 +280,7 @@ msgstr "Clear All"
 msgid "Common Tags"
 msgstr "Common Tags"
 
-#: src/auth/util/get-pin-form-meta.util.ts:52
+#: src/auth/util/get-pin-setup-meta.util.ts:52
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
 
@@ -316,7 +312,7 @@ msgstr "Could not restore account."
 msgid "Could not update account. Please try again later"
 msgstr "Could not update account. Please try again later"
 
-#: src/auth/util/get-pin-form-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:45
 msgid "Create a PIN"
 msgstr "Create a PIN"
 
@@ -419,7 +415,7 @@ msgstr "Delete"
 msgid "Deselect All"
 msgstr "Deselect All"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx:86
+#: src/settings/components/security-settings/pin-enabled-card.tsx:89
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
@@ -457,15 +453,15 @@ msgid "Enable"
 msgstr "Enable"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
-#: src/auth/util/get-pin-form-meta.util.ts:23
+#: src/auth/util/get-pin-setup-meta.util.ts:23
 msgid "Enable biometric unlock?"
 msgstr "Enable biometric unlock?"
 
-#: src/auth/util/get-pin-form-meta.util.ts:10
+#: src/auth/util/get-pin-setup-meta.util.ts:10
 msgid "Enable Face ID unlock?"
 msgstr "Enable Face ID unlock?"
 
-#: src/auth/util/get-pin-form-meta.util.ts:17
+#: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
 msgstr "Enable Touch ID unlock?"
 
@@ -481,24 +477,24 @@ msgstr "English (United Kingdom)"
 msgid "English (United States)"
 msgstr "English (United States)"
 
-#: src/auth/util/get-pin-form-meta.util.ts:46
+#: src/auth/util/get-pin-setup-meta.util.ts:46
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Enter a {PIN_LENGTH}-digit PIN"
 
-#: src/auth/util/get-pin-form-meta.util.ts:31
-#: src/auth/util/get-pin-form-meta.util.ts:38
+#: src/auth/util/get-pin-setup-meta.util.ts:31
+#: src/auth/util/get-pin-setup-meta.util.ts:38
 msgid "Enter current PIN"
 msgstr "Enter current PIN"
 
-#: src/auth/util/get-pin-form-meta.util.ts:32
+#: src/auth/util/get-pin-setup-meta.util.ts:32
 msgid "Enter current PIN to disable protection"
 msgstr "Enter current PIN to disable protection"
 
-#: src/auth/util/get-pin-form-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:45
 msgid "Enter new PIN"
 msgstr "Enter new PIN"
 
-#: src/auth/util/get-pin-form-meta.util.ts:39
+#: src/auth/util/get-pin-setup-meta.util.ts:39
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Enter your {PIN_LENGTH}-digit PIN"
 
@@ -518,16 +514,16 @@ msgstr "Everyday transactions and spending"
 msgid "Expense"
 msgstr "Expense"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx:64
+#: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
 msgstr "Face ID"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:39
-#: src/settings/components/security-settings/pin-enabled-card.tsx:62
+#: src/settings/components/security-settings/pin-enabled-card.tsx:65
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
-#: src/auth/hook/use-pin-setup.hook.tsx:91
+#: src/auth/hook/use-pin-setup.hook.tsx:90
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
@@ -569,7 +565,7 @@ msgid "Income"
 msgstr "Income"
 
 #: src/app/(main)/pin.tsx:74
-#: src/auth/hook/use-pin-setup.hook.tsx:42
+#: src/auth/hook/use-pin-setup.hook.tsx:41
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
@@ -720,11 +716,11 @@ msgid "Over:"
 msgstr "Over:"
 
 #: src/app/(main)/pin.tsx:58
-#: src/auth/hook/use-pin-setup.hook.tsx:120
+#: src/auth/hook/use-pin-setup.hook.tsx:119
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "PIN must be {PIN_LENGTH} digits"
 
-#: src/auth/hook/use-pin-setup.hook.tsx:99
+#: src/auth/hook/use-pin-setup.hook.tsx:98
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
@@ -751,7 +747,7 @@ msgstr "Preview"
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/auth/util/get-pin-form-meta.util.ts:53
+#: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
@@ -960,7 +956,7 @@ msgstr "Today"
 msgid "Total Balance"
 msgstr "Total Balance"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx:63
+#: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Touch ID"
 msgstr "Touch ID"
 
@@ -1014,15 +1010,15 @@ msgid "Update Account"
 msgstr "Update Account"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
-#: src/auth/util/get-pin-form-meta.util.ts:24
+#: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
 msgstr "Use Face ID or Touch ID to unlock your app quickly and securely"
 
-#: src/auth/util/get-pin-form-meta.util.ts:11
+#: src/auth/util/get-pin-setup-meta.util.ts:11
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Use Face ID to unlock your app quickly and securely"
 
-#: src/auth/util/get-pin-form-meta.util.ts:18
+#: src/auth/util/get-pin-setup-meta.util.ts:18
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
