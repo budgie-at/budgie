@@ -1,8 +1,6 @@
 import { Redirect, usePathname } from 'expo-router';
 import { ReactNode } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { EmptyScreen } from '../../@generic/components/empty-screen/empty-screen';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useAuthContext } from '../context/auth.context';
@@ -16,7 +14,7 @@ export const AuthGuard = ({ children }: Props) => {
     const { isLoading } = useSettingsContext();
     const pathname = usePathname();
 
-    if (!isDefined(isUnlocked) || isLoading) {
+    if (isLoading) {
         return <EmptyScreen />;
     }
 
