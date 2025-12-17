@@ -17,7 +17,7 @@ import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
 import { useBiometricAvailability } from '../../../auth/hook/use-biometric-availability.hook';
 import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
-import { getPinFormMeta } from '../../../auth/util/get-pin-form-meta.util';
+import { getPinSetupMeta } from '../../../auth/util/get-pin-setup-meta.util';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
 export default function PinSetupScreen() {
@@ -32,7 +32,7 @@ export default function PinSetupScreen() {
             void goBackOrReplace('/settings');
         }
     });
-    const { title, description } = getPinFormMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
+    const { title, description } = getPinSetupMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
 
     if (!isEnumValue(mode, PinSetupModeEnum)) {
         return <Redirect href="/settings" />;
@@ -44,33 +44,29 @@ export default function PinSetupScreen() {
 
     return (
         <FullPage>
-            <View className="flex-1">
-                <HapticPressable onPress={handleGoBack}>
-                    <Icon icon={ICONS.ChevronLeft} className="text-primary" size={28} />
-                </HapticPressable>
+            <HapticPressable onPress={handleGoBack} className="absolute left-[20px] top-[20px]">
+                <Icon icon={ICONS.ChevronLeft} className="text-primary" size={28} />
+            </HapticPressable>
 
-                <View className="flex-1 justify-center">
-                    {state.step === PinSetupStepEnum.BIOMETRIC ? (
-                        <BiometricConfiguration onSubmit={saveAndContinue} />
-                    ) : (
-                        <PinForm
-                            error={error}
-                            title={i18n.t(title)}
-                            description={i18n.t(description)}
-                            currentInput={state.input}
-                            isLoading={state.isLoading}
-                            onDigitPress={addDigit}
-                            onDeletePress={deleteDigit}
-                        />
-                    )}
+            {state.step === PinSetupStepEnum.BIOMETRIC ? (
+                <BiometricConfiguration onSubmit={saveAndContinue} />
+            ) : (
+                <PinForm
+                    error={error}
+                    title={i18n.t(title)}
+                    description={i18n.t(description)}
+                    currentInput={state.input}
+                    isLoading={state.isLoading}
+                    onDigitPress={addDigit}
+                    onDeletePress={deleteDigit}
+                />
+            )}
+
+            {state.isLoading ? (
+                <View className="absolute inset-0 bg-primary-reverse/80 justify-center items-center">
+                    <ActivityIndicator size="large" color="var(--color-primary)" />
                 </View>
-
-                {state.isLoading && state.step !== PinSetupStepEnum.BIOMETRIC && (
-                    <View className="absolute inset-0 bg-primary-reverse/80 justify-center items-center">
-                        <ActivityIndicator size="large" color="var(--color-primary)" />
-                    </View>
-                )}
-            </View>
+            ) : null}
         </FullPage>
     );
 }

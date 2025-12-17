@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import { emptyFn, EmptyFn, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
@@ -35,7 +35,7 @@ export const PinForm: React.FC<PinPadFormProps> = ({
     const canDelete = isNotEmptyString(currentInput) && !isLoading;
 
     return (
-        <View>
+        <View className="flex-1 justify-center">
             <View className="border border-secondary-corner bg-secondary-background rounded-7xl p-5xl mx-auto mb-7xl">
                 <Icon icon={ICONS.Lock} className="text-primary" size={40} />
             </View>
