@@ -44,6 +44,39 @@ class TransactionService {
             return transaction;
         });
     }
+
+    async updateById(id: number, input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+        return await db.transaction(async tx => {
+            const transaction = await transactionRepository.updateById(
+                id,
+                {
+                    type: input.type,
+                    title: input.title,
+                    comment: input.comment,
+                    operatedAt: input.operatedAt,
+                    toAccountId: input.toAccountId,
+                    exchangeRate: input.exchangeRate,
+                    fromAccountId: input.fromAccountId,
+                    amount: convertToMicroUnits(input.amount)
+                },
+                tx
+            );
+
+            await transactionEntryRepository.deleteByTransactionId(id, tx);
+            await Promise.all(
+                input.entries.map(async entry =>
+                    transactionEntryRepository.create({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId: id }, tx)
+                )
+            );
+
+            await transactionTagsRepository.deleteByTransactionId(id, tx);
+            if (isNotEmptyArray(input.tagIds)) {
+                await Promise.all(input.tagIds.map(async tagId => transactionTagsRepository.create({ transactionId: id, tagId }, tx)));
+            }
+
+            return transaction;
+        });
+    }
 }
 
 export const transactionService = new TransactionService();

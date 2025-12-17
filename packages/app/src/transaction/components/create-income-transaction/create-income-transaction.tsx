@@ -2,14 +2,14 @@ import { IncomeTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useTransactionForm } from '../../hook/use-transaction-form.hook';
+import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
 import { TransactionForm } from '../transaction-form/transaction-form';
 
 export const CreateIncomeTransaction = () => {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
 
-    const { form, handleSubmit } = useTransactionForm({
+    const { form, handleSubmit } = useCreateTransactionForm({
         schema: IncomeTransactionCreateEntitySchema,
         toAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,
