@@ -19,7 +19,7 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
     const handleContinue = () => void onSubmit(enableBiometrics);
 
     return (
-        <View className="gap-y-[32px]">
+        <View className="gap-y-[32px] flex-1 justify-center">
             <View className="rounded-full bg-secondary-background p-[32px] mx-auto">
                 <Icon icon={ICONS.Fingerprint} className="text-primary" size={80} />
             </View>
