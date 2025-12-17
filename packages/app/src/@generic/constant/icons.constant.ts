@@ -43,6 +43,7 @@ import {
     LockKeyhole,
     LockOpen,
     LucideIcon,
+    LucideScanFace,
     MapPinIcon,
     Moon,
     PawPrint,
@@ -69,7 +70,6 @@ import {
     TrendingUp,
     Utensils,
     Wallet,
-    LucideScanFace,
     Wrench,
     X
 } from 'lucide-react-native';
