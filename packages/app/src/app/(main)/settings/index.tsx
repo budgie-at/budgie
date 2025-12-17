@@ -13,7 +13,7 @@ import { DefaultCurrencySelector } from '../../../settings/components/default-cu
 import { GenericSelectorCard } from '../../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
-import { SecuritySettings } from '../../../settings/components/security-settings/security-settings';
+import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
@@ -41,7 +41,7 @@ export default function SettingsPage() {
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Security`}>
-                        <SecuritySettings />
+                        <PinCard />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`General`}>

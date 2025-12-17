@@ -21,9 +21,9 @@ export const SettingsEntityTable = sqliteTable(
             .notNull()
             .default(ThemeEnum.SYSTEM)
             .$type<ThemeEnum>(),
+        isPinEnabled: int('is_pin_enabled', { mode: 'boolean' }).notNull().default(false),
+        isBiometricEnabled: int('is_biometric_enabled', { mode: 'boolean' }).notNull().default(false),
         showCents: int('show_cents', { mode: 'boolean' }).notNull().default(true),
         isVibrationEnabled: int('is_vibration_enabled', { mode: 'boolean' }).notNull().default(true),
-        isPinEnabled: int('is_pin_enabled', { mode: 'boolean' }).notNull().default(false),
-        isBiometricEnabled: int('is_biometric_enabled', { mode: 'boolean' }).notNull().default(false)
     })
 );

@@ -6,10 +6,12 @@ export const DEFAULT_SETTINGS = {
     deletedAt: null,
     showCents: true,
     defaultAccountId: 0,
+    isPinEnabled: false,
     createdAt: new Date(),
     updatedAt: new Date(),
     theme: ThemeEnum.DARK,
     defaultInstrumentId: 0,
     isVibrationEnabled: true,
+    isBiometricEnabled: false,
     language: LanguageEnum.EN,
 } satisfies SettingsEntityInterface
