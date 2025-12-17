@@ -5,6 +5,7 @@ import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
+import { Shake } from '../../../@generic/components/shake/shake';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
@@ -43,9 +44,11 @@ export const PinForm: React.FC<PinPadFormProps> = ({
             <Text className="text-3xl font-semibold text-primary text-center mb-md">{title}</Text>
             <Text className="text-md text-secondary-foreground text-center mb-7xl">{description}</Text>
 
-            <PinFormDots filled={currentInput.length} />
+            <Shake isEnabled={isNotEmptyString(error)}>
+                <PinFormDots filled={currentInput.length} />
+            </Shake>
 
-            {error && <Text className="text-lg text-destructive-foreground text-center mt-5xl">{error}</Text>}
+            {isNotEmptyString(error) ? <Text className="text-sm text-destructive-foreground text-center mt-5xl">{error}</Text> : null}
 
             <View className="mt-8xl gap-y-lg items-center">
                 <View className="flex-row gap-x-lg border">
