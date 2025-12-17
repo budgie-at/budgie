@@ -3,12 +3,12 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
+import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
 import { authService } from '../../auth/service/auth.service';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
 
 interface AuthFormStateInterface {
     input: string;
