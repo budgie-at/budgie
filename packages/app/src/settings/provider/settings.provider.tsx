@@ -23,6 +23,7 @@ export const SettingsProvider = ({ children }: Props) => {
     const value = {
         defaultAccount,
         defaultInstrument,
+        isLoading: result.isLoading,
         settings: result.settings ?? DEFAULT_SETTINGS,
         decimalPlaces: showCents ? DEFAULT_DECIMAL_PLACES : 0,
         defaultCurrency: isEnumValue(defaultInstrument.code, CurrencyEnum) ? defaultInstrument.code : CurrencyEnum.USD
