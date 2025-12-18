@@ -5,12 +5,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionFormAmountBase } from '../transaction-form-amount/transaction-form-amount-base';
-import { TransactionTransferFormCategory } from '../transaction-form-category/transaction-transfer-form-category';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
 
@@ -59,11 +57,7 @@ export const TransferTransactionForm = ({ onSubmit, icon, control, setValue, tit
                     onAmountChange={handleAmountChange}
                 />
 
-                <FormLayoutGroup>
-                    <TransactionTransferFormCategory setValue={setValue} control={control} variant={variant} />
-
-                    <TransactionFormMetadataFields variant={variant} control={control} />
-                </FormLayoutGroup>
+                <TransactionFormMetadataFields variant={variant} control={control} />
             </KeyboardAwareScrollView>
         </TransactionFormLayout>
     );

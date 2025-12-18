@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
@@ -8,6 +8,11 @@ import { HapticPressable } from '../../../@generic/components/haptic-pressable/h
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { useEffect } from 'react';
+import { isDefined } from '@rnw-community/shared';
+import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
+import { getTransferCategoryId } from '../../utils/get-transfer-category-id.util';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -22,6 +27,25 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
         control,
         name: ['fromAccountId', 'toAccountId']
     });
+
+    const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
+    const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
+
+    useEffect(() => {
+        setValue('entries.0.instrumentId', fromAccount?.instrument.id ?? 0);
+        setValue('entries.1.instrumentId', toAccount?.instrument.id ?? 0);
+
+        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
+            return;
+        }
+
+        const categoryId = getTransferCategoryId(fromAccount.type, toAccount.type);
+
+        if (isDefined(categoryId)) {
+            setValue('entries.0.categoryId', categoryId);
+            setValue('entries.1.categoryId', categoryId);
+        }
+    }, [fromAccount, toAccount, setValue]);
 
     const handleSwitchAccounts = () => {
         const temp = fromAccountId;
