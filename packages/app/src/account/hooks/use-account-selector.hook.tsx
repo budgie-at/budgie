@@ -14,7 +14,7 @@ interface UseAccountSelectorParams {
     readonly accountId: number | null;
     readonly emptyStateDescription?: string;
     readonly excludeAccountId?: number | null;
-    readonly onSelect: (accountId: number) => void;
+    readonly onSelect: (accountId: number) => Promise<void> | void;
 }
 
 export const useAccountSelector = ({ accountId, excludeAccountId = null, emptyStateDescription, onSelect }: UseAccountSelectorParams) => {
