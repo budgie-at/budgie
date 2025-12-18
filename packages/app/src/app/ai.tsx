@@ -1,16 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
 import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
+import { categoryRepository } from '../@generic/drizzle/db/db';
 
 const TransactionSchema = {
     properties: {
         category: {
             type: 'string',
+            enum: ['food'],
             // eslint-disable-next-line lingui/no-unlocalized-strings
             description: 'Transaction category.'
         },
@@ -43,11 +48,14 @@ const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, du
     recorder.stop();
 };
 
+// eslint-disable-next-line max-statements
 export default function AiScreen() {
     const { t } = useLingui();
 
     const llm = useLLM({ model: LLAMA3_2_1B });
     const speechToText = useSpeechToText({ model: WHISPER_TINY });
+
+    const { data: categoriesData } = useLiveQuery(categoryRepository.findAll());
 
     useEffect(() => {
         const setup = async () => {
@@ -64,9 +72,11 @@ export default function AiScreen() {
 
     const [isRecording, setIsRecording] = useState(false);
     const [prompt, setPrompt] = useState('');
+    const [error, setError] = useState('');
     const waveformRef = useRef<number[]>([]);
 
     const handlePress = async () => {
+        setError('');
         setIsRecording(true);
 
         waveformRef.current = [];
@@ -74,19 +84,25 @@ export default function AiScreen() {
             waveformRef.current.push(...waveform);
         });
 
+        TransactionSchema.properties.category.enum = categoriesData.map(category => category.title);
+
         const formattingInstructions = getStructuredOutputPrompt(TransactionSchema);
-        const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' });
+        const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' }).catch(() => '');
 
         setPrompt(transcribed);
 
-        await llm.generate([
-            {
-                role: 'system',
-                // eslint-disable-next-line lingui/no-unlocalized-strings
-                content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
-            },
-            { role: 'user', content: transcribed }
-        ]);
+        try {
+            await llm.generate([
+                {
+                    role: 'system',
+                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
+                },
+                { role: 'user', content: transcribed }
+            ]);
+        } catch (e: unknown) {
+            setError(getErrorMessage(e));
+        }
 
         setIsRecording(false);
     };
@@ -117,6 +133,7 @@ export default function AiScreen() {
             )}
             <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
             <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
+            <Text className="text-primary text-3xl font-semibold">{error}</Text>
         </Page>
     );
 }

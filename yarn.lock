@@ -1591,7 +1591,7 @@ __metadata:
     "@rnw-community/shared": "npm:^1.8.2"
     drizzle-orm: "npm:^0.44.7"
     drizzle-zod: "npm:^0.8.3"
-    expo-sqlite: "npm:^16.0.9"
+    expo-sqlite: "npm:~16.0.10"
     zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
@@ -11112,19 +11112,6 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/09fe3f313d946af6e4052f79e8b6578b61af895ca6621ded6708bdf955946aed1a17716f1e3aa8608bfa47e3b2fc5207c25aa8e368e2ebdce929716e54afc6d7
-  languageName: node
-  linkType: hard
-
-"expo-sqlite@npm:^16.0.9":
-  version: 16.0.9
-  resolution: "expo-sqlite@npm:16.0.9"
-  dependencies:
-    await-lock: "npm:^2.2.2"
-  peerDependencies:
-    expo: "*"
-    react: "*"
-    react-native: "*"
-  checksum: 10/468d2e0bc42556e5b6b046d9d99f2d376b646b0b073b60cd3996b62021621696c8ed0b9f555277baedd9ae96c2f61409988628d20a67ebbb786440357eb90bd2
   languageName: node
   linkType: hard
 
