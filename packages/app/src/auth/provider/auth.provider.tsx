@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { AuthContext } from '../context/auth.context';
+import { AuthContext, AuthContextInterface } from '../context/auth.context';
 import { useBiometricAvailability } from '../hook/use-biometric-availability.hook';
 
 interface Props {
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: Props) => {
         return () => void subscription.remove();
     }, [isPinEnabled]);
 
-    const value = {
+    const value: AuthContextInterface = {
         isUnlocked,
         setIsUnlocked,
         isFaceIdAvailable,
