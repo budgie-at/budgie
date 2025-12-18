@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.75.0](https://github.com/budgie-at/budgie/compare/v1.74.0...v1.75.0) (2025-12-18)
+
+### Features
+
+- **app:** AI poc ([8d4daab](https://github.com/budgie-at/budgie/commit/8d4daabc839ca9bf79b3ec46ff9dc42c62ead480))
+- **app:** AI poc ([1cb302a](https://github.com/budgie-at/budgie/commit/1cb302a094325d6d1b83f0829a98ac6efd85cc16))
+- **app:** AI poc ([708d806](https://github.com/budgie-at/budgie/commit/708d806ddbd9b4fdeeb00aea87aba90c6c756a91))
+- **app:** AI poc ([77ec041](https://github.com/budgie-at/budgie/commit/77ec04189006769fe827ddb905e8c0b5786f5027))
+- **app:** AI poc ([1c2f906](https://github.com/budgie-at/budgie/commit/1c2f9069926b30af4f45b9c0da149e2b64445c0e))
+- **app:** AI poc ([831c102](https://github.com/budgie-at/budgie/commit/831c102dcda756ad19807392af27356d9da1a1eb))
+- **app:** AI poc ([ff6f28e](https://github.com/budgie-at/budgie/commit/ff6f28eeadf4c7254c26e3832f8d3faa570e6a71))
+
 # [1.74.0](https://github.com/budgie-at/budgie/compare/v1.73.0...v1.74.0) (2025-12-18)
 
 ### Features
