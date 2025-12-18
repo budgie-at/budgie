@@ -4,7 +4,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { LLAMA3_2_1B_SPINQUANT, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
@@ -53,7 +53,7 @@ const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, du
 export default function AiScreen() {
     const { t } = useLingui();
 
-    const llm = useLLM({ model: LLAMA3_2_1B_SPINQUANT });
+    const llm = useLLM({ model: LLAMA3_2_1B });
     const speechToText = useSpeechToText({ model: WHISPER_TINY });
 
     const { data: categoriesData } = useLiveQuery(categoryRepository.findAll());
