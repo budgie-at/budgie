@@ -15,7 +15,7 @@ msgstr ""
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
 
-#: src/app/(main)/archived.tsx:27
+#: src/app/(main)/settings/archived.tsx:35
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} рахунок"
 
@@ -35,15 +35,15 @@ msgstr "{tagsCount} тегів доступно"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(tabs)/settings.tsx:36
+#: src/app/(main)/settings/index.tsx:37
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(tabs)/settings.tsx:78
+#: src/app/(main)/settings/index.tsx:83
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/transaction-form/transaction-form.tsx:50
+#: src/transaction/components/transaction-form/transaction-form.tsx:52
 msgid "Account"
 msgstr "Рахунок"
 
@@ -55,7 +55,7 @@ msgstr "Назва рахунку"
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:92
+#: src/account/component/update-liability-account/update-liability-account.tsx:96
 msgid "Account Settings"
 msgstr "Налаштування рахунку"
 
@@ -72,6 +72,10 @@ msgstr "Рахунки ({selectedAccountsCount})"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:16
 msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
 msgstr "Архівовані рахунки відображатимуться тут. Вони не будуть включені до ваших підсумків або головного перегляду."
+
+#: src/settings/components/security-settings/pin-enabled-card.tsx:53
+msgid "Active"
+msgstr "Активний"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 msgid "Add a new category to organize your transactions"
@@ -97,23 +101,19 @@ msgstr "Додати поділ"
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
-#: src/app/(tabs)/add-account.tsx:11
-msgid "AddAccount Page"
-msgstr "Сторінка додавання рахунку"
-
 #: src/transaction/constant/transaction-type.constant.ts:10
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:18
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "ШІ"
 
-#: src/app/ai.tsx:9
-msgid "Ai Page"
-msgstr "Сторінка ШІ"
+#: src/app/ai.tsx:10
+msgid "AI chat"
+msgstr "AI-чат"
 
-#: src/app/(tabs)/settings.tsx:82
+#: src/app/(main)/settings/index.tsx:87
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -125,7 +125,7 @@ msgstr ""
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(tabs)/settings.tsx:37
+#: src/app/(main)/settings/index.tsx:38
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -133,11 +133,16 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Allocated"
 msgstr "Розподілено"
 
-#: src/app/(tabs)/analytics.tsx:11
+#: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
 msgstr "Сторінка аналітики"
 
-#: src/app/(tabs)/settings.tsx:73
+#: src/settings/components/security-settings/pin-disabled-card.tsx:18
+#: src/settings/components/security-settings/pin-enabled-card.tsx:47
+msgid "App Lock"
+msgstr "Блокування додатка"
+
+#: src/app/(main)/settings/index.tsx:78
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -149,12 +154,12 @@ msgstr "Застосувати фільтр"
 msgid "Apply Filter ({selected})"
 msgstr "Застосувати фільтр ({selected})"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:107
+#: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Archive Account"
 msgstr "Архівувати рахунок"
 
-#: src/app/(main)/archived.tsx:27
-#: src/app/(tabs)/settings.tsx:66
+#: src/app/(main)/settings/archived.tsx:37
+#: src/app/(main)/settings/index.tsx:71
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -174,11 +179,15 @@ msgstr "Банк"
 msgid "Base currency"
 msgstr "Базова валюта"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:38
+msgid "Biometric Authentication"
+msgstr "Біометрична автентифікація"
+
 #: src/@generic/components/icon-selector/icon-selector.tsx:33
 msgid "Browse"
 msgstr "Переглянути"
 
-#: src/app/(tabs)/settings.tsx:80
+#: src/app/(main)/settings/index.tsx:85
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -192,7 +201,7 @@ msgstr "Скасувати"
 msgid "Cash"
 msgstr "Готівка"
 
-#: src/app/(main)/categories.tsx:39
+#: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:55
@@ -216,8 +225,12 @@ msgstr "Назва категорії"
 msgid "Change"
 msgstr "Змінити"
 
+#: src/settings/components/security-settings/pin-enabled-card.tsx:79
+msgid "Change PIN"
+msgstr "Змінити PIN-код"
+
 #: src/account/component/create-bank-account/create-bank-account.tsx:9
-#: src/app/(main)/create-account/index.tsx:36
+#: src/app/(main)/create-account/index.tsx:26
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
@@ -229,7 +242,7 @@ msgstr "Оберіть тип, щоб почати"
 msgid "Choose Icon"
 msgstr "Обрати іконку"
 
-#: src/app/(main)/create-account/index.tsx:29
+#: src/app/(main)/create-account/index.tsx:19
 msgid "Choose the type of account you want to add"
 msgstr "Оберіть тип рахунку, який ви хочете додати"
 
@@ -265,6 +278,18 @@ msgstr "Очистити все"
 msgid "Common Tags"
 msgstr "Поширені теги"
 
+#: src/auth/util/get-pin-setup-meta.util.ts:52
+msgid "Confirm PIN"
+msgstr "Підтвердити PIN-код"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
+msgid "Continue"
+msgstr "Продовжити"
+
+#: src/account/component/update-liability-account/update-liability-account.tsx:78
+msgid "Could not archive account. Please try again later"
+msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
+
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
@@ -281,11 +306,19 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
+#: src/account/component/update-liability-account/update-liability-account.tsx:64
+msgid "Could not update account. Please try again later"
+msgstr "Не вдалося оновити обліковий запис. Спробуйте пізніше"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:45
+msgid "Create a PIN"
+msgstr "Створити PIN-код"
+
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:70
 msgid "Create accounts"
 msgstr "Створити рахунки"
 
-#: src/app/(tabs)/settings.tsx:60
+#: src/app/(main)/settings/index.tsx:65
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -317,11 +350,11 @@ msgstr "Створити тег"
 msgid "Create Tags"
 msgstr "Створити теги"
 
-#: src/app/(main)/tags.tsx:35
+#: src/app/(main)/settings/tags.tsx:37
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/transaction-form/transaction-form.tsx:56
+#: src/transaction/components/transaction-form/transaction-form.tsx:58
 msgid "Create your first account to start tracking transactions"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати транзакції"
 
@@ -345,7 +378,7 @@ msgstr "Валюта"
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
-#: src/app/(main)/categories.tsx:34
+#: src/app/(main)/settings/categories.tsx:37
 msgid "Custom categories you create will appear here"
 msgstr "Створені вами власні категорії з'являться тут"
 
@@ -353,13 +386,13 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:45
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:66
-#: src/transaction/components/transaction-form/transaction-form.tsx:63
+#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:48
+#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:69
+#: src/transaction/components/transaction-form/transaction-form.tsx:65
 msgid "Date"
 msgstr "Дата"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:78
+#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:81
 msgid "Date Range"
 msgstr "Діапазон дат"
 
@@ -379,6 +412,10 @@ msgstr "Видалити"
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
 msgstr "Скасувати вибір усіх"
+
+#: src/settings/components/security-settings/pin-enabled-card.tsx:89
+msgid "Disable App Lock"
+msgstr "Вимкнути блокування"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:36
 msgid "Done"
@@ -405,9 +442,26 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/app/(main)/create-account/index.tsx:40
+#: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
 msgstr "Резервний фонд та цілі заощаджень"
+
+#: src/settings/components/security-settings/pin-disabled-card.tsx:23
+msgid "Enable"
+msgstr "Увімкнути"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
+#: src/auth/util/get-pin-setup-meta.util.ts:23
+msgid "Enable biometric unlock?"
+msgstr "Увімкнути біометричне розблокування?"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:10
+msgid "Enable Face ID unlock?"
+msgstr "Увімкнути розблокування Face ID?"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:17
+msgid "Enable Touch ID unlock?"
+msgstr "Увімкнути розблокування Touch ID?"
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -421,7 +475,36 @@ msgstr "Англійська (Велика Британія)"
 msgid "English (United States)"
 msgstr "Англійська (США)"
 
-#: src/app/(main)/create-account/index.tsx:34
+#: src/auth/util/get-pin-setup-meta.util.ts:46
+msgid "Enter a {PIN_LENGTH}-digit PIN"
+msgstr "Введіть {PIN_LENGTH}-значний PIN-код"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:31
+#: src/auth/util/get-pin-setup-meta.util.ts:38
+msgid "Enter current PIN"
+msgstr "Введіть поточний PIN-код"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:32
+msgid "Enter current PIN to disable protection"
+msgstr "Введіть поточний PIN-код для вимкнення захисту"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:45
+msgid "Enter new PIN"
+msgstr "Введіть новий PIN-код"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:39
+msgid "Enter your {PIN_LENGTH}-digit PIN"
+msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
+
+#: src/app/(main)/pin.tsx:102
+msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
+msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
+
+#: src/app/(main)/pin.tsx:101
+msgid "Enter your PIN"
+msgstr "Введіть свій PIN-код"
+
+#: src/app/(main)/create-account/index.tsx:24
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
 
@@ -429,7 +512,20 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:64
+#: src/settings/components/security-settings/pin-enabled-card.tsx:67
+msgid "Face ID"
+msgstr "Face ID"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:39
+#: src/settings/components/security-settings/pin-enabled-card.tsx:65
+msgid "Face ID / Touch ID"
+msgstr "Face ID / Touch ID"
+
+#: src/auth/hook/use-pin-setup.hook.tsx:86
+msgid "Failed to save PIN. Please try again."
+msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:68
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
@@ -441,7 +537,7 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
-#: src/app/(tabs)/settings.tsx:42
+#: src/app/(main)/settings/index.tsx:47
 msgid "General"
 msgstr "Загальне"
 
@@ -466,6 +562,11 @@ msgstr "Іконка"
 msgid "Income"
 msgstr "Дохід"
 
+#: src/app/(main)/pin.tsx:67
+#: src/auth/hook/use-pin-setup.hook.tsx:38
+msgid "Incorrect PIN"
+msgstr "Неправильний PIN-код"
+
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
@@ -482,11 +583,11 @@ msgstr "Регіональні налаштування"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(tabs)/settings.tsx:52
+#: src/app/(main)/settings/index.tsx:57
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(tabs)/settings.tsx:59
+#: src/app/(main)/settings/index.tsx:64
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -498,7 +599,7 @@ msgstr "Гроші, які ви заробляєте"
 msgid "Money you spend"
 msgstr "Гроші, які ви витрачаєте"
 
-#: src/app/(main)/create-account/index.tsx:22
+#: src/app/(main)/create-account/index.tsx:19
 msgid "New Account"
 msgstr "Новий рахунок"
 
@@ -534,7 +635,7 @@ msgstr "Немає архівованих рахунків"
 msgid "No categories found"
 msgstr "Категорій не знайдено"
 
-#: src/app/(main)/categories.tsx:34
+#: src/app/(main)/settings/categories.tsx:37
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
@@ -546,7 +647,7 @@ msgstr "Поки немає категорій"
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
-#: src/app/(main)/categories.tsx:33
+#: src/app/(main)/settings/categories.tsx:36
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
@@ -570,8 +671,8 @@ msgstr "Регіональні налаштування не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/app/(main)/categories.tsx:33
-#: src/app/(main)/tags.tsx:34
+#: src/app/(main)/settings/categories.tsx:36
+#: src/app/(main)/settings/tags.tsx:36
 msgid "No Results"
 msgstr "Немає результатів"
 
@@ -579,7 +680,7 @@ msgstr "Немає результатів"
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
-#: src/app/(main)/tags.tsx:35
+#: src/app/(main)/settings/tags.tsx:37
 msgid "No tags match your search"
 msgstr "Жодний тег не відповідає вашому пошуку"
 
@@ -587,7 +688,7 @@ msgstr "Жодний тег не відповідає вашому пошуку"
 msgid "No tags yet"
 msgstr "Ще немає тегів"
 
-#: src/app/(main)/tags.tsx:34
+#: src/app/(main)/settings/tags.tsx:36
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
@@ -604,7 +705,7 @@ msgstr "Немає"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
-#: src/app/(tabs)/settings.tsx:49
+#: src/app/(main)/settings/index.tsx:54
 msgid "Organization"
 msgstr "Організація"
 
@@ -612,9 +713,16 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:55
-#: src/account/component/update-liability-account/update-liability-account.tsx:60
-#: src/account/component/update-liability-account/update-liability-account.tsx:74
+#: src/app/(main)/pin.tsx:52
+#: src/auth/hook/use-pin-setup.hook.tsx:115
+msgid "PIN must be {PIN_LENGTH} digits"
+msgstr "PIN-код має бути {PIN_LENGTH} цифр"
+
+#: src/auth/hook/use-pin-setup.hook.tsx:94
+msgid "PINs do not match"
+msgstr "PIN-коди не збігаються"
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
@@ -633,9 +741,13 @@ msgstr "Португальська (Португалія)"
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(tabs)/settings.tsx:33
+#: src/app/(main)/settings/index.tsx:34
 msgid "Privacy"
 msgstr "Конфіденційність"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:53
+msgid "Re-enter your PIN to confirm"
+msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:142
 msgid "Remaining:"
@@ -654,7 +766,7 @@ msgid "Savings"
 msgstr "Заощадження"
 
 #: src/account/component/create-cash-account/create-cash-account.tsx:9
-#: src/app/(main)/create-account/index.tsx:42
+#: src/app/(main)/create-account/index.tsx:32
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
@@ -663,7 +775,7 @@ msgstr "Ощадний рахунок"
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
-#: src/app/(main)/categories.tsx:40
+#: src/app/(main)/settings/categories.tsx:46
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:64
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:59
 msgid "Search categories..."
@@ -685,10 +797,18 @@ msgstr "Пошук мов..."
 msgid "Search locales..."
 msgstr "Пошук регіональних налаштувань..."
 
-#: src/app/(main)/tags.tsx:41
+#: src/app/(main)/settings/tags.tsx:46
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:61
 msgid "Search tags..."
 msgstr "Пошук тегів..."
+
+#: src/settings/components/security-settings/pin-disabled-card.tsx:19
+msgid "Secure your app with PIN & Face ID"
+msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
+
+#: src/app/(main)/settings/index.tsx:43
+msgid "Security"
+msgstr "Безпека"
 
 #: src/account/component/account-selector/account-selector.tsx:59
 msgid "Select account"
@@ -707,7 +827,7 @@ msgid "Select category"
 msgstr "Виберіть категорію"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:61
-#: src/transaction/components/transaction-form/transaction-form.tsx:81
+#: src/transaction/components/transaction-form/transaction-form.tsx:83
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -735,7 +855,7 @@ msgstr "Виберіть теги"
 msgid "Selected {selectedTagsCount}"
 msgstr "Вибрано {selectedTagsCount}"
 
-#: src/app/(tabs)/settings.tsx:29
+#: src/app/(main)/settings/index.tsx:31
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -743,9 +863,9 @@ msgstr "Налаштування"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:54
-#: src/account/component/update-liability-account/update-liability-account.tsx:59
-#: src/account/component/update-liability-account/update-liability-account.tsx:73
+#: src/account/component/create-liability-account/create-liability-account.tsx:58
+#: src/account/component/update-liability-account/update-liability-account.tsx:63
+#: src/account/component/update-liability-account/update-liability-account.tsx:77
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
@@ -778,7 +898,7 @@ msgid "Stocks"
 msgstr "Акції"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
-#: src/account/component/create-liability-account/create-liability-account.tsx:68
+#: src/account/component/create-liability-account/create-liability-account.tsx:72
 msgid "Submit"
 msgstr "Відправити"
 
@@ -795,8 +915,8 @@ msgstr "Перемикайтеся між світлою та темною те�
 msgid "Tag Name"
 msgstr "Назва тегу"
 
-#: src/app/(main)/tags.tsx:40
-#: src/transaction/components/transaction-form/transaction-form.tsx:69
+#: src/app/(main)/settings/tags.tsx:45
+#: src/transaction/components/transaction-form/transaction-form.tsx:71
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:58
 msgid "Tags"
@@ -834,7 +954,19 @@ msgstr "Сьогодні"
 msgid "Total Balance"
 msgstr "Загальний баланс"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:60
+#: src/settings/components/security-settings/pin-enabled-card.tsx:66
+msgid "Touch ID"
+msgstr "Touch ID"
+
+#: src/app/(main)/transactions/[id].tsx:11
+msgid "Transaction Details"
+msgstr "Деталі транзакції"
+
+#: src/app/(main)/transactions/[id].tsx:14
+msgid "Transaction ID: {id}"
+msgstr "ID транзакції: {id}"
+
+#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
 msgstr "Тип транзакції"
 
@@ -858,11 +990,11 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:35
+#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
 msgstr "Тип"
 
-#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:35
+#: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type ({selectedTypesCount})"
 msgstr "Тип ({selectedTypesCount})"
 
@@ -871,15 +1003,28 @@ msgstr "Тип ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:106
+#: src/account/component/update-liability-account/update-liability-account.tsx:111
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/app/(tabs)/settings.tsx:53
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
+#: src/auth/util/get-pin-setup-meta.util.ts:24
+msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
+msgstr "Використовуйте Face ID або Touch ID для швидкого та безпечного розблокування додатка"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:11
+msgid "Use Face ID to unlock your app quickly and securely"
+msgstr "Використовуйте Face ID для швидкого та безпечного розблокування додатка"
+
+#: src/auth/util/get-pin-setup-meta.util.ts:18
+msgid "Use Touch ID to unlock your app quickly and securely"
+msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування додатка"
+
+#: src/app/(main)/settings/index.tsx:58
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(tabs)/settings.tsx:67
+#: src/app/(main)/settings/index.tsx:72
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
