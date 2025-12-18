@@ -1,0 +1,64 @@
+import { useLingui } from '@lingui/react/macro';
+import { Redirect, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { GoBackButton } from '../../../@generic/components/go-back-button/go-back-button';
+import { LoadingOverlay } from '../../../@generic/components/loading-overlay/loading-overlay';
+import { FullPage } from '../../../@generic/components/page/full-page';
+import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { BiometricConfiguration } from '../../../auth/components/biometric-configuration/biometric-configuration';
+import { PinForm } from '../../../auth/components/pin-form/pin-form';
+import { useAuthContext } from '../../../auth/context/auth.context';
+import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
+import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
+import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
+import { getPinSetupMeta } from '../../../auth/util/get-pin-setup-meta.util';
+import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
+
+export default function PinSetupScreen() {
+    const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();
+    const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
+    const { i18n } = useLingui();
+
+    const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({
+        mode,
+        onSuccess: ({ isBiometricEnabled, isPinEnabled }) => {
+            void updateSettingsMutation({ isPinEnabled, isBiometricEnabled });
+            void goBackOrReplace('/settings');
+        }
+    });
+    const { title, description } = getPinSetupMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
+
+    if (!isEnumValue(mode, PinSetupModeEnum)) {
+        return <Redirect href="/settings" />;
+    }
+
+    const handleGoBack = () => void goBackOrReplace('/settings');
+
+    const error = isDefined(state.error) ? i18n.t(state.error) : null;
+
+    return (
+        <FullPage>
+            <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
+
+            {state.step === PinSetupStepEnum.BIOMETRIC ? (
+                <BiometricConfiguration onSubmit={saveAndContinue} />
+            ) : (
+                <PinForm
+                    error={error}
+                    title={i18n.t(title)}
+                    description={i18n.t(description)}
+                    currentInput={state.input}
+                    isLoading={state.isLoading}
+                    onDigitPress={addDigit}
+                    onDeletePress={deleteDigit}
+                />
+            )}
+
+            {state.isLoading ? <LoadingOverlay /> : null}
+        </FullPage>
+    );
+}

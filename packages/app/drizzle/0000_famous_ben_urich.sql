@@ -70,6 +70,8 @@ CREATE TABLE `settings` (
 	`default_account_id` integer,
 	`default_instrument_id` integer,
 	`theme` text DEFAULT 'SYSTEM' NOT NULL,
+	`is_pin_enabled` integer DEFAULT false NOT NULL,
+	`is_biometric_enabled` integer DEFAULT false NOT NULL,
 	`show_cents` integer DEFAULT true NOT NULL,
 	`is_vibration_enabled` integer DEFAULT true NOT NULL,
 	FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
