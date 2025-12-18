@@ -51,7 +51,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         try {
             await accountService.create(values);
 
-            void router.dismissAll();
+            void router.replace('/');
         } catch {
             Toast.show({
                 type: 'error',
