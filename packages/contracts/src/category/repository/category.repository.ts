@@ -11,6 +11,10 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class CategoryRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
+    findAll() {
+        return this.db.query.CategoryEntityTable.findMany();
+    }
+
     findBySearchQuery(search: string, includeDefault: boolean) {
         const searchQuery = sql`LOWER (${CategoryEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`;
 
