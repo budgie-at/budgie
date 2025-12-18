@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.75.1](https://github.com/budgie-at/budgie/compare/v1.75.0...v1.75.1) (2025-12-18)
+
+### Bug Fixes
+
+- add fingerprint ignore ([0ad23da](https://github.com/budgie-at/budgie/commit/0ad23daa4399d8365e14e1c48fd76ff444e11b61))
+- add fingerprint ignore ([1f2b5db](https://github.com/budgie-at/budgie/commit/1f2b5dba16b9bb6b2d788b0cbc925febb7ee7afa))
+
 # [1.75.0](https://github.com/budgie-at/budgie/compare/v1.74.0...v1.75.0) (2025-12-18)
 
 ### Features
