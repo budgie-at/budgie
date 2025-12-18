@@ -105,6 +105,7 @@ export type { TransactionWithRelationsEntityInterface } from './transaction/enti
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
 export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';
+export type { TransactionTransferWithRelationsEntityInterface } from './transaction/entity/transaction-transfer-with-relations-entity.interface';
 export type { TransactionPositiveAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-positive-adjustment-with-relations-entity.interface';
 export type { TransactionNegativeAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-negative-adjustment-with-relations-entity.interface';
 
@@ -152,6 +153,7 @@ export type { TransactionFilterInterface } from './transaction/interface/transac
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
+export { isTransferTransaction } from './transaction/type-guard/is-transfer-transaction.type-guard';
 export { isNegativeAdjustmentTransaction } from './transaction/type-guard/is-negative-adjustment-transaction.type-guard';
 export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-positive-adjustment-transaction.type-guard';
 
