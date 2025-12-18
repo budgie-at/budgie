@@ -89,7 +89,14 @@ export default ({ config }) => ({
     },
     plugins: [
         'expo-sqlite',
+        'expo-secure-store',
         'expo-background-task',
+        [
+            'expo-local-authentication',
+            {
+                faceIDPermission: 'Allow $(PRODUCT_NAME) to use Face ID for authentication',
+            }
+        ],
         [
             'expo-splash-screen',
             {
