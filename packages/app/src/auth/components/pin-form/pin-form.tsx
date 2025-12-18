@@ -10,7 +10,7 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
 
-interface PinPadFormProps {
+interface Props {
     readonly title: string;
     readonly description: string;
     readonly currentInput: string;
@@ -22,17 +22,8 @@ interface PinPadFormProps {
     readonly canScan?: boolean;
 }
 
-export const PinForm: React.FC<PinPadFormProps> = ({
-    title,
-    currentInput,
-    description,
-    error,
-    isLoading,
-    onDigitPress,
-    onDeletePress,
-    canScan,
-    onScanPress = emptyFn
-}) => {
+export const PinForm = (props: Props) => {
+    const { title, currentInput, description, error, isLoading, onDigitPress, onDeletePress, canScan, onScanPress = emptyFn } = props;
     const canDelete = isNotEmptyString(currentInput) && !isLoading;
 
     return (
