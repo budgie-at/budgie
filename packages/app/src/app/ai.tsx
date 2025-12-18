@@ -1,3 +1,4 @@
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
@@ -21,7 +22,7 @@ const TransactionSchema = {
         },
         type: {
             type: 'string',
-            enum: ['expense', 'income'],
+            enum: Object.values(TransactionTypeEnum),
             // eslint-disable-next-line lingui/no-unlocalized-strings
             description: 'Transaction type.'
         },
