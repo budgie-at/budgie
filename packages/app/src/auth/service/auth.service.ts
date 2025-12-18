@@ -2,6 +2,8 @@
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
+import { expoDb } from '../../@generic/drizzle/db/db';
+
 const PIN_KEY = 'user_pin';
 
 class AuthService {
@@ -56,6 +58,8 @@ class AuthService {
     }
 
     async savePin(pin: string): Promise<void> {
+        expoDb.execSync(`PRAGMA rekey = '${pin}';`);
+
         await SecureStore.setItemAsync(PIN_KEY, pin);
     }
 
