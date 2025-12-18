@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.73.0](https://github.com/budgie-at/budgie/compare/v1.72.0...v1.73.0) (2025-12-18)
+
+### Bug Fixes
+
+- **app:** go to main after account creation ([d722ab4](https://github.com/budgie-at/budgie/commit/d722ab4945164982c52653097910a2c898cd4402))
+
+### Features
+
+- **app:** added sql cipher ([3870132](https://github.com/budgie-at/budgie/commit/38701323000da00fbc6855c7144c8d87e7498074))
+- **app:** added sql cipher ([158966b](https://github.com/budgie-at/budgie/commit/158966bc6383fd7a4bad891387c783dde88b39ab))
+- **app:** added sql cipher ([3f33b5d](https://github.com/budgie-at/budgie/commit/3f33b5d7147e88f3e31c396539e91b42deff13e5))
+- **app:** fix network liveness ([2d5fbd7](https://github.com/budgie-at/budgie/commit/2d5fbd7d6603dc44b8d5ddc505d4472445cc8162))
+- **app:** run biometric on app state change ([d286b35](https://github.com/budgie-at/budgie/commit/d286b3505f117a6e2f919ff30a6e833595533720))
+
 # [1.72.0](https://github.com/budgie-at/budgie/compare/v1.71.2...v1.72.0) (2025-12-18)
 
 ### Bug Fixes
