@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.74.0](https://github.com/budgie-at/budgie/compare/v1.73.0...v1.74.0) (2025-12-18)
+
+### Features
+
+- **app:** fix sql cipher when PIN is changed ([02f1a0d](https://github.com/budgie-at/budgie/commit/02f1a0de4297b22dfba8c074c1c08e0be2a740e3))
+- **app:** fix sql cipher when PIN is changed ([1f1a7b1](https://github.com/budgie-at/budgie/commit/1f1a7b12d24e3987d1a46d8051bb8aa8ec250d04))
+- **app:** fix sql cipher when PIN is changed ([ee53181](https://github.com/budgie-at/budgie/commit/ee53181bf0083db89640b5e7799ef340fe5b15d3))
+- **app:** fix sql cipher when PIN is changed ([fbdcc9c](https://github.com/budgie-at/budgie/commit/fbdcc9c185a8ed1ae24511c18d6c6cacd5456d79))
+- **app:** fix sql cipher when PIN is changed ([7d8372f](https://github.com/budgie-at/budgie/commit/7d8372f9dd2669ff86b60a389ef5383909bff1b2))
+
 # [1.73.0](https://github.com/budgie-at/budgie/compare/v1.72.0...v1.73.0) (2025-12-18)
 
 ### Bug Fixes
