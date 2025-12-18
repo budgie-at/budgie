@@ -18,9 +18,6 @@ export const CreateTransferTransaction = () => {
         toAccountId: 0
     });
 
-    const errors = form.formState.errors;
-    console.log(JSON.stringify({ errors }, null, 4));
-
     return (
         <TransferTransactionForm
             control={form.control}
