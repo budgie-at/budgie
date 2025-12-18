@@ -8,5 +8,5 @@ package.json
 **/ios/**/*
 !**/ios/Podfile
 !**/ios/Podfile.lock
-
+**/expo-sqlite/ios/
 
