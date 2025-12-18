@@ -28,7 +28,7 @@ export const expoDb =
 setTimeout(async () => {
     const pin = (await authService.getPin()) ?? 'no-pin';
 
-    expoDb.execSync(`PRAGMA key = '${pin}';`);
+    await expoDb.execAsync(`PRAGMA key = '${pin}';`);
 }, 100);
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
