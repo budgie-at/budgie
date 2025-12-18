@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { SMOLLM2_1_135M, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
@@ -46,7 +46,7 @@ const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, du
 export default function AiScreen() {
     const { t } = useLingui();
 
-    const llm = useLLM({ model: SMOLLM2_1_135M });
+    const llm = useLLM({ model: LLAMA3_2_1B });
     const speechToText = useSpeechToText({ model: WHISPER_TINY });
 
     useEffect(() => {
@@ -77,17 +77,18 @@ export default function AiScreen() {
         const formattingInstructions = getStructuredOutputPrompt(TransactionSchema);
         const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' });
 
+        setPrompt(transcribed);
+
         await llm.generate([
             {
                 role: 'system',
                 // eslint-disable-next-line lingui/no-unlocalized-strings
-                content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}\n /no_think`
+                content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
             },
             { role: 'user', content: transcribed }
         ]);
 
         setIsRecording(false);
-        setPrompt(transcribed);
     };
 
     const areModelsReady = speechToText.isReady && llm.isReady;
