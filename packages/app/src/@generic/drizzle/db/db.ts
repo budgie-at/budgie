@@ -23,6 +23,7 @@ declare global {
 }
 
 const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+
 setTimeout(async () => {
     const pin = await authService.getPin();
     if (isNotEmptyString(pin)) {
