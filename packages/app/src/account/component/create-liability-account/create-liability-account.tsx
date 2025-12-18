@@ -74,7 +74,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
                 </KeyboardStickyView>
             }
         >
-            <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
                 <FormLayoutGroup>
