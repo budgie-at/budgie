@@ -1,15 +1,13 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { AuthContext, AuthContextInterface } from '../context/auth.context';
+import { AuthContext } from '../context/auth.context';
 import { useBiometricAvailability } from '../hook/use-biometric-availability.hook';
 
 interface Props {
     readonly children: ReactNode;
 }
-
-const BACKGROUND_LOCK_DELAY_MS = 60 * 1000;
 
 export const AuthProvider = ({ children }: Props) => {
     const { settings, isLoading: settingsLoading } = useSettingsContext();
@@ -17,7 +15,6 @@ export const AuthProvider = ({ children }: Props) => {
     const { isPinEnabled } = settings;
 
     const [isUnlocked, setIsUnlocked] = useState(false);
-    const backgroundTimerRef = useRef<NodeJS.Timeout | null>(null);
 
     const shouldAutoUnlock = !settingsLoading && !isPinEnabled;
 
@@ -26,30 +23,16 @@ export const AuthProvider = ({ children }: Props) => {
     }
 
     useEffect(() => {
-        const handleAppStateChange = (nextAppState: AppStateStatus) => {
-            if (backgroundTimerRef.current) {
-                clearTimeout(backgroundTimerRef.current);
-                backgroundTimerRef.current = null;
+        const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+            if (nextAppState === 'background' && isPinEnabled) {
+                setIsUnlocked(false);
             }
+        });
 
-            if ((nextAppState === 'background' || nextAppState === 'inactive') && isPinEnabled && isUnlocked) {
-                backgroundTimerRef.current = setTimeout(() => {
-                    setIsUnlocked(false);
-                }, BACKGROUND_LOCK_DELAY_MS);
-            }
-        };
+        return () => void subscription.remove();
+    }, [isPinEnabled]);
 
-        const subscription = AppState.addEventListener('change', handleAppStateChange);
-
-        return () => {
-            subscription.remove();
-            if (backgroundTimerRef.current) {
-                clearTimeout(backgroundTimerRef.current);
-            }
-        };
-    }, [isPinEnabled, isUnlocked]);
-
-    const value: AuthContextInterface = {
+    const value = {
         isUnlocked,
         setIsUnlocked,
         isFaceIdAvailable,
