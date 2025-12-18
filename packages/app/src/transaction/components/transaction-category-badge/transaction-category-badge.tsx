@@ -1,26 +1,38 @@
-import { TransactionEntryWithRelationsEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionWithRelationsEntityInterface,
+    isNegativeAdjustmentTransaction,
+    isPositiveAdjustmentTransaction,
+    isTransferTransaction
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 
 interface Props {
-    readonly entries: TransactionEntryWithRelationsEntityInterface[];
-    readonly type: TransactionTypeEnum;
+    readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
 const wrapperClassName = 'bg-secondary-corner self-start py-xxs px-md rounded-2xl flex-row';
 const textClassName = 'text-xs font-medium text-primary';
 
-export const TransactionCategoryBadge = ({ entries, type }: Props) => {
-    const { t } = useLingui();
+export const TransactionCategoryBadge = ({ transaction }: Props) => {
+    const { t, i18n } = useLingui();
 
-    const [firstEntry, secondEntry] = entries;
+    if (isTransferTransaction(transaction)) {
+        const [entry] = transaction.entries;
+        const category = entry.category?.title ?? i18n.t(TRANSACTION_TYPE[transaction.type]);
 
-    if (type === TransactionTypeEnum.ADJUSTMENT) {
+        return (
+            <View className={wrapperClassName}>
+                <Text className={textClassName}>{category}</Text>
+            </View>
+        );
+    }
+
+    if (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
         return (
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{t`Balance Adjustment`}</Text>
@@ -28,7 +40,7 @@ export const TransactionCategoryBadge = ({ entries, type }: Props) => {
         );
     }
 
-    if (isDefined(secondEntry)) {
+    if (transaction.entries.length > 1) {
         return (
             <View className={wrapperClassName}>
                 <Icon icon={ICONS.SplitIcon} className="text-primary" size={12} />
@@ -38,9 +50,12 @@ export const TransactionCategoryBadge = ({ entries, type }: Props) => {
         );
     }
 
+    const [entry] = transaction.entries;
+    const category = entry.category?.title ?? i18n.t(TRANSACTION_TYPE[transaction.type]);
+
     return (
         <View className={wrapperClassName}>
-            <Text className={textClassName}>{firstEntry.category?.title ?? ''}</Text>
+            <Text className={textClassName}>{category}</Text>
         </View>
     );
 };
