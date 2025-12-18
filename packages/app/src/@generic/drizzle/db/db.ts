@@ -22,7 +22,8 @@ declare global {
     var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
 }
 
-const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+export const expoDb =
+    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
 // HINT: We need to wait for native module to init
 setTimeout(async () => {
