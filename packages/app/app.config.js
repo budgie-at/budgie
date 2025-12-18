@@ -88,6 +88,9 @@ export default ({ config }) => ({
         url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
     },
     plugins: [
+        'expo-localization',
+        'expo-secure-store',
+        'expo-background-task',
         [
             'expo-sqlite',
             {
@@ -95,8 +98,20 @@ export default ({ config }) => ({
                 useSQLCipher: true
             }
         ],
-        'expo-secure-store',
-        'expo-background-task',
+        [
+            'react-native-audio-api',
+            {
+                iosBackgroundMode: true,
+                iosMicrophonePermission: 'This app requires access to the microphone to record audio.',
+                androidPermissions: [
+                    'android.permission.MODIFY_AUDIO_SETTINGS',
+                    'android.permission.FOREGROUND_SERVICE',
+                    'android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK'
+                ],
+                androidForegroundService: true,
+                androidFSTypes: ['mediaPlayback']
+            }
+        ],
         [
             'expo-local-authentication',
             {
