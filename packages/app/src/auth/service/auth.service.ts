@@ -2,9 +2,18 @@
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { expoDb } from '../../@generic/drizzle/db/db';
+
 const PIN_KEY = 'user_pin';
 
 class AuthService {
+    constructor() {
+        // HINT: We need to wait for native module to init
+        setTimeout(() => void this.decryptDb(), 100);
+    }
+
     async isBiometricAvailable(): Promise<boolean> {
         const compatible = await LocalAuthentication.hasHardwareAsync();
         const enrolled = await LocalAuthentication.isEnrolledAsync();
@@ -56,6 +65,8 @@ class AuthService {
     }
 
     async savePin(pin: string): Promise<void> {
+        await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);
+
         await SecureStore.setItemAsync(PIN_KEY, pin);
     }
 
@@ -77,6 +88,14 @@ class AuthService {
 
     async getPin(): Promise<string | null> {
         return SecureStore.getItemAsync(PIN_KEY);
+    }
+
+    private async decryptDb() {
+        const pin = await this.getPin();
+
+        if (isNotEmptyString(pin)) {
+            await expoDb.execAsync(`PRAGMA key = '${pin}';`);
+        }
     }
 }
 

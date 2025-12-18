@@ -14,23 +14,14 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
-import { authService } from '../../../auth/service/auth.service';
-import { isNotEmptyString } from '@rnw-community/shared';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
     var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
 }
 
-const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
-
-// HINT: We need to wait for native module to init
-setTimeout(async () => {
-    const pin = await authService.getPin();
-    if (isNotEmptyString(pin)) {
-        expoDb.execSync(`PRAGMA key = '${pin}';`);
-    }
-}, 100);
+export const expoDb =
+    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
