@@ -2,13 +2,14 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { AccountSelectorBottomSheet } from '../../../account/component/account-selector-bottom-sheet/account-selector-bottom-sheet';
+import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
 
 export const DefaultAccountSelector = () => {
     const ref = useRef<BottomSheetInterface | null>(null);
+
     const { defaultAccount } = useSettingsContext();
     const { t } = useLingui();
 
@@ -16,24 +17,25 @@ export const DefaultAccountSelector = () => {
         await updateSettingsMutation({ defaultAccountId });
     };
 
+    const { selectedAccount, icon, renderBottomSheet } = useAccountSelector({
+        accountId: defaultAccount?.id ?? null,
+        onSelect: updateDefaultAccount,
+        excludeAccountId: null
+    });
+
     const handleOpen = () => void ref.current?.open();
 
     return (
         <>
             <GenericSelectorCard
-                title={t`Default Account`}
-                description={defaultAccount?.title ?? t`None selected`}
-                icon="Wallet"
+                icon={icon}
                 iconVariant="ghost"
                 onPress={handleOpen}
+                title={t`Default Account`}
+                description={selectedAccount?.title ?? t`None selected`}
             />
 
-            <AccountSelectorBottomSheet
-                excludeAccountId={null}
-                selectedAccount={defaultAccount}
-                onSelect={updateDefaultAccount}
-                ref={ref}
-            />
+            {renderBottomSheet(ref)}
         </>
     );
 };
