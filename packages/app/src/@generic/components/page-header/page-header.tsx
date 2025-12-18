@@ -10,7 +10,7 @@ import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { GoBackBtn } from '../go-back-btn/go-back-btn';
+import { GoBackButton } from '../go-back-button/go-back-button';
 
 interface Props {
     readonly title: string;
@@ -49,7 +49,7 @@ export const PageHeader = ({
 }: Props) => (
     <View className={cn(headerVariant({ size }), className)}>
         <View className="flex-row items-center gap-x-xl">
-            {isDefined(onGoBack) ? <GoBackBtn onPress={onGoBack} /> : null}
+            {isDefined(onGoBack) ? <GoBackButton onPress={onGoBack} /> : null}
 
             {isNotEmptyString(icon) ? <CircleIcon icon={ICONS[icon]} variant={iconVariant} size="2xl" className="rounded-3xl" /> : null}
 

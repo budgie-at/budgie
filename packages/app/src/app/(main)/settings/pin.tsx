@@ -4,7 +4,7 @@ import React from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GoBackBtn } from '../../../@generic/components/go-back-btn/go-back-btn';
+import { GoBackButton } from '../../../@generic/components/go-back-button/go-back-button';
 import { LoadingOverlay } from '../../../@generic/components/loading-overlay/loading-overlay';
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
@@ -42,7 +42,7 @@ export default function PinSetupScreen() {
 
     return (
         <FullPage>
-            <GoBackBtn onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
+            <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
 
             {state.step === PinSetupStepEnum.BIOMETRIC ? (
                 <BiometricConfiguration onSubmit={saveAndContinue} />
