@@ -1,5 +1,5 @@
 import { TransactionCreateEntityInterface } from '@budgie/contracts';
-import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
+import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -10,23 +10,17 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
+    readonly onAmountChange: (amount: number) => void;
     readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
 }
 
-export const TransactionTransferFormAmount = ({ variant, setValue, control, instrumentSymbol }: Props) => {
-    const handleAmountChange = (amount: number) => {
-        setValue('amount', amount);
-        setValue('entries.0.amount', amount);
-        setValue('entries.1.amount', amount);
-    };
-
+export const TransactionFormAmountBase = ({ variant, control, instrumentSymbol, onAmountChange }: Props) => {
     const renderAmountInput = ({
         field: { value },
         fieldState: { error }
     }: UseControllerReturn<TransactionCreateEntityInterface, 'amount'>) => (
         <View>
-            <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={handleAmountChange} />
+            <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={onAmountChange} />
 
             {isNotEmptyString(error?.message) ? (
                 <Text className="font-semibold text-xs text-destructive-foreground bg-destructive-background border border-destructive-corner p-lg rounded-5xl text-center mb-3xl">
