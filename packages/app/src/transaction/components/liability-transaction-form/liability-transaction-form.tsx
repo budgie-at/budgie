@@ -19,17 +19,17 @@ import { TransactionFormDatePicker } from '../transaction-form-date-picker/trans
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 
 interface Props {
-    onSubmit: EmptyFn;
-    control: Control<TransactionCreateEntityInterface>;
-    icon: IconName;
-    setValue: UseFormSetValue<TransactionCreateEntityInterface>;
-    title: string;
-    buttonText: string;
-    variant: ColorPaletteVariant;
-    accountFieldName: 'toAccountId' | 'fromAccountId';
+    readonly onSubmit: EmptyFn;
+    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly icon: IconName;
+    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly title: string;
+    readonly buttonText: string;
+    readonly variant: ColorPaletteVariant;
+    readonly accountFieldName: 'toAccountId' | 'fromAccountId';
 }
 
-export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
+export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 

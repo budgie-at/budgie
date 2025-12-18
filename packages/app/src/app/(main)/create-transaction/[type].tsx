@@ -3,7 +3,7 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { CreateExpenseTransaction } from '../../../transaction/components/create-expense-transaction/create-expense-transaction';
 import { CreateIncomeTransaction } from '../../../transaction/components/create-income-transaction/create-income-transaction';
-import { CreateTransferTransaction } from '../../../transaction/components/create-transfer-transaction/create-transfer-transaction';
+import { CreateTransferTransaction } from '../../../transaction/components/update-transfer-transaction/create-transfer-transaction';
 
 export default function CreateTransaction() {
     const { type } = useLocalSearchParams<{ type: TransactionTypeEnum }>();
