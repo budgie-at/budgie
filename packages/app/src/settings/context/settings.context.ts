@@ -11,6 +11,7 @@ interface SettingsContextInterface {
     settings: SettingsEntityInterface;
     defaultCurrency: CurrencyEnum;
     decimalPlaces: number;
+    isLoading: boolean;
 }
 
 export const SettingsContext = createContext<SettingsContextInterface>({
@@ -18,7 +19,8 @@ export const SettingsContext = createContext<SettingsContextInterface>({
     defaultCurrency: CurrencyEnum.USD,
     defaultInstrument: DEFAULT_INSTRUMENT,
     decimalPlaces: DEFAULT_DECIMAL_PLACES,
-    defaultAccount: null
+    defaultAccount: null,
+    isLoading: true
 });
 
 export const useSettingsContext = () => use(SettingsContext);
