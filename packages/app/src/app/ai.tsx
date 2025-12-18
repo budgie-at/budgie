@@ -2,11 +2,11 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { LLAMA3_2_1B_SPINQUANT, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
@@ -53,7 +53,7 @@ const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, du
 export default function AiScreen() {
     const { t } = useLingui();
 
-    const llm = useLLM({ model: LLAMA3_2_1B });
+    const llm = useLLM({ model: LLAMA3_2_1B_SPINQUANT });
     const speechToText = useSpeechToText({ model: WHISPER_TINY });
 
     const { data: categoriesData } = useLiveQuery(categoryRepository.findAll());
@@ -91,13 +91,12 @@ export default function AiScreen() {
         const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' }).catch(() => '');
 
         setPrompt(transcribed);
-
         try {
             await llm.generate([
                 {
                     role: 'system',
                     // eslint-disable-next-line lingui/no-unlocalized-strings
-                    content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
+                    content: `Your goal is to analyze and parse user message and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
                 },
                 { role: 'user', content: transcribed }
             ]);
@@ -114,27 +113,29 @@ export default function AiScreen() {
 
     return (
         <Page>
-            {areModelsReady ? (
-                <>
-                    {isGenerating ? (
+            <ScrollView>
+                {areModelsReady ? (
+                    <>
+                        {isGenerating ? (
+                            <ActivityIndicator size="large" className="bg-primary-reverse" />
+                        ) : (
+                            <Button onPress={handlePress} content={buttonText}></Button>
+                        )}
+                    </>
+                ) : (
+                    <>
                         <ActivityIndicator size="large" className="bg-primary-reverse" />
-                    ) : (
-                        <Button onPress={handlePress} content={buttonText}></Button>
-                    )}
-                </>
-            ) : (
-                <>
-                    <ActivityIndicator size="large" className="bg-primary-reverse" />
-                    <View className="w-full px-4 mt-4">
-                        <Text className="text-primary text-center mt-2">
-                            {t`Downloading model...`} {Math.round(llm.downloadProgress * 100)}%
-                        </Text>
-                    </View>
-                </>
-            )}
-            <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
-            <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
-            <Text className="text-primary text-3xl font-semibold">{error}</Text>
+                        <View className="w-full px-4 mt-4">
+                            <Text className="text-primary text-center mt-2">
+                                {t`Downloading model...`} {Math.round(llm.downloadProgress * 100)}%
+                            </Text>
+                        </View>
+                    </>
+                )}
+                <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
+                <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
+                {isNotEmptyString(error) && <Text className="text-primary text-3xl font-semibold">{error}</Text>}
+            </ScrollView>
         </Page>
     );
 }
