@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.72.0](https://github.com/budgie-at/budgie/compare/v1.71.2...v1.72.0) (2025-12-18)
+
+### Bug Fixes
+
+- add shake animation for pin-dots ([dacd587](https://github.com/budgie-at/budgie/commit/dacd587b088000e77cc55fde543578545c696d23))
+- lock app once it is in background ([9028dd5](https://github.com/budgie-at/budgie/commit/9028dd540698543d1aea7015c58fdeec8070392c))
+- lock the app only after 1 minute ([45c5398](https://github.com/budgie-at/budgie/commit/45c5398aa4e87229ef76e1eedd90f77c21263d07))
+- regenerate migrations ([c28f6dd](https://github.com/budgie-at/budgie/commit/c28f6dd458083cb08020639dbba15668b8f216f1))
+- resolve CI ([9abe6e0](https://github.com/budgie-at/budgie/commit/9abe6e0a05fb8fe302c25d56bda690a154cdc99a))
+- resolve review comments ([cd0168b](https://github.com/budgie-at/budgie/commit/cd0168bc155b205ab17766a30f36e0d2fdc1b97a))
+- sync lingui ([94292b5](https://github.com/budgie-at/budgie/commit/94292b551a7fdcfef5a6e9b3293b8d5433b74fc4))
+- sync lingui ([bbd7443](https://github.com/budgie-at/budgie/commit/bbd7443884e9c0014c60d3dadf968ff5f66efea8))
+- use interface ([bcb62de](https://github.com/budgie-at/budgie/commit/bcb62de11edae0899fe6bb9ee4aa16b9fc4afd6a))
+
+### Features
+
+- add missing lingui translations for security features ([79c824e](https://github.com/budgie-at/budgie/commit/79c824e3aeea5a007a69fce51675cada6d112be3))
+- add transaction details screen ([bcd70aa](https://github.com/budgie-at/budgie/commit/bcd70aa77e88a8d60e43787fc5a699b80d7ac4c5))
+
 ## [1.71.2](https://github.com/budgie-at/budgie/compare/v1.71.1...v1.71.2) (2025-12-18)
 
 ### Bug Fixes
