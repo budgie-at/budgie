@@ -14,7 +14,6 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
-import { authService } from '../../../auth/service/auth.service';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
@@ -23,13 +22,6 @@ declare global {
 
 export const expoDb =
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
-
-// HINT: We need to wait for native module to init
-setTimeout(async () => {
-    const pin = (await authService.getPin()) ?? 'no-pin';
-
-    await expoDb.execAsync(`PRAGMA key = '${pin}';`);
-}, 100);
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
