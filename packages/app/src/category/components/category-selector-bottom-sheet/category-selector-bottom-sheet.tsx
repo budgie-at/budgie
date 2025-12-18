@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -14,6 +14,7 @@ import { CategorySelectorCard } from '../category-selector-card/category-selecto
 
 interface Props {
     readonly variant: ColorPaletteVariant;
+    readonly excludeCategoryIds?: number[];
     readonly onSelect: (categoryId: number) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly selectedCategory: CategoryEntityInterface | null;
@@ -28,7 +29,7 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg px-6 pt-xl'
 };
 
-export const CategorySelectorBottomSheet = ({ ref, selectedCategory, variant, onSelect }: Props) => {
+export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);
     const { t } = useLingui();
@@ -38,7 +39,10 @@ export const CategorySelectorBottomSheet = ({ ref, selectedCategory, variant, on
         onSelect(categoryId);
     };
 
-    const data = isNotEmptyArray(categories) ? padFlatListData(categories) : [];
+    const categoriesWithoutExcluded = isNotEmptyArray(categories)
+        ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
+        : [];
+    const data = padFlatListData(categoriesWithoutExcluded);
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
