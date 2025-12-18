@@ -5,19 +5,11 @@
         "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
         "baseUrl": "./",
         "rootDir": "./src",
-        "lib": [
-            "esnext"
-        ],
+        "lib": ["esnext"],
         "outDir": "dist/esm",
         "module": "esnext",
         "noEmit": false
     },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "babel.config.js",
-        "dist"
-    ]
+    "include": ["src"],
+    "exclude": ["node_modules", "babel.config.js", "dist"]
 }
