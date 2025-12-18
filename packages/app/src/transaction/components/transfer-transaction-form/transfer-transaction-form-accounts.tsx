@@ -1,4 +1,4 @@
-import { AccountTypeEnum, TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
@@ -9,10 +9,7 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { useEffect } from 'react';
-import { isDefined } from '@rnw-community/shared';
-import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
-import { getTransferCategoryId } from '../../utils/get-transfer-category-id.util';
+import { syncTransferInstrumentAndCategory } from '../../utils/sync-transfer-instrument-and-category.util';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -31,30 +28,23 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
 
-    useEffect(() => {
-        setValue('entries.0.instrumentId', fromAccount?.instrument.id ?? 0);
-        setValue('entries.1.instrumentId', toAccount?.instrument.id ?? 0);
+    const handleAccountSelect = (entryIndex: 0 | 1, accountId: number) => {
+        const fieldName = entryIndex === 0 ? 'fromAccountId' : 'toAccountId';
 
-        if (!isDefined(fromAccount) || !isDefined(toAccount)) {
-            return;
-        }
+        setValue(fieldName, accountId);
+        setValue(`entries.${entryIndex}.accountId`, accountId);
 
-        const categoryId = getTransferCategoryId(fromAccount.type, toAccount.type);
-
-        if (isDefined(categoryId)) {
-            setValue('entries.0.categoryId', categoryId);
-            setValue('entries.1.categoryId', categoryId);
-        }
-    }, [fromAccount, toAccount, setValue]);
+        syncTransferInstrumentAndCategory(fromAccount, toAccount, setValue);
+    };
 
     const handleSwitchAccounts = () => {
-        const temp = fromAccountId;
-
         setValue('fromAccountId', toAccountId);
-        setValue('toAccountId', temp);
+        setValue('toAccountId', fromAccountId);
 
-        setValue('entries.0.accountId', fromAccountId ?? 0);
-        setValue('entries.1.accountId', toAccountId ?? 0);
+        setValue('entries.0.accountId', toAccountId ?? 0);
+        setValue('entries.1.accountId', fromAccountId ?? 0);
+
+        syncTransferInstrumentAndCategory(toAccount, fromAccount, setValue);
     };
 
     const renderFromAccount = ({
@@ -62,8 +52,8 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
         fieldState: { invalid }
     }: UseControllerReturn<TransactionCreateEntityInterface, 'fromAccountId'>) => {
         const handleChange = (accountId: number) => {
-            setValue('entries.0.accountId', accountId);
             onChange(accountId);
+            handleAccountSelect(0, accountId);
         };
         const status = invalid ? 'error' : 'default';
 
@@ -86,8 +76,8 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
         fieldState: { invalid }
     }: UseControllerReturn<TransactionCreateEntityInterface, 'toAccountId'>) => {
         const handleChange = (accountId: number) => {
-            setValue('entries.1.accountId', accountId);
             onChange(accountId);
+            handleAccountSelect(1, accountId);
         };
 
         const status = invalid ? 'error' : 'default';
