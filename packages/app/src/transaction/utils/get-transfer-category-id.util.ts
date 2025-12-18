@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 
 export const getTransferCategoryId = (fromType: AccountTypeEnum, toType: AccountTypeEnum): SystemCategoryIdEnum | null => {

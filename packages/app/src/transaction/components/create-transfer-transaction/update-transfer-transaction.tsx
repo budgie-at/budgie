@@ -12,8 +12,6 @@ interface Props {
 export const UpdateTransferTransaction = ({ transaction }: Props) => {
     const { t } = useLingui();
 
-    console.log(JSON.stringify({ transaction }, null, 4));
-
     const { form, handleSubmit } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
         schema: TransferTransactionCreateEntitySchema,
