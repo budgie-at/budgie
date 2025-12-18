@@ -15,10 +15,11 @@ interface Props {
     readonly onRemove: (index: number) => void;
     readonly variant: ColorPaletteVariant;
     readonly control: Control<TransactionCreateEntityInterface>;
+    readonly selectedCategoryIds: number[];
     readonly index: number;
 }
 
-export const TransactionEntry = ({ variant, control, index, onRemove }: Props) => {
+export const TransactionEntry = ({ variant, control, index, onRemove, selectedCategoryIds }: Props) => {
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
 
@@ -29,8 +30,17 @@ export const TransactionEntry = ({ variant, control, index, onRemove }: Props) =
         fieldState: { invalid }
     }: UseControllerReturn<TransactionCreateEntityInterface, `entries.${number}.categoryId`>) => {
         const status = invalid ? 'error' : 'default';
+        const excludeCategoryIds = selectedCategoryIds.filter(id => id !== value);
 
-        return <TransactionEntryCategorySelector status={status} variant={variant} onSelect={onChange} categoryId={value} />;
+        return (
+            <TransactionEntryCategorySelector
+                excludeCategoryIds={excludeCategoryIds}
+                status={status}
+                variant={variant}
+                onSelect={onChange}
+                categoryId={value}
+            />
+        );
     };
 
     const renderAmountInput = ({
