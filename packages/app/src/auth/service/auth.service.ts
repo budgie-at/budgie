@@ -74,6 +74,10 @@ class AuthService {
     async deletePin(): Promise<void> {
         await SecureStore.deleteItemAsync(PIN_KEY);
     }
+
+    async getPin(): Promise<string | null> {
+        return SecureStore.getItemAsync(PIN_KEY);
+    }
 }
 
 export const authService = new AuthService();

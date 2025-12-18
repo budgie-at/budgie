@@ -88,13 +88,19 @@ export default ({ config }) => ({
         url: 'https://u.expo.dev/41569eb3-e5c7-41f2-bea0-200d87a7fc36'
     },
     plugins: [
-        'expo-sqlite',
+        [
+            'expo-sqlite',
+            {
+                enableFTS: true,
+                useSQLCipher: true
+            }
+        ],
         'expo-secure-store',
         'expo-background-task',
         [
             'expo-local-authentication',
             {
-                faceIDPermission: 'Allow $(PRODUCT_NAME) to use Face ID for authentication',
+                faceIDPermission: 'Allow $(PRODUCT_NAME) to use Face ID for authentication'
             }
         ],
         [

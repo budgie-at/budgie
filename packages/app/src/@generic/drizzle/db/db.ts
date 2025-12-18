@@ -14,6 +14,8 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
+import { authService } from '../../../auth/service/auth.service';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
@@ -21,6 +23,15 @@ declare global {
 }
 
 const expoDb = global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+
+// HINT: We need to wait for native module to init
+setTimeout(async () => {
+    const pin = await authService.getPin();
+    if (isNotEmptyString(pin)) {
+        expoDb.execSync(`PRAGMA key = '${pin}';`);
+    }
+}, 100);
+
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
 export const tagRepository = new TagRepository(db);
@@ -33,4 +44,3 @@ export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
-

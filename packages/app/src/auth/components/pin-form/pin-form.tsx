@@ -42,7 +42,7 @@ export const PinForm = (props: Props) => {
             {isNotEmptyString(error) ? <Text className="text-sm text-destructive-foreground text-center mt-5xl">{error}</Text> : null}
 
             <View className="mt-8xl gap-y-lg items-center">
-                <View className="flex-row gap-x-lg border">
+                <View className="flex-row gap-x-lg">
                     {['1', '2', '3'].map(digit => (
                         <PinFormButton key={digit} digit={digit} onPress={onDigitPress} disabled={isLoading} />
                     ))}
