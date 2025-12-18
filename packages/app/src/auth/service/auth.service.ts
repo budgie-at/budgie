@@ -2,6 +2,8 @@
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { expoDb } from '../../@generic/drizzle/db/db';
 
 const PIN_KEY = 'user_pin';
@@ -89,9 +91,11 @@ class AuthService {
     }
 
     private async decryptDb() {
-        const pin = (await this.getPin()) ?? 'no-pin';
+        const pin = await this.getPin();
 
-        await expoDb.execAsync(`PRAGMA key = '${pin}';`);
+        if (isNotEmptyString(pin)) {
+            await expoDb.execAsync(`PRAGMA key = '${pin}';`);
+        }
     }
 }
 
