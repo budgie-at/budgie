@@ -7,6 +7,11 @@ import { expoDb } from '../../@generic/drizzle/db/db';
 const PIN_KEY = 'user_pin';
 
 class AuthService {
+    constructor() {
+        // HINT: We need to wait for native module to init
+        setTimeout(() => void this.decryptDb(), 100);
+    }
+
     async isBiometricAvailable(): Promise<boolean> {
         const compatible = await LocalAuthentication.hasHardwareAsync();
         const enrolled = await LocalAuthentication.isEnrolledAsync();
@@ -81,6 +86,12 @@ class AuthService {
 
     async getPin(): Promise<string | null> {
         return SecureStore.getItemAsync(PIN_KEY);
+    }
+
+    private async decryptDb() {
+        const pin = (await this.getPin()) ?? 'no-pin';
+
+        await expoDb.execAsync(`PRAGMA key = '${pin}';`);
     }
 }
 
