@@ -1,4 +1,9 @@
-import { TransactionCreateEntityInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -8,13 +13,13 @@ import Toast from 'react-native-toast-message';
 import { isDefined } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { transactionService } from '../service/transaction.service';
 import { createTransactionEntryInput } from '../utils/create-transaction-entry-input.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
 
 interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
+    onSubmit: (data: TransactionCreateEntityInterface) => Promise<TransactionEntityInterface>;
     fromAccountId: number | null;
     toAccountId: number | null;
     type: TransactionTypeEnum;
@@ -25,9 +30,10 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
 export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>({
     type,
     schema,
+    onSubmit,
     categoryId,
     toAccountId,
-    fromAccountId,
+    fromAccountId
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
     const { defaultInstrument, defaultAccount } = useSettingsContext();
@@ -81,7 +87,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
 
     const handleSubmit: SubmitHandler<TransactionCreateEntityInterface> = async data => {
         try {
-            await transactionService.createInternal(data);
+            await onSubmit(data);
             router.back();
         } catch {
             Toast.show({
