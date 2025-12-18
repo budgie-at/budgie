@@ -34,7 +34,6 @@ export const TransactionCard = ({ transaction }: Props) => {
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, true);
     const { formatMonthAndDay } = useFormatDate();
 
-    const amount = transaction.entries.reduce((acc, curr) => acc + curr.amount, 0);
     const categoryIcon = getTransactionIcon(transaction);
 
     const handleNavigate = () => void router.push(`/transactions/${transaction.id}`);
@@ -59,7 +58,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                 </View>
             </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(amount)}</Text>
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
         </Card>
     );
 };

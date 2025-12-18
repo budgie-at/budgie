@@ -1,29 +1,32 @@
-import { TransactionTypeEnum, TransferTransactionCreateEntitySchema } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, TransferTransactionCreateEntitySchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
-
+import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
+import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
 
-export const CreateTransferTransaction = () => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+}
+
+export const UpdateTransferTransaction = ({ transaction }: Props) => {
     const { t } = useLingui();
 
-    const { form, handleSubmit } = useCreateTransactionForm({
+    const { form, handleSubmit } = useUpdateTransactionForm({
+        transaction: convertTransactionToInput(transaction),
         schema: TransferTransactionCreateEntitySchema,
-        type: TransactionTypeEnum.TRANSFER,
-        fromAccountId: null,
-        toAccountId: null
+        id: transaction.id
     });
 
     return (
         <TransferTransactionForm
             control={form.control}
             setValue={form.setValue}
-            title={t`New Transfer`}
+            title={t`Edit Transfer`}
             variant="default"
             icon="ArrowRightLeft"
             onSubmit={handleSubmit}
-            buttonText={t`Add Transfer`}
+            buttonText={t`Update Transfer`}
         />
     );
 };
