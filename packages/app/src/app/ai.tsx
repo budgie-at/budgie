@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { Message, SMOLLM2_1_135M, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { SMOLLM2_1_135M, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
@@ -63,6 +63,7 @@ export default function AiScreen() {
     }, []);
 
     const [isRecording, setIsRecording] = useState(false);
+    const [prompt, setPrompt] = useState('');
     const waveformRef = useRef<number[]>([]);
 
     const handlePress = async () => {
@@ -74,17 +75,19 @@ export default function AiScreen() {
         });
 
         const formattingInstructions = getStructuredOutputPrompt(TransactionSchema);
-        const chat: Message[] = [
+        const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' });
+
+        await llm.generate([
             {
                 role: 'system',
                 // eslint-disable-next-line lingui/no-unlocalized-strings
                 content: `Your goal is to parse user's messages and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}\n /no_think`
             },
-            { role: 'user', content: await speechToText.transcribe(waveformRef.current, { language: 'en' }) }
-        ];
+            { role: 'user', content: transcribed }
+        ]);
 
-        await llm.generate(chat);
         setIsRecording(false);
+        setPrompt(transcribed);
     };
 
     const areModelsReady = speechToText.isReady && llm.isReady;
@@ -111,6 +114,7 @@ export default function AiScreen() {
                     </View>
                 </>
             )}
+            <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
             <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
         </Page>
     );
