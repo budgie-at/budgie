@@ -1,0 +1,11 @@
+export enum SystemCategoryIdEnum {
+    CURRENCY_PURCHASE = 1,
+    CURRENCY_SALE = 2,
+    CRYPTO_PURCHASE = 3,
+    CRYPTO_SALE = 4,
+    STOCK_PURCHASE = 5,
+    STOCK_SALE = 6,
+    CURRENCY_TRANSFER = 7,
+    CRYPTO_TRANSFER = 8,
+    STOCK_TRANSFER = 9,
+}
