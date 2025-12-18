@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, View } from 'react-native';
 
 import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
@@ -17,6 +17,7 @@ interface AuthFormStateInterface {
     hasAttemptedBiometric: boolean;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export default function PinScreen() {
     const { t } = useLingui();
     const { setIsUnlocked } = useAuthContext();
@@ -26,6 +27,7 @@ export default function PinScreen() {
     const { isBiometricEnabled } = settings;
     const canUseBiometric = isFaceIdAvailable && isBiometricEnabled;
 
+    const appState = useRef(AppState.currentState);
     const [formState, setFormState] = useState<AuthFormStateInterface>({
         input: '',
         error: null,
@@ -85,14 +87,32 @@ export default function PinScreen() {
         }
     };
 
-    if (canUseBiometric && !formState.hasAttemptedBiometric) {
-        updateForm({ hasAttemptedBiometric: true });
-        void handleBiometricAuth();
-    }
+    const tryAutomaticBiometric = () => {
+        if (canUseBiometric && !formState.hasAttemptedBiometric) {
+            updateForm({ hasAttemptedBiometric: true });
+            void handleBiometricAuth();
+        }
+    };
+
+    tryAutomaticBiometric();
 
     if (formState.input.length === PIN_LENGTH && !formState.isLoading) {
         void handlePinSubmit();
     }
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', nextAppState => {
+            if (appState.current.match(/inactive|background/iu) && nextAppState === 'active') {
+                tryAutomaticBiometric();
+            }
+
+            appState.current = nextAppState;
+        });
+
+        return () => {
+            subscription.remove();
+        };
+    }, []);
 
     return (
         <View className="flex-1 bg-primary-reverse">
