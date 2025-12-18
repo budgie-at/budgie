@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -52,9 +52,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
 
-                    {transaction.type === TransactionTypeEnum.TRANSFER ? null : (
-                        <TransactionCategoryBadge entries={transaction.entries} type={transaction.type} />
-                    )}
+                    <TransactionCategoryBadge transaction={transaction} />
                 </View>
             </View>
 

@@ -5,19 +5,24 @@ import { TransactionEntryCreateEntitySchema } from '../../transaction-entry/sche
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { TransactionEntitySchema } from './transaction-entity.schema';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export const TransactionCreateEntitySchema = convertToCreateEntitySchema(TransactionEntitySchema)
     .extend({
         tagIds: number().array().describe('Array of tag IDs associated with the transaction'),
         [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
-    .superRefine(({ amount, entries }, context) => {
+    .superRefine(({ amount, entries, type }, context) => {
         if (amount === 0) {
             context.addIssue({
                 code: 'custom',
                 path: ['amount'],
                 message: 'Amount must not be equal to 0.'
             });
+        }
+
+        if (type === TransactionTypeEnum.TRANSFER) {
+            return;
         }
 
         const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
