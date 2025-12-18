@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.71.2](https://github.com/budgie-at/budgie/compare/v1.71.1...v1.71.2) (2025-12-18)
+
+### Bug Fixes
+
+- resolve lint ([f476a14](https://github.com/budgie-at/budgie/commit/f476a14ff39036f29d142a163913adc3ff6cac2c))
+- resolve lint ([a0c4d0b](https://github.com/budgie-at/budgie/commit/a0c4d0b45763361490aa1a9e754b0e87d7bf0203))
+- resolve new findings ([18b6ab4](https://github.com/budgie-at/budgie/commit/18b6ab4fbab5dfb7222a7dd7aed33baef71df9d9))
+- resolve new findings ([a9ab3ec](https://github.com/budgie-at/budgie/commit/a9ab3ec2be59005b20d11c36166085bce02bcea4))
+- restrict selecting same category in splits ([fa65ab8](https://github.com/budgie-at/budgie/commit/fa65ab84cc38bc85e6b66178cd2279c18cc83913))
+
 ## [1.71.1](https://github.com/budgie-at/budgie/compare/v1.71.0...v1.71.1) (2025-12-16)
 
 ### Bug Fixes
