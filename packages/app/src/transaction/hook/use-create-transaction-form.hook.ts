@@ -60,12 +60,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                 ...(!isDefined(fromAccountId) && !isDefined(toAccountId)
                     ? [
                           createTransactionEntryInput({
-                              accountId: null,
+                              accountId: 0,
                               instrumentId: defaultInstrument.id,
                               type: TransactionEntryTypeEnum.CREDIT
                           }),
                           createTransactionEntryInput({
-                              accountId: null,
+                              accountId: 0,
                               instrumentId: defaultInstrument.id,
                               type: TransactionEntryTypeEnum.DEBIT
                           })
