@@ -1,20 +1,16 @@
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { useGetAccountByIdQuery } from '../../query/use-get-account-by-id.query';
-import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
+import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 
 interface Props {
     readonly emptyStateDescription?: string;
@@ -22,9 +18,19 @@ interface Props {
     readonly excludeAccountId: number | null;
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (accountId: number) => void;
+    readonly status?: FormFieldStatus;
     readonly className?: string;
     readonly title: string;
 }
+
+const cardVariants = cva('', {
+    variants: {
+        status: {
+            error: 'border-destructive-corner bg-destructive-background/5',
+            default: ''
+        }
+    }
+});
 
 export const AccountSelectorSquare = ({
     emptyStateDescription,
@@ -32,55 +38,38 @@ export const AccountSelectorSquare = ({
     accountId,
     title,
     onSelect,
+    status = 'default',
     variant,
     className
 }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
+    const { t } = useLingui();
 
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
-
-    const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
-
-    const { balance } = useAccountBalanceQuery(accountId ?? 0);
-    const formatMoney = useFormatMoney(decimalPlaces, selectedAccount?.instrument.code ?? defaultCurrency);
+    const { selectedAccount, formattedBalance, icon, hasAccount, renderBottomSheet } = useAccountSelector({
+        accountId,
+        excludeAccountId,
+        emptyStateDescription,
+        onSelect
+    });
 
     const handleOpen = () => ref.current?.open();
 
+    const iconVariant = hasAccount ? variant : 'ghost';
+    const subtitle = selectedAccount?.title ?? t`Select account`;
+    const description = hasAccount ? formattedBalance : t`Tap to choose`;
+
     return (
         <>
-            <Card onPress={handleOpen} className={cn('flex-row items-center gap-x-xl', className)}>
-                {isDefined(selectedAccount) ? (
-                    <View>
-                        <View className="flex-row gap-x-md items-center mb-lg">
-                            <CircleIcon size="lg" icon={ICONS[selectedAccount.icon]} variant={variant} />
-                            <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
-                        </View>
-                        <Text className="text-primary mb-xs">{selectedAccount.title}</Text>
-                        <Text className="font-medium text-secondary-foreground text-xs">{formatMoney(balance)}</Text>
-                    </View>
-                ) : (
-                    <View>
-                        <View className="flex-row gap-x-md items-center mb-lg">
-                            <CircleIcon size="lg" icon={ICONS.Wallet} variant="ghost" />
-                            <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
-                        </View>
-                        <Text className="text-primary mb-xs">
-                            <Trans>Select account</Trans>
-                        </Text>
-                        <Text className="font-medium text-secondary-foreground text-xs">
-                            <Trans>Tap to choose</Trans>
-                        </Text>
-                    </View>
-                )}
+            <Card onPress={handleOpen} className={cn(cardVariants({ status }), className)}>
+                <View className="flex-row gap-x-md items-center mb-lg">
+                    <CircleIcon size="lg" icon={ICONS[icon]} variant={iconVariant} />
+                    <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
+                </View>
+                <Text className="text-primary mb-xs">{subtitle}</Text>
+                <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
             </Card>
 
-            <AccountSelectorBottomSheet
-                emptyStateDescription={emptyStateDescription}
-                excludeAccountId={excludeAccountId}
-                selectedAccount={selectedAccount}
-                onSelect={onSelect}
-                ref={ref}
-            />
+            {renderBottomSheet(ref)}
         </>
     );
 };

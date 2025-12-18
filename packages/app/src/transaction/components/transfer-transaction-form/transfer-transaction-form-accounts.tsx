@@ -1,0 +1,96 @@
+import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
+
+import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { ICONS } from '../../../@generic/constant/icons.constant';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
+
+interface Props {
+    readonly variant: ColorPaletteVariant;
+    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+}
+
+export const TransferTransactionFormAccounts = ({ control, setValue, variant }: Props) => {
+    const { t } = useLingui();
+
+    const [fromAccountId, toAccountId] = useWatch({
+        control,
+        name: ['fromAccountId', 'toAccountId']
+    });
+
+    const handleSwitchAccounts = () => {
+        const temp = fromAccountId;
+
+        setValue('fromAccountId', toAccountId);
+        setValue('toAccountId', temp);
+
+        setValue('entries.0.accountId', fromAccountId ?? 0);
+        setValue('entries.1.accountId', toAccountId ?? 0);
+    };
+
+    const renderFromAccount = ({
+        field: { value, onChange },
+        fieldState: { invalid }
+    }: UseControllerReturn<TransactionCreateEntityInterface, 'fromAccountId'>) => {
+        const handleChange = (accountId: number) => {
+            setValue('entries.0.accountId', accountId);
+            onChange(accountId);
+        };
+        const status = invalid ? 'error' : 'default';
+
+        return (
+            <AccountSelectorSquare
+                className="flex-1"
+                status={status}
+                variant={variant}
+                excludeAccountId={toAccountId}
+                accountId={value}
+                onSelect={handleChange}
+                title={t`FROM`}
+                emptyStateDescription={t`Create your first account to start tracking transactions`}
+            />
+        );
+    };
+
+    const renderToAccount = ({
+        field: { value, onChange },
+        fieldState: { invalid }
+    }: UseControllerReturn<TransactionCreateEntityInterface, 'toAccountId'>) => {
+        const handleChange = (accountId: number) => {
+            setValue('entries.1.accountId', accountId);
+            onChange(accountId);
+        };
+
+        const status = invalid ? 'error' : 'default';
+
+        return (
+            <AccountSelectorSquare
+                className="flex-1"
+                variant={variant}
+                status={status}
+                title={t`TO`}
+                excludeAccountId={fromAccountId}
+                accountId={value}
+                onSelect={handleChange}
+                emptyStateDescription={t`Create your first account to start tracking transactions`}
+            />
+        );
+    };
+
+    return (
+        <View className="flex-row items-center justify-between gap-x-lg">
+            <Controller render={renderFromAccount} control={control} name="fromAccountId" />
+
+            <HapticPressable onPress={handleSwitchAccounts}>
+                <CircleIcon size="xxs" variant="ghost" icon={ICONS.ArrowRightIcon} />
+            </HapticPressable>
+
+            <Controller render={renderToAccount} name="toAccountId" control={control} />
+        </View>
+    );
+};

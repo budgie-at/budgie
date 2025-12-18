@@ -26,7 +26,7 @@ interface Props {
     readonly iconVariant?: ColorPaletteVariant;
 }
 
-const headerVariant = cva<{ size: Record<PageHeaderSize, ClassValue> }>('px-5xl border-b border-b-secondary-corner gap-y-3xl', {
+const headerVariant = cva<{ size: Record<PageHeaderSize, ClassValue> }>('px-5xl gap-y-3xl', {
     variants: {
         size: {
             md: 'pb-md',

@@ -54,7 +54,6 @@ export default function PinSetupScreen() {
                         title={i18n.t(title)}
                         description={i18n.t(description)}
                         currentInput={state.input}
-                        error={state.error}
                         isLoading={state.isLoading}
                         onDigitPress={addDigit}
                         onDeletePress={deleteDigit}

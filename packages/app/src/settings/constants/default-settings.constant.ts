@@ -5,7 +5,6 @@ export const DEFAULT_SETTINGS = {
     locale: 'en-US',
     deletedAt: null,
     showCents: true,
-    isPinEnabled: true,
     defaultAccountId: 0,
     isPinEnabled: false,
     createdAt: new Date(),

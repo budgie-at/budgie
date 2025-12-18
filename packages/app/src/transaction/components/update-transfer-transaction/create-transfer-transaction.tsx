@@ -2,7 +2,6 @@ import { TransactionTypeEnum, TransferTransactionCreateEntitySchema } from '@bud
 import { useLingui } from '@lingui/react/macro';
 
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
-
 import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
 
 export const CreateTransferTransaction = () => {
@@ -11,8 +10,8 @@ export const CreateTransferTransaction = () => {
     const { form, handleSubmit } = useCreateTransactionForm({
         schema: TransferTransactionCreateEntitySchema,
         type: TransactionTypeEnum.TRANSFER,
-        fromAccountId: null,
-        toAccountId: null
+        fromAccountId: 0,
+        toAccountId: 0
     });
 
     return (

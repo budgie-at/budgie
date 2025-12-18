@@ -27,7 +27,7 @@ export const FormAmountInput = ({ value, onChange, variant, textClassName, instr
     const format = useFormatDigits(decimalPlaces);
 
     return (
-        <View className="flex-row items-center justify-center pt-[40px] pb-7xl">
+        <View className="flex-row items-center justify-center py-5xl">
             <Text className={textVariants({ variant })}>{instrumentSymbol} </Text>
 
             <AmountInput

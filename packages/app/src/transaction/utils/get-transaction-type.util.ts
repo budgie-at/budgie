@@ -1,10 +1,10 @@
 import {
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
     isExpenseTransaction,
     isIncomeTransaction,
     isNegativeAdjustmentTransaction,
-    isPositiveAdjustmentTransaction,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface
+    isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 
 export const getTransactionType = (
