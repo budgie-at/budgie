@@ -1,9 +1,6 @@
 import { CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { i18n } from '@lingui/core';
 import { getStructuredOutputPrompt } from 'react-native-executorch';
-
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const { t } = useLingui();
 
 export const getSystemPrompt = (categories: CategoryEntityInterface[]) => {
     const formattingInstructions = getStructuredOutputPrompt({
@@ -11,20 +8,22 @@ export const getSystemPrompt = (categories: CategoryEntityInterface[]) => {
             category: {
                 type: 'string',
                 enum: categories.map(category => category.title),
-                description: t`Available transaction categories`
+                description: i18n._(`Available transaction categories`)
             },
             type: {
                 type: 'string',
                 enum: Object.values(TransactionTypeEnum),
-                description: t`Available transaction types`
+                description: i18n._(`Available transaction types`)
             },
             amount: {
                 type: 'number',
-                description: t`Amount of money, that user spent or earned in this transaction`
+                description: i18n._(`Amount of money, that user spent or earned in this transaction`)
             }
         },
         required: ['category', 'type', 'amount']
     });
 
-    return t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed. ${formattingInstructions}`;
+    return i18n._(
+        `Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed. ${formattingInstructions}`
+    );
 };
