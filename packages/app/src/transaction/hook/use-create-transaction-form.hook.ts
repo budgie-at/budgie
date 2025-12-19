@@ -52,34 +52,36 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                 ...(isDefined(fromAccountId)
                     ? [
                           createTransactionEntryInput({
+                              amount,
+                              categoryId,
                               accountId: fromAccountId,
                               type: TransactionEntryTypeEnum.CREDIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
-                              amount,
-                              categoryId
+                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id
                           })
                       ]
                     : []),
                 ...(isDefined(toAccountId)
                     ? [
                           createTransactionEntryInput({
+                              amount,
+                              categoryId,
                               accountId: toAccountId,
                               type: TransactionEntryTypeEnum.DEBIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
-                              amount,
-                              categoryId
+                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id
                           })
                       ]
                     : []),
                 ...(!isDefined(fromAccountId) && !isDefined(toAccountId)
                     ? [
                           createTransactionEntryInput({
+                              amount,
                               categoryId,
                               accountId: 0,
                               instrumentId: defaultInstrument.id,
                               type: TransactionEntryTypeEnum.CREDIT
                           }),
                           createTransactionEntryInput({
+                              amount,
                               categoryId,
                               accountId: 0,
                               instrumentId: defaultInstrument.id,
