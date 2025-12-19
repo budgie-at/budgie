@@ -21,6 +21,8 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
     useEffect(() => {
         if (!llm.isGenerating && isNotEmptyString(llm.response)) {
             try {
+                // eslint-disable-next-line no-undefined
+                setTransactionInfo(undefined);
                 const categoryId = categories.find(category => category.title.toLowerCase().includes(llm.response.toLowerCase()))?.id ?? 0;
 
                 // TODO: Can we do better?
