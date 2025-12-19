@@ -129,6 +129,10 @@ msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. S
 msgid "Allocated"
 msgstr "Asignado"
 
+#: src/ai/util/get-system-prompt.util.ts:23
+msgid "Amount of money, that user spent or earned in this transaction"
+msgstr ""
+
 #: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
 msgstr "Página de análisis"
@@ -162,6 +166,14 @@ msgstr "Cuentas archivadas"
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
+
+#: src/ai/util/get-system-prompt.util.ts:14
+msgid "Available transaction categories"
+msgstr ""
+
+#: src/ai/util/get-system-prompt.util.ts:19
+msgid "Available transaction types"
+msgstr ""
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Balance Adjustment"
@@ -688,7 +700,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/ai.tsx:60
+#: src/app/ai.tsx:58
 msgid "No speech detected"
 msgstr ""
 
@@ -729,7 +741,7 @@ msgstr "Organización"
 msgid "Over:"
 msgstr "Exceso:"
 
-#: src/app/ai.tsx:86
+#: src/app/ai.tsx:84
 msgid "Parsed transaction:"
 msgstr ""
 
@@ -1065,10 +1077,10 @@ msgstr "Ver y restaurar cuentas archivadas"
 msgid "will be restored to your main view and included in totals."
 msgstr "se restaurará a tu vista principal y se incluirá en los totales."
 
-#: src/app/ai.tsx:29
-msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
+#: src/ai/util/get-system-prompt.util.ts:29
+msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed. {formattingInstructions}"
 msgstr ""
 
-#: src/app/ai.tsx:77
+#: src/app/ai.tsx:75
 msgid "Your message:"
 msgstr ""
