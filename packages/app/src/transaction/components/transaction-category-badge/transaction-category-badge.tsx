@@ -1,8 +1,8 @@
 import {
-    TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
-    isTransferTransaction
+    isTransferTransaction,
+    TransactionWithRelationsEntityInterface
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -15,24 +15,15 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
 }
 
-const wrapperClassName = 'bg-secondary-corner self-start py-xxs px-md rounded-2xl flex-row';
+const wrapperClassName = 'bg-secondary-corner self-start py-xxs px-md rounded-2xl flex-row gap-xs items-center';
 const textClassName = 'text-xs font-medium text-primary';
 
 export const TransactionCategoryBadge = ({ transaction }: Props) => {
     const { t, i18n } = useLingui();
 
-    if (isTransferTransaction(transaction)) {
-        const [entry] = transaction.entries;
-        const category = entry.category?.title ?? i18n.t(TRANSACTION_TYPE[transaction.type]);
+    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
-        return (
-            <View className={wrapperClassName}>
-                <Text className={textClassName}>{category}</Text>
-            </View>
-        );
-    }
-
-    if (isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
+    if (isAdjustment) {
         return (
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{t`Balance Adjustment`}</Text>
@@ -40,22 +31,26 @@ export const TransactionCategoryBadge = ({ transaction }: Props) => {
         );
     }
 
-    if (transaction.entries.length > 1) {
+    const hasMultipleEntries = transaction.entries.length > 1;
+
+    if (hasMultipleEntries) {
         return (
             <View className={wrapperClassName}>
                 <Icon icon={ICONS.SplitIcon} className="text-primary" size={12} />
-
                 <Text className={textClassName}>{t`Categories`}</Text>
             </View>
         );
     }
 
     const [entry] = transaction.entries;
-    const category = entry.category?.title ?? i18n.t(TRANSACTION_TYPE[transaction.type]);
+    const defaultLabel = i18n.t(TRANSACTION_TYPE[transaction.type]);
+    const categoryTitle = entry.category?.title ?? defaultLabel;
+
+    const label = isTransferTransaction(transaction) ? categoryTitle : categoryTitle;
 
     return (
         <View className={wrapperClassName}>
-            <Text className={textClassName}>{category}</Text>
+            <Text className={textClassName}>{label}</Text>
         </View>
     );
 };
