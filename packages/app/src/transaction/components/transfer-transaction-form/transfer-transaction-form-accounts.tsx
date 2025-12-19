@@ -1,5 +1,6 @@
 import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useEffect } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -28,13 +29,15 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
 
+    useEffect(() => {
+        syncTransferInstrumentAndCategory(fromAccount, toAccount, setValue);
+    }, [fromAccount, toAccount, setValue]);
+
     const handleAccountSelect = (entryIndex: 0 | 1, accountId: number) => {
         const fieldName = entryIndex === 0 ? 'fromAccountId' : 'toAccountId';
 
         setValue(fieldName, accountId);
         setValue(`entries.${entryIndex}.accountId`, accountId);
-
-        syncTransferInstrumentAndCategory(fromAccount, toAccount, setValue);
     };
 
     const handleSwitchAccounts = () => {
@@ -43,8 +46,6 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
 
         setValue('entries.0.accountId', toAccountId ?? 0);
         setValue('entries.1.accountId', fromAccountId ?? 0);
-
-        syncTransferInstrumentAndCategory(toAccount, fromAccount, setValue);
     };
 
     const renderFromAccount = ({
