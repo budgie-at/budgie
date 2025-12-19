@@ -3,16 +3,16 @@ import { useMemo, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Page } from '../@generic/components/page/page';
 import { RecordButton } from '../ai/component/record-button/record-button';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
 import { useLlm } from '../ai/hook/use-llm.hook';
-import { getSystemPrompt } from '../ai/util/get-system-prompt.util';
+import { useTransactionInfoPrompt } from '../ai/hook/use-transaction-info-prompt.hook';
 import { recordVoice } from '../ai/util/record-voice.util';
-import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
 import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
+import { CreateExpenseTransaction } from '../transaction/components/create-expense-transaction/create-expense-transaction';
 
 export default function AiScreen() {
     const { t } = useLingui();
@@ -23,12 +23,11 @@ export default function AiScreen() {
     const [isRecording, setIsRecording] = useState(false);
     const [prompt, setPrompt] = useState('');
     const [error, setError] = useState('');
-    const [systemPrompt, setSystemPrompt] = useState('');
 
     const waveformRef = useRef<number[]>([]);
 
     useAudioManager();
-    useAllCategoriesQuery(categories => void setSystemPrompt(getSystemPrompt(categories)));
+    const [systemPrompt, transactionInfo] = useTransactionInfoPrompt(llm);
 
     const handlePress = async () => {
         setError('');
@@ -39,9 +38,9 @@ export default function AiScreen() {
             waveformRef.current.push(...waveform);
         });
 
-        const transcribed = await speechToText
-            .transcribe(waveformRef.current, { language: locale.languageCode as SpeechToTextLanguage })
-            .catch(() => '');
+        const transcribed = (
+            await speechToText.transcribe(waveformRef.current, { language: locale.languageCode as SpeechToTextLanguage }).catch(() => '')
+        ).trim();
 
         setPrompt(transcribed);
 
@@ -78,19 +77,14 @@ export default function AiScreen() {
                     </View>
                 )}
 
-                {isNotEmptyString(llm.response) && (
-                    <View className="mt-4 p-4 bg-secondary rounded-2xl">
-                        <Text className="text-secondary text-sm font-medium mb-2">
-                            <Trans>Parsed transaction:</Trans>
-                        </Text>
-                        <Text className="text-primary text-base">{llm.response}</Text>
-                    </View>
-                )}
-
                 {isNotEmptyString(error) && (
                     <View className="mt-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
                         <Text className="text-red-600 dark:text-red-400 text-base">{error}</Text>
                     </View>
+                )}
+
+                {isDefined(transactionInfo) && (
+                    <CreateExpenseTransaction categoryId={transactionInfo.categoryId} amount={transactionInfo.amount} />
                 )}
             </ScrollView>
 
