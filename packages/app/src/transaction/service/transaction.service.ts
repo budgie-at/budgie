@@ -13,25 +13,19 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { Transaction } from '../../@generic/type/transaction.type';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.create(
                 {
+                    ...input,
                     tagIds: [],
                     entries: [],
                     externalId: null,
                     externalSource: null,
-                    type: input.type,
-                    title: input.title,
-                    comment: input.comment,
-                    operatedAt: input.operatedAt,
-                    toAccountId: input.toAccountId,
-                    exchangeRate: input.exchangeRate,
-                    fromAccountId: input.fromAccountId,
                     amount: convertToMicroUnits(input.amount)
                 },
                 tx
@@ -57,17 +51,10 @@ class TransactionService {
 
             const transaction = await transactionRepository.create(
                 {
-                    tagIds: [],
-                    entries: [],
+                    ...input,
                     externalId: null,
-                    externalSource: null,
-                    type: input.type,
-                    title: input.title,
-                    comment: input.comment,
-                    operatedAt: input.operatedAt,
-                    toAccountId: input.toAccountId,
-                    fromAccountId: input.fromAccountId,
                     amount: fromAmount,
+                    externalSource: null,
                     exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
                 },
                 tx
@@ -108,20 +95,7 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
-            const transaction = await transactionRepository.updateById(
-                id,
-                {
-                    type: input.type,
-                    title: input.title,
-                    comment: input.comment,
-                    operatedAt: input.operatedAt,
-                    toAccountId: input.toAccountId,
-                    exchangeRate: input.exchangeRate,
-                    fromAccountId: input.fromAccountId,
-                    amount: convertToMicroUnits(input.amount)
-                },
-                tx
-            );
+            const transaction = await transactionRepository.updateById(id, { ...input, amount: convertToMicroUnits(input.amount) }, tx);
 
             await this.upsertEntriesAndTags(id, input, tx);
 
@@ -132,17 +106,8 @@ class TransactionService {
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
-        await Promise.all(
-            input.entries.map(async entry =>
-                transactionEntryRepository.create(
-                    {
-                        ...entry,
-                        amount: convertToMicroUnits(entry.amount),
-                        transactionId
-                    },
-                    tx
-                )
-            )
+        await transactionEntryRepository.bulkCreate(
+            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId }), tx)
         );
 
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
