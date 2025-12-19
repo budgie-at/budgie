@@ -25,7 +25,7 @@ interface Props extends Omit<ComponentProps<typeof HapticPressable>, 'children'>
 const buttonVariants = cva<{
     variant: Record<RecordButtonVariant, ClassValue>;
     size: Record<RecordButtonSize, ClassValue>;
-}>('rounded-full items-center justify-center shadow-lg dark:shadow-white/20', {
+}>('rounded-full items-center  justify-center shadow-lg dark:shadow-white/20', {
     variants: {
         variant: {
             default: 'bg-accent',
