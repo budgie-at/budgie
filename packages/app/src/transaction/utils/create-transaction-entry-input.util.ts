@@ -1,8 +1,8 @@
 import { TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
 export const createTransactionEntryInput = (
-    input: Pick<TransactionEntryCreateEntityInterface, 'type' | 'instrumentId' | 'accountId'> &
-        Partial<Pick<TransactionEntryCreateEntityInterface, 'categoryId'>>
+    input: Pick<TransactionEntryCreateEntityInterface, 'type' | 'instrumentId'> &
+        Partial<Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'categoryId'>>
 ): Omit<TransactionEntryCreateEntityInterface, 'transactionId'> => ({
     categoryId: 0,
     amount: 0,
