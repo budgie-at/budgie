@@ -14,13 +14,6 @@ class AuthService {
         setTimeout(() => void this.decryptDb(), 100);
     }
 
-    async isBiometricAvailable(): Promise<boolean> {
-        const compatible = await LocalAuthentication.hasHardwareAsync();
-        const enrolled = await LocalAuthentication.isEnrolledAsync();
-
-        return compatible && enrolled;
-    }
-
     async getBiometricTypes() {
         try {
             const [hasHardware, isEnrolled, types] = await Promise.all([
@@ -74,12 +67,6 @@ class AuthService {
         const savedPin = await SecureStore.getItemAsync(PIN_KEY);
 
         return savedPin === pin;
-    }
-
-    async hasPinInSecureStore(): Promise<boolean> {
-        const pin = await SecureStore.getItemAsync(PIN_KEY);
-
-        return pin !== null;
     }
 
     async deletePin(): Promise<void> {
