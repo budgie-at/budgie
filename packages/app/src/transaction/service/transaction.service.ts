@@ -148,7 +148,10 @@ class TransactionService {
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
 
         if (isNotEmptyArray(input.tagIds)) {
-            await Promise.all(input.tagIds.map(async tagId => transactionTagsRepository.create({ transactionId, tagId }, tx)));
+            await transactionTagsRepository.create(
+                input.tagIds.map(tagId => ({ transactionId, tagId })),
+                tx
+            );
         }
     }
 }
