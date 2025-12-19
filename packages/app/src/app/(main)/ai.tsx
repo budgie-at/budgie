@@ -4,13 +4,13 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { getStructuredOutputPrompt, LLAMA3_2_1B, useLLM, useSpeechToText, WHISPER_TINY } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../@generic/components/button/button';
-import { Page } from '../@generic/components/page/page';
-import { categoryRepository } from '../@generic/drizzle/db/db';
+import { Button } from '../../@generic/components/button/button';
+import { Page } from '../../@generic/components/page/page';
+import { categoryRepository } from '../../@generic/drizzle/db/db';
 
 const TransactionSchema = {
     properties: {
@@ -101,6 +101,7 @@ export default function AiScreen() {
                 { role: 'user', content: transcribed }
             ]);
         } catch (e: unknown) {
+            console.log({ e });
             setError(getErrorMessage(e));
         }
 
