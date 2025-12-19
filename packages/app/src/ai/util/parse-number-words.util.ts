@@ -1,3 +1,5 @@
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+
 const wordToNumber: Record<string, number> = {
     zero: 0,
     one: 1,
@@ -70,5 +72,5 @@ export const parseNumberFromMessage = (message: string): number => {
     // eslint-disable-next-line no-undefined
     const digitNumber = digitMatches?.[0] ? parseDigit(digitMatches[0]) : undefined;
 
-    return wordNumber ?? digitNumber ?? 0;
+    return convertToMicroUnits(wordNumber ?? digitNumber ?? 0);
 };
