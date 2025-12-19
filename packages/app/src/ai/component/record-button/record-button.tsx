@@ -65,8 +65,8 @@ const iconSize: Record<RecordButtonSize, number> = {
 const activityIndicatorSize: Record<RecordButtonSize, 'small' | 'large'> = {
     sm: 'small',
     md: 'small',
-    lg: 'large',
-    xl: 'large'
+    lg: 'small',
+    xl: 'small'
 };
 
 export const RecordButton = (props: Props) => {
