@@ -11,6 +11,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:11
+msgid "Available transaction categories"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:16
+msgid "Available transaction types"
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:20
+msgid "Amount of money, that user spent or earned in this transaction"
+msgstr ""
+
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
@@ -129,10 +144,6 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Allocated"
 msgstr "Zugewiesen"
 
-#: src/ai/util/get-system-prompt.util.ts:23
-msgid "Amount of money, that user spent or earned in this transaction"
-msgstr ""
-
 #: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
 msgstr "Analyse-Seite"
@@ -166,14 +177,6 @@ msgstr "Archivierte Konten"
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
-
-#: src/ai/util/get-system-prompt.util.ts:14
-msgid "Available transaction categories"
-msgstr ""
-
-#: src/ai/util/get-system-prompt.util.ts:19
-msgid "Available transaction types"
-msgstr ""
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Balance Adjustment"
@@ -1076,10 +1079,6 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:45
 msgid "will be restored to your main view and included in totals."
 msgstr "wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."
-
-#: src/ai/util/get-system-prompt.util.ts:29
-msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed. {formattingInstructions}"
-msgstr ""
 
 #: src/app/ai.tsx:75
 msgid "Your message:"

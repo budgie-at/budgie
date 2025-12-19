@@ -11,6 +11,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:11
+msgid "Available transaction categories"
+msgstr "Доступні категорії транзакцій"
+
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:16
+msgid "Available transaction types"
+msgstr "Доступні типи транзакцій"
+
+#. js-lingui-explicit-id
+#: src/ai/util/get-system-prompt.util.ts:20
+msgid "Amount of money, that user spent or earned in this transaction"
+msgstr "Сума грошей, яку користувач витратив або отримав у цій транзакції"
+
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -129,10 +144,6 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Allocated"
 msgstr "Розподілено"
 
-#: src/ai/util/get-system-prompt.util.ts:23
-msgid "Amount of money, that user spent or earned in this transaction"
-msgstr ""
-
 #: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
 msgstr "Сторінка аналітики"
@@ -166,14 +177,6 @@ msgstr "Архівовані рахунки"
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
-
-#: src/ai/util/get-system-prompt.util.ts:14
-msgid "Available transaction categories"
-msgstr ""
-
-#: src/ai/util/get-system-prompt.util.ts:19
-msgid "Available transaction types"
-msgstr ""
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Balance Adjustment"
@@ -320,7 +323,7 @@ msgstr "Не вдалося оновити обліковий запис. Спр
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:39
 msgid "Could not update transaction. Please try again later."
-msgstr ""
+msgstr "Не вдалося оновити транзакцію. Будь ласка, спробуйте пізніше."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:45
 msgid "Create a PIN"
@@ -456,11 +459,11 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:33
 msgid "Edit Expense"
-msgstr ""
+msgstr "Редагувати витрату"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:33
 msgid "Edit Income"
-msgstr ""
+msgstr "Редагувати дохід"
 
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
@@ -597,7 +600,7 @@ msgstr "Мова"
 
 #: src/ai/component/record-button/record-button.tsx:94
 msgid "Loading AI... {progress}%"
-msgstr ""
+msgstr "Завантаження ШІ... {progress}%"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
@@ -702,7 +705,7 @@ msgstr "Немає результатів"
 
 #: src/app/ai.tsx:58
 msgid "No speech detected"
-msgstr ""
+msgstr "Мовлення не виявлено"
 
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:60
 msgid "No tags found"
@@ -743,7 +746,7 @@ msgstr "Перевищення:"
 
 #: src/app/ai.tsx:84
 msgid "Parsed transaction:"
-msgstr ""
+msgstr "Розпізнана транзакція:"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -779,7 +782,7 @@ msgstr "Конфіденційність"
 
 #: src/ai/component/record-button/record-button.tsx:97
 msgid "Processing..."
-msgstr ""
+msgstr "Обробка..."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
@@ -787,7 +790,7 @@ msgstr "Введіть свій PIN-код ще раз для підтвердж
 
 #: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
-msgstr ""
+msgstr "Запис..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -973,7 +976,7 @@ msgstr "Торкніться, щоб змінити іконку"
 
 #: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
-msgstr ""
+msgstr "Натисніть, щоб говорити"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1046,11 +1049,11 @@ msgstr "Оновити рахунок"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
 msgid "Update Expense"
-msgstr ""
+msgstr "Оновити витрату"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
 msgid "Update Income"
-msgstr ""
+msgstr "Оновити дохід"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -1077,10 +1080,6 @@ msgstr "Перегляд та відновлення архівованих ра
 msgid "will be restored to your main view and included in totals."
 msgstr "буде відновлено у вашому головному перегляді та включено до підсумків."
 
-#: src/ai/util/get-system-prompt.util.ts:29
-msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed. {formattingInstructions}"
-msgstr ""
-
 #: src/app/ai.tsx:75
 msgid "Your message:"
-msgstr ""
+msgstr "Ваше повідомлення:"
