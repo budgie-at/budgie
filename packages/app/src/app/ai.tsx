@@ -12,10 +12,6 @@ import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
 import { recordVoice } from '../ai/util/record-voice.util';
 import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
 
-// eslint-disable-next-line lingui/no-unlocalized-strings
-const systemPrompt = `Your goal is to analyze and parse user message and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed.`;
-
-// TODO: Add support for different languages based on user settings
 // eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
     const { t } = useLingui();
@@ -30,6 +26,10 @@ export default function AiScreen() {
     const [formattingInstructions, setFormattingInstructions] = useState('');
 
     const waveformRef = useRef<number[]>([]);
+
+    // TODO: Add support for different languages based on user settings
+    const speechToTextLanguage = 'en';
+    const systemPrompt = t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed.`;
 
     useAllCategoriesQuery(categories => {
         AiTransactionSchema.properties.category.enum = categories.map(category => category.title);
@@ -58,7 +58,7 @@ export default function AiScreen() {
             waveformRef.current.push(...waveform);
         });
 
-        const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' }).catch(() => '');
+        const transcribed = await speechToText.transcribe(waveformRef.current, { language: speechToTextLanguage }).catch(() => '');
 
         setPrompt(transcribed);
 
