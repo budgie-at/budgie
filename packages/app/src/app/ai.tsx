@@ -1,62 +1,40 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { AudioManager, AudioRecorder } from 'react-native-audio-api';
+import { AudioManager } from 'react-native-audio-api';
 import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
-import { categoryRepository } from '../@generic/drizzle/db/db';
+import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
+import { recordVoice } from '../ai/util/record-voice.util';
+import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
 
-const TransactionSchema = {
-    properties: {
-        category: {
-            type: 'string',
-            enum: ['food'],
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Transaction category.'
-        },
-        type: {
-            type: 'string',
-            enum: Object.values(TransactionTypeEnum),
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Transaction type.'
-        },
-        amount: {
-            type: 'number',
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Amount of money, that user spent.'
-        }
-    },
-    required: ['category', 'type', 'amount']
-};
+// eslint-disable-next-line lingui/no-unlocalized-strings
+const systemPrompt = `Your goal is to analyze and parse user message and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed.`;
 
-const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, durationSeconds = 3, sampleRate = 16000) => {
-    const recorder = new AudioRecorder({ sampleRate, bufferLengthInSamples: 4096 });
-
-    recorder.onAudioReady(({ buffer }) => {
-        void onRecorder(Array.from(buffer.getChannelData(0)));
-    });
-
-    recorder.start();
-    await new Promise(resolve => {
-        setTimeout(resolve, durationSeconds * 1000);
-    });
-    recorder.stop();
-};
-
-// eslint-disable-next-line max-statements
+// TODO: Add support for different languages based on user settings
+// eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
     const { t } = useLingui();
 
     const llm = useLLM({ model: LLAMA3_2_1B });
+
     const speechToText = useSpeechToText({ model: WHISPER_TINY });
 
-    const { data: categoriesData } = useLiveQuery(categoryRepository.findAll());
+    const [isRecording, setIsRecording] = useState(false);
+    const [prompt, setPrompt] = useState('');
+    const [error, setError] = useState('');
+    const [formattingInstructions, setFormattingInstructions] = useState('');
+
+    const waveformRef = useRef<number[]>([]);
+
+    useAllCategoriesQuery(categories => {
+        AiTransactionSchema.properties.category.enum = categories.map(category => category.title);
+        setFormattingInstructions(getStructuredOutputPrompt(AiTransactionSchema));
+    });
 
     useEffect(() => {
         const setup = async () => {
@@ -71,11 +49,6 @@ export default function AiScreen() {
         void setup();
     }, []);
 
-    const [isRecording, setIsRecording] = useState(false);
-    const [prompt, setPrompt] = useState('');
-    const [error, setError] = useState('');
-    const waveformRef = useRef<number[]>([]);
-
     const handlePress = async () => {
         setError('');
         setIsRecording(true);
@@ -85,23 +58,21 @@ export default function AiScreen() {
             waveformRef.current.push(...waveform);
         });
 
-        TransactionSchema.properties.category.enum = categoriesData.map(category => category.title);
-
-        const formattingInstructions = getStructuredOutputPrompt(TransactionSchema);
         const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' }).catch(() => '');
 
         setPrompt(transcribed);
-        try {
-            await llm.generate([
-                {
-                    role: 'system',
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    content: `Your goal is to analyze and parse user message and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
-                },
-                { role: 'user', content: transcribed }
-            ]);
-        } catch (e: unknown) {
-            setError(getErrorMessage(e));
+
+        if (isNotEmptyString(transcribed)) {
+            try {
+                await llm.generate([
+                    { role: 'system', content: `${systemPrompt}\n${formattingInstructions}` },
+                    { role: 'user', content: transcribed }
+                ]);
+            } catch (e: unknown) {
+                setError(getErrorMessage(e));
+            }
+        } else {
+            setError(t`No speech detected`);
         }
 
         setIsRecording(false);
@@ -132,8 +103,21 @@ export default function AiScreen() {
                         </View>
                     </>
                 )}
-                <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
-                <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
+
+                <>
+                    <Text className="text-primary text-3xl font-semibold">
+                        <Trans>Prompt:</Trans>
+                    </Text>
+                    <Text className="text-primary text-3xl">{prompt}</Text>
+                </>
+
+                <>
+                    <Text className="text-primary text-3xl font-semibold">
+                        <Trans>Structured:</Trans>
+                    </Text>
+                    <Text className="text-primary text-3xl">{llm.response}</Text>
+                </>
+
                 {isNotEmptyString(error) && <Text className="text-primary text-3xl font-semibold">{error}</Text>}
             </ScrollView>
         </Page>
