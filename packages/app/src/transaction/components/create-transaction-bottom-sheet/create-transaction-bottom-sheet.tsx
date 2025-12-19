@@ -49,6 +49,13 @@ export const CreateTransactionBottomSheet = ({ ref }: Props) => {
                         onNavigate={handleNavigate}
                         type={TransactionTypeEnum.INCOME}
                     />
+                    <CreateTransactionCard
+                        description={t`Move between accounts`}
+                        icon={TRANSACTION_ICON.TRANSFER}
+                        title={i18n.t(TRANSACTION_TYPE.TRANSFER)}
+                        onNavigate={handleNavigate}
+                        type={TransactionTypeEnum.TRANSFER}
+                    />
                 </View>
             </BottomSheetView>
         </BottomSheet>

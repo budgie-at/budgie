@@ -1,68 +1,41 @@
-import { isDefined } from '@rnw-community/shared';
-
 import { PRECISION } from '../../generic/constant/precision.constant';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { findCoreTransactionEntries } from '../util/find-core-transaction-entries.util';
 
 import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
 
 export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
     ({ entries, exchangeRate, fromAccountId, toAccountId }, context) => {
-        const fromEntryIndex = entries.findIndex(transactionEntry => transactionEntry.accountId === fromAccountId);
-        const toEntryIndex = entries.findIndex(transactionEntry => transactionEntry.accountId === toAccountId);
+        const { fromEntry, toEntry } = findCoreTransactionEntries(entries, fromAccountId, toAccountId);
 
-        const fromEntry = fromEntryIndex >= 0 ? entries[fromEntryIndex] : null;
-        const toEntry = toEntryIndex >= 0 ? entries[toEntryIndex] : null;
+        if (!fromEntry || !toEntry) {
+            return;
+        }
 
-        const feeEntryIndex = entries.findIndex(
-            transactionEntry => transactionEntry.accountId !== fromAccountId && transactionEntry.accountId !== toAccountId
-        );
-        const feeEntry = feeEntryIndex >= 0 ? entries[feeEntryIndex] : null;
+        const calculatedRate = toEntry.amount / fromEntry.amount;
 
-        if (fromEntry?.type === TransactionEntryTypeEnum.DEBIT) {
+        const providedRateMicro = Math.round(exchangeRate * PRECISION);
+        const calculatedRateMicro = Math.round(calculatedRate * PRECISION);
+
+        if (Math.abs(providedRateMicro - calculatedRateMicro) > TOLERANCE_MICRO) {
             context.addIssue({
                 code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES, fromEntryIndex, 'type'],
-                message: '"from" entry must be "credit" (funds leave the "from" account)'
+                path: ['exchangeRate'],
+                message: `Exchange rate (${exchangeRate}) does not match the ratio of entry amounts (${calculatedRate}). Expected: ${calculatedRate.toFixed(6)}`
             });
 
             return;
         }
-
-        if (toEntry?.type === TransactionEntryTypeEnum.CREDIT) {
-            context.addIssue({
-                code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES, toEntryIndex, 'type'],
-                message: '"to" entry must be "debit" (funds enter the "to" account)'
-            });
-
-            return;
-        }
-
-        if (isDefined(feeEntry) && feeEntry.type !== TransactionEntryTypeEnum.DEBIT) {
-            context.addIssue({
-                code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES, feeEntryIndex, 'type'],
-                message: '"fee" entry must be "debit" (fee increases FROM-currency outflow)'
-            });
-
-            return;
-        }
-
-        const rateScaledInteger = Math.round(exchangeRate * PRECISION);
-
-        const convertToEntryMicroUnits = (amountMicroUnits: number, isToAccountEntry: boolean): number => {
-            if (!isToAccountEntry) {
-                return amountMicroUnits;
-            }
-
-            return Math.round((amountMicroUnits * rateScaledInteger) / PRECISION);
-        };
 
         const totalSignedFromMicroUnits = entries.reduce((acc, curr) => {
-            const amountInFromCurrencyMicroUnits = convertToEntryMicroUnits(curr.amount, curr.accountId === toAccountId);
+            let amountInFromCurrencyMicroUnits = curr.amount;
+
+            if (curr.accountId === toAccountId) {
+                amountInFromCurrencyMicroUnits = Math.round((curr.amount * PRECISION) / providedRateMicro);
+            }
+
             const signedValue = getSignFromEntryType(curr.type) * amountInFromCurrencyMicroUnits;
 
             return acc + signedValue;
@@ -72,7 +45,7 @@ export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCrea
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES],
-                message: `entries do not balance (micro): total signed FROM = ${totalSignedFromMicroUnits} (must be 0±${TOLERANCE_MICRO})`
+                message: `Entries do not balance (micro): total signed FROM = ${totalSignedFromMicroUnits} (must be 0±${TOLERANCE_MICRO})`
             });
         }
     }

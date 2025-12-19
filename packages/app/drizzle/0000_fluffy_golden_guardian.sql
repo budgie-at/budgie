@@ -34,7 +34,8 @@ CREATE TABLE `categories` (
 	`title` text DEFAULT '' NOT NULL,
 	`icon` text NOT NULL,
 	`parent_id` integer,
-	`is_default` integer DEFAULT false NOT NULL
+	`is_default` integer DEFAULT false NOT NULL,
+	`is_system_category` integer DEFAULT false NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `exchange_rates` (
@@ -168,40 +169,48 @@ INSERT INTO `instruments` (`type`, `code`, `name`, `symbol`) VALUES
 ('FIAT', 'UAH', 'Ukrainian Hryvnia', '₴');
 --> statement-breakpoint
 -- Seed default settings
-INSERT INTO `settings` (`locale`, `language`, `default_account_id`, `default_instrument_id`, `theme`, `show_cents`, `is_vibration_enabled`) VALUES
-    ('en-US', 'en', null, 1, 'SYSTEM', true, true);
+INSERT INTO `settings` (`locale`, `language`, `default_account_id`, `default_instrument_id`, `theme`, `show_cents`, `is_vibration_enabled`, `is_pin_enabled`, `is_biometric_enabled`) VALUES
+    ('en-US', 'en', null, 1, 'SYSTEM', true, true, false, false);
 --> statement-breakpoint
 -- Seed default categories
-INSERT INTO `categories` (`is_default`, `title`, `icon`, `parent_id`)
+INSERT INTO `categories` (`is_default`, `title`, `icon`, `parent_id`, `is_system_category`)
 VALUES
-    (true, 'Housing & Utilities',        'Home',                 NULL),
-    (true, 'Groceries',                  'ShoppingBasket',       NULL),
-    (true, 'Restaurants & Cafes',        'Utensils',             NULL),
-    (true, 'Transportation',             'Bus',                  NULL),
-    (true, 'Car & Fuel',                 'Car',                  NULL),
-    (true, 'Health & Medical',           'HeartPulse',           NULL),
-    (true, 'Insurance',                  'ShieldCheck',          NULL),
-    (true, 'Debt Payments',              'CreditCard',           NULL),
-    (true, 'Savings',                    'PiggyBank',            NULL),
-    (true, 'Investments',                'TrendingUp',           NULL),
-    (true, 'Salary & Wages',             'Banknote',             NULL),
-    (true, 'Freelance & Side Hustle',    'Briefcase',            NULL),
-    (true, 'Shopping',                   'ShoppingBag',          NULL),
-    (true, 'Subscriptions',              'Repeat',               NULL),
-    (true, 'Entertainment',              'Popcorn',              NULL),
-    (true, 'Education',                  'GraduationCap',        NULL),
-    (true, 'Gifts & Donations',          'Gift',                 NULL),
-    (true, 'Family & Kids',              'Baby',                 NULL),
-    (true, 'Pets',                       'PawPrint',             NULL),
-    (true, 'Travel',                     'Plane',                NULL),
-    (true, 'Business Expenses',          'Building2',            NULL),
-    (true, 'Taxes',                      'FileText',             NULL),
-    (true, 'Bank Fees & Charges',        'Landmark',             NULL),
-    (true, 'Home Maintenance',           'Wrench',               NULL),
-    (true, 'Personal Care',              'Sparkles',             NULL),
-    (true, 'Electronics & Gadgets',      'Smartphone',           NULL),
-    (true, 'Sport & Fitness',            'Dumbbell',             NULL),
-    (true, 'Clothing & Accessories',     'Shirt',                NULL),
-    (true, 'Other',                      'CircleDot',            NULL),
-    (true, 'Emergency Fund',             'AlertTriangle',        NULL);
-
+    (true, 'Currency Purchase',          'ArrowRightLeft',       NULL, true),
+    (true, 'Currency Sale',              'ArrowLeftRight',       NULL, true),
+    (true, 'Crypto Purchase',            'Bitcoin',              NULL, true),
+    (true, 'Crypto Sale',                'Coins',                NULL, true),
+    (true, 'Stock Purchase',             'LineChart',            NULL, true),
+    (true, 'Stock Sale',                 'CandlestickChart',     NULL, true),
+    (true, 'Currency Transfer',          'ArrowLeftRight',       NULL, true),
+    (true, 'Crypto Transfer',            'Send',                 NULL, true),
+    (true, 'Stock Transfer',             'MoveHorizontal',       NULL, true),
+    (true, 'Housing & Utilities',        'Home',                 NULL, false),
+    (true, 'Groceries',                  'ShoppingBasket',       NULL, false),
+    (true, 'Restaurants & Cafes',        'Utensils',             NULL, false),
+    (true, 'Transportation',             'Bus',                  NULL, false),
+    (true, 'Car & Fuel',                 'Car',                  NULL, false),
+    (true, 'Health & Medical',           'HeartPulse',           NULL, false),
+    (true, 'Insurance',                  'ShieldCheck',          NULL, false),
+    (true, 'Debt Payments',              'CreditCard',           NULL, false),
+    (true, 'Savings',                    'PiggyBank',            NULL, false),
+    (true, 'Investments',                'TrendingUp',           NULL, false),
+    (true, 'Salary & Wages',             'Banknote',             NULL, false),
+    (true, 'Freelance & Side Hustle',    'Briefcase',            NULL, false),
+    (true, 'Shopping',                   'ShoppingBag',          NULL, false),
+    (true, 'Subscriptions',              'Repeat',               NULL, false),
+    (true, 'Entertainment',              'Popcorn',              NULL, false),
+    (true, 'Education',                  'GraduationCap',        NULL, false),
+    (true, 'Gifts & Donations',          'Gift',                 NULL, false),
+    (true, 'Family & Kids',              'Baby',                 NULL, false),
+    (true, 'Pets',                       'PawPrint',             NULL, false),
+    (true, 'Travel',                     'Plane',                NULL, false),
+    (true, 'Business Expenses',          'Building2',            NULL, false),
+    (true, 'Taxes',                      'FileText',             NULL, false),
+    (true, 'Bank Fees & Charges',        'Landmark',             NULL, false),
+    (true, 'Home Maintenance',           'Wrench',               NULL, false),
+    (true, 'Personal Care',              'Sparkles',             NULL, false),
+    (true, 'Electronics & Gadgets',      'Smartphone',           NULL, false),
+    (true, 'Sport & Fitness',            'Dumbbell',             NULL, false),
+    (true, 'Clothing & Accessories',     'Shirt',                NULL, false),
+    (true, 'Other',                      'CircleDot',            NULL, false),
+    (true, 'Emergency Fund',             'AlertTriangle',        NULL, false);
