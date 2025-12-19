@@ -2,12 +2,13 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { AudioManager } from 'react-native-audio-api';
-import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { getStructuredOutputPrompt } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
+import { useLlm } from '../ai/hook/use-llm.hook';
 import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
 import { recordVoice } from '../ai/util/record-voice.util';
 import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
@@ -16,9 +17,7 @@ import { useAllCategoriesQuery } from '../category/query/use-all-categories.quer
 export default function AiScreen() {
     const { t } = useLingui();
 
-    const llm = useLLM({ model: LLAMA3_2_1B });
-
-    const speechToText = useSpeechToText({ model: WHISPER_TINY });
+    const [llm, speechToText] = useLlm();
 
     const [isRecording, setIsRecording] = useState(false);
     const [prompt, setPrompt] = useState('');
