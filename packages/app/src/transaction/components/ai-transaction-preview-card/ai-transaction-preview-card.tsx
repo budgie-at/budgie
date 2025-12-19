@@ -9,6 +9,7 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -29,6 +30,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
 
     const variant = TRANSACTION_COLOR[type];
     const icon = isDefined(category) ? category.icon : 'Receipt';
+    const microAmount = convertToMicroUnits(amount);
 
     return (
         <Card className="mt-4 p-5xl gap-y-4xl">
@@ -46,7 +48,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                 <Text className="text-secondary-foreground text-xs uppercase mb-xs">
                     <Trans>Amount</Trans>
                 </Text>
-                <Text className="text-destructive-foreground text-2xl font-bold">{formatMoney(amount)}</Text>
+                <Text className="text-destructive-foreground text-2xl font-bold">{formatMoney(microAmount)}</Text>
             </View>
 
             <View className="flex-row gap-x-lg">
