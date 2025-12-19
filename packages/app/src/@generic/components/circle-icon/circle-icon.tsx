@@ -28,6 +28,7 @@ const wrapperVariants = cva<{
     variants: {
         variant: BACKGROUND_COLOR_PALETTE,
         size: {
+            xxs: 'w-6 h-6',
             xs: 'w-6.5 h-6.5',
             sm: 'w-7 h-7',
             md: 'w-8 h-8',
@@ -53,6 +54,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
 });
 
 const iconSize: Record<CircleIconSize, number> = {
+    xxs: 14,
     xs: 14,
     sm: 14,
     md: 16,
