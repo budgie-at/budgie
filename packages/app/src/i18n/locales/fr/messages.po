@@ -105,7 +105,7 @@ msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 msgid "Adjustment"
 msgstr "Ajustement"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:27
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "IA"
 
@@ -425,8 +425,8 @@ msgstr "Terminé"
 msgid "Done ({selectedTagsCount})"
 msgstr "Terminé ({selectedTagsCount})"
 
-#: src/app/ai.tsx:89
-msgid "Downloading model..."
+#: src/app/ai.tsx:84
+msgid "Downloading AI model..."
 msgstr ""
 
 #: src/i18n/constant/locales.constant.ts:178
@@ -587,6 +587,10 @@ msgstr "Italien (Italie)"
 msgid "Language"
 msgstr "Langue"
 
+#: src/app/ai.tsx:140
+msgid "Loading..."
+msgstr ""
+
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Paramètres régionaux"
@@ -688,7 +692,7 @@ msgstr "Aucune transaction correspondante"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/app/ai.tsx:61
+#: src/app/ai.tsx:62
 msgid "No speech detected"
 msgstr ""
 
@@ -729,6 +733,10 @@ msgstr "Organisation"
 msgid "Over:"
 msgstr "Excédent :"
 
+#: src/app/ai.tsx:102
+msgid "Parsed transaction:"
+msgstr ""
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -752,10 +760,6 @@ msgstr "Polonais (Pologne)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugais (Portugal)"
 
-#: src/app/ai.tsx:69
-msgid "Press and describe your transaction"
-msgstr ""
-
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -765,15 +769,15 @@ msgstr "Aperçu"
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: src/app/ai.tsx:97
-msgid "Prompt:"
+#: src/app/ai.tsx:112
+msgid "Processing..."
 msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/app/ai.tsx:69
+#: src/app/ai.tsx:140
 msgid "Recording..."
 msgstr ""
 
@@ -926,10 +930,6 @@ msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajo
 msgid "Stocks"
 msgstr "Actions"
 
-#: src/app/ai.tsx:104
-msgid "Structured:"
-msgstr ""
-
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
 #: src/account/component/create-liability-account/create-liability-account.tsx:72
 msgid "Submit"
@@ -962,6 +962,10 @@ msgstr "Étiquettes ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Appuyez pour changer l'icône"
+
+#: src/app/ai.tsx:140
+msgid "Tap to speak"
+msgstr ""
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1065,6 +1069,10 @@ msgstr "Afficher et restaurer les comptes archivés"
 msgid "will be restored to your main view and included in totals."
 msgstr "sera restauré dans votre vue principale et inclus dans les totaux."
 
-#: src/app/ai.tsx:30
+#: src/app/ai.tsx:31
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
+msgstr ""
+
+#: src/app/ai.tsx:93
+msgid "Your message:"
 msgstr ""

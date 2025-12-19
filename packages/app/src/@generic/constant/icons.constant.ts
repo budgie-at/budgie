@@ -49,6 +49,7 @@ import {
     LucideIcon,
     LucideScanFace,
     MapPinIcon,
+    Mic,
     Moon,
     MoveHorizontal,
     PawPrint,
@@ -70,6 +71,7 @@ import {
     Smartphone,
     Sparkles,
     SplitIcon,
+    Square,
     Tag,
     Trash,
     TrendingDown,
@@ -105,6 +107,7 @@ export const ICONS = {
     FolderOpen,
     X,
     DollarSign,
+    Mic,
     Moon,
     EllipsisVertical,
     ChevronLeft,
@@ -158,6 +161,7 @@ export const ICONS = {
     Dumbbell,
     Shirt,
     CircleDot,
+    Square,
     AlertTriangle
 } as const satisfies Record<string, LucideIcon>;
 

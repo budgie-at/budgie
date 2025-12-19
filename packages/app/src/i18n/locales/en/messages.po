@@ -107,7 +107,7 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:27
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "AI"
 
@@ -427,9 +427,9 @@ msgstr "Done"
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
-#: src/app/ai.tsx:89
-msgid "Downloading model..."
-msgstr "Downloading model..."
+#: src/app/ai.tsx:84
+msgid "Downloading AI model..."
+msgstr "Downloading AI model..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -589,6 +589,10 @@ msgstr "Italian (Italy)"
 msgid "Language"
 msgstr "Language"
 
+#: src/app/ai.tsx:140
+msgid "Loading..."
+msgstr "Loading..."
+
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Locale"
@@ -690,7 +694,7 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/ai.tsx:61
+#: src/app/ai.tsx:62
 msgid "No speech detected"
 msgstr "No speech detected"
 
@@ -731,6 +735,10 @@ msgstr "Organization"
 msgid "Over:"
 msgstr "Over:"
 
+#: src/app/ai.tsx:102
+msgid "Parsed transaction:"
+msgstr "Parsed transaction:"
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -754,10 +762,6 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
-#: src/app/ai.tsx:69
-msgid "Press and describe your transaction"
-msgstr "Press and describe your transaction"
-
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -767,15 +771,15 @@ msgstr "Preview"
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/app/ai.tsx:97
-msgid "Prompt:"
-msgstr "Prompt:"
+#: src/app/ai.tsx:112
+msgid "Processing..."
+msgstr "Processing..."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/app/ai.tsx:69
+#: src/app/ai.tsx:140
 msgid "Recording..."
 msgstr "Recording..."
 
@@ -928,10 +932,6 @@ msgstr "Start tracking your spending by using the mic button or adding transacti
 msgid "Stocks"
 msgstr "Stocks"
 
-#: src/app/ai.tsx:104
-msgid "Structured:"
-msgstr "Structured:"
-
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
 #: src/account/component/create-liability-account/create-liability-account.tsx:72
 msgid "Submit"
@@ -964,6 +964,10 @@ msgstr "Tags ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Tap to change icon"
+
+#: src/app/ai.tsx:140
+msgid "Tap to speak"
+msgstr "Tap to speak"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1067,6 +1071,10 @@ msgstr "View and restore archived accounts"
 msgid "will be restored to your main view and included in totals."
 msgstr "will be restored to your main view and included in totals."
 
-#: src/app/ai.tsx:30
+#: src/app/ai.tsx:31
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
 msgstr "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
+
+#: src/app/ai.tsx:93
+msgid "Your message:"
+msgstr "Your message:"
