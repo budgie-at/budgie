@@ -1,7 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMemo, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { getStructuredOutputPrompt } from 'react-native-executorch';
+import { SpeechToTextLanguage } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
@@ -9,30 +9,26 @@ import { Page } from '../@generic/components/page/page';
 import { RecordButton } from '../ai/component/record-button/record-button';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
 import { useLlm } from '../ai/hook/use-llm.hook';
-import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
+import { getSystemPrompt } from '../ai/util/get-system-prompt.util';
 import { recordVoice } from '../ai/util/record-voice.util';
 import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
+import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
 
 export default function AiScreen() {
     const { t } = useLingui();
 
     const [llm, speechToText] = useLlm();
+    const locale = useLocaleInfo();
 
     const [isRecording, setIsRecording] = useState(false);
     const [prompt, setPrompt] = useState('');
     const [error, setError] = useState('');
-    const [formattingInstructions, setFormattingInstructions] = useState('');
+    const [systemPrompt, setSystemPrompt] = useState('');
 
     const waveformRef = useRef<number[]>([]);
 
-    const speechToTextLanguage = 'en';
-    const systemPrompt = t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed.`;
-
     useAudioManager();
-    useAllCategoriesQuery(categories => {
-        AiTransactionSchema.properties.category.enum = categories.map(category => category.title);
-        setFormattingInstructions(getStructuredOutputPrompt(AiTransactionSchema));
-    });
+    useAllCategoriesQuery(categories => void setSystemPrompt(getSystemPrompt(categories)));
 
     const handlePress = async () => {
         setError('');
@@ -43,14 +39,16 @@ export default function AiScreen() {
             waveformRef.current.push(...waveform);
         });
 
-        const transcribed = await speechToText.transcribe(waveformRef.current, { language: speechToTextLanguage }).catch(() => '');
+        const transcribed = await speechToText
+            .transcribe(waveformRef.current, { language: locale.languageCode as SpeechToTextLanguage })
+            .catch(() => '');
 
         setPrompt(transcribed);
 
         if (isNotEmptyString(transcribed)) {
             try {
                 await llm.generate([
-                    { role: 'system', content: `${systemPrompt}\n${formattingInstructions}` },
+                    { role: 'system', content: systemPrompt },
                     { role: 'user', content: transcribed }
                 ]);
             } catch (e: unknown) {
