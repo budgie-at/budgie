@@ -425,10 +425,6 @@ msgstr "Terminé"
 msgid "Done ({selectedTagsCount})"
 msgstr "Terminé ({selectedTagsCount})"
 
-#: src/app/ai.tsx:84
-msgid "Downloading AI model..."
-msgstr ""
-
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Néerlandais (Pays-Bas)"
@@ -587,8 +583,8 @@ msgstr "Italien (Italie)"
 msgid "Language"
 msgstr "Langue"
 
-#: src/app/ai.tsx:140
-msgid "Loading..."
+#: src/ai/component/record-button/record-button.tsx:94
+msgid "Loading AI... {progress}%"
 msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:35
@@ -692,7 +688,7 @@ msgstr "Aucune transaction correspondante"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/app/ai.tsx:62
+#: src/app/ai.tsx:60
 msgid "No speech detected"
 msgstr ""
 
@@ -733,7 +729,7 @@ msgstr "Organisation"
 msgid "Over:"
 msgstr "Excédent :"
 
-#: src/app/ai.tsx:102
+#: src/app/ai.tsx:86
 msgid "Parsed transaction:"
 msgstr ""
 
@@ -769,7 +765,7 @@ msgstr "Aperçu"
 msgid "Privacy"
 msgstr "Confidentialité"
 
-#: src/app/ai.tsx:112
+#: src/ai/component/record-button/record-button.tsx:97
 msgid "Processing..."
 msgstr ""
 
@@ -777,7 +773,7 @@ msgstr ""
 msgid "Re-enter your PIN to confirm"
 msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
 msgstr ""
 
@@ -963,7 +959,7 @@ msgstr "Étiquettes ({selectedTagsCount})"
 msgid "Tap to change icon"
 msgstr "Appuyez pour changer l'icône"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
 msgstr ""
 
@@ -1069,10 +1065,10 @@ msgstr "Afficher et restaurer les comptes archivés"
 msgid "will be restored to your main view and included in totals."
 msgstr "sera restauré dans votre vue principale et inclus dans les totaux."
 
-#: src/app/ai.tsx:31
+#: src/app/ai.tsx:29
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
 msgstr ""
 
-#: src/app/ai.tsx:93
+#: src/app/ai.tsx:77
 msgid "Your message:"
 msgstr ""

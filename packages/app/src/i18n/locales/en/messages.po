@@ -427,10 +427,6 @@ msgstr "Done"
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
-#: src/app/ai.tsx:84
-msgid "Downloading AI model..."
-msgstr "Downloading AI model..."
-
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Dutch (Netherlands)"
@@ -589,9 +585,9 @@ msgstr "Italian (Italy)"
 msgid "Language"
 msgstr "Language"
 
-#: src/app/ai.tsx:140
-msgid "Loading..."
-msgstr "Loading..."
+#: src/ai/component/record-button/record-button.tsx:94
+msgid "Loading AI... {progress}%"
+msgstr "Loading AI... {progress}%"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
@@ -694,7 +690,7 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/ai.tsx:62
+#: src/app/ai.tsx:60
 msgid "No speech detected"
 msgstr "No speech detected"
 
@@ -735,7 +731,7 @@ msgstr "Organization"
 msgid "Over:"
 msgstr "Over:"
 
-#: src/app/ai.tsx:102
+#: src/app/ai.tsx:86
 msgid "Parsed transaction:"
 msgstr "Parsed transaction:"
 
@@ -771,7 +767,7 @@ msgstr "Preview"
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/app/ai.tsx:112
+#: src/ai/component/record-button/record-button.tsx:97
 msgid "Processing..."
 msgstr "Processing..."
 
@@ -779,7 +775,7 @@ msgstr "Processing..."
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
 msgstr "Recording..."
 
@@ -965,7 +961,7 @@ msgstr "Tags ({selectedTagsCount})"
 msgid "Tap to change icon"
 msgstr "Tap to change icon"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
 msgstr "Tap to speak"
 
@@ -1071,10 +1067,10 @@ msgstr "View and restore archived accounts"
 msgid "will be restored to your main view and included in totals."
 msgstr "will be restored to your main view and included in totals."
 
-#: src/app/ai.tsx:31
+#: src/app/ai.tsx:29
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
 msgstr "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
 
-#: src/app/ai.tsx:93
+#: src/app/ai.tsx:77
 msgid "Your message:"
 msgstr "Your message:"

@@ -425,10 +425,6 @@ msgstr "Listo"
 msgid "Done ({selectedTagsCount})"
 msgstr "Listo ({selectedTagsCount})"
 
-#: src/app/ai.tsx:84
-msgid "Downloading AI model..."
-msgstr ""
-
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
@@ -587,8 +583,8 @@ msgstr "Italiano (Italia)"
 msgid "Language"
 msgstr "Idioma"
 
-#: src/app/ai.tsx:140
-msgid "Loading..."
+#: src/ai/component/record-button/record-button.tsx:94
+msgid "Loading AI... {progress}%"
 msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:35
@@ -692,7 +688,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/ai.tsx:62
+#: src/app/ai.tsx:60
 msgid "No speech detected"
 msgstr ""
 
@@ -733,7 +729,7 @@ msgstr "Organización"
 msgid "Over:"
 msgstr "Exceso:"
 
-#: src/app/ai.tsx:102
+#: src/app/ai.tsx:86
 msgid "Parsed transaction:"
 msgstr ""
 
@@ -769,7 +765,7 @@ msgstr "Vista previa"
 msgid "Privacy"
 msgstr "Privacidad"
 
-#: src/app/ai.tsx:112
+#: src/ai/component/record-button/record-button.tsx:97
 msgid "Processing..."
 msgstr ""
 
@@ -777,7 +773,7 @@ msgstr ""
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
 msgstr ""
 
@@ -963,7 +959,7 @@ msgstr "Etiquetas ({selectedTagsCount})"
 msgid "Tap to change icon"
 msgstr "Toca para cambiar el icono"
 
-#: src/app/ai.tsx:140
+#: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
 msgstr ""
 
@@ -1069,10 +1065,10 @@ msgstr "Ver y restaurar cuentas archivadas"
 msgid "will be restored to your main view and included in totals."
 msgstr "se restaurará a tu vista principal y se incluirá en los totales."
 
-#: src/app/ai.tsx:31
+#: src/app/ai.tsx:29
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
 msgstr ""
 
-#: src/app/ai.tsx:93
+#: src/app/ai.tsx:77
 msgid "Your message:"
 msgstr ""
