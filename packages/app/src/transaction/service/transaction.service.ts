@@ -14,6 +14,7 @@ import {
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { Transaction } from '../../@generic/type/transaction.type';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -23,9 +24,9 @@ class TransactionService {
                     tagIds: [],
                     entries: [],
                     externalId: null,
+                    externalSource: null,
                     type: input.type,
                     title: input.title,
-                    externalSource: null,
                     comment: input.comment,
                     operatedAt: input.operatedAt,
                     toAccountId: input.toAccountId,
@@ -36,20 +37,7 @@ class TransactionService {
                 tx
             );
 
-            await Promise.all(
-                input.entries.map(async entry =>
-                    transactionEntryRepository.create(
-                        { ...entry, amount: convertToMicroUnits(entry.amount), transactionId: transaction.id },
-                        tx
-                    )
-                )
-            );
-
-            if (isNotEmptyArray(input.tagIds)) {
-                await Promise.all(
-                    input.tagIds.map(async id => transactionTagsRepository.create({ transactionId: transaction.id, tagId: id }, tx))
-                );
-            }
+            await this.upsertEntriesAndTags(transaction.id, input, tx);
 
             return transaction;
         });
@@ -72,15 +60,15 @@ class TransactionService {
                     tagIds: [],
                     entries: [],
                     externalId: null,
-                    type: input.type,
-                    amount: fromAmount,
-                    title: input.title,
                     externalSource: null,
+                    type: input.type,
+                    title: input.title,
                     comment: input.comment,
                     operatedAt: input.operatedAt,
                     toAccountId: input.toAccountId,
-                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount,
                     fromAccountId: input.fromAccountId,
+                    amount: fromAmount,
+                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
                 },
                 tx
             );
@@ -89,7 +77,6 @@ class TransactionService {
                 {
                     ...fromEntry,
                     amount: fromAmount,
-                    accountId: toEntry.accountId,
                     transactionId: transaction.id,
                     type: TransactionEntryTypeEnum.CREDIT,
                     instrumentId: fromEntry.instrumentId
@@ -101,17 +88,17 @@ class TransactionService {
                 {
                     ...toEntry,
                     amount: toAmount,
-                    accountId: toEntry.accountId,
                     transactionId: transaction.id,
-                    instrumentId: toEntry.instrumentId,
-                    type: TransactionEntryTypeEnum.DEBIT
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    instrumentId: toEntry.instrumentId
                 },
                 tx
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await Promise.all(
-                    input.tagIds.map(async id => transactionTagsRepository.create({ transactionId: transaction.id, tagId: id }, tx))
+                await transactionTagsRepository.create(
+                    input.tagIds.map(tagId => ({ transactionId: transaction.id, tagId })),
+                    tx
                 );
             }
 
@@ -136,20 +123,33 @@ class TransactionService {
                 tx
             );
 
-            await transactionEntryRepository.deleteByTransactionId(id, tx);
-            await Promise.all(
-                input.entries.map(async entry =>
-                    transactionEntryRepository.create({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId: id }, tx)
-                )
-            );
-
-            await transactionTagsRepository.deleteByTransactionId(id, tx);
-            if (isNotEmptyArray(input.tagIds)) {
-                await Promise.all(input.tagIds.map(async tagId => transactionTagsRepository.create({ transactionId: id, tagId }, tx)));
-            }
+            await this.upsertEntriesAndTags(id, input, tx);
 
             return transaction;
         });
+    }
+
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
+        await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
+
+        await Promise.all(
+            input.entries.map(async entry =>
+                transactionEntryRepository.create(
+                    {
+                        ...entry,
+                        amount: convertToMicroUnits(entry.amount),
+                        transactionId
+                    },
+                    tx
+                )
+            )
+        );
+
+        await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
+
+        if (isNotEmptyArray(input.tagIds)) {
+            await Promise.all(input.tagIds.map(async tagId => transactionTagsRepository.create({ transactionId, tagId }, tx)));
+        }
     }
 }
 
