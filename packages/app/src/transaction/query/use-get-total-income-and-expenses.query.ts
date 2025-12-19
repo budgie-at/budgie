@@ -1,6 +1,7 @@
-import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { DateRangeInterface } from '@budgie/contracts';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+
+import { transactionRepository } from '../../@generic/drizzle/db/db';
 
 export const useGetTotalIncomeAndExpensesQuery = (range: DateRangeInterface) => {
     const { data } = useLiveQuery(transactionRepository.getTotalIncomeAndExpenseQuery(range), [range]);

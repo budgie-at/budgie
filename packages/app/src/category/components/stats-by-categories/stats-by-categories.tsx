@@ -1,5 +1,6 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { ClassValue } from 'clsx';
 import { Text, View, ViewStyle } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
@@ -24,11 +25,17 @@ const amountVariants = cva('text-xs', {
     }
 });
 
-const barVariants = cva('h-[8px] rounded-5xl', {
+const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h-[8px] rounded-5xl', {
     variants: {
         variant: {
+            'dark-warning': 'bg-dark-warning-foreground',
             destructive: 'bg-destructive-foreground',
-            positive: 'bg-positive-foreground'
+            secondary: 'bg-secondary-foreground',
+            positive: 'bg-positive-foreground',
+            warning: 'bg-warning-foreground',
+            default: 'bg-default-foreground',
+            ghost: 'bg-ghost-foreground',
+            pink: 'bg-pink-foreground',
         }
     }
 });

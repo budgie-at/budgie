@@ -3,13 +3,13 @@ import { SQL, and, eq, gte, inArray, isNull, isNotNull, sql, desc, lte, or } fro
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DateRangeInterface } from '../../generic/interface/date-range.interface';
 import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
-import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
