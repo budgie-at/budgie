@@ -7,5 +7,7 @@ export const useLlm = () => {
     const llm = useLLM({ model: AI_TEXT_MODEL });
     const speechToText = useSpeechToText({ model: AI_SPEECH_MODEL });
 
+    console.log(llm, speechToText);
+
     return [llm, speechToText] as const;
 };
