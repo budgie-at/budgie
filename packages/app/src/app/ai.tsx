@@ -1,12 +1,12 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { getStructuredOutputPrompt } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
+import { RecordButton } from '../ai/component/record-button/record-button';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
 import { useLlm } from '../ai/hook/use-llm.hook';
 import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
@@ -25,7 +25,6 @@ export default function AiScreen() {
 
     const waveformRef = useRef<number[]>([]);
 
-    // TODO: Add support for different languages based on user settings
     const speechToTextLanguage = 'en';
     const systemPrompt = t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed.`;
 
@@ -66,48 +65,46 @@ export default function AiScreen() {
 
     const areModelsReady = speechToText.isReady && llm.isReady;
     const isGenerating = speechToText.isGenerating || llm.isGenerating;
-    const buttonText = isRecording ? t`Recording...` : t`Press and describe your transaction`;
 
-    console.log(llm.error, speechToText.error, speechToText.isReady, llm.isReady);
+    const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
 
     return (
         <Page>
-            <ScrollView>
-                {areModelsReady ? (
-                    <>
-                        {isGenerating ? (
-                            <ActivityIndicator size="large" className="bg-primary-reverse" />
-                        ) : (
-                            <Button onPress={handlePress} content={buttonText}></Button>
-                        )}
-                    </>
-                ) : (
-                    <>
-                        <ActivityIndicator size="large" className="bg-primary-reverse" />
-                        <View className="w-full px-4 mt-4">
-                            <Text className="text-primary text-center mt-2">
-                                {t`Downloading model...`} {Math.round(llm.downloadProgress * 100)}%
-                            </Text>
-                        </View>
-                    </>
+            <ScrollView className="flex-1 px-4" contentContainerStyle={scrollViewContentStyle}>
+                {isNotEmptyString(prompt) && (
+                    <View className="mt-4 p-4 bg-secondary rounded-2xl">
+                        <Text className="text-secondary text-sm font-medium mb-2">
+                            <Trans>Your message:</Trans>
+                        </Text>
+                        <Text className="text-primary text-base">{prompt}</Text>
+                    </View>
                 )}
 
-                <>
-                    <Text className="text-primary text-3xl font-semibold">
-                        <Trans>Prompt:</Trans>
-                    </Text>
-                    <Text className="text-primary text-3xl">{prompt}</Text>
-                </>
+                {isNotEmptyString(llm.response) && (
+                    <View className="mt-4 p-4 bg-secondary rounded-2xl">
+                        <Text className="text-secondary text-sm font-medium mb-2">
+                            <Trans>Parsed transaction:</Trans>
+                        </Text>
+                        <Text className="text-primary text-base">{llm.response}</Text>
+                    </View>
+                )}
 
-                <>
-                    <Text className="text-primary text-3xl font-semibold">
-                        <Trans>Structured:</Trans>
-                    </Text>
-                    <Text className="text-primary text-3xl">{llm.response}</Text>
-                </>
-
-                {isNotEmptyString(error) && <Text className="text-primary text-3xl font-semibold">{error}</Text>}
+                {isNotEmptyString(error) && (
+                    <View className="mt-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
+                        <Text className="text-red-600 dark:text-red-400 text-base">{error}</Text>
+                    </View>
+                )}
             </ScrollView>
+
+            <View className="absolute bottom-8 left-0 right-0 items-center">
+                <RecordButton
+                    isReady={areModelsReady}
+                    isRecording={isRecording}
+                    isProcessing={isGenerating}
+                    downloadProgress={llm.downloadProgress}
+                    onPress={handlePress}
+                />
+            </View>
         </Page>
     );
 }
