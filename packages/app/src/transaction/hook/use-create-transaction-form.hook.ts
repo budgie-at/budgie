@@ -25,15 +25,17 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     type: TransactionTypeEnum;
     schema: ZodType<T, T>;
     categoryId?: number;
+    amount?: number;
 }
 
 export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>({
     type,
     schema,
     onSubmit,
-    categoryId,
+    amount = 0,
     toAccountId,
-    fromAccountId
+    fromAccountId,
+    categoryId = 0,
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
     const { defaultInstrument, defaultAccount } = useSettingsContext();
@@ -52,7 +54,9 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: fromAccountId,
                               type: TransactionEntryTypeEnum.CREDIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id
+                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
+                              amount,
+                              categoryId
                           })
                       ]
                     : []),
@@ -61,7 +65,9 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: toAccountId,
                               type: TransactionEntryTypeEnum.DEBIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id
+                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
+                              amount,
+                              categoryId
                           })
                       ]
                     : []),
