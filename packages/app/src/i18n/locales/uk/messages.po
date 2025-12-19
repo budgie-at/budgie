@@ -105,7 +105,7 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:27
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "ШІ"
 
@@ -425,8 +425,8 @@ msgstr "Готово"
 msgid "Done ({selectedTagsCount})"
 msgstr "Готово ({selectedTagsCount})"
 
-#: src/app/ai.tsx:89
-msgid "Downloading model..."
+#: src/app/ai.tsx:84
+msgid "Downloading AI model..."
 msgstr ""
 
 #: src/i18n/constant/locales.constant.ts:178
@@ -587,6 +587,10 @@ msgstr "Італійська (Італія)"
 msgid "Language"
 msgstr "Мова"
 
+#: src/app/ai.tsx:140
+msgid "Loading..."
+msgstr ""
+
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Регіональні налаштування"
@@ -688,7 +692,7 @@ msgstr "Немає відповідних транзакцій"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/app/ai.tsx:61
+#: src/app/ai.tsx:62
 msgid "No speech detected"
 msgstr ""
 
@@ -729,6 +733,10 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
+#: src/app/ai.tsx:102
+msgid "Parsed transaction:"
+msgstr ""
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -752,10 +760,6 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
-#: src/app/ai.tsx:69
-msgid "Press and describe your transaction"
-msgstr ""
-
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -765,15 +769,15 @@ msgstr "Попередній перегляд"
 msgid "Privacy"
 msgstr "Конфіденційність"
 
-#: src/app/ai.tsx:97
-msgid "Prompt:"
+#: src/app/ai.tsx:112
+msgid "Processing..."
 msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/app/ai.tsx:69
+#: src/app/ai.tsx:140
 msgid "Recording..."
 msgstr ""
 
@@ -926,10 +930,6 @@ msgstr "Почніть відстежувати свої витрати, вик�
 msgid "Stocks"
 msgstr "Акції"
 
-#: src/app/ai.tsx:104
-msgid "Structured:"
-msgstr ""
-
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
 #: src/account/component/create-liability-account/create-liability-account.tsx:72
 msgid "Submit"
@@ -962,6 +962,10 @@ msgstr "Теги ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Торкніться, щоб змінити іконку"
+
+#: src/app/ai.tsx:140
+msgid "Tap to speak"
+msgstr ""
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1065,6 +1069,10 @@ msgstr "Перегляд та відновлення архівованих ра
 msgid "will be restored to your main view and included in totals."
 msgstr "буде відновлено у вашому головному перегляді та включено до підсумків."
 
-#: src/app/ai.tsx:30
+#: src/app/ai.tsx:31
 msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
+msgstr ""
+
+#: src/app/ai.tsx:93
+msgid "Your message:"
 msgstr ""
