@@ -1,9 +1,9 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLLM } from 'react-native-executorch';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { parseNumberFromMessage } from '../util/parse-number-words.util';
@@ -25,7 +25,6 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>, prompt:
                 setTransactionInfo(undefined);
                 const categoryId = categories.find(category => category.title.toLowerCase().includes(llm.response.toLowerCase()))?.id ?? 0;
 
-                // TODO: Can we do better?
                 setTransactionInfo({
                     categoryId,
                     amount: parseNumberFromMessage(prompt),
@@ -39,5 +38,16 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>, prompt:
     }, [llm.response, llm.isGenerating, categories, prompt]);
 
     // eslint-disable-next-line no-undefined
-    return [systemPrompt, transactionInfo, () => void setTransactionInfo(undefined)] as const;
+    const resetTransactionInfo = useCallback(() => void setTransactionInfo(undefined), []);
+
+    const setCategoryId = useCallback(
+        (categoryId: number) => {
+            if (isDefined(transactionInfo)) {
+                setTransactionInfo({ ...transactionInfo, categoryId });
+            }
+        },
+        [transactionInfo]
+    );
+
+    return [systemPrompt, transactionInfo, resetTransactionInfo, setCategoryId] as const;
 };
