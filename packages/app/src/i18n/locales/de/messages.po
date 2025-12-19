@@ -11,21 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:11
-msgid "Available transaction categories"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:16
-msgid "Available transaction types"
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:20
-msgid "Amount of money, that user spent or earned in this transaction"
-msgstr ""
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
@@ -100,7 +85,7 @@ msgstr "Fügen Sie eine neue Kategorie hinzu, um Ihre Transaktionen zu organisie
 msgid "Add a new tag to organize your transactions"
 msgstr "Fügen Sie ein neues Tag hinzu, um Ihre Transaktionen zu organisieren"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:48
 msgid "Add Expense"
 msgstr "Ausgabe hinzufügen"
 
@@ -120,9 +105,13 @@ msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
 msgid "Adjustment"
 msgstr "Anpassung"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
+#: src/ai/component/ai-chat-button/ai-chat-button.tsx:27
 msgid "AI"
 msgstr "KI"
+
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
+msgid "AI Suggestion"
+msgstr ""
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -143,6 +132,10 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Zugewiesen"
+
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
+msgid "Amount"
+msgstr ""
 
 #: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
@@ -205,6 +198,7 @@ msgstr "BudgetKI"
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:50
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -289,6 +283,10 @@ msgstr "Alle löschen"
 msgid "Common Tags"
 msgstr "Häufig verwendete Tags"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
+msgid "Confirm"
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:52
 msgid "Confirm PIN"
 msgstr "PIN bestätigen"
@@ -309,7 +307,8 @@ msgstr "Kategorie konnte nicht erstellt werden"
 msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:72
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
+#: src/transaction/hook/use-create-transaction-form.hook.ts:80
 msgid "Could not create transaction. Please try again later."
 msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später erneut."
 
@@ -535,6 +534,10 @@ msgstr "Alltägliche Transaktionen und Ausgaben"
 msgid "Expense"
 msgstr "Ausgabe"
 
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+msgid "Expense created"
+msgstr ""
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
 msgstr "Face ID"
@@ -630,7 +633,7 @@ msgstr "Geld, das Sie ausgeben"
 msgid "New Account"
 msgstr "Neues Konto"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:47
 msgid "New Expense"
 msgstr "Neue Ausgabe"
 
@@ -703,7 +706,7 @@ msgstr "Keine passenden Transaktionen"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/app/ai.tsx:58
+#: src/app/ai.tsx:78
 msgid "No speech detected"
 msgstr ""
 
@@ -743,10 +746,6 @@ msgstr "Organisation"
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Over:"
 msgstr "Überschuss:"
-
-#: src/app/ai.tsx:84
-msgid "Parsed transaction:"
-msgstr ""
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -912,7 +911,8 @@ msgstr "$1.234,56 statt $1.235 anzeigen"
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:71
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
+#: src/transaction/hook/use-create-transaction-form.hook.ts:79
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Etwas ist schief gelaufen."
@@ -1043,6 +1043,10 @@ msgstr "Typ ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
+msgid "Unknown Category"
+msgstr ""
+
 #: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
 msgstr "Konto aktualisieren"
@@ -1080,6 +1084,14 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 msgid "will be restored to your main view and included in totals."
 msgstr "wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."
 
-#: src/app/ai.tsx:75
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+msgid "Your expense has been recorded successfully."
+msgstr ""
+
+#: src/ai/hook/use-transaction-info-prompt.hook.ts:19
+msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
+msgstr ""
+
+#: src/app/ai.tsx:96
 msgid "Your message:"
 msgstr ""
