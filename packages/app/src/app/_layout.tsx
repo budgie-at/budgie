@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 
 import migrations from '../../drizzle/migrations';
@@ -65,10 +65,10 @@ export default function RootLayout() {
                 <SettingsProvider>
                     <I18nProvider>
                         <KeyboardProvider>
-                            <ThemeProvider>
-                                <BottomSheetsProvider>
-                                    <AuthProvider>
-                                        <AuthGuard>
+                            <BottomSheetsProvider>
+                                <AuthProvider>
+                                    <AuthGuard>
+                                        <ThemeProvider>
                                             <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                 <Stack.Screen name="(tabs)" />
 
@@ -86,12 +86,12 @@ export default function RootLayout() {
                                                 <Stack.Screen name="(main)/settings/tags" />
                                                 <Stack.Screen name="(main)/settings/archived" />
 
-                                                <Stack.Screen name="ai" options={aiScreenOptions} />
+                                                <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                             </Stack>
-                                        </AuthGuard>
-                                    </AuthProvider>
-                                </BottomSheetsProvider>
-                            </ThemeProvider>
+                                        </ThemeProvider>
+                                    </AuthGuard>
+                                </AuthProvider>
+                            </BottomSheetsProvider>
                         </KeyboardProvider>
                     </I18nProvider>
                 </SettingsProvider>
