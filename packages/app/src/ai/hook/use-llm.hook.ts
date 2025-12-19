@@ -1,11 +1,8 @@
-import { useLLM, useSpeechToText } from 'react-native-executorch';
-
-import { AI_SPEECH_MODEL } from '../constant/ai-speech-model.constant';
-import { AI_TEXT_MODEL } from '../constant/ai-text-model.constant';
+import { LLAMA3_2_1B_QLORA, WHISPER_TINY, useLLM, useSpeechToText } from 'react-native-executorch';
 
 export const useLlm = () => {
-    const llm = useLLM({ model: AI_TEXT_MODEL });
-    const speechToText = useSpeechToText({ model: AI_SPEECH_MODEL });
+    const llm = useLLM({ model: LLAMA3_2_1B_QLORA });
+    const speechToText = useSpeechToText({ model: WHISPER_TINY });
 
     return [llm, speechToText] as const;
 };

@@ -1,13 +1,12 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { getStructuredOutputPrompt, useLLM } from 'react-native-executorch';
+import { useLLM } from 'react-native-executorch';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
-import { LLMParsedTransaction } from '../interface/llm-parsed-transaction.interface';
-import { llmResponseParserUtil } from '../util/llm-response-parser.util';
+import { parseNumberFromMessage } from '../util/parse-number-words.util';
 
 export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
     const { t } = useLingui();
@@ -16,46 +15,20 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
 
     const [transactionInfo, setTransactionInfo] = useState<{ categoryId: number; amount: number; type: TransactionTypeEnum }>();
 
-    const schema = {
-        properties: {
-            category: {
-                type: 'string',
-                enum: categories.map(category => category.title),
-                description: t`Available transaction categories`
-            },
-            type: {
-                type: 'string',
-                enum: Object.values(TransactionTypeEnum),
-                description: t`Available transaction types`
-            },
-            amount: {
-                type: 'number',
-                description: t`Amount of money, that user spent or earned in this transaction`
-            }
-        },
-        required: ['category', 'type', 'amount']
-    };
-
-    const systemPrompt = t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. ONLY return JSON with user's transaction data parsed, NOTHING ELSE.`;
+    const categoriesList = categories.map(category => category.title).join(', ');
+    const systemPrompt = t`Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>${categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list.`;
 
     useEffect(() => {
         if (!llm.isGenerating && isNotEmptyString(llm.response)) {
             try {
-                const parsedTransaction = llmResponseParserUtil<LLMParsedTransaction>(llm.response);
+                const categoryId = categories.find(category => category.title.toLowerCase().includes(llm.response.toLowerCase()))?.id ?? 0;
 
-                if (isDefined(parsedTransaction)) {
-                    const categoryId =
-                        categories.find(category => category.title.toLowerCase().includes(parsedTransaction.category.toLowerCase()))?.id ??
-                        0;
-
-                    // TODO: Can we do better?
-                    // eslint-disable-next-line react-hooks/set-state-in-effect
-                    setTransactionInfo({
-                        categoryId,
-                        amount: parsedTransaction.amount,
-                        type: parsedTransaction.type ?? TransactionTypeEnum.EXPENSE
-                    });
-                }
+                // TODO: Can we do better?
+                setTransactionInfo({
+                    categoryId,
+                    amount: parseNumberFromMessage(llm.response),
+                    type: TransactionTypeEnum.EXPENSE
+                });
             } catch (e: unknown) {
                 // eslint-disable-next-line no-console
                 console.log(getErrorMessage(e));
@@ -63,5 +36,5 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
         }
     }, [llm.response, llm.isGenerating, categories]);
 
-    return [`${systemPrompt}\n${getStructuredOutputPrompt(schema)}`, transactionInfo] as const;
+    return [systemPrompt, transactionInfo] as const;
 };
