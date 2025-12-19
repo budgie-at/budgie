@@ -7,8 +7,8 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 
 import { Page } from '../@generic/components/page/page';
 import { RecordButton } from '../ai/component/record-button/record-button';
+import { useLlmContext } from '../ai/context/llm.context';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
-import { useLlm } from '../ai/hook/use-llm.hook';
 import { useTransactionInfoPrompt } from '../ai/hook/use-transaction-info-prompt.hook';
 import { recordVoice } from '../ai/util/record-voice.util';
 import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
@@ -17,7 +17,7 @@ import { CreateExpenseTransaction } from '../transaction/components/create-expen
 export default function AiScreen() {
     const { t } = useLingui();
 
-    const [llm, speechToText] = useLlm();
+    const { llm, speechToText } = useLlmContext();
     const locale = useLocaleInfo();
 
     const [isRecording, setIsRecording] = useState(false);
@@ -27,11 +27,13 @@ export default function AiScreen() {
     const waveformRef = useRef<number[]>([]);
 
     useAudioManager();
-    const [systemPrompt, transactionInfo] = useTransactionInfoPrompt(llm);
+    const [systemPrompt, transactionInfo, resetTransactionInfo] = useTransactionInfoPrompt(llm, prompt);
 
+    // eslint-disable-next-line max-statements
     const handlePress = async () => {
         setError('');
         setIsRecording(true);
+        resetTransactionInfo();
 
         waveformRef.current = [];
         await recordVoice(async waveform => {
