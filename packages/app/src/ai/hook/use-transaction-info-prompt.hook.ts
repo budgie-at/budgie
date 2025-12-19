@@ -36,7 +36,7 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>, prompt:
                 console.log(getErrorMessage(e));
             }
         }
-    }, [llm.response, llm.isGenerating, categories]);
+    }, [llm.response, llm.isGenerating, categories, prompt]);
 
     // eslint-disable-next-line no-undefined
     return [systemPrompt, transactionInfo, () => void setTransactionInfo(undefined)] as const;
