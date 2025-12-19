@@ -20,6 +20,7 @@ import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
@@ -69,25 +70,27 @@ export default function RootLayout() {
                                 <BottomSheetsProvider>
                                     <AuthProvider>
                                         <AuthGuard>
-                                            <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                <Stack.Screen name="(tabs)" />
+                                            <LlmProvider>
+                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                    <Stack.Screen name="(tabs)" />
 
-                                                <Stack.Screen name="(main)/pin" />
-                                                <Stack.Screen name="(main)/create-account" />
+                                                    <Stack.Screen name="(main)/pin" />
+                                                    <Stack.Screen name="(main)/create-account" />
 
-                                                <Stack.Screen name="(main)/account/[id]/update" />
-                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                    <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                <Stack.Screen name="(main)/transactions/[id]" />
+                                                    <Stack.Screen name="(main)/transactions/[id]" />
 
-                                                <Stack.Screen name="(main)/settings/index" />
-                                                <Stack.Screen name="(main)/settings/pin" />
-                                                <Stack.Screen name="(main)/settings/categories" />
-                                                <Stack.Screen name="(main)/settings/tags" />
-                                                <Stack.Screen name="(main)/settings/archived" />
+                                                    <Stack.Screen name="(main)/settings/index" />
+                                                    <Stack.Screen name="(main)/settings/pin" />
+                                                    <Stack.Screen name="(main)/settings/categories" />
+                                                    <Stack.Screen name="(main)/settings/tags" />
+                                                    <Stack.Screen name="(main)/settings/archived" />
 
-                                                <Stack.Screen name="ai" options={aiScreenOptions} />
-                                            </Stack>
+                                                    <Stack.Screen name="ai" options={aiScreenOptions} />
+                                                </Stack>
+                                            </LlmProvider>
                                         </AuthGuard>
                                     </AuthProvider>
                                 </BottomSheetsProvider>

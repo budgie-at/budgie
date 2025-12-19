@@ -8,7 +8,7 @@ import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { parseNumberFromMessage } from '../util/parse-number-words.util';
 
-export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
+export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>, prompt: string) => {
     const { t } = useLingui();
 
     const { categories } = useAllCategoriesQuery();
@@ -28,7 +28,7 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
                 // TODO: Can we do better?
                 setTransactionInfo({
                     categoryId,
-                    amount: parseNumberFromMessage(llm.response),
+                    amount: parseNumberFromMessage(prompt),
                     type: TransactionTypeEnum.EXPENSE
                 });
             } catch (e: unknown) {
@@ -38,5 +38,6 @@ export const useTransactionInfoPrompt = (llm: ReturnType<typeof useLLM>) => {
         }
     }, [llm.response, llm.isGenerating, categories]);
 
-    return [systemPrompt, transactionInfo] as const;
+    // eslint-disable-next-line no-undefined
+    return [systemPrompt, transactionInfo, () => void setTransactionInfo(undefined)] as const;
 };
