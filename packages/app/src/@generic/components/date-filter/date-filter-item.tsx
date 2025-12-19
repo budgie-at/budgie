@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { DATE_PERIOD } from '../../../@generic/constant/date-period.constant';
+import { DATE_PERIOD } from '../../constant/date-period.constant';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly isSelected: boolean;
@@ -30,7 +30,7 @@ const chipTextVariants = cva('font-semibold', {
     }
 });
 
-export const TransactionDateFilterItem = ({ period, isSelected, onSelect }: Props) => {
+export const DateFilterItem = ({ period, isSelected, onSelect }: Props) => {
     const { i18n } = useLingui();
 
     const handleSelect = () => void onSelect(period);
