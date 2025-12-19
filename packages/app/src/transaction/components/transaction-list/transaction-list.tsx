@@ -9,7 +9,7 @@ import { EmptyState } from '../../../@generic/components/empty-state/empty-state
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
-import { TransactionListFilters } from '../transaction-list-filters/transaction-list-filters';
+import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
     readonly accountId: number | null;
@@ -54,7 +54,7 @@ export const TransactionList = ({ accountId }: Props) => {
 
     return (
         <View className="gap-y-3xl flex-1">
-            <TransactionListFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
+            <TransactionFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
 
             <SectionList
                 showsVerticalScrollIndicator={false}
