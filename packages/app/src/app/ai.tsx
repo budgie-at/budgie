@@ -1,19 +1,18 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { AudioManager } from 'react-native-audio-api';
 import { getStructuredOutputPrompt } from 'react-native-executorch';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../@generic/components/button/button';
 import { Page } from '../@generic/components/page/page';
+import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
 import { useLlm } from '../ai/hook/use-llm.hook';
 import { AiTransactionSchema } from '../ai/schema/ai-transaction.schema';
 import { recordVoice } from '../ai/util/record-voice.util';
 import { useAllCategoriesQuery } from '../category/query/use-all-categories.query';
 
-// eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
     const { t } = useLingui();
 
@@ -30,23 +29,11 @@ export default function AiScreen() {
     const speechToTextLanguage = 'en';
     const systemPrompt = t`Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed.`;
 
+    useAudioManager();
     useAllCategoriesQuery(categories => {
         AiTransactionSchema.properties.category.enum = categories.map(category => category.title);
         setFormattingInstructions(getStructuredOutputPrompt(AiTransactionSchema));
     });
-
-    useEffect(() => {
-        const setup = async () => {
-            await AudioManager.requestRecordingPermissions();
-            AudioManager.setAudioSessionOptions({
-                iosCategory: 'playAndRecord',
-                iosMode: 'spokenAudio',
-                iosOptions: ['defaultToSpeaker', 'allowBluetoothA2DP']
-            });
-        };
-
-        void setup();
-    }, []);
 
     const handlePress = async () => {
         setError('');
@@ -80,6 +67,8 @@ export default function AiScreen() {
     const areModelsReady = speechToText.isReady && llm.isReady;
     const isGenerating = speechToText.isGenerating || llm.isGenerating;
     const buttonText = isRecording ? t`Recording...` : t`Press and describe your transaction`;
+
+    console.log(llm.error, speechToText.error, speechToText.isReady, llm.isReady);
 
     return (
         <Page>
