@@ -1,10 +1,10 @@
-import { DateRangeInterface } from '@budgie/contracts';
+import { TransactionFilterInterface } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
 
-export const useGetIncomeByCategoryQuery = (range: DateRangeInterface) => {
-    const { data } = useLiveQuery(transactionRepository.getIncomeByCategoryQuery(range), [range]);
+export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface) => {
+    const { data } = useLiveQuery(transactionRepository.getIncomeByCategoryQuery(filters), [filters]);
 
     return { incomeByCategory: data };
 };

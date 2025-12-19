@@ -1,4 +1,4 @@
-import { SQL, and, eq, gte, inArray, isNull, isNotNull, sql, desc, lte, or } from 'drizzle-orm';
+import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -34,80 +34,28 @@ export class TransactionRepository {
 
     constructor(private db: DB) {}
 
-    getIncomeByCategoryQuery(dateRange: DateRangeInterface) {
-        const dateCondition = this.buildDateCondition(dateRange);
+    getIncomeByCategoryQuery(filters: TransactionFilterInterface) {
+        const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.INCOME,
+            TransactionEntryTypeEnum.DEBIT
+        );
 
-        if (!dateCondition) {
-            return this.db
-                .select({
-                    category: CategoryEntityTable,
-                    amount: sql<number>`0`
-                })
-                .from(CategoryEntityTable)
-                .limit(0);
-        }
-
-        const incomeTransactionIds = this.db
-            .selectDistinct({ transactionId: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .where(and(dateCondition, eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME)));
-
-        return this.db
-            .select({
-                category: CategoryEntityTable,
-                amount: sql<number>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, incomeTransactionIds), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(desc(sql`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
+        return this.buildCategoryBreakdownQuery(incomeTransactionIds);
     }
 
-    getExpenseByCategoryQuery(dateRange: DateRangeInterface) {
-        const dateCondition = this.buildDateCondition(dateRange);
+    getExpenseByCategoryQuery(filters: TransactionFilterInterface) {
+        const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.EXPENSE,
+            TransactionEntryTypeEnum.CREDIT
+        );
 
-        if (!dateCondition) {
-            return this.db
-                .select({
-                    category: CategoryEntityTable,
-                    amount: sql<number>`0`
-                })
-                .from(CategoryEntityTable)
-                .limit(0);
-        }
-
-        const expenseTransactionIds = this.db
-            .selectDistinct({ transactionId: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .where(and(dateCondition, eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE)));
-
-        return this.db
-            .select({
-                category: CategoryEntityTable,
-                amount: sql<number>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, expenseTransactionIds), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(desc(sql`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
+        return this.buildCategoryBreakdownQuery(expenseTransactionIds);
     }
 
-    getTotalIncomeAndExpenseQuery(dateRange: DateRangeInterface) {
-        const dateCondition = this.buildDateCondition(dateRange);
-
-        if (!dateCondition) {
-            return this.db
-                .select({
-                    income: sql<number>`0`,
-                    expense: sql<number>`0`
-                })
-                .from(TransactionEntityTable)
-                .limit(0);
-        }
+    getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface) {
+        const baseWhere = this.buildWhere(filters);
 
         const adjustmentIncomeIds = this.db
             .selectDistinct({ id: TransactionEntryEntityTable.transactionId })
@@ -122,30 +70,31 @@ export class TransactionRepository {
         return this.db
             .select({
                 income: sql<number>`
-                COALESCE(SUM(
-                    CASE
-                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${TransactionEntityTable.amount}
-                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
-                             AND ${inArray(TransactionEntityTable.id, adjustmentIncomeIds)}
-                        THEN ${TransactionEntityTable.amount}
-                        ELSE 0
-                    END
-                ), 0)
-            `,
+                    COALESCE(SUM(
+                        CASE
+                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${TransactionEntityTable.amount}
+                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
+                                 AND ${inArray(TransactionEntityTable.id, adjustmentIncomeIds)}
+                            THEN ${TransactionEntityTable.amount}
+                            ELSE 0
+                        END
+                    ), 0)
+                `,
                 expense: sql<number>`
-                COALESCE(SUM(
-                    CASE
-                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntityTable.amount}
-                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
-                             AND ${inArray(TransactionEntityTable.id, adjustmentExpenseIds)}
-                        THEN ${TransactionEntityTable.amount}
-                        ELSE 0
-                    END
-                ), 0)
-            `
+                    COALESCE(SUM(
+                        CASE
+                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntityTable.amount}
+                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
+                                 AND ${inArray(TransactionEntityTable.id, adjustmentExpenseIds)}
+                            THEN ${TransactionEntityTable.amount}
+                            ELSE 0
+                        END
+                    ), 0)
+                `
             })
             .from(TransactionEntityTable)
-            .where(dateCondition);
+            // eslint-disable-next-line no-undefined
+            .where(isDefined(baseWhere) ? baseWhere : undefined);
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
@@ -180,6 +129,39 @@ export class TransactionRepository {
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
+    }
+
+    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
+        return this.db
+            .select({
+                category: CategoryEntityTable,
+                amount: sql<number>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
+            .groupBy(CategoryEntityTable.id)
+            .orderBy(desc(sql`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
+    }
+
+    private buildFilteredTransactionIdsQuery(
+        filters: TransactionFilterInterface,
+        transactionType: TransactionTypeEnum,
+        entryType: TransactionEntryTypeEnum
+    ) {
+        const baseWhere = this.buildWhere(filters);
+
+        return this.db
+            .selectDistinct({ transactionId: TransactionEntityTable.id })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    // eslint-disable-next-line no-undefined
+                    isDefined(baseWhere) ? baseWhere : undefined,
+                    or(eq(TransactionEntityTable.type, transactionType), this.buildAdjustmentCondition(entryType))
+                )
+            );
     }
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
