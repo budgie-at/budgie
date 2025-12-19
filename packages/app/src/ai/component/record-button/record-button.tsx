@@ -115,10 +115,10 @@ export const RecordButton = (props: Props) => {
         }
 
         if (isProcessing) {
-            return <Icon icon={ICONS.Sparkles} size={iconSize[size]} className="text-white" />;
+            return <Icon icon={ICONS.Sparkles} size={iconSize[size]} className="text-primary" />;
         }
 
-        return <Icon icon={icon} size={iconSize[size]} className="text-white" />;
+        return <Icon icon={icon} size={iconSize[size]} className="text-primary" />;
     };
 
     return (
