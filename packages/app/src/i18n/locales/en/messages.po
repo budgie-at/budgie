@@ -13,21 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:11
-msgid "Available transaction categories"
-msgstr "Available transaction categories"
-
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:16
-msgid "Available transaction types"
-msgstr "Available transaction types"
-
-#. js-lingui-explicit-id
-#: src/ai/util/get-system-prompt.util.ts:20
-msgid "Amount of money, that user spent or earned in this transaction"
-msgstr "Amount of money, that user spent or earned in this transaction"
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -102,7 +87,7 @@ msgstr "Add a new category to organize your transactions"
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:28
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:48
 msgid "Add Expense"
 msgstr "Add Expense"
 
@@ -122,9 +107,13 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
+#: src/ai/component/ai-chat-button/ai-chat-button.tsx:27
 msgid "AI"
 msgstr "AI"
+
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
+msgid "AI Suggestion"
+msgstr "AI Suggestion"
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -145,6 +134,10 @@ msgstr "All your financial data is stored locally on your device. No cloud sync,
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Allocated"
+
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
+msgid "Amount"
+msgstr "Amount"
 
 #: src/app/(tabs)/analytics.tsx:10
 msgid "Analytics Page"
@@ -207,6 +200,7 @@ msgstr "BudgetAI"
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:50
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -291,6 +285,10 @@ msgstr "Clear All"
 msgid "Common Tags"
 msgstr "Common Tags"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
+msgid "Confirm"
+msgstr "Confirm"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:52
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
@@ -311,7 +309,8 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:72
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
+#: src/transaction/hook/use-create-transaction-form.hook.ts:80
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
@@ -537,6 +536,10 @@ msgstr "Everyday transactions and spending"
 msgid "Expense"
 msgstr "Expense"
 
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+msgid "Expense created"
+msgstr "Expense created"
+
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
 msgstr "Face ID"
@@ -632,7 +635,7 @@ msgstr "Money you spend"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:27
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:47
 msgid "New Expense"
 msgstr "New Expense"
 
@@ -705,7 +708,7 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/ai.tsx:58
+#: src/app/ai.tsx:78
 msgid "No speech detected"
 msgstr "No speech detected"
 
@@ -745,10 +748,6 @@ msgstr "Organization"
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Over:"
 msgstr "Over:"
-
-#: src/app/ai.tsx:84
-msgid "Parsed transaction:"
-msgstr "Parsed transaction:"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -914,7 +913,8 @@ msgstr "Show $1,234.56 instead of $1,235"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:71
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
+#: src/transaction/hook/use-create-transaction-form.hook.ts:79
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Something went wrong."
@@ -1045,6 +1045,10 @@ msgstr "Type ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ukrainian"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
+msgid "Unknown Category"
+msgstr "Unknown Category"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
 msgstr "Update Account"
@@ -1082,6 +1086,14 @@ msgstr "View and restore archived accounts"
 msgid "will be restored to your main view and included in totals."
 msgstr "will be restored to your main view and included in totals."
 
-#: src/app/ai.tsx:75
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+msgid "Your expense has been recorded successfully."
+msgstr "Your expense has been recorded successfully."
+
+#: src/ai/hook/use-transaction-info-prompt.hook.ts:19
+msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
+msgstr "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
+
+#: src/app/ai.tsx:96
 msgid "Your message:"
 msgstr "Your message:"
