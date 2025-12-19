@@ -55,7 +55,7 @@ msgstr "Nombre de la cuenta"
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:96
+#: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
@@ -93,7 +93,7 @@ msgstr "Agregar gasto"
 msgid "Add Income"
 msgstr "Agregar ingreso"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:130
+#: src/transaction/components/transaction-split/transaction-split.tsx:111
 msgid "Add Split"
 msgstr "Agregar división"
 
@@ -105,13 +105,9 @@ msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 msgid "Adjustment"
 msgstr "Ajuste"
 
-#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:27
 msgid "AI"
 msgstr "IA"
-
-#: src/app/ai.tsx:10
-msgid "AI chat"
-msgstr "Chat IA"
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -129,7 +125,7 @@ msgstr "Todo el tiempo"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:140
+#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Asignado"
 
@@ -154,7 +150,7 @@ msgstr "Aplicar filtro"
 msgid "Apply Filter ({selected})"
 msgstr "Aplicar filtro ({selected})"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:112
+#: src/account/component/update-liability-account/update-liability-account.tsx:113
 msgid "Archive Account"
 msgstr "Archivar cuenta"
 
@@ -212,7 +208,7 @@ msgstr "Categorías"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categorías ({selectedCategoriesCount})"
 
-#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
 msgid "Category"
 msgstr "Categoría"
@@ -250,7 +246,7 @@ msgstr "Elige el tipo de cuenta que deseas agregar"
 msgid "Choose your main account"
 msgstr "Elige tu cuenta principal"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:62
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:66
 msgid "Choose your main category"
 msgstr "Elige tu categoría principal"
 
@@ -286,7 +282,7 @@ msgstr "Confirmar PIN"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:78
+#: src/account/component/update-liability-account/update-liability-account.tsx:79
 msgid "Could not archive account. Please try again later"
 msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 
@@ -298,7 +294,7 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
-#: src/transaction/hook/use-transaction-form.hook.ts:72
+#: src/transaction/hook/use-create-transaction-form.hook.ts:72
 msgid "Could not create transaction. Please try again later."
 msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
 
@@ -306,9 +302,13 @@ msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más ta
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:64
+#: src/account/component/update-liability-account/update-liability-account.tsx:65
 msgid "Could not update account. Please try again later"
 msgstr "No se pudo actualizar la cuenta. Inténtalo de nuevo más tarde"
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:39
+msgid "Could not update transaction. Please try again later."
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:45
 msgid "Create a PIN"
@@ -425,6 +425,10 @@ msgstr "Listo"
 msgid "Done ({selectedTagsCount})"
 msgstr "Listo ({selectedTagsCount})"
 
+#: src/app/ai.tsx:89
+msgid "Downloading model..."
+msgstr ""
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
@@ -441,6 +445,14 @@ msgstr "ej. Negocios, Personal, Vacaciones"
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:60
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ej. Comestibles, Salario, Alquiler"
+
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:33
+msgid "Edit Expense"
+msgstr ""
+
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:33
+msgid "Edit Income"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
@@ -496,11 +508,11 @@ msgstr "Ingresa el nuevo PIN"
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
-#: src/app/(main)/pin.tsx:102
+#: src/app/(main)/pin.tsx:122
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
-#: src/app/(main)/pin.tsx:101
+#: src/app/(main)/pin.tsx:121
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
@@ -562,7 +574,7 @@ msgstr "Icono"
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/app/(main)/pin.tsx:67
+#: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
@@ -630,7 +642,7 @@ msgstr "Aún no hay cuentas"
 msgid "No archived accounts"
 msgstr "No hay cuentas archivadas"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:69
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:58
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -676,6 +688,10 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
+#: src/app/ai.tsx:61
+msgid "No speech detected"
+msgstr ""
+
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:60
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -709,11 +725,11 @@ msgstr "Ninguna seleccionada"
 msgid "Organization"
 msgstr "Organización"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:141
+#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Over:"
 msgstr "Exceso:"
 
-#: src/app/(main)/pin.tsx:52
+#: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
@@ -736,6 +752,10 @@ msgstr "Polaco (Polonia)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugués (Portugal)"
 
+#: src/app/ai.tsx:69
+msgid "Press and describe your transaction"
+msgstr ""
+
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -745,11 +765,19 @@ msgstr "Vista previa"
 msgid "Privacy"
 msgstr "Privacidad"
 
+#: src/app/ai.tsx:97
+msgid "Prompt:"
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:142
+#: src/app/ai.tsx:69
+msgid "Recording..."
+msgstr ""
+
+#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
 msgstr "Restante:"
 
@@ -776,7 +804,7 @@ msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:64
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:59
 msgid "Search categories..."
 msgstr "Buscar categorías..."
@@ -826,7 +854,7 @@ msgstr "Seleccionar todo"
 msgid "Select category"
 msgstr "Seleccionar categoría"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:61
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
 #: src/transaction/components/transaction-form/transaction-form.tsx:83
 msgid "Select Category"
 msgstr "Seleccionar categoría"
@@ -864,12 +892,13 @@ msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:58
-#: src/account/component/update-liability-account/update-liability-account.tsx:63
-#: src/account/component/update-liability-account/update-liability-account.tsx:77
+#: src/account/component/update-liability-account/update-liability-account.tsx:64
+#: src/account/component/update-liability-account/update-liability-account.tsx:78
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/transaction/hook/use-transaction-form.hook.ts:71
+#: src/transaction/hook/use-create-transaction-form.hook.ts:71
+#: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Algo salió mal."
 
@@ -885,7 +914,7 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:110
+#: src/transaction/components/transaction-split/transaction-split.tsx:84
 msgid "Split by Category"
 msgstr "Dividir por categoría"
 
@@ -896,6 +925,10 @@ msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregand
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Acciones"
+
+#: src/app/ai.tsx:104
+msgid "Structured:"
+msgstr ""
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
 #: src/account/component/create-liability-account/create-liability-account.tsx:72
@@ -958,14 +991,6 @@ msgstr "Saldo total"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/app/(main)/transactions/[id].tsx:11
-msgid "Transaction Details"
-msgstr "Detalles de la transacción"
-
-#: src/app/(main)/transactions/[id].tsx:14
-msgid "Transaction ID: {id}"
-msgstr "ID de transacción: {id}"
-
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
 msgstr "Tipo de transacción"
@@ -980,7 +1005,7 @@ msgstr "Transferencia"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:52
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:72
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 #: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
@@ -1003,9 +1028,17 @@ msgstr "Tipo ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ucraniano"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:111
+#: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
 msgstr "Actualizar cuenta"
+
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
+msgid "Update Expense"
+msgstr ""
+
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
+msgid "Update Income"
+msgstr ""
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -1031,3 +1064,7 @@ msgstr "Ver y restaurar cuentas archivadas"
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:45
 msgid "will be restored to your main view and included in totals."
 msgstr "se restaurará a tu vista principal y se incluirá en los totales."
+
+#: src/app/ai.tsx:30
+msgid "Your goal is to analyze and parse user message about the financial transaction and return them in JSON format. Don't respond to user. Simply return JSON with user's transaction data parsed."
+msgstr ""
