@@ -100,9 +100,7 @@ export default function AiScreen() {
         waveformRef.current = [];
         recorderRef.current.start();
 
-        silenceTimeoutRef.current = setTimeout(() => {
-            void handleStopRecording();
-        }, SILENCE_TIMEOUT);
+        silenceTimeoutRef.current = setTimeout(() => void handleStopRecording(), SILENCE_TIMEOUT);
     };
 
     const handlePress = () => {
