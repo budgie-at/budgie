@@ -11,6 +11,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:95
+msgid "Processing..."
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:99
+msgid "Recording..."
+msgstr ""
+
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:102
+msgid "Tap to speak"
+msgstr ""
+
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -601,10 +616,6 @@ msgstr "Італійська (Італія)"
 msgid "Language"
 msgstr "Мова"
 
-#: src/ai/component/record-button/record-button.tsx:94
-msgid "Loading AI... {progress}%"
-msgstr "Завантаження ШІ... {progress}%"
-
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Регіональні налаштування"
@@ -779,17 +790,9 @@ msgstr "Попередній перегляд"
 msgid "Privacy"
 msgstr "Конфіденційність"
 
-#: src/ai/component/record-button/record-button.tsx:97
-msgid "Processing..."
-msgstr "Обробка..."
-
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
-
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Запис..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -973,10 +976,6 @@ msgstr "Теги ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Торкніться, щоб змінити іконку"
-
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Натисніть, щоб говорити"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."

@@ -9,15 +9,13 @@ import { Page } from '../@generic/components/page/page';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { RecordButton } from '../ai/component/record-button/record-button';
 import { useLlmContext } from '../ai/context/llm.context';
+import { useAiTransaction } from '../ai/hook/use-ai-transaction.hook';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
-import { useTransactionInfoPrompt } from '../ai/hook/use-transaction-info-prompt.hook';
 import { recordVoice } from '../ai/util/record-voice.util';
-import { useGetCategoryByIdQuery } from '../category/query/use-get-category-by-id.query';
 import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
 import { AiTransactionPreviewCard } from '../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../transaction/hook/use-create-expense-transaction.mutation';
 
-/* eslint-disable max-lines-per-function */
 export default function AiScreen() {
     const { t } = useLingui();
 
@@ -31,13 +29,12 @@ export default function AiScreen() {
     const waveformRef = useRef<number[]>([]);
 
     useAudioManager();
-    const [systemPrompt, transactionInfo, resetTransactionInfo, setCategoryId] = useTransactionInfoPrompt(llm, prompt);
-    const { category } = useGetCategoryByIdQuery(transactionInfo?.categoryId ?? 0);
+    const [systemPrompt, transactionInfo, resetTransactionInfo, setTransactionCategory] = useAiTransaction(llm, prompt);
     const createExpense = useCreateExpenseTransactionMutation();
 
     const handleConfirm = async () => {
-        if (isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount)) {
-            await createExpense(transactionInfo.amount, transactionInfo.categoryId);
+        if (isPositiveNumber(transactionInfo?.amount)) {
+            await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
             resetTransactionInfo();
         }
     };
@@ -81,9 +78,6 @@ export default function AiScreen() {
         setIsRecording(false);
     };
 
-    const areModelsReady = speechToText.isReady && llm.isReady;
-    const isGenerating = speechToText.isGenerating || llm.isGenerating;
-
     const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
 
     return (
@@ -108,23 +102,17 @@ export default function AiScreen() {
                     {isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount) && (
                         <AiTransactionPreviewCard
                             amount={transactionInfo.amount}
-                            category={category}
+                            category={transactionInfo.category}
                             type={transactionInfo.type}
                             onConfirm={handleConfirm}
                             onCancel={handleCancel}
-                            onCategoryChange={setCategoryId}
+                            onCategoryChange={setTransactionCategory}
                         />
                     )}
                 </ScrollView>
 
                 <View className="absolute bottom-8 left-0 right-0 items-center">
-                    <RecordButton
-                        isReady={areModelsReady}
-                        isRecording={isRecording}
-                        isProcessing={isGenerating}
-                        downloadProgress={llm.downloadProgress}
-                        onPress={handlePress}
-                    />
+                    <RecordButton llm={llm} isRecording={isRecording} onPress={handlePress} />
                 </View>
             </Page>
         </BottomSheetsProvider>

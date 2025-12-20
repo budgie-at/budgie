@@ -1,4 +1,4 @@
-import { useLingui } from '@lingui/react/macro';
+import { i18n } from '@lingui/core';
 import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
@@ -7,6 +7,7 @@ import { HapticPressable } from '../../../@generic/components/haptic-pressable/h
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
+import { LlmType } from '../../type/llm.type';
 
 import type { ClassValue } from 'clsx';
 
@@ -15,10 +16,8 @@ type RecordButtonVariant = 'default' | 'recording' | 'loading' | 'processing';
 
 interface Props extends Omit<ComponentProps<typeof HapticPressable>, 'children'> {
     readonly size?: RecordButtonSize;
-    readonly isReady: boolean;
+    readonly llm: LlmType;
     readonly isRecording: boolean;
-    readonly isProcessing: boolean;
-    readonly downloadProgress?: number;
     readonly labelClassName?: string;
 }
 
@@ -69,62 +68,54 @@ const activityIndicatorSize: Record<RecordButtonSize, 'small' | 'large'> = {
     xl: 'small'
 };
 
+const getVariant = (llm: LlmType, isRecording: boolean): RecordButtonVariant => {
+    if (!llm.isReady) {
+        return 'loading';
+    }
+
+    if (llm.isGenerating) {
+        return 'processing';
+    }
+
+    if (isRecording) {
+        return 'recording';
+    }
+
+    return 'default';
+};
+
+const getLabel = (llm: LlmType, variant: RecordButtonVariant): string => {
+    if (variant === 'loading') {
+        const progress = Math.round(llm.downloadProgress * 100);
+
+        return i18n._(`Loading AI... ${progress}%`);
+    }
+
+    if (variant === 'processing') {
+        return i18n._(`Processing...`);
+    }
+
+    if (variant === 'recording') {
+        return i18n._(`Recording...`);
+    }
+
+    return i18n._(`Tap to speak`);
+};
+
 export const RecordButton = (props: Props) => {
-    const { size = 'lg', isReady, isRecording, isProcessing, downloadProgress = 0, className, labelClassName, ...rest } = props;
-    const { t } = useLingui();
+    const { size = 'lg', isRecording, llm, className, labelClassName, ...rest } = props;
 
-    const getVariant = (): RecordButtonVariant => {
-        if (!isReady) {
-            return 'loading';
-        }
-        if (isProcessing) {
-            return 'processing';
-        }
-        if (isRecording) {
-            return 'recording';
-        }
-
-        return 'default';
-    };
-
-    const getLabel = (): string => {
-        if (!isReady) {
-            const progress = Math.round(downloadProgress * 100);
-
-            return t`Loading AI... ${progress}%`;
-        }
-        if (isProcessing) {
-            return t`Processing...`;
-        }
-        if (isRecording) {
-            return t`Recording...`;
-        }
-
-        return t`Tap to speak`;
-    };
-
-    const variant = getVariant();
-    const label = getLabel();
-    const isLoading = variant === 'loading';
-    const isDisabled = !isReady || isProcessing;
-    const icon = isRecording ? ICONS.Square : ICONS.Mic;
-
-    const renderButtonContent = () => {
-        if (isLoading) {
-            return <ActivityIndicator size={activityIndicatorSize[size]} color="white" />;
-        }
-
-        if (isProcessing) {
-            return <Icon icon={ICONS.Sparkles} size={iconSize[size]} className="text-primary" />;
-        }
-
-        return <Icon icon={icon} size={iconSize[size]} className="text-primary" />;
-    };
+    const variant = getVariant(llm, isRecording);
+    const label = getLabel(llm, variant);
+    const isDisabled = ['processing', 'loading'].includes(variant);
 
     return (
         <View className="items-center">
             <HapticPressable disabled={isDisabled} className={cn(buttonVariants({ variant, size }), className)} {...rest}>
-                {renderButtonContent()}
+                {variant === 'loading' && <ActivityIndicator size={activityIndicatorSize[size]} color="white" />}
+                {variant === 'processing' && <Icon icon={ICONS.Sparkles} size={iconSize[size]} className="text-primary" />}
+                {variant === 'recording' && <Icon icon={ICONS.Square} size={iconSize[size]} className="text-primary" />}
+                {variant === 'default' && <Icon icon={ICONS.Mic} size={iconSize[size]} className="text-primary" />}
             </HapticPressable>
 
             <Text className={cn('mt-3', labelVariants({ variant }), labelClassName)}>{label}</Text>

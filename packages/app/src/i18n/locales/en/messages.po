@@ -13,6 +13,21 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:95
+msgid "Processing..."
+msgstr "Processing..."
+
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:99
+msgid "Recording..."
+msgstr "Recording..."
+
+#. js-lingui-explicit-id
+#: src/ai/component/record-button/record-button.tsx:102
+msgid "Tap to speak"
+msgstr "Tap to speak"
+
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -603,10 +618,6 @@ msgstr "Italian (Italy)"
 msgid "Language"
 msgstr "Language"
 
-#: src/ai/component/record-button/record-button.tsx:94
-msgid "Loading AI... {progress}%"
-msgstr "Loading AI... {progress}%"
-
 #: src/settings/components/locale-selector/locale-selector.tsx:35
 msgid "Locale"
 msgstr "Locale"
@@ -781,17 +792,9 @@ msgstr "Preview"
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/ai/component/record-button/record-button.tsx:97
-msgid "Processing..."
-msgstr "Processing..."
-
 #: src/auth/util/get-pin-setup-meta.util.ts:53
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
-
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Recording..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -975,10 +978,6 @@ msgstr "Tags ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Tap to change icon"
-
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Tap to speak"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
