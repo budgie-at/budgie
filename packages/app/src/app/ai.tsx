@@ -70,6 +70,7 @@ export default function AiScreen() {
         setIsRecording(false);
         setRecordingStartedAt(0);
 
+        // HINT: We need time for AudioRecorder to process the audio data, would be nice to have event there
         await new Promise(resolve => {
             setTimeout(resolve, 500);
         });
