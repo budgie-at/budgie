@@ -2,4 +2,4 @@
 
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 
-export const Accordion = AccordionPrimitive.Root
+export const Accordion = AccordionPrimitive.Root;

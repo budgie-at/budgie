@@ -8,5 +8,5 @@ export const ExchangeRateEntitySchema = createSelectSchema(ExchangeRateEntityTab
     source: schema => schema.describe('The source of the exchange rate.'),
     baseInstrumentId: schema => schema.describe('The id of the base instrument.'),
     quoteInstrumentId: schema => schema.describe('The id of the quote instrument.'),
-    rate: schema => schema.describe('The exchange rate.'),
-})
+    rate: schema => schema.describe('The exchange rate.')
+});
