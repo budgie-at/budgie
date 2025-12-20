@@ -65,10 +65,8 @@ export const parseNumberFromMessage = (message: string): number => {
     const wordMatches = message.match(numberWordPattern);
     const digitMatches = message.match(digitPattern);
 
-    // eslint-disable-next-line no-undefined
-    const wordNumber = wordMatches?.[0] ? parseNumberWord(wordMatches[0]) : undefined;
-    // eslint-disable-next-line no-undefined
-    const digitNumber = digitMatches?.[0] ? parseDigit(digitMatches[0]) : undefined;
+    const wordNumber = wordMatches?.[0] ? parseNumberWord(wordMatches[0]) : null;
+    const digitNumber = digitMatches?.[0] ? parseDigit(digitMatches[0]) : null;
 
     return wordNumber ?? digitNumber ?? 0;
 };
