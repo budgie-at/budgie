@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.79.0](https://github.com/budgie-at/budgie/compare/v1.78.0...v1.79.0) (2025-12-20)
+
+### Bug Fixes
+
+- **app:** llm parsing category improved ([e0be8ff](https://github.com/budgie-at/budgie/commit/e0be8ff64f62c27210a2d29c8e6504ec745a1791))
+- **app:** llm parsing category improved ([4860c8c](https://github.com/budgie-at/budgie/commit/4860c8c20fdd5896e8cdd313eefadeac9e2ba0b8))
+- **app:** llm parsing category improved ([588490d](https://github.com/budgie-at/budgie/commit/588490d3ec859cfa1327a6f2ddf6a4864da71a12))
+- **app:** llm parsing category improved ([0b40e2d](https://github.com/budgie-at/budgie/commit/0b40e2dc53ea3b720f695d9be9ffceecbef60164))
+- **deps:** added general llm loading ([1d543f1](https://github.com/budgie-at/budgie/commit/1d543f126f4a89779d923711b8068c4d980344c6))
+- **deps:** added general llm loading ([d99b436](https://github.com/budgie-at/budgie/commit/d99b43648d6a4f74a11c804b514029632f061b2c))
+- **deps:** fix record button spinner position ([8949cff](https://github.com/budgie-at/budgie/commit/8949cffb212d66c79dc6003a01c6b6d38c69e019))
+- **deps:** fix record button spinner position ([0eff8ef](https://github.com/budgie-at/budgie/commit/0eff8ef05068b48e9029eabd49a0ef157987fd6f))
+- **deps:** fix record button theme colors ([ebe2e8c](https://github.com/budgie-at/budgie/commit/ebe2e8c04bdefed61f99de5f87b7b8fad5b01bad))
+- **deps:** fix record button theme colors ([fd1598e](https://github.com/budgie-at/budgie/commit/fd1598e150c10e640f56e63ac6d7f501ba3ddb4f))
+- **deps:** fix record button theme colors ([e6c2bc2](https://github.com/budgie-at/budgie/commit/e6c2bc2a8312fa6ccd6ddb85b67f73ec1f190050))
+- **deps:** fix record button theme colors ([3baf499](https://github.com/budgie-at/budgie/commit/3baf4995fc3780ef5695e809aa549a287c5723e5))
+- **deps:** fix record button theme colors ([d29302a](https://github.com/budgie-at/budgie/commit/d29302a8aa78eff94164a2c943ce543f37e19c7f))
+- **deps:** fix record button theme colors ([474a64a](https://github.com/budgie-at/budgie/commit/474a64a348dbf1bffdb49b40072670fdeae6615c))
+- resolve issues ([c4fc1c2](https://github.com/budgie-at/budgie/commit/c4fc1c2a17032ab564310d96978783ebaac92fdb))
+
+### Features
+
+- **app:** added silence poc ([1c894e0](https://github.com/budgie-at/budgie/commit/1c894e044883c207dffc1cb1c30aa913570a3e29))
+- **app:** added silence poc ([fcd1ac4](https://github.com/budgie-at/budgie/commit/fcd1ac4c509a63f5441d18a634c64e951b0ff55f))
+- **app:** added silence poc ([e13a631](https://github.com/budgie-at/budgie/commit/e13a631a51b25544faf73fdb1b8c3356c55c0e26))
+- **app:** added silence poc ([a0148e6](https://github.com/budgie-at/budgie/commit/a0148e682a926f48089c59dc3ad541519c9aa789))
+- **app:** i18n ([951753a](https://github.com/budgie-at/budgie/commit/951753a89e65f8bd61ad35c72f7e3e2dd0211ace))
+- **app:** improved ai recording voice ux ([9acf28f](https://github.com/budgie-at/budgie/commit/9acf28f64a5acf504a5b68ee6cec2ee9b501fa83))
+- **app:** improved ai recording voice ux ([44bc8ef](https://github.com/budgie-at/budgie/commit/44bc8efed94a1193ede8fe07522479f1d82843e8))
+- **app:** new transaction ai card ([03dc141](https://github.com/budgie-at/budgie/commit/03dc14175bc628c4a64c545aa3739cb198b84725))
+- **app:** new transaction ai card ([fb44330](https://github.com/budgie-at/budgie/commit/fb443305bc86e030fb55e275ec2417e4d969aee0))
+- **app:** new transaction ai card ([c1ece72](https://github.com/budgie-at/budgie/commit/c1ece7249311a232d9769b1b89aa40a10399b10a))
+- **app:** new transaction ai card ([23f3941](https://github.com/budgie-at/budgie/commit/23f3941ed5bbda2b385deecb1cf302966d9ab1f7))
+- **app:** new transaction ai card ([619271a](https://github.com/budgie-at/budgie/commit/619271a12f392dffac601bdbb8227fc54b0cb57c))
+- **app:** new transaction ai card ([f970ef7](https://github.com/budgie-at/budgie/commit/f970ef7c720fdc162dfc002bdaa0dceff4f4c0d8))
+- **app:** new transaction ai card ([3e1e090](https://github.com/budgie-at/budgie/commit/3e1e090677481562e7214c32c2603e7e46a5381c))
+- **app:** new transaction ai card ([bdae567](https://github.com/budgie-at/budgie/commit/bdae567719751d3f64f5c16809175c5a3a7a786e))
+- **app:** new transaction ai card ([27098cf](https://github.com/budgie-at/budgie/commit/27098cfecaa183ea22bdd434224f0879e39c7211))
+- **app:** new transaction ai card ([500068e](https://github.com/budgie-at/budgie/commit/500068e48d863769391a07af27057f624ec67fd0))
+
 # [1.78.0](https://github.com/budgie-at/budgie/compare/v1.77.0...v1.78.0) (2025-12-20)
 
 ### Bug Fixes
