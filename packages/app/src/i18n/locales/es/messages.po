@@ -14,17 +14,17 @@ msgstr ""
 #. js-lingui-explicit-id
 #: src/ai/component/record-button/record-button.tsx:96
 msgid "Processing..."
-msgstr ""
+msgstr "Procesando..."
 
 #. js-lingui-explicit-id
 #: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
-msgstr ""
+msgstr "Grabando..."
 
 #. js-lingui-explicit-id
 #: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
-msgstr ""
+msgstr "Toca para hablar"
 
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
@@ -138,7 +138,7 @@ msgstr "IA"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
 msgid "AI Suggestion"
-msgstr ""
+msgstr "Sugerencia de IA"
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -162,7 +162,7 @@ msgstr "Asignado"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:18
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -312,7 +312,7 @@ msgstr "Etiquetas frecuentes"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
@@ -569,7 +569,7 @@ msgstr "Gasto"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
 msgid "Expense created"
-msgstr ""
+msgstr "Gasto creado"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
@@ -758,7 +758,7 @@ msgstr "Sin resultados"
 
 #: src/app/(main)/ai.tsx:90
 msgid "No speech detected"
-msgstr ""
+msgstr "No se detectó voz"
 
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:60
 msgid "No tags found"
@@ -1108,7 +1108,7 @@ msgstr "Ucraniano"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
 msgid "Unknown Category"
-msgstr ""
+msgstr "Categoría desconocida"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
@@ -1153,12 +1153,12 @@ msgstr "se restaurará a tu vista principal y se incluirá en los totales."
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 msgid "Your expense has been recorded successfully."
-msgstr ""
+msgstr "Tu gasto ha sido registrado exitosamente."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr ""
+msgstr "Tu objetivo es devolver UNA categoría que mejor coincida, SOLO EL NOMBRE DE esta lista <CategoryList>{categoriesList}</CategoryList> basado en el mensaje del usuario, sin respuesta, sin texto adicional, solo la categoría de la lista."
 
 #: src/app/(main)/ai.tsx:149
 msgid "Your message:"
-msgstr ""
+msgstr "Tu mensaje:"
