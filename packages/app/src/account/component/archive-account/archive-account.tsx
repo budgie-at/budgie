@@ -19,7 +19,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
     const handleArchive = async () => {
         try {
             await accountService.archiveById(accountId);
-
+            ref.current?.close();
             dismissAllOrReplace('/');
         } catch {
             Toast.show({
@@ -39,7 +39,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
             <ConfirmActionBottomSheet
                 ref={ref}
                 variant="dark-warning"
-                description={t`This account will be hidden from your main view and won&apos;t be included in totals. \n\n 💡 You can restore it anytime from Settings → Archived Accounts`}
+                description={t`This account will be hidden from your main view and won't be included in totals. \n\n 💡 You can restore it anytime from Settings → Archived Accounts`}
                 buttonText={t`Archive`}
                 onSubmit={handleArchive}
                 icon="Archive"
