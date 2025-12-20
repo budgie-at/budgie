@@ -19,7 +19,7 @@ export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, va
     const { selectedAccount, formattedBalance, icon, hasAccount, renderBottomSheet } = useAccountSelector({
         onSelect,
         accountId,
-        emptyStateDescription,
+        emptyStateDescription
     });
     const { t } = useLingui();
 
