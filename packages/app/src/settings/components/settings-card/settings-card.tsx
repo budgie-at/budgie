@@ -15,8 +15,8 @@ interface Props {
     readonly description: string;
 }
 
-export const SettingsCard = ({className, title, description, onPress, right, left }: Props) => (
-    <Card onPress={onPress} className={cn("flex-row items-center gap-x-xl bg-secondary-background", className)}>
+export const SettingsCard = ({ className, title, description, onPress, right, left }: Props) => (
+    <Card onPress={onPress} className={cn('flex-row items-center gap-x-xl bg-secondary-background', className)}>
         {left}
 
         <View className="gap-y-xxs flex-1">
