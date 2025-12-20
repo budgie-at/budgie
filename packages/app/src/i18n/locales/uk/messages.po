@@ -21,7 +21,7 @@ msgstr "{archivedAccountsCount} рахунок"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
-msgstr ""
+msgstr "{formattedBalance} доступно"
 
 #: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
@@ -29,11 +29,11 @@ msgstr "{iconsCount} іконок доступно"
 
 #: src/app/(tabs)/analytics.tsx:30
 msgid "{percentage}% of expenses"
-msgstr ""
+msgstr "{percentage}% витрат"
 
 #: src/app/(tabs)/analytics.tsx:29
 msgid "{percentage}% of income"
-msgstr ""
+msgstr "{percentage}% доходів"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -107,7 +107,7 @@ msgstr "Додати поділ"
 
 #: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:29
 msgid "Add Transfer"
-msgstr ""
+msgstr "Додати переказ"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
@@ -173,7 +173,7 @@ msgstr "Ви впевнені?"
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
-msgstr ""
+msgstr "Баланс"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
 msgid "Balance Adjustment"
@@ -286,7 +286,7 @@ msgstr "Очистити все"
 msgid "Common Tags"
 msgstr "Поширені теги"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:52
+#: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
 
@@ -320,9 +320,9 @@ msgstr "Не вдалося оновити обліковий запис. Спр
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:39
 msgid "Could not update transaction. Please try again later."
-msgstr ""
+msgstr "Не вдалося оновити транзакцію. Будь ласка, спробуйте пізніше."
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
 
@@ -441,7 +441,7 @@ msgstr "Готово ({selectedTagsCount})"
 
 #: src/app/(main)/ai.tsx:130
 msgid "Downloading model..."
-msgstr ""
+msgstr "Завантаження моделі..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -462,15 +462,15 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:33
 msgid "Edit Expense"
-msgstr ""
+msgstr "Редагувати витрату"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:33
 msgid "Edit Income"
-msgstr ""
+msgstr "Редагувати дохід"
 
 #: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:25
 msgid "Edit Transfer"
-msgstr ""
+msgstr "Редагувати переказ"
 
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
@@ -505,24 +505,24 @@ msgstr "Англійська (Велика Британія)"
 msgid "English (United States)"
 msgstr "Англійська (США)"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:46
+#: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Введіть {PIN_LENGTH}-значний PIN-код"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:31
-#: src/auth/util/get-pin-setup-meta.util.ts:38
+#: src/auth/util/get-pin-setup-meta.util.ts:36
+#: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
 msgstr "Введіть поточний PIN-код"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:32
+#: src/auth/util/get-pin-setup-meta.util.ts:37
 msgid "Enter current PIN to disable protection"
 msgstr "Введіть поточний PIN-код для вимкнення захисту"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Enter new PIN"
 msgstr "Введіть новий PIN-код"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:39
+#: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 
@@ -569,7 +569,7 @@ msgstr "Французька (Франція)"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
 msgid "FROM"
-msgstr ""
+msgstr "З"
 
 #: src/app/(main)/settings/index.tsx:47
 msgid "General"
@@ -599,7 +599,7 @@ msgstr "Дохід"
 
 #: src/app/(tabs)/analytics.tsx:63
 msgid "Income by category"
-msgstr ""
+msgstr "Доходи за категоріями"
 
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -640,11 +640,11 @@ msgstr "Гроші, які ви витрачаєте"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
-msgstr ""
+msgstr "Переказ між рахунками"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:44
 msgid "Move Money"
-msgstr ""
+msgstr "Переказати гроші"
 
 #: src/app/(main)/create-account/index.tsx:19
 msgid "New Account"
@@ -664,7 +664,7 @@ msgstr "Нова транзакція"
 
 #: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:25
 msgid "New Transfer"
-msgstr ""
+msgstr "Новий переказ"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
@@ -766,7 +766,7 @@ msgstr "Перевищення:"
 
 #: src/app/(tabs)/analytics.tsx:49
 msgid "Overview"
-msgstr ""
+msgstr "Огляд"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -793,7 +793,7 @@ msgstr "Португальська (Португалія)"
 
 #: src/app/(main)/ai.tsx:112
 msgid "Press and describe your transaction"
-msgstr ""
+msgstr "Натисніть і опишіть вашу транзакцію"
 
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
@@ -804,13 +804,13 @@ msgstr "Попередній перегляд"
 msgid "Privacy"
 msgstr "Конфіденційність"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:53
+#: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
 #: src/app/(main)/ai.tsx:112
 msgid "Recording..."
-msgstr ""
+msgstr "Запис..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -952,11 +952,11 @@ msgstr "Іспанська (Іспанія)"
 
 #: src/app/(tabs)/analytics.tsx:73
 msgid "Spending by Category"
-msgstr ""
+msgstr "Витрати за категоріями"
 
 #: src/app/(tabs)/analytics.tsx:53
 msgid "Spent"
-msgstr ""
+msgstr "Витрачено"
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:84
 msgid "Split by Category"
@@ -968,7 +968,7 @@ msgstr "Почніть відстежувати свої витрати, вик�
 
 #: src/app/(tabs)/analytics.tsx:35
 msgid "Statistics"
-msgstr ""
+msgstr "Статистика"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1009,7 +1009,7 @@ msgstr "Торкніться, щоб змінити іконку"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:59
 msgid "Tap to choose"
-msgstr ""
+msgstr "Натисніть, щоб вибрати"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1029,7 +1029,7 @@ msgstr "Цього року"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
 msgid "TO"
-msgstr ""
+msgstr "НА"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1086,15 +1086,15 @@ msgstr "Оновити рахунок"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
 msgid "Update Expense"
-msgstr ""
+msgstr "Оновити витрату"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
 msgid "Update Income"
-msgstr ""
+msgstr "Оновити дохід"
 
 #: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:29
 msgid "Update Transfer"
-msgstr ""
+msgstr "Оновити переказ"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24

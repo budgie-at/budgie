@@ -19,7 +19,7 @@ export const AccountBalance = ({ balance, currency }: Props) => {
                 <Trans>Current Balance</Trans>
             </Text>
 
-            <FormattedMoney className='justify-start' minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
+            <FormattedMoney className="justify-start" minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
                 {balance}
             </FormattedMoney>
         </View>

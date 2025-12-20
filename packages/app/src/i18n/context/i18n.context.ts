@@ -8,7 +8,7 @@ export interface I18nContextInterface {
 }
 
 export const I18nContext = createContext<I18nContextInterface>({
-    intl: createIntl({ locale: DEFAULT_LOCALE.languageTag }),
+    intl: createIntl({ locale: DEFAULT_LOCALE.languageTag })
 });
 
 export const useI18nContext = () => use(I18nContext);

@@ -77,7 +77,7 @@ import {
     Utensils,
     Wallet,
     Wrench,
-    X,
+    X
 } from 'lucide-react-native';
 
 export const ICONS = {

@@ -1,7 +1,7 @@
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 
 export const extractPartsFromNumeric = (normalized: string, decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
-    const [integerPart = '', decimalPart = ''] = normalized.split('.');
+    const [integerPart, decimalPart] = normalized.split('.');
 
     return {
         integerPart,
