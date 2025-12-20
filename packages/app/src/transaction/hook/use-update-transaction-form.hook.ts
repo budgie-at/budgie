@@ -25,7 +25,7 @@ export const useUpdateTransactionForm = <T extends TransactionCreateEntityInterf
     const form = useForm({
         mode: 'onSubmit',
         values: transaction,
-        resolver: zodResolver<TransactionCreateEntityInterface, unknown, TransactionCreateEntityInterface>(schema),
+        resolver: zodResolver<TransactionCreateEntityInterface, unknown, TransactionCreateEntityInterface>(schema)
     });
 
     const handleSubmit: SubmitHandler<TransactionCreateEntityInterface> = async data => {

@@ -7,5 +7,5 @@ export enum SystemCategoryIdEnum {
     STOCK_SALE = 6,
     CURRENCY_TRANSFER = 7,
     CRYPTO_TRANSFER = 8,
-    STOCK_TRANSFER = 9,
+    STOCK_TRANSFER = 9
 }

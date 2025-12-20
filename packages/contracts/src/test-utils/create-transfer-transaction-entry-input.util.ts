@@ -11,5 +11,5 @@ export const createTransferTransactionEntryInput = (
     accountId,
     categoryId: 0,
     instrumentId: 0,
-    transactionId: 0,
+    transactionId: 0
 });

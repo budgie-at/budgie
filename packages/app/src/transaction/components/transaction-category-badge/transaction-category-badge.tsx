@@ -1,8 +1,8 @@
 import {
+    TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
-    isTransferTransaction,
-    TransactionWithRelationsEntityInterface
+    isTransferTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
