@@ -28,7 +28,9 @@
         "ts:force": "turbo run ts --force"
     },
     "resolutions": {
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "react": "19.1.4",
+        "react-dom": "19.1.4"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.8.1",
@@ -39,6 +41,8 @@
         "@lingui/cli": "^5.5.2",
         "@rnw-community/eslint-plugin": "^1.8.2",
         "@types/node": "^24.5.2",
+        "@types/react": "^19.1.17",
+        "@types/react-dom": "^19.1.17",
         "babel-jest": "^30.2.0",
         "eslint": "^9.38.0",
         "eslint-plugin-import": "^2.32.0",
