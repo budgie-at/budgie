@@ -1,22 +1,15 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
 import { Page } from '../../@generic/components/page/page';
-import { Separator } from '../../@generic/components/separator/separator';
+import { PageHeader } from '../../@generic/components/page-header/page-header';
 import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
 
 export default function TransactionsPage() {
+    const { t } = useLingui();
+
     return (
-        <Page>
-            <Text className="text-primary text-6xl mb-lg">
-                <Trans>Transactions</Trans>
-            </Text>
-
-            <Separator />
-
-            <View className="mt-5xl flex-1">
-                <TransactionList accountId={null} />
-            </View>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} />}>
+            <TransactionList accountId={null} />
         </Page>
     );
 }
