@@ -18,8 +18,10 @@ import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
+import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
@@ -43,7 +45,10 @@ const aiScreenOptions: ExtendedStackNavigationOptions = {
 };
 
 export default function RootLayout() {
-    const { success } = useMigrations(db, migrations);
+    const { success, error } = useMigrations(db, migrations);
+
+    // TODO: REMOVE ME WHEN DB IS STABLE!
+    useResetDb(error);
 
     useEffect(() => {
         if (success) {
@@ -68,27 +73,29 @@ export default function RootLayout() {
                             <BottomSheetsProvider>
                                 <AuthProvider>
                                     <AuthGuard>
-                                        <ThemeProvider>
-                                            <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                <Stack.Screen name="(tabs)" />
+                                        <LlmProvider>
+                                            <ThemeProvider>
+                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                    <Stack.Screen name="(tabs)" />
 
-                                                <Stack.Screen name="(main)/pin" />
-                                                <Stack.Screen name="(main)/create-account" />
+                                                    <Stack.Screen name="(main)/pin" />
+                                                    <Stack.Screen name="(main)/create-account" />
 
-                                                <Stack.Screen name="(main)/account/[id]/update" />
-                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                    <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                <Stack.Screen name="(main)/transactions/[id]" />
+                                                    <Stack.Screen name="(main)/transactions/[id]" />
 
-                                                <Stack.Screen name="(main)/settings/index" />
-                                                <Stack.Screen name="(main)/settings/pin" />
-                                                <Stack.Screen name="(main)/settings/categories" />
-                                                <Stack.Screen name="(main)/settings/tags" />
-                                                <Stack.Screen name="(main)/settings/archived" />
+                                                    <Stack.Screen name="(main)/settings/index" />
+                                                    <Stack.Screen name="(main)/settings/pin" />
+                                                    <Stack.Screen name="(main)/settings/categories" />
+                                                    <Stack.Screen name="(main)/settings/tags" />
+                                                    <Stack.Screen name="(main)/settings/archived" />
 
-                                                <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                            </Stack>
-                                        </ThemeProvider>
+                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                </Stack>
+                                            </ThemeProvider>
+                                        </LlmProvider>
                                     </AuthGuard>
                                 </AuthProvider>
                             </BottomSheetsProvider>
