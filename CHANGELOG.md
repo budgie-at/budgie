@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.80.0](https://github.com/budgie-at/budgie/compare/v1.79.1...v1.80.0) (2025-12-20)
+
+### Bug Fixes
+
+- add comment to transaction card ([4f03ecb](https://github.com/budgie-at/budgie/commit/4f03ecb6d87b051c7cb70446ba0b75be996d4dbf))
+- update useCreateTransactionForm ([45afa4f](https://github.com/budgie-at/budgie/commit/45afa4f60f5b2cc98ed8b9eab0f7d05d39babc79))
+
+### Features
+
+- add transaction comment field ([ed1188f](https://github.com/budgie-at/budgie/commit/ed1188ff55bf1e94610279d823799b5ff43fdc1f))
+
 ## [1.79.1](https://github.com/budgie-at/budgie/compare/v1.79.0...v1.79.1) (2025-12-20)
 
 ### Bug Fixes
