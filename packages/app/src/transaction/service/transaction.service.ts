@@ -1,8 +1,19 @@
-import { TransactionCreateEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
+/* eslint-disable lingui/no-unlocalized-strings */
+import {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
+import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 class TransactionService {
@@ -10,34 +21,71 @@ class TransactionService {
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.create(
                 {
+                    ...input,
                     tagIds: [],
                     entries: [],
                     externalId: null,
-                    type: input.type,
-                    title: input.title,
                     externalSource: null,
-                    comment: input.comment,
-                    operatedAt: input.operatedAt,
-                    toAccountId: input.toAccountId,
-                    exchangeRate: input.exchangeRate,
-                    fromAccountId: input.fromAccountId,
                     amount: convertToMicroUnits(input.amount)
                 },
                 tx
             );
 
-            await Promise.all(
-                input.entries.map(async entry =>
-                    transactionEntryRepository.create(
-                        { ...entry, amount: convertToMicroUnits(entry.amount), transactionId: transaction.id },
-                        tx
-                    )
-                )
+            await this.upsertEntriesAndTags(transaction.id, input, tx);
+
+            return transaction;
+        });
+    }
+
+    async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+        return await db.transaction(async tx => {
+            const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
+            const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
+
+            if (!isDefined(fromEntry) || !isDefined(toEntry)) {
+                throw new Error('Transfer must have exactly two entries');
+            }
+
+            const fromAmount = convertToMicroUnits(fromEntry.amount);
+            const toAmount = convertToMicroUnits(toEntry.amount);
+
+            const transaction = await transactionRepository.create(
+                {
+                    ...input,
+                    externalId: null,
+                    amount: fromAmount,
+                    externalSource: null,
+                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
+                },
+                tx
+            );
+
+            await transactionEntryRepository.create(
+                {
+                    ...fromEntry,
+                    amount: fromAmount,
+                    transactionId: transaction.id,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    instrumentId: fromEntry.instrumentId
+                },
+                tx
+            );
+
+            await transactionEntryRepository.create(
+                {
+                    ...toEntry,
+                    amount: toAmount,
+                    transactionId: transaction.id,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    instrumentId: toEntry.instrumentId
+                },
+                tx
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await Promise.all(
-                    input.tagIds.map(async id => transactionTagsRepository.create({ transactionId: transaction.id, tagId: id }, tx))
+                await transactionTagsRepository.create(
+                    input.tagIds.map(tagId => ({ transactionId: transaction.id, tagId })),
+                    tx
                 );
             }
 
@@ -47,35 +95,29 @@ class TransactionService {
 
     async updateById(id: number, input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
-            const transaction = await transactionRepository.updateById(
-                id,
-                {
-                    type: input.type,
-                    title: input.title,
-                    comment: input.comment,
-                    operatedAt: input.operatedAt,
-                    toAccountId: input.toAccountId,
-                    exchangeRate: input.exchangeRate,
-                    fromAccountId: input.fromAccountId,
-                    amount: convertToMicroUnits(input.amount)
-                },
-                tx
-            );
+            const transaction = await transactionRepository.updateById(id, { ...input, amount: convertToMicroUnits(input.amount) }, tx);
 
-            await transactionEntryRepository.deleteByTransactionId(id, tx);
-            await Promise.all(
-                input.entries.map(async entry =>
-                    transactionEntryRepository.create({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId: id }, tx)
-                )
-            );
-
-            await transactionTagsRepository.deleteByTransactionId(id, tx);
-            if (isNotEmptyArray(input.tagIds)) {
-                await Promise.all(input.tagIds.map(async tagId => transactionTagsRepository.create({ transactionId: id, tagId }, tx)));
-            }
+            await this.upsertEntriesAndTags(id, input, tx);
 
             return transaction;
         });
+    }
+
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
+        await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
+
+        await transactionEntryRepository.bulkCreate(
+            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId }), tx)
+        );
+
+        await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
+
+        if (isNotEmptyArray(input.tagIds)) {
+            await transactionTagsRepository.create(
+                input.tagIds.map(tagId => ({ transactionId, tagId })),
+                tx
+            );
+        }
     }
 }
 

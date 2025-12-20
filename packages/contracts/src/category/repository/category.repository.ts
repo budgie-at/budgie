@@ -19,7 +19,9 @@ export class CategoryRepository {
         const searchQuery = sql`LOWER (${CategoryEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`;
 
         return this.db.query.CategoryEntityTable.findMany({
-            where: includeDefault ? searchQuery : and(searchQuery, eq(CategoryEntityTable.isDefault, false))
+            where: includeDefault
+                ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
+                : and(searchQuery, eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false))
         });
     }
 

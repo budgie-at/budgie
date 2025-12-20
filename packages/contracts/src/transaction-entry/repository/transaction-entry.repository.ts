@@ -9,6 +9,10 @@ import type { TransactionEntryEntityInterface } from '../entity/transaction-entr
 export class TransactionEntryRepository {
     constructor(private db: DB) {}
 
+    async bulkCreate(input: TransactionEntryCreateEntityInterface[], tx?: TX): Promise<TransactionEntryEntityInterface[]> {
+        return await (tx ?? this.db).insert(TransactionEntryEntityTable).values(input).returning();
+    }
+
     async create(input: TransactionEntryCreateEntityInterface, tx?: TX): Promise<TransactionEntryEntityInterface> {
         const [transactionEntry] = await (tx ?? this.db).insert(TransactionEntryEntityTable).values([input]).returning();
 

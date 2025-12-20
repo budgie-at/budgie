@@ -6,7 +6,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
-import { TransactionForm } from '../transaction-form/transaction-form';
+import { transactionService } from '../../service/transaction.service';
+import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
 
 interface Props {
     readonly categoryId?: number;
@@ -17,6 +18,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
     const { defaultAccount } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
+        onSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateEntitySchema,
         fromAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
@@ -37,7 +39,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
     }, [categoryId, form]);
 
     return (
-        <TransactionForm
+        <LiabilityTransactionForm
             accountFieldName="fromAccountId"
             control={form.control}
             onSubmit={handleSubmit}

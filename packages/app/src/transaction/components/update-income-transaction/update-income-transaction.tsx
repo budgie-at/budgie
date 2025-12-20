@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
-import { TransactionForm } from '../transaction-form/transaction-form';
+import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
 
 interface Props {
     readonly transaction: TransactionIncomeWithRelationsEntityInterface | TransactionPositiveAdjustmentWithRelationsEntityInterface;
@@ -23,7 +23,7 @@ export const UpdateIncomeTransaction = ({ transaction }: Props) => {
     });
 
     return (
-        <TransactionForm
+        <LiabilityTransactionForm
             accountFieldName="toAccountId"
             control={form.control}
             onSubmit={handleSubmit}

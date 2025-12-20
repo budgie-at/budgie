@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.76.0](https://github.com/budgie-at/budgie/compare/v1.75.2...v1.76.0) (2025-12-19)
+
+### Bug Fixes
+
+- resolve ci ([f4ea474](https://github.com/budgie-at/budgie/commit/f4ea4746e9f5c5a06f219bec649f8ecb3ef06d83))
+- resolve CI ([2e7a73b](https://github.com/budgie-at/budgie/commit/2e7a73bf9645211183fa00d7ed6a3ebe54329fa4))
+- resolve cpd ([27b647f](https://github.com/budgie-at/budgie/commit/27b647f0c2385ed8b37c65bdac0b926a7dd5fc43))
+- revert db name ([a82153e](https://github.com/budgie-at/budgie/commit/a82153ee2b9dc38b5cb0aeb03c4183151e183a71))
+
+### Features
+
+- add transfer transaction ([75a0570](https://github.com/budgie-at/budgie/commit/75a0570d611b8c4b2a47cd32b50b085d9f50e206))
+- add transfer transaction ([3d91334](https://github.com/budgie-at/budgie/commit/3d91334f653d2f54c9c9c19815dab178e6701d23))
+- add transfer transactione ([12c84f4](https://github.com/budgie-at/budgie/commit/12c84f4de51c1fb91a5993dbfe9ba758bd51154a))
+
 ## [1.75.2](https://github.com/budgie-at/budgie/compare/v1.75.1...v1.75.2) (2025-12-19)
 
 **Note:** Version bump only for package @budgie-at/app

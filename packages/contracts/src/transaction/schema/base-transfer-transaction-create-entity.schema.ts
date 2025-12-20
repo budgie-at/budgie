@@ -1,18 +1,22 @@
-import { array } from 'zod';
-
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { TransactionEntryCreateEntitySchema } from '../../transaction-entry/schema/transaction-entry-create-entity.schema';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { findCoreTransactionEntries } from '../util/find-core-transaction-entries.util';
 
-import { TransferTransactionEntitySchema } from './transfer-transaction-entity.schema';
+import { TransactionCreateEntitySchema } from './transaction-create-entity.schema';
 
-export const BaseTransferTransactionCreateEntitySchema = convertToCreateEntitySchema(TransferTransactionEntitySchema)
-    .extend({ [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema).min(2).max(3) })
-    .superRefine(({ fromAccountId, toAccountId, entries }, context) => {
+export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(
+    ({ fromAccountId, toAccountId, entries, type }, context) => {
+        if (type !== TransactionTypeEnum.TRANSFER) {
+            context.addIssue({
+                code: 'custom',
+                path: ['type'],
+                message: `Transaction type must be '${TransactionTypeEnum.TRANSFER}'.`
+            });
+        }
+
         if (!isDefined(fromAccountId) || !isDefined(toAccountId)) {
             context.addIssue({
                 code: 'custom',
@@ -87,4 +91,5 @@ export const BaseTransferTransactionCreateEntitySchema = convertToCreateEntitySc
                 message: '"fee" entry must be "debit"'
             });
         }
-    });
+    }
+);
