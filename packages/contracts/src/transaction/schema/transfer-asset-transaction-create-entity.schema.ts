@@ -1,3 +1,4 @@
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -6,27 +7,29 @@ import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-trans
 
 export const TransferAssetTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
     ({ entries, exchangeRate }, context) => {
-        if (exchangeRate !== 1) {
+        if (exchangeRate !== convertToMicroUnits(1)) {
             context.addIssue({
                 code: 'custom',
                 path: ['exchangeRate'],
                 message: 'transfer asset transaction exchange rate must be equal to 1'
             });
 
-            return;
+return;
         }
 
         const totalSignedMicroUnits = entries.reduce((acc, curr) => {
-            const signedValue = getSignFromEntryType(curr.type) * curr.amount;
+            const signedValue = BigInt(getSignFromEntryType(curr.type)) * curr.amount;
 
             return acc + signedValue;
-        }, 0);
+        }, BigInt(0));
 
-        if (Math.abs(totalSignedMicroUnits) > TOLERANCE_MICRO) {
+        const absDiff = totalSignedMicroUnits < BigInt(0) ? -totalSignedMicroUnits : totalSignedMicroUnits;
+
+        if (absDiff > BigInt(TOLERANCE_MICRO)) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES],
-                message: `entries do not balance (micro): total signed = ${totalSignedMicroUnits} (must be 0±${TOLERANCE_MICRO})`
+                message: `entries do not balance: deviation of ${absDiff} micro units (tolerance ±${BigInt(TOLERANCE_MICRO)})`
             });
         }
     }

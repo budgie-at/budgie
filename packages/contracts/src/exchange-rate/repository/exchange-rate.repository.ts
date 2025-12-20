@@ -21,7 +21,7 @@ export class ExchangeRateRepository {
         });
     }
 
-    async upsert(baseInstrumentId: number, quoteInstrumentId: number, rate: number, source: string): Promise<void> {
+    async upsert(baseInstrumentId: number, quoteInstrumentId: number, rate: bigint, source: string): Promise<void> {
         await this.db
             .insert(ExchangeRateEntityTable)
             .values({ baseInstrumentId, quoteInstrumentId, rate, source })

@@ -13,11 +13,11 @@ export const ExpenseTransactionCreateEntitySchema = TransactionCreateEntitySchem
         });
     }
 
-    entries.forEach((transactionEntry, entryIndex) => {
-        if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {
+    entries.forEach((entry, index) => {
+        if (entry.type !== TransactionEntryTypeEnum.CREDIT) {
             context.addIssue({
                 code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES, entryIndex, 'type'],
+                path: [TransactionAssociationEnum.ENTRIES, index, 'type'],
                 message: "expense entry must be 'credit' (outflow)."
             });
         }

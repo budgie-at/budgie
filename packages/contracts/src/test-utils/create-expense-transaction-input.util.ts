@@ -1,3 +1,4 @@
+import { convertToMicroUnits } from '../@generic/util/convert-to-micto-units.util';
 import { ExternalSourceEnum } from '../account/enum/external-source.enum';
 import { ExpenseTransactionCreateEntityInterface } from '../transaction/entity/expense-transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../transaction/enum/transaction-association.enum';
@@ -13,11 +14,11 @@ export const createExpenseTransactionInput = (
     comment: '',
     externalId: null,
     operatedAt: new Date(),
-    exchangeRate: 1,
+    exchangeRate: convertToMicroUnits(1),
     externalSource,
     toAccountId: null,
     fromAccountId: 42,
-    amount: 0,
+    amount: BigInt(0),
     tagIds: [],
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input

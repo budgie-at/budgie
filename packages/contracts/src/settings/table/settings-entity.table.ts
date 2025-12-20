@@ -1,10 +1,10 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
+import { LanguageEnum } from '../../@generic/enum/language.enum';
+import { ThemeEnum } from '../../@generic/enum/theme.enum';
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { LanguageEnum } from '../../generic/enum/language.enum';
-import { ThemeEnum } from '../../generic/enum/theme.enum';
-import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 
 export const SettingsEntityTable = sqliteTable(

@@ -1,4 +1,6 @@
-import { PRECISION } from '../../generic/constant/precision.constant';
+import { isDefined } from '@rnw-community/shared';
+
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -6,46 +8,36 @@ import { findCoreTransactionEntries } from '../util/find-core-transaction-entrie
 
 import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
 
+
+const ONE_SCALED = convertToMicroUnits(1);
+
 export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
     ({ entries, exchangeRate, fromAccountId, toAccountId }, context) => {
         const { fromEntry, toEntry } = findCoreTransactionEntries(entries, fromAccountId, toAccountId);
 
-        if (!fromEntry || !toEntry) {
-            return;
-        }
-
-        const calculatedRate = toEntry.amount / fromEntry.amount;
-
-        const providedRateMicro = Math.round(exchangeRate * PRECISION);
-        const calculatedRateMicro = Math.round(calculatedRate * PRECISION);
-
-        if (Math.abs(providedRateMicro - calculatedRateMicro) > TOLERANCE_MICRO) {
-            context.addIssue({
-                code: 'custom',
-                path: ['exchangeRate'],
-                message: `Exchange rate (${exchangeRate}) does not match the ratio of entry amounts (${calculatedRate}). Expected: ${calculatedRate.toFixed(6)}`
-            });
-
+        if (!isDefined(fromEntry) || !isDefined(toEntry)) {
             return;
         }
 
         const totalSignedFromMicroUnits = entries.reduce((acc, curr) => {
-            let amountInFromCurrencyMicroUnits = curr.amount;
+            let amountInFromCurrency: bigint = curr.amount;
 
             if (curr.accountId === toAccountId) {
-                amountInFromCurrencyMicroUnits = Math.round((curr.amount * PRECISION) / providedRateMicro);
+                amountInFromCurrency = (curr.amount * exchangeRate) / ONE_SCALED;
             }
 
-            const signedValue = getSignFromEntryType(curr.type) * amountInFromCurrencyMicroUnits;
+            const signedValue = BigInt(getSignFromEntryType(curr.type)) * amountInFromCurrency;
 
             return acc + signedValue;
-        }, 0);
+        }, BigInt(0));
 
-        if (Math.abs(totalSignedFromMicroUnits) > TOLERANCE_MICRO) {
+        const absDiff = totalSignedFromMicroUnits < BigInt(0) ? -totalSignedFromMicroUnits : totalSignedFromMicroUnits;
+
+        if (absDiff > BigInt(TOLERANCE_MICRO)) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES],
-                message: `Entries do not balance (micro): total signed FROM = ${totalSignedFromMicroUnits} (must be 0±${TOLERANCE_MICRO})`
+                message: `entries do not balance: deviation of ${absDiff} micro units (tolerance ±${BigInt(TOLERANCE_MICRO)})`
             });
         }
     }
