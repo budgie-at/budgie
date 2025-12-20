@@ -27,6 +27,7 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
     type,
     schema,
+    onSubmit,
     fromAccountId,
     toAccountId,
     amount = 0,
@@ -72,7 +73,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
-            await transactionService.createInternal(data);
+            await onSubmit(data);
             router.back();
         } catch {
             Toast.show({
