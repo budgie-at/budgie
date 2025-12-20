@@ -7,7 +7,7 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {
-    category: CategoryEntityInterface
+    category: CategoryEntityInterface;
     onOpen: (category: CategoryEntityInterface) => void;
 }
 

@@ -2,4 +2,4 @@ import { convertToCreateEntitySchema } from '../../generic/util/convert-to-creat
 
 import { SettingsEntitySchema } from './settings-entity.schema';
 
-export const SettingsCreateEntitySchema = convertToCreateEntitySchema(SettingsEntitySchema)
+export const SettingsCreateEntitySchema = convertToCreateEntitySchema(SettingsEntitySchema);

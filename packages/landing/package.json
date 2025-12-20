@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "1.56.0",
+    "version": "1.77.0",
     "private": true,
     "scripts": {
         "build": "next build",
@@ -13,9 +13,9 @@
         "i18n:sync": "yarn i18n:extract && yarn i18n:compile"
     },
     "dependencies": {
-        "@lingui/core": "^5.5.2",
-        "@lingui/macro": "^5.5.2",
-        "@lingui/react": "^5.5.2",
+        "@lingui/core": "^5.7.0",
+        "@lingui/macro": "^5.7.0",
+        "@lingui/react": "^5.7.0",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@next/mdx": "^16.0.1",
@@ -31,7 +31,7 @@
         "gray-matter": "^4.0.3",
         "lucide-react": "^0.544.0",
         "negotiator": "^1.0.0",
-        "next": "^15.5.4",
+        "next": "15.5.9",
         "next-themes": "^0.4.6",
         "react": "19.1.0",
         "react-dom": "19.1.0",
@@ -40,13 +40,11 @@
         "tailwindcss-animate": "^1.0.7"
     },
     "devDependencies": {
-        "@lingui/loader": "^5.5.2",
-        "@lingui/swc-plugin": "^5.6.1",
+        "@lingui/loader": "^5.7.0",
+        "@lingui/swc-plugin": "5.7.0",
         "@tailwindcss/postcss": "^4.1.14",
         "@types/mdx": "^2.0.13",
         "@types/negotiator": "^0.6.3",
-        "@types/react": "^19.1.17",
-        "@types/react-dom": "^19.1.17",
         "babel-plugin-react-compiler": "^1.0.0",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.14"
