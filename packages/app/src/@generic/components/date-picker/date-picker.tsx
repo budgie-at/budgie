@@ -38,7 +38,9 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
         range_fill: 'bg-secondary-corner',
         range_middle_label: 'text-primary',
         range_start: 'rounded-l-full',
+        range_start_label: 'text-primary-reverse',
         range_end: 'rounded-r-full',
+        range_end_label: 'text-primary-reverse',
         weekday: 'bg-primary-reverse',
         weekday_label: 'text-xs text-secondary-foreground font-semibold'
     };

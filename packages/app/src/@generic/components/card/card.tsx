@@ -16,5 +16,5 @@ interface Props {
 export const Card = ({ className, onPress, ...rest }: PropsWithChildren<Props>) => {
     const Component = isDefined(onPress) ? HapticPressable : View;
 
-    return <Component className={cn(`p-5xl border rounded-5xl border-corner`, className)} onPress={onPress} {...rest} />;
+    return <Component className={cn(`p-5xl border rounded-5xl border-secondary-corner`, className)} onPress={onPress} {...rest} />;
 };
