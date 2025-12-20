@@ -7,7 +7,7 @@ type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithInstrumentEntity
 
 export const useSearchAccountsGroupedQuery = (search = '') => {
     const { data, ...rest } = useLiveQuery(accountRepository.findBySearchQuery(search), [search]);
-    const {data: countData} = useLiveQuery(accountRepository.count(), []);
+    const { data: countData } = useLiveQuery(accountRepository.count(), []);
 
     return {
         accounts: data,

@@ -5,4 +5,3 @@ export const quoteMicroToBaseMicro = (toAmountMicro: number, exchangeRate: numbe
 
     return Math.round((toAmountMicro * rateScaled) / PRECISION);
 };
-
