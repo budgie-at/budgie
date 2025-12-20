@@ -32,7 +32,7 @@ const amountVariants = cva('text-md', {
 export const TransactionCard = ({ transaction }: Props) => {
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, true);
-    const { formatMonthAndDay } = useFormatDate();
+    const { formatMonthAndDayWithTime } = useFormatDate();
 
     const categoryIcon = getTransactionIcon(transaction);
 
@@ -40,7 +40,7 @@ export const TransactionCard = ({ transaction }: Props) => {
     const transactionType = getTransactionType(transaction);
 
     return (
-        <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl">
+        <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl relative">
             <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transactionType]} />
 
             <View className="flex-1 gap-y-xxs">
@@ -48,7 +48,7 @@ export const TransactionCard = ({ transaction }: Props) => {
 
                 <View className="gap-y-md">
                     <View className="flex-row items-center gap-x-sm flex-wrap">
-                        <Text className="text-xs text-secondary-foreground">{formatMonthAndDay(transaction.operatedAt)}</Text>
+                        {isNotEmptyString(transaction.comment) ? <Text className="text-primary text-sm">{transaction.comment}</Text> : null}
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
 
@@ -57,6 +57,9 @@ export const TransactionCard = ({ transaction }: Props) => {
             </View>
 
             <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
+            <Text className="text-xxs text-secondary-foreground absolute right-[12px] bottom-[8px]">
+                {formatMonthAndDayWithTime(transaction.operatedAt)}
+            </Text>
         </Card>
     );
 };
