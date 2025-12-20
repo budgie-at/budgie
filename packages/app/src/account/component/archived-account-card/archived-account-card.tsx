@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
@@ -14,7 +15,6 @@ import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { RestoreAccountBottomSheet } from '../restore-account-bottom-sheet/restore-account-bottom-sheet';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -44,6 +44,9 @@ export const ArchivedAccountCard = ({ account }: Props) => {
         }
     };
 
+    const accountTitle = account.title;
+    const description = t`${accountTitle} will be restored to your main view and included in totals.`;
+
     return (
         <>
             <Card className="flex-row items-center gap-x-xl">
@@ -61,7 +64,15 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                 </HapticPressable>
             </Card>
 
-            <RestoreAccountBottomSheet ref={ref} title={account.title} onRestore={handleRestore} />
+            <ConfirmActionBottomSheet
+                ref={ref}
+                icon="RotateCcw"
+                variant="positive"
+                buttonText={t`Restore`}
+                onSubmit={handleRestore}
+                title={t`Restore Account?`}
+                description={description}
+            />
         </>
     );
 };

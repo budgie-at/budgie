@@ -6,6 +6,7 @@ import { useAccountSelector } from '../../../account/hooks/use-account-selector.
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
+import { isDefined } from '@rnw-community/shared';
 
 export const DefaultAccountSelector = () => {
     const ref = useRef<BottomSheetInterface | null>(null);
@@ -23,6 +24,8 @@ export const DefaultAccountSelector = () => {
         excludeAccountId: null
     });
 
+    const description = isDefined(selectedAccount) ? `${selectedAccount.title} – ${selectedAccount.instrument.code}` : null;
+
     const handleOpen = () => void ref.current?.open();
 
     return (
@@ -32,7 +35,7 @@ export const DefaultAccountSelector = () => {
                 iconVariant="ghost"
                 onPress={handleOpen}
                 title={t`Default Account`}
-                description={selectedAccount?.title ?? t`None selected`}
+                description={description ?? t`None selected`}
             />
 
             {renderBottomSheet(ref)}
