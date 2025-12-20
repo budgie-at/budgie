@@ -11,6 +11,7 @@ import { CentsSwitch } from '../../../settings/components/cents-switch/cents-swi
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { GenericSelectorCard } from '../../../settings/components/generic-selector-card/generic-selector-card';
+import { ImportCsv } from '../../../settings/components/import-csv/import-csv';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
@@ -49,6 +50,7 @@ export default function SettingsPage() {
                         <DefaultCurrencySelector />
                         <LocaleSelector />
                         <DefaultAccountSelector />
+                        <ImportCsv />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Organization`}>
