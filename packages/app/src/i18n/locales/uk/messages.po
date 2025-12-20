@@ -11,21 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:96
-msgid "Processing..."
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr ""
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr ""
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -36,11 +21,19 @@ msgstr "{archivedAccountsCount} рахунок"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
-msgstr ""
+msgstr "{formattedBalance} доступно"
 
 #: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} іконок доступно"
+
+#: src/app/(tabs)/analytics.tsx:30
+msgid "{percentage}% of expenses"
+msgstr "{percentage}% витрат"
+
+#: src/app/(tabs)/analytics.tsx:29
+msgid "{percentage}% of income"
+msgstr "{percentage}% доходів"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -100,11 +93,11 @@ msgstr "Додайте нову категорію для організації
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:48
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:30
 msgid "Add Expense"
 msgstr "Додати витрату"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
 msgid "Add Income"
 msgstr "Додати дохід"
 
@@ -112,9 +105,9 @@ msgstr "Додати дохід"
 msgid "Add Split"
 msgstr "Додати поділ"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:29
 msgid "Add Transfer"
-msgstr ""
+msgstr "Додати переказ"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
@@ -124,13 +117,9 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:27
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "ШІ"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
-msgid "AI Suggestion"
-msgstr "Пропозиція ШІ"
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -151,14 +140,6 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Розподілено"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
-msgid "Amount"
-msgstr "Сума"
-
-#: src/app/(tabs)/analytics.tsx:10
-msgid "Analytics Page"
-msgstr "Сторінка аналітики"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:18
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -190,6 +171,10 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/app/(tabs)/analytics.tsx:55
+msgid "Balance"
+msgstr "Баланс"
+
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
@@ -217,7 +202,6 @@ msgstr "BudgetAI"
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:50
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -294,17 +278,13 @@ msgstr "Оберіть бажані регіональні налаштуван�
 msgid "Clear"
 msgstr "Очистити"
 
-#: src/transaction/components/transaction-list-filters/transaction-list-filters.tsx:43
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:44
 msgid "Clear All"
 msgstr "Очистити все"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
 msgstr "Поширені теги"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
-msgid "Confirm"
-msgstr "Підтвердити"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
@@ -326,8 +306,7 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:80
+#: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
@@ -421,13 +400,13 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:48
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:69
+#: src/@generic/components/date-filter/date-filter.tsx:48
+#: src/@generic/components/date-filter/date-filter.tsx:69
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Дата"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:81
+#: src/@generic/components/date-filter/date-filter.tsx:81
 msgid "Date Range"
 msgstr "Діапазон дат"
 
@@ -460,6 +439,10 @@ msgstr "Готово"
 msgid "Done ({selectedTagsCount})"
 msgstr "Готово ({selectedTagsCount})"
 
+#: src/app/(main)/ai.tsx:130
+msgid "Downloading model..."
+msgstr "Завантаження моделі..."
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
@@ -485,9 +468,9 @@ msgstr "Редагувати витрату"
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:25
+#: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:25
 msgid "Edit Transfer"
-msgstr ""
+msgstr "Редагувати переказ"
 
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
@@ -559,10 +542,6 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
-msgid "Expense created"
-msgstr "Витрату створено"
-
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
 msgstr "Face ID"
@@ -590,7 +569,7 @@ msgstr "Французька (Франція)"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
 msgid "FROM"
-msgstr ""
+msgstr "З"
 
 #: src/app/(main)/settings/index.tsx:47
 msgid "General"
@@ -613,9 +592,14 @@ msgstr "Приховати копійки"
 msgid "Icon"
 msgstr "Іконка"
 
+#: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
+
+#: src/app/(tabs)/analytics.tsx:63
+msgid "Income by category"
+msgstr "Доходи за категоріями"
 
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -656,21 +640,21 @@ msgstr "Гроші, які ви витрачаєте"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
-msgstr ""
+msgstr "Переказ між рахунками"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:44
 msgid "Move Money"
-msgstr ""
+msgstr "Переказати гроші"
 
 #: src/app/(main)/create-account/index.tsx:19
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:47
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:29
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
 msgid "New Income"
 msgstr "Новий дохід"
 
@@ -678,9 +662,9 @@ msgstr "Новий дохід"
 msgid "New Transaction"
 msgstr "Нова транзакція"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:23
+#: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:25
 msgid "New Transfer"
-msgstr ""
+msgstr "Новий переказ"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
@@ -743,10 +727,6 @@ msgstr "Немає відповідних транзакцій"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/app/ai.tsx:90
-msgid "No speech detected"
-msgstr "Мовлення не виявлено"
-
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:60
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -784,6 +764,10 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
+#: src/app/(tabs)/analytics.tsx:49
+msgid "Overview"
+msgstr "Огляд"
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -807,6 +791,10 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
+#: src/app/(main)/ai.tsx:112
+msgid "Press and describe your transaction"
+msgstr "Натисніть і опишіть вашу транзакцію"
+
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -819,6 +807,10 @@ msgstr "Конфіденційність"
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
+
+#: src/app/(main)/ai.tsx:112
+msgid "Recording..."
+msgstr "Запис..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -941,8 +933,7 @@ msgstr "Показувати $1 234,56 замість $1 235"
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:79
+#: src/transaction/hook/use-create-transaction-form.hook.ts:95
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
@@ -959,6 +950,14 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
+#: src/app/(tabs)/analytics.tsx:73
+msgid "Spending by Category"
+msgstr "Витрати за категоріями"
+
+#: src/app/(tabs)/analytics.tsx:53
+msgid "Spent"
+msgstr "Витрачено"
+
 #: src/transaction/components/transaction-split/transaction-split.tsx:84
 msgid "Split by Category"
 msgstr "Поділ за категоріями"
@@ -966,6 +965,10 @@ msgstr "Поділ за категоріями"
 #: src/transaction/components/transaction-list/transaction-list.tsx:43
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
+
+#: src/app/(tabs)/analytics.tsx:35
+msgid "Statistics"
+msgstr "Статистика"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1006,7 +1009,7 @@ msgstr "Торкніться, щоб змінити іконку"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:59
 msgid "Tap to choose"
-msgstr ""
+msgstr "Натисніть, щоб вибрати"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1026,7 +1029,7 @@ msgstr "Цього року"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
 msgid "TO"
-msgstr ""
+msgstr "НА"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1077,10 +1080,6 @@ msgstr "Тип ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
-msgid "Unknown Category"
-msgstr "Невідома категорія"
-
 #: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
 msgstr "Оновити рахунок"
@@ -1093,9 +1092,9 @@ msgstr "Оновити витрату"
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:29
+#: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:29
 msgid "Update Transfer"
-msgstr ""
+msgstr "Оновити переказ"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -1121,15 +1120,3 @@ msgstr "Перегляд та відновлення архівованих ра
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:45
 msgid "will be restored to your main view and included in totals."
 msgstr "буде відновлено у вашому головному перегляді та включено до підсумків."
-
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
-msgid "Your expense has been recorded successfully."
-msgstr "Вашу витрату успішно записано."
-
-#: src/ai/hook/use-ai-transaction.hook.ts:20
-msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Твоя мета — повернути ОДНУ найбільш відповідну категорію, ТІЛЬКИ НАЗВУ З цього списку <CategoryList>{categoriesList}</CategoryList> на основі повідомлення користувача, без відповіді, без додаткового тексту, лише категорію зі списку."
-
-#: src/app/ai.tsx:149
-msgid "Your message:"
-msgstr "Ваше повідомлення:"
