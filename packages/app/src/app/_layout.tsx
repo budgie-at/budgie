@@ -18,6 +18,7 @@ import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
+import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
@@ -44,7 +45,10 @@ const aiScreenOptions: ExtendedStackNavigationOptions = {
 };
 
 export default function RootLayout() {
-    const { success } = useMigrations(db, migrations);
+    const { success, error } = useMigrations(db, migrations);
+
+    // TODO: REMOVE ME WHEN DB IS STABLE!
+    useResetDb(error);
 
     useEffect(() => {
         if (success) {
