@@ -3,5 +3,5 @@ export enum TransactionTypeEnum {
     INCOME = 'INCOME',
     EXPENSE = 'EXPENSE',
     TRANSFER = 'TRANSFER',
-    ADJUSTMENT = 'ADJUSTMENT',
+    ADJUSTMENT = 'ADJUSTMENT'
 }

@@ -35,7 +35,9 @@ export const DefaultCurrencySelector = () => {
                 }
                 left={
                     <View className="w-[40px] h-[40px] rounded-full bg-secondary-foreground/10 justify-center items-center">
-                        <Text className="text-primary text-3xl" adjustsFontSizeToFit numberOfLines={1}>{defaultInstrument.symbol}</Text>
+                        <Text className="text-primary text-3xl" adjustsFontSizeToFit numberOfLines={1}>
+                            {defaultInstrument.symbol}
+                        </Text>
                     </View>
                 }
                 onPress={handleOpen}

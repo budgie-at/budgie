@@ -37,5 +37,5 @@ export enum UserIconNameEnum {
     Dumbbell = 'Dumbbell',
     Shirt = 'Shirt',
     CircleDot = 'CircleDot',
-    AlertTriangle = 'AlertTriangle',
+    AlertTriangle = 'AlertTriangle'
 }

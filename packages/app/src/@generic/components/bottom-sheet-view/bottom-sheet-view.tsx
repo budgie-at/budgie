@@ -6,5 +6,6 @@ const Wrapper = styled(GorhomBottomSheetView, {
     className: 'style'
 });
 
-export const BottomSheetView = ({ children, ...props }: ComponentProps<typeof GorhomBottomSheetView>) => <Wrapper {...props}>{children}</Wrapper>;
-
+export const BottomSheetView = ({ children, ...props }: ComponentProps<typeof GorhomBottomSheetView>) => (
+    <Wrapper {...props}>{children}</Wrapper>
+);
