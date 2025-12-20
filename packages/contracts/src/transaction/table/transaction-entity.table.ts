@@ -17,7 +17,7 @@ export const TransactionEntityTable = sqliteTable(
         externalId: text('external_id'),
         operatedAt: int('operated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP),
         comment: text('comment').default('').notNull(),
-        amount: blob('amount', { mode: 'bigint' }).default(BigInt(0)).notNull(),
+        amount: blob('amount', { mode: 'bigint' }).notNull(),
         toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         exchangeRate: blob('exchange_rate', { mode: 'bigint' }).notNull(),

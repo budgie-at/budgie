@@ -1,14 +1,16 @@
-import { AccountWithInstrumentEntityInterface, TransactionCreateEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { UseFormSetValue } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
+
+import { TransactionCreateInputInterface } from '../schema/transaction-create-input.schema';
 
 import { getTransferCategoryId } from './get-transfer-category-id.util';
 
 export const syncTransferInstrumentAndCategory = (
     fromAccount: AccountWithInstrumentEntityInterface | null,
     toAccount: AccountWithInstrumentEntityInterface | null,
-    setValue: UseFormSetValue<TransactionCreateEntityInterface>
+    setValue: UseFormSetValue<TransactionCreateInputInterface>
 ) => {
     if (isDefined(fromAccount)) {
         setValue('entries.0.instrumentId', fromAccount.instrument.id);

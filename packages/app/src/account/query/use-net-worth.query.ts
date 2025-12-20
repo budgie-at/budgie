@@ -9,19 +9,16 @@ export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
     const { data } = useLiveQuery(accountBalanceRepository.getNetWorth(defaultInstrument.id), [defaultInstrument.id]);
 
-    const [netWorthState, setNetWorthState] = useState<number>(data.at(0)?.netWorth ?? 0);
+    const [netWorthState, setNetWorthState] = useState(data.at(0)?.netWorth ?? BigInt(0));
 
     // HINT: temporary fix to force refresh on screen focus
     useFocusEffect(
-        // eslint-disable-next-line react-hooks/preserve-manual-memoization
         useCallback(() => {
             accountBalanceRepository
                 .getNetWorth(defaultInstrument.id)
                 .execute()
                 .then(([{ netWorth }]) => void setNetWorthState(netWorth))
-                .catch(() => {
-                    setNetWorthState(0);
-                });
+                .catch(() => void setNetWorthState(BigInt(0)));
         }, [data])
     );
 

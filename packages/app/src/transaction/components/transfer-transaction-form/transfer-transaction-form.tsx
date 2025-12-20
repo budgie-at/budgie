@@ -1,4 +1,3 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, UseFormSetValue } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -8,6 +7,7 @@ import { EmptyFn } from '@rnw-community/shared';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 import { TransactionFormAmountBase } from '../transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
@@ -17,8 +17,8 @@ import { TransferTransactionFormAccounts } from './transfer-transaction-form-acc
 interface Props {
     readonly icon: IconName;
     readonly onSubmit: EmptyFn;
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;

@@ -1,15 +1,15 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 
 import { TransactionFormAmountBase } from './transaction-form-amount-base';
 
 interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
 }
 
 export const TransactionFormAmount = ({ variant, setValue, control, instrumentSymbol }: Props) => {

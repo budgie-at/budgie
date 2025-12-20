@@ -1,4 +1,3 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -12,6 +11,7 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
@@ -19,9 +19,9 @@ import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/t
 
 interface Props {
     readonly onSubmit: EmptyFn;
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly icon: IconName;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
@@ -44,7 +44,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
     const renderAccountSelector = ({
         field: { value },
         fieldState: { error, invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, typeof accountFieldName>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, typeof accountFieldName>) => {
         const status = invalid ? 'error' : 'default';
 
         return (

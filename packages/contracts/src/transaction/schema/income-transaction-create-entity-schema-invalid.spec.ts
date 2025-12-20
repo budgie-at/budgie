@@ -3,10 +3,8 @@ import { prettifyError } from 'zod';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { createIncomeTransactionInput } from '../../test-utils/create-income-transaction-input.util';
-import { createTransactionEntryInput } from '../../test-utils/create-transaction-entry-input.util';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { IncomeTransactionCreateEntitySchema } from './income-transaction-create-entity.schema';
@@ -15,13 +13,7 @@ describe('IncomeTransactionCreateEntitySchema – invalid cases', () => {
     it("any entry that isn't 'debit' is rejected", () => {
         const totalAmount = convertToMicroUnits(3340.75);
 
-        const payload = createIncomeTransactionInput({
-            amount: totalAmount,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(2450.75), 101),
-                createTransactionEntryInput(TransactionEntryTypeEnum.CREDIT, convertToMicroUnits(890.0), 102)
-            ]
-        });
+        const payload = createIncomeTransactionInput({ amount: totalAmount });
 
         const result = IncomeTransactionCreateEntitySchema.safeParse(payload);
 
@@ -34,10 +26,7 @@ describe('IncomeTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it('zero entries (min 1 enforced)', () => {
-        const payload = createIncomeTransactionInput({
-            amount: convertToMicroUnits(0),
-            [TransactionAssociationEnum.ENTRIES]: []
-        });
+        const payload = createIncomeTransactionInput({ amount: convertToMicroUnits(0) });
 
         const result = IncomeTransactionCreateEntitySchema.safeParse(payload);
 
@@ -50,10 +39,7 @@ describe('IncomeTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it('amount must be positive integer (delegated to entry schema)', () => {
-        const payload = createIncomeTransactionInput({
-            amount: convertToMicroUnits(-10),
-            [TransactionAssociationEnum.ENTRIES]: [createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(-10), 101)]
-        });
+        const payload = createIncomeTransactionInput({ amount: convertToMicroUnits(-10) });
 
         const result = IncomeTransactionCreateEntitySchema.safeParse(payload);
 

@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -41,7 +41,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
 
             <Text className="text-sm font-medium text-secondary-foreground mr-auto">{account.title}</Text>
 
-            <Text className="text-primary">{format(balance)}</Text>
+            <Text className="text-primary">{format(convertFromMicroUnits(balance))}</Text>
 
             {isSelected ? <Icon icon={ICONS.Check} size={16} className="text-primary" /> : null}
         </HapticPressable>

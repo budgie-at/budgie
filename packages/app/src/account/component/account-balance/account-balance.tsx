@@ -1,4 +1,4 @@
-import { CurrencyEnum } from '@budgie/contracts';
+import { CurrencyEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -6,7 +6,7 @@ import { FormattedMoney } from '../../../@generic/components/formatted-money/for
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
-    readonly balance: number;
+    readonly balance: bigint;
     readonly currency: CurrencyEnum;
 }
 
@@ -20,7 +20,7 @@ export const AccountBalance = ({ balance, currency }: Props) => {
             </Text>
 
             <FormattedMoney className="justify-start" minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
-                {balance}
+                {convertFromMicroUnits(balance)}
             </FormattedMoney>
         </View>
     );

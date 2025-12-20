@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "00bdc82b-1721-43b5-9a67-7212993816be",
+  "id": "4908ace1-9cc4-4511-bd6c-6497a2dae235",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -46,7 +46,7 @@
         },
         "amount": {
           "name": "amount",
-          "type": "integer",
+          "type": "blob",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -327,7 +327,7 @@
         },
         "rate": {
           "name": "rate",
-          "type": "integer",
+          "type": "blob",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -671,11 +671,10 @@
         },
         "amount": {
           "name": "amount",
-          "type": "integer",
+          "type": "blob",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": 0
+          "autoincrement": false
         },
         "to_account_id": {
           "name": "to_account_id",
@@ -693,7 +692,7 @@
         },
         "exchange_rate": {
           "name": "exchange_rate",
-          "type": "real",
+          "type": "blob",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -790,7 +789,7 @@
           "name": "category_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "instrument_id": {
@@ -809,7 +808,7 @@
         },
         "amount": {
           "name": "amount",
-          "type": "integer",
+          "type": "blob",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

@@ -1,4 +1,4 @@
-import { ExpenseTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 
@@ -6,6 +6,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
+import { ExpenseTransactionCreateInputSchema } from '../../schema/transaction-create-input.schema';
+import { transactionService } from '../../service/transaction.service';
 import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
 
 interface Props {
@@ -17,7 +19,8 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
     const { defaultAccount } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        schema: ExpenseTransactionCreateEntitySchema,
+        onSubmit: data => transactionService.createInternal(data),
+        schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,

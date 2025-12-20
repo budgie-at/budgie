@@ -1,18 +1,14 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
-import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
-import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
 import { BuyAssetTransactionCreateEntitySchema } from './buy-asset-transaction-create-entity.schema';
 
 describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
     const fromAccountId = 11;
     const toAccountId = 22;
-    const feeAccountId = 33;
 
     const ONE_SCALED = convertToMicroUnits(1);
 
@@ -25,11 +21,7 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
             amount: fromAmount,
             exchangeRate,
             toAccountId,
-            fromAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount)
-            ]
+            fromAccountId
         });
 
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
@@ -48,12 +40,7 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
             amount: fromAmount,
             exchangeRate,
             toAccountId,
-            fromAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
-            ]
+            fromAccountId
         });
 
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);
@@ -72,12 +59,7 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
             amount: fromAmount,
             exchangeRate,
             toAccountId,
-            fromAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
-            ]
+            fromAccountId
         });
 
         const result = BuyAssetTransactionCreateEntitySchema.safeParse(payload);

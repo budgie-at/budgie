@@ -1,4 +1,3 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
@@ -10,12 +9,13 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 import { syncTransferInstrumentAndCategory } from '../../utils/sync-transfer-instrument-and-category.util';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
 }
 
 export const TransferTransactionFormAccounts = ({ control, setValue, variant }: Props) => {
@@ -51,7 +51,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const renderFromAccount = ({
         field: { value, onChange },
         fieldState: { invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'fromAccountId'>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, 'fromAccountId'>) => {
         const handleChange = (accountId: number) => {
             onChange(accountId);
             handleAccountSelect(0, accountId);
@@ -75,7 +75,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const renderToAccount = ({
         field: { value, onChange },
         fieldState: { invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'toAccountId'>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, 'toAccountId'>) => {
         const handleChange = (accountId: number) => {
             onChange(accountId);
             handleAccountSelect(1, accountId);

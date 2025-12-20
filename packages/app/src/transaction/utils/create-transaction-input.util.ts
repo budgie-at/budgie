@@ -1,8 +1,8 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '../schema/transaction-create-input.schema';
 
 export const createTransactionInput = (
-    input: Pick<TransactionCreateEntityInterface, 'type' | 'fromAccountId' | 'toAccountId' | 'entries' | 'exchangeRate'>
-): TransactionCreateEntityInterface => ({
+    input: Pick<TransactionCreateInputInterface, 'type' | 'fromAccountId' | 'toAccountId' | 'entries' | 'exchangeRate'>
+): TransactionCreateInputInterface => ({
     ...input,
     title: '',
     amount: 0,
