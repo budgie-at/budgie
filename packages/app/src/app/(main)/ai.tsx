@@ -1,141 +1,107 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { AudioManager, AudioRecorder } from 'react-native-audio-api';
-import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeechToText } from 'react-native-executorch';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../@generic/components/button/button';
 import { Page } from '../../@generic/components/page/page';
-import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { BottomSheetsProvider } from '../../@generic/providers/bottom-sheets.provider';
+import { RecordButton } from '../../ai/component/record-button/record-button';
+import { useLlmContext } from '../../ai/context/llm.context';
+import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
+import { useTranscribe } from '../../ai/hook/use-transcribe.hook';
+import { AiTransactionPreviewCard } from '../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
+import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
-const TransactionSchema = {
-    properties: {
-        category: {
-            type: 'string',
-            enum: ['food'],
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Transaction category.'
-        },
-        type: {
-            type: 'string',
-            enum: Object.values(TransactionTypeEnum),
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Transaction type.'
-        },
-        amount: {
-            type: 'number',
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            description: 'Amount of money, that user spent.'
-        }
-    },
-    required: ['category', 'type', 'amount']
-};
-
-const recordVoice = async (onRecorder: (waveform: number[]) => Promise<void>, durationSeconds = 3, sampleRate = 16000) => {
-    const recorder = new AudioRecorder({ sampleRate, bufferLengthInSamples: 4096 });
-
-    recorder.onAudioReady(({ buffer }) => {
-        void onRecorder(Array.from(buffer.getChannelData(0)));
-    });
-
-    recorder.start();
-    await new Promise(resolve => {
-        setTimeout(resolve, durationSeconds * 1000);
-    });
-    recorder.stop();
-};
-
-// eslint-disable-next-line max-statements
 export default function AiScreen() {
     const { t } = useLingui();
+    const { llm } = useLlmContext();
 
-    const llm = useLLM({ model: LLAMA3_2_1B });
-    const speechToText = useSpeechToText({ model: WHISPER_TINY });
-
-    const { data: categoriesData } = useLiveQuery(categoryRepository.findAll());
-
-    useEffect(() => {
-        const setup = async () => {
-            await AudioManager.requestRecordingPermissions();
-            AudioManager.setAudioSessionOptions({
-                iosCategory: 'playAndRecord',
-                iosMode: 'spokenAudio',
-                iosOptions: ['defaultToSpeaker', 'allowBluetoothA2DP']
-            });
-        };
-
-        void setup();
-    }, []);
-
-    const [isRecording, setIsRecording] = useState(false);
     const [prompt, setPrompt] = useState('');
     const [error, setError] = useState('');
-    const waveformRef = useRef<number[]>([]);
 
-    const handlePress = async () => {
-        setError('');
-        setIsRecording(true);
-
-        waveformRef.current = [];
-        await recordVoice(async waveform => {
-            waveformRef.current.push(...waveform);
-        });
-
-        TransactionSchema.properties.category.enum = categoriesData.map(category => category.title);
-
-        const formattingInstructions = getStructuredOutputPrompt(TransactionSchema);
-        const transcribed = await speechToText.transcribe(waveformRef.current, { language: 'en' }).catch(() => '');
-
+    const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, prompt);
+    const [handleStartRecording, handleStopRecording, status] = useTranscribe(async transcribed => {
         setPrompt(transcribed);
-        try {
-            await llm.generate([
-                {
-                    role: 'system',
-                    // eslint-disable-next-line lingui/no-unlocalized-strings
-                    content: `Your goal is to analyze and parse user message and return them in JSON format. Don't respond to user. Simply return JSON with user's question parsed. \n${formattingInstructions}`
-                },
-                { role: 'user', content: transcribed }
-            ]);
-        } catch (e: unknown) {
-            setError(getErrorMessage(e));
-        }
 
-        setIsRecording(false);
+        if (isNotEmptyString(transcribed)) {
+            try {
+                await llm.generate([
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: transcribed }
+                ]);
+            } catch (e: unknown) {
+                setError(getErrorMessage(e));
+            }
+        } else {
+            setError(t`No speech detected`);
+        }
+    });
+
+    const createExpense = useCreateExpenseTransactionMutation();
+
+    const handleConfirm = async () => {
+        if (isPositiveNumber(transactionInfo?.amount)) {
+            await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
+            resetTransaction();
+        }
     };
 
-    const areModelsReady = speechToText.isReady && llm.isReady;
-    const isGenerating = speechToText.isGenerating || llm.isGenerating;
-    const buttonText = isRecording ? t`Recording...` : t`Press and describe your transaction`;
+    const handleCancel = () => {
+        setError('');
+        setPrompt('');
+        resetTransaction();
+    };
+
+    const handleRecord = () => {
+        if (status === 'idle') {
+            handleCancel();
+
+            handleStartRecording();
+        } else {
+            void handleStopRecording();
+        }
+    };
+
+    const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
+    const isRecording = status === 'recording';
+    const isGenerating = llm.isGenerating || status === 'processing';
 
     return (
-        <Page>
-            <ScrollView>
-                {areModelsReady ? (
-                    <>
-                        {isGenerating ? (
-                            <ActivityIndicator size="large" className="bg-primary-reverse" />
-                        ) : (
-                            <Button onPress={handlePress} content={buttonText}></Button>
-                        )}
-                    </>
-                ) : (
-                    <>
-                        <ActivityIndicator size="large" className="bg-primary-reverse" />
-                        <View className="w-full px-4 mt-4">
-                            <Text className="text-primary text-center mt-2">
-                                {t`Downloading model...`} {Math.round(llm.downloadProgress * 100)}%
+        <BottomSheetsProvider>
+            <Page>
+                <ScrollView className="flex-1 px-4" contentContainerStyle={scrollViewContentStyle}>
+                    {isNotEmptyString(prompt) && (
+                        <View className="mt-4 p-4 bg-secondary rounded-2xl">
+                            <Text className="text-secondary text-sm font-medium mb-2">
+                                <Trans>Your message:</Trans>
                             </Text>
+                            <Text className="text-primary text-base">{prompt}</Text>
                         </View>
-                    </>
-                )}
-                <Text className="text-primary text-3xl font-semibold">{prompt}</Text>
-                <Text className="text-primary text-3xl font-semibold">{llm.response}</Text>
-                {isNotEmptyString(error) && <Text className="text-primary text-3xl font-semibold">{error}</Text>}
-            </ScrollView>
-        </Page>
+                    )}
+
+                    {isNotEmptyString(error) && (
+                        <View className="mt-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
+                            <Text className="text-red-600 dark:text-red-400 text-base">{error}</Text>
+                        </View>
+                    )}
+
+                    {isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount) && (
+                        <AiTransactionPreviewCard
+                            amount={transactionInfo.amount}
+                            category={transactionInfo.category}
+                            type={transactionInfo.type}
+                            onConfirm={handleConfirm}
+                            onCancel={handleCancel}
+                            onCategoryChange={setTransactionCategory}
+                        />
+                    )}
+                </ScrollView>
+
+                <View className="absolute bottom-8 left-0 right-0 items-center">
+                    <RecordButton llm={llm} isGenerating={isGenerating} isRecording={isRecording} onPress={handleRecord} />
+                </View>
+            </Page>
+        </BottomSheetsProvider>
     );
 }
