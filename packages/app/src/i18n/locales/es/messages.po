@@ -12,17 +12,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:95
+#: src/ai/component/record-button/record-button.tsx:96
 msgid "Processing..."
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:99
+#: src/ai/component/record-button/record-button.tsx:100
 msgid "Recording..."
 msgstr ""
 
 #. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:102
+#: src/ai/component/record-button/record-button.tsx:103
 msgid "Tap to speak"
 msgstr ""
 
@@ -34,9 +34,9 @@ msgstr "{accountsCount} cuentas"
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} cuenta"
 
-#: src/account/component/account-selector/account-selector.tsx:39
-msgid "{currentBalance} available"
-msgstr "{currentBalance} disponible"
+#: src/account/component/account-selector/account-selector.tsx:28
+msgid "{formattedBalance} available"
+msgstr ""
 
 #: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
@@ -58,7 +58,7 @@ msgstr "100% Sin conexión y privado"
 msgid "About"
 msgstr "Acerca de"
 
-#: src/transaction/components/transaction-form/transaction-form.tsx:52
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Cuenta"
 
@@ -111,6 +111,10 @@ msgstr "Agregar ingreso"
 #: src/transaction/components/transaction-split/transaction-split.tsx:111
 msgid "Add Split"
 msgstr "Agregar división"
+
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+msgid "Add Transfer"
+msgstr ""
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
@@ -186,7 +190,7 @@ msgstr "Cuentas archivadas"
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
@@ -222,7 +226,7 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/app/(main)/settings/categories.tsx:45
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:36
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:40
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:55
 msgid "Categories"
@@ -302,7 +306,7 @@ msgstr "Etiquetas frecuentes"
 msgid "Confirm"
 msgstr ""
 
-#: src/auth/util/get-pin-setup-meta.util.ts:52
+#: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Confirmar PIN"
 
@@ -339,7 +343,7 @@ msgstr "No se pudo actualizar la cuenta. Inténtalo de nuevo más tarde"
 msgid "Could not update transaction. Please try again later."
 msgstr ""
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Crear un PIN"
 
@@ -383,7 +387,9 @@ msgstr "Crear etiquetas"
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
 
-#: src/transaction/components/transaction-form/transaction-form.tsx:58
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:70
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:95
 msgid "Create your first account to start tracking transactions"
 msgstr "Crea tu primera cuenta para empezar a rastrear tus transacciones"
 
@@ -417,7 +423,7 @@ msgstr "Modo oscuro"
 
 #: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:48
 #: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:69
-#: src/transaction/components/transaction-form/transaction-form.tsx:65
+#: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Fecha"
 
@@ -430,7 +436,7 @@ msgstr "Rango de fechas"
 msgid "Debt"
 msgstr "Deuda"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:24
+#: src/settings/components/default-account-selector/default-account-selector.tsx:34
 msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
@@ -479,6 +485,10 @@ msgstr ""
 msgid "Edit Income"
 msgstr ""
 
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:25
+msgid "Edit Transfer"
+msgstr ""
+
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
 msgstr "Fondo de emergencia y metas de ahorro"
@@ -512,24 +522,24 @@ msgstr "Inglés (Reino Unido)"
 msgid "English (United States)"
 msgstr "Inglés (Estados Unidos)"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:46
+#: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa un PIN de {PIN_LENGTH} dígitos"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:31
-#: src/auth/util/get-pin-setup-meta.util.ts:38
+#: src/auth/util/get-pin-setup-meta.util.ts:36
+#: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
 msgstr "Ingresa el PIN actual"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:32
+#: src/auth/util/get-pin-setup-meta.util.ts:37
 msgid "Enter current PIN to disable protection"
 msgstr "Ingresa el PIN actual para desactivar la protección"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Enter new PIN"
 msgstr "Ingresa el nuevo PIN"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:39
+#: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
@@ -577,6 +587,10 @@ msgstr "Francés"
 #: src/i18n/constant/locales.constant.ts:88
 msgid "French (France)"
 msgstr "Francés (Francia)"
+
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
+msgid "FROM"
+msgstr ""
 
 #: src/app/(main)/settings/index.tsx:47
 msgid "General"
@@ -640,6 +654,14 @@ msgstr "Dinero que ganas"
 msgid "Money you spend"
 msgstr "Dinero que gastas"
 
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+msgid "Move between accounts"
+msgstr ""
+
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:44
+msgid "Move Money"
+msgstr ""
+
 #: src/app/(main)/create-account/index.tsx:19
 msgid "New Account"
 msgstr "Nueva cuenta"
@@ -655,6 +677,10 @@ msgstr "Nuevo ingreso"
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "New Transaction"
 msgstr "Nueva transacción"
+
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:23
+msgid "New Transfer"
+msgstr ""
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
@@ -717,7 +743,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/ai.tsx:78
+#: src/app/ai.tsx:90
 msgid "No speech detected"
 msgstr ""
 
@@ -746,7 +772,7 @@ msgstr "Aún no hay transacciones"
 msgid "None"
 msgstr "Ninguno"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:25
+#: src/settings/components/default-account-selector/default-account-selector.tsx:35
 msgid "None selected"
 msgstr "Ninguna seleccionada"
 
@@ -790,7 +816,7 @@ msgstr "Vista previa"
 msgid "Privacy"
 msgstr "Privacidad"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:53
+#: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
@@ -855,7 +881,8 @@ msgstr "Protege tu aplicación con PIN y Face ID"
 msgid "Security"
 msgstr "Seguridad"
 
-#: src/account/component/account-selector/account-selector.tsx:59
+#: src/account/component/account-selector-square/account-selector-square.tsx:58
+#: src/account/component/account-selector/account-selector.tsx:40
 msgid "Select account"
 msgstr "Seleccionar cuenta"
 
@@ -872,7 +899,7 @@ msgid "Select category"
 msgstr "Seleccionar categoría"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/transaction-form/transaction-form.tsx:83
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:70
 msgid "Select Category"
 msgstr "Seleccionar categoría"
 
@@ -963,7 +990,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(main)/settings/tags.tsx:45
-#: src/transaction/components/transaction-form/transaction-form.tsx:71
+#: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:58
 msgid "Tags"
@@ -976,6 +1003,10 @@ msgstr "Etiquetas ({selectedTagsCount})"
 #: src/@generic/components/icon-selector/icon-selector.tsx:28
 msgid "Tap to change icon"
 msgstr "Toca para cambiar el icono"
+
+#: src/account/component/account-selector-square/account-selector-square.tsx:59
+msgid "Tap to choose"
+msgstr ""
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -992,6 +1023,10 @@ msgstr "Esta semana"
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
 msgstr "Este año"
+
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
+msgid "TO"
+msgstr ""
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1058,6 +1093,10 @@ msgstr ""
 msgid "Update Income"
 msgstr ""
 
+#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:29
+msgid "Update Transfer"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -1087,10 +1126,10 @@ msgstr "se restaurará a tu vista principal y se incluirá en los totales."
 msgid "Your expense has been recorded successfully."
 msgstr ""
 
-#: src/ai/hook/use-transaction-info-prompt.hook.ts:19
+#: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
 msgstr ""
 
-#: src/app/ai.tsx:96
+#: src/app/ai.tsx:149
 msgid "Your message:"
 msgstr ""
