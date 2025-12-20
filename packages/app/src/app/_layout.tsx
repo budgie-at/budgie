@@ -70,11 +70,11 @@ export default function RootLayout() {
                 <SettingsProvider>
                     <I18nProvider>
                         <KeyboardProvider>
-                            <ThemeProvider>
-                                <BottomSheetsProvider>
-                                    <AuthProvider>
-                                        <AuthGuard>
-                                            <LlmProvider>
+                            <BottomSheetsProvider>
+                                <AuthProvider>
+                                    <AuthGuard>
+                                        <LlmProvider>
+                                            <ThemeProvider>
                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                     <Stack.Screen name="(tabs)" />
 
@@ -92,13 +92,13 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/settings/tags" />
                                                     <Stack.Screen name="(main)/settings/archived" />
 
-                                                    <Stack.Screen name="ai" options={aiScreenOptions} />
+                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                 </Stack>
-                                            </LlmProvider>
-                                        </AuthGuard>
-                                    </AuthProvider>
-                                </BottomSheetsProvider>
-                            </ThemeProvider>
+                                            </ThemeProvider>
+                                        </LlmProvider>
+                                    </AuthGuard>
+                                </AuthProvider>
+                            </BottomSheetsProvider>
                         </KeyboardProvider>
                     </I18nProvider>
                 </SettingsProvider>
