@@ -30,7 +30,9 @@
     "resolutions": {
         "typescript": "^5.9.3",
         "react": "19.1.4",
-        "react-dom": "19.1.4"
+        "react-dom": "19.1.4",
+        "@lingui/core": "5.7.0",
+        "@lingui/react": "5.7.0"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.8.1",
