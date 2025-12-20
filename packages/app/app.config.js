@@ -131,6 +131,12 @@ export default ({ config }) => ({
                 }
             }
         ],
+        [
+            'expo-document-picker',
+            {
+                iCloudContainerEnvironment: 'Production'
+            }
+        ],
         ['expo-router', { origin: 'https://www.budgie.at/' }],
         [
             'expo-font',
