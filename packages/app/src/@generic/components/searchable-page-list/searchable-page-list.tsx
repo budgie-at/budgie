@@ -46,7 +46,7 @@ export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSh
             <AnimatedFlatList
                 className="flex-1"
                 data={data}
-                contentContainerClassName='gap-y-5xl pt-5xl'
+                contentContainerClassName="gap-y-5xl pt-5xl"
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 ListFooterComponent={listFooter}

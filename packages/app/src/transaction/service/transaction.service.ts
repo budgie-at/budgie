@@ -1,18 +1,9 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import {
-    TransactionCreateEntityInterface,
-    TransactionEntityInterface,
-    TransactionEntryTypeEnum
-} from '@budgie/contracts';
+import { TransactionCreateEntityInterface, TransactionEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import {
-    db,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
