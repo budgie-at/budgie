@@ -286,7 +286,7 @@ msgstr "Alle löschen"
 msgid "Common Tags"
 msgstr "Häufig verwendete Tags"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:52
+#: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "PIN bestätigen"
 
@@ -322,7 +322,7 @@ msgstr "Konto konnte nicht aktualisiert werden. Bitte versuchen Sie es später e
 msgid "Could not update transaction. Please try again later."
 msgstr "Transaktion konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut."
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "PIN erstellen"
 
@@ -505,24 +505,24 @@ msgstr "Englisch (Vereinigtes Königreich)"
 msgid "English (United States)"
 msgstr "Englisch (Vereinigte Staaten)"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:46
+#: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:31
-#: src/auth/util/get-pin-setup-meta.util.ts:38
+#: src/auth/util/get-pin-setup-meta.util.ts:36
+#: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:32
+#: src/auth/util/get-pin-setup-meta.util.ts:37
 msgid "Enter current PIN to disable protection"
 msgstr "Aktuelle PIN eingeben, um Schutz zu deaktivieren"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Enter new PIN"
 msgstr "Neue PIN eingeben"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:39
+#: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
 
@@ -804,7 +804,7 @@ msgstr "Vorschau"
 msgid "Privacy"
 msgstr "Privatsphäre"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:53
+#: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
 

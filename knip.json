@@ -30,7 +30,8 @@
         "tsx",
         "babel-plugin-inline-import",
         "babel-plugin-react-compiler",
-        "eas-build-cache-provider"
+        "eas-build-cache-provider",
+        "@types/react-dom"
     ],
     "ignoreBinaries": ["run"]
 }
