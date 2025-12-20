@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.79.1](https://github.com/budgie-at/budgie/compare/v1.79.0...v1.79.1) (2025-12-20)
+
+### Bug Fixes
+
+- **app:** broken language bottom sheet, styling ([88c1628](https://github.com/budgie-at/budgie/commit/88c1628a6fdcf6a232e94fc737d00c1765a16866))
+- **app:** fix pin and sqlcipher ([ca4d48c](https://github.com/budgie-at/budgie/commit/ca4d48ca5c24f4ccf88845cb753e094f157eaa82))
+
 # [1.79.0](https://github.com/budgie-at/budgie/compare/v1.78.0...v1.79.0) (2025-12-20)
 
 ### Bug Fixes
