@@ -11,9 +11,9 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
-import { UpdateTransferTransaction } from '../../../transaction/components/create-transfer-transaction/update-transfer-transaction';
 import { UpdateExpenseTransaction } from '../../../transaction/components/update-expense-transaction/update-expense-transaction';
 import { UpdateIncomeTransaction } from '../../../transaction/components/update-income-transaction/update-income-transaction';
+import { UpdateTransferTransaction } from '../../../transaction/components/update-transfer-transaction/update-transfer-transaction';
 import { useGetTransactionByIdQuery } from '../../../transaction/query/use-get-transaction-by-id.query';
 
 export default function TransactionDetailsScreen() {

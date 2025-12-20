@@ -10,6 +10,7 @@ import { IncomeTransactionCreateEntitySchema } from './income-transaction-create
 describe('IncomeTransactionCreateEntitySchema – valid cases', () => {
     it('single debit entry with unique category', () => {
         const payload = createIncomeTransactionInput({
+            amount: 1_000_000,
             [TransactionAssociationEnum.ENTRIES]: [createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 1_000_000, 101)]
         });
 
@@ -20,6 +21,7 @@ describe('IncomeTransactionCreateEntitySchema – valid cases', () => {
 
     it('multiple debit entries (splits) with unique categories', () => {
         const payload = createIncomeTransactionInput({
+            amount: 1_000_000,
             [TransactionAssociationEnum.ENTRIES]: [
                 createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 600_000, 101),
                 createTransactionEntryInput(TransactionEntryTypeEnum.DEBIT, 300_000, 102),

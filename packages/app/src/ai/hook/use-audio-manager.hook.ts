@@ -1,0 +1,15 @@
+import { useEffect } from 'react';
+import { AudioManager } from 'react-native-audio-api';
+
+const setup = async () => {
+    await AudioManager.requestRecordingPermissions();
+    AudioManager.setAudioSessionOptions({
+        iosCategory: 'playAndRecord',
+        iosMode: 'spokenAudio',
+        iosOptions: ['defaultToSpeaker', 'allowBluetoothA2DP']
+    });
+};
+
+export const useAudioManager = () => {
+    useEffect(() => void setup(), []);
+};
