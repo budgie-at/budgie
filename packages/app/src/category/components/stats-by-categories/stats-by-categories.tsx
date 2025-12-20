@@ -35,7 +35,7 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
             warning: 'bg-warning-foreground',
             default: 'bg-default-foreground',
             ghost: 'bg-ghost-foreground',
-            pink: 'bg-pink-foreground',
+            pink: 'bg-pink-foreground'
         }
     }
 });
@@ -69,7 +69,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
         <View className="gap-y-md">
             <Text className="uppercase text-secondary-foreground text-xs">{title}</Text>
 
-            <Card className='gap-y-xl'>{stats.map(renderStats)}</Card>
+            <Card className="gap-y-xl">{stats.map(renderStats)}</Card>
         </View>
     );
 };

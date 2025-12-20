@@ -67,9 +67,10 @@ export class TransactionRepository {
             .from(TransactionEntryEntityTable)
             .where(eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT));
 
-        return this.db
-            .select({
-                income: sql<number>`
+        return (
+            this.db
+                .select({
+                    income: sql<number>`
                     COALESCE(SUM(
                         CASE
                             WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${TransactionEntityTable.amount}
@@ -80,7 +81,7 @@ export class TransactionRepository {
                         END
                     ), 0)
                 `,
-                expense: sql<number>`
+                    expense: sql<number>`
                     COALESCE(SUM(
                         CASE
                             WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntityTable.amount}
@@ -91,10 +92,11 @@ export class TransactionRepository {
                         END
                     ), 0)
                 `
-            })
-            .from(TransactionEntityTable)
-            // eslint-disable-next-line no-undefined
-            .where(isDefined(baseWhere) ? baseWhere : undefined);
+                })
+                .from(TransactionEntityTable)
+                // eslint-disable-next-line no-undefined
+                .where(isDefined(baseWhere) ? baseWhere : undefined)
+        );
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
