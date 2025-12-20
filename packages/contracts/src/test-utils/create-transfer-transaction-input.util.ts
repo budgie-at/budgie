@@ -18,6 +18,7 @@ export const createTransferTransactionInput = (
     toAccountId: 2,
     fromAccountId: 1,
     amount: 0,
+    tagIds: [],
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input
 });
