@@ -1,15 +1,16 @@
-import { TransactionAssociationEnum, TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionAssociationEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/components/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { CategorySelector } from '../../../category/components/category-selector/category-selector';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 import { TransactionSplit } from '../transaction-split/transaction-split';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
 }
 
@@ -24,7 +25,7 @@ export const TransactionFormCategory = ({ variant, control }: Props) => {
     const renderCategorySelector = ({
         field: { value, onChange },
         fieldState: { invalid, error }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'entries.0.categoryId'>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, 'entries.0.categoryId'>) => {
         const status = invalid ? 'error' : 'default';
 
         return (

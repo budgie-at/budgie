@@ -70,28 +70,28 @@ export class TransactionRepository {
         return (
             this.db
                 .select({
-                    income: sql<number>`
-                    COALESCE(SUM(
-                        CASE
-                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${TransactionEntityTable.amount}
-                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
-                                 AND ${inArray(TransactionEntityTable.id, adjustmentIncomeIds)}
-                            THEN ${TransactionEntityTable.amount}
-                            ELSE 0
-                        END
-                    ), 0)
-                `,
-                    expense: sql<number>`
-                    COALESCE(SUM(
-                        CASE
-                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntityTable.amount}
-                            WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
-                                 AND ${inArray(TransactionEntityTable.id, adjustmentExpenseIds)}
-                            THEN ${TransactionEntityTable.amount}
-                            ELSE 0
-                        END
-                    ), 0)
-                `
+                    income: sql<bigint>`
+                COALESCE(SUM(
+                    CASE
+                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN ${TransactionEntityTable.amount}
+                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
+                             AND ${inArray(TransactionEntityTable.id, adjustmentIncomeIds)}
+                        THEN ${TransactionEntityTable.amount}
+                        ELSE 0
+                    END
+                ), 0)
+            `,
+                    expense: sql<bigint>`
+                COALESCE(SUM(
+                    CASE
+                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.EXPENSE} THEN ${TransactionEntityTable.amount}
+                        WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.ADJUSTMENT}
+                             AND ${inArray(TransactionEntityTable.id, adjustmentExpenseIds)}
+                        THEN ${TransactionEntityTable.amount}
+                        ELSE 0
+                    END
+                ), 0)
+            `
                 })
                 .from(TransactionEntityTable)
                 // eslint-disable-next-line no-undefined
@@ -133,20 +133,6 @@ export class TransactionRepository {
         });
     }
 
-    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
-        return this.db
-            .select({
-                category: CategoryEntityTable,
-                amount: sql<number>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(desc(sql`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
-    }
-
     private buildFilteredTransactionIdsQuery(
         filters: TransactionFilterInterface,
         transactionType: TransactionTypeEnum,
@@ -164,6 +150,20 @@ export class TransactionRepository {
                     or(eq(TransactionEntityTable.type, transactionType), this.buildAdjustmentCondition(entryType))
                 )
             );
+    }
+
+    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
+        return this.db
+            .select({
+                category: CategoryEntityTable,
+                amount: sql<bigint>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
+            .groupBy(CategoryEntityTable.id)
+            .orderBy(desc(sql<bigint>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
     }
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {

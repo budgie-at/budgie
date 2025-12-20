@@ -1,10 +1,11 @@
-import { TransactionCreateEntityInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { TransactionCreateInputInterface } from '../schema/transaction-create-input.schema';
 
-export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): TransactionCreateEntityInterface => ({
+export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): TransactionCreateInputInterface => ({
     ...transaction,
     amount: convertFromMicroUnits(transaction.amount),
+    exchangeRate: convertFromMicroUnits(transaction.exchangeRate),
     tagIds: transaction.transactionTags.map(({ tagId }) => tagId),
     entries: transaction.entries.map(entry => ({
         ...entry,

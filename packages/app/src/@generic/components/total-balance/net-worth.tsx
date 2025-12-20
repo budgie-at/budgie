@@ -1,3 +1,4 @@
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -16,7 +17,7 @@ export const NetWorth = () => {
             </Text>
 
             <FormattedMoney decimalPlaces={decimalPlaces} minFontSize={24} maxFontSize={60} currency={defaultCurrency}>
-                {netWorth}
+                {convertFromMicroUnits(netWorth)}
             </FormattedMoney>
         </View>
     );

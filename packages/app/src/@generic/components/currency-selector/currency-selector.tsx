@@ -36,7 +36,7 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
 
     const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
     const { code: defaultInstrumentCode } = defaultInstrument;
-    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
+    const convertedAmount = isDefined(rate) ? rate.rate / BigInt(PRECISION) : 1;
     const isBaseCurrency = !isDefined(rate);
 
     const handleOpen = () => ref.current?.open();

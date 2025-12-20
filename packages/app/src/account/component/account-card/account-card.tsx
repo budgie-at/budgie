@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -8,7 +8,6 @@ import { HapticPressable } from '../../../@generic/components/haptic-pressable/h
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';

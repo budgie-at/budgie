@@ -1,43 +1,33 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
-import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
-import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
-import { findCoreTransactionEntries } from '../util/find-core-transaction-entries.util';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
+import { TransactionCreateEntitySchema } from './transaction-create-entity.schema';
 
-
-const ONE_SCALED = convertToMicroUnits(1);
-
-export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
-    ({ entries, exchangeRate, fromAccountId, toAccountId }, context) => {
-        const { fromEntry, toEntry } = findCoreTransactionEntries(entries, fromAccountId, toAccountId);
-
-        if (!isDefined(fromEntry) || !isDefined(toEntry)) {
-            return;
+export const TransferTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(
+    ({ fromAccountId, toAccountId, type }, context) => {
+        if (type !== TransactionTypeEnum.TRANSFER) {
+            context.addIssue({
+                code: 'custom',
+                path: ['type'],
+                message: `Transaction type must be '${TransactionTypeEnum.TRANSFER}'.`
+            });
         }
 
-        const totalSignedFromMicroUnits = entries.reduce((acc, curr) => {
-            let amountInFromCurrency: bigint = curr.amount;
-
-            if (curr.accountId === toAccountId) {
-                amountInFromCurrency = (curr.amount * exchangeRate) / ONE_SCALED;
-            }
-
-            const signedValue = BigInt(getSignFromEntryType(curr.type)) * amountInFromCurrency;
-
-            return acc + signedValue;
-        }, BigInt(0));
-
-        const absDiff = totalSignedFromMicroUnits < BigInt(0) ? -totalSignedFromMicroUnits : totalSignedFromMicroUnits;
-
-        if (absDiff > BigInt(TOLERANCE_MICRO)) {
+        if (!isDefined(fromAccountId) || !isDefined(toAccountId)) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES],
-                message: `entries do not balance: deviation of ${absDiff} micro units (tolerance ±${BigInt(TOLERANCE_MICRO)})`
+                message: '"from" and "to" accounts must be defined'
+            });
+        }
+
+        if (fromAccountId === toAccountId) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: '"from" and "to" accounts must be different'
             });
         }
     }

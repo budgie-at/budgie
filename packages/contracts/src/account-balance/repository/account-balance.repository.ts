@@ -55,9 +55,9 @@ export class AccountBalanceRepository {
     getByAccountId(accountId: number) {
         return this.db
             .select({
-                balance: sql<number>`
-                COALESCE(${this.getAccountBalanceWithTransactionsSql()}, 0)
-            `
+                balance: sql<bigint>`
+                    COALESCE(${this.getAccountBalanceWithTransactionsSql()}, 0)
+                `
             })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.id, accountId), isNull(AccountEntityTable.deletedAt)))
@@ -67,16 +67,16 @@ export class AccountBalanceRepository {
     getNetWorth(defaultInstrumentId: number) {
         return this.db
             .select({
-                netWorth: sql<number>`
-                COALESCE(
-                    SUM(
-                        ${this.getAccountBalanceWithTransactionsSql()}
-                        *
-                        ${this.getExchangeRateMultiplierSql(defaultInstrumentId)}
-                    ),
-                    0
-                )
-            `
+                netWorth: sql<bigint>`
+                    COALESCE(
+                        SUM(
+                            ${this.getAccountBalanceWithTransactionsSql()}
+                            *
+                            ${this.getExchangeRateMultiplierSql(defaultInstrumentId)}
+                        ),
+                        0
+                    )
+                `
             })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));

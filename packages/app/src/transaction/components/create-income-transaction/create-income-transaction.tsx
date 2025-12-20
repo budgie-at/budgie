@@ -1,8 +1,10 @@
-import { IncomeTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
+import { IncomeTransactionCreateInputSchema } from '../../schema/transaction-create-input.schema';
+import { transactionService } from '../../service/transaction.service';
 import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
 
 export const CreateIncomeTransaction = () => {
@@ -10,7 +12,8 @@ export const CreateIncomeTransaction = () => {
     const { defaultAccount } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        schema: IncomeTransactionCreateEntitySchema,
+        onSubmit: data => transactionService.createInternal(data),
+        schema: IncomeTransactionCreateInputSchema,
         toAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,
         fromAccountId: null

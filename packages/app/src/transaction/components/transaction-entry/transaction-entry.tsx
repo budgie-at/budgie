@@ -1,4 +1,3 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -10,11 +9,12 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 
 interface Props {
     readonly onRemove: (index: number) => void;
     readonly variant: ColorPaletteVariant;
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly selectedCategoryIds: number[];
     readonly index: number;
 }
@@ -28,7 +28,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
     const renderCategorySelector = ({
         field: { value, onChange },
         fieldState: { invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, `entries.${number}.categoryId`>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, `entries.${number}.categoryId`>) => {
         const status = invalid ? 'error' : 'default';
         const excludeCategoryIds = selectedCategoryIds.filter(id => id !== value);
 
@@ -46,7 +46,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
     const renderAmountInput = ({
         field: { onChange, value },
         fieldState: { invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, `entries.${number}.amount`>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, `entries.${number}.amount`>) => {
         const status = invalid ? 'error' : 'default';
 
         return (

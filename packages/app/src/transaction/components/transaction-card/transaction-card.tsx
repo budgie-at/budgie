@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -56,7 +56,9 @@ export const TransactionCard = ({ transaction }: Props) => {
                 </View>
             </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>
+                {formatMoney(convertFromMicroUnits(transaction.amount))}
+            </Text>
         </Card>
     );
 };

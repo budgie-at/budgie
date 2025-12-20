@@ -3,10 +3,8 @@ import { prettifyError } from 'zod';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
-import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micro-units.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
@@ -15,7 +13,6 @@ import { TransferTransactionCreateEntitySchema } from './transfer-transaction-cr
 describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
     const fromAccountId = 11;
     const toAccountId = 22;
-    const feeAccountId = 33;
 
     const ONE_SCALED = convertToMicroUnits(1);
 
@@ -31,12 +28,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -58,11 +50,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId: fromAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, toAmount)
-            ]
+            toAccountId: fromAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -84,12 +72,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(50.0))
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -111,11 +94,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount)
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -137,11 +116,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.CREDIT, toAmount)
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -164,12 +139,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.CREDIT, fee)
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -191,10 +161,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount)
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);
@@ -216,13 +183,7 @@ describe('TransferTransactionCreateEntitySchema – invalid cases', () => {
             amount: fromAmount,
             exchangeRate: conversionRate,
             fromAccountId,
-            toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(10.0)),
-                createTransferTransactionEntryInput(44, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(5.0))
-            ]
+            toAccountId
         });
 
         const result = TransferTransactionCreateEntitySchema.safeParse(payload);

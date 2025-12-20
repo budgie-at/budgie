@@ -1,11 +1,11 @@
 import {
-    IncomeTransactionCreateEntitySchema,
     TransactionIncomeWithRelationsEntityInterface,
     TransactionPositiveAdjustmentWithRelationsEntityInterface
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
+import { IncomeTransactionCreateInputSchema } from '../../schema/transaction-create-input.schema';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
 
@@ -18,7 +18,7 @@ export const UpdateIncomeTransaction = ({ transaction }: Props) => {
 
     const { form, handleSubmit } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
-        schema: IncomeTransactionCreateEntitySchema,
+        schema: IncomeTransactionCreateInputSchema,
         id: transaction.id
     });
 

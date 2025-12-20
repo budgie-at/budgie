@@ -1,4 +1,4 @@
-import { PRECISION } from '@budgie/contracts';
+import { convertToMicroUnits } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -74,14 +74,11 @@ class ExchangeRatesService {
             return;
         }
 
-        const directInteger = Math.round(rate * PRECISION);
-
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, directInteger, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, convertToMicroUnits(rate), 'exchangerate-api.com');
 
         const reverse = 1 / rate;
-        const reverseInteger = Math.round(reverse * PRECISION);
 
-        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseInteger, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, convertToMicroUnits(reverse), 'exchangerate-api.com');
     }
 }
 

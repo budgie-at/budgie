@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { RefObject } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -24,7 +24,7 @@ export const useAccountSelector = ({ accountId, excludeAccountId = null, emptySt
     const { balance } = useAccountBalanceQuery(accountId ?? 0);
     const formatMoney = useFormatMoney(decimalPlaces, selectedAccount?.instrument.code ?? defaultCurrency);
 
-    const formattedBalance = formatMoney(balance);
+    const formattedBalance = formatMoney(convertFromMicroUnits(balance));
     const hasAccount = isDefined(selectedAccount);
     const icon = selectedAccount?.icon ?? UserIconNameEnum.Wallet;
 

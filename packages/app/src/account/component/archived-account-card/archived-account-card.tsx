@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -54,7 +54,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                     <Text className="text-xs text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                 </View>
 
-                <Text className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</Text>
+                <Text className="text-destructive-foreground text-sm font-semibold">{formatMoney(convertFromMicroUnits(balance))}</Text>
 
                 <HapticPressable onPress={onRestore}>
                     <CircleIcon variant="positive" icon={ICONS.RotateCcw} />

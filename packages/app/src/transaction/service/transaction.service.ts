@@ -1,23 +1,27 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionCreateEntityInterface, TransactionEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionEntityInterface, TransactionEntryTypeEnum, convertToMicroUnits } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { TransactionCreateInputInterface } from '../schema/transaction-create-input.schema';
 
 class TransactionService {
-    async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.create(
                 {
                     ...input,
-                    tagIds: [],
-                    entries: [],
                     externalId: null,
                     externalSource: null,
-                    amount: convertToMicroUnits(input.amount)
+                    amount: convertToMicroUnits(input.amount),
+                    exchangeRate: convertToMicroUnits(input.exchangeRate)
                 },
                 tx
             );
@@ -28,7 +32,7 @@ class TransactionService {
         });
     }
 
-    async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
             const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
@@ -46,7 +50,7 @@ class TransactionService {
                     externalId: null,
                     amount: fromAmount,
                     externalSource: null,
-                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
+                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? convertToMicroUnits(1) : toAmount / fromAmount
                 },
                 tx
             );
@@ -84,9 +88,13 @@ class TransactionService {
         });
     }
 
-    async updateById(id: number, input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
-            const transaction = await transactionRepository.updateById(id, { ...input, amount: convertToMicroUnits(input.amount) }, tx);
+            const transaction = await transactionRepository.updateById(
+                id,
+                { ...input, exchangeRate: convertToMicroUnits(input.exchangeRate), amount: convertToMicroUnits(input.amount) },
+                tx
+            );
 
             await this.upsertEntriesAndTags(id, input, tx);
 
@@ -94,7 +102,7 @@ class TransactionService {
         });
     }
 
-    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: Transaction): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(

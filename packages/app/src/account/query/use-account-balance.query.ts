@@ -4,7 +4,7 @@ import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 
 export const useAccountBalanceQuery = (accountId: number) => {
     const { data } = useLiveQuery(accountBalanceRepository.getByAccountId(accountId), [accountId]);
-    const { balance } = data.at(0) ?? { balance: 0 };
+    const { balance } = data.at(0) ?? { balance: BigInt(0) };
 
     return { balance };
 };

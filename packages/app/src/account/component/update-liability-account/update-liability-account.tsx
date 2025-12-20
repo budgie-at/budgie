@@ -1,4 +1,4 @@
-import { AccountCreateEntityInterface, AccountEntityInterface } from '@budgie/contracts';
+import { AccountCreateEntityInterface, AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -15,7 +15,6 @@ import { FullPage } from '../../../@generic/components/page/full-page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';

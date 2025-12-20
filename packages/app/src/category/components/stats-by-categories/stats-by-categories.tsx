@@ -1,4 +1,4 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View, ViewStyle } from 'react-native';
@@ -13,10 +13,10 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly title: string;
-    readonly totalAmount: number;
+    readonly totalAmount: bigint;
     readonly variant: ColorPaletteVariant;
     readonly getPercentageLabel: (percentage: number) => string;
-    readonly stats: { amount: number; category: CategoryEntityInterface }[];
+    readonly stats: { amount: bigint; category: CategoryEntityInterface }[];
 }
 
 const amountVariants = cva('text-xs', {
@@ -43,9 +43,12 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
 export const StatsByCategories = ({ title, stats, totalAmount, variant, getPercentageLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const format = useFormatMoney(decimalPlaces, defaultInstrument.code);
+    const convertedTotal = convertFromMicroUnits(totalAmount);
 
-    const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
-        const percentage = Number((totalAmount > 0 ? (amount / totalAmount) * 100 : 0).toFixed(2));
+    const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: bigint }) => {
+        const convertedAmount = convertFromMicroUnits(amount);
+
+        const percentage = Number((convertedTotal > 0 ? (convertedAmount / convertedTotal) * 100 : 0).toFixed(2));
         const style: ViewStyle = { width: `${percentage}%` };
 
         return (
@@ -53,7 +56,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
                 <View className="flex-row items-center gap-x-md">
                     <CircleIcon icon={ICONS[category.icon]} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                    <Text className={amountVariants({ variant })}>{format(amount)}</Text>
+                    <Text className={amountVariants({ variant })}>{format(convertedAmount)}</Text>
                 </View>
 
                 <View className="rounded-5xl bg-secondary-corner h-[8px]">

@@ -53,22 +53,22 @@ class AccountBalanceIncrementalService {
             map.set(accountId, amount);
 
             return map;
-        }, new Map<number, number>());
+        }, new Map<number, bigint>());
     }
 
     private buildDeltaMap(entries: TransactionEntryEntityInterface[]) {
         return entries.reduce((map, { accountId, amount, type }) => {
             const delta = type === TransactionEntryTypeEnum.DEBIT ? amount : -amount;
-            const total = (map.get(accountId) ?? 0) + delta;
+            const total = (map.get(accountId) ?? BigInt(0)) + delta;
 
             return map.set(accountId, total);
-        }, new Map<number, number>());
+        }, new Map<number, bigint>());
     }
 
-    private buildNewBalances(accounts: AccountEntityInterface[], balancesMap: Map<number, number>, deltaMap: Map<number, number>) {
+    private buildNewBalances(accounts: AccountEntityInterface[], balancesMap: Map<number, bigint>, deltaMap: Map<number, bigint>) {
         return accounts.map(account => {
-            const base = balancesMap.get(account.id) ?? 0;
-            const delta = deltaMap.get(account.id) ?? 0;
+            const base = balancesMap.get(account.id) ?? BigInt(0);
+            const delta = deltaMap.get(account.id) ?? BigInt(0);
 
             return {
                 amount: base + delta,

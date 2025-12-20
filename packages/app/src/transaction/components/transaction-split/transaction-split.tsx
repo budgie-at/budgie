@@ -1,4 +1,4 @@
-import { TransactionAssociationEnum, TransactionCreateEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionAssociationEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Control, useFieldArray, useWatch } from 'react-hook-form';
@@ -12,12 +12,13 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { sumEntriesAmount } from '../../../transaction-entry/utils/sum-entries-amount.util';
+import { TransactionCreateInputInterface } from '../../schema/transaction-create-input.schema';
 import { TransactionEntry } from '../transaction-entry/transaction-entry';
 
 import { TransactionSplitAllocation } from './transaction-split-allocation';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
 }
 

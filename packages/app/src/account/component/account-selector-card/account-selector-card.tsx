@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -36,7 +36,7 @@ export const AccountSelectorCard = (props: Props) => {
                 <View className="flex-row items-center">
                     <Text className="text-secondary-foreground text-xs">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                     <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                    <Text className="text-sm font-medium text-primary">{formatMoney(balance)}</Text>
+                    <Text className="text-sm font-medium text-primary">{formatMoney(convertFromMicroUnits(balance))}</Text>
                 </View>
             }
         />
