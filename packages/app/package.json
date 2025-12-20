@@ -39,6 +39,7 @@
         "expo-background-task": "~1.0.10",
         "expo-constants": "~18.0.12",
         "expo-dev-client": "~6.0.20",
+        "expo-document-picker": "^14.0.8",
         "expo-drizzle-studio-plugin": "^0.2.1",
         "expo-font": "~14.0.10",
         "expo-haptics": "~15.0.8",
@@ -55,6 +56,7 @@
         "expo-updates": "~29.0.15",
         "lucide-react-native": "^0.545.0",
         "nativewind": "^5.0.0-preview.2",
+        "papaparse": "^5.5.3",
         "react": "19.1.0",
         "react-compiler-runtime": "19.0.0-beta-63e3235-20250105",
         "react-dom": "19.1.0",
@@ -79,6 +81,7 @@
     "devDependencies": {
         "@lingui/babel-plugin-lingui-macro": "^5.7.0",
         "@tailwindcss/postcss": "^4.1.14",
+        "@types/papaparse": "^5",
         "babel-plugin-inline-import": "^3.0.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-react-compiler": "^1.0.0",
