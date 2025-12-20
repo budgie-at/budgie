@@ -12,12 +12,14 @@ import { RecordButton } from '../ai/component/record-button/record-button';
 import { useLlmContext } from '../ai/context/llm.context';
 import { useAiTransaction } from '../ai/hook/use-ai-transaction.hook';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
+import { calculateRMS } from '../ai/util/calculate-rms.util';
 import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
 import { AiTransactionPreviewCard } from '../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../transaction/hook/use-create-expense-transaction.mutation';
 
 const SAMPLE_RATE = 16000;
-const MAX_RECORDING_TIME = 5000;
+const SILENCE_TIMEOUT = 2000;
+const SILENCE_THRESHOLD = 0.01;
 
 // eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
@@ -28,12 +30,12 @@ export default function AiScreen() {
 
     const [isRecording, setIsRecording] = useState(false);
     const [isProcessingVoice, setIsProcessingVoice] = useState(false);
-    const [recordingStartedAt, setRecordingStartedAt] = useState(0);
     const [prompt, setPrompt] = useState('');
     const [error, setError] = useState('');
 
     const recorderRef = useRef(new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: 4096 }));
     const waveformRef = useRef<number[]>([]);
+    const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useAudioManager();
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, prompt);
@@ -51,24 +53,17 @@ export default function AiScreen() {
         setPrompt('');
     };
 
-    const handleStartRecording = () => {
-        setError('');
-        setPrompt('');
-        setIsRecording(true);
-        setRecordingStartedAt(Date.now());
-        resetTransaction();
-
-        waveformRef.current = [];
-        recorderRef.current.start();
-    };
-
     // eslint-disable-next-line max-statements
     const handleStopRecording = async () => {
+        if (silenceTimeoutRef.current) {
+            clearTimeout(silenceTimeoutRef.current);
+            silenceTimeoutRef.current = null;
+        }
+
         recorderRef.current.stop();
 
         setIsProcessingVoice(true);
         setIsRecording(false);
-        setRecordingStartedAt(0);
 
         // HINT: We need time for AudioRecorder to process the audio data, would be nice to have event there
         await new Promise(resolve => {
@@ -96,6 +91,20 @@ export default function AiScreen() {
         }
     };
 
+    const handleStartRecording = () => {
+        setError('');
+        setPrompt('');
+        setIsRecording(true);
+        resetTransaction();
+
+        waveformRef.current = [];
+        recorderRef.current.start();
+
+        silenceTimeoutRef.current = setTimeout(() => {
+            void handleStopRecording();
+        }, SILENCE_TIMEOUT);
+    };
+
     const handlePress = () => {
         if (isRecording) {
             void handleStopRecording();
@@ -106,21 +115,31 @@ export default function AiScreen() {
 
     useEffect(() => {
         recorderRef.current.onAudioReady(({ buffer }) => {
-            waveformRef.current.push(...Array.from(buffer.getChannelData(0)));
-        });
-    }, []);
-    useEffect(() => {
-        let timeoutId: number;
-        if (isRecording) {
-            timeoutId = setTimeout(() => {
-                if (Date.now() - recordingStartedAt > MAX_RECORDING_TIME) {
-                    void handleStopRecording();
-                }
-            }, MAX_RECORDING_TIME);
-        }
+            const samples = buffer.getChannelData(0);
 
-        return () => void clearTimeout(timeoutId);
-    }, [isRecording, recordingStartedAt]);
+            if (calculateRMS(samples) > SILENCE_THRESHOLD) {
+                waveformRef.current.push(...Array.from(samples));
+
+                if (silenceTimeoutRef.current) {
+                    clearTimeout(silenceTimeoutRef.current);
+                }
+
+                silenceTimeoutRef.current = setTimeout(() => {
+                    void handleStopRecording();
+                }, SILENCE_TIMEOUT);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(
+        () => () => {
+            if (silenceTimeoutRef.current) {
+                clearTimeout(silenceTimeoutRef.current);
+            }
+        },
+        []
+    );
 
     const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
     const isGenerating = llm.isGenerating || speechToText.isGenerating || isProcessingVoice;
