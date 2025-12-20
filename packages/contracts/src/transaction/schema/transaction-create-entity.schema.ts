@@ -1,6 +1,6 @@
 import { array, number } from 'zod';
 
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 import { TransactionEntryCreateEntitySchema } from '../../transaction-entry/schema/transaction-entry-create-entity.schema';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
@@ -13,7 +13,7 @@ export const TransactionCreateEntitySchema = convertToCreateEntitySchema(Transac
         [TransactionAssociationEnum.ENTRIES]: array(TransactionEntryCreateEntitySchema.omit({ transactionId: true })).min(1)
     })
     .superRefine(({ amount, entries, type }, context) => {
-        if (amount === 0) {
+        if (amount === BigInt(0)) {
             context.addIssue({
                 code: 'custom',
                 path: ['amount'],
@@ -25,7 +25,7 @@ export const TransactionCreateEntitySchema = convertToCreateEntitySchema(Transac
             return;
         }
 
-        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, 0);
+        const totalAmount = entries.reduce((acc, curr) => acc + curr.amount, BigInt(0));
 
         if (totalAmount !== amount) {
             context.addIssue({

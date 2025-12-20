@@ -3,6 +3,7 @@ import { prettifyError } from 'zod';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -17,19 +18,20 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     const feeAccountId = 33;
 
     it('entries do not balance (beyond tolerance)', () => {
-        const toMicro = 2_000_000;
-        const feeMicro = 300_000;
-        const extra = TOLERANCE_MICRO + 5;
-        const fromMicro = toMicro + feeMicro + extra;
+        const toAmount = convertToMicroUnits(2450.75);
+        const fee = convertToMicroUnits(12.5);
+        const extra = BigInt(TOLERANCE_MICRO) + 5n;
+        const fromAmount = toAmount + fee + extra;
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount: toAmount,
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
             ]
         });
 
@@ -43,10 +45,11 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it('exchangeRate !== 1', () => {
-        const amount = 1_000;
+        const amount = convertToMicroUnits(1500.0);
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 2,
+            amount,
+            exchangeRate: convertToMicroUnits(1.17),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
@@ -65,10 +68,11 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it('fromAccountId === toAccountId', () => {
-        const amount = 100;
+        const amount = convertToMicroUnits(890.0);
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount,
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId: fromAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
@@ -88,13 +92,14 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
 
     it('duplicate account ids in entries', () => {
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount: convertToMicroUnits(1000.0),
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, 50),
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, 50)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, convertToMicroUnits(1200.0)),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(1000.0)),
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(200.0))
             ]
         });
 
@@ -108,10 +113,11 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it("from-entry must be 'credit'", () => {
-        const amount = 1_000;
+        const amount = convertToMicroUnits(3250.8);
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount,
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
@@ -130,10 +136,11 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it("to-entry must be 'debit'", () => {
-        const amount = 1_000;
+        const amount = convertToMicroUnits(127.43);
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount,
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
@@ -152,18 +159,19 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
     });
 
     it("fee entry must be 'debit' when present", () => {
-        const toMicro = 1_000_000;
-        const feeMicro = 10_000;
-        const fromMicro = toMicro + feeMicro;
+        const toAmount = convertToMicroUnits(2450.75);
+        const fee = convertToMicroUnits(8.5);
+        const fromAmount = toAmount + fee;
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount: toAmount,
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromMicro),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toMicro),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.CREDIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.CREDIT, fee)
             ]
         });
 
@@ -178,10 +186,13 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
 
     it('too few entries (min 2)', () => {
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount: convertToMicroUnits(500.0),
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
-            [TransactionAssociationEnum.ENTRIES]: [createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100)]
+            [TransactionAssociationEnum.ENTRIES]: [
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, convertToMicroUnits(500.0))
+            ]
         });
 
         const result = TransferAssetTransactionCreateEntitySchema.safeParse(payload);
@@ -189,7 +200,7 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
 
         const error = isDefined(result.error) ? prettifyError(result.error) : '';
 
-        expect(error).toContain('Too small: expected array to have >=2 items');
+        expect(error).toContain('Too small: expected array to have >=2');
         expect(error).toContain(`at ${TransactionAssociationEnum.ENTRIES}`);
     });
 
@@ -197,14 +208,15 @@ describe('TransferAssetTransactionCreateEntitySchema – invalid cases', () => {
         const mockAccountId = 44;
 
         const payload = createTransferTransactionInput({
-            exchangeRate: 1,
+            amount: convertToMicroUnits(1150.0),
+            exchangeRate: convertToMicroUnits(1),
             fromAccountId,
             toAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, 100),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, 90),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, 10),
-                createTransferTransactionEntryInput(mockAccountId, TransactionEntryTypeEnum.DEBIT, 1)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, convertToMicroUnits(1200.0)),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(1150.0)),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(50.0)),
+                createTransferTransactionEntryInput(mockAccountId, TransactionEntryTypeEnum.DEBIT, convertToMicroUnits(10.0))
             ]
         });
 

@@ -1,16 +1,17 @@
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { TransactionEntryCreateEntityInterface } from '../../transaction-entry/entity/transaction-entry-create-entity.interface';
 import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
 
 export const getTotalSignedEntryMicroUnits = (
     entries: Pick<TransactionEntryCreateEntityInterface, 'accountId' | 'type' | 'amount'>[],
-    accountId: number,
-    rateScaled: number,
-    convert: (value: number, rateScaled: number) => number
-) =>
+    fromAccountId: number,
+    exchangeRateScaled: bigint
+): bigint =>
     entries.reduce((acc, curr) => {
-        const amountInEntryCurrencyMicroUnits = curr.accountId === accountId ? convert(curr.amount, rateScaled) : curr.amount;
+        const amountInFromCurrencyMicro =
+            curr.accountId === fromAccountId ? (curr.amount * exchangeRateScaled) / BigInt(PRECISION) : curr.amount;
 
-        const signedValue = getSignFromEntryType(curr.type) * amountInEntryCurrencyMicroUnits;
+        const signedValue = BigInt(getSignFromEntryType(curr.type)) * amountInFromCurrencyMicro;
 
         return acc + signedValue;
-    }, 0);
+    }, BigInt(0));

@@ -1,10 +1,10 @@
-import { int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { blob, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
+import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { CURRENT_TIMESTAMP } from '../../generic/constant/current-timestamp.constant';
-import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export const TransactionEntityTable = sqliteTable(
@@ -17,10 +17,10 @@ export const TransactionEntityTable = sqliteTable(
         externalId: text('external_id'),
         operatedAt: int('operated_at', { mode: 'timestamp' }).notNull().default(CURRENT_TIMESTAMP),
         comment: text('comment').default('').notNull(),
-        amount: int('amount', { mode: 'number' }).default(0).notNull(),
+        amount: blob('amount', { mode: 'bigint' }).default(BigInt(0)).notNull(),
         toAccountId: int('to_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         fromAccountId: int('from_account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
-        exchangeRate: real('exchange_rate').notNull(),
+        exchangeRate: blob('exchange_rate', { mode: 'bigint' }).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>()
     })
 );

@@ -1,3 +1,4 @@
+import { convertToMicroUnits } from '../@generic/util/convert-to-micto-units.util';
 import { ExternalSourceEnum } from '../account/enum/external-source.enum';
 import { BuyAssetTransactionCreateEntityInterface } from '../transaction/entity/buy-asset-transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../transaction/enum/transaction-association.enum';
@@ -8,16 +9,16 @@ const [externalSource] = Object.values(ExternalSourceEnum);
 export const createTransferTransactionInput = (
     input: Partial<BuyAssetTransactionCreateEntityInterface>
 ): BuyAssetTransactionCreateEntityInterface => ({
+    amount: BigInt(0),
     type: TransactionTypeEnum.TRANSFER,
     title: 'Test',
     comment: '',
     externalId: null,
     operatedAt: new Date(),
-    exchangeRate: 2,
+    exchangeRate: convertToMicroUnits(2),
     externalSource,
     toAccountId: 2,
     fromAccountId: 1,
-    amount: 0,
     tagIds: [],
     [TransactionAssociationEnum.ENTRIES]: [],
     ...input

@@ -3,13 +3,13 @@ import { TransactionEntryTypeEnum } from '../transaction-entry/enum/transaction-
 
 export const createTransactionEntryInput = (
     type: TransactionEntryTypeEnum,
-    amount: number,
+    amount: bigint,
     categoryId: number
 ): TransactionEntryCreateEntityInterface => ({
     type,
     amount,
     categoryId,
-    accountId: 0,
-    instrumentId: 0,
-    transactionId: 0
+    accountId: 1,
+    instrumentId: 1,
+    transactionId: 1,
 });

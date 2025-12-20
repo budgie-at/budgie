@@ -1,8 +1,8 @@
 import { describe, expect, it } from '@jest/globals';
 
+import { convertToMicroUnits } from '../../@generic/util/convert-to-micto-units.util';
 import { createTransferTransactionEntryInput } from '../../test-utils/create-transfer-transaction-entry-input.util';
 import { createTransferTransactionInput } from '../../test-utils/create-transfer-transaction-input.util';
-import { quoteMicroToBaseMicro } from '../../test-utils/quote-micro-to-base-micro.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -14,18 +14,21 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
     const toAccountId = 22;
     const feeAccountId = 33;
 
+    const ONE_SCALED = convertToMicroUnits(1);
+
     it('2 entries (no fee), balances exactly', () => {
-        const exchangeRate = 90_000.123456;
-        const toAmountMicro = 1_000_000;
-        const fromAmountMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
+        const exchangeRate = convertToMicroUnits(42.26);
+        const toAmount = convertToMicroUnits(5000.0);
+        const fromAmount = (toAmount * exchangeRate) / ONE_SCALED;
 
         const payload = createTransferTransactionInput({
+            amount: fromAmount,
             exchangeRate,
             toAccountId,
             fromAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmountMicro),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmountMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount)
             ]
         });
 
@@ -34,20 +37,22 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
     });
 
     it('3 entries (with fee), balances exactly', () => {
-        const exchangeRate = 12_345.678901;
-        const toAmountMicro = 2_500_000;
-        const feeMicro = 30_000_000;
-        const convertedToInFromMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
-        const fromAmountMicro = convertedToInFromMicro + feeMicro;
+        const exchangeRate = convertToMicroUnits(1.17);
+        const toAmount = convertToMicroUnits(2000.0);
+        const fee = convertToMicroUnits(15.0);
+
+        const converted = (toAmount * exchangeRate) / ONE_SCALED;
+        const fromAmount = converted + fee;
 
         const payload = createTransferTransactionInput({
+            amount: fromAmount,
             exchangeRate,
             toAccountId,
             fromAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmountMicro),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmountMicro),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
             ]
         });
 
@@ -55,21 +60,23 @@ describe('BuyAssetTransactionCreateEntitySchema – valid cases', () => {
         expect(result.success).toBe(true);
     });
 
-    it(`within tolerance (±${TOLERANCE_MICRO.toString()} micro)`, () => {
-        const exchangeRate = 7_777.777777;
-        const toAmountMicro = 10_000_000;
-        const feeMicro = 1_000_000;
-        const convertedToInFromMicro = quoteMicroToBaseMicro(toAmountMicro, exchangeRate);
-        const fromAmountMicro = convertedToInFromMicro + feeMicro - TOLERANCE_MICRO;
+    it(`within tolerance (±${BigInt(TOLERANCE_MICRO).toString()} micro)`, () => {
+        const exchangeRate = convertToMicroUnits(156.07);
+        const toAmount = convertToMicroUnits(3000.0);
+        const fee = convertToMicroUnits(25.0);
+
+        const converted = (toAmount * exchangeRate) / ONE_SCALED;
+        const fromAmount = converted + fee - BigInt(TOLERANCE_MICRO);
 
         const payload = createTransferTransactionInput({
+            amount: fromAmount,
             exchangeRate,
             toAccountId,
             fromAccountId,
             [TransactionAssociationEnum.ENTRIES]: [
-                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmountMicro),
-                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmountMicro),
-                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, feeMicro)
+                createTransferTransactionEntryInput(fromAccountId, TransactionEntryTypeEnum.CREDIT, fromAmount),
+                createTransferTransactionEntryInput(toAccountId, TransactionEntryTypeEnum.DEBIT, toAmount),
+                createTransferTransactionEntryInput(feeAccountId, TransactionEntryTypeEnum.DEBIT, fee)
             ]
         });
 

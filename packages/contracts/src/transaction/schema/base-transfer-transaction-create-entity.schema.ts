@@ -9,6 +9,22 @@ import { TransactionCreateEntitySchema } from './transaction-create-entity.schem
 
 export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(
     ({ fromAccountId, toAccountId, entries, type }, context) => {
+        if (entries.length < 2) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: 'Too small: expected array to have >=2'
+            });
+        }
+
+        if (entries.length > 3) {
+            context.addIssue({
+                code: 'custom',
+                path: [TransactionAssociationEnum.ENTRIES],
+                message: 'Too big: expected array to have <=3 items'
+            });
+        }
+
         if (type !== TransactionTypeEnum.TRANSFER) {
             context.addIssue({
                 code: 'custom',
@@ -23,8 +39,6 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
                 path: [TransactionAssociationEnum.ENTRIES],
                 message: '"from" and "to" accounts must be defined'
             });
-
-            return;
         }
 
         if (fromAccountId === toAccountId) {
@@ -33,8 +47,6 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
                 path: [TransactionAssociationEnum.ENTRIES],
                 message: '"from" and "to" accounts must be different'
             });
-
-            return;
         }
 
         const { toEntry, fromEntry, fromEntryIndex, toEntryIndex } = findCoreTransactionEntries(entries, fromAccountId, toAccountId);
@@ -57,8 +69,6 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
                 path: [TransactionAssociationEnum.ENTRIES],
                 message: 'each account may appear at most once within the entries'
             });
-
-            return;
         }
 
         if (fromEntry.type === TransactionEntryTypeEnum.DEBIT) {
@@ -67,8 +77,6 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
                 path: [TransactionAssociationEnum.ENTRIES, fromEntryIndex, 'type'],
                 message: '"from" entry must be "credit"'
             });
-
-            return;
         }
 
         if (toEntry.type === TransactionEntryTypeEnum.CREDIT) {
@@ -77,8 +85,6 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
                 path: [TransactionAssociationEnum.ENTRIES, toEntryIndex, 'type'],
                 message: '"to" entry must be "debit"'
             });
-
-            return;
         }
 
         const feeEntryIndex = entries.findIndex(entry => entry.accountId !== fromAccountId && entry.accountId !== toAccountId);

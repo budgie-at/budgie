@@ -1,7 +1,10 @@
-import { PRECISION } from '../generic/constant/precision.constant';
+import { PRECISION } from '../@generic/constant/precision.constant';
 
-export const quoteMicroToBaseMicro = (toAmountMicro: number, exchangeRate: number): number => {
+export const quoteMicroToBaseMicro = (toAmountMicro: bigint, exchangeRate: number): bigint => {
     const rateScaled = Math.round(exchangeRate * PRECISION);
 
-    return Math.round((toAmountMicro * rateScaled) / PRECISION);
+    const rateScaledBig = BigInt(rateScaled);
+    const precisionBig = BigInt(PRECISION);
+
+    return (toAmountMicro * rateScaledBig) / precisionBig;
 };
