@@ -14,14 +14,27 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
+import { isNotEmptyString } from '@rnw-community/shared';
+import { authService } from '../../../auth/service/auth.service';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
     var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
 }
 
-export const expoDb =
+const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+
+    authService.getPin().then(pin => {
+        if (isNotEmptyString(pin)) {
+            expoDb.execSync(`PRAGMA key = '${pin}';`);
+        }
+    });
+
+    return global.__expoSqliteDb__;
+};
+
+export const expoDb = dbInit();
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 

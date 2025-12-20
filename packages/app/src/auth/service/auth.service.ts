@@ -9,11 +9,6 @@ import { expoDb } from '../../@generic/drizzle/db/db';
 const PIN_KEY = 'user_pin';
 
 class AuthService {
-    constructor() {
-        // HINT: We need to wait for native module to init
-        setTimeout(() => void this.decryptDb(), 100);
-    }
-
     async getBiometricTypes() {
         try {
             const [hasHardware, isEnrolled, types] = await Promise.all([
@@ -58,9 +53,14 @@ class AuthService {
     }
 
     async savePin(pin: string): Promise<void> {
-        await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);
-
+        const oldPin = await this.getPin();
         await SecureStore.setItemAsync(PIN_KEY, pin);
+
+        if (isNotEmptyString(oldPin)) {
+            await expoDb.execAsync(`PRAGMA rekey = '${pin}';`);
+        } else {
+            await expoDb.execAsync(`PRAGMA key = '${pin}';`);
+        }
     }
 
     async verifyPin(pin: string): Promise<boolean> {
@@ -75,14 +75,6 @@ class AuthService {
 
     async getPin(): Promise<string | null> {
         return SecureStore.getItemAsync(PIN_KEY);
-    }
-
-    private async decryptDb() {
-        const pin = await this.getPin();
-
-        if (isNotEmptyString(pin)) {
-            await expoDb.execAsync(`PRAGMA key = '${pin}';`);
-        }
     }
 }
 
