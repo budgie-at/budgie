@@ -73,6 +73,7 @@ export const SearchableListBottomSheet = <T,>({
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
+                    keyboardShouldPersistTaps="handled"
                     className={className}
                     contentContainerClassName={contentContainerClassName}
                     columnWrapperClassName={columnWrapperClassName}
