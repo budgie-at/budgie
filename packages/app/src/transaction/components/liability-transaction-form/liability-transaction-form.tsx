@@ -12,24 +12,23 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { TagsSelector } from '../../../tag/components/tags-selector/tags-selector';
 import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
-import { TransactionFormDatePicker } from '../transaction-form-date-picker/transaction-form-date-picker';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
+import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
 
 interface Props {
-    onSubmit: EmptyFn;
-    control: Control<TransactionCreateEntityInterface>;
-    icon: IconName;
-    setValue: UseFormSetValue<TransactionCreateEntityInterface>;
-    title: string;
-    buttonText: string;
-    variant: ColorPaletteVariant;
-    accountFieldName: 'toAccountId' | 'fromAccountId';
+    readonly onSubmit: EmptyFn;
+    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly icon: IconName;
+    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly title: string;
+    readonly buttonText: string;
+    readonly variant: ColorPaletteVariant;
+    readonly accountFieldName: 'toAccountId' | 'fromAccountId';
 }
 
-export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
+export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -61,18 +60,6 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
         );
     };
 
-    const renderDateInput = ({ field: { value, onChange } }: UseControllerReturn<TransactionCreateEntityInterface, 'operatedAt'>) => (
-        <FormItem className="w-auto flex-1" label={t`Date`}>
-            <TransactionFormDatePicker variant={variant} date={value} onChange={onChange} />
-        </FormItem>
-    );
-
-    const renderTagsSelector = ({ field: { value, onChange } }: UseControllerReturn<TransactionCreateEntityInterface, 'tagIds'>) => (
-        <FormItem className="w-auto flex-1" label={t`Tags`}>
-            <TagsSelector tagIds={value} onChange={onChange} variant={variant} />
-        </FormItem>
-    );
-
     return (
         <TransactionFormLayout
             title={title}
@@ -94,11 +81,7 @@ export const TransactionForm = ({ onSubmit, setValue, control, icon, buttonText,
 
                     <TransactionFormCategory setValue={setValue} control={control} variant={variant} />
 
-                    <FormLayoutGroup variant="horizontal">
-                        <Controller render={renderDateInput} name="operatedAt" control={control} />
-
-                        <Controller render={renderTagsSelector} name="tagIds" control={control} />
-                    </FormLayoutGroup>
+                    <TransactionFormMetadataFields variant={variant} control={control} />
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
         </TransactionFormLayout>
