@@ -1,6 +1,7 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
+import { AudioRecorder } from 'react-native-audio-api';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -11,11 +12,14 @@ import { RecordButton } from '../ai/component/record-button/record-button';
 import { useLlmContext } from '../ai/context/llm.context';
 import { useAiTransaction } from '../ai/hook/use-ai-transaction.hook';
 import { useAudioManager } from '../ai/hook/use-audio-manager.hook';
-import { recordVoice } from '../ai/util/record-voice.util';
 import { useLocaleInfo } from '../i18n/hook/use-locale-info.hook';
 import { AiTransactionPreviewCard } from '../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../transaction/hook/use-create-expense-transaction.mutation';
 
+const SAMPLE_RATE = 16000;
+const MAX_RECORDING_TIME = 5000;
+
+// eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
     const { t } = useLingui();
 
@@ -23,43 +27,58 @@ export default function AiScreen() {
     const locale = useLocaleInfo();
 
     const [isRecording, setIsRecording] = useState(false);
+    const [isProcessingVoice, setIsProcessingVoice] = useState(false);
+    const [recordingStartedAt, setRecordingStartedAt] = useState(0);
     const [prompt, setPrompt] = useState('');
     const [error, setError] = useState('');
 
+    const recorderRef = useRef(new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: 4096 }));
     const waveformRef = useRef<number[]>([]);
 
     useAudioManager();
-    const [systemPrompt, transactionInfo, resetTransactionInfo, setTransactionCategory] = useAiTransaction(llm, prompt);
+    const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, prompt);
     const createExpense = useCreateExpenseTransactionMutation();
 
     const handleConfirm = async () => {
         if (isPositiveNumber(transactionInfo?.amount)) {
             await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
-            resetTransactionInfo();
+            resetTransaction();
         }
     };
 
     const handleCancel = () => {
-        resetTransactionInfo();
+        resetTransaction();
         setPrompt('');
     };
 
-    // eslint-disable-next-line max-statements
-    const handlePress = async () => {
+    const handleStartRecording = () => {
         setError('');
         setPrompt('');
         setIsRecording(true);
-        resetTransactionInfo();
+        setRecordingStartedAt(Date.now());
+        resetTransaction();
 
         waveformRef.current = [];
-        await recordVoice(async waveform => {
-            waveformRef.current.push(...waveform);
+        recorderRef.current.start();
+    };
+
+    // eslint-disable-next-line max-statements
+    const handleStopRecording = async () => {
+        recorderRef.current.stop();
+
+        setIsProcessingVoice(true);
+        setIsRecording(false);
+        setRecordingStartedAt(0);
+
+        await new Promise(resolve => {
+            setTimeout(resolve, 500);
         });
 
         const transcribed = (
             await speechToText.transcribe(waveformRef.current, { language: locale.languageCode as SpeechToTextLanguage }).catch(() => '')
         ).trim();
 
+        setIsProcessingVoice(false);
         setPrompt(transcribed);
 
         if (isNotEmptyString(transcribed)) {
@@ -74,11 +93,36 @@ export default function AiScreen() {
         } else {
             setError(t`No speech detected`);
         }
-
-        setIsRecording(false);
     };
 
+    const handlePress = () => {
+        if (isRecording) {
+            void handleStopRecording();
+        } else {
+            handleStartRecording();
+        }
+    };
+
+    useEffect(() => {
+        recorderRef.current.onAudioReady(({ buffer }) => {
+            waveformRef.current.push(...Array.from(buffer.getChannelData(0)));
+        });
+    }, []);
+    useEffect(() => {
+        let timeoutId: number;
+        if (isRecording) {
+            timeoutId = setTimeout(() => {
+                if (Date.now() - recordingStartedAt > MAX_RECORDING_TIME) {
+                    void handleStopRecording();
+                }
+            }, MAX_RECORDING_TIME);
+        }
+
+        return () => void clearTimeout(timeoutId);
+    }, [isRecording, recordingStartedAt]);
+
     const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
+    const isGenerating = llm.isGenerating || speechToText.isGenerating || isProcessingVoice;
 
     return (
         <BottomSheetsProvider>
@@ -112,7 +156,7 @@ export default function AiScreen() {
                 </ScrollView>
 
                 <View className="absolute bottom-8 left-0 right-0 items-center">
-                    <RecordButton llm={llm} isRecording={isRecording} onPress={handlePress} />
+                    <RecordButton llm={llm} isGenerating={isGenerating} isRecording={isRecording} onPress={handlePress} />
                 </View>
             </Page>
         </BottomSheetsProvider>
