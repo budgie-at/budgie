@@ -6,7 +6,7 @@ import { LanguageInterface } from '../interface/language.interface';
 const DEFAULT_LANGUAGE: LanguageInterface = {
     code: LanguageEnum.EN,
     name: msg`English`,
-    emoji: '🇺🇸',
+    emoji: '🇺🇸'
 };
 
 export const LANGUAGES: LanguageInterface[] = [
@@ -14,21 +14,21 @@ export const LANGUAGES: LanguageInterface[] = [
     {
         code: LanguageEnum.FR,
         name: msg`French`,
-        emoji: '🇫🇷',
+        emoji: '🇫🇷'
     },
     {
         code: LanguageEnum.UK,
         name: msg`Ukrainian`,
-        emoji: '🇺🇦',
+        emoji: '🇺🇦'
     },
     {
         code: LanguageEnum.DE,
         name: msg`German`,
-        emoji: '🇩🇪',
+        emoji: '🇩🇪'
     },
     {
         code: LanguageEnum.ES,
         name: msg`Spanish`,
-        emoji: '🇪🇸',
-    },
+        emoji: '🇪🇸'
+    }
 ];

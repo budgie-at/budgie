@@ -1,1 +1,1 @@
-export type TagVariantType = 'static' | 'removable'
+export type TagVariantType = 'static' | 'removable';
