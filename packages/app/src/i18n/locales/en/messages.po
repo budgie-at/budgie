@@ -13,21 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:96
-msgid "Processing..."
-msgstr "Processing..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Recording..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Tap to speak"
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -43,6 +28,14 @@ msgstr "{formattedBalance} available"
 #: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} icons available"
+
+#: src/app/(tabs)/analytics.tsx:30
+msgid "{percentage}% of expenses"
+msgstr "{percentage}% of expenses"
+
+#: src/app/(tabs)/analytics.tsx:29
+msgid "{percentage}% of income"
+msgstr "{percentage}% of income"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -102,11 +95,11 @@ msgstr "Add a new category to organize your transactions"
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:48
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:30
 msgid "Add Expense"
 msgstr "Add Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
 msgid "Add Income"
 msgstr "Add Income"
 
@@ -114,7 +107,7 @@ msgstr "Add Income"
 msgid "Add Split"
 msgstr "Add Split"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:29
 msgid "Add Transfer"
 msgstr "Add Transfer"
 
@@ -126,13 +119,9 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:27
+#: src/ai/components/ai-chat-button/ai-chat-button.tsx:17
 msgid "AI"
 msgstr "AI"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
-msgid "AI Suggestion"
-msgstr "AI Suggestion"
 
 #: src/app/(main)/settings/index.tsx:87
 msgid ""
@@ -153,14 +142,6 @@ msgstr "All your financial data is stored locally on your device. No cloud sync,
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Allocated"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
-msgid "Amount"
-msgstr "Amount"
-
-#: src/app/(tabs)/analytics.tsx:10
-msgid "Analytics Page"
-msgstr "Analytics Page"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:18
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -192,6 +173,10 @@ msgstr "Archived Accounts"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
+#: src/app/(tabs)/analytics.tsx:55
+msgid "Balance"
+msgstr "Balance"
+
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
@@ -219,7 +204,6 @@ msgstr "BudgetAI"
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:50
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -296,17 +280,13 @@ msgstr "Choose your preferred locale for date and number formatting"
 msgid "Clear"
 msgstr "Clear"
 
-#: src/transaction/components/transaction-list-filters/transaction-list-filters.tsx:43
+#: src/transaction/components/transaction-filters/transaction-filters.tsx:44
 msgid "Clear All"
 msgstr "Clear All"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
 msgstr "Common Tags"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
-msgid "Confirm"
-msgstr "Confirm"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
@@ -328,8 +308,7 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:80
+#: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
@@ -423,13 +402,13 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:48
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:69
+#: src/@generic/components/date-filter/date-filter.tsx:48
+#: src/@generic/components/date-filter/date-filter.tsx:69
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Date"
 
-#: src/transaction/components/transaction-date-filter/transaction-date-filter.tsx:81
+#: src/@generic/components/date-filter/date-filter.tsx:81
 msgid "Date Range"
 msgstr "Date Range"
 
@@ -462,6 +441,10 @@ msgstr "Done"
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
+#: src/app/(main)/ai.tsx:130
+msgid "Downloading model..."
+msgstr "Downloading model..."
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Dutch (Netherlands)"
@@ -487,7 +470,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:25
+#: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:25
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -561,10 +544,6 @@ msgstr "Everyday transactions and spending"
 msgid "Expense"
 msgstr "Expense"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
-msgid "Expense created"
-msgstr "Expense created"
-
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
 msgstr "Face ID"
@@ -615,9 +594,14 @@ msgstr "Hide Cents"
 msgid "Icon"
 msgstr "Icon"
 
+#: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Income"
+
+#: src/app/(tabs)/analytics.tsx:63
+msgid "Income by category"
+msgstr "Income by category"
 
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -668,11 +652,11 @@ msgstr "Move Money"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:47
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:29
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
 msgid "New Income"
 msgstr "New Income"
 
@@ -680,7 +664,7 @@ msgstr "New Income"
 msgid "New Transaction"
 msgstr "New Transaction"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:23
+#: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:25
 msgid "New Transfer"
 msgstr "New Transfer"
 
@@ -745,10 +729,6 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/ai.tsx:90
-msgid "No speech detected"
-msgstr "No speech detected"
-
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:60
 msgid "No tags found"
 msgstr "No tags found"
@@ -786,6 +766,10 @@ msgstr "Organization"
 msgid "Over:"
 msgstr "Over:"
 
+#: src/app/(tabs)/analytics.tsx:49
+msgid "Overview"
+msgstr "Overview"
+
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -809,6 +793,10 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
+#: src/app/(main)/ai.tsx:112
+msgid "Press and describe your transaction"
+msgstr "Press and describe your transaction"
+
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
@@ -821,6 +809,10 @@ msgstr "Privacy"
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
+
+#: src/app/(main)/ai.tsx:112
+msgid "Recording..."
+msgstr "Recording..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -943,8 +935,7 @@ msgstr "Show $1,234.56 instead of $1,235"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:79
+#: src/transaction/hook/use-create-transaction-form.hook.ts:95
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Something went wrong."
@@ -961,6 +952,14 @@ msgstr "Spanish"
 msgid "Spanish (Spain)"
 msgstr "Spanish (Spain)"
 
+#: src/app/(tabs)/analytics.tsx:73
+msgid "Spending by Category"
+msgstr "Spending by Category"
+
+#: src/app/(tabs)/analytics.tsx:53
+msgid "Spent"
+msgstr "Spent"
+
 #: src/transaction/components/transaction-split/transaction-split.tsx:84
 msgid "Split by Category"
 msgstr "Split by Category"
@@ -968,6 +967,10 @@ msgstr "Split by Category"
 #: src/transaction/components/transaction-list/transaction-list.tsx:43
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
+
+#: src/app/(tabs)/analytics.tsx:35
+msgid "Statistics"
+msgstr "Statistics"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1079,10 +1082,6 @@ msgstr "Type ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ukrainian"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
-msgid "Unknown Category"
-msgstr "Unknown Category"
-
 #: src/account/component/update-liability-account/update-liability-account.tsx:112
 msgid "Update Account"
 msgstr "Update Account"
@@ -1095,7 +1094,7 @@ msgstr "Update Expense"
 msgid "Update Income"
 msgstr "Update Income"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:29
+#: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:29
 msgid "Update Transfer"
 msgstr "Update Transfer"
 
@@ -1123,15 +1122,3 @@ msgstr "View and restore archived accounts"
 #: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:45
 msgid "will be restored to your main view and included in totals."
 msgstr "will be restored to your main view and included in totals."
-
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
-msgid "Your expense has been recorded successfully."
-msgstr "Your expense has been recorded successfully."
-
-#: src/ai/hook/use-ai-transaction.hook.ts:20
-msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-
-#: src/app/ai.tsx:149
-msgid "Your message:"
-msgstr "Your message:"

@@ -5,23 +5,24 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { DateFilter } from '../../../@generic/components/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TransactionAccountFilter } from '../transaction-account-filter/transaction-account-filter';
 import { TransactionCategoryFilter } from '../transaction-category-filter/transaction-category-filter';
-import { TransactionDateFilter } from '../transaction-date-filter/transaction-date-filter';
 import { TransactionTagFilter } from '../transaction-tag-filter/transaction-tag-filter';
 import { TransactionTypeFilter } from '../transaction-type-filter/transaction-type-filter';
 
 interface Props {
+    readonly showTypeFilter?: boolean;
     readonly accountId: number | null;
     readonly hasFiltersSelected: boolean;
     readonly filters: TransactionFilterInterface;
     readonly onChange: (cb: TransactionFilterInterface | ((prev: TransactionFilterInterface) => TransactionFilterInterface)) => void;
 }
 
-export const TransactionListFilters = ({ filters, onChange, accountId, hasFiltersSelected }: Props) => {
+export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, hasFiltersSelected }: Props) => {
     const createFilterHandler =
         <K extends keyof TransactionFilterInterface>(key: K) =>
         (value: TransactionFilterInterface[K]) => {
@@ -45,8 +46,8 @@ export const TransactionListFilters = ({ filters, onChange, accountId, hasFilter
                     </HapticPressable>
                 ) : null}
 
-                <TransactionDateFilter value={filters.date} onChange={createFilterHandler('date')} />
-                <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} />
+                <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
+                {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
                 <TransactionCategoryFilter value={filters.categoryIds} onChange={createFilterHandler('categoryIds')} />
                 <TransactionTagFilter value={filters.tagIds} onChange={createFilterHandler('tagIds')} />
 
