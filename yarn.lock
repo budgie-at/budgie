@@ -1139,7 +1139,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
-    "@budgie/contracts": "npm:^1.78.0"
+    "@budgie/contracts": "npm:^1.79.0"
     "@expo/fingerprint": "npm:~0.15.4"
     "@formatjs/intl": "npm:^3.1.8"
     "@gorhom/bottom-sheet": "npm:^5.2.6"
@@ -1284,7 +1284,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@npm:^1.78.0, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@npm:^1.79.0, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
