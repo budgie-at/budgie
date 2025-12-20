@@ -64,8 +64,8 @@ export default function AiScreen() {
     };
 
     const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
-    const isRecording = status !== 'idle';
-    const isGenerating = llm.isGenerating || isRecording;
+    const isRecording = status === 'recording';
+    const isGenerating = llm.isGenerating || status === 'processing';
 
     return (
         <BottomSheetsProvider>
