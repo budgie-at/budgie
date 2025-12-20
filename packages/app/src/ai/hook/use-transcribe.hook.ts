@@ -26,11 +26,15 @@ export const useTranscribe = (
 
     useAudioManager();
 
-    const handleStopRecording = async () => {
+    const resetSilenceTimeout = () => {
         if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current);
             silenceTimeoutRef.current = null;
         }
+    };
+
+    const handleStopRecording = async () => {
+        resetSilenceTimeout();
 
         recorderRef.current.stop();
 
@@ -65,9 +69,7 @@ export const useTranscribe = (
             if (calculateRMS(samples) > silenceThreshold) {
                 waveformRef.current.push(...Array.from(samples));
 
-                if (silenceTimeoutRef.current) {
-                    clearTimeout(silenceTimeoutRef.current);
-                }
+                resetSilenceTimeout();
 
                 silenceTimeoutRef.current = setTimeout(() => void handleStopRecording(), silenceTimeoutMs);
             }
@@ -75,14 +77,7 @@ export const useTranscribe = (
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(
-        () => () => {
-            if (silenceTimeoutRef.current) {
-                clearTimeout(silenceTimeoutRef.current);
-            }
-        },
-        []
-    );
+    useEffect(() => resetSilenceTimeout, []);
 
     return [handleStartRecording, handleStopRecording, status] as const;
 };
