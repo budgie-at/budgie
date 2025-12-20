@@ -4,8 +4,10 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 import { TransactionWithRelationsEntityInterface } from './transaction-with-relations-entity.interface';
 
-export interface TransactionIncomeWithRelationsEntityInterface
-    extends Omit<TransactionWithRelationsEntityInterface, TransactionAssociationEnum.TO_ACCOUNT | 'type'> {
+export interface TransactionIncomeWithRelationsEntityInterface extends Omit<
+    TransactionWithRelationsEntityInterface,
+    TransactionAssociationEnum.TO_ACCOUNT | 'type'
+> {
     [TransactionAssociationEnum.TO_ACCOUNT]: AccountEntityInterface;
     type: TransactionTypeEnum.INCOME;
 }
