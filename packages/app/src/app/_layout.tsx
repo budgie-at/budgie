@@ -65,10 +65,10 @@ export default function RootLayout() {
                 <SettingsProvider>
                     <I18nProvider>
                         <KeyboardProvider>
-                            <ThemeProvider>
-                                <BottomSheetsProvider>
-                                    <AuthProvider>
-                                        <AuthGuard>
+                            <BottomSheetsProvider>
+                                <AuthProvider>
+                                    <AuthGuard>
+                                        <ThemeProvider>
                                             <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                 <Stack.Screen name="(tabs)" />
 
@@ -86,12 +86,12 @@ export default function RootLayout() {
                                                 <Stack.Screen name="(main)/settings/tags" />
                                                 <Stack.Screen name="(main)/settings/archived" />
 
-                                                <Stack.Screen name="ai" options={aiScreenOptions} />
+                                                <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                             </Stack>
-                                        </AuthGuard>
-                                    </AuthProvider>
-                                </BottomSheetsProvider>
-                            </ThemeProvider>
+                                        </ThemeProvider>
+                                    </AuthGuard>
+                                </AuthProvider>
+                            </BottomSheetsProvider>
                         </KeyboardProvider>
                     </I18nProvider>
                 </SettingsProvider>
