@@ -1,1 +1,1 @@
-export type PageHeaderSize = 'md' | 'lg'
+export type PageHeaderSize = 'md' | 'lg';

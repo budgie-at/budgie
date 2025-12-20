@@ -32,10 +32,10 @@ export const LanguageSelector = () => {
     return (
         <>
             <GenericSelectorCard
-                icon='Globe'
+                icon="Globe"
                 title={t`Language`}
                 onPress={handleOpen}
-                iconVariant='default'
+                iconVariant="default"
                 description={`${selectedLanguage.emoji} ${i18n.t(selectedLanguage.name)}`}
             />
 
