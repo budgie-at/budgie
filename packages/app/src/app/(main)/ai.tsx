@@ -8,9 +8,9 @@ import { LLAMA3_2_1B, WHISPER_TINY, getStructuredOutputPrompt, useLLM, useSpeech
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../@generic/components/button/button';
-import { Page } from '../@generic/components/page/page';
-import { categoryRepository } from '../@generic/drizzle/db/db';
+import { Button } from '../../@generic/components/button/button';
+import { Page } from '../../@generic/components/page/page';
+import { categoryRepository } from '../../@generic/drizzle/db/db';
 
 const TransactionSchema = {
     properties: {
