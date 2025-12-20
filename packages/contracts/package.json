@@ -23,9 +23,9 @@
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
         "ts": "run -T tsc -p .",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage"
+        "test": "run -T jest",
+        "test:watch": "run -T jest --watch",
+        "test:cov": "run -T jest --coverage"
     },
     "dependencies": {
         "@rnw-community/shared": "^1.8.2",
