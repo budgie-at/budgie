@@ -5,23 +5,23 @@ import { ScrollView, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { RangeDatePicker } from '../../../@generic/components/date-picker/range-date-picker';
-import { DATE_PERIOD } from '../../../@generic/constant/date-period.constant';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
-import { getPeriodByDateRange } from '../../../@generic/utils/date/get-period-by-date-range.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { TransactionBaseFilter } from '../transaction-base-filter/transaction-base-filter';
-import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
+import { TransactionBaseFilter } from '../../../transaction/components/transaction-base-filter/transaction-base-filter';
+import { TransactionFilterChip } from '../../../transaction/components/transaction-filter-chip/transaction-filter-chip';
+import { DATE_PERIOD } from '../../constant/date-period.constant';
+import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { getDateFilterByPeriod } from '../../utils/date/get-date-filter-by-period.util';
+import { getPeriodByDateRange } from '../../utils/date/get-period-by-date-range.util';
+import { RangeDatePicker } from '../date-picker/range-date-picker';
 
-import { TransactionDateFilterItem } from './transaction-date-filter-item';
+import { DateFilterItem } from './date-filter-item';
 
 interface Props {
     readonly value: DateRangeInterface | null;
     readonly onChange: (value: DateRangeInterface | null) => void;
 }
 
-export const TransactionDateFilter = ({ value, onChange }: Props) => {
+export const DateFilter = ({ value, onChange }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => value);
     const selectedPeriod = getPeriodByDateRange(localValue);
@@ -90,7 +90,7 @@ export const TransactionDateFilter = ({ value, onChange }: Props) => {
                 <View className="pt-[40px] gap-y-7xl">
                     <ScrollView contentContainerClassName="gap-x-md px-7xl" showsHorizontalScrollIndicator={false} horizontal>
                         {Object.values(DatePeriodEnum).map(period => (
-                            <TransactionDateFilterItem
+                            <DateFilterItem
                                 key={period}
                                 period={period}
                                 onSelect={handlePeriodSelect}

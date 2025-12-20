@@ -1,3 +1,5 @@
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 
 export const extractPartsFromNumeric = (normalized: string, decimalPlaces = DEFAULT_DECIMAL_PLACES) => {
@@ -6,6 +8,6 @@ export const extractPartsFromNumeric = (normalized: string, decimalPlaces = DEFA
     return {
         integerPart,
         hasDecimal: normalized.includes('.'),
-        decimalPart: decimalPart.slice(0, decimalPlaces)
+        decimalPart: isNotEmptyString(decimalPart) ? decimalPart.slice(0, decimalPlaces) : ''
     };
 };
