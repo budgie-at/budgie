@@ -99,7 +99,6 @@ export default function AiScreen() {
 
         waveformRef.current = [];
         recorderRef.current.start();
-
         silenceTimeoutRef.current = setTimeout(() => void handleStopRecording(), SILENCE_TIMEOUT);
     };
 
@@ -122,9 +121,7 @@ export default function AiScreen() {
                     clearTimeout(silenceTimeoutRef.current);
                 }
 
-                silenceTimeoutRef.current = setTimeout(() => {
-                    void handleStopRecording();
-                }, SILENCE_TIMEOUT);
+                silenceTimeoutRef.current = setTimeout(() => void handleStopRecording(), SILENCE_TIMEOUT);
             }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
