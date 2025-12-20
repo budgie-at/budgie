@@ -31,10 +31,10 @@ export const LocaleSelector = () => {
     return (
         <>
             <GenericSelectorCard
-                icon='MapPinIcon'
+                icon="MapPinIcon"
                 title={t`Locale`}
                 onPress={handleOpen}
-                iconVariant='warning'
+                iconVariant="warning"
                 description={`${selectedLocale.emoji} ${i18n.t(selectedLocale.name)}`}
             />
 

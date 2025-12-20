@@ -21,7 +21,7 @@ msgstr "{archivedAccountsCount} Konto"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
-msgstr ""
+msgstr "{formattedBalance} verfügbar"
 
 #: src/@generic/components/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:61
 msgid "{iconsCount} icons available"
@@ -29,11 +29,11 @@ msgstr "{iconsCount} Symbole verfügbar"
 
 #: src/app/(tabs)/analytics.tsx:30
 msgid "{percentage}% of expenses"
-msgstr ""
+msgstr "{percentage}% der Ausgaben"
 
 #: src/app/(tabs)/analytics.tsx:29
 msgid "{percentage}% of income"
-msgstr ""
+msgstr "{percentage}% der Einnahmen"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -107,7 +107,7 @@ msgstr "Aufteilung hinzufügen"
 
 #: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:29
 msgid "Add Transfer"
-msgstr ""
+msgstr "Überweisung hinzufügen"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
 msgid "Add your first account to start tracking your finances"
@@ -173,7 +173,7 @@ msgstr "Sind Sie sicher?"
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
-msgstr ""
+msgstr "Saldo"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
 msgid "Balance Adjustment"
@@ -286,7 +286,7 @@ msgstr "Alle löschen"
 msgid "Common Tags"
 msgstr "Häufig verwendete Tags"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:52
+#: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "PIN bestätigen"
 
@@ -320,9 +320,9 @@ msgstr "Konto konnte nicht aktualisiert werden. Bitte versuchen Sie es später e
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:39
 msgid "Could not update transaction. Please try again later."
-msgstr ""
+msgstr "Transaktion konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut."
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "PIN erstellen"
 
@@ -441,7 +441,7 @@ msgstr "Fertig ({selectedTagsCount})"
 
 #: src/app/(main)/ai.tsx:130
 msgid "Downloading model..."
-msgstr ""
+msgstr "Modell wird heruntergeladen..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -462,15 +462,15 @@ msgstr "z. B. Lebensmittel, Gehalt, Miete"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:33
 msgid "Edit Expense"
-msgstr ""
+msgstr "Ausgabe bearbeiten"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:33
 msgid "Edit Income"
-msgstr ""
+msgstr "Einnahme bearbeiten"
 
 #: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:25
 msgid "Edit Transfer"
-msgstr ""
+msgstr "Überweisung bearbeiten"
 
 #: src/app/(main)/create-account/index.tsx:30
 msgid "Emergency fund and savings goals"
@@ -505,24 +505,24 @@ msgstr "Englisch (Vereinigtes Königreich)"
 msgid "English (United States)"
 msgstr "Englisch (Vereinigte Staaten)"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:46
+#: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:31
-#: src/auth/util/get-pin-setup-meta.util.ts:38
+#: src/auth/util/get-pin-setup-meta.util.ts:36
+#: src/auth/util/get-pin-setup-meta.util.ts:43
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:32
+#: src/auth/util/get-pin-setup-meta.util.ts:37
 msgid "Enter current PIN to disable protection"
 msgstr "Aktuelle PIN eingeben, um Schutz zu deaktivieren"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:45
+#: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Enter new PIN"
 msgstr "Neue PIN eingeben"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:39
+#: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
 
@@ -569,7 +569,7 @@ msgstr "Französisch (Frankreich)"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
 msgid "FROM"
-msgstr ""
+msgstr "VON"
 
 #: src/app/(main)/settings/index.tsx:47
 msgid "General"
@@ -599,7 +599,7 @@ msgstr "Einnahmen"
 
 #: src/app/(tabs)/analytics.tsx:63
 msgid "Income by category"
-msgstr ""
+msgstr "Einnahmen nach Kategorie"
 
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -640,11 +640,11 @@ msgstr "Geld, das Sie ausgeben"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
-msgstr ""
+msgstr "Zwischen Konten übertragen"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:44
 msgid "Move Money"
-msgstr ""
+msgstr "Geld übertragen"
 
 #: src/app/(main)/create-account/index.tsx:19
 msgid "New Account"
@@ -664,7 +664,7 @@ msgstr "Neue Transaktion"
 
 #: src/transaction/components/update-transfer-transaction/create-transfer-transaction.tsx:25
 msgid "New Transfer"
-msgstr ""
+msgstr "Neue Überweisung"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:60
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
@@ -766,7 +766,7 @@ msgstr "Überschuss:"
 
 #: src/app/(tabs)/analytics.tsx:49
 msgid "Overview"
-msgstr ""
+msgstr "Übersicht"
 
 #: src/app/(main)/pin.tsx:54
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -793,7 +793,7 @@ msgstr "Portugiesisch (Portugal)"
 
 #: src/app/(main)/ai.tsx:112
 msgid "Press and describe your transaction"
-msgstr ""
+msgstr "Drücken Sie und beschreiben Sie Ihre Transaktion"
 
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
@@ -804,13 +804,13 @@ msgstr "Vorschau"
 msgid "Privacy"
 msgstr "Privatsphäre"
 
-#: src/auth/util/get-pin-setup-meta.util.ts:53
+#: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
 
 #: src/app/(main)/ai.tsx:112
 msgid "Recording..."
-msgstr ""
+msgstr "Aufnahme..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -952,11 +952,11 @@ msgstr "Spanisch (Spanien)"
 
 #: src/app/(tabs)/analytics.tsx:73
 msgid "Spending by Category"
-msgstr ""
+msgstr "Ausgaben nach Kategorie"
 
 #: src/app/(tabs)/analytics.tsx:53
 msgid "Spent"
-msgstr ""
+msgstr "Ausgegeben"
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:84
 msgid "Split by Category"
@@ -968,7 +968,7 @@ msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofonta
 
 #: src/app/(tabs)/analytics.tsx:35
 msgid "Statistics"
-msgstr ""
+msgstr "Statistiken"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1009,7 +1009,7 @@ msgstr "Tippen Sie, um das Symbol zu ändern"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:59
 msgid "Tap to choose"
-msgstr ""
+msgstr "Zum Auswählen tippen"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1029,7 +1029,7 @@ msgstr "Dieses Jahr"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
 msgid "TO"
-msgstr ""
+msgstr "AN"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1086,15 +1086,15 @@ msgstr "Konto aktualisieren"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
 msgid "Update Expense"
-msgstr ""
+msgstr "Ausgabe aktualisieren"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
 msgid "Update Income"
-msgstr ""
+msgstr "Einnahme aktualisieren"
 
 #: src/transaction/components/create-transfer-transaction/update-transfer-transaction.tsx:29
 msgid "Update Transfer"
-msgstr ""
+msgstr "Überweisung aktualisieren"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
