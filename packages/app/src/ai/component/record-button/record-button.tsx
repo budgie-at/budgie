@@ -17,6 +17,7 @@ type RecordButtonVariant = 'default' | 'recording' | 'loading' | 'processing';
 interface Props extends Omit<ComponentProps<typeof HapticPressable>, 'children'> {
     readonly size?: RecordButtonSize;
     readonly llm: LlmType;
+    readonly isGenerating: boolean;
     readonly isRecording: boolean;
     readonly labelClassName?: string;
 }
@@ -68,17 +69,17 @@ const activityIndicatorSize: Record<RecordButtonSize, 'small' | 'large'> = {
     xl: 'small'
 };
 
-const getVariant = (llm: LlmType, isRecording: boolean): RecordButtonVariant => {
+const getVariant = (llm: LlmType, isGenerating: boolean, isRecording: boolean): RecordButtonVariant => {
     if (!llm.isReady) {
         return 'loading';
     }
 
-    if (llm.isGenerating) {
-        return 'processing';
-    }
-
     if (isRecording) {
         return 'recording';
+    }
+
+    if (isGenerating) {
+        return 'processing';
     }
 
     return 'default';
@@ -103,9 +104,9 @@ const getLabel = (llm: LlmType, variant: RecordButtonVariant): string => {
 };
 
 export const RecordButton = (props: Props) => {
-    const { size = 'lg', isRecording, llm, className, labelClassName, ...rest } = props;
+    const { size = 'lg', isRecording, isGenerating, llm, className, labelClassName, ...rest } = props;
 
-    const variant = getVariant(llm, isRecording);
+    const variant = getVariant(llm, isGenerating, isRecording);
     const label = getLabel(llm, variant);
     const isDisabled = ['processing', 'loading'].includes(variant);
 
