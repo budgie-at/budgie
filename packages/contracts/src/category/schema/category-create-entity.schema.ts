@@ -2,9 +2,11 @@ import { convertToCreateEntitySchema } from '../../generic/util/convert-to-creat
 
 import { CategoryEntitySchema } from './category-entity.schema';
 
-export const CategoryCreateEntitySchema = convertToCreateEntitySchema(CategoryEntitySchema).omit({
-    isDefault: true,
-    isSystemCategory: true,
-}).partial({
-    parentId: true,
-});
+export const CategoryCreateEntitySchema = convertToCreateEntitySchema(CategoryEntitySchema)
+    .omit({
+        isDefault: true,
+        isSystemCategory: true
+    })
+    .partial({
+        parentId: true
+    });
