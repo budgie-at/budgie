@@ -13,5 +13,5 @@ export const CategoryEntitySchema = createSelectSchema(CategoryEntityTable, {
     icon: zodEnum(UserIconNameEnum).describe('The category icon.'),
     parentId: schema => schema.positive().nullable().describe('The id of the parent category.'),
     isSystemCategory: schema => schema.describe('Indicates if the category is a system category.'),
-    isDefault: schema => schema.describe('Indicates if the category is a default system category.'),
+    isDefault: schema => schema.describe('Indicates if the category is a default system category.')
 });

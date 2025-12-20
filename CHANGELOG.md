@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.77.0](https://github.com/budgie-at/budgie/compare/v1.76.0...v1.77.0) (2025-12-20)
+
+### Bug Fixes
+
+- **landing:** react native build ([1160a3d](https://github.com/budgie-at/budgie/commit/1160a3d8f31652eb82b3d03bf8cb17a92a005127))
+- **landing:** react native build ([0bdd383](https://github.com/budgie-at/budgie/commit/0bdd38364cc4657819e769f48bdd462e6cd2d6e0))
+
+### Features
+
+- **landing:** bump deps ([ade44dc](https://github.com/budgie-at/budgie/commit/ade44dced8a0dc31950ea017970b09d2f29dd9f8))
+- **landing:** bump lingui ([8a7d7d7](https://github.com/budgie-at/budgie/commit/8a7d7d7e9f04af087b8eb79b36b32168401aa438))
+- **landing:** bump yarn ([25ae339](https://github.com/budgie-at/budgie/commit/25ae33971daa31697ad6b8bd761b3489360f5a7c))
+- **landing:** bump yarn ([3c969be](https://github.com/budgie-at/budgie/commit/3c969bec2dfb57ee7b1b0e105dc6ed511e28f7cf))
+- **landing:** fix deps, bump next, react ([159e03c](https://github.com/budgie-at/budgie/commit/159e03c416a19cee5531f79dff3995212f61b545))
+- **landing:** format ([07ce321](https://github.com/budgie-at/budgie/commit/07ce32147eaf51e401f03c45d2fddb03624cd7ba))
+
 # [1.76.0](https://github.com/budgie-at/budgie/compare/v1.75.2...v1.76.0) (2025-12-19)
 
 ### Bug Fixes

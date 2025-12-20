@@ -34,11 +34,11 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
     const handleOpen = () => void ref.current?.open();
 
     const handleSelect = (id: number) => {
-        onChange(Array.from(new Set([...tagIds, id])))
+        onChange(Array.from(new Set([...tagIds, id])));
     };
 
     const handleRemoveSelection = (id: number) => {
-        onChange(tagIds.filter(tagId => tagId !== id))
+        onChange(tagIds.filter(tagId => tagId !== id));
     };
 
     return (
@@ -63,12 +63,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 <View className="w-8.5" />
             </Card>
 
-            <TagsSelectorBottomSheet
-                onRemoveSelection={handleRemoveSelection}
-                onSelect={handleSelect}
-                selectedTagIds={tagIds}
-                ref={ref}
-            />
+            <TagsSelectorBottomSheet onRemoveSelection={handleRemoveSelection} onSelect={handleSelect} selectedTagIds={tagIds} ref={ref} />
         </>
     );
 };

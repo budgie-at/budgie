@@ -25,7 +25,12 @@ const getBiometricTitleAndDescription = (isFaceIdAvailable: boolean, isTouchIdAv
     };
 };
 
-export const getPinSetupMeta = (mode: PinSetupModeEnum, step: PinSetupStepEnum, isFaceIdAvailable: boolean, isTouchIdAvailable: boolean) => {
+export const getPinSetupMeta = (
+    mode: PinSetupModeEnum,
+    step: PinSetupStepEnum,
+    isFaceIdAvailable: boolean,
+    isTouchIdAvailable: boolean
+) => {
     if (mode === PinSetupModeEnum.DISABLE) {
         return {
             title: msg`Enter current PIN`,

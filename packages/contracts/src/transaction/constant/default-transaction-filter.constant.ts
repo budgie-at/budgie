@@ -5,5 +5,5 @@ export const DEFAULT_TRANSACTION_FILTER: TransactionFilterInterface = {
     types: null,
     tagIds: null,
     accountIds: null,
-    categoryIds: null,
+    categoryIds: null
 };

@@ -84,7 +84,7 @@ const USER_ICONS: Record<UserIconNameEnum, LucideIcon> = {
     Dumbbell,
     Shirt,
     CircleDot,
-    AlertTriangle,
+    AlertTriangle
 };
 
 export const USER_ICONS_LIST: UserIcon[] = typedObjectEntries(USER_ICONS).map(([name, icon]) => ({ name, icon }));

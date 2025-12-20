@@ -57,7 +57,7 @@ const descriptionVariants = cva('text-center text-secondary-foreground', {
 });
 
 export const BottomSheetHeader = (props: Props) => {
-    const { size = 'md', align = 'center', icon, title, description, className, titleClassName, descriptionClassName } = props;
+    const { size, align = 'center', icon, title, description, className, titleClassName, descriptionClassName } = props;
 
     return (
         <View className={cn(headerVariant({ align }), className)}>

@@ -7,5 +7,5 @@ export const TRANSACTION_COLOR: Record<TransactionTypeEnum, ColorPaletteVariant>
     [TransactionTypeEnum.EXPENSE]: 'destructive',
     [TransactionTypeEnum.TRANSFER]: 'default',
     [TransactionTypeEnum.DEBT]: 'warning',
-    [TransactionTypeEnum.ADJUSTMENT]: 'positive',
+    [TransactionTypeEnum.ADJUSTMENT]: 'positive'
 };

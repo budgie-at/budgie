@@ -1,3 +1,3 @@
 export enum AccountBalanceAssociationEnum {
-    ACCOUNT = 'account',
+    ACCOUNT = 'account'
 }
