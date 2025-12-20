@@ -31,7 +31,6 @@ export const LanguageSelectorBottomSheet = ({ ref, language, onSelect }: Props) 
             emptyDescription={t`Try a different search term`}
             getItemKey={getItemKey}
             getItemCode={getItemKey}
-            index={1}
         />
     );
 };
