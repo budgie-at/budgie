@@ -9,7 +9,7 @@ export const useCategoryForm = (defaultValues: CategoryCreateEntityInterface | n
         resolver: zodResolver(CategoryCreateEntitySchema),
         defaultValues: defaultValues ?? DEFAULT_VALUES,
         values: defaultValues ?? DEFAULT_VALUES,
-        mode: 'onSubmit',
+        mode: 'onSubmit'
     });
 
     const [icon, title] = useWatch({

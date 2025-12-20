@@ -13,6 +13,6 @@ export const CategoryEntityTable = sqliteTable(
             .notNull(),
         parentId: int('parent_id', { mode: 'number' }),
         isDefault: int('is_default', { mode: 'boolean' }).default(false).notNull(),
-        isSystemCategory: int('is_system_category', { mode: 'boolean' }).default(false).notNull(),
+        isSystemCategory: int('is_system_category', { mode: 'boolean' }).default(false).notNull()
     })
 );
