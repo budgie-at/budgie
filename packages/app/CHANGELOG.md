@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.78.0](https://github.com/budgie-at/budgie/compare/v1.77.0...v1.78.0) (2025-12-20)
+
+### Bug Fixes
+
+- **app:** fix number input ([2c4aa5b](https://github.com/budgie-at/budgie/commit/2c4aa5b445814f0453bcb486ba1c3135b79bd4a3))
+- **app:** fix range start-end text colors ([c36eb30](https://github.com/budgie-at/budgie/commit/c36eb302c8524931b54080fb497d7a962abc7516))
+- **app:** fix range start-end text colors ([7dd365d](https://github.com/budgie-at/budgie/commit/7dd365de655020edb8118e43035f5eed586bfa4b))
+- **app:** unify transactions and statistics pages ([ae5300f](https://github.com/budgie-at/budgie/commit/ae5300f71c36d803c4562751bc2467d20b401227))
+- resolve CI ([2a26718](https://github.com/budgie-at/budgie/commit/2a267181e29d28c795fef9b59177f5c7aaddef72))
+- resolve ts issues ([ff805ff](https://github.com/budgie-at/budgie/commit/ff805ff7e43ec727d463fb34d993a379e5091ceb))
+
+### Features
+
+- add basic analytics screen ([ee9e9c1](https://github.com/budgie-at/budgie/commit/ee9e9c152cd4ebcbaa95547869cedae7376ee509))
+- **i18n:** fill empty translations for fr, es, uk, de ([6b85ebf](https://github.com/budgie-at/budgie/commit/6b85ebfb150bdbc16d5e9e807da1304b15f5cb3b))
+- sync translations ([8da5b34](https://github.com/budgie-at/budgie/commit/8da5b34ca69b541c5cc8e37c552f0ea30dfa4a37))
+
 # [1.77.0](https://github.com/budgie-at/budgie/compare/v1.76.0...v1.77.0) (2025-12-20)
 
 ### Bug Fixes
