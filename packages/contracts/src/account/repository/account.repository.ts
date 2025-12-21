@@ -13,7 +13,7 @@ export class AccountRepository {
     constructor(private db: DB) {}
 
     async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
-        const [account] = await (tx ?? this.db).insert(AccountEntityTable).values([input]).returning();
+        const [account] = await this.bulkCreate([input], tx);
 
         return account;
     }
@@ -81,5 +81,9 @@ export class AccountRepository {
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
+    }
+
+    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: TX): Promise<AccountEntityInterface[]> {
+        return await (tx ?? this.db).insert(AccountEntityTable).values(inputs).returning();
     }
 }
