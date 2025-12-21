@@ -28,6 +28,57 @@ class TransactionService {
         });
     }
 
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], batchSize = 100): Promise<TransactionEntityInterface[]> {
+        const batches: TransactionCreateEntityInterface[][] = [];
+        for (let i = 0; i < inputs.length; i += batchSize) {
+            batches.push(inputs.slice(i, i + batchSize));
+        }
+
+        const batchResults = await Promise.all(
+            batches.map(batch =>
+                db.transaction(async tx => {
+                    const preparedInputs = batch.map(input => ({
+                        ...input,
+                        tagIds: [],
+                        entries: [],
+                        externalId: null,
+                        externalSource: null,
+                        amount: convertToMicroUnits(input.amount)
+                    }));
+
+                    const transactions = await transactionRepository.bulkCreate(preparedInputs, tx);
+
+                    const allEntries = transactions.flatMap((transaction, index) =>
+                        batch[index].entries.map(entry => ({
+                            ...entry,
+                            transactionId: transaction.id,
+                            amount: convertToMicroUnits(entry.amount)
+                        }))
+                    );
+
+                    if (isNotEmptyArray(allEntries)) {
+                        await transactionEntryRepository.bulkCreate(allEntries, tx);
+                    }
+
+                    const allTags = transactions.flatMap((transaction, index) =>
+                        batch[index].tagIds.map(tagId => ({
+                            transactionId: transaction.id,
+                            tagId
+                        }))
+                    );
+
+                    if (isNotEmptyArray(allTags)) {
+                        await transactionTagsRepository.create(allTags, tx);
+                    }
+
+                    return transactions;
+                })
+            )
+        );
+
+        return batchResults.flat();
+    }
+
     async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);

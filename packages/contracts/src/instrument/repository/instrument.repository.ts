@@ -14,6 +14,10 @@ export class InstrumentRepository {
         return await this.db.query.InstrumentEntityTable.findMany();
     }
 
+    findAll() {
+        return this.db.query.InstrumentEntityTable.findMany();
+    }
+
     findById(id: number) {
         return this.db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) });
     }
