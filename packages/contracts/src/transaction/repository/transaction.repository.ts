@@ -100,9 +100,13 @@ export class TransactionRepository {
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
-        const [transaction] = await (tx ?? this.db).insert(TransactionEntityTable).values([input]).returning();
+        const [transaction] = await this.bulkCreate([input], tx);
 
         return transaction;
+    }
+
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: TX): Promise<TransactionEntityInterface[]> {
+        return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: TX): Promise<TransactionEntityInterface> {

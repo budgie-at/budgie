@@ -29,6 +29,31 @@ class AccountService {
         });
     }
 
+    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<AccountEntityInterface[]> {
+        const batches: AccountCreateEntityInterface[][] = [];
+        for (let i = 0; i < inputs.length; i += batchSize) {
+            batches.push(inputs.slice(i, i + batchSize));
+        }
+
+        const batchResults = await Promise.all(
+            batches.map(batch =>
+                db.transaction(async tx => {
+                    const accounts = await accountRepository.bulkCreate(batch, tx);
+
+                    await Promise.all(
+                        accounts.map((account, index) =>
+                            this.adjustBalanceTo(account.id, account.instrumentId, batch[index].currentBalance, tx)
+                        )
+                    );
+
+                    return accounts;
+                })
+            )
+        );
+
+        return batchResults.flat();
+    }
+
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
             const account = await accountRepository.updateById(id, input, tx);
