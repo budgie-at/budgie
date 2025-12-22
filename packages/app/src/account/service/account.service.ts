@@ -18,6 +18,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class AccountService {
     async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
@@ -37,15 +38,9 @@ class AccountService {
     }
 
     async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
-        const results: AccountEntityInterface[] = [];
-        for (let i = 0; i < inputs.length; i += batchSize) {
-            const batch = inputs.slice(i, i + batchSize);
+        const result = await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
 
-            // eslint-disable-next-line no-await-in-loop
-            results.push(...(await this.processBatch(batch)));
-        }
-
-        return results.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
+        return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {

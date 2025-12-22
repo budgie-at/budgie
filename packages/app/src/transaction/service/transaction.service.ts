@@ -1,11 +1,21 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionCreateEntityInterface, TransactionEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -15,16 +25,7 @@ class TransactionService {
     }
 
     async bulkCreate(inputs: TransactionCreateEntityInterface[], batchSize = 500): Promise<TransactionEntityInterface[]> {
-        const results: TransactionEntityInterface[] = [];
-
-        for (let i = 0; i < inputs.length; i += batchSize) {
-            const batch = inputs.slice(i, i + batchSize);
-
-            // eslint-disable-next-line no-await-in-loop
-            results.push(...(await this.processBatch(batch)));
-        }
-
-        return results;
+        return await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
     }
 
     async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
