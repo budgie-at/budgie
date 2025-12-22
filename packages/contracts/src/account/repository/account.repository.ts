@@ -12,6 +12,16 @@ import type { AccountEntityInterface } from '../entity/account-entity.interface'
 export class AccountRepository {
     constructor(private db: DB) {}
 
+    async hasAnyAccount(): Promise<boolean> {
+        const result = await this.db
+            .select({ count: count() })
+            .from(AccountEntityTable)
+            .where(isNull(AccountEntityTable.deletedAt))
+            .limit(1);
+
+        return result[0].count > 0;
+    }
+
     async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
 
@@ -32,8 +42,14 @@ export class AccountRepository {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
-    async deleteById(id: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
+    async archiveById(id: number, tx?: TX): Promise<AccountEntityInterface> {
+        const [account] = await (tx ?? this.db)
+            .update(AccountEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(eq(AccountEntityTable.id, id))
+            .returning();
+
+        return account;
     }
 
     async getAllActiveAccounts(): Promise<AccountEntityInterface[]> {
