@@ -5,5 +5,6 @@ export enum ExternalSourceEnum {
     REVOLUT = 'REVOLUT',
     BINANCE = 'BINANCE',
     COINBASE = 'COINBASE',
-    WISE = 'WISE'
+    WISE = 'WISE',
+    CSV = 'CSV'
 }
