@@ -91,6 +91,7 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/settings/categories" />
                                                     <Stack.Screen name="(main)/settings/tags" />
                                                     <Stack.Screen name="(main)/settings/archived" />
+                                                    <Stack.Screen name="(main)/settings/import" options={aiScreenOptions} />
 
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                 </Stack>
