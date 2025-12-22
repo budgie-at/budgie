@@ -136,7 +136,6 @@ export const ImportScreen = () => {
 
             router.back();
         } catch (error) {
-            console.log(`[Import] Failed`, error);
             Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
         }
 
