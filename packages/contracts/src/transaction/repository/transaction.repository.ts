@@ -141,6 +141,10 @@ export class TransactionRepository {
         });
     }
 
+    async truncate(): Promise<void> {
+        await this.db.delete(TransactionEntityTable);
+    }
+
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
         return this.db
             .select({
