@@ -18,12 +18,17 @@ export const useFormatMoney = (decimalPlaces: number, currency: string, showSign
             return '';
         }
 
-        return intl.formatNumber(num, {
-            currency,
-            style: 'currency',
-            maximumFractionDigits: decimalPlaces,
-            minimumFractionDigits: decimalPlaces,
-            signDisplay: showSign ? 'always' : 'never'
-        });
+        return (
+            intl
+                .formatNumber(num, {
+                    currency,
+                    style: 'currency',
+                    maximumFractionDigits: decimalPlaces,
+                    minimumFractionDigits: decimalPlaces,
+                    signDisplay: showSign ? 'always' : 'never'
+                })
+                // HINT: Fix for UAH symbol
+                .replace('UAH ', '₴')
+        );
     };
 };
