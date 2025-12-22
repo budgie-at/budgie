@@ -29,29 +29,16 @@ class AccountService {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<AccountEntityInterface[]> {
-        const batches: AccountCreateEntityInterface[][] = [];
+    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
+        const results: AccountEntityInterface[] = [];
         for (let i = 0; i < inputs.length; i += batchSize) {
-            batches.push(inputs.slice(i, i + batchSize));
+            const batch = inputs.slice(i, i + batchSize);
+
+            // eslint-disable-next-line no-await-in-loop
+            results.push(...(await this.processBatch(batch)));
         }
 
-        const batchResults = await Promise.all(
-            batches.map(batch =>
-                db.transaction(async tx => {
-                    const accounts = await accountRepository.bulkCreate(batch, tx);
-
-                    await Promise.all(
-                        accounts.map((account, index) =>
-                            this.adjustBalanceTo(account.id, account.instrumentId, batch[index].currentBalance, tx)
-                        )
-                    );
-
-                    return accounts;
-                })
-            )
-        );
-
-        return batchResults.flat();
+        return results.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
@@ -111,6 +98,18 @@ class AccountService {
         );
 
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
+    }
+
+    private async processBatch(batch: AccountCreateEntityInterface[]): Promise<AccountEntityInterface[]> {
+        return await db.transaction(async tx => {
+            const accounts = await accountRepository.bulkCreate(batch, tx);
+
+            await Promise.all(
+                accounts.map((account, index) => this.adjustBalanceTo(account.id, account.instrumentId, batch[index].currentBalance, tx))
+            );
+
+            return accounts;
+        });
     }
 }
 
