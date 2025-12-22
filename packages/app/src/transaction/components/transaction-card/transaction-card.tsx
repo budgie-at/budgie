@@ -16,9 +16,8 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
-
-import { TransactionCardAccountInfo } from './transaction-card-account-info';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -50,7 +49,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                 {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
 
                 <View className="gap-y-md">
-                    <View className="flex-row items-center gap-x-sm flex-wrap">
+                    <View className="flex-row items-center gap-x-sm ">
                         <Text className="text-xs text-secondary-foreground">{formatMonthAndDay(transaction.operatedAt)}</Text>
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
