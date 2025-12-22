@@ -12,6 +12,7 @@ import {
     accountBalanceRepository,
     accountRepository,
     db,
+    settingsRepository,
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
@@ -21,9 +22,15 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 class AccountService {
     async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
+            const hasAnyAccount = await accountRepository.hasAnyAccount();
+
             const account = await accountRepository.create(input, tx);
 
             await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
+
+            if (!hasAnyAccount) {
+                await settingsRepository.update({ defaultAccountId: account.id }, tx);
+            }
 
             return account;
         });
@@ -47,6 +54,19 @@ class AccountService {
 
             if (isNumber(input.currentBalance)) {
                 await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
+            }
+
+            return account;
+        });
+    }
+
+    async archiveById(id: number): Promise<AccountEntityInterface> {
+        return db.transaction(async tx => {
+            const account = await accountRepository.archiveById(id, tx);
+            const settings = await settingsRepository.getSettings();
+
+            if (settings.defaultAccountId === id) {
+                await settingsRepository.update({ defaultAccountId: null }, tx);
             }
 
             return account;

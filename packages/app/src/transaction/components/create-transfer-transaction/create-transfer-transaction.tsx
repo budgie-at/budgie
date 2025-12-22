@@ -4,11 +4,13 @@ import { useLingui } from '@lingui/react/macro';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
 import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
+import { transactionService } from '../../service/transaction.service';
 
 export const CreateTransferTransaction = () => {
     const { t } = useLingui();
 
     const { form, handleSubmit } = useCreateTransactionForm({
+        onSubmit: data => transactionService.createInternalTransfer(data),
         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateEntitySchema,
         type: TransactionTypeEnum.TRANSFER,

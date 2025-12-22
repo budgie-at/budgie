@@ -14,9 +14,7 @@ import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/
 import { FullPage } from '../../../@generic/components/page/full-page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -26,6 +24,7 @@ import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
+import { ArchiveAccount } from '../archive-account/archive-account';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -67,20 +66,6 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         }
     };
 
-    const handleArchive = async () => {
-        try {
-            await accountRepository.deleteById(account.id);
-
-            dismissAllOrReplace('/');
-        } catch {
-            Toast.show({
-                type: 'error',
-                text1: t`Something went wrong`,
-                text2: t`Could not archive account. Please try again later`
-            });
-        }
-    };
-
     const variant = ACCOUNT_COLOR[account.type];
 
     if (!isDefined(instrument)) {
@@ -110,7 +95,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
                 <View className="gap-y-xl">
                     <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
-                    <Button onPress={handleArchive} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
+                    <ArchiveAccount accountId={account.id} />
                 </View>
             </KeyboardAwareScrollView>
         </FullPage>
