@@ -18,6 +18,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class AccountService {
     async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
@@ -34,6 +35,12 @@ class AccountService {
 
             return account;
         });
+    }
+
+    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
+        const result = await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
+
+        return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
@@ -75,6 +82,8 @@ class AccountService {
         const isDebit = delta > 0;
         const absDelta = Math.abs(delta);
 
+        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date('01.01.1970') }, tx);
+
         const transaction = await transactionRepository.create(
             {
                 type: TransactionTypeEnum.ADJUSTMENT,
@@ -104,8 +113,18 @@ class AccountService {
             },
             tx
         );
+    }
 
-        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
+    private async processBatch(batch: AccountCreateEntityInterface[]): Promise<AccountEntityInterface[]> {
+        return await db.transaction(async tx => {
+            const accounts = await accountRepository.bulkCreate(batch, tx);
+
+            await Promise.all(
+                accounts.map((account, index) => this.adjustBalanceTo(account.id, account.instrumentId, batch[index].currentBalance, tx))
+            );
+
+            return accounts;
+        });
     }
 }
 
