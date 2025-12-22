@@ -122,6 +122,7 @@ export const ImportCsv = () => {
         });
     };
 
+    // eslint-disable-next-line max-lines-per-function
     const processTransactions = async (
         fileContent: string,
         accountsMap: Record<string, AccountEntityInterface>,
@@ -179,11 +180,21 @@ export const ImportCsv = () => {
                 return;
             }
 
+            let type = TransactionTypeEnum.EXPENSE;
+            let firstEntryType = TransactionEntryTypeEnum.DEBIT;
+            if (isDefined(fromInstrument)) {
+                type = TransactionTypeEnum.TRANSFER;
+                firstEntryType = TransactionEntryTypeEnum.DEBIT;
+            } else if (amount > 0) {
+                type = TransactionTypeEnum.INCOME;
+                firstEntryType = TransactionEntryTypeEnum.CREDIT;
+            }
+
             transactions.push({
                 amount,
                 operatedAt,
                 externalId,
-                type: TransactionTypeEnum.DEBT,
+                type,
                 title: '',
                 externalSource: null,
                 comment: normalizedRow.comment,
@@ -195,7 +206,7 @@ export const ImportCsv = () => {
                 entries: [
                     {
                         amount,
-                        type: TransactionEntryTypeEnum.CREDIT,
+                        type: firstEntryType,
                         instrumentId: toInstrument.id,
                         accountId: toAccount.id,
                         categoryId: category.id
