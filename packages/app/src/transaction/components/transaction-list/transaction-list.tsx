@@ -2,7 +2,7 @@ import { DEFAULT_TRANSACTION_FILTER, TransactionAssociationEnum, TransactionFilt
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -16,8 +16,8 @@ import { useGetTransactionsQuery } from '../../query/use-get-transactions.query'
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
+import { TransactionCardPure } from '../transaction-card/transaction-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
-import { TransactionListItem } from '../transaction-list-item/transaction-list-item';
 
 interface Props {
     readonly accountId: number | null;
@@ -26,6 +26,20 @@ interface Props {
 const LIST_CONTENT_CONTAINER_STYLE = { gap: 16 };
 const keyExtractor = (item: TransactionListItemType) => item.id;
 const getItemType = (item: TransactionListItemType) => item.type;
+// HINT: You cannot extract this into component or you will get a warning about hook usage
+const renderItem = ({ item }: { item: TransactionListItemType }) =>
+    item.type === 'header' ? (
+        <View className="bg-primary-reverse py-sm">
+            <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
+        </View>
+    ) : (
+        <TransactionCardPure
+            transaction={item.data.transaction}
+            formattedAmount={item.data.formattedAmount}
+            formattedDate={item.data.formattedDate}
+            categoryLabel={item.data.categoryLabel}
+        />
+    );
 
 // eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
@@ -88,7 +102,7 @@ export const TransactionList = ({ accountId }: Props) => {
             <LegendList
                 data={flatData}
                 keyExtractor={keyExtractor}
-                renderItem={TransactionListItem}
+                renderItem={renderItem}
                 estimatedItemSize={80}
                 recycleItems
                 onEndReached={loadMore}
