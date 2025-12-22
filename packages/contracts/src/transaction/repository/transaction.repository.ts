@@ -106,7 +106,11 @@ export class TransactionRepository {
     }
 
     async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: TX): Promise<TransactionEntityInterface[]> {
-        return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+        if (isNotEmptyArray(inputs)) {
+            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+        }
+
+        return [];
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: TX): Promise<TransactionEntityInterface> {
