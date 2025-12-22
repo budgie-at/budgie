@@ -12,11 +12,11 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
-import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 
 interface Props {
     readonly onSubmit: EmptyFn;
