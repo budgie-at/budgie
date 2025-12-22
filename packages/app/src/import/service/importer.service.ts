@@ -29,13 +29,14 @@ import { ImporterRowInterface } from '../interface/importer-row.interface';
 type NormalizedRow = Record<keyof ImporterColumnMapInterface, string>;
 
 interface EntryParams {
-    amount: number;
-    firstEntryType: TransactionEntryTypeEnum;
+    toAmount: number;
     toInstrument: InstrumentEntityInterface;
     toAccount: AccountEntityInterface;
+    firstEntryType: TransactionEntryTypeEnum;
     category: CategoryEntityInterface;
     fromAccount: AccountEntityInterface | null;
     fromInstrument: InstrumentEntityInterface | null;
+    fromAmount: number | null;
 }
 
 interface ValidationParams {
@@ -43,8 +44,10 @@ interface ValidationParams {
     toAccount?: AccountEntityInterface;
     category?: CategoryEntityInterface;
     operatedAt: Date;
-    amount: number;
+    toAmount: number;
     toInstrument?: InstrumentEntityInterface;
+    fromInstrument?: InstrumentEntityInterface;
+    fromAmount?: number;
 }
 
 export class ImporterService {
@@ -135,16 +138,17 @@ export class ImporterService {
     }
 
     private createTransaction(normalizedRow: NormalizedRow): TransactionCreateEntityInterface {
-        const { toAccount, fromAccount, category, operatedAt, amount, fromInstrument, toInstrument } = this.parseRow(normalizedRow);
+        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
+            this.parseRow(normalizedRow);
 
-        this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, amount, toInstrument });
+        this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument });
 
-        const { type, firstEntryType } = this.determineTransactionType(amount, fromInstrument);
+        const { type, firstEntryType } = this.determineTransactionType(toAmount, fromInstrument);
 
         return {
             type,
             operatedAt,
-            amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(amount) : amount,
+            amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(toAmount) : toAmount,
             externalId: normalizedRow.externalId,
             title: '',
             externalSource: ExternalSourceEnum.CSV,
@@ -153,13 +157,22 @@ export class ImporterService {
             fromAccountId: isDefined(fromAccount) ? fromAccount.id : null,
             exchangeRate: 0,
             tagIds: [],
-            entries: this.createEntries({ amount, firstEntryType, toInstrument, toAccount, category, fromAccount, fromInstrument })
+            entries: this.createEntries({
+                toAmount,
+                fromAmount,
+                firstEntryType,
+                toInstrument,
+                toAccount,
+                category,
+                fromAccount,
+                fromInstrument
+            })
         };
     }
 
     private determineTransactionType(
         amount: number,
-        fromInstrument: InstrumentEntityInterface | undefined
+        fromInstrument: InstrumentEntityInterface | null
     ): { type: TransactionTypeEnum; firstEntryType: TransactionEntryTypeEnum } {
         if (isDefined(fromInstrument)) {
             return { type: TransactionTypeEnum.TRANSFER, firstEntryType: TransactionEntryTypeEnum.DEBIT };
@@ -172,11 +185,11 @@ export class ImporterService {
     }
 
     private createEntries(params: EntryParams): TransactionCreateEntityInterface['entries'] {
-        const { amount, firstEntryType, toInstrument, toAccount, category, fromAccount, fromInstrument } = params;
+        const { toAmount, firstEntryType, toInstrument, toAccount, category, fromAccount, fromInstrument, fromAmount } = params;
 
         const entries: TransactionCreateEntityInterface['entries'] = [
             {
-                amount: Math.abs(amount),
+                amount: Math.abs(toAmount),
                 type: firstEntryType,
                 instrumentId: toInstrument.id,
                 accountId: toAccount.id,
@@ -184,9 +197,9 @@ export class ImporterService {
             }
         ];
 
-        if (isDefined(fromAccount) && isDefined(fromInstrument)) {
+        if (isDefined(fromAccount) && isDefined(fromInstrument) && isDefined(fromAmount) && !isNaN(fromAmount)) {
             entries.push({
-                amount: Math.abs(amount),
+                amount: Math.abs(fromAmount),
                 type: TransactionEntryTypeEnum.CREDIT,
                 instrumentId: fromInstrument.id,
                 accountId: fromAccount.id,
@@ -207,26 +220,29 @@ export class ImporterService {
             category: getValue(this.columnMap.category).toLowerCase().trim(),
             operatedAt: getValue(this.columnMap.operatedAt).toLowerCase().trim(),
             comment: getValue(this.columnMap.comment).trim(),
-            amount: getValue(this.columnMap.amount).trim(),
+            toAmount: getValue(this.columnMap.toAmount).trim(),
             fromCurrency: getValue(this.columnMap.fromCurrency).toUpperCase().trim(),
+            fromAmount: getValue(this.columnMap.fromAmount).trim(),
             toCurrency: getValue(this.columnMap.toCurrency).toUpperCase().trim()
         } satisfies NormalizedRow;
     }
 
     private parseRow(normalizedRow: NormalizedRow): ImporterRowInterface {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
+        const toAmount = parseFloat(normalizedRow.toAmount);
+        const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
         const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const category = this.categoriesMap[normalizedRow.category];
         const operatedAt = parse(normalizedRow.operatedAt, 'MM/dd/yyyy HH:mm:ss', new Date());
-        const amount = parseFloat(normalizedRow.amount);
         const fromInstrument = this.instrumentsMap[normalizedRow.fromCurrency];
-        const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
+        const fromAmount = parseFloat(normalizedRow.fromAmount);
 
-        return { toAccount, fromAccount, category, operatedAt, amount, fromInstrument, toInstrument };
+        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount };
     }
 
+    // eslint-disable-next-line max-statements
     private validateParsedRow(params: ValidationParams): void {
-        const { normalizedRow, toAccount, category, operatedAt, amount, toInstrument } = params;
+        const { normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument, fromInstrument, fromAmount } = params;
 
         if (!isDefined(toAccount)) {
             throw new Error(`To Account ${normalizedRow.toAccount} not found`);
@@ -237,11 +253,14 @@ export class ImporterService {
         if (!isDefined(operatedAt) || isNaN(operatedAt.getTime())) {
             throw new Error(`Date "${normalizedRow.operatedAt}" is invalid`);
         }
-        if (!isDefined(amount) || isNaN(amount)) {
-            throw new Error(`Amount "${normalizedRow.amount}" is invalid`);
+        if (!isDefined(toAmount) || isNaN(toAmount)) {
+            throw new Error(`To Amount "${normalizedRow.toAmount}" is invalid`);
         }
         if (!isDefined(toInstrument)) {
             throw new Error(`Currency ${normalizedRow.toCurrency} not found`);
+        }
+        if (isDefined(fromInstrument) && (!isDefined(fromAmount) || isNaN(fromAmount))) {
+            throw new Error(`From Amount "${normalizedRow.fromAmount}" is invalid`);
         }
     }
 
