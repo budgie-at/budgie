@@ -9,23 +9,9 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
-        return await db.transaction(async tx => {
-            const transaction = await transactionRepository.create(
-                {
-                    ...input,
-                    tagIds: [],
-                    entries: [],
-                    externalId: null,
-                    externalSource: null,
-                    amount: convertToMicroUnits(input.amount)
-                },
-                tx
-            );
+        const [transaction] = await this.bulkCreate([input]);
 
-            await this.upsertEntriesAndTags(transaction.id, input, tx);
-
-            return transaction;
-        });
+        return transaction;
     }
 
     async bulkCreate(inputs: TransactionCreateEntityInterface[], batchSize = 100): Promise<TransactionEntityInterface[]> {
@@ -39,16 +25,12 @@ class TransactionService {
                 db.transaction(async tx => {
                     const preparedInputs = batch.map(input => ({
                         ...input,
-                        tagIds: [],
-                        entries: [],
-                        externalId: null,
-                        externalSource: null,
                         amount: convertToMicroUnits(input.amount)
                     }));
 
                     const transactions = await transactionRepository.bulkCreate(preparedInputs, tx);
 
-                    const allEntries = transactions.flatMap((transaction, index) =>
+                    const batchEntries = transactions.flatMap((transaction, index) =>
                         batch[index].entries.map(entry => ({
                             ...entry,
                             transactionId: transaction.id,
@@ -56,19 +38,16 @@ class TransactionService {
                         }))
                     );
 
-                    if (isNotEmptyArray(allEntries)) {
-                        await transactionEntryRepository.bulkCreate(allEntries, tx);
+                    if (isNotEmptyArray(batchEntries)) {
+                        await transactionEntryRepository.bulkCreate(batchEntries, tx);
                     }
 
-                    const allTags = transactions.flatMap((transaction, index) =>
-                        batch[index].tagIds.map(tagId => ({
-                            transactionId: transaction.id,
-                            tagId
-                        }))
+                    const batchTags = transactions.flatMap((transaction, index) =>
+                        batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
                     );
 
-                    if (isNotEmptyArray(allTags)) {
-                        await transactionTagsRepository.create(allTags, tx);
+                    if (isNotEmptyArray(batchTags)) {
+                        await transactionTagsRepository.bulkCreate(batchTags, tx);
                     }
 
                     return transactions;
@@ -125,7 +104,7 @@ class TransactionService {
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await transactionTagsRepository.create(
+                await transactionTagsRepository.bulkCreate(
                     input.tagIds.map(tagId => ({ transactionId: transaction.id, tagId })),
                     tx
                 );
@@ -155,7 +134,7 @@ class TransactionService {
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
 
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.create(
+            await transactionTagsRepository.bulkCreate(
                 input.tagIds.map(tagId => ({ transactionId, tagId })),
                 tx
             );
