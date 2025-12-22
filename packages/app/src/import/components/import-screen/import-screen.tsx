@@ -12,7 +12,15 @@ import { Button } from '../../../@generic/components/button/button';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../../@generic/components/page/page';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import {
+    accountRepository,
+    categoryRepository,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../../@generic/drizzle/db/db';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
+import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImporterColumnMapInterface } from '../../interface/importer-column-map.interface';
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../schema/import-column-map.schema';
 import { ImporterService } from '../../service/importer.service';
@@ -93,6 +101,7 @@ export const ImportScreen = () => {
         void loadFile();
     }, [fileUri, t]);
 
+    // eslint-disable-next-line max-statements
     const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
@@ -101,6 +110,12 @@ export const ImportScreen = () => {
         const importer = new ImporterService(columnMap);
 
         try {
+            await accountRepository.truncate();
+            await categoryRepository.truncate();
+            await transactionTagsRepository.truncate();
+            await transactionEntryRepository.truncate();
+            await transactionRepository.truncate();
+
             const finalProgress = await importer.process(csvText, rowCount);
 
             const hasErrors = finalProgress.errors > 0;
@@ -112,6 +127,8 @@ export const ImportScreen = () => {
                 text1: t`Import Complete`,
                 text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
             });
+
+            await accountBalanceIncrementalService.updateAllBalances();
 
             router.back();
         } catch (error) {

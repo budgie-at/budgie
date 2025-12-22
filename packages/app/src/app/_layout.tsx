@@ -30,6 +30,8 @@ import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
+import Toast from 'react-native-toast-message';
+
 enableScreens();
 enableFreeze();
 
@@ -94,6 +96,8 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/settings/import" options={aiScreenOptions} />
 
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+
+                                                    <Toast />
                                                 </Stack>
                                             </LlmProvider>
                                         </AuthGuard>

@@ -86,4 +86,8 @@ export class AccountRepository {
     async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: TX): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db).insert(AccountEntityTable).values(inputs).returning();
     }
+
+    async truncate(): Promise<void> {
+        await this.db.delete(AccountEntityTable);
+    }
 }

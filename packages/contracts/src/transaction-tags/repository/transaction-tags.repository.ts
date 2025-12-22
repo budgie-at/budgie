@@ -21,4 +21,8 @@ export class TransactionTagsRepository {
     async deleteByTransactionId(id: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id));
     }
+
+    async truncate(): Promise<void> {
+        await this.db.delete(TransactionTagsEntityTable);
+    }
 }

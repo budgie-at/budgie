@@ -59,4 +59,8 @@ export class CategoryRepository {
     async deleteById(id: number): Promise<void> {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
     }
+
+    async truncate(): Promise<void> {
+        await this.db.delete(CategoryEntityTable);
+    }
 }
