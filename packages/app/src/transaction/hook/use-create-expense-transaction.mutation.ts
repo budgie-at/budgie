@@ -26,7 +26,7 @@ export const useCreateExpenseTransactionMutation = () => {
                     accountId,
                     type: TransactionEntryTypeEnum.CREDIT,
                     instrumentId,
-                    amount,
+                    toAmount: amount,
                     categoryId
                 })
             ]

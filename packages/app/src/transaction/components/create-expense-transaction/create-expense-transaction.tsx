@@ -21,7 +21,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
         fromAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,
-        amount,
+        toAmount: amount,
         categoryId
     });
 

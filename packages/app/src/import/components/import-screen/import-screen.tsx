@@ -39,10 +39,12 @@ const DEFAULT_VALUES: ImportColumnMapFormValues = {
     category: 'Категория',
     operatedAt: 'Дата',
     comment: 'Описание',
-    amount: 'Сумма',
+    toAmount: 'Сумма',
     toCurrency: 'Валюта',
     // eslint-disable-next-line lingui/no-unlocalized-strings
-    fromCurrency: 'Валюта 2'
+    fromCurrency: 'Валюта 2',
+    // eslint-disable-next-line lingui/no-unlocalized-strings
+    fromAmount: 'Сумма 2'
 };
 
 const SAFE_EDGES: Edge[] = ['bottom'];
@@ -66,7 +68,7 @@ export const ImportScreen = () => {
     })
         .refine(data => headersSet.has(data.category), { message: t`Select a valid column`, path: ['category'] })
         .refine(data => headersSet.has(data.operatedAt), { message: t`Select a valid column`, path: ['operatedAt'] })
-        .refine(data => headersSet.has(data.amount), { message: t`Select a valid column`, path: ['amount'] })
+        .refine(data => headersSet.has(data.toAmount), { message: t`Select a valid column`, path: ['toAmount'] })
         .refine(data => headersSet.has(data.toCurrency), { message: t`Select a valid column`, path: ['toCurrency'] });
 
     const {
@@ -108,6 +110,7 @@ export const ImportScreen = () => {
 
         await microPause();
 
+        console.log({ columnMap });
         const importer = new ImporterService(columnMap);
 
         try {
@@ -134,6 +137,7 @@ export const ImportScreen = () => {
 
             router.back();
         } catch (error) {
+            console.log(`[Import] Failed`, error);
             Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
         }
 
@@ -160,11 +164,12 @@ export const ImportScreen = () => {
                     <ImportColumnMapField control={control} name="toAccount" label={t`To Account`} headers={headers} isRequired />
                     <ImportColumnMapField control={control} name="category" label={t`Category`} headers={headers} isRequired />
                     <ImportColumnMapField control={control} name="operatedAt" label={t`Date`} headers={headers} isRequired />
-                    <ImportColumnMapField control={control} name="amount" label={t`Amount`} headers={headers} isRequired />
+                    <ImportColumnMapField control={control} name="toAmount" label={t`Amount`} headers={headers} isRequired />
                     <ImportColumnMapField control={control} name="toCurrency" label={t`To Currency`} headers={headers} isRequired />
                     <ImportColumnMapField control={control} name="externalId" label={t`External ID`} headers={headers} />
                     <ImportColumnMapField control={control} name="fromAccount" label={t`From Account`} headers={headers} />
                     <ImportColumnMapField control={control} name="fromCurrency" label={t`From Currency`} headers={headers} />
+                    <ImportColumnMapField control={control} name="fromAmount" label={t`From Amount`} headers={headers} />
                     <ImportColumnMapField control={control} name="comment" label={t`Comment`} headers={headers} />
                 </ScrollView>
 
@@ -186,6 +191,7 @@ export const ImportScreen = () => {
                     </View>
                 </View>
             </View>
+            <Toast />
         </Page>
     );
 };

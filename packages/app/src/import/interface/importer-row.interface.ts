@@ -2,10 +2,11 @@ import { AccountEntityInterface, CategoryEntityInterface, InstrumentEntityInterf
 
 export interface ImporterRowInterface {
     toAccount: AccountEntityInterface;
-    fromAccount: AccountEntityInterface | null;
-    category: CategoryEntityInterface;
-    amount: number;
-    operatedAt: Date;
-    fromInstrument: InstrumentEntityInterface;
+    toAmount: number;
     toInstrument: InstrumentEntityInterface;
+    fromAccount: AccountEntityInterface | null;
+    fromAmount: number | null;
+    fromInstrument: InstrumentEntityInterface | null;
+    category: CategoryEntityInterface;
+    operatedAt: Date;
 }
