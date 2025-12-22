@@ -8,8 +8,8 @@ import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.tab
 export class TransactionTagsRepository {
     constructor(private db: DB) {}
 
-    async create(input: TransactionTagsCreateEntityInterface[], tx?: TX): Promise<TransactionTagsEntityInterface[]> {
-        return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(input).returning();
+    async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: TX): Promise<TransactionTagsEntityInterface[]> {
+        return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).returning();
     }
 
     async deleteByTransactionId(id: number, tx?: TX): Promise<void> {
