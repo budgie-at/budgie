@@ -56,9 +56,9 @@ export class ImporterWithProgress {
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        await this.initializeInstruments();
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
 
+        this.instrumentsMap = await this.initializeInstruments();
         this.accountsMap = await accountService.bulkCreate([...accountInputs.values()]);
         this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
 
@@ -68,9 +68,10 @@ export class ImporterWithProgress {
         return progress;
     }
 
-    private async initializeInstruments(): Promise<void> {
+    private async initializeInstruments(): Promise<Record<string, InstrumentEntityInterface>> {
         const instruments = await instrumentRepository.getAll();
-        this.instrumentsMap = instruments.reduce<Record<string, InstrumentEntityInterface>>(
+
+        return instruments.reduce<Record<string, InstrumentEntityInterface>>(
             (acc, instrument) => ({ ...acc, [instrument.code]: instrument }),
             {}
         );
@@ -80,9 +81,6 @@ export class ImporterWithProgress {
         accountInputs: Map<string, AccountCreateEntityInterface>;
         categoryInputs: Map<string, CategoryCreateEntityInterface>;
     }> {
-        this.accountsMap = {};
-        this.categoriesMap = {};
-
         const accountInputs = new Map<string, AccountCreateEntityInterface>();
         const categoryInputs = new Map<string, CategoryCreateEntityInterface>();
 
