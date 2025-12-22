@@ -82,6 +82,10 @@ export class AccountBalanceRepository {
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
+    async truncate(): Promise<void> {
+        await this.db.delete(AccountBalanceEntityTable);
+    }
+
     private getAccountBalanceWithTransactionsSql() {
         return sql`${this.getLatestAccountBalanceSql()} + ${this.getTransactionsSinceLastBalanceSql()}`;
     }

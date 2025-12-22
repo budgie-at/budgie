@@ -13,6 +13,7 @@ import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon
 import { Page } from '../../../@generic/components/page/page';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import {
+    accountBalanceRepository,
     accountRepository,
     categoryRepository,
     transactionEntryRepository,
@@ -115,6 +116,7 @@ export const ImportScreen = () => {
             await transactionTagsRepository.truncate();
             await transactionEntryRepository.truncate();
             await transactionRepository.truncate();
+            await accountBalanceRepository.truncate();
 
             const finalProgress = await importer.process(csvText, rowCount);
 
