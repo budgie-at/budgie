@@ -1,20 +1,47 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionAssociationEnum, TransactionFilterInterface } from '@budgie/contracts';
+import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
-import React, { useState } from 'react';
-import { SectionList, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
+import { useI18nContext } from '../../../i18n/context/i18n.context';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { createFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useGetInstrumentsMapQuery } from '../../../instrument/query/use-get-instruments-map.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
+import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
-import { TransactionCard } from '../transaction-card/transaction-card';
+import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
+import { TransactionCardPure } from '../transaction-card/transaction-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
     readonly accountId: number | null;
 }
 
+const LIST_CONTENT_CONTAINER_STYLE = { gap: 16 };
+const keyExtractor = (item: TransactionListItemType) => item.id;
+const getItemType = (item: TransactionListItemType) => item.type;
+// HINT: You cannot extract this into component or you will get a warning about hook usage
+const renderItem = ({ item }: { item: TransactionListItemType }) =>
+    item.type === 'header' ? (
+        <View className="bg-primary-reverse py-sm">
+            <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
+        </View>
+    ) : (
+        <TransactionCardPure
+            transaction={item.data.transaction}
+            formattedAmount={item.data.formattedAmount}
+            formattedDate={item.data.formattedDate}
+            categoryLabel={item.data.categoryLabel}
+        />
+    );
+
+// eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -22,20 +49,36 @@ export const TransactionList = ({ accountId }: Props) => {
     });
 
     const hasFiltersSelected = checkIfFiltersSelected(accountId, filters);
-
     const { sections, loadMore } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
+    const { intl } = useI18nContext();
+    const { decimalPlaces, defaultCurrency } = useSettingsContext();
+    const { formatMonthAndDayWithTime } = useFormatDate();
+    const { instrumentsMap } = useGetInstrumentsMapQuery();
 
-    const listSections = sections.map(({ date, transactions }) => ({ title: date, data: transactions }));
+    const balanceAdjustmentLabel = t`Balance Adjustment`;
+    const categoriesLabel = t`Categories`;
 
-    const renderItem = ({ item }: { item: TransactionWithRelationsEntityInterface }) => <TransactionCard transaction={item} />;
-    const keyExtractor = (item: TransactionWithRelationsEntityInterface) => item.id.toString();
+    const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
+        { type: 'header' as const, title: date, id: `header-${date}` },
+        ...transactions.map(transaction => {
+            const [{ instrumentId }] = transaction[TransactionAssociationEnum.ENTRIES];
+            const instrument = instrumentsMap.get(instrumentId);
+            const currencyCode = instrument?.code ?? defaultCurrency;
+            const formatTransactionMoney = createFormatMoney(intl, decimalPlaces, currencyCode, true);
 
-    const renderSectionHeader = ({ section }: { section: { title: string } }) => (
-        <View className="bg-primary-reverse py-sm">
-            <Text className="text-secondary-foreground uppercase text-xs">{section.title}</Text>
-        </View>
-    );
+            return {
+                type: 'transaction' as const,
+                id: `transaction-${transaction.id}`,
+                data: {
+                    transaction,
+                    formattedAmount: formatTransactionMoney(transaction.amount),
+                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
+                }
+            };
+        })
+    ]);
 
     const emptyTitle = hasFiltersSelected ? t`No matching transactions` : t`No transactions yet`;
     const emptyDescription = hasFiltersSelected
@@ -56,17 +99,18 @@ export const TransactionList = ({ accountId }: Props) => {
         <View className="gap-y-3xl flex-1">
             <TransactionFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
 
-            <SectionList
-                showsVerticalScrollIndicator={false}
-                contentContainerClassName="gap-y-xl"
-                sections={listSections}
+            <LegendList
+                data={flatData}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
-                renderSectionHeader={renderSectionHeader}
-                stickySectionHeadersEnabled
+                estimatedItemSize={80}
+                recycleItems
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.3}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={LIST_CONTENT_CONTAINER_STYLE}
                 ListEmptyComponent={listEmptyState}
+                getItemType={getItemType}
             />
         </View>
     );
