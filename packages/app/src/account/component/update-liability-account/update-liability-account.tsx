@@ -21,10 +21,10 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
+import { ArchiveAccount } from '../archive-account/archive-account';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
-import { ArchiveAccount } from '../archive-account/archive-account';
 
 interface Props {
     readonly account: AccountEntityInterface;
