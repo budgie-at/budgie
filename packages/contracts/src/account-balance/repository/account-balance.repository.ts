@@ -22,7 +22,7 @@ export class AccountBalanceRepository {
             .values([input])
             .onConflictDoUpdate({
                 target: AccountBalanceEntityTable.accountId,
-                set: { amount: input.amount, updatedAt: new Date() }
+                set: { amount: input.amount, updatedAt: input.updatedAt ?? new Date() }
             })
             .returning();
 
@@ -111,9 +111,9 @@ export class AccountBalanceRepository {
                     SELECT SUM(
                         CASE
                             WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                                THEN ${TransactionEntryEntityTable.amount}
-                            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                                 THEN -${TransactionEntryEntityTable.amount}
+                            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                                THEN ${TransactionEntryEntityTable.amount}
                             ELSE 0
                         END
                     )
