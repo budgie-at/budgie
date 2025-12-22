@@ -60,7 +60,7 @@ export class AccountBalanceRepository {
             `
             })
             .from(AccountEntityTable)
-            .where(and(eq(AccountEntityTable.id, accountId), isNull(AccountEntityTable.deletedAt)))
+            .where(eq(AccountEntityTable.id, accountId))
             .limit(1);
     }
 
