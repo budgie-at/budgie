@@ -70,6 +70,7 @@ const getCategoryLabel = (
     return entry.category?.title ?? transaction.type;
 };
 
+// eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -90,7 +91,7 @@ export const TransactionList = ({ accountId }: Props) => {
     const flatData: ListItem[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
         ...transactions.map(transaction => {
-            const { instrumentId } = transaction[TransactionAssociationEnum.ENTRIES][0];
+            const [{ instrumentId }] = transaction[TransactionAssociationEnum.ENTRIES];
             const instrument = instrumentsMap.get(instrumentId);
             const currencyCode = instrument?.code ?? defaultCurrency;
             const formatTransactionMoney = createFormatMoney(intl, decimalPlaces, currencyCode, true);
