@@ -1144,6 +1144,7 @@ __metadata:
     "@formatjs/intl": "npm:^3.1.8"
     "@gorhom/bottom-sheet": "npm:^5.2.6"
     "@hookform/resolvers": "npm:^5.2.2"
+    "@legendapp/list": "npm:^2.0.18"
     "@libsql/client": "npm:^0.15.15"
     "@lingui/babel-plugin-lingui-macro": "npm:^5.7.0"
     "@lingui/core": "npm:^5.7.0"
@@ -3594,6 +3595,18 @@ __metadata:
     reprism: "npm:^0.0.11"
     spark-md5: "npm:^3.0.2"
   checksum: 10/da6433406a73f19380ac5154ce689b1a4632f8292f741a48792aefcea65da7a8cb2d980684ae4b4afe11ca7aa0872d044f7ac30bc328d834b9c9778f692bc464
+  languageName: node
+  linkType: hard
+
+"@legendapp/list@npm:^2.0.18":
+  version: 2.0.18
+  resolution: "@legendapp/list@npm:2.0.18"
+  dependencies:
+    use-sync-external-store: "npm:^1.5.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/8d4e6514ffb3462c30a3c5e8b33c7e4902585b1925fad99c6876498b7e1095464f6d6fbf2a4f00dd519d486a93125da6c569c24b76a0484bdb341febb19650bc
   languageName: node
   linkType: hard
 
