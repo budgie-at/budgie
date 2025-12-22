@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionAssociationEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -11,13 +11,13 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
-
-import { TransactionCardAccountInfo } from './transaction-card-account-info';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -31,7 +31,9 @@ const amountVariants = cva('text-md', {
 
 export const TransactionCard = ({ transaction }: Props) => {
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, true);
+    // TODO: We take 1st entry, but is this correct?
+    const transactionInstrument = useGetInstrumentByIdQuery(transaction[TransactionAssociationEnum.ENTRIES][0].instrumentId);
+    const formatMoney = useFormatMoney(decimalPlaces, transactionInstrument.instrument?.code ?? defaultCurrency, true);
     const { formatMonthAndDayWithTime } = useFormatDate();
 
     const categoryIcon = getTransactionIcon(transaction);
@@ -47,7 +49,7 @@ export const TransactionCard = ({ transaction }: Props) => {
                 {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
 
                 <View className="gap-y-md">
-                    <View className="flex-row items-center gap-x-sm flex-wrap">
+                    <View className="flex-row items-center gap-x-sm ">
                         {isNotEmptyString(transaction.comment) ? <Text className="text-primary text-sm">{transaction.comment}</Text> : null}
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
