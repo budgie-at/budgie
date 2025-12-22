@@ -13,7 +13,7 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { parse } from 'date-fns';
-import Papa, { ParseResult } from 'papaparse';
+import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -46,7 +46,7 @@ interface ValidationParams {
     toInstrument?: InstrumentEntityInterface;
 }
 
-export class ImporterWithProgress {
+export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
@@ -56,9 +56,10 @@ export class ImporterWithProgress {
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
+        this.instrumentsMap = await this.initializeInstruments();
+
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
 
-        this.instrumentsMap = await this.initializeInstruments();
         this.accountsMap = await accountService.bulkCreate([...accountInputs.values()]);
         this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
 
@@ -259,10 +260,8 @@ export class ImporterWithProgress {
             Papa.parse<Record<string, string>>(csvText, {
                 header: true,
                 skipEmptyLines: true,
-                chunk: ({ data }: ParseResult<Record<string, string>>) => {
-                    for (const row of data) {
-                        onRow(this.normalizeRow(row), row);
-                    }
+                step: (row: ParseStepResult<Record<string, string>>) => {
+                    onRow(this.normalizeRow(row.data), row.data);
                 },
                 complete: () => void resolve(),
                 error: (error: Error) => void reject(error)

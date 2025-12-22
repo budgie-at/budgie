@@ -12,9 +12,10 @@ import { Button } from '../../../@generic/components/button/button';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { Page } from '../../../@generic/components/page/page';
 import { ICONS } from '../../../@generic/constant/icons.constant';
+import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { ImporterColumnMapInterface } from '../../interface/importer-column-map.interface';
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../schema/import-column-map.schema';
-import { ImporterWithProgress } from '../../service/importer-with-progress.service';
+import { ImporterService } from '../../service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../util/csv-parser.util';
 import { ImportColumnMapField } from '../import-column-map-field/import-column-map-field';
 
@@ -92,31 +93,30 @@ export const ImportScreen = () => {
         void loadFile();
     }, [fileUri, t]);
 
-    const handleStartImport = (columnMap: ImporterColumnMapInterface) => {
+    const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
-        const importer = new ImporterWithProgress(columnMap);
+        await microPause();
 
-        importer
-            .process(csvText, rowCount)
-            .then(finalProgress => {
-                const hasErrors = finalProgress.errors > 0;
-                const successCount = finalProgress.successful;
-                const errorCount = finalProgress.errors;
+        const importer = new ImporterService(columnMap);
 
-                Toast.show({
-                    type: hasErrors ? 'info' : 'success',
-                    text1: t`Import Complete`,
-                    text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
-                });
+        try {
+            const finalProgress = await importer.process(csvText, rowCount);
 
-                router.back();
+            const hasErrors = finalProgress.errors > 0;
+            const successCount = finalProgress.successful;
+            const errorCount = finalProgress.errors;
 
-                return true;
-            })
-            .catch((error: unknown) => {
-                Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
+            Toast.show({
+                type: hasErrors ? 'info' : 'success',
+                text1: t`Import Complete`,
+                text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
             });
+
+            router.back();
+        } catch (error) {
+            Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
+        }
 
         setIsLoading(false);
     };
