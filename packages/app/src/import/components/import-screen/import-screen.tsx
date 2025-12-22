@@ -110,7 +110,6 @@ export const ImportScreen = () => {
 
         await microPause();
 
-        console.log({ columnMap });
         const importer = new ImporterService(columnMap);
 
         try {
