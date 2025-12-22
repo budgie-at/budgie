@@ -1,4 +1,4 @@
-import { TransactionAssociationEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -9,18 +9,17 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
-import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
-import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
+import { TransactionCategoryBadgePure } from '../transaction-category-badge/transaction-category-badge';
 
-interface Props {
+export interface TransactionCardPureProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly formattedAmount: string;
+    readonly formattedDate: string;
+    readonly categoryLabel: string;
 }
 
 const amountVariants = cva('text-md', {
@@ -29,17 +28,11 @@ const amountVariants = cva('text-md', {
     }
 });
 
-export const TransactionCard = ({ transaction }: Props) => {
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    // TODO: We take 1st entry, but is this correct?
-    const transactionInstrument = useGetInstrumentByIdQuery(transaction[TransactionAssociationEnum.ENTRIES][0].instrumentId);
-    const formatMoney = useFormatMoney(decimalPlaces, transactionInstrument.instrument?.code ?? defaultCurrency, true);
-    const { formatMonthAndDayWithTime } = useFormatDate();
-
+export const TransactionCardPure = ({ transaction, formattedAmount, formattedDate, categoryLabel }: TransactionCardPureProps) => {
     const categoryIcon = getTransactionIcon(transaction);
+    const transactionType = getTransactionType(transaction);
 
     const handleNavigate = () => void router.push(`/transactions/${transaction.id}`);
-    const transactionType = getTransactionType(transaction);
 
     return (
         <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl relative">
@@ -54,14 +47,12 @@ export const TransactionCard = ({ transaction }: Props) => {
                         <TransactionCardAccountInfo transaction={transaction} />
                     </View>
 
-                    <TransactionCategoryBadge transaction={transaction} />
+                    <TransactionCategoryBadgePure transaction={transaction} categoryLabel={categoryLabel} />
                 </View>
             </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
-            <Text className="text-xxs text-secondary-foreground absolute right-[12px] bottom-[8px]">
-                {formatMonthAndDayWithTime(transaction.operatedAt)}
-            </Text>
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formattedAmount}</Text>
+            <Text className="text-xxs text-secondary-foreground absolute right-[12px] bottom-[8px]">{formattedDate}</Text>
         </Card>
     );
 };
