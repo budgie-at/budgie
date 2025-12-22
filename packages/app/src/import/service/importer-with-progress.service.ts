@@ -25,7 +25,6 @@ import { ImportProgressInterface } from '../interface/import-progress.interface'
 import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import { ImporterRowInterface } from '../interface/importer-row.interface';
 
-type ProgressCallback = (progress: ImportProgressInterface) => void;
 type NormalizedRow = Record<keyof ImporterColumnMapInterface, string>;
 
 interface EntryParams {
@@ -52,10 +51,7 @@ export class ImporterWithProgress {
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
 
-    constructor(
-        private readonly columnMap: ImporterColumnMapInterface,
-        private readonly onProgress: ProgressCallback
-    ) {}
+    constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
@@ -133,7 +129,6 @@ export class ImporterWithProgress {
                 progress.errors += 1;
                 console.log(`Error processing row: ${getErrorMessage(error)}`, row);
             }
-            this.onProgress({ ...progress });
         });
 
         return transactions;
