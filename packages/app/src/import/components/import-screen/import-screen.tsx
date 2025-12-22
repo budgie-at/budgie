@@ -67,6 +67,7 @@ export const ImportScreen = () => {
             const hasErrors = finalProgress.errors > 0;
             const successCount = finalProgress.successful;
             const errorCount = finalProgress.errors;
+
             const toastType = hasErrors ? 'info' : 'success';
             const text2 = hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`;
             Toast.show({ type: toastType, text1: t`Import Complete`, text2 });
