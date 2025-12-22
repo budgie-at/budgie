@@ -100,9 +100,17 @@ export class TransactionRepository {
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
-        const [transaction] = await (tx ?? this.db).insert(TransactionEntityTable).values([input]).returning();
+        const [transaction] = await this.bulkCreate([input], tx);
 
         return transaction;
+    }
+
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: TX): Promise<TransactionEntityInterface[]> {
+        if (isNotEmptyArray(inputs)) {
+            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+        }
+
+        return [];
     }
 
     async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: TX): Promise<TransactionEntityInterface> {
@@ -131,6 +139,10 @@ export class TransactionRepository {
             where: eq(TransactionEntityTable.id, id),
             with: this.transactionRelations
         });
+    }
+
+    async truncate(): Promise<void> {
+        await this.db.delete(TransactionEntityTable);
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

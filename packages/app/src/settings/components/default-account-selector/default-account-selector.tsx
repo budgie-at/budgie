@@ -1,12 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
-import { isDefined } from '@rnw-community/shared';
 
 export const DefaultAccountSelector = () => {
     const ref = useRef<BottomSheetInterface | null>(null);

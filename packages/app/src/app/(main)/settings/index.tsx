@@ -7,6 +7,7 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { CentsSwitch } from '../../../settings/components/cents-switch/cents-switch';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
@@ -49,6 +50,7 @@ export default function SettingsPage() {
                         <DefaultCurrencySelector />
                         <LocaleSelector />
                         <DefaultAccountSelector />
+                        <ImportCsv />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Organization`}>

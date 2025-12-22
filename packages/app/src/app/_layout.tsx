@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
+import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
@@ -91,8 +92,11 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/settings/categories" />
                                                     <Stack.Screen name="(main)/settings/tags" />
                                                     <Stack.Screen name="(main)/settings/archived" />
+                                                    <Stack.Screen name="(main)/settings/import" options={aiScreenOptions} />
 
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+
+                                                    <Toast />
                                                 </Stack>
                                             </LlmProvider>
                                         </AuthGuard>

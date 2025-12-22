@@ -1,9 +1,4 @@
-import {
-    AccountBalanceEntityInterface,
-    AccountEntityInterface,
-    TransactionEntryEntityInterface,
-    TransactionEntryTypeEnum
-} from '@budgie/contracts';
+import { AccountBalanceEntityInterface, TransactionEntryEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -14,7 +9,7 @@ import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-in
 import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 class AccountBalanceIncrementalService {
-    async updateAllBalances(): Promise<void> {
+    async updateAllBalances(updatedAt?: Date): Promise<void> {
         const accounts = await accountRepository.getAllActiveAccounts();
         if (isEmptyArray(accounts)) {
             return;
@@ -30,7 +25,16 @@ class AccountBalanceIncrementalService {
         const balancesMap = this.buildBalancesMap(currentBalances);
         const deltaMap = this.buildDeltaMap(newEntries);
 
-        const balancesToInsert = this.buildNewBalances(accounts, balancesMap, deltaMap);
+        const balancesToInsert = accounts.map(account => {
+            const base = balancesMap.get(account.id) ?? 0;
+            const delta = deltaMap.get(account.id) ?? 0;
+
+            return {
+                amount: base + delta,
+                accountId: account.id,
+                updatedAt: updatedAt ?? new Date()
+            };
+        });
 
         if (isNotEmptyArray(balancesToInsert)) {
             await Promise.all(balancesToInsert.map(async balance => accountBalanceRepository.upsert(balance)));
@@ -63,18 +67,6 @@ class AccountBalanceIncrementalService {
 
             return map.set(accountId, total);
         }, new Map<number, number>());
-    }
-
-    private buildNewBalances(accounts: AccountEntityInterface[], balancesMap: Map<number, number>, deltaMap: Map<number, number>) {
-        return accounts.map(account => {
-            const base = balancesMap.get(account.id) ?? 0;
-            const delta = deltaMap.get(account.id) ?? 0;
-
-            return {
-                amount: base + delta,
-                accountId: account.id
-            };
-        });
     }
 }
 

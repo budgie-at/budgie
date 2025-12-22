@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
-import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
 import { transactionService } from '../../service/transaction.service';
+import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
 
 export const CreateTransferTransaction = () => {
     const { t } = useLingui();

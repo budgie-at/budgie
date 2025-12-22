@@ -53,7 +53,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                     ? [
                           createTransactionEntryInput({
                               accountId: fromAccountId,
-                              type: TransactionEntryTypeEnum.CREDIT,
+                              type: TransactionEntryTypeEnum.DEBIT,
                               instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId
@@ -64,7 +64,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                     ? [
                           createTransactionEntryInput({
                               accountId: toAccountId,
-                              type: TransactionEntryTypeEnum.DEBIT,
+                              type: TransactionEntryTypeEnum.CREDIT,
                               instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId

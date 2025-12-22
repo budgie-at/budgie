@@ -26,7 +26,6 @@
         "metro-minify-terser",
         "react-compiler-runtime",
         "babel-jest",
-        "date-fns",
         "tsx",
         "babel-plugin-inline-import",
         "babel-plugin-react-compiler",

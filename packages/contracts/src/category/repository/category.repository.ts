@@ -1,5 +1,6 @@
 import { and, count, eq, sql } from 'drizzle-orm';
 
+import { TX } from '../../generic/type/db.type';
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
@@ -33,10 +34,14 @@ export class CategoryRepository {
         return this.db.select({ count: count() }).from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, false));
     }
 
-    async create(input: CategoryCreateEntityInterface): Promise<CategoryEntityInterface> {
-        const [category] = await this.db.insert(CategoryEntityTable).values([input]).returning();
+    async create(input: CategoryCreateEntityInterface, tx?: TX): Promise<CategoryEntityInterface> {
+        const [category] = await this.bulkCreate([input], tx);
 
         return category;
+    }
+
+    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: TX): Promise<CategoryEntityInterface[]> {
+        return await (tx ?? this.db).insert(CategoryEntityTable).values(inputs).returning();
     }
 
     async updateById(id: number, input: CategoryUpdateEntityInterface): Promise<CategoryEntityInterface> {
@@ -53,5 +58,9 @@ export class CategoryRepository {
 
     async deleteById(id: number): Promise<void> {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
+    }
+
+    async truncate(): Promise<void> {
+        await this.db.delete(CategoryEntityTable);
     }
 }

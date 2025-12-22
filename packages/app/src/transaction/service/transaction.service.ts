@@ -1,31 +1,31 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionCreateEntityInterface, TransactionEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
-        return await db.transaction(async tx => {
-            const transaction = await transactionRepository.create(
-                {
-                    ...input,
-                    tagIds: [],
-                    entries: [],
-                    externalId: null,
-                    externalSource: null,
-                    amount: convertToMicroUnits(input.amount)
-                },
-                tx
-            );
+        const [transaction] = await this.bulkCreate([input]);
 
-            await this.upsertEntriesAndTags(transaction.id, input, tx);
+        return transaction;
+    }
 
-            return transaction;
-        });
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], batchSize = 500): Promise<TransactionEntityInterface[]> {
+        return await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
     }
 
     async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -74,7 +74,7 @@ class TransactionService {
             );
 
             if (isNotEmptyArray(input.tagIds)) {
-                await transactionTagsRepository.create(
+                await transactionTagsRepository.bulkCreate(
                     input.tagIds.map(tagId => ({ transactionId: transaction.id, tagId })),
                     tx
                 );
@@ -94,6 +94,35 @@ class TransactionService {
         });
     }
 
+    private processBatch(batch: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> {
+        return db.transaction(async tx => {
+            const preparedInputs = batch.map(input => ({
+                ...input,
+                amount: convertToMicroUnits(input.amount)
+            }));
+
+            const transactions = await transactionRepository.bulkCreate(preparedInputs, tx);
+
+            // HINT: This will work if bulkCreate will preserve the order of the inputs.
+            const batchEntries = transactions.flatMap((transaction, index) =>
+                batch[index].entries.map(entry => ({
+                    ...entry,
+                    transactionId: transaction.id,
+                    amount: convertToMicroUnits(entry.amount)
+                }))
+            );
+
+            const batchTags = transactions.flatMap((transaction, index) =>
+                batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
+            );
+
+            await transactionEntryRepository.bulkCreate(batchEntries, tx);
+            await transactionTagsRepository.bulkCreate(batchTags, tx);
+
+            return transactions;
+        });
+    }
+
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
@@ -104,7 +133,7 @@ class TransactionService {
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
 
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.create(
+            await transactionTagsRepository.bulkCreate(
                 input.tagIds.map(tagId => ({ transactionId, tagId })),
                 tx
             );
