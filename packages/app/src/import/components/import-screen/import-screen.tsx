@@ -92,28 +92,33 @@ export const ImportScreen = () => {
         void loadFile();
     }, [fileUri, t]);
 
-    const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
+    const handleStartImport = (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
-        try {
-            const importer = new ImporterWithProgress(columnMap);
-            const finalProgress = await importer.process(csvText, rowCount);
 
-            const hasErrors = finalProgress.errors > 0;
-            const successCount = finalProgress.successful;
-            const errorCount = finalProgress.errors;
+        const importer = new ImporterWithProgress(columnMap);
 
-            Toast.show({
-                type: hasErrors ? 'info' : 'success',
-                text1: t`Import Complete`,
-                text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
+        importer
+            .process(csvText, rowCount)
+            .then(finalProgress => {
+                const hasErrors = finalProgress.errors > 0;
+                const successCount = finalProgress.successful;
+                const errorCount = finalProgress.errors;
+
+                Toast.show({
+                    type: hasErrors ? 'info' : 'success',
+                    text1: t`Import Complete`,
+                    text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
+                });
+
+                router.back();
+
+                return true;
+            })
+            .catch((error: unknown) => {
+                Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
             });
 
-            router.back();
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Import Failed`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
+        setIsLoading(false);
     };
     const handleCancel = () => void router.back();
 
@@ -148,7 +153,7 @@ export const ImportScreen = () => {
                     <View className="flex-1">
                         <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
                     </View>
-                    <View className="flex-2 align-middle justify-center flex-row-reverse gap-x-md">
+                    <View className="flex-2 align-middle justify-center ">
                         {isLoading ? (
                             <ActivityIndicator size="small" />
                         ) : (
