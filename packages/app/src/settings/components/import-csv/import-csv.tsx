@@ -191,7 +191,7 @@ export const ImportCsv = () => {
             }
 
             transactions.push({
-                amount,
+                amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(amount) : amount,
                 operatedAt,
                 externalId,
                 type,
@@ -205,7 +205,7 @@ export const ImportCsv = () => {
                 tagIds: [],
                 entries: [
                     {
-                        amount,
+                        amount: Math.abs(amount),
                         type: firstEntryType,
                         instrumentId: toInstrument.id,
                         accountId: toAccount.id,
@@ -214,8 +214,8 @@ export const ImportCsv = () => {
                     ...(isDefined(fromAccount)
                         ? [
                               {
-                                  amount,
-                                  type: TransactionEntryTypeEnum.DEBIT,
+                                  amount: Math.abs(amount),
+                                  type: TransactionEntryTypeEnum.CREDIT,
                                   instrumentId: fromInstrument.id,
                                   accountId: fromAccount.id,
                                   categoryId: category.id
