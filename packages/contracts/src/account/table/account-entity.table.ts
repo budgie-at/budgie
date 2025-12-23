@@ -7,6 +7,7 @@ import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.
 import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
+import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 
 export const AccountEntityTable = sqliteTable(
     'accounts',
@@ -17,11 +18,15 @@ export const AccountEntityTable = sqliteTable(
         parentId: int('parent_id', { mode: 'number' }),
         order: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),
-        type: text('type', { enum: convertEnumToDrizzleEnum(UserIconNameEnum) })
+        type: text('type', { enum: convertEnumToDrizzleEnum(AccountTypeEnum) })
             .$type<AccountTypeEnum>()
             .notNull(),
         nature: text('nature', { enum: convertEnumToDrizzleEnum(AccountNatureEnum) })
             .$type<AccountNatureEnum>()
+            .notNull(),
+        debtType: text('debt_type', { enum: convertEnumToDrizzleEnum(AccountDebtTypeEnum) })
+            .$type<AccountDebtTypeEnum>()
+            .default(AccountDebtTypeEnum.LENT)
             .notNull(),
         instrumentId: int('instrument_id', { mode: 'number' })
             .notNull()

@@ -1,30 +1,31 @@
-import { cva } from 'class-variance-authority';
-import { Text } from 'react-native';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
-import { EmptyFn } from '@rnw-community/shared';
-
-import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { ICONS } from '../../constant/icons.constant';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { Card } from '../card/card';
-import { Icon } from '../icon/icon';
+import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 
 interface Props {
-    readonly date: Date;
+    readonly title?: string;
     readonly onPress: EmptyFn;
+    readonly date: Date | null;
+    readonly description?: string;
     readonly variant: ColorPaletteVariant;
 }
 
-const iconVariants = cva('', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
-});
+export const DatePickerCard = ({ variant, onPress, date, title, description }: Props) => {
+    const { formatDayAndFullMonthAndYear } = useFormatDate();
 
-export const DatePickerCard = ({ variant, onPress, date }: Props) => (
-    <Card onPress={onPress} className="flex-row items-center gap-x-xl">
-        <Icon icon={ICONS.Calendar} size={16} className={iconVariants({ variant })} />
+    const cardTitle = isDefined(date) ? formatDayAndFullMonthAndYear(date) : title;
+    const titleVariant = isDefined(date) ? 'primary' : 'secondary';
 
-        <Text className="text-sm font-medium text-primary">{date.toLocaleDateString()}</Text>
-    </Card>
-);
+    return (
+        <HorizontalCell
+            titleVariant={titleVariant}
+            onPress={onPress}
+            variant={variant}
+            title={cardTitle}
+            description={description}
+            icon="Calendar"
+        />
+    );
+};
