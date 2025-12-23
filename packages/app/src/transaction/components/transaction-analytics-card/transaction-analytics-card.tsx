@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ScreenshotProtectedView } from '../../../@generic/components/screenshot-protected-view/screenshot-protected-view';
+import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
@@ -25,9 +25,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
 
             <Text className="text-xs text-secondary-foreground">{label}</Text>
 
-            <ScreenshotProtectedView>
-                <Text className="text-primary text-md">{format(amount)}</Text>
-            </ScreenshotProtectedView>
+            <ProtectedText className="text-primary text-md">{format(amount)}</ProtectedText>
         </Card>
     );
 };

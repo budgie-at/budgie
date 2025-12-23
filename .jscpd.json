@@ -16,8 +16,7 @@
         "**/node_modules/**",
         "**/ios/**",
         "**/landing/**",
-        "**/android/**",
-        "**/settings/components/**/*-switch/**"
+        "**/android/**"
     ],
     "absolute": false,
     "gitignore": true,

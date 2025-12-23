@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
-import { ScreenshotProtectedView } from '../../../@generic/components/screenshot-protected-view/screenshot-protected-view';
+import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -42,9 +42,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
 
             <Text className="text-sm font-medium text-secondary-foreground mr-auto">{account.title}</Text>
 
-            <ScreenshotProtectedView>
-                <Text className="text-primary">{format(balance)}</Text>
-            </ScreenshotProtectedView>
+            <ProtectedText className="text-primary">{format(balance)}</ProtectedText>
 
             {isSelected ? <Icon icon={ICONS.Check} size={16} className="text-primary" /> : null}
         </HapticPressable>
