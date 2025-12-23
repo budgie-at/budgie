@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* eslint-disable lingui/no-unlocalized-strings,max-lines */
 import {
     AccountCreateEntityInterface,
     AccountEntityInterface,
@@ -29,15 +29,9 @@ import { ImporterRowInterface } from '../interface/importer-row.interface';
 type NormalizedRow = Record<keyof ImporterColumnMapInterface, string>;
 
 interface EntryParams {
-    toAmount: number;
-    toInstrument: InstrumentEntityInterface;
-    toAccount: AccountEntityInterface;
-    firstEntryType: TransactionEntryTypeEnum;
-    category: CategoryEntityInterface;
-    fromAccount: AccountEntityInterface | null;
-    fromInstrument: InstrumentEntityInterface | null;
-    fromAmount: number | null;
-    isPlanned: boolean;
+    account: AccountEntityInterface;
+    amount: number;
+    instrument: InstrumentEntityInterface;
 }
 
 interface ValidationParams {
@@ -141,77 +135,101 @@ export class ImporterService {
     }
 
     private createTransaction(normalizedRow: NormalizedRow): TransactionCreateEntityInterface {
-        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned } =
+        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
             this.parseRow(normalizedRow);
 
         this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument });
 
-        const { type, firstEntryType } = this.determineTransactionType(toAmount, fromInstrument);
+        const type = this.determineTransactionType(toAmount, fromInstrument);
+
+        const source: EntryParams = {
+            account: isDefined(fromAccount) ? fromAccount : toAccount,
+            instrument: isDefined(fromInstrument) ? fromInstrument : toInstrument,
+            amount: isDefined(fromAmount) ? fromAmount : toAmount
+        };
+
+        const dest: EntryParams | null = isDefined(fromAccount)
+            ? {
+                  account: toAccount,
+                  instrument: toInstrument,
+                  amount: toAmount
+              }
+            : null;
 
         return {
             type,
             operatedAt,
-            amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(toAmount) : toAmount,
+            exchangeRate: isDefined(dest) ? dest.amount / source.amount : 1,
+            amount: type === TransactionTypeEnum.TRANSFER ? Math.abs(dest?.amount ?? source.amount) : source.amount,
             externalId: normalizedRow.externalId,
             title: '',
             externalSource: ExternalSourceEnum.CSV,
             comment: normalizedRow.comment,
-            toAccountId: toAccount.id,
-            fromAccountId: isDefined(fromAccount) ? fromAccount.id : null,
-            exchangeRate: 0,
+            toAccountId: source.account.id,
+            fromAccountId: dest?.account.id ?? null,
             tagIds: [],
-            entries: this.createEntries({
-                toAmount,
-                fromAmount,
-                firstEntryType,
-                toInstrument,
-                toAccount,
-                category,
-                fromAccount,
-                fromInstrument,
-                isPlanned
-            })
+            entries: this.createEntries(type, category, source, dest)
         };
     }
 
-    private determineTransactionType(
-        amount: number,
-        fromInstrument: InstrumentEntityInterface | null
-    ): { type: TransactionTypeEnum; firstEntryType: TransactionEntryTypeEnum } {
+    private determineTransactionType(amount: number, fromInstrument: InstrumentEntityInterface | null): TransactionTypeEnum {
         if (isDefined(fromInstrument)) {
-            return { type: TransactionTypeEnum.TRANSFER, firstEntryType: TransactionEntryTypeEnum.DEBIT };
-        }
-        if (amount > 0) {
-            return { type: TransactionTypeEnum.INCOME, firstEntryType: TransactionEntryTypeEnum.CREDIT };
+            return TransactionTypeEnum.TRANSFER;
         }
 
-        return { type: TransactionTypeEnum.EXPENSE, firstEntryType: TransactionEntryTypeEnum.DEBIT };
+        if (amount > 0) {
+            return TransactionTypeEnum.INCOME;
+        }
+
+        return TransactionTypeEnum.EXPENSE;
     }
 
-    private createEntries(params: EntryParams): TransactionCreateEntityInterface['entries'] {
-        const { toAmount, firstEntryType, toInstrument, toAccount, category, fromAccount, fromInstrument, fromAmount } = params;
-
-        const entries: TransactionCreateEntityInterface['entries'] = [
-            {
-                amount: Math.abs(toAmount),
-                type: firstEntryType,
-                instrumentId: toInstrument.id,
-                accountId: toAccount.id,
-                categoryId: category.id
-            }
-        ];
-
-        if (isDefined(fromAccount) && isDefined(fromInstrument) && isDefined(fromAmount) && !isNaN(fromAmount)) {
-            entries.push({
-                amount: Math.abs(fromAmount),
-                type: TransactionEntryTypeEnum.CREDIT,
-                instrumentId: fromInstrument.id,
-                accountId: fromAccount.id,
-                categoryId: category.id
-            });
+    private createEntries(
+        type: TransactionTypeEnum,
+        category: CategoryEntityInterface,
+        source: EntryParams,
+        dest: EntryParams | null
+    ): TransactionCreateEntityInterface['entries'] {
+        if (type === TransactionTypeEnum.INCOME) {
+            return [
+                {
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: Math.abs(source.amount),
+                    instrumentId: source.instrument.id,
+                    accountId: source.account.id,
+                    categoryId: category.id
+                }
+            ];
+        } else if (type === TransactionTypeEnum.EXPENSE) {
+            return [
+                {
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: Math.abs(source.amount),
+                    instrumentId: source.instrument.id,
+                    accountId: source.account.id,
+                    categoryId: category.id
+                }
+            ];
+        } else if (type === TransactionTypeEnum.TRANSFER && isDefined(dest)) {
+            return [
+                {
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: Math.abs(source.amount),
+                    instrumentId: source.instrument.id,
+                    accountId: source.account.id,
+                    categoryId: category.id
+                },
+                {
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: Math.abs(dest.amount),
+                    instrumentId: dest.instrument.id,
+                    accountId: dest.account.id,
+                    categoryId: category.id
+                }
+            ];
         }
 
-        return entries;
+        return [];
     }
 
     private normalizeRow(row: Record<string, string>): NormalizedRow {
@@ -236,11 +254,11 @@ export class ImporterService {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
-        const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const category = this.categoriesMap[normalizedRow.category];
         const operatedAt = parse(normalizedRow.operatedAt, 'MM/dd/yyyy HH:mm:ss', new Date());
-        const fromInstrument = this.instrumentsMap[normalizedRow.fromCurrency];
-        const fromAmount = parseFloat(normalizedRow.fromAmount);
+        const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
+        const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
+        const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
         const isPlanned = normalizedRow.isPlanned === '1';
 
         return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
