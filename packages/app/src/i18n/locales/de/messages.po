@@ -30,9 +30,17 @@ msgstr "Zum Sprechen tippen"
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:48
+msgid "{accountTitle} will be restored to your main view and included in totals."
+msgstr ""
+
 #: src/app/(main)/settings/archived.tsx:35
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} Konto"
+
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
+msgid "{availableCount} columns available"
+msgstr ""
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -50,6 +58,14 @@ msgstr "{percentage}% der Ausgaben"
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
 
+#: src/app/(main)/settings/import.tsx:136
+msgid "{successCount} imported, {errorCount} failed"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:136
+msgid "{successCount} transactions imported"
+msgstr ""
+
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} Tags verfügbar"
@@ -58,15 +74,15 @@ msgstr "{tagsCount} Tags verfügbar"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:37
+#: src/app/(main)/settings/index.tsx:38
 msgid "100% Offline & Private"
 msgstr "100% Offline & Privat"
 
-#: src/app/(main)/settings/index.tsx:83
+#: src/app/(main)/settings/index.tsx:85
 msgid "About"
 msgstr "Über"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:52
 msgid "Account"
 msgstr "Konto"
 
@@ -78,7 +94,7 @@ msgstr "Kontoname"
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:97
+#: src/account/component/update-liability-account/update-liability-account.tsx:82
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
@@ -108,11 +124,15 @@ msgstr "Fügen Sie eine neue Kategorie hinzu, um Ihre Transaktionen zu organisie
 msgid "Add a new tag to organize your transactions"
 msgstr "Fügen Sie ein neues Tag hinzu, um Ihre Transaktionen zu organisieren"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:48
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
+msgid "Add a note..."
+msgstr ""
+
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "Add Expense"
 msgstr "Ausgabe hinzufügen"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:28
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
 msgid "Add Income"
 msgstr "Einnahme hinzufügen"
 
@@ -120,7 +140,7 @@ msgstr "Einnahme hinzufügen"
 msgid "Add Split"
 msgstr "Aufteilung hinzufügen"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:29
 msgid "Add Transfer"
 msgstr "Überweisung hinzufügen"
 
@@ -140,7 +160,7 @@ msgstr "KI"
 msgid "AI Suggestion"
 msgstr "KI-Vorschlag"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:89
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -148,11 +168,15 @@ msgstr ""
 "KI-gestützte Budgetierungs-App mit vollständiger Privatsphäre. Alle Datenverarbeitung erfolgt lokal auf Ihrem Gerät.\n"
 "Version 1.0.0"
 
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:85
+msgid "All columns have been assigned"
+msgstr ""
+
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
 msgstr "Gesamte Zeit"
 
-#: src/app/(main)/settings/index.tsx:38
+#: src/app/(main)/settings/index.tsx:39
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine Cloud-Synchronisierung, kein Tracking, keine Datenweitergabe."
 
@@ -160,6 +184,7 @@ msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Keine C
 msgid "Allocated"
 msgstr "Zugewiesen"
 
+#: src/app/(main)/settings/import.tsx:197
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
 msgstr "Betrag"
@@ -169,7 +194,7 @@ msgstr "Betrag"
 msgid "App Lock"
 msgstr "App-Sperre"
 
-#: src/app/(main)/settings/index.tsx:78
+#: src/app/(main)/settings/index.tsx:80
 msgid "Appearance"
 msgstr "Erscheinungsbild"
 
@@ -181,12 +206,20 @@ msgstr "Filter anwenden"
 msgid "Apply Filter ({selected})"
 msgstr "Filter anwenden ({selected})"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:113
+#: src/account/component/archive-account/archive-account.tsx:43
+msgid "Archive"
+msgstr ""
+
+#: src/account/component/archive-account/archive-account.tsx:37
 msgid "Archive Account"
 msgstr "Konto archivieren"
 
+#: src/account/component/archive-account/archive-account.tsx:46
+msgid "Archive Account?"
+msgstr ""
+
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:71
+#: src/app/(main)/settings/index.tsx:73
 msgid "Archived Accounts"
 msgstr "Archivierte Konten"
 
@@ -194,11 +227,15 @@ msgstr "Archivierte Konten"
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
+msgid "Available Columns"
+msgstr ""
+
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
 msgstr "Saldo"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:29
+#: src/transaction/components/transaction-list/transaction-list.tsx:59
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -218,13 +255,14 @@ msgstr "Biometrische Authentifizierung"
 msgid "Browse"
 msgstr "Durchsuchen"
 
-#: src/app/(main)/settings/index.tsx:85
+#: src/app/(main)/settings/index.tsx:87
 msgid "BudgetAI"
 msgstr "BudgetKI"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
+#: src/@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:66
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:50
+#: src/app/(main)/settings/import.tsx:256
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -234,9 +272,9 @@ msgid "Cash"
 msgstr "Bargeld"
 
 #: src/app/(main)/settings/categories.tsx:45
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:40
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:55
+#: src/transaction/components/transaction-list/transaction-list.tsx:60
 msgid "Categories"
 msgstr "Kategorien"
 
@@ -244,6 +282,7 @@ msgstr "Kategorien"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Kategorien ({selectedCategoriesCount})"
 
+#: src/app/(main)/settings/import.tsx:181
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
 msgid "Category"
@@ -306,6 +345,10 @@ msgstr "Löschen"
 msgid "Clear All"
 msgstr "Alle löschen"
 
+#: src/app/(main)/settings/import.tsx:241
+msgid "Comment"
+msgstr ""
+
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
 msgstr "Häufig verwendete Tags"
@@ -322,7 +365,7 @@ msgstr "PIN bestätigen"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:79
+#: src/account/component/archive-account/archive-account.tsx:28
 msgid "Could not archive account. Please try again later"
 msgstr "Konto konnte nicht archiviert werden. Bitte versuchen Sie es später erneut"
 
@@ -335,7 +378,7 @@ msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:80
+#: src/transaction/hook/use-create-transaction-form.hook.ts:102
 msgid "Could not create transaction. Please try again later."
 msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später erneut."
 
@@ -343,7 +386,7 @@ msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später
 msgid "Could not restore account."
 msgstr "Konto konnte nicht wiederhergestellt werden."
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:65
+#: src/account/component/update-liability-account/update-liability-account.tsx:64
 msgid "Could not update account. Please try again later"
 msgstr "Konto konnte nicht aktualisiert werden. Bitte versuchen Sie es später erneut"
 
@@ -359,7 +402,7 @@ msgstr "PIN erstellen"
 msgid "Create accounts"
 msgstr "Konten erstellen"
 
-#: src/app/(main)/settings/index.tsx:65
+#: src/app/(main)/settings/index.tsx:67
 msgid "Create and organize transaction tags"
 msgstr "Transaktions-Tags erstellen und organisieren"
 
@@ -395,7 +438,7 @@ msgstr "Tags erstellen"
 msgid "Create tags to organize your transactions"
 msgstr "Erstellen Sie Tags, um Ihre Transaktionen zu organisieren"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:58
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:70
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:95
 msgid "Create your first account to start tracking transactions"
@@ -431,6 +474,7 @@ msgstr "Dunkler Modus"
 
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
+#: src/app/(main)/settings/import.tsx:189
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Datum"
@@ -444,7 +488,7 @@ msgstr "Datumsbereich"
 msgid "Debt"
 msgstr "Schulden"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:34
+#: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "Default Account"
 msgstr "Standardkonto"
 
@@ -460,6 +504,7 @@ msgstr "Alle abwählen"
 msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
 
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:36
 msgid "Done"
 msgstr "Fertig"
@@ -559,6 +604,11 @@ msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
 msgid "Enter your PIN"
 msgstr "Geben Sie Ihre PIN ein"
 
+#: src/app/(main)/settings/import.tsx:103
+#: src/import/components/import-csv/import-csv.tsx:30
+msgid "Error"
+msgstr ""
+
 #: src/app/(main)/create-account/index.tsx:24
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
@@ -570,6 +620,10 @@ msgstr "Ausgabe"
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
 msgid "Expense created"
 msgstr "Ausgabe erstellt"
+
+#: src/app/(main)/settings/import.tsx:213
+msgid "External ID"
+msgstr ""
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
@@ -588,6 +642,10 @@ msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 msgid "Fill in the account details"
 msgstr "Füllen Sie die Kontodetails aus"
 
+#: src/app/(main)/settings/import.tsx:151
+msgid "Fix Errors"
+msgstr ""
+
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
 msgstr "Französisch"
@@ -600,7 +658,19 @@ msgstr "Französisch (Frankreich)"
 msgid "FROM"
 msgstr "VON"
 
-#: src/app/(main)/settings/index.tsx:47
+#: src/app/(main)/settings/import.tsx:220
+msgid "From Account"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:234
+msgid "From Amount"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:227
+msgid "From Currency"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:48
 msgid "General"
 msgstr "Allgemein"
 
@@ -621,6 +691,22 @@ msgstr "Cent ausblenden"
 msgid "Icon"
 msgstr "Symbol"
 
+#: src/app/(main)/settings/import.tsx:135
+msgid "Import Complete"
+msgstr ""
+
+#: src/import/components/import-csv/import-csv.tsx:40
+msgid "Import CSV"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:143
+msgid "Import Failed"
+msgstr ""
+
+#: src/import/components/import-csv/import-csv.tsx:41
+msgid "Import transactions from a CSV file"
+msgstr ""
+
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -634,6 +720,10 @@ msgstr "Einnahmen nach Kategorie"
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
+
+#: src/app/(main)/settings/import.tsx:248
+msgid "Is Planned"
+msgstr ""
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
@@ -651,13 +741,21 @@ msgstr "Gebietsschema"
 msgid "Main Currency"
 msgstr "Hauptwährung"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:59
 msgid "Manage Categories"
 msgstr "Kategorien verwalten"
 
-#: src/app/(main)/settings/index.tsx:64
+#: src/app/(main)/settings/index.tsx:66
 msgid "Manage Tags"
 msgstr "Tags verwalten"
+
+#: src/app/(main)/settings/import.tsx:158
+msgid "Map CSV Columns"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:159
+msgid "Match each field to a column from your CSV file"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -671,7 +769,7 @@ msgstr "Geld, das Sie ausgeben"
 msgid "Move between accounts"
 msgstr "Zwischen Konten übertragen"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:44
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:46
 msgid "Move Money"
 msgstr "Geld übertragen"
 
@@ -679,11 +777,11 @@ msgstr "Geld übertragen"
 msgid "New Account"
 msgstr "Neues Konto"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:47
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:49
 msgid "New Expense"
 msgstr "Neue Ausgabe"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:27
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
 msgid "New Income"
 msgstr "Neue Einnahme"
 
@@ -691,7 +789,7 @@ msgstr "Neue Einnahme"
 msgid "New Transaction"
 msgstr "Neue Transaktion"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:23
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:25
 msgid "New Transfer"
 msgstr "Neue Überweisung"
 
@@ -747,7 +845,7 @@ msgstr "Keine Sprachen gefunden"
 msgid "No locales found"
 msgstr "Keine Gebietsschemata gefunden"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/transaction-list/transaction-list.tsx:83
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
@@ -756,7 +854,7 @@ msgstr "Keine passenden Transaktionen"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/app/(main)/ai.tsx:90
+#: src/app/(main)/ai.tsx:37
 msgid "No speech detected"
 msgstr "Keine Sprache erkannt"
 
@@ -777,7 +875,7 @@ msgstr "Noch keine Tags"
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:40
+#: src/transaction/components/transaction-list/transaction-list.tsx:83
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
@@ -785,11 +883,15 @@ msgstr "Noch keine Transaktionen"
 msgid "None"
 msgstr "Keine"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:35
+#: src/settings/components/default-account-selector/default-account-selector.tsx:39
 msgid "None selected"
 msgstr "Nichts ausgewählt"
 
-#: src/app/(main)/settings/index.tsx:54
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
+msgid "Note (optional)"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:56
 msgid "Organization"
 msgstr "Organisation"
 
@@ -829,7 +931,7 @@ msgstr "Portugiesisch (Portugal)"
 msgid "Preview"
 msgstr "Vorschau"
 
-#: src/app/(main)/settings/index.tsx:34
+#: src/app/(main)/settings/index.tsx:35
 msgid "Privacy"
 msgstr "Privatsphäre"
 
@@ -841,11 +943,11 @@ msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
 msgid "Remaining:"
 msgstr "Verbleibend:"
 
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:49
+#: src/account/component/archived-account-card/archived-account-card.tsx:71
 msgid "Restore"
 msgstr "Wiederherstellen"
 
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:40
+#: src/account/component/archived-account-card/archived-account-card.tsx:73
 msgid "Restore Account?"
 msgstr "Konto wiederherstellen?"
 
@@ -894,9 +996,17 @@ msgstr "Tags durchsuchen..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Sichern Sie Ihre App mit PIN und Face ID"
 
-#: src/app/(main)/settings/index.tsx:43
+#: src/app/(main)/settings/index.tsx:44
 msgid "Security"
 msgstr "Sicherheit"
+
+#: src/app/(main)/settings/import.tsx:67
+#: src/app/(main)/settings/import.tsx:70
+#: src/app/(main)/settings/import.tsx:71
+#: src/app/(main)/settings/import.tsx:72
+#: src/app/(main)/settings/import.tsx:73
+msgid "Select a valid column"
+msgstr ""
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:58
 #: src/account/component/account-selector/account-selector.tsx:40
@@ -916,9 +1026,13 @@ msgid "Select category"
 msgstr "Kategorie auswählen"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:70
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:71
 msgid "Select Category"
 msgstr "Kategorie auswählen"
+
+#: src/import/components/import-column-mapper/import-column-mapper.tsx:39
+msgid "Select column..."
+msgstr ""
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -940,11 +1054,15 @@ msgstr "Gebietsschema auswählen"
 msgid "Select Tags"
 msgstr "Tags auswählen"
 
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
+msgid "Selected"
+msgstr ""
+
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:46
 msgid "Selected {selectedTagsCount}"
 msgstr "Ausgewählt: {selectedTagsCount}"
 
-#: src/app/(main)/settings/index.tsx:31
+#: src/app/(main)/settings/index.tsx:32
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -952,14 +1070,14 @@ msgstr "Einstellungen"
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "$1.234,56 statt $1.235 anzeigen"
 
+#: src/account/component/archive-account/archive-account.tsx:27
 #: src/account/component/create-liability-account/create-liability-account.tsx:58
-#: src/account/component/update-liability-account/update-liability-account.tsx:64
-#: src/account/component/update-liability-account/update-liability-account.tsx:78
+#: src/account/component/update-liability-account/update-liability-account.tsx:63
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:79
+#: src/transaction/hook/use-create-transaction-form.hook.ts:101
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Etwas ist schief gelaufen."
@@ -988,7 +1106,11 @@ msgstr "Ausgegeben"
 msgid "Split by Category"
 msgstr "Nach Kategorie aufteilen"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:43
+#: src/app/(main)/settings/import.tsx:151
+msgid "Start Import"
+msgstr ""
+
+#: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
@@ -1037,6 +1159,17 @@ msgstr "Tippen Sie, um das Symbol zu ändern"
 msgid "Tap to choose"
 msgstr "Zum Auswählen tippen"
 
+#: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
+msgid "Tap to clear"
+msgstr ""
+
+#: src/account/component/archive-account/archive-account.tsx:42
+msgid ""
+"This account will be hidden from your main view and won't be included in totals. \n"
+"\n"
+" 💡 You can restore it anytime from Settings → Archived Accounts"
+msgstr ""
+
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
@@ -1056,6 +1189,14 @@ msgstr "Dieses Jahr"
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
 msgid "TO"
 msgstr "AN"
+
+#: src/app/(main)/settings/import.tsx:173
+msgid "To Account"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:205
+msgid "To Currency"
+msgstr ""
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1089,7 +1230,7 @@ msgstr "Überweisung"
 msgid "Try a different search term"
 msgstr "Versuchen Sie einen anderen Suchbegriff"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:42
+#: src/transaction/components/transaction-list/transaction-list.tsx:85
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
@@ -1110,7 +1251,7 @@ msgstr "Ukrainisch"
 msgid "Unknown Category"
 msgstr "Unbekannte Kategorie"
 
-#: src/account/component/update-liability-account/update-liability-account.tsx:112
+#: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Update Account"
 msgstr "Konto aktualisieren"
 
@@ -1139,17 +1280,13 @@ msgstr "Verwenden Sie Face ID, um Ihre App schnell und sicher zu entsperren"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:60
 msgid "View and delete custom categories"
 msgstr "Benutzerdefinierte Kategorien anzeigen und löschen"
 
-#: src/app/(main)/settings/index.tsx:72
+#: src/app/(main)/settings/index.tsx:74
 msgid "View and restore archived accounts"
 msgstr "Archivierte Konten anzeigen und wiederherstellen"
-
-#: src/account/component/restore-account-bottom-sheet/restore-account-bottom-sheet.tsx:45
-msgid "will be restored to your main view and included in totals."
-msgstr "wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 msgid "Your expense has been recorded successfully."
@@ -1159,6 +1296,6 @@ msgstr "Ihre Ausgabe wurde erfolgreich erfasst."
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
 msgstr "Ihr Ziel ist es, EINE am besten passende Kategorie zurückzugeben, NUR DEN NAMEN AUS dieser Liste <CategoryList>{categoriesList}</CategoryList> basierend auf der Benutzernachricht, keine Antwort, kein zusätzlicher Text, nur die Kategorie aus der Liste."
 
-#: src/app/(main)/ai.tsx:149
+#: src/app/(main)/ai.tsx:77
 msgid "Your message:"
 msgstr "Ihre Nachricht:"
