@@ -14,6 +14,7 @@ import { DefaultCurrencySelector } from '../../../settings/components/default-cu
 import { GenericSelectorCard } from '../../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
+import { ScreenshotProtectionSwitch } from '../../../settings/components/screenshot-protection-switch/screenshot-protection-switch';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -39,6 +40,7 @@ export default function SettingsPage() {
                             description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
                             left={<CircleIcon size="1_5xl" icon={ICONS.Shield} variant="positive" border={false} />}
                         />
+                        <ScreenshotProtectionSwitch />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Security`}>
