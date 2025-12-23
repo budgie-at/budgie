@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { DatePicker } from './date-picker';
 
 interface Props {
-    readonly date: Date;
+    readonly date: Date | null;
     readonly onChange: (value: Date) => void;
 }
 
@@ -14,5 +14,5 @@ export const SingleDatePicker = ({ date, onChange }: Props) => {
         onChange(isDefined(value.date) ? new Date(value.date.toString()) : new Date());
     };
 
-    return <DatePicker date={date} mode="single" onChange={handleChange} />;
+    return <DatePicker date={date ?? new Date()} mode="single" onChange={handleChange} />;
 };

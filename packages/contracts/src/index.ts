@@ -14,6 +14,7 @@ export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-l
 export { AccountTypeEnum } from './account/enum/account-type.enum';
 export { AccountNatureEnum } from './account/enum/account-nature.enum';
 export { ExternalSourceEnum } from './account/enum/external-source.enum';
+export { AccountDebtTypeEnum } from './account/enum/account-debt-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export { AccountEntityTable } from './account/table/account-entity.table';
@@ -21,11 +22,14 @@ export { AccountEntityRelations } from './account/relations/account-entity.relat
 
 export { AccountEntitySchema } from './account/schema/account-entity.schema';
 export { AccountCreateEntitySchema } from './account/schema/account-create-entity.schema';
+export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountCreateEntityInterface } from './account/entity/account-create-entity.interface';
 export type { AccountUpdateEntityInterface } from './account/entity/account-update-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
+
+export type { DebtAccountCreateInputInterface } from './account/input/debt-account-create-input.interface';
 
 export { AccountRepository } from './account/repository/account.repository';
 

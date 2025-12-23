@@ -7,6 +7,7 @@ export enum UserIconNameEnum {
     ArrowRightLeft = 'ArrowRightLeft',
     TrendingUp = 'TrendingUp',
     Plus = 'Plus',
+    HandCoins = 'HandCoins',
     ChevronRight = 'ChevronRight',
     CreditCard = 'CreditCard',
     Bitcoin = 'Bitcoin',

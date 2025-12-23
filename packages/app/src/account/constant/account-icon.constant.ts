@@ -6,7 +6,7 @@ import { IconName } from '../../@generic/constant/icons.constant';
 export const ACCOUNT_ICON: Record<AccountTypeEnum, IconName> = {
     [AccountTypeEnum.BANK]: 'CreditCard',
     [AccountTypeEnum.CASH]: 'Wallet',
-    [AccountTypeEnum.DEBT]: 'CreditCard',
+    [AccountTypeEnum.DEBT]: 'HandCoins',
     [AccountTypeEnum.CRYPTO]: 'Coins',
     [AccountTypeEnum.STOCKS]: 'CreditCard',
     [AccountTypeEnum.SAVINGS]: 'Coins'

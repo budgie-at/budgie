@@ -1,0 +1,1 @@
+ALTER TABLE `accounts` ADD `debt_type` text DEFAULT 'LENT' NOT NULL;
