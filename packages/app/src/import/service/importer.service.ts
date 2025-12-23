@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings,no-console */
+/* eslint-disable lingui/no-unlocalized-strings */
 import {
     AccountCreateEntityInterface,
     AccountEntityInterface,
@@ -37,6 +37,7 @@ interface EntryParams {
     fromAccount: AccountEntityInterface | null;
     fromInstrument: InstrumentEntityInterface | null;
     fromAmount: number | null;
+    isPlanned: boolean;
 }
 
 interface ValidationParams {
@@ -48,6 +49,7 @@ interface ValidationParams {
     toInstrument?: InstrumentEntityInterface;
     fromInstrument?: InstrumentEntityInterface;
     fromAmount?: number;
+    isPlanned?: boolean;
 }
 
 export class ImporterService {
@@ -130,6 +132,7 @@ export class ImporterService {
                 progress.successful += 1;
             } catch (error) {
                 progress.errors += 1;
+                // eslint-disable-next-line no-console
                 console.log(`Error processing row: ${getErrorMessage(error)}`, row);
             }
         });
@@ -138,7 +141,7 @@ export class ImporterService {
     }
 
     private createTransaction(normalizedRow: NormalizedRow): TransactionCreateEntityInterface {
-        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
+        const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned } =
             this.parseRow(normalizedRow);
 
         this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument });
@@ -165,7 +168,8 @@ export class ImporterService {
                 toAccount,
                 category,
                 fromAccount,
-                fromInstrument
+                fromInstrument,
+                isPlanned
             })
         };
     }
@@ -223,7 +227,8 @@ export class ImporterService {
             toAmount: getValue(this.columnMap.toAmount).trim(),
             fromCurrency: getValue(this.columnMap.fromCurrency).toUpperCase().trim(),
             fromAmount: getValue(this.columnMap.fromAmount).trim(),
-            toCurrency: getValue(this.columnMap.toCurrency).toUpperCase().trim()
+            toCurrency: getValue(this.columnMap.toCurrency).toUpperCase().trim(),
+            isPlanned: getValue(this.columnMap.isPlanned).trim()
         } satisfies NormalizedRow;
     }
 
@@ -236,8 +241,9 @@ export class ImporterService {
         const operatedAt = parse(normalizedRow.operatedAt, 'MM/dd/yyyy HH:mm:ss', new Date());
         const fromInstrument = this.instrumentsMap[normalizedRow.fromCurrency];
         const fromAmount = parseFloat(normalizedRow.fromAmount);
+        const isPlanned = normalizedRow.isPlanned === '1';
 
-        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount };
+        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
     }
 
     // eslint-disable-next-line max-statements

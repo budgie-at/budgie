@@ -9,4 +9,5 @@ export interface ImporterRowInterface {
     fromInstrument: InstrumentEntityInterface | null;
     category: CategoryEntityInterface;
     operatedAt: Date;
+    isPlanned: boolean;
 }

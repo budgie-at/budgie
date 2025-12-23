@@ -10,7 +10,8 @@ export const ImportColumnMapSchema = z.object({
     fromAccount: z.string(),
     fromCurrency: z.string(),
     fromAmount: z.string(),
-    comment: z.string()
+    comment: z.string(),
+    isPlanned: z.string()
 });
 
 export type ImportColumnMapFormValues = z.infer<typeof ImportColumnMapSchema>;

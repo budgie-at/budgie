@@ -44,7 +44,8 @@ const DEFAULT_VALUES: ImportColumnMapFormValues = {
     // eslint-disable-next-line lingui/no-unlocalized-strings
     fromCurrency: 'Валюта 2',
     // eslint-disable-next-line lingui/no-unlocalized-strings
-    fromAmount: 'Сумма 2'
+    fromAmount: 'Сумма 2',
+    isPlanned: 'Запланировано'
 };
 
 const SAFE_EDGES: Edge[] = ['bottom'];
@@ -169,6 +170,7 @@ export const ImportScreen = () => {
                     <ImportColumnMapField control={control} name="fromCurrency" label={t`From Currency`} headers={headers} />
                     <ImportColumnMapField control={control} name="fromAmount" label={t`From Amount`} headers={headers} />
                     <ImportColumnMapField control={control} name="comment" label={t`Comment`} headers={headers} />
+                    <ImportColumnMapField control={control} name="isPlanned" label={t`Is Planned`} headers={headers} />
                 </ScrollView>
 
                 <View className="pt-xl pb-xl flex-row gap-x-md">
