@@ -30,7 +30,7 @@ msgstr "Натисніть, щоб говорити"
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:48
+#: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "{accountTitle} will be restored to your main view and included in totals."
 msgstr ""
 
@@ -58,11 +58,11 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/app/(main)/settings/import.tsx:136
+#: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} imported, {errorCount} failed"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:136
+#: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} transactions imported"
 msgstr ""
 
@@ -74,11 +74,11 @@ msgstr "{tagsCount} тегів доступно"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:38
+#: src/app/(main)/settings/index.tsx:39
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:85
+#: src/app/(main)/settings/index.tsx:87
 msgid "About"
 msgstr "Про застосунок"
 
@@ -160,7 +160,7 @@ msgstr "ШІ"
 msgid "AI Suggestion"
 msgstr "Пропозиція ШІ"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:91
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -176,7 +176,7 @@ msgstr ""
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:39
+#: src/app/(main)/settings/index.tsx:40
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -184,7 +184,7 @@ msgstr "Усі ваші фінансові дані зберігаються л�
 msgid "Allocated"
 msgstr "Розподілено"
 
-#: src/app/(main)/settings/import.tsx:197
+#: src/app/(main)/settings/import.tsx:205
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
 msgstr "Сума"
@@ -194,7 +194,7 @@ msgstr "Сума"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:80
+#: src/app/(main)/settings/index.tsx:82
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -219,7 +219,7 @@ msgid "Archive Account?"
 msgstr ""
 
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:73
+#: src/app/(main)/settings/index.tsx:75
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -255,14 +255,14 @@ msgstr "Біометрична автентифікація"
 msgid "Browse"
 msgstr "Переглянути"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:89
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:66
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:256
+#: src/app/(main)/settings/import.tsx:264
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
 msgid "Cancel"
 msgstr "Скасувати"
@@ -282,7 +282,7 @@ msgstr "Категорії"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
-#: src/app/(main)/settings/import.tsx:181
+#: src/app/(main)/settings/import.tsx:189
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
 msgid "Category"
@@ -304,6 +304,10 @@ msgstr "Змінити PIN-код"
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Checking Account"
 msgstr "Поточний рахунок"
+
+#: src/import/components/import-preset-selector/import-preset-selector.tsx:32
+msgid "Choose a preset to auto-fill column mappings"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Choose a type to get started"
@@ -345,7 +349,7 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/app/(main)/settings/import.tsx:241
+#: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
 msgstr ""
 
@@ -382,7 +386,7 @@ msgstr "Не вдалося створити тег"
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:41
+#: src/account/component/archived-account-card/archived-account-card.tsx:42
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
@@ -402,7 +406,7 @@ msgstr "Створити PIN-код"
 msgid "Create accounts"
 msgstr "Створити рахунки"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/app/(main)/settings/index.tsx:69
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -460,7 +464,7 @@ msgstr "Криптовалюта"
 msgid "Currency"
 msgstr "Валюта"
 
-#: src/account/component/account-balance/account-balance.tsx:19
+#: src/account/component/account-balance/account-balance.tsx:20
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
@@ -474,7 +478,7 @@ msgstr "Темний режим"
 
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:189
+#: src/app/(main)/settings/import.tsx:197
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Дата"
@@ -604,7 +608,7 @@ msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для р
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
-#: src/app/(main)/settings/import.tsx:103
+#: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
 msgid "Error"
 msgstr ""
@@ -621,7 +625,7 @@ msgstr "Витрата"
 msgid "Expense created"
 msgstr "Витрату створено"
 
-#: src/app/(main)/settings/import.tsx:213
+#: src/app/(main)/settings/import.tsx:221
 msgid "External ID"
 msgstr ""
 
@@ -642,7 +646,7 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
-#: src/app/(main)/settings/import.tsx:151
+#: src/app/(main)/settings/import.tsx:158
 msgid "Fix Errors"
 msgstr ""
 
@@ -658,19 +662,19 @@ msgstr "Французька (Франція)"
 msgid "FROM"
 msgstr "З"
 
-#: src/app/(main)/settings/import.tsx:220
+#: src/app/(main)/settings/import.tsx:228
 msgid "From Account"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:234
+#: src/app/(main)/settings/import.tsx:242
 msgid "From Amount"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:227
+#: src/app/(main)/settings/import.tsx:235
 msgid "From Currency"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:48
+#: src/app/(main)/settings/index.tsx:50
 msgid "General"
 msgstr "Загальне"
 
@@ -682,6 +686,10 @@ msgstr "Німецька"
 msgid "German (Germany)"
 msgstr "Німецька (Німеччина)"
 
+#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:21
+msgid "Hide account balances and net worth when taking screenshots"
+msgstr ""
+
 #: src/settings/components/cents-switch/cents-switch.tsx:20
 msgid "Hide Cents"
 msgstr "Приховати копійки"
@@ -691,7 +699,7 @@ msgstr "Приховати копійки"
 msgid "Icon"
 msgstr "Іконка"
 
-#: src/app/(main)/settings/import.tsx:135
+#: src/app/(main)/settings/import.tsx:142
 msgid "Import Complete"
 msgstr ""
 
@@ -699,8 +707,16 @@ msgstr ""
 msgid "Import CSV"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:143
+#: src/app/(main)/settings/import.tsx:150
 msgid "Import Failed"
+msgstr ""
+
+#: src/import/components/import-preset-selector/import-preset-selector.tsx:44
+msgid "Import from FinEye app with English columns"
+msgstr ""
+
+#: src/import/components/import-preset-selector/import-preset-selector.tsx:38
+msgid "Import from SmartBudget2 app with Russian columns"
 msgstr ""
 
 #: src/import/components/import-csv/import-csv.tsx:41
@@ -721,7 +737,7 @@ msgstr "Доходи за категоріями"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/app/(main)/settings/import.tsx:248
+#: src/app/(main)/settings/import.tsx:256
 msgid "Is Planned"
 msgstr ""
 
@@ -741,19 +757,19 @@ msgstr "Регіональні налаштування"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:59
+#: src/app/(main)/settings/index.tsx:61
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:68
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
-#: src/app/(main)/settings/import.tsx:158
+#: src/app/(main)/settings/import.tsx:165
 msgid "Map CSV Columns"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:159
+#: src/app/(main)/settings/import.tsx:166
 msgid "Match each field to a column from your CSV file"
 msgstr ""
 
@@ -891,7 +907,7 @@ msgstr "Нічого не вибрано"
 msgid "Note (optional)"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:58
 msgid "Organization"
 msgstr "Організація"
 
@@ -926,12 +942,16 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
+#: src/import/components/import-preset-selector/import-preset-selector.tsx:31
+msgid "Preset applied. Adjust columns below if needed."
+msgstr ""
+
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:35
+#: src/app/(main)/settings/index.tsx:36
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -943,11 +963,11 @@ msgstr "Введіть свій PIN-код ще раз для підтвердж
 msgid "Remaining:"
 msgstr "Залишок:"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:71
+#: src/account/component/archived-account-card/archived-account-card.tsx:74
 msgid "Restore"
 msgstr "Відновити"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:73
+#: src/account/component/archived-account-card/archived-account-card.tsx:76
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
@@ -959,6 +979,10 @@ msgstr "Заощадження"
 #: src/app/(main)/create-account/index.tsx:32
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
+
+#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:20
+msgid "Screenshot Protection"
+msgstr ""
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
@@ -996,15 +1020,15 @@ msgstr "Пошук тегів..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:44
+#: src/app/(main)/settings/index.tsx:46
 msgid "Security"
 msgstr "Безпека"
 
-#: src/app/(main)/settings/import.tsx:67
-#: src/app/(main)/settings/import.tsx:70
-#: src/app/(main)/settings/import.tsx:71
-#: src/app/(main)/settings/import.tsx:72
-#: src/app/(main)/settings/import.tsx:73
+#: src/app/(main)/settings/import.tsx:53
+#: src/app/(main)/settings/import.tsx:56
+#: src/app/(main)/settings/import.tsx:57
+#: src/app/(main)/settings/import.tsx:58
+#: src/app/(main)/settings/import.tsx:59
 msgid "Select a valid column"
 msgstr ""
 
@@ -1042,6 +1066,10 @@ msgstr "Виберіть валюту"
 msgid "Select Date"
 msgstr "Виберіть дату"
 
+#: src/import/components/import-preset-selector/import-preset-selector.tsx:28
+msgid "Select Import Preset"
+msgstr ""
+
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
 msgstr "Виберіть мову"
@@ -1062,7 +1090,7 @@ msgstr ""
 msgid "Selected {selectedTagsCount}"
 msgstr "Вибрано {selectedTagsCount}"
 
-#: src/app/(main)/settings/index.tsx:32
+#: src/app/(main)/settings/index.tsx:33
 msgid "Settings"
 msgstr "Налаштування"
 
@@ -1082,7 +1110,7 @@ msgstr "Щось пішло не так"
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:42
+#: src/account/component/archived-account-card/archived-account-card.tsx:43
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
 
@@ -1106,7 +1134,7 @@ msgstr "Витрачено"
 msgid "Split by Category"
 msgstr "Поділ за категоріями"
 
-#: src/app/(main)/settings/import.tsx:151
+#: src/app/(main)/settings/import.tsx:158
 msgid "Start Import"
 msgstr ""
 
@@ -1190,11 +1218,11 @@ msgstr "Цього року"
 msgid "TO"
 msgstr "НА"
 
-#: src/app/(main)/settings/import.tsx:173
+#: src/app/(main)/settings/import.tsx:181
 msgid "To Account"
 msgstr ""
 
-#: src/app/(main)/settings/import.tsx:205
+#: src/app/(main)/settings/import.tsx:213
 msgid "To Currency"
 msgstr ""
 
@@ -1202,7 +1230,7 @@ msgstr ""
 msgid "Today"
 msgstr "Сьогодні"
 
-#: src/@generic/components/total-balance/net-worth.tsx:15
+#: src/@generic/components/total-balance/net-worth.tsx:16
 msgid "Total Balance"
 msgstr "Загальний баланс"
 
@@ -1280,11 +1308,11 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування додатка"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(main)/settings/index.tsx:62
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:74
+#: src/app/(main)/settings/index.tsx:76
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
