@@ -22,8 +22,6 @@ class AccountBalanceIncrementalService {
             accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds)
         ]);
 
-        console.log({ deltaMap });
-
         const balancesMap = this.buildBalancesMap(currentBalances);
 
         const balancesToInsert = accounts.map(account => {
