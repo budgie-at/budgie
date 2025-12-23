@@ -34,6 +34,12 @@ export default function Index() {
                     title={t`Savings Account`}
                     type={AccountTypeEnum.CASH}
                 />
+                <CreateAccountCard
+                    description={t`Money lent or borrowed`}
+                    icon={ACCOUNT_ICON.DEBT}
+                    title={t`Debt Account`}
+                    type={AccountTypeEnum.DEBT}
+                />
 
                 <Text className="text-secondary-foreground text-sm px-md mt-xl">
                     <Trans>Bank Sync</Trans>
