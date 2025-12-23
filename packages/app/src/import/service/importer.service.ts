@@ -13,12 +13,12 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { parse } from 'date-fns';
+import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { instrumentRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -50,12 +50,14 @@ export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
+    private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
+        [this.fallbackCategory] = await categoryRepository.findBySearchQuery('Other', true);
         this.instrumentsMap = await this.initializeInstruments();
 
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
@@ -254,8 +256,8 @@ export class ImporterService {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
-        const category = this.categoriesMap[normalizedRow.category];
-        const operatedAt = parse(normalizedRow.operatedAt, 'MM/dd/yyyy HH:mm:ss', new Date());
+        const category = this.categoriesMap[normalizedRow.category] ?? this.fallbackCategory;
+        const operatedAt = this.parseDate(normalizedRow.operatedAt);
         const fromAccount = this.accountsMap[this.getFromAccountKey(normalizedRow)];
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
         const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
@@ -294,6 +296,15 @@ export class ImporterService {
 
     private getFromAccountKey(normalizedRow: NormalizedRow): string {
         return `${normalizedRow.fromAccount} ${normalizedRow.fromCurrency}`;
+    }
+
+    private parseDate(dateString: string): Date {
+        const primaryFormat = parse(dateString, 'MM/dd/yyyy HH:mm:ss', new Date());
+        if (isValid(primaryFormat)) {
+            return primaryFormat;
+        }
+
+        return parse(dateString, 'yyyy-MM-dd', new Date());
     }
 
     private async processRows(
