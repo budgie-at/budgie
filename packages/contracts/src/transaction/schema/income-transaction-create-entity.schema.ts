@@ -1,10 +1,8 @@
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 import { TransactionCreateEntitySchema } from './transaction-create-entity.schema';
 
-export const IncomeTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(({ entries, type }, context) => {
+export const IncomeTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(({ type }, context) => {
     if (type !== TransactionTypeEnum.INCOME) {
         context.addIssue({
             code: 'custom',
@@ -12,14 +10,4 @@ export const IncomeTransactionCreateEntitySchema = TransactionCreateEntitySchema
             message: `Transaction type must be '${TransactionTypeEnum.INCOME}'.`
         });
     }
-
-    entries.forEach((transactionEntry, entryIndex) => {
-        if (transactionEntry.type !== TransactionEntryTypeEnum.DEBIT) {
-            context.addIssue({
-                code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES, entryIndex, 'type'],
-                message: "income entry must be 'debit' (inflow)."
-            });
-        }
-    });
 });

@@ -1,6 +1,6 @@
 import { and, count, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
-import { DB, TX } from '../../generic/type/db.type';
+import { DB, Transaction } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -22,7 +22,7 @@ export class AccountRepository {
         return result[0].count > 0;
     }
 
-    async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
+    async create(input: AccountCreateEntityInterface, tx?: Transaction): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
 
         return account;
@@ -32,17 +32,17 @@ export class AccountRepository {
         return this.db.select({ count: count() }).from(AccountEntityTable);
     }
 
-    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: Transaction): Promise<AccountEntityInterface> {
         const [account] = await (tx ?? this.db).update(AccountEntityTable).set(input).where(eq(AccountEntityTable.id, id)).returning();
 
         return account;
     }
 
-    async restoreById(id: number, tx?: TX): Promise<void> {
+    async restoreById(id: number, tx?: Transaction): Promise<void> {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
-    async archiveById(id: number, tx?: TX): Promise<AccountEntityInterface> {
+    async archiveById(id: number, tx?: Transaction): Promise<AccountEntityInterface> {
         const [account] = await (tx ?? this.db)
             .update(AccountEntityTable)
             .set({ deletedAt: new Date() })
@@ -99,7 +99,7 @@ export class AccountRepository {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: TX): Promise<AccountEntityInterface[]> {
+    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: Transaction): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db).insert(AccountEntityTable).values(inputs).returning();
     }
 

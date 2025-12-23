@@ -1,4 +1,4 @@
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 
 import { TransactionEntryEntitySchema } from './transaction-entry-entity.schema';
 

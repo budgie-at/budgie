@@ -4,7 +4,7 @@ import * as schema from '../../schema';
 import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
-import type { TX } from '../../generic/type/db.type';
+import type { Transaction } from '../../@generic/type/db.type';
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
 import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
@@ -12,7 +12,7 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class SettingsRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    async update(input: Partial<SettingsCreateEntityInterface>, tx?: TX): Promise<SettingsEntityInterface> {
+    async update(input: Partial<SettingsCreateEntityInterface>, tx?: Transaction): Promise<SettingsEntityInterface> {
         const [settings] = await (tx ?? this.db).update(SettingsEntityTable).set(input).returning();
 
         return settings;

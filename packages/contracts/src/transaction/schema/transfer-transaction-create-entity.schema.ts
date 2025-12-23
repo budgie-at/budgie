@@ -1,51 +1,44 @@
-import { PRECISION } from '../../generic/constant/precision.constant';
-import { getSignFromEntryType } from '../../transaction-entry/util/get-sign-from-entry-type.util';
-import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
-import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
-import { findCoreTransactionEntries } from '../util/find-core-transaction-entries.util';
+import { isDefined } from '@rnw-community/shared';
 
-import { BaseTransferTransactionCreateEntitySchema } from './base-transfer-transaction-create-entity.schema';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-export const TransferTransactionCreateEntitySchema = BaseTransferTransactionCreateEntitySchema.superRefine(
-    ({ entries, exchangeRate, fromAccountId, toAccountId }, context) => {
-        const { fromEntry, toEntry } = findCoreTransactionEntries(entries, fromAccountId, toAccountId);
+import { TransactionCreateEntitySchema } from './transaction-create-entity.schema';
 
-        if (!fromEntry || !toEntry) {
-            return;
-        }
-
-        const calculatedRate = toEntry.amount / fromEntry.amount;
-
-        const providedRateMicro = Math.round(exchangeRate * PRECISION);
-        const calculatedRateMicro = Math.round(calculatedRate * PRECISION);
-
-        if (Math.abs(providedRateMicro - calculatedRateMicro) > TOLERANCE_MICRO) {
+export const TransferTransactionCreateEntitySchema = TransactionCreateEntitySchema.superRefine(
+    ({ fromAccountId, toAccountId, type }, context) => {
+        if (type !== TransactionTypeEnum.TRANSFER) {
             context.addIssue({
                 code: 'custom',
-                path: ['exchangeRate'],
-                message: `Exchange rate (${exchangeRate}) does not match the ratio of entry amounts (${calculatedRate}). Expected: ${calculatedRate.toFixed(6)}`
+                path: ['type'],
+                message: `Transaction type must be '${TransactionTypeEnum.TRANSFER}'.`
+            });
+        }
+
+        if (!isDefined(fromAccountId)) {
+            context.addIssue({
+                code: 'custom',
+                path: ['fromAccountId'],
+                message: '"from" account must be defined'
             });
 
             return;
         }
 
-        const totalSignedFromMicroUnits = entries.reduce((acc, curr) => {
-            let amountInFromCurrencyMicroUnits = curr.amount;
-
-            if (curr.accountId === toAccountId) {
-                amountInFromCurrencyMicroUnits = Math.round((curr.amount * PRECISION) / providedRateMicro);
-            }
-
-            const signedValue = getSignFromEntryType(curr.type) * amountInFromCurrencyMicroUnits;
-
-            return acc + signedValue;
-        }, 0);
-
-        if (Math.abs(totalSignedFromMicroUnits) > TOLERANCE_MICRO) {
+        if (!isDefined(toAccountId)) {
             context.addIssue({
                 code: 'custom',
-                path: [TransactionAssociationEnum.ENTRIES],
-                message: `Entries do not balance (micro): total signed FROM = ${totalSignedFromMicroUnits} (must be 0±${TOLERANCE_MICRO})`
+                path: ['toAccountId'],
+                message: '"to" account must be defined'
+            });
+
+            return;
+        }
+
+        if (fromAccountId === toAccountId) {
+            context.addIssue({
+                code: 'custom',
+                path: ['fromAccountId', 'toAccountId'],
+                message: '"from" and "to" accounts must be different'
             });
         }
     }

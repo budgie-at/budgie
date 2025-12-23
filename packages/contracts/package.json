@@ -29,9 +29,14 @@
     },
     "dependencies": {
         "@rnw-community/shared": "^1.8.2",
+        "date-fns": "^4.1.0",
         "drizzle-orm": "^0.44.7",
         "drizzle-zod": "^0.8.3",
         "expo-sqlite": "~16.0.10",
+        "papaparse": "5.5.3",
         "zod": "^4.1.12"
+    },
+    "devDependencies": {
+        "@types/papaparse": "^5"
     }
 }

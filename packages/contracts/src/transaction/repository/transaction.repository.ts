@@ -4,8 +4,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { DateRangeInterface } from '../../generic/interface/date-range.interface';
-import { DB, TX } from '../../generic/type/db.type';
+import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
+import { DB, Transaction } from '../../@generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -99,13 +99,13 @@ export class TransactionRepository {
         );
     }
 
-    async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
+    async create(input: TransactionCreateEntityInterface, tx?: Transaction): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: TX): Promise<TransactionEntityInterface[]> {
+    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: Transaction): Promise<TransactionEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
         }
@@ -113,7 +113,7 @@ export class TransactionRepository {
         return [];
     }
 
-    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: TX): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: Partial<TransactionCreateEntityInterface>, tx?: Transaction): Promise<TransactionEntityInterface> {
         const [transaction] = await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set(input)
@@ -149,14 +149,13 @@ export class TransactionRepository {
         return this.db
             .select({
                 category: CategoryEntityTable,
-                amount: sql<number>`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`
+                amount: sql<number>`0`
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
             .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(desc(sql`COALESCE(SUM(${TransactionEntityTable.amount}), 0)`));
+            .groupBy(CategoryEntityTable.id);
     }
 
     private buildFilteredTransactionIdsQuery(

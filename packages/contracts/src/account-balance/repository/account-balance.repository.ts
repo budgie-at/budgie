@@ -2,8 +2,8 @@ import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
-import { PRECISION } from '../../generic/constant/precision.constant';
-import { DB, TX } from '../../generic/type/db.type';
+import { PRECISION } from '../../@generic/constant/precision.constant';
+import { DB, Transaction } from '../../@generic/type/db.type';
 import { TransactionEntryEntityInterface } from '../../transaction-entry/entity/transaction-entry-entity.interface';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -16,7 +16,7 @@ export class AccountBalanceRepository {
     constructor(private db: DB) {}
 
     // TODO: change to bulkUpsert when drizzle is updated to the latest version
-    async upsert(input: AccountBalanceCreateEntityInterface, tx?: TX): Promise<AccountBalanceEntityInterface> {
+    async upsert(input: AccountBalanceCreateEntityInterface, tx?: Transaction): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
             .values([input])

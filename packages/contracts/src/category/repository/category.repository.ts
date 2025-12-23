@@ -1,6 +1,6 @@
 import { and, count, eq, sql } from 'drizzle-orm';
 
-import { TX } from '../../generic/type/db.type';
+import { Transaction } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
@@ -34,13 +34,13 @@ export class CategoryRepository {
         return this.db.select({ count: count() }).from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, false));
     }
 
-    async create(input: CategoryCreateEntityInterface, tx?: TX): Promise<CategoryEntityInterface> {
+    async create(input: CategoryCreateEntityInterface, tx?: Transaction): Promise<CategoryEntityInterface> {
         const [category] = await this.bulkCreate([input], tx);
 
         return category;
     }
 
-    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: TX): Promise<CategoryEntityInterface[]> {
+    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: Transaction): Promise<CategoryEntityInterface[]> {
         return await (tx ?? this.db).insert(CategoryEntityTable).values(inputs).returning();
     }
 

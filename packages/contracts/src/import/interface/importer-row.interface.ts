@@ -1,4 +1,6 @@
-import { AccountEntityInterface, CategoryEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
+import { CategoryEntityInterface } from '../../category/entity/category-entity.interface';
+import { InstrumentEntityInterface } from '../../instrument/entity/instrument-entity.interface';
 
 export interface ImporterRowInterface {
     toAccount: AccountEntityInterface;

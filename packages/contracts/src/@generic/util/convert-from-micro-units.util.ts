@@ -1,3 +1,3 @@
-import { PRECISION } from '@budgie/contracts';
+import { PRECISION } from '../constant/precision.constant';
 
 export const convertFromMicroUnits = (value: number) => value / PRECISION;

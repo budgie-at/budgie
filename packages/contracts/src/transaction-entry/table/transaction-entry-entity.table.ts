@@ -2,9 +2,8 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
-import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 
@@ -18,9 +17,6 @@ export const TransactionEntryEntityTable = sqliteTable(
             .notNull()
             .references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         categoryId: int('category_id', { mode: 'number' }).references(() => CategoryEntityTable.id, { onDelete: 'cascade' }),
-        instrumentId: int('instrument_id', { mode: 'number' })
-            .notNull()
-            .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         transactionId: int('transaction_id', { mode: 'number' })
             .notNull()
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),

@@ -1,41 +1,37 @@
-/* eslint-disable lingui/no-unlocalized-strings,no-console */
-import {
-    AccountCreateEntityInterface,
-    AccountEntityInterface,
-    AccountNatureEnum,
-    AccountTypeEnum,
-    CategoryCreateEntityInterface,
-    CategoryEntityInterface,
-    ExternalSourceEnum,
-    InstrumentEntityInterface,
-    TransactionCreateEntityInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    UserIconNameEnum
-} from '@budgie/contracts';
 import { parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { instrumentRepository } from '../../@generic/drizzle/db/db';
-import { accountService } from '../../account/service/account.service';
-import { categoryService } from '../../category/service/category.service';
-import { transactionService } from '../../transaction/service/transaction.service';
+import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import { DB } from '../../@generic/type/db.type';
+import { AccountCreateEntityInterface } from '../../account/entity/account-create-entity.interface';
+import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
+import { AccountNatureEnum } from '../../account/enum/account-nature.enum';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
+import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { AccountService } from '../../account/service/account.service';
+import { CategoryCreateEntityInterface } from '../../category/entity/category-create-entity.interface';
+import { CategoryEntityInterface } from '../../category/entity/category-entity.interface';
+import { CategoryService } from '../../category/service/category.service';
+import { InstrumentEntityInterface } from '../../instrument/entity/instrument-entity.interface';
+import { InstrumentRepository } from '../../instrument/repository/instrument.repository';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionService } from '../../transaction/service/transaction.service';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { ImportProgressInterface } from '../interface/import-progress.interface';
 import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import { ImporterRowInterface } from '../interface/importer-row.interface';
+import { TransactionCreateInputInterface } from '../../transaction/input/transaction-create-input.interface';
 
 type NormalizedRow = Record<keyof ImporterColumnMapInterface, string>;
 
 interface EntryParams {
     toAmount: number;
-    toInstrument: InstrumentEntityInterface;
     toAccount: AccountEntityInterface;
     firstEntryType: TransactionEntryTypeEnum;
     category: CategoryEntityInterface;
     fromAccount: AccountEntityInterface | null;
-    fromInstrument: InstrumentEntityInterface | null;
     fromAmount: number | null;
 }
 
@@ -51,11 +47,24 @@ interface ValidationParams {
 }
 
 export class ImporterService {
+    private accountService: AccountService;
+    private categoryService: CategoryService;
+    private transactionService: TransactionService;
+    private instrumentRepository: InstrumentRepository;
+
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
 
-    constructor(private readonly columnMap: ImporterColumnMapInterface) {}
+    constructor(
+        readonly db: DB,
+        private readonly columnMap: ImporterColumnMapInterface
+    ) {
+        this.accountService = new AccountService(db);
+        this.categoryService = new CategoryService(db);
+        this.transactionService = new TransactionService(db);
+        this.instrumentRepository = new InstrumentRepository(db);
+    }
 
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
@@ -64,17 +73,17 @@ export class ImporterService {
 
         const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
 
-        this.accountsMap = await accountService.bulkCreate([...accountInputs.values()]);
-        this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
+        this.accountsMap = await this.accountService.bulkCreate([...accountInputs.values()]);
+        this.categoriesMap = await this.categoryService.bulkCreate([...categoryInputs.values()]);
 
         const transactions = await this.processTransactions(csvText, progress);
-        await transactionService.bulkCreate(transactions);
+        await this.transactionService.bulkCreate(transactions);
 
         return progress;
     }
 
     private async initializeInstruments(): Promise<Record<string, InstrumentEntityInterface>> {
-        const instruments = await instrumentRepository.getAll();
+        const instruments = await this.instrumentRepository.getAll();
 
         return instruments.reduce<Record<string, InstrumentEntityInterface>>(
             (acc, instrument) => ({ ...acc, [instrument.code]: instrument }),
@@ -119,8 +128,8 @@ export class ImporterService {
         };
     }
 
-    private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateEntityInterface[]> {
-        const transactions: TransactionCreateEntityInterface[] = [];
+    private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateInputInterface[]> {
+        const transactions: TransactionCreateInputInterface[] = [];
 
         await this.processRows(csvText, (normalizedRow, row) => {
             progress.processed += 1;
@@ -130,6 +139,7 @@ export class ImporterService {
                 progress.successful += 1;
             } catch (error) {
                 progress.errors += 1;
+                // eslint-disable-next-line
                 console.log(`Error processing row: ${getErrorMessage(error)}`, row);
             }
         });
@@ -137,7 +147,7 @@ export class ImporterService {
         return transactions;
     }
 
-    private createTransaction(normalizedRow: NormalizedRow): TransactionCreateEntityInterface {
+    private createTransaction(normalizedRow: NormalizedRow): TransactionCreateInputInterface {
         const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
             this.parseRow(normalizedRow);
 
@@ -161,11 +171,9 @@ export class ImporterService {
                 toAmount,
                 fromAmount,
                 firstEntryType,
-                toInstrument,
                 toAccount,
                 category,
-                fromAccount,
-                fromInstrument
+                fromAccount
             })
         };
     }
@@ -184,24 +192,22 @@ export class ImporterService {
         return { type: TransactionTypeEnum.EXPENSE, firstEntryType: TransactionEntryTypeEnum.DEBIT };
     }
 
-    private createEntries(params: EntryParams): TransactionCreateEntityInterface['entries'] {
-        const { toAmount, firstEntryType, toInstrument, toAccount, category, fromAccount, fromInstrument, fromAmount } = params;
+    private createEntries(params: EntryParams): TransactionCreateInputInterface['entries'] {
+        const { toAmount, firstEntryType, toAccount, category, fromAccount, fromAmount } = params;
 
-        const entries: TransactionCreateEntityInterface['entries'] = [
+        const entries: TransactionCreateInputInterface['entries'] = [
             {
                 amount: Math.abs(toAmount),
                 type: firstEntryType,
-                instrumentId: toInstrument.id,
                 accountId: toAccount.id,
                 categoryId: category.id
             }
         ];
 
-        if (isDefined(fromAccount) && isDefined(fromInstrument) && isDefined(fromAmount) && !isNaN(fromAmount)) {
+        if (isDefined(fromAccount) && isDefined(fromAmount) && !isNaN(fromAmount)) {
             entries.push({
                 amount: Math.abs(fromAmount),
                 type: TransactionEntryTypeEnum.CREDIT,
-                instrumentId: fromInstrument.id,
                 accountId: fromAccount.id,
                 categoryId: category.id
             });
