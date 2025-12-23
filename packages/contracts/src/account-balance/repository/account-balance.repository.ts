@@ -76,11 +76,15 @@ export class AccountBalanceRepository {
                 netWorth: sql<number>`
                 COALESCE(
                     SUM(
-                        ${this.getAccountBalanceWithTransactionsSql()}
+                        (
+                            ${this.getLatestAccountBalanceSql()}
+                            +
+                            ${this.getTransactionsSinceLastBalanceOptimizedSql()}
+                        )
                         *
                         COALESCE(
-                            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
-                            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
+                            er_account_direct.rate * 1.0 / ${PRECISION},
+                            ${PRECISION} * 1.0 / er_account_inverse.rate,
                             1.0
                         )
                     ),
@@ -89,6 +93,14 @@ export class AccountBalanceRepository {
             `
             })
             .from(AccountEntityTable)
+            .leftJoin(
+                sql`${ExchangeRateEntityTable} er_account_direct`,
+                this.getAccountExchangeRateDirectJoinConditionSql(defaultInstrumentId)
+            )
+            .leftJoin(
+                sql`${ExchangeRateEntityTable} er_account_inverse`,
+                this.getAccountExchangeRateInverseJoinConditionSql(defaultInstrumentId)
+            )
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
     }
 
@@ -159,34 +171,6 @@ export class AccountBalanceRepository {
     `;
     }
 
-    private getDirectExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-        (
-            SELECT ${ExchangeRateEntityTable.rate} * 1.0 / ${PRECISION}
-            FROM ${ExchangeRateEntityTable}
-            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
-                AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
-                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-            LIMIT 1
-        )
-    `;
-    }
-
-    private getInverseExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-        (
-            SELECT ${PRECISION} * 1.0 / ${ExchangeRateEntityTable.rate}
-            FROM ${ExchangeRateEntityTable}
-            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
-                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-            LIMIT 1
-        )
-    `;
-    }
-
     private getTransactionEntryDirectExchangeRateSql() {
         return sql`
         (
@@ -213,5 +197,88 @@ export class AccountBalanceRepository {
             LIMIT 1
         )
     `;
+    }
+
+    private getTransactionsSinceLastBalanceOptimizedSql() {
+        return sql`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (CASE
+                            WHEN te.type = ${TransactionEntryTypeEnum.CREDIT}
+                                THEN te.amount
+                            WHEN te.type = ${TransactionEntryTypeEnum.DEBIT}
+                                THEN -te.amount
+                            ELSE 0
+                        END)
+                        *
+                        COALESCE(
+                            er_te_direct.rate * 1.0 / ${PRECISION},
+                            ${PRECISION} * 1.0 / er_te_inverse.rate,
+                            1.0
+                        )
+                    )
+                    FROM ${TransactionEntryEntityTable} te
+                    LEFT JOIN ${ExchangeRateEntityTable} er_te_direct ON (
+                        er_te_direct.base_instrument_id = te.instrument_id
+                        AND er_te_direct.quote_instrument_id = ${AccountEntityTable.instrumentId}
+                        AND er_te_direct.deleted_at IS NULL
+                        AND er_te_direct.id = (
+                            SELECT id FROM ${ExchangeRateEntityTable}
+                            WHERE base_instrument_id = te.instrument_id
+                                AND quote_instrument_id = ${AccountEntityTable.instrumentId}
+                                AND deleted_at IS NULL
+                            ORDER BY created_at DESC
+                            LIMIT 1
+                        )
+                    )
+                    LEFT JOIN ${ExchangeRateEntityTable} er_te_inverse ON (
+                        er_te_inverse.base_instrument_id = ${AccountEntityTable.instrumentId}
+                        AND er_te_inverse.quote_instrument_id = te.instrument_id
+                        AND er_te_inverse.deleted_at IS NULL
+                        AND er_te_inverse.id = (
+                            SELECT id FROM ${ExchangeRateEntityTable}
+                            WHERE base_instrument_id = ${AccountEntityTable.instrumentId}
+                                AND quote_instrument_id = te.instrument_id
+                                AND deleted_at IS NULL
+                            ORDER BY created_at DESC
+                            LIMIT 1
+                        )
+                    )
+                    WHERE te.account_id = ${AccountEntityTable.id}
+                        AND te.deleted_at IS NULL
+                        AND te.created_at > ${this.getLastBalanceUpdatedAtSql()}
+                ),
+                0
+            )
+        `;
+    }
+
+    private getAccountExchangeRateDirectJoinConditionSql(defaultInstrumentId: number) {
+        return sql`er_account_direct.base_instrument_id = ${AccountEntityTable.instrumentId}
+            AND er_account_direct.quote_instrument_id = ${defaultInstrumentId}
+            AND er_account_direct.deleted_at IS NULL
+            AND er_account_direct.id = (
+                SELECT id FROM ${ExchangeRateEntityTable}
+                WHERE base_instrument_id = ${AccountEntityTable.instrumentId}
+                    AND quote_instrument_id = ${defaultInstrumentId}
+                    AND deleted_at IS NULL
+                ORDER BY created_at DESC
+                LIMIT 1
+            )`;
+    }
+
+    private getAccountExchangeRateInverseJoinConditionSql(defaultInstrumentId: number) {
+        return sql`er_account_inverse.base_instrument_id = ${defaultInstrumentId}
+            AND er_account_inverse.quote_instrument_id = ${AccountEntityTable.instrumentId}
+            AND er_account_inverse.deleted_at IS NULL
+            AND er_account_inverse.id = (
+                SELECT id FROM ${ExchangeRateEntityTable}
+                WHERE base_instrument_id = ${defaultInstrumentId}
+                    AND quote_instrument_id = ${AccountEntityTable.instrumentId}
+                    AND deleted_at IS NULL
+                ORDER BY created_at DESC
+                LIMIT 1
+            )`;
     }
 }
