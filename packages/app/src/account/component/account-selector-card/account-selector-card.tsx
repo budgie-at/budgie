@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { ScreenshotProtectedView } from '../../../@generic/components/screenshot-protected-view/screenshot-protected-view';
 import { SelectorCard } from '../../../@generic/components/selector-card/selector-card';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
@@ -36,7 +37,9 @@ export const AccountSelectorCard = (props: Props) => {
                 <View className="flex-row items-center">
                     <Text className="text-secondary-foreground text-xs">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                     <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                    <Text className="text-sm font-medium text-primary">{formatMoney(balance)}</Text>
+                    <ScreenshotProtectedView>
+                        <Text className="text-sm font-medium text-primary">{formatMoney(balance)}</Text>
+                    </ScreenshotProtectedView>
                 </View>
             }
         />
