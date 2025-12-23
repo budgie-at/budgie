@@ -60,7 +60,9 @@ export class CategoryRepository {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
     }
 
-    async truncate(): Promise<void> {
-        await this.db.delete(CategoryEntityTable);
+    async truncate(includeDefault: boolean): Promise<void> {
+        await this.db
+            .delete(CategoryEntityTable)
+            .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false));
     }
 }
