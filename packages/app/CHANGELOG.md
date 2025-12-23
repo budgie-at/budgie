@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.81.0](https://github.com/budgie-at/budgie/compare/v1.80.0...v1.81.0) (2025-12-23)
+
+### Bug Fixes
+
+- remove unused file ([a133069](https://github.com/budgie-at/budgie/commit/a133069c7bb05f7956b261779a9d59fff0cd4d19))
+- resolve cpd ([79dead7](https://github.com/budgie-at/budgie/commit/79dead74f1f26ad100b6e69f913b195aaaf12b4e))
+- resolve review comments ([8269fdc](https://github.com/budgie-at/budgie/commit/8269fdc768ababc5575fa9640e34cdd10e97f695))
+
+### Features
+
+- add archive account confirmation modal ([1a9efe9](https://github.com/budgie-at/budgie/commit/1a9efe9253706704f1762bcd9f11cd15bee9968c))
+- **app:** added csv import ([d193cb7](https://github.com/budgie-at/budgie/commit/d193cb7c70f970e3700af3b205f3da7a934036d8))
+- **app:** added csv import ([d2a82f5](https://github.com/budgie-at/budgie/commit/d2a82f552984ee252a134f2cba77c998b883a2c7))
+- **app:** added csv import ([3589f24](https://github.com/budgie-at/budgie/commit/3589f24e3c93b0e955e2cb93e7b023124d6c7be7))
+- **app:** added csv import ([2c145ab](https://github.com/budgie-at/budgie/commit/2c145abdf4937c6ac7ad80d1ee3414f3a44e8c96))
+- **app:** fix debit credit ([15ecc67](https://github.com/budgie-at/budgie/commit/15ecc67ff94512b5560d27e42260f0a97d37fe7d))
+- **app:** fix debit credit ([9421e90](https://github.com/budgie-at/budgie/commit/9421e9091d4d1fa300115da5e3d4dc7e3af6562e))
+- **app:** fix debit credit ([36569f7](https://github.com/budgie-at/budgie/commit/36569f7d798c5eb599c13b98d65c188df63a68da))
+- **app:** fix fromamount parsing from csv ([6e1dbc8](https://github.com/budgie-at/budgie/commit/6e1dbc809ae7ec41498c3068df8ca3d141998c6c))
+- **app:** fix fromamount parsing from csv ([0204b8a](https://github.com/budgie-at/budgie/commit/0204b8ac8f0f3ab32a88db2b42b550c69d79daad))
+- **app:** fix fromamount parsing from csv ([0c987ea](https://github.com/budgie-at/budgie/commit/0c987ea26492ee067eb8d9da59584b552f99d4af))
+- **app:** fix parsing transaction amount sign ([c3af138](https://github.com/budgie-at/budgie/commit/c3af138b62a951b03b4ee2592ff195ed9f297573))
+- **app:** fix parsing transaction type and entries ([d557656](https://github.com/budgie-at/budgie/commit/d5576567543257a268de8b2ea6136cd390ec5329))
+- **app:** fix parsing transaction type and entries ([294025b](https://github.com/budgie-at/budgie/commit/294025bf3cf0c8186e794ec6ddb6bbbcc05b5601))
+- **app:** import added isPlanned flag ([e26a264](https://github.com/budgie-at/budgie/commit/e26a2640beeb8b206d14a181525a19d2d7f7fc56))
+- **app:** improve import page ux ([3bb4617](https://github.com/budgie-at/budgie/commit/3bb46175b41b88db1fb89c4d340dcfaf3930a85c))
+- **app:** improve import page ux ([205deb7](https://github.com/budgie-at/budgie/commit/205deb7158d7037443b9a4b81691569f366b367d))
+- **app:** improve importer ([feb2a10](https://github.com/budgie-at/budgie/commit/feb2a105ff2bf2b8f5b3cde80b42c1a61b479697))
+- **app:** improve importer ([176187c](https://github.com/budgie-at/budgie/commit/176187c8e287ea0aa6a060b182b009f8f8cd9745))
+- **app:** improve transaction service ([187d121](https://github.com/budgie-at/budgie/commit/187d121ddb14c9df77c45d39a74ebb65df206c6b))
+- **app:** trucate tables before import ([53355dc](https://github.com/budgie-at/budgie/commit/53355dca9510e1122ac995108696ed49eed7e5d4))
+- **app:** trucate tables before import ([a816f74](https://github.com/budgie-at/budgie/commit/a816f74d9feabb0fa22e5bcd15462da6445eed22))
+- **app:** use legend list for transactions ([042e294](https://github.com/budgie-at/budgie/commit/042e29460ac221e623b615db913671af41bc01ea))
+- **app:** use legend list for transactions ([aa0cb4c](https://github.com/budgie-at/budgie/commit/aa0cb4c4dc83ec6f98231ff54d663f46360e51ac))
+- **app:** use legend list for transactions ([020d92b](https://github.com/budgie-at/budgie/commit/020d92b7284b00b3989da4fc461ac164f9671192))
+- **app:** use legend list for transactions ([4291330](https://github.com/budgie-at/budgie/commit/4291330482cdee5d20a68e0e2f2bcb8889e4bd9e))
+- **app:** ux for column mapper ([3d1bf2e](https://github.com/budgie-at/budgie/commit/3d1bf2e651c5a241c5acb19f2e20ef38de76b2af))
+- **app:** ux for column mapper ([1bc43dc](https://github.com/budgie-at/budgie/commit/1bc43dc7eb622027171e2f34d57e20c374d744b6))
+- **app:** ux for column mapper ([86d798e](https://github.com/budgie-at/budgie/commit/86d798e7da7bd4ec514c65c064d5914e72f425f0))
+- **app:** ux for column mapper ([12cdaf2](https://github.com/budgie-at/budgie/commit/12cdaf28ff0747ba162dd289ef7b103672798c53))
+- **app:** ux for column mapper ([b41fb5b](https://github.com/budgie-at/budgie/commit/b41fb5bbe551351ad22085fb29a2dba478442140))
+- **app:** ux for column mapper ([4debdc2](https://github.com/budgie-at/budgie/commit/4debdc23841ff9eddbbd83c42f0f29935da0975f))
+
 # [1.80.0](https://github.com/budgie-at/budgie/compare/v1.79.1...v1.80.0) (2025-12-20)
 
 ### Bug Fixes
