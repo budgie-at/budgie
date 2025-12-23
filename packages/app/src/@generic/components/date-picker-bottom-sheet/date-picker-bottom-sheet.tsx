@@ -10,19 +10,22 @@ import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { SingleDatePicker } from '../date-picker/single-date-picker';
+import { isDefined } from '@rnw-community/shared';
 
 interface Props {
-    readonly date: Date;
+    readonly date: Date | null;
     readonly variant: ColorPaletteVariant;
     readonly onChange: (date: Date) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
 export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
-    const [localDate, setLocalDate] = useState<Date>(date);
+    const [localDate, setLocalDate] = useState<Date | null>(date);
 
     const handleSubmit = () => {
-        void onChange(localDate);
+        if (isDefined(localDate)) {
+            void onChange(localDate);
+        }
         ref.current?.close();
     };
 
