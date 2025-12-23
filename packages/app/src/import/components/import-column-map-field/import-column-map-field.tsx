@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ImportColumnMapFormValues } from '../../schema/import-column-map.schema';
+import { ImportColumnMapFormValues } from '../../../../../contracts/src/import/schema/import-column-map.schema';
 import { ImportColumnMapper } from '../import-column-mapper/import-column-mapper';
 
 interface Props {

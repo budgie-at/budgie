@@ -1,4 +1,11 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    isExpenseTransaction,
+    isIncomeTransaction,
+    isNegativeAdjustmentTransaction,
+    isPositiveAdjustmentTransaction,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -12,6 +19,34 @@ interface Props {
 
 export const TransactionCardAccountInfo = ({ transaction }: Props) => {
     const { toAccount, fromAccount } = transaction;
+
+    if (isIncomeTransaction(transaction) || isPositiveAdjustmentTransaction(transaction)) {
+        const { title, icon } = transaction.toAccount;
+
+        return (
+            <View className="flex-row items-center gap-x-md">
+                <Text className="text-secondary-foreground text-sm">
+                    <Trans>to</Trans>
+                </Text>
+                <Icon icon={ICONS[icon]} className="text-secondary-foreground" size={12} />
+                <Text className="text-secondary-foreground text-sm">{title}</Text>
+            </View>
+        );
+    }
+
+    if (isExpenseTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
+        const { title, icon } = transaction.fromAccount;
+
+        return (
+            <View className="flex-row items-center gap-x-md">
+                <Text className="text-secondary-foreground text-sm">
+                    <Trans>from</Trans>
+                </Text>
+                <Icon icon={ICONS[icon]} className="text-secondary-foreground" size={12} />
+                <Text className="text-secondary-foreground text-sm">{title}</Text>
+            </View>
+        );
+    }
 
     if (isDefined(fromAccount) && isDefined(toAccount)) {
         return (

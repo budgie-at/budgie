@@ -1151,7 +1151,6 @@ __metadata:
     "@react-native/virtualized-lists": "npm:^0.82.1"
     "@rnw-community/shared": "npm:^1.8.2"
     "@tailwindcss/postcss": "npm:^4.1.14"
-    "@types/papaparse": "npm:^5"
     babel-plugin-inline-import: "npm:^3.0.0"
     babel-plugin-macros: "npm:^3.1.0"
     babel-plugin-react-compiler: "npm:^1.0.0"
@@ -1183,7 +1182,6 @@ __metadata:
     expo-updates: "npm:~29.0.15"
     lucide-react-native: "npm:^0.545.0"
     nativewind: "npm:^5.0.0-preview.2"
-    papaparse: "npm:^5.5.3"
     postcss: "npm:^8.5.6"
     react: "npm:19.1.0"
     react-compiler-runtime: "npm:19.0.0-beta-63e3235-20250105"
@@ -1292,9 +1290,12 @@ __metadata:
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
     "@rnw-community/shared": "npm:^1.8.2"
+    "@types/papaparse": "npm:^5"
+    date-fns: "npm:^4.1.0"
     drizzle-orm: "npm:^0.44.7"
     drizzle-zod: "npm:^0.8.3"
     expo-sqlite: "npm:~16.0.10"
+    papaparse: "npm:5.5.3"
     zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
@@ -16500,7 +16501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"papaparse@npm:^5.5.3":
+"papaparse@npm:5.5.3":
   version: 5.5.3
   resolution: "papaparse@npm:5.5.3"
   checksum: 10/383e38f8ff910be48b684e7f47b84dbe5e67708669c13bb21f316a0591ef183ff670dfc7eb9f6d0a8b67e21a5b0e8934712cda96ff8fb678d6591e597d108bd1

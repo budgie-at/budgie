@@ -53,7 +53,6 @@ export const TransactionSplit = ({ control, variant }: Props) => {
             amount: 0,
             accountId: 0,
             categoryId: 0,
-            instrumentId: 0,
             type: TransactionEntryTypeEnum.DEBIT
         });
     };

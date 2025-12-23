@@ -1,4 +1,4 @@
-import { TransactionAssociationEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -11,7 +11,6 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
-import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
@@ -31,9 +30,7 @@ const amountVariants = cva('text-md', {
 
 export const TransactionCard = ({ transaction }: Props) => {
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    // TODO: We take 1st entry, but is this correct?
-    const transactionInstrument = useGetInstrumentByIdQuery(transaction[TransactionAssociationEnum.ENTRIES][0].instrumentId);
-    const formatMoney = useFormatMoney(decimalPlaces, transactionInstrument.instrument?.code ?? defaultCurrency, true);
+    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, true);
     const { formatMonthAndDayWithTime } = useFormatDate();
 
     const categoryIcon = getTransactionIcon(transaction);
@@ -42,26 +39,29 @@ export const TransactionCard = ({ transaction }: Props) => {
     const transactionType = getTransactionType(transaction);
 
     return (
-        <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl relative">
-            <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transactionType]} />
+        <Card onPress={handleNavigate} className="gap-y-7xl p-xl">
+            <View className="flex-row gap-x-xl">
+                <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transactionType]} />
 
-            <View className="flex-1 gap-y-xxs">
-                {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
-
-                <View className="gap-y-md">
-                    <View className="flex-row items-center gap-x-sm ">
-                        {isNotEmptyString(transaction.comment) ? <Text className="text-primary text-sm">{transaction.comment}</Text> : null}
-                        <TransactionCardAccountInfo transaction={transaction} />
-                    </View>
+                <View className="flex-1 gap-y-sm pt-xs">
+                    {isNotEmptyString(transaction.title) || isNotEmptyString(transaction.comment) ? (
+                        <View className="gap-y-xxs">
+                            {isNotEmptyString(transaction.title) ? <Text>{transaction.title}</Text> : null}
+                            {isNotEmptyString(transaction.comment) ? <Text>{transaction.comment}</Text> : null}
+                        </View>
+                    ) : null}
 
                     <TransactionCategoryBadge transaction={transaction} />
                 </View>
+
+                <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
             </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formatMoney(transaction.amount)}</Text>
-            <Text className="text-xxs text-secondary-foreground absolute right-[12px] bottom-[8px]">
-                {formatMonthAndDayWithTime(transaction.operatedAt)}
-            </Text>
+            <View className="flex-row justify-between">
+                <TransactionCardAccountInfo transaction={transaction} />
+
+                <Text className="text-xs text-secondary-foreground">{formatMonthAndDayWithTime(transaction.operatedAt)}</Text>
+            </View>
         </Card>
     );
 };

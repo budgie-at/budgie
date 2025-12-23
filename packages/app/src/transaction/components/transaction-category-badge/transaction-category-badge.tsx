@@ -4,7 +4,7 @@ import {
     isPositiveAdjustmentTransaction,
     isTransferTransaction
 } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/components/icon/icon';
@@ -19,14 +19,16 @@ const wrapperClassName = 'bg-secondary-corner self-start py-xxs px-md rounded-2x
 const textClassName = 'text-xs font-medium text-primary';
 
 export const TransactionCategoryBadge = ({ transaction }: Props) => {
-    const { t, i18n } = useLingui();
+    const { i18n } = useLingui();
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     if (isAdjustment) {
         return (
             <View className={wrapperClassName}>
-                <Text className={textClassName}>{t`Balance Adjustment`}</Text>
+                <Text className={textClassName}>
+                    <Trans>Balance Adjustment</Trans>
+                </Text>
             </View>
         );
     }
@@ -37,7 +39,10 @@ export const TransactionCategoryBadge = ({ transaction }: Props) => {
         return (
             <View className={wrapperClassName}>
                 <Icon icon={ICONS.SplitIcon} className="text-primary" size={12} />
-                <Text className={textClassName}>{t`Categories`}</Text>
+
+                <Text className={textClassName}>
+                    <Trans>Categories</Trans>
+                </Text>
             </View>
         );
     }

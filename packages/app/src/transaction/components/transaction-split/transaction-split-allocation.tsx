@@ -7,9 +7,9 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { convertToMicroUnits } from '@budgie/contracts';
 
 interface Props {
     readonly entriesAmount: number;

@@ -5,9 +5,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
-import { transactionService } from '../service/transaction.service';
 
 import type { ZodType } from 'zod';
+import { transactionService } from '../../@generic/drizzle/db/db';
 
 interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     schema: ZodType<T, T>;

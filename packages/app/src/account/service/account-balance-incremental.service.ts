@@ -3,10 +3,9 @@ import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
-
-import { accountBalanceRepository, accountRepository } from '@budgie-at/app/src/@generic/drizzle/db/db';
-import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '@budgie-at/app/src/account/constant/account-balance-incremental-task.constant';
-import { ONE_WEEK_IN_SECONDS } from '@budgie-at/app/src/account/constant/one-week-in-seconds.constant';
+import { accountBalanceRepository, accountRepository } from '../../@generic/drizzle/db/db';
+import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
+import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 class AccountBalanceIncrementalService {
     async updateAllBalances(updatedAt?: Date): Promise<void> {

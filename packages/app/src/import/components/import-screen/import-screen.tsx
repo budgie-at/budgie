@@ -1,3 +1,11 @@
+import {
+    ImportColumnMapFormValues,
+    ImportColumnMapSchema,
+    ImporterColumnMapInterface,
+    ImporterService,
+    countCsvRows,
+    parseCsvHeaders
+} from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -16,16 +24,13 @@ import {
     accountBalanceRepository,
     accountRepository,
     categoryRepository,
+    db,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
-import { ImporterColumnMapInterface } from '../../interface/importer-column-map.interface';
-import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../schema/import-column-map.schema';
-import { ImporterService } from '../../service/importer.service';
-import { countCsvRows, parseCsvHeaders } from '../../util/csv-parser.util';
 import { ImportColumnMapField } from '../import-column-map-field/import-column-map-field';
 
 import type { Edge } from 'react-native-safe-area-context';
@@ -110,7 +115,7 @@ export const ImportScreen = () => {
 
         await microPause();
 
-        const importer = new ImporterService(columnMap);
+        const importer = new ImporterService(db, columnMap);
 
         try {
             await accountRepository.truncate();

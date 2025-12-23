@@ -3,6 +3,7 @@ import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
+    AccountService,
     CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
@@ -10,6 +11,7 @@ import {
     TagRepository,
     TransactionEntryRepository,
     TransactionRepository,
+    TransactionService,
     TransactionTagsRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
@@ -46,12 +48,15 @@ export const expoDb = dbInit();
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
 export const tagRepository = new TagRepository(db);
+export const accountService = new AccountService(db);
 export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const categoryRepository = new CategoryRepository(db);
+export const transactionService = new TransactionService(db);
 export const instrumentRepository = new InstrumentRepository(db);
 export const transactionRepository = new TransactionRepository(db);
 export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
+

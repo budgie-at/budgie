@@ -14,11 +14,11 @@ import { Footer } from '../../../@generic/components/footer/footer';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { accountService } from '../../../@generic/drizzle/db/db';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
-import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
 
 interface Props {

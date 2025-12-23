@@ -6,8 +6,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
-import { transactionService } from '../../service/transaction.service';
 import { LiabilityTransactionForm } from '../liability-transaction-form/liability-transaction-form';
+import { transactionService } from '../../../@generic/drizzle/db/db';
 
 interface Props {
     readonly categoryId?: number;

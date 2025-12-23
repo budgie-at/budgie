@@ -6,7 +6,7 @@ import { Button } from '../../../@generic/components/button/button';
 import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
-import { accountService } from '../../service/account.service';
+import { accountService } from '../../../@generic/drizzle/db/db';
 
 interface Props {
     readonly accountId: number;
