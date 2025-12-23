@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -23,30 +23,15 @@ import { BottomSheetsProvider } from '../../../@generic/providers/bottom-sheets.
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
+import { ImportPresetSelector } from '../../../import/components/import-preset-selector/import-preset-selector';
+import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
+import { ImportPresetEnum } from '../../../import/enum/import-preset.enum';
 import { ImporterColumnMapInterface } from '../../../import/interface/importer-column-map.interface';
 import { ImportColumnMapFormValues, ImportColumnMapSchema } from '../../../import/schema/import-column-map.schema';
 import { ImporterService } from '../../../import/service/importer.service';
 import { countCsvRows, parseCsvHeaders } from '../../../import/util/csv-parser.util';
 
 import type { Edge } from 'react-native-safe-area-context';
-
-// HINT: SmartBudget2 columns
-const DEFAULT_VALUES: ImportColumnMapFormValues = {
-    // eslint-disable-next-line lingui/no-unlocalized-strings
-    externalId: 'Порядковый номер',
-    fromAccount: 'Счёт_1',
-    toAccount: 'Счёт',
-    category: 'Категория',
-    operatedAt: 'Дата',
-    comment: 'Описание',
-    toAmount: 'Сумма',
-    toCurrency: 'Валюта',
-    // eslint-disable-next-line lingui/no-unlocalized-strings
-    fromCurrency: 'Валюта 2',
-    // eslint-disable-next-line lingui/no-unlocalized-strings
-    fromAmount: 'Сумма 2',
-    isPlanned: 'Запланировано'
-};
 
 const SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
@@ -60,6 +45,7 @@ export default function ImportScreen() {
     const [headers, setHeaders] = useState<string[]>([]);
     const [rowCount, setRowCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
 
@@ -75,15 +61,36 @@ export default function ImportScreen() {
     const {
         control,
         handleSubmit,
+        reset,
         formState: { errors }
     } = useForm<ImportColumnMapFormValues>({
         resolver: zodResolver(schemaWithHeaders),
-        defaultValues: DEFAULT_VALUES,
+        defaultValues: {
+            toAccount: '',
+            category: '',
+            operatedAt: '',
+            toAmount: '',
+            toCurrency: '',
+            externalId: '',
+            fromAccount: '',
+            fromCurrency: '',
+            fromAmount: '',
+            comment: '',
+            isPlanned: ''
+        },
         mode: 'onSubmit'
     });
 
     const formValues = useWatch({ control });
     const selectedHeaders = Object.values(formValues).filter(isNotEmptyString);
+
+    const handlePresetSelect = useCallback(
+        (preset: ImportPresetEnum) => {
+            setSelectedPreset(preset);
+            reset(IMPORT_PRESETS[preset]);
+        },
+        [reset]
+    );
 
     useEffect(() => {
         const loadFile = async () => {
@@ -118,7 +125,7 @@ export default function ImportScreen() {
 
         try {
             await accountRepository.truncate();
-            await categoryRepository.truncate();
+            await categoryRepository.truncate(false);
             await transactionTagsRepository.truncate();
             await transactionEntryRepository.truncate();
             await transactionRepository.truncate();
@@ -167,6 +174,7 @@ export default function ImportScreen() {
                 safeEdges={SAFE_EDGES}
             >
                 <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerClassName="gap-y-xl pb-5xl pt-3xl">
+                    <ImportPresetSelector selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
                     <ImportColumnMapField
                         control={control}
                         name="toAccount"
