@@ -7,16 +7,17 @@ import { isDefined } from '@rnw-community/shared';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { LanguageSelectorBottomSheet } from '../../../i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
-import { useSettingsContext } from '../../context/settings.context';
+import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
 
 export const LanguageSelector = () => {
-    const ref = useRef<BottomSheetInterface | null>(null);
-    const { settings } = useSettingsContext();
+    const language = useSetting('language');
     const { i18n, t } = useLingui();
 
-    const selectedLanguage = LANGUAGES.find(({ code }) => code === settings.language);
+    const ref = useRef<BottomSheetInterface | null>(null);
+
+    const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 
     const updateDefaultInstrument = async (language: LanguageEnum) => {
         await updateSettingsMutation({ language });
@@ -39,7 +40,7 @@ export const LanguageSelector = () => {
                 description={`${selectedLanguage.emoji} ${i18n.t(selectedLanguage.name)}`}
             />
 
-            <LanguageSelectorBottomSheet language={settings.language} onSelect={updateDefaultInstrument} ref={ref} />
+            <LanguageSelectorBottomSheet language={language} onSelect={updateDefaultInstrument} ref={ref} />
         </>
     );
 };

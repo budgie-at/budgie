@@ -8,6 +8,7 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -57,7 +58,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                     <Text className="text-xs text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                 </View>
 
-                <Text className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</Text>
+                <ProtectedText className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</ProtectedText>
 
                 <HapticPressable onPress={onRestore}>
                     <CircleIcon variant="positive" icon={ICONS.RotateCcw} />

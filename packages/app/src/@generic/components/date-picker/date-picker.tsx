@@ -1,7 +1,7 @@
 import { ComponentProps } from 'react';
 import DateTimePicker, { CalendarComponents, useDefaultClassNames } from 'react-native-ui-datepicker';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ICONS } from '../../constant/icons.constant';
 import { Icon } from '../icon/icon';
 
@@ -11,7 +11,7 @@ const components: CalendarComponents = {
 };
 
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
-    const { settings } = useSettingsContext();
+    const locale = useSetting('locale');
     const defaultClassNames = useDefaultClassNames();
 
     /* eslint-disable lingui/no-unlocalized-strings */
@@ -46,5 +46,5 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={classNames} locale={settings.locale} components={components} />;
+    return <DateTimePicker {...props} classNames={classNames} locale={locale} components={components} />;
 };

@@ -6,6 +6,7 @@ import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/components/icon/icon';
+import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -43,10 +44,10 @@ export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Pr
                     {title}
                 </Text>
 
-                <Text className="text-primary">
+                <ProtectedText className="text-primary" placeholderText={`${instrumentSymbol}999.99`}>
                     {instrumentSymbol}
                     {formattedBalance}
-                </Text>
+                </ProtectedText>
             </View>
         </Card>
     );

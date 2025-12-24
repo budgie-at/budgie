@@ -15,12 +15,15 @@ interface Props {
     readonly maxFontSize?: number;
     readonly className?: string;
     readonly fontSize?: number;
+    readonly hasAnimation?: boolean;
 }
 
 const TickItem = styled(Tick, { textClassName: 'textStyle' });
 const StaticCharItem = styled(StaticChar, { textClassName: 'textStyle' });
 
-export const Ticker = ({ number, textClassName, className, fontSize = 24, minFontSize = 10, maxFontSize = 200 }: Props) => {
+export const Ticker = (props: Props) => {
+    const { number, textClassName, className, fontSize = 24, minFontSize = 10, maxFontSize = 200, hasAnimation = true } = props;
+
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
@@ -50,6 +53,7 @@ export const Ticker = ({ number, textClassName, className, fontSize = 24, minFon
                             textSize={textSize}
                             textClassName={textClassName}
                             index={acc.digitIndex}
+                            {...(!hasAnimation && { duration: 0, delay: 0 })}
                         />
                     ]
                 };

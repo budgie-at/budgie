@@ -3,10 +3,9 @@
 import journal from './meta/_journal.json';
 import m0000 from './0000_fluffy_golden_guardian.sql';
 
-  export default {
+export default {
     journal,
     migrations: {
-      m0000
+        m0000
     }
-  }
-  
+};
