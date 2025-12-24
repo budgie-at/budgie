@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.82.1](https://github.com/budgie-at/budgie/compare/v1.82.0...v1.82.1) (2025-12-24)
+
+### Bug Fixes
+
+- remove initial account-balance updated-at ([e935c06](https://github.com/budgie-at/budgie/commit/e935c06a51befae15b83e88c20d8cb8965038434))
+
 # [1.82.0](https://github.com/budgie-at/budgie/compare/v1.81.0...v1.82.0) (2025-12-23)
 
 ### Features
