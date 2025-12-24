@@ -2,9 +2,9 @@ import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@b
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
-import { SelectorCard } from '../../../@generic/components/selector-card/selector-card';
+import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

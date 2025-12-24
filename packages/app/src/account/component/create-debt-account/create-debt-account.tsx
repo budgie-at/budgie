@@ -1,4 +1,11 @@
-import { AccountCreateEntityInterface, AccountDebtTypeEnum, AccountNatureEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import {
+    AccountCreateEntityInterface,
+    AccountDebtTypeEnum,
+    AccountNatureEnum,
+    AccountTypeEnum,
+    DebtAccountCreateInputInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Controller } from 'react-hook-form';
@@ -8,23 +15,24 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
-import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
-import { Footer } from '../../../@generic/components/footer/footer';
-import { FormItem } from '../../../@generic/components/form-item/form-item';
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { CreateAccountDetailsField } from '../../../@generic/component/create-account-details-field/create-account-details-field';
+import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountSelector } from '../account-selector/account-selector';
-import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
+import { DebtAccountBalanceField } from '../debt-account-balance-field/debt-account-balance-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountDeptTypeCard } from '../account-dept-type-card/account-dept-type-card';
+import ContactSelector from '../../../@generic/component/contact-selector/contact-selector';
 
 const DEFAULT_ICON = UserIconNameEnum.HandCoins;
 
@@ -35,9 +43,10 @@ export const CreateDebtAccount = () => {
     const { control, handleSubmit, instrument, debtType } = useDebtAccountForm({
         title: '',
         accountId: 0,
+        returnAt: null,
+        amountToReturn: 0,
         currentBalance: 0,
         icon: DEFAULT_ICON,
-        dateToReturn: null,
         type: AccountTypeEnum.DEBT,
         debtType: AccountDebtTypeEnum.LENT,
         instrumentId: defaultInstrument.id,
@@ -50,9 +59,9 @@ export const CreateDebtAccount = () => {
         return <EmptyScreen />;
     }
 
-    const handleCreate = async (values: AccountCreateEntityInterface) => {
+    const handleCreate = async (values: DebtAccountCreateInputInterface) => {
         try {
-            await accountService.create(values);
+            await accountService.createDebt(values);
 
             void router.replace('/');
         } catch {
@@ -76,7 +85,7 @@ export const CreateDebtAccount = () => {
             }
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
+                <DebtAccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
                 <FormLayoutGroup>
                     <CreateAccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />
@@ -99,6 +108,10 @@ export const CreateDebtAccount = () => {
                         control={control}
                         name="debtType"
                     />
+
+                    <FormItem label={t`Contact (optional)`}>
+                        <ContactSelector />
+                    </FormItem>
 
                     <Controller
                         render={({ field: { value, onChange } }) => {

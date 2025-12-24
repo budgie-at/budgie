@@ -1,11 +1,11 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -14,13 +14,14 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { DebtAccountCard } from './debt-account-card';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | 'type' | 'returnAt' | 'debtType' | 'amountToReturn'> {
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
 
-export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Props) => {
+export const AccountCard = ({ icon, title, returnAt, type, amountToReturn, className, id, debtType, instrumentSymbol }: Props) => {
     const showCents = useSetting('showCents');
     const { decimalPlaces } = useSettingsContext();
     const { balance } = useAccountBalanceQuery(id);
@@ -31,6 +32,20 @@ export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Pr
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
     const formattedBalance = format(convertFromMicroUnits(balance).toString());
+
+    if (type === AccountTypeEnum.DEBT) {
+        return (
+            <DebtAccountCard
+                amountToReturn={amountToReturn}
+                id={id}
+                returnAt={returnAt}
+                title={title}
+                instrumentSymbol={instrumentSymbol}
+                debtType={debtType}
+                className={className}
+            />
+        );
+    }
 
     return (
         <Card onPress={navigateToAccount} className={cn('gap-3 active:scale-xs', className)}>

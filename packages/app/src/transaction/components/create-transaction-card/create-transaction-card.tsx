@@ -1,9 +1,9 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 

@@ -2,7 +2,7 @@ import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, RefObject, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useVibration } from '../../hooks/use-vibration.hook';
+import { useVibration } from '../../hook/use-vibration.hook';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';

@@ -1,24 +1,17 @@
 import { number } from 'zod';
 
 import { AccountEntitySchema } from './account-entity.schema';
+import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
 
-export const AccountCreateEntitySchema = AccountEntitySchema.pick({
-    icon: true,
-    type: true,
-    order: true,
-    title: true,
-    nature: true,
-    parentId: true,
-    externalId: true,
-    instrumentId: true,
-    externalSource: true,
-    iban: true,
-    includeInNetWorth: true
-})
+export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEntitySchema)
     .partial({
+        iban: true,
         order: true,
+        debtType: true,
         parentId: true,
+        returnAt: true,
         externalId: true,
+        amountToReturn: true,
         externalSource: true,
         iban: true,
         includeInNetWorth: true

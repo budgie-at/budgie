@@ -3,10 +3,10 @@ import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { Footer } from '../../../@generic/components/footer/footer';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
