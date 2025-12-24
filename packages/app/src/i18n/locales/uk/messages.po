@@ -74,11 +74,11 @@ msgstr "{tagsCount} тегів доступно"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:39
+#: src/app/(main)/settings/index.tsx:48
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:112
 msgid "About"
 msgstr "Про застосунок"
 
@@ -160,7 +160,7 @@ msgstr "ШІ"
 msgid "AI Suggestion"
 msgstr "Пропозиція ШІ"
 
-#: src/app/(main)/settings/index.tsx:91
+#: src/app/(main)/settings/index.tsx:116
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -176,7 +176,7 @@ msgstr ""
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:40
+#: src/app/(main)/settings/index.tsx:49
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -194,7 +194,7 @@ msgstr "Сума"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:82
+#: src/app/(main)/settings/index.tsx:102
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -219,7 +219,7 @@ msgid "Archive Account?"
 msgstr ""
 
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:75
+#: src/app/(main)/settings/index.tsx:95
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -255,7 +255,7 @@ msgstr "Біометрична автентифікація"
 msgid "Browse"
 msgstr "Переглянути"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:114
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -406,7 +406,7 @@ msgstr "Створити PIN-код"
 msgid "Create accounts"
 msgstr "Створити рахунки"
 
-#: src/app/(main)/settings/index.tsx:69
+#: src/app/(main)/settings/index.tsx:89
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -464,7 +464,7 @@ msgstr "Криптовалюта"
 msgid "Currency"
 msgstr "Валюта"
 
-#: src/account/component/account-balance/account-balance.tsx:20
+#: src/account/component/account-balance/account-balance.tsx:19
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
@@ -600,11 +600,11 @@ msgstr "Введіть новий PIN-код"
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 
-#: src/app/(main)/pin.tsx:122
+#: src/app/(main)/pin.tsx:112
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
 
-#: src/app/(main)/pin.tsx:121
+#: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
@@ -674,7 +674,7 @@ msgstr ""
 msgid "From Currency"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:70
 msgid "General"
 msgstr "Загальне"
 
@@ -686,11 +686,11 @@ msgstr "Німецька"
 msgid "German (Germany)"
 msgstr "Німецька (Німеччина)"
 
-#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:21
+#: src/app/(main)/settings/index.tsx:55
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr ""
 
-#: src/settings/components/cents-switch/cents-switch.tsx:20
+#: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
 msgstr "Приховати копійки"
 
@@ -732,7 +732,7 @@ msgstr "Дохід"
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/app/(main)/pin.tsx:69
+#: src/app/(main)/pin.tsx:68
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
@@ -745,11 +745,11 @@ msgstr ""
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
 
-#: src/settings/components/language-selector/language-selector.tsx:36
+#: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Мова"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:35
+#: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
 msgstr "Регіональні налаштування"
 
@@ -757,11 +757,11 @@ msgstr "Регіональні налаштування"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:81
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:68
+#: src/app/(main)/settings/index.tsx:88
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -907,7 +907,7 @@ msgstr "Нічого не вибрано"
 msgid "Note (optional)"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
 msgstr "Організація"
 
@@ -919,7 +919,7 @@ msgstr "Перевищення:"
 msgid "Overview"
 msgstr "Огляд"
 
-#: src/app/(main)/pin.tsx:54
+#: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "PIN-код має бути {PIN_LENGTH} цифр"
@@ -951,7 +951,7 @@ msgstr ""
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:36
+#: src/app/(main)/settings/index.tsx:45
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -963,11 +963,11 @@ msgstr "Введіть свій PIN-код ще раз для підтвердж
 msgid "Remaining:"
 msgstr "Залишок:"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:74
+#: src/account/component/archived-account-card/archived-account-card.tsx:72
 msgid "Restore"
 msgstr "Відновити"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:76
+#: src/account/component/archived-account-card/archived-account-card.tsx:74
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
@@ -980,7 +980,7 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
-#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:20
+#: src/app/(main)/settings/index.tsx:54
 msgid "Screenshot Protection"
 msgstr ""
 
@@ -1020,7 +1020,7 @@ msgstr "Пошук тегів..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:46
+#: src/app/(main)/settings/index.tsx:66
 msgid "Security"
 msgstr "Безпека"
 
@@ -1090,11 +1090,11 @@ msgstr ""
 msgid "Selected {selectedTagsCount}"
 msgstr "Вибрано {selectedTagsCount}"
 
-#: src/app/(main)/settings/index.tsx:33
+#: src/app/(main)/settings/index.tsx:42
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/settings/components/cents-switch/cents-switch.tsx:21
+#: src/app/(main)/settings/index.tsx:106
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "Today"
 msgstr "Сьогодні"
 
-#: src/@generic/components/total-balance/net-worth.tsx:16
+#: src/@generic/components/total-balance/net-worth.tsx:15
 msgid "Total Balance"
 msgstr "Загальний баланс"
 
@@ -1308,11 +1308,11 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування додатка"
 
-#: src/app/(main)/settings/index.tsx:62
+#: src/app/(main)/settings/index.tsx:82
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:76
+#: src/app/(main)/settings/index.tsx:96
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
