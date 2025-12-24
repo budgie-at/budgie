@@ -85,4 +85,4 @@ jobs:
 
       - name: Publish update
         working-directory: packages/app
-        run: eas update --channel production --auto
+        run: eas update --channel production --auto --message "${{ github.ref_name }} - ${{ github.event.head_commit.message }}"
