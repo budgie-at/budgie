@@ -1,1 +1,0 @@
-ALTER TABLE `settings` ADD `is_screenshot_protection_enabled` integer DEFAULT true NOT NULL;

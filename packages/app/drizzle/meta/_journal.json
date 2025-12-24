@@ -1,20 +1,13 @@
 {
-  "version": "7",
-  "dialect": "sqlite",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1766081347212,
-      "tag": "0000_fluffy_golden_guardian",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1766522649230,
-      "tag": "0001_plain_squirrel_girl",
-      "breakpoints": true
-    }
-  ]
+    "version": "7",
+    "dialect": "sqlite",
+    "entries": [
+        {
+            "idx": 0,
+            "version": "6",
+            "when": 1766081347212,
+            "tag": "0000_fluffy_golden_guardian",
+            "breakpoints": true
+        }
+    ]
 }
