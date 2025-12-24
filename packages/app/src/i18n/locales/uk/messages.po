@@ -688,7 +688,7 @@ msgstr "Німецька (Німеччина)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Приховувати баланси рахунків і чистий капітал при створенні знімків екрана"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -982,7 +982,7 @@ msgstr "Ощадний рахунок"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Захист від знімків екрана"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
