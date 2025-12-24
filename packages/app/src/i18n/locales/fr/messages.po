@@ -688,7 +688,7 @@ msgstr "Allemand (Allemagne)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Masquer les soldes de compte et la valeur nette lors de la prise de captures d'écran"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -982,7 +982,7 @@ msgstr "Compte d'épargne"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Protection des captures d'écran"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
