@@ -686,7 +686,7 @@ msgstr "Alemán"
 msgid "German (Germany)"
 msgstr "Alemán (Alemania)"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr ""
 
@@ -980,7 +980,7 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
-#: src/app/(main)/settings/index.tsx:54
+#: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
 msgstr ""
 
@@ -1020,7 +1020,7 @@ msgstr "Buscar etiquetas..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Protege tu aplicación con PIN y Face ID"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:54
 msgid "Security"
 msgstr "Seguridad"
 

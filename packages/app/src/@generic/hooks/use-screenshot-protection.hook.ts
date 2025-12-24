@@ -9,9 +9,9 @@ export const useScreenshotProtection = (): boolean => {
     useEffect(() => {
         const setupScreenshotProtection = async () => {
             if (isScreenshotProtectionEnabled) {
-                await preventScreenCaptureAsync();
+                await preventScreenCaptureAsync('setting');
             } else {
-                await allowScreenCaptureAsync();
+                await allowScreenCaptureAsync('setting');
             }
         };
 

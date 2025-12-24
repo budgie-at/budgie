@@ -49,6 +49,10 @@ export default function SettingsPage() {
                             description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
                             left={<CircleIcon size="1_5xl" icon={ICONS.Shield} variant="positive" border={false} />}
                         />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Security`}>
+                        <PinCard />
                         <SettingsCard
                             left={<CircleIcon size="1_5xl" icon={ICONS.ShieldCheck} variant="pink" border={false} />}
                             title={t`Screenshot Protection`}
@@ -61,10 +65,6 @@ export default function SettingsPage() {
                                 />
                             }
                         />
-                    </SettingsGroup>
-
-                    <SettingsGroup title={t`Security`}>
-                        <PinCard />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`General`}>
