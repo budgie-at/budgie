@@ -48,4 +48,5 @@ jobs:
 
       - name: Build on EAS
         working-directory: packages/app
-        run: eas build --platform all --non-interactive --no-wait --profile development
+        # TODO: temporary only IOS
+        run: eas build --platform ios --non-interactive --no-wait --profile development
