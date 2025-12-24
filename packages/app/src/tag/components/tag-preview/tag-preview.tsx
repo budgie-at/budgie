@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
+import { Card } from '../../../@generic/component/card/card';
 
 interface Props {
     readonly title: string;

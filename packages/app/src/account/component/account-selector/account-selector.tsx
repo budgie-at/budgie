@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { EntitySelector } from '../../../@generic/components/entity-selector/entity-selector';
+import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';

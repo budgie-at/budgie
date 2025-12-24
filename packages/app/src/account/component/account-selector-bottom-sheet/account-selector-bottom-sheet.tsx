@@ -4,7 +4,7 @@ import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchAccountsQuery } from '../../query/use-search-accounts.query';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';

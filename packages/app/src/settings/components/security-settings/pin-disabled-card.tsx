@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { SettingsCard } from '../settings-card/settings-card';
