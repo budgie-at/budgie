@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.82.2](https://github.com/budgie-at/budgie/compare/v1.82.1...v1.82.2) (2025-12-24)
+
+**Note:** Version bump only for package @budgie-at/app
+
 ## [1.82.1](https://github.com/budgie-at/budgie/compare/v1.82.0...v1.82.1) (2025-12-24)
 
 ### Bug Fixes
