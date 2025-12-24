@@ -13,5 +13,6 @@ export const DEFAULT_SETTINGS = {
     defaultInstrumentId: 0,
     isVibrationEnabled: true,
     isBiometricEnabled: false,
-    language: LanguageEnum.EN
+    language: LanguageEnum.EN,
+    isScreenshotProtectionEnabled: true
 } satisfies SettingsEntityInterface;

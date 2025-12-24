@@ -2,16 +2,16 @@ import { getLocales } from 'expo-localization';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
 import { LOCALES } from '../constant/locales.constant';
 import { LocaleInfoInterface } from '../interface/locale-info.interface';
 
 export const useLocaleInfo = (): LocaleInfoInterface => {
-    const { settings } = useSettingsContext();
+    const settingsLocale = useSetting('locale');
     const [locale] = getLocales();
 
-    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === settings.locale);
+    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === settingsLocale);
 
     if (isDefined(localeFromSettings)) {
         return localeFromSettings;
