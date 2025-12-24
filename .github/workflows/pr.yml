@@ -100,7 +100,7 @@ jobs:
         id: create-preview
         uses: expo/expo-github-action/preview@v8
         with:
-          command: eas update --channel development --message "${{ github.ref_name }} - ${{ github.event.head_commit.message }}"
+          command: eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
           working-directory: packages/app
 
       - name: Build web app
