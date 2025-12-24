@@ -2,12 +2,12 @@ import { ThemeEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import { Switch } from 'react-native';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { PRIMARY_COLOR, PRIMARY_REVERSE_COLOR } from '../../constant/colors.constant';
 
 export const ThemedSwitch = (props: ComponentProps<typeof Switch>) => {
-    const { settings } = useSettingsContext();
-    const isDarkTheme = settings.theme === ThemeEnum.DARK;
+    const theme = useSetting('theme');
+    const isDarkTheme = theme === ThemeEnum.DARK;
 
     const thumbColor = isDarkTheme ? PRIMARY_COLOR : PRIMARY_REVERSE_COLOR;
     const iosBackgroundColor = isDarkTheme ? PRIMARY_REVERSE_COLOR : PRIMARY_COLOR;
