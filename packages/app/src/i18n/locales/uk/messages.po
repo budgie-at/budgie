@@ -32,7 +32,7 @@ msgstr "{accountsCount} рахунків"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr ""
+msgstr "{accountTitle} буде відновлено у вашому головному перегляді та включено до підсумків."
 
 #: src/app/(main)/settings/archived.tsx:35
 msgid "{archivedAccountsCount} account"
@@ -40,7 +40,7 @@ msgstr "{archivedAccountsCount} рахунок"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
-msgstr ""
+msgstr "{availableCount} стовпців доступно"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -60,11 +60,11 @@ msgstr "{percentage}% доходів"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} imported, {errorCount} failed"
-msgstr ""
+msgstr "{successCount} імпортовано, {errorCount} помилок"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} transactions imported"
-msgstr ""
+msgstr "{successCount} транзакцій імпортовано"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -126,7 +126,7 @@ msgstr "Додайте новий тег для організації ваши�
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
 msgid "Add a note..."
-msgstr ""
+msgstr "Додати нотатку..."
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "Add Expense"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:85
 msgid "All columns have been assigned"
-msgstr ""
+msgstr "Усі стовпці було призначено"
 
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
@@ -208,7 +208,7 @@ msgstr "Застосувати фільтр ({selected})"
 
 #: src/account/component/archive-account/archive-account.tsx:43
 msgid "Archive"
-msgstr ""
+msgstr "Архівувати"
 
 #: src/account/component/archive-account/archive-account.tsx:37
 msgid "Archive Account"
@@ -216,7 +216,7 @@ msgstr "Архівувати рахунок"
 
 #: src/account/component/archive-account/archive-account.tsx:46
 msgid "Archive Account?"
-msgstr ""
+msgstr "Архівувати рахунок?"
 
 #: src/app/(main)/settings/archived.tsx:37
 #: src/app/(main)/settings/index.tsx:95
@@ -229,7 +229,7 @@ msgstr "Ви впевнені?"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
-msgstr ""
+msgstr "Доступні стовпці"
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
@@ -307,7 +307,7 @@ msgstr "Поточний рахунок"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:32
 msgid "Choose a preset to auto-fill column mappings"
-msgstr ""
+msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Choose a type to get started"
@@ -351,7 +351,7 @@ msgstr "Очистити все"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
-msgstr ""
+msgstr "Коментар"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
@@ -611,7 +611,7 @@ msgstr "Введіть свій PIN-код"
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
 msgid "Error"
-msgstr ""
+msgstr "Помилка"
 
 #: src/app/(main)/create-account/index.tsx:24
 msgid "Everyday transactions and spending"
@@ -627,7 +627,7 @@ msgstr "Витрату створено"
 
 #: src/app/(main)/settings/import.tsx:221
 msgid "External ID"
-msgstr ""
+msgstr "Зовнішній ID"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
@@ -648,7 +648,7 @@ msgstr "Заповніть деталі рахунку"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Fix Errors"
-msgstr ""
+msgstr "Виправити помилки"
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -664,15 +664,15 @@ msgstr "З"
 
 #: src/app/(main)/settings/import.tsx:228
 msgid "From Account"
-msgstr ""
+msgstr "З рахунку"
 
 #: src/app/(main)/settings/import.tsx:242
 msgid "From Amount"
-msgstr ""
+msgstr "Сума з"
 
 #: src/app/(main)/settings/import.tsx:235
 msgid "From Currency"
-msgstr ""
+msgstr "Валюта з"
 
 #: src/app/(main)/settings/index.tsx:70
 msgid "General"
@@ -688,7 +688,7 @@ msgstr "Німецька (Німеччина)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -701,27 +701,27 @@ msgstr "Іконка"
 
 #: src/app/(main)/settings/import.tsx:142
 msgid "Import Complete"
-msgstr ""
+msgstr "Імпорт завершено"
 
 #: src/import/components/import-csv/import-csv.tsx:40
 msgid "Import CSV"
-msgstr ""
+msgstr "Імпортувати CSV"
 
 #: src/app/(main)/settings/import.tsx:150
 msgid "Import Failed"
-msgstr ""
+msgstr "Імпорт не вдався"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:44
 msgid "Import from FinEye app with English columns"
-msgstr ""
+msgstr "Імпорт з додатку FinEye з англійськими стовпцями"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:38
 msgid "Import from SmartBudget2 app with Russian columns"
-msgstr ""
+msgstr "Імпорт з додатку SmartBudget2 з російськими стовпцями"
 
 #: src/import/components/import-csv/import-csv.tsx:41
 msgid "Import transactions from a CSV file"
-msgstr ""
+msgstr "Імпортувати транзакції з CSV файлу"
 
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -739,7 +739,7 @@ msgstr "Неправильний PIN-код"
 
 #: src/app/(main)/settings/import.tsx:256
 msgid "Is Planned"
-msgstr ""
+msgstr "Заплановано"
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
@@ -767,11 +767,11 @@ msgstr "Керування тегами"
 
 #: src/app/(main)/settings/import.tsx:165
 msgid "Map CSV Columns"
-msgstr ""
+msgstr "Зіставлення стовпців CSV"
 
 #: src/app/(main)/settings/import.tsx:166
 msgid "Match each field to a column from your CSV file"
-msgstr ""
+msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -905,7 +905,7 @@ msgstr "Нічого не вибрано"
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
 msgid "Note (optional)"
-msgstr ""
+msgstr "Нотатка (необов'язково)"
 
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
@@ -944,7 +944,7 @@ msgstr "Португальська (Португалія)"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:31
 msgid "Preset applied. Adjust columns below if needed."
-msgstr ""
+msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
@@ -982,7 +982,7 @@ msgstr "Ощадний рахунок"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Захист від скріншотів"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
@@ -1030,7 +1030,7 @@ msgstr "Безпека"
 #: src/app/(main)/settings/import.tsx:58
 #: src/app/(main)/settings/import.tsx:59
 msgid "Select a valid column"
-msgstr ""
+msgstr "Виберіть дійсний стовпець"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:58
 #: src/account/component/account-selector/account-selector.tsx:40
@@ -1056,7 +1056,7 @@ msgstr "Виберіть категорію"
 
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:39
 msgid "Select column..."
-msgstr ""
+msgstr "Виберіть стовпець..."
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1068,7 +1068,7 @@ msgstr "Виберіть дату"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Select Import Preset"
-msgstr ""
+msgstr "Вибрати шаблон імпорту"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
@@ -1084,7 +1084,7 @@ msgstr "Виберіть теги"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
-msgstr ""
+msgstr "Вибрано"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:46
 msgid "Selected {selectedTagsCount}"
@@ -1136,7 +1136,7 @@ msgstr "Поділ за категоріями"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Start Import"
-msgstr ""
+msgstr "Почати імпорт"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
@@ -1189,7 +1189,7 @@ msgstr "Натисніть, щоб вибрати"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
-msgstr ""
+msgstr "Натисніть, щоб очистити"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1197,6 +1197,9 @@ msgid ""
 "\n"
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 msgstr ""
+"Цей рахунок буде прихований з вашого головного перегляду і не буде включено до підсумків.\n"
+"\n"
+" 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1220,11 +1223,11 @@ msgstr "НА"
 
 #: src/app/(main)/settings/import.tsx:181
 msgid "To Account"
-msgstr ""
+msgstr "На рахунок"
 
 #: src/app/(main)/settings/import.tsx:213
 msgid "To Currency"
-msgstr ""
+msgstr "Валюта на"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1298,15 +1301,15 @@ msgstr "Оновити переказ"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
-msgstr "Використовуйте Face ID або Touch ID для швидкого та безпечного розблокування додатка"
+msgstr "Використовуйте Face ID або Touch ID для швидкого та безпечного розблокування вашого додатку"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:11
 msgid "Use Face ID to unlock your app quickly and securely"
-msgstr "Використовуйте Face ID для швидкого та безпечного розблокування додатка"
+msgstr "Використовуйте Face ID для швидкого та безпечного розблокування вашого додатку"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:18
 msgid "Use Touch ID to unlock your app quickly and securely"
-msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування додатка"
+msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
 #: src/app/(main)/settings/index.tsx:82
 msgid "View and delete custom categories"
@@ -1318,11 +1321,11 @@ msgstr "Перегляд та відновлення архівованих ра
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 msgid "Your expense has been recorded successfully."
-msgstr "Вашу витрату успішно записано."
+msgstr "Ваша витрата була успішно зафіксована."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Ваша мета - повернути ОДНУ найкращу відповідну категорію, ТІЛЬКИ НАЗВУ З цього списку <CategoryList>{categoriesList}</CategoryList> на основі повідомлення користувача, без відповіді, без додаткового тексту, лише категорію зі списку."
+msgstr "Ваша мета - повернути ОДНУ найкращу відповідну категорію, ЛИШЕ НАЗВУ З цього списку <CategoryList>{categoriesList}</CategoryList> на основі повідомлення користувача, без відповіді, без додаткового тексту, лише категорію зі списку."
 
 #: src/app/(main)/ai.tsx:77
 msgid "Your message:"

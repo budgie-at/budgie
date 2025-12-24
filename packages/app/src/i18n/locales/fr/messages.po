@@ -32,7 +32,7 @@ msgstr "{accountsCount} comptes"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr ""
+msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans les totaux."
 
 #: src/app/(main)/settings/archived.tsx:35
 msgid "{archivedAccountsCount} account"
@@ -40,7 +40,7 @@ msgstr "{archivedAccountsCount} compte"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
-msgstr ""
+msgstr "{availableCount} colonnes disponibles"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -60,11 +60,11 @@ msgstr "{percentage}% des revenus"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} imported, {errorCount} failed"
-msgstr ""
+msgstr "{successCount} importées, {errorCount} échouées"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} transactions imported"
-msgstr ""
+msgstr "{successCount} transactions importées"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -126,7 +126,7 @@ msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
 msgid "Add a note..."
-msgstr ""
+msgstr "Ajouter une note..."
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "Add Expense"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:85
 msgid "All columns have been assigned"
-msgstr ""
+msgstr "Toutes les colonnes ont été assignées"
 
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
@@ -208,7 +208,7 @@ msgstr "Appliquer le filtre ({selected})"
 
 #: src/account/component/archive-account/archive-account.tsx:43
 msgid "Archive"
-msgstr ""
+msgstr "Archiver"
 
 #: src/account/component/archive-account/archive-account.tsx:37
 msgid "Archive Account"
@@ -216,7 +216,7 @@ msgstr "Archiver le compte"
 
 #: src/account/component/archive-account/archive-account.tsx:46
 msgid "Archive Account?"
-msgstr ""
+msgstr "Archiver le compte ?"
 
 #: src/app/(main)/settings/archived.tsx:37
 #: src/app/(main)/settings/index.tsx:95
@@ -229,7 +229,7 @@ msgstr "Êtes-vous sûr ?"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
-msgstr ""
+msgstr "Colonnes disponibles"
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
@@ -307,7 +307,7 @@ msgstr "Compte courant"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:32
 msgid "Choose a preset to auto-fill column mappings"
-msgstr ""
+msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Choose a type to get started"
@@ -351,7 +351,7 @@ msgstr "Tout effacer"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
-msgstr ""
+msgstr "Commentaire"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
@@ -611,7 +611,7 @@ msgstr "Entrez votre code PIN"
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 #: src/app/(main)/create-account/index.tsx:24
 msgid "Everyday transactions and spending"
@@ -627,7 +627,7 @@ msgstr "Dépense créée"
 
 #: src/app/(main)/settings/import.tsx:221
 msgid "External ID"
-msgstr ""
+msgstr "ID externe"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
@@ -648,7 +648,7 @@ msgstr "Remplissez les détails du compte"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Fix Errors"
-msgstr ""
+msgstr "Corriger les erreurs"
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -664,15 +664,15 @@ msgstr "DE"
 
 #: src/app/(main)/settings/import.tsx:228
 msgid "From Account"
-msgstr ""
+msgstr "Du compte"
 
 #: src/app/(main)/settings/import.tsx:242
 msgid "From Amount"
-msgstr ""
+msgstr "Montant source"
 
 #: src/app/(main)/settings/import.tsx:235
 msgid "From Currency"
-msgstr ""
+msgstr "Devise source"
 
 #: src/app/(main)/settings/index.tsx:70
 msgid "General"
@@ -688,7 +688,7 @@ msgstr "Allemand (Allemagne)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'écran"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -701,27 +701,27 @@ msgstr "Icône"
 
 #: src/app/(main)/settings/import.tsx:142
 msgid "Import Complete"
-msgstr ""
+msgstr "Importation terminée"
 
 #: src/import/components/import-csv/import-csv.tsx:40
 msgid "Import CSV"
-msgstr ""
+msgstr "Importer CSV"
 
 #: src/app/(main)/settings/import.tsx:150
 msgid "Import Failed"
-msgstr ""
+msgstr "Importation échouée"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:44
 msgid "Import from FinEye app with English columns"
-msgstr ""
+msgstr "Importer depuis l'application FinEye avec des colonnes en anglais"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:38
 msgid "Import from SmartBudget2 app with Russian columns"
-msgstr ""
+msgstr "Importer depuis l'application SmartBudget2 avec des colonnes en russe"
 
 #: src/import/components/import-csv/import-csv.tsx:41
 msgid "Import transactions from a CSV file"
-msgstr ""
+msgstr "Importer des transactions depuis un fichier CSV"
 
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -739,7 +739,7 @@ msgstr "Code PIN incorrect"
 
 #: src/app/(main)/settings/import.tsx:256
 msgid "Is Planned"
-msgstr ""
+msgstr "Est planifié"
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
@@ -767,11 +767,11 @@ msgstr "Gérer les étiquettes"
 
 #: src/app/(main)/settings/import.tsx:165
 msgid "Map CSV Columns"
-msgstr ""
+msgstr "Mapper les colonnes CSV"
 
 #: src/app/(main)/settings/import.tsx:166
 msgid "Match each field to a column from your CSV file"
-msgstr ""
+msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -905,7 +905,7 @@ msgstr "Aucune sélectionnée"
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
 msgid "Note (optional)"
-msgstr ""
+msgstr "Note (optionnel)"
 
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
@@ -944,7 +944,7 @@ msgstr "Portugais (Portugal)"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:31
 msgid "Preset applied. Adjust columns below if needed."
-msgstr ""
+msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
@@ -982,7 +982,7 @@ msgstr "Compte d'épargne"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Protection des captures d'écran"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
@@ -1030,7 +1030,7 @@ msgstr "Sécurité"
 #: src/app/(main)/settings/import.tsx:58
 #: src/app/(main)/settings/import.tsx:59
 msgid "Select a valid column"
-msgstr ""
+msgstr "Sélectionnez une colonne valide"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:58
 #: src/account/component/account-selector/account-selector.tsx:40
@@ -1056,7 +1056,7 @@ msgstr "Sélectionner une catégorie"
 
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:39
 msgid "Select column..."
-msgstr ""
+msgstr "Sélectionner une colonne..."
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1068,7 +1068,7 @@ msgstr "Sélectionner une date"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Select Import Preset"
-msgstr ""
+msgstr "Sélectionner un modèle d'importation"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
@@ -1084,7 +1084,7 @@ msgstr "Sélectionner des étiquettes"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
-msgstr ""
+msgstr "Sélectionné"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:46
 msgid "Selected {selectedTagsCount}"
@@ -1136,7 +1136,7 @@ msgstr "Répartir par catégorie"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Start Import"
-msgstr ""
+msgstr "Démarrer l'importation"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
@@ -1189,7 +1189,7 @@ msgstr "Appuyez pour choisir"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
-msgstr ""
+msgstr "Appuyez pour effacer"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1197,6 +1197,9 @@ msgid ""
 "\n"
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 msgstr ""
+"Ce compte sera masqué de votre vue principale et ne sera pas inclus dans les totaux.\n"
+"\n"
+" 💡 Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1220,11 +1223,11 @@ msgstr "VERS"
 
 #: src/app/(main)/settings/import.tsx:181
 msgid "To Account"
-msgstr ""
+msgstr "Vers le compte"
 
 #: src/app/(main)/settings/import.tsx:213
 msgid "To Currency"
-msgstr ""
+msgstr "Devise cible"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
@@ -1248,7 +1251,7 @@ msgstr "Transactions"
 
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
-msgstr "Transfert"
+msgstr "Virement"
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:52
@@ -1293,7 +1296,7 @@ msgstr "Mettre à jour le revenu"
 
 #: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:29
 msgid "Update Transfer"
-msgstr "Mettre à jour le transfert"
+msgstr "Mettre à jour le virement"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -1322,8 +1325,8 @@ msgstr "Votre dépense a été enregistrée avec succès."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Votre objectif est de retourner UNE catégorie correspondante, SEULEMENT LE NOM DE cette liste <CategoryList>{categoriesList}</CategoryList> basé sur le message de l'utilisateur, pas de réponse, pas de texte supplémentaire, juste la catégorie de la liste."
+msgstr "Votre objectif est de retourner UNE SEULE catégorie correspondant le mieux, UNIQUEMENT LE NOM DE cette liste <CategoryList>{categoriesList}</CategoryList> en fonction du message de l'utilisateur, sans réponse, sans texte supplémentaire, uniquement la catégorie de la liste."
 
 #: src/app/(main)/ai.tsx:77
 msgid "Your message:"
-msgstr "Votre message :"
+msgstr "Votre message:"
