@@ -2,8 +2,8 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';

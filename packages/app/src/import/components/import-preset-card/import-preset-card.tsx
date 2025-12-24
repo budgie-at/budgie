@@ -1,8 +1,8 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {

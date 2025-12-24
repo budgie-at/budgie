@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 
-import { FormItem } from '../../../@generic/components/form-item/form-item';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { CategorySelector } from '../../../category/components/category-selector/category-selector';
 import { TransactionSplit } from '../transaction-split/transaction-split';

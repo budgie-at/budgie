@@ -2,8 +2,8 @@ import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { SettingsCard } from '../settings-card/settings-card';

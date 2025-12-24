@@ -3,9 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ThemedSwitch } from '../../../@generic/components/themed-switch/themed-switch';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';

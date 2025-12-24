@@ -2,8 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
-import { CurrencySelectorBottomSheet } from '../../../@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { CurrencySelectorBottomSheet } from '../../../@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSettingsContext } from '../../context/settings.context';

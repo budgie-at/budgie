@@ -8,11 +8,11 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { FullPage } from '../../../@generic/components/page/full-page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { FullPage } from '../../../@generic/component/page/full-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -22,7 +22,7 @@ import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
 import { ArchiveAccount } from '../archive-account/archive-account';
-import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
+import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
 

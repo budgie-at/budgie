@@ -1,7 +1,7 @@
 import { ThemeEnum } from '@budgie/contracts';
 import { Appearance, Platform, StatusBar, View } from 'react-native';
 
-import { useSystemTheme } from '../../@generic/hooks/use-system-theme.hook';
+import { useSystemTheme } from '../../@generic/hook/use-system-theme.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { ThemeContext } from '../context/theme.context';
