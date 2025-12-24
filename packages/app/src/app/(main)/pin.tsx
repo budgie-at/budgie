@@ -1,14 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
-import { AppState, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
 
 import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
+import { useAppState } from '../../@generic/hooks/use-app-state.hook';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
 import { authService } from '../../auth/service/auth.service';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 
 interface AuthFormStateInterface {
     input: string;
@@ -17,17 +18,15 @@ interface AuthFormStateInterface {
     hasAttemptedBiometric: boolean;
 }
 
-// eslint-disable-next-line max-lines-per-function
 export default function PinScreen() {
     const { t } = useLingui();
-    const { setIsUnlocked } = useAuthContext();
-    const { settings } = useSettingsContext();
-    const { isFaceIdAvailable } = useAuthContext();
 
-    const { isBiometricEnabled } = settings;
+    const { setIsUnlocked } = useAuthContext();
+    const { isFaceIdAvailable } = useAuthContext();
+    const isBiometricEnabled = useSetting('isBiometricEnabled');
+
     const canUseBiometric = isFaceIdAvailable && isBiometricEnabled;
 
-    const appState = useRef(AppState.currentState);
     const [formState, setFormState] = useState<AuthFormStateInterface>({
         input: '',
         error: null,
@@ -94,25 +93,16 @@ export default function PinScreen() {
         }
     };
 
-    tryAutomaticBiometric();
-
     if (formState.input.length === PIN_LENGTH && !formState.isLoading) {
         void handlePinSubmit();
     }
 
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', nextAppState => {
-            if (appState.current.match(/inactive|background/iu) && nextAppState === 'active') {
-                tryAutomaticBiometric();
-            }
-
-            appState.current = nextAppState;
-        });
-
-        return () => {
-            subscription.remove();
-        };
-    }, []);
+    useEffect(() => tryAutomaticBiometric, []);
+    useAppState(isActive => {
+        if (isActive) {
+            tryAutomaticBiometric();
+        }
+    });
 
     return (
         <View className="flex-1 bg-primary-reverse">

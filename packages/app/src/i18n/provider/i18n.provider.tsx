@@ -3,7 +3,7 @@ import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import { ReactNode, useEffect } from 'react';
 
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
 
 interface Props {
@@ -11,14 +11,13 @@ interface Props {
 }
 
 export const I18nProvider = ({ children }: Props) => {
-    const { settings } = useSettingsContext();
+    const locale = useSetting('locale');
+    const language = useSetting('language');
 
-    useEffect(() => {
-        i18n.activate(settings.language);
-    }, [settings.language]);
+    useEffect(() => void i18n.activate(language), [language]);
 
     const cache = createIntlCache();
-    const intl = createIntl({ locale: settings.locale }, cache);
+    const intl = createIntl({ locale }, cache);
 
     const value: I18nContextInterface = { intl };
 
