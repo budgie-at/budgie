@@ -17,7 +17,7 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
 }
 
 export const ProtectedMoney = (props: Props) => {
-    const { children, className, decimalPlaces, currency, protectedText = '999.99', ...rest } = props;
+    const { children, className, decimalPlaces, currency, protectedText = '$999.99', ...rest } = props;
 
     const showCents = useSetting('showCents');
 
