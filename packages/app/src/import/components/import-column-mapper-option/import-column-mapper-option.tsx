@@ -1,6 +1,6 @@
 import { Pressable, Text } from 'react-native';
 
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 

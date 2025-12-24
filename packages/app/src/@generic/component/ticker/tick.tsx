@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Text, TextStyle, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
-import { usePrevious } from '../../hooks/use-previous.hook';
+import { usePrevious } from '../../hook/use-previous.hook';
 import { getTextStyleForTicket } from '../../utils/get-text-style-for-ticket.util';
 
 interface Props {

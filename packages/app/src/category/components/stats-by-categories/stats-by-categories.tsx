@@ -3,8 +3,8 @@ import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View, ViewStyle } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';

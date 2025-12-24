@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 export const AccountsEmptyState = () => (

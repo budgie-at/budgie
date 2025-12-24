@@ -4,10 +4,10 @@ import { View } from 'react-native';
 
 import { EmptyFn, isPositiveNumber } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { BottomSheetView } from '../../../@generic/components/bottom-sheet-view/bottom-sheet-view';
-import { Button } from '../../../@generic/components/button/button';
-import { Footer } from '../../../@generic/components/footer/footer';
+import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
+import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
+import { Button } from '../../../@generic/component/button/button';
+import { Footer } from '../../../@generic/component/footer/footer';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';

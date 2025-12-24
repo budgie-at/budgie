@@ -92,6 +92,12 @@ export default ({ config }) => ({
         'expo-secure-store',
         'expo-background-task',
         [
+            'expo-contacts',
+            {
+                contactsPermission: 'Allow $(PRODUCT_NAME) to access your contacts.'
+            }
+        ],
+        [
             'expo-sqlite',
             {
                 enableFTS: true,
