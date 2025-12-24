@@ -1,9 +1,9 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { Text, View } from 'react-native';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Card } from '../../../@generic/components/card/card';
+import { Card } from '../../../@generic/component/card/card';
 import { cva } from 'class-variance-authority';
 import { ACCOUNT_DEBT_TYPE } from '../../constant/account-debt-type.constant';
 import { ACCOUNT_DEBT_TYPE_DESCRIPTION } from '../../constant/account-debt-type-description.constant';

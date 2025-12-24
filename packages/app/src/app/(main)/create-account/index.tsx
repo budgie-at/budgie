@@ -3,8 +3,8 @@ import { AccountTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
 import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';

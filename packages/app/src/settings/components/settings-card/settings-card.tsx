@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
+import { Card } from '../../../@generic/component/card/card';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {

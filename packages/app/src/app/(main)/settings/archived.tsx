@@ -6,8 +6,8 @@ import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';

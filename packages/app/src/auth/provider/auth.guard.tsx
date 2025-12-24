@@ -1,7 +1,7 @@
 import { Redirect, usePathname } from 'expo-router';
 import { ReactNode } from 'react';
 
-import { EmptyScreen } from '../../@generic/components/empty-screen/empty-screen';
+import { EmptyScreen } from '../../@generic/component/empty-screen/empty-screen';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useAuthContext } from '../context/auth.context';
 

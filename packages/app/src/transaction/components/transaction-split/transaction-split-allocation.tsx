@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';

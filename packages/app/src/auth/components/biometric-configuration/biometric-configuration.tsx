@@ -2,9 +2,9 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Switch, Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/components/button/button';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Button } from '../../../@generic/component/button/button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 

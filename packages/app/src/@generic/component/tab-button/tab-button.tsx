@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Pressable, View } from 'react-native';
 
-import { useVibration } from '../../hooks/use-vibration.hook';
+import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
 
 import type { TabTriggerSlotProps } from 'expo-router/ui';

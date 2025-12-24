@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 
-import { EntitySelector } from '../../../@generic/components/entity-selector/entity-selector';
+import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';

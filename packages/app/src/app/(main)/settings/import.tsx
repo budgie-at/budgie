@@ -8,9 +8,9 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import {
     accountBalanceRepository,
     accountRepository,

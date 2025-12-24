@@ -5,8 +5,8 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Card } from '../../../@generic/component/card/card';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';

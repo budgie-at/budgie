@@ -4,10 +4,10 @@ import { useRef } from 'react';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';

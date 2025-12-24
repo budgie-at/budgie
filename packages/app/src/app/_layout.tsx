@@ -15,7 +15,7 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
-import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
+import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';

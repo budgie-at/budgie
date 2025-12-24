@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';

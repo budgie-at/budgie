@@ -6,8 +6,8 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';

@@ -5,10 +5,10 @@ import { ScrollView } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../@generic/components/icon/icon';
-import { Page } from '../../@generic/components/page/page';
-import { NetWorth } from '../../@generic/components/total-balance/net-worth';
+import { HapticPressable } from '../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../@generic/component/icon/icon';
+import { Page } from '../../@generic/component/page/page';
+import { NetWorth } from '../../@generic/component/total-balance/net-worth';
 import { ICONS } from '../../@generic/constant/icons.constant';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountList } from '../../account/component/account-list/account-list';

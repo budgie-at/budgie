@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';

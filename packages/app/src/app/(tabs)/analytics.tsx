@@ -5,8 +5,8 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Page } from '../../@generic/components/page/page';
-import { PageHeader } from '../../@generic/components/page-header/page-header';
+import { Page } from '../../@generic/component/page/page';
+import { PageHeader } from '../../@generic/component/page-header/page-header';
 import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../category/components/stats-by-categories/stats-by-categories';
 import { TransactionAnalyticsCard } from '../../transaction/components/transaction-analytics-card/transaction-analytics-card';

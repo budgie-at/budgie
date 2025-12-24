@@ -6,20 +6,20 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { CreateAccountCurrencyField } from '../../../@generic/components/create-account-currency-field/create-account-currency-field';
-import { CreateAccountDetailsField } from '../../../@generic/components/create-account-details-field/create-account-details-field';
-import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
-import { Footer } from '../../../@generic/components/footer/footer';
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
+import { CreateAccountDetailsField } from '../../../@generic/component/create-account-details-field/create-account-details-field';
+import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
-import { AccountBalanceField } from '../create-account-balance-field/account-balance-field';
+import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;

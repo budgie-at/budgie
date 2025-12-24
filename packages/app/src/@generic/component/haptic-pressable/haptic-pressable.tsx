@@ -2,7 +2,7 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { ComponentProps } from 'react';
 import { GestureResponderEvent, Keyboard, Pressable } from 'react-native';
 
-import { useVibration } from '../../hooks/use-vibration.hook';
+import { useVibration } from '../../hook/use-vibration.hook';
 import { cn } from '../../utils/cn.util';
 
 export const HapticPressable = ({ onPress, className, ...rest }: ComponentProps<typeof Pressable>) => {

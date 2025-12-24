@@ -2,7 +2,7 @@ import { CurrencyEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { ProtectedMoney } from '../../../@generic/components/protected-money/protected-money';
+import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {

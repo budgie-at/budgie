@@ -3,9 +3,9 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { Shake } from '../../../@generic/components/shake/shake';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { Shake } from '../../../@generic/component/shake/shake';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';

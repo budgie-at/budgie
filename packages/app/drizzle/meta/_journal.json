@@ -15,6 +15,13 @@
       "when": 1766518905708,
       "tag": "0001_curved_adam_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1766531810738,
+      "tag": "0002_chunky_nick_fury",
+      "breakpoints": true
     }
   ]
 }

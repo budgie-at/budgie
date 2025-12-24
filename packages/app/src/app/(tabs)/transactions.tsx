@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { Page } from '../../@generic/components/page/page';
-import { PageHeader } from '../../@generic/components/page-header/page-header';
+import { Page } from '../../@generic/component/page/page';
+import { PageHeader } from '../../@generic/component/page-header/page-header';
 import { TransactionList } from '../../transaction/components/transaction-list/transaction-list';
 
 export default function TransactionsPage() {

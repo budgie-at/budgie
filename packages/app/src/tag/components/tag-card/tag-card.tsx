@@ -2,7 +2,7 @@ import { TagEntityInterface } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
+import { Card } from '../../../@generic/component/card/card';
 
 interface Props {
     tag: TagEntityInterface;

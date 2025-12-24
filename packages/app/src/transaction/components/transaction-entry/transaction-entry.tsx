@@ -2,9 +2,9 @@ import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { AmountInput } from '../../../@generic/components/amount-input/amount-input';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';

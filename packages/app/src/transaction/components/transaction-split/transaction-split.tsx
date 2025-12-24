@@ -6,8 +6,8 @@ import { Switch, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Button } from '../../../@generic/component/button/button';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';

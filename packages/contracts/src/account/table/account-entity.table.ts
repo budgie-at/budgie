@@ -4,10 +4,10 @@ import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
+import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
-import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
 
 export const AccountEntityTable = sqliteTable(
     'accounts',
@@ -32,6 +32,9 @@ export const AccountEntityTable = sqliteTable(
             .notNull()
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         externalId: text('external_id'),
+        contactId: text('contact_id'),
+        returnAt: int('return_at', { mode: 'timestamp' }),
+        amountToReturn: int('amount_to_return', { mode: 'number' }).default(0).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()

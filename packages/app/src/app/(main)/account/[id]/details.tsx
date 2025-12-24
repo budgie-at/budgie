@@ -6,11 +6,11 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../../@generic/components/circle-icon/circle-icon';
-import { EmptyScreen } from '../../../../@generic/components/empty-screen/empty-screen';
-import { HapticPressable } from '../../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Page } from '../../../../@generic/components/page/page';
-import { PageHeader } from '../../../../@generic/components/page-header/page-header';
+import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
+import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
+import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Page } from '../../../../@generic/component/page/page';
+import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../../@generic/constant/icons.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';

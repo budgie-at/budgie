@@ -4,12 +4,12 @@ import { Pressable, Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetScrollView } from '../../../@generic/components/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { Button } from '../../../@generic/components/button/button';
-import { Footer } from '../../../@generic/components/footer/footer';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
+import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
+import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
+import { Button } from '../../../@generic/component/button/button';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ImportColumnMapperOption } from '../import-column-mapper-option/import-column-mapper-option';

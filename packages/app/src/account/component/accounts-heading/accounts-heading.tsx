@@ -2,8 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 export const AccountsHeading = () => (

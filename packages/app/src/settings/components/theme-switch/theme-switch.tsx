@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ThemedSwitch } from '../../../@generic/components/themed-switch/themed-switch';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { SettingsCard } from '../settings-card/settings-card';
