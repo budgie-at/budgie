@@ -26,12 +26,11 @@ export const ProtectedMoney = (props: Props) => {
 
     const format = useFormatMoney(showCents ? 0 : decimalPlaces, currency);
 
-    // eslint-disable-next-line lingui/no-unlocalized-strings
-    const textClassName = cn('font-extralight text-primary', className);
-
     const shouldProtect = !isActive && isScreenshotProtectionEnabled;
 
     const formatted = shouldProtect ? protectedText : format(children);
 
-    return <Ticker hasAnimation={!shouldProtect} number={formatted} textClassName={textClassName} {...rest} />;
+    return (
+        <Ticker hasAnimation={!shouldProtect} number={formatted} textClassName={cn('font-extralight text-primary', className)} {...rest} />
+    );
 };

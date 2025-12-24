@@ -22,7 +22,7 @@ export const useScreenshotProtection = (): boolean => {
         };
 
         void setupScreenshotProtection();
-    }, [isScreenshotProtectionEnabled, status]);
+    }, [isScreenshotProtectionEnabled, requestPermission, status]);
 
     return isScreenshotProtectionEnabled;
 };
