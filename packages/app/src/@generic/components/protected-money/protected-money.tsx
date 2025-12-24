@@ -1,30 +1,34 @@
 import { CurrencyEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAppState } from '../../hooks/use-app-state.hook';
-import { FormattedMoney } from '../formatted-money/formatted-money';
+import { cn } from '../../utils/cn.util';
+import { Ticker } from '../ticker/ticker';
 
-interface Props extends Omit<ComponentProps<typeof FormattedMoney>, 'children'> {
+interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
     readonly children: number;
-    readonly currency: CurrencyEnum;
+    readonly className?: string;
     readonly decimalPlaces: number;
+    readonly currency: CurrencyEnum;
+    readonly protectedText?: string;
 }
 
-const PLACEHOLDER_AMOUNT = 999.99;
+export const ProtectedMoney = (props: Props) => {
+    const { children, className, decimalPlaces, currency, protectedText = '999.99', ...rest } = props;
 
-export const ProtectedMoney = ({ children, currency, decimalPlaces, ...rest }: Props) => {
-    const { settings } = useSettingsContext();
-    const { isScreenshotProtectionEnabled } = settings;
-    const { isBackground, isInactive } = useAppState();
+    const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
+    const showCents = useSetting('showCents');
 
-    const shouldProtect = isScreenshotProtectionEnabled && (isBackground || isInactive);
+    const { isActive } = useAppState();
 
-    const displayValue = shouldProtect ? PLACEHOLDER_AMOUNT : children;
+    const format = useFormatMoney(showCents ? 0 : decimalPlaces, currency);
 
-    return (
-        <FormattedMoney currency={currency} decimalPlaces={decimalPlaces} {...rest}>
-            {displayValue}
-        </FormattedMoney>
-    );
+    // eslint-disable-next-line lingui/no-unlocalized-strings
+    const textClassName = cn('font-extralight text-primary', className);
+
+    const formatted = isScreenshotProtectionEnabled && !isActive ? protectedText : format(children);
+
+    return <Ticker number={formatted} textClassName={textClassName} {...rest} />;
 };
