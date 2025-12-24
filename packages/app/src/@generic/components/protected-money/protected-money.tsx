@@ -1,4 +1,5 @@
 import { CurrencyEnum } from '@budgie/contracts';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import { ComponentProps } from 'react';
 
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
@@ -17,6 +18,7 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
 
 export const ProtectedMoney = (props: Props) => {
     const { children, className, decimalPlaces, currency, protectedText = '999.99', ...rest } = props;
+    usePreventScreenCapture();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -28,7 +30,8 @@ export const ProtectedMoney = (props: Props) => {
     // eslint-disable-next-line lingui/no-unlocalized-strings
     const textClassName = cn('font-extralight text-primary', className);
 
-    const formatted = isScreenshotProtectionEnabled && !isActive ? protectedText : format(children);
+    const shouldProtect = !isActive && isScreenshotProtectionEnabled;
+    const formatted = shouldProtect ? protectedText : format(children);
 
-    return <Ticker number={formatted} textClassName={textClassName} {...rest} />;
+    return <Ticker hasAnimation={!shouldProtect} number={formatted} textClassName={textClassName} {...rest} />;
 };

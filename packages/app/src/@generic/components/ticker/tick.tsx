@@ -10,26 +10,21 @@ interface Props {
     readonly textSize: number;
     readonly textStyle?: TextStyle;
     readonly index: number;
+    readonly duration?: number;
+    readonly delay?: number;
 }
 
 const NUM_FROM_ZERO_TO_NINE = [...Array(10).keys()];
-const DURATION = 500;
-const DELAY = 80;
 
-export const Tick = ({ num, textSize, textStyle, index }: Props) => {
+export const Tick = (props: Props) => {
+    const { num, textSize, textStyle, index, duration = 500, delay = 50 } = props;
+
     const previous = usePrevious(num);
     const translateY = useSharedValue(-textSize * (previous ?? 0));
 
     useEffect(() => {
-        translateY.set(
-            withDelay(
-                DELAY * index,
-                withTiming(-textSize * num, {
-                    duration: DURATION
-                })
-            )
-        );
-    }, [num, textSize, index, translateY]);
+        translateY.set(withDelay(delay * index, withTiming(-textSize * num, { duration })));
+    }, [num, textSize, index, translateY, delay, duration]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: translateY.value }]
