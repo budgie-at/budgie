@@ -74,11 +74,11 @@ msgstr "{tagsCount} etiquetas disponibles"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:39
+#: src/app/(main)/settings/index.tsx:48
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:112
 msgid "About"
 msgstr "Acerca de"
 
@@ -160,7 +160,7 @@ msgstr "IA"
 msgid "AI Suggestion"
 msgstr "Sugerencia de IA"
 
-#: src/app/(main)/settings/index.tsx:91
+#: src/app/(main)/settings/index.tsx:116
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -176,7 +176,7 @@ msgstr ""
 msgid "All Time"
 msgstr "Todo el tiempo"
 
-#: src/app/(main)/settings/index.tsx:40
+#: src/app/(main)/settings/index.tsx:49
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
@@ -194,7 +194,7 @@ msgstr "Cantidad"
 msgid "App Lock"
 msgstr "Bloqueo de aplicación"
 
-#: src/app/(main)/settings/index.tsx:82
+#: src/app/(main)/settings/index.tsx:102
 msgid "Appearance"
 msgstr "Apariencia"
 
@@ -219,7 +219,7 @@ msgid "Archive Account?"
 msgstr ""
 
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:75
+#: src/app/(main)/settings/index.tsx:95
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
@@ -255,7 +255,7 @@ msgstr "Autenticación biométrica"
 msgid "Browse"
 msgstr "Explorar"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:114
 msgid "BudgetAI"
 msgstr "PresupuestoIA"
 
@@ -406,7 +406,7 @@ msgstr "Crear un PIN"
 msgid "Create accounts"
 msgstr "Crear cuentas"
 
-#: src/app/(main)/settings/index.tsx:69
+#: src/app/(main)/settings/index.tsx:89
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -464,7 +464,7 @@ msgstr "Cripto"
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/account/component/account-balance/account-balance.tsx:20
+#: src/account/component/account-balance/account-balance.tsx:19
 msgid "Current Balance"
 msgstr "Saldo actual"
 
@@ -600,11 +600,11 @@ msgstr "Ingresa el nuevo PIN"
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos"
 
-#: src/app/(main)/pin.tsx:122
+#: src/app/(main)/pin.tsx:112
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Ingresa tu PIN de {PIN_LENGTH} dígitos para desbloquear"
 
-#: src/app/(main)/pin.tsx:121
+#: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
@@ -674,7 +674,7 @@ msgstr ""
 msgid "From Currency"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:70
 msgid "General"
 msgstr "General"
 
@@ -686,11 +686,11 @@ msgstr "Alemán"
 msgid "German (Germany)"
 msgstr "Alemán (Alemania)"
 
-#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:21
+#: src/app/(main)/settings/index.tsx:55
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr ""
 
-#: src/settings/components/cents-switch/cents-switch.tsx:20
+#: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
 msgstr "Ocultar centavos"
 
@@ -732,7 +732,7 @@ msgstr "Ingreso"
 msgid "Income by category"
 msgstr "Ingresos por categoría"
 
-#: src/app/(main)/pin.tsx:69
+#: src/app/(main)/pin.tsx:68
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
@@ -745,11 +745,11 @@ msgstr ""
 msgid "Italian (Italy)"
 msgstr "Italiano (Italia)"
 
-#: src/settings/components/language-selector/language-selector.tsx:36
+#: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Idioma"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:35
+#: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
 msgstr "Configuración regional"
 
@@ -757,11 +757,11 @@ msgstr "Configuración regional"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:81
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(main)/settings/index.tsx:68
+#: src/app/(main)/settings/index.tsx:88
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
@@ -907,7 +907,7 @@ msgstr "Ninguna seleccionada"
 msgid "Note (optional)"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
 msgstr "Organización"
 
@@ -919,7 +919,7 @@ msgstr "Exceso:"
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/app/(main)/pin.tsx:54
+#: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
 msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
@@ -951,7 +951,7 @@ msgstr ""
 msgid "Preview"
 msgstr "Vista previa"
 
-#: src/app/(main)/settings/index.tsx:36
+#: src/app/(main)/settings/index.tsx:45
 msgid "Privacy"
 msgstr "Privacidad"
 
@@ -963,11 +963,11 @@ msgstr "Vuelve a ingresar tu PIN para confirmar"
 msgid "Remaining:"
 msgstr "Restante:"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:74
+#: src/account/component/archived-account-card/archived-account-card.tsx:72
 msgid "Restore"
 msgstr "Restaurar"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:76
+#: src/account/component/archived-account-card/archived-account-card.tsx:74
 msgid "Restore Account?"
 msgstr "¿Restaurar cuenta?"
 
@@ -980,7 +980,7 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
-#: src/settings/components/screenshot-protection-switch/screenshot-protection-switch.tsx:20
+#: src/app/(main)/settings/index.tsx:54
 msgid "Screenshot Protection"
 msgstr ""
 
@@ -1020,7 +1020,7 @@ msgstr "Buscar etiquetas..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Protege tu aplicación con PIN y Face ID"
 
-#: src/app/(main)/settings/index.tsx:46
+#: src/app/(main)/settings/index.tsx:66
 msgid "Security"
 msgstr "Seguridad"
 
@@ -1090,11 +1090,11 @@ msgstr ""
 msgid "Selected {selectedTagsCount}"
 msgstr "Seleccionadas: {selectedTagsCount}"
 
-#: src/app/(main)/settings/index.tsx:33
+#: src/app/(main)/settings/index.tsx:42
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/settings/components/cents-switch/cents-switch.tsx:21
+#: src/app/(main)/settings/index.tsx:106
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
@@ -1230,7 +1230,7 @@ msgstr ""
 msgid "Today"
 msgstr "Hoy"
 
-#: src/@generic/components/total-balance/net-worth.tsx:16
+#: src/@generic/components/total-balance/net-worth.tsx:15
 msgid "Total Balance"
 msgstr "Saldo total"
 
@@ -1308,11 +1308,11 @@ msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
-#: src/app/(main)/settings/index.tsx:62
+#: src/app/(main)/settings/index.tsx:82
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(main)/settings/index.tsx:76
+#: src/app/(main)/settings/index.tsx:96
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 
