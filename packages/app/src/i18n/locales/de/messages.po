@@ -32,7 +32,7 @@ msgstr "{accountsCount} Konten"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr ""
+msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."
 
 #: src/app/(main)/settings/archived.tsx:35
 msgid "{archivedAccountsCount} account"
@@ -40,7 +40,7 @@ msgstr "{archivedAccountsCount} Konto"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
-msgstr ""
+msgstr "{availableCount} Spalten verfügbar"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -60,11 +60,11 @@ msgstr "{percentage}% der Einnahmen"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} imported, {errorCount} failed"
-msgstr ""
+msgstr "{successCount} importiert, {errorCount} fehlgeschlagen"
 
 #: src/app/(main)/settings/import.tsx:143
 msgid "{successCount} transactions imported"
-msgstr ""
+msgstr "{successCount} Transaktionen importiert"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
@@ -126,7 +126,7 @@ msgstr "Fügen Sie ein neues Tag hinzu, um Ihre Transaktionen zu organisieren"
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
 msgid "Add a note..."
-msgstr ""
+msgstr "Notiz hinzufügen..."
 
 #: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "Add Expense"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:85
 msgid "All columns have been assigned"
-msgstr ""
+msgstr "Alle Spalten wurden zugewiesen"
 
 #: src/@generic/constant/date-period.constant.ts:6
 msgid "All Time"
@@ -208,7 +208,7 @@ msgstr "Filter anwenden ({selected})"
 
 #: src/account/component/archive-account/archive-account.tsx:43
 msgid "Archive"
-msgstr ""
+msgstr "Archivieren"
 
 #: src/account/component/archive-account/archive-account.tsx:37
 msgid "Archive Account"
@@ -216,7 +216,7 @@ msgstr "Konto archivieren"
 
 #: src/account/component/archive-account/archive-account.tsx:46
 msgid "Archive Account?"
-msgstr ""
+msgstr "Konto archivieren?"
 
 #: src/app/(main)/settings/archived.tsx:37
 #: src/app/(main)/settings/index.tsx:95
@@ -229,7 +229,7 @@ msgstr "Sind Sie sicher?"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
-msgstr ""
+msgstr "Verfügbare Spalten"
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Balance"
@@ -307,7 +307,7 @@ msgstr "Girokonto"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:32
 msgid "Choose a preset to auto-fill column mappings"
-msgstr ""
+msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
 msgid "Choose a type to get started"
@@ -351,7 +351,7 @@ msgstr "Alle löschen"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Common Tags"
@@ -611,7 +611,7 @@ msgstr "Geben Sie Ihre PIN ein"
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
 msgid "Error"
-msgstr ""
+msgstr "Fehler"
 
 #: src/app/(main)/create-account/index.tsx:24
 msgid "Everyday transactions and spending"
@@ -627,7 +627,7 @@ msgstr "Ausgabe erstellt"
 
 #: src/app/(main)/settings/import.tsx:221
 msgid "External ID"
-msgstr ""
+msgstr "Externe ID"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:67
 msgid "Face ID"
@@ -648,7 +648,7 @@ msgstr "Füllen Sie die Kontodetails aus"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Fix Errors"
-msgstr ""
+msgstr "Fehler beheben"
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -664,15 +664,15 @@ msgstr "VON"
 
 #: src/app/(main)/settings/import.tsx:228
 msgid "From Account"
-msgstr ""
+msgstr "Von Konto"
 
 #: src/app/(main)/settings/import.tsx:242
 msgid "From Amount"
-msgstr ""
+msgstr "Von Betrag"
 
 #: src/app/(main)/settings/import.tsx:235
 msgid "From Currency"
-msgstr ""
+msgstr "Von Währung"
 
 #: src/app/(main)/settings/index.tsx:70
 msgid "General"
@@ -688,7 +688,7 @@ msgstr "Deutsch (Deutschland)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -701,27 +701,27 @@ msgstr "Symbol"
 
 #: src/app/(main)/settings/import.tsx:142
 msgid "Import Complete"
-msgstr ""
+msgstr "Import abgeschlossen"
 
 #: src/import/components/import-csv/import-csv.tsx:40
 msgid "Import CSV"
-msgstr ""
+msgstr "CSV importieren"
 
 #: src/app/(main)/settings/import.tsx:150
 msgid "Import Failed"
-msgstr ""
+msgstr "Import fehlgeschlagen"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:44
 msgid "Import from FinEye app with English columns"
-msgstr ""
+msgstr "Import aus FinEye-App mit englischen Spalten"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:38
 msgid "Import from SmartBudget2 app with Russian columns"
-msgstr ""
+msgstr "Import aus SmartBudget2-App mit russischen Spalten"
 
 #: src/import/components/import-csv/import-csv.tsx:41
 msgid "Import transactions from a CSV file"
-msgstr ""
+msgstr "Transaktionen aus einer CSV-Datei importieren"
 
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -739,7 +739,7 @@ msgstr "Falsche PIN"
 
 #: src/app/(main)/settings/import.tsx:256
 msgid "Is Planned"
-msgstr ""
+msgstr "Ist geplant"
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
@@ -767,11 +767,11 @@ msgstr "Tags verwalten"
 
 #: src/app/(main)/settings/import.tsx:165
 msgid "Map CSV Columns"
-msgstr ""
+msgstr "CSV-Spalten zuordnen"
 
 #: src/app/(main)/settings/import.tsx:166
 msgid "Match each field to a column from your CSV file"
-msgstr ""
+msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -905,7 +905,7 @@ msgstr "Nichts ausgewählt"
 
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
 msgid "Note (optional)"
-msgstr ""
+msgstr "Notiz (optional)"
 
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
@@ -944,7 +944,7 @@ msgstr "Portugiesisch (Portugal)"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:31
 msgid "Preset applied. Adjust columns below if needed."
-msgstr ""
+msgstr "Vorlage angewendet. Passen Sie die Spalten bei Bedarf unten an."
 
 #: src/category/components/category-preview/category-preview.tsx:17
 #: src/tag/components/tag-preview/tag-preview.tsx:13
@@ -982,7 +982,7 @@ msgstr "Sparkonto"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Screenshot-Schutz"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
@@ -1030,7 +1030,7 @@ msgstr "Sicherheit"
 #: src/app/(main)/settings/import.tsx:58
 #: src/app/(main)/settings/import.tsx:59
 msgid "Select a valid column"
-msgstr ""
+msgstr "Wählen Sie eine gültige Spalte"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:58
 #: src/account/component/account-selector/account-selector.tsx:40
@@ -1056,7 +1056,7 @@ msgstr "Kategorie auswählen"
 
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:39
 msgid "Select column..."
-msgstr ""
+msgstr "Spalte auswählen..."
 
 #: src/@generic/components/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1068,7 +1068,7 @@ msgstr "Datum auswählen"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Select Import Preset"
-msgstr ""
+msgstr "Import-Vorlage auswählen"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
@@ -1084,7 +1084,7 @@ msgstr "Tags auswählen"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
-msgstr ""
+msgstr "Ausgewählt"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:46
 msgid "Selected {selectedTagsCount}"
@@ -1136,7 +1136,7 @@ msgstr "Nach Kategorie aufteilen"
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Start Import"
-msgstr ""
+msgstr "Import starten"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
@@ -1189,7 +1189,7 @@ msgstr "Zum Auswählen tippen"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
-msgstr ""
+msgstr "Tippen zum Leeren"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1197,6 +1197,9 @@ msgid ""
 "\n"
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 msgstr ""
+"Dieses Konto wird aus Ihrer Hauptansicht ausgeblendet und nicht in den Gesamtsummen berücksichtigt.\n"
+"\n"
+" 💡 Sie können es jederzeit über Einstellungen → Archivierte Konten wiederherstellen"
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "This action cannot be undone."
@@ -1220,11 +1223,11 @@ msgstr "AN"
 
 #: src/app/(main)/settings/import.tsx:181
 msgid "To Account"
-msgstr ""
+msgstr "Auf Konto"
 
 #: src/app/(main)/settings/import.tsx:213
 msgid "To Currency"
-msgstr ""
+msgstr "In Währung"
 
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
