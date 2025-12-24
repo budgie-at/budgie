@@ -85,4 +85,6 @@ jobs:
 
       - name: Publish update
         working-directory: packages/app
-        run: eas update --channel production --auto --message "${{ github.ref_name }} - ${{ github.event.head_commit.message }}"
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          eas update --channel production --auto --message "${COMMIT_MSG}"
