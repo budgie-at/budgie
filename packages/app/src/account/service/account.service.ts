@@ -82,7 +82,7 @@ class AccountService {
         const isDebit = delta > 0;
         const absDelta = Math.abs(delta);
 
-        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date('01.01.1970') }, tx);
+        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
 
         const transaction = await transactionRepository.create(
             {
