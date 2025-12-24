@@ -688,7 +688,7 @@ msgstr "Deutsch (Deutschland)"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
-msgstr ""
+msgstr "Kontostände und Vermögen bei Screenshots ausblenden"
 
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
@@ -982,7 +982,7 @@ msgstr "Sparkonto"
 
 #: src/app/(main)/settings/index.tsx:58
 msgid "Screenshot Protection"
-msgstr ""
+msgstr "Screenshot-Schutz"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
