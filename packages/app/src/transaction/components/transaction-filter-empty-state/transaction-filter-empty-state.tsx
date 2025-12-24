@@ -2,8 +2,8 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Button } from '../../../@generic/component/button/button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {

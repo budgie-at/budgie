@@ -3,7 +3,7 @@ import { Link } from 'expo-router';
 import { Mic } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { useLlmContext } from '../../context/llm.context';
 
 export const AiChatButton = () => {

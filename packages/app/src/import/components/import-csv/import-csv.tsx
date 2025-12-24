@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 

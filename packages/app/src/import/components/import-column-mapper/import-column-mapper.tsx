@@ -4,8 +4,8 @@ import { Pressable, Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { Card } from '../../../@generic/component/card/card';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { cn } from '../../../@generic/utils/cn.util';

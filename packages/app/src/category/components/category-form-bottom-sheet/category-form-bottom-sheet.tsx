@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { FormBottomSheet } from '../../../@generic/components/form-bottom-sheet/form-bottom-sheet';
-import { FormBottomSheetTitleField } from '../../../@generic/components/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
+import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
+import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';

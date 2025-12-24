@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
-import { DatePickerBottomSheet } from '../../../@generic/components/date-picker-bottom-sheet/date-picker-bottom-sheet';
-import { DatePickerCard } from '../../../@generic/components/date-picker-card/date-picker-card';
+import { DatePickerBottomSheet } from '../../../@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet';
+import { DatePickerCard } from '../../../@generic/component/date-picker-card/date-picker-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 

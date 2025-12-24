@@ -21,7 +21,9 @@ export const useDebtAccountForm = (defaultValues: DebtAccountCreateInputInterfac
             icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.DEBT,
             currentBalance: 0,
-            instrumentId: 1,
+            instrumentId: 0,
+            returnAt: null,
+            accountId: 0,
             title: ''
         },
         values: defaultValues

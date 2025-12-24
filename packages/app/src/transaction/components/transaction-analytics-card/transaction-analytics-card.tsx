@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';

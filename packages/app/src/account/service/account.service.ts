@@ -2,6 +2,7 @@ import {
     AccountCreateEntityInterface,
     AccountEntityInterface,
     AccountUpdateEntityInterface,
+    DebtAccountCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -19,6 +20,8 @@ import {
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { transactionService } from '../../transaction/service/transaction.service';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 
 class AccountService {
     async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
@@ -32,6 +35,55 @@ class AccountService {
             if (!hasAnyAccount) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
             }
+
+            return account;
+        });
+    }
+
+    async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
+        return db.transaction(async tx => {
+            const account = await accountRepository.create(
+                {
+                    ...input,
+                    amountToReturn: convertToMicroUnits(input.amountToReturn),
+                    includeInNetWorth: false
+                },
+                tx
+            );
+
+            await this.adjustBalanceTo(account.id, account.instrumentId, input.amountToReturn ?? 0, tx);
+
+            await microPause();
+
+            await transactionService.createInternal({
+                title: '',
+                comment: '',
+                tagIds: [],
+                operatedAt: new Date(),
+                type: TransactionTypeEnum.TRANSFER,
+                externalId: null,
+                externalSource: null,
+                exchangeRate: 1,
+                amount: input.amountToReturn ?? 0,
+                fromAccountId: account.id,
+                toAccountId: input.accountId,
+                entries: [
+                    {
+                        categoryId: 1,
+                        accountId: input.accountId,
+                        amount: input.amountToReturn ?? 0,
+                        instrumentId: account.instrumentId,
+                        type: TransactionEntryTypeEnum.CREDIT
+                    },
+                    {
+                        categoryId: 1,
+                        accountId: account.id,
+                        amount: input.amountToReturn ?? 0,
+                        instrumentId: account.instrumentId,
+                        type: TransactionEntryTypeEnum.DEBIT
+                    },
+                ]
+            });
 
             return account;
         });
