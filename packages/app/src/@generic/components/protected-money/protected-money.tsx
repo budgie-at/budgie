@@ -27,7 +27,6 @@ export const ProtectedMoney = (props: Props) => {
     const format = useFormatMoney(showCents ? 0 : decimalPlaces, currency);
 
     const shouldProtect = !isActive && isScreenshotProtectionEnabled;
-
     const formatted = shouldProtect ? protectedText : format(children);
 
     return (
