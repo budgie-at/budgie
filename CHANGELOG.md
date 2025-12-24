@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.83.0](https://github.com/budgie-at/budgie/compare/v1.82.2...v1.83.0) (2025-12-24)
+
+### Bug Fixes
+
+- **ci:** resolve copy/paste detection failures by ignoring settings switches ([433bafa](https://github.com/budgie-at/budgie/commit/433bafa6c04a4ed5e6f2125c72fba37f4d736c89))
+- **contracts:** respecting setting for screenshot protection ([db1488b](https://github.com/budgie-at/budgie/commit/db1488b6ca0a5dcf06663bc0ca564a37e1e2bef5))
+- **contracts:** respecting setting for screenshot protection ([2f5beb1](https://github.com/budgie-at/budgie/commit/2f5beb12032145e7f400425f62bca6fdcf572900))
+- **contracts:** respecting setting for screenshot protection ([9745af0](https://github.com/budgie-at/budgie/commit/9745af0fe00a65a22565957d99a8ddf6bdbd8405))
+- **contracts:** respecting setting for screenshot protection ([d1db8bf](https://github.com/budgie-at/budgie/commit/d1db8bf8c0e83e865a2a99869bc73f276c3412c1))
+
+### Features
+
+- **app:** add screenshot protection for sensitive financial data ([422e31a](https://github.com/budgie-at/budgie/commit/422e31a54b95dc387a655d9c3030f86ebbc46221))
+
+### Performance Improvements
+
+- **contracts:** improve balance calculation query ([30be5a3](https://github.com/budgie-at/budgie/commit/30be5a3ba2c912b438803c3e8e91bf5391303b9c))
+- **contracts:** improve balance calculation query ([1486d7a](https://github.com/budgie-at/budgie/commit/1486d7a642bec6e8082b0e04f6e49fe52cd47d05))
+
 ## [1.82.2](https://github.com/budgie-at/budgie/compare/v1.82.1...v1.82.2) (2025-12-24)
 
 ### Bug Fixes
