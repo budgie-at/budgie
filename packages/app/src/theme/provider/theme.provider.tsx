@@ -2,7 +2,7 @@ import { ThemeEnum } from '@budgie/contracts';
 import { Appearance, Platform, StatusBar, View } from 'react-native';
 
 import { useSystemTheme } from '../../@generic/hooks/use-system-theme.hook';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { ThemeContext } from '../context/theme.context';
 import { ColorSchemaEnum } from '../enum/color-schema.enum';
@@ -14,12 +14,12 @@ interface Props {
 }
 
 export const ThemeProvider = ({ children }: Props) => {
-    const { settings } = useSettingsContext();
+    const theme = useSetting('theme');
     const systemScheme = useSystemTheme();
     const isSystemDark = systemScheme === 'dark';
 
-    const isManuallyDark = settings.theme === ThemeEnum.DARK;
-    const isSystemTheme = settings.theme === ThemeEnum.SYSTEM;
+    const isManuallyDark = theme === ThemeEnum.DARK;
+    const isSystemTheme = theme === ThemeEnum.SYSTEM;
 
     const shouldUseDarkTheme = isManuallyDark || (isSystemTheme && isSystemDark);
 
