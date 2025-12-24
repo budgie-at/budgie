@@ -67,6 +67,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -85,4 +87,6 @@ jobs:
 
       - name: Publish update
         working-directory: packages/app
-        run: eas update --channel production --auto
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          eas update --channel production --auto --message "${COMMIT_MSG}"
