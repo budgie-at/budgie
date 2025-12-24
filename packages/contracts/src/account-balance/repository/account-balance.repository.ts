@@ -96,7 +96,7 @@ export class AccountBalanceRepository {
             WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
             LIMIT 1`;
 
-        const transactionsSumSinceLastBalanceSql = sql`
+        const transactionsSumSinceLastBalanceSql = sql<number>`
             SELECT ${this.getTransactionsSumSql()}
             FROM ${TransactionEntryEntityTable}
             LEFT JOIN (
@@ -110,7 +110,7 @@ export class AccountBalanceRepository {
               AND ${TransactionEntryEntityTable.createdAt} > COALESCE(ab_max.last_balance_at, '1970-01-01')
         `;
 
-        return sql`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
+        return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
     }
 
     private getTransactionsSumSql() {
