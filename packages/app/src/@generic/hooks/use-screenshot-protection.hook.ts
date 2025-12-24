@@ -1,4 +1,4 @@
-import { allowScreenCaptureAsync, preventScreenCaptureAsync } from 'expo-screen-capture';
+import { PermissionStatus, allowScreenCaptureAsync, preventScreenCaptureAsync, requestPermissionsAsync } from 'expo-screen-capture';
 import { useEffect } from 'react';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -8,10 +8,14 @@ export const useScreenshotProtection = (): boolean => {
 
     useEffect(() => {
         const setupScreenshotProtection = async () => {
-            if (isScreenshotProtectionEnabled) {
-                await preventScreenCaptureAsync('setting');
-            } else {
-                await allowScreenCaptureAsync('setting');
+            const { status } = await requestPermissionsAsync();
+
+            if (status === PermissionStatus.GRANTED) {
+                if (isScreenshotProtectionEnabled) {
+                    await preventScreenCaptureAsync('setting');
+                } else {
+                    await allowScreenCaptureAsync('setting');
+                }
             }
         };
 
