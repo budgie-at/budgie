@@ -98,12 +98,9 @@ jobs:
 
       - name: Create preview
         id: create-preview
-        uses: expo/expo-github-action/preview@v8
-        env:
-          EAS_UPDATE_MESSAGE: "PR #${{ env.PR_NUMBER }} - ${{ env.PR_TITLE }}"
-        with:
-          command: eas update --channel development --message "$EAS_UPDATE_MESSAGE"
-          working-directory: packages/app
+        working-directory: packages/app
+        run: |
+          eas update --channel development --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
 
       - name: Build web app
         working-directory: packages/app
