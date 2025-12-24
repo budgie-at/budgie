@@ -59,30 +59,24 @@ export class AccountBalanceRepository {
 
     getByAccountId(accountId: number) {
         return this.db
-            .select({
-                balance: sql<number>`
-                COALESCE(${this.getAccountBalanceWithTransactionsSql()}, 0)
-            `
-            })
+            .select({ balance: this.getAccountBalanceWithTransactionsSql() })
             .from(AccountEntityTable)
             .where(eq(AccountEntityTable.id, accountId))
             .limit(1);
     }
 
     getNetWorth(defaultInstrumentId: number) {
+        const exchangeRateSql = sql`COALESCE(
+            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
+            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
+            1.0
+        )`;
+
         return this.db
             .select({
                 netWorth: sql<number>`
                 COALESCE(
-                    SUM(
-                        ${this.getAccountBalanceWithTransactionsSql()}
-                        *
-                        COALESCE(
-                            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
-                            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
-                            1.0
-                        )
-                    ),
+                    SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}),
                     0
                 )
             `
@@ -96,36 +90,27 @@ export class AccountBalanceRepository {
     }
 
     private getAccountBalanceWithTransactionsSql() {
-        return sql`${this.getLatestAccountBalanceSql()} + ${this.getTransactionsSinceLastBalanceSql()}`;
-    }
+        const latestAccountBalanceSql = sql<number>`
+            SELECT ${AccountBalanceEntityTable.amount}
+            FROM ${AccountBalanceEntityTable}
+            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+            LIMIT 1`;
 
-    private getLatestAccountBalanceSql() {
-        return sql`
-            COALESCE(
-                (
-                    SELECT ${AccountBalanceEntityTable.amount}
-                    FROM ${AccountBalanceEntityTable}
-                    WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
-                    LIMIT 1
-                ),
-                0
-            )
-    `;
-    }
+        const lastCalculatedBalanceSql = sql`
+            SELECT COALESCE(MAX(${AccountBalanceEntityTable.updatedAt}), '1970-01-01')
+            FROM ${AccountBalanceEntityTable}
+            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+        `;
 
-    private getTransactionsSinceLastBalanceSql() {
-        return sql`
-            COALESCE(
-                (
-                    SELECT ${this.getTransactionsSumSql()}
-                    FROM ${TransactionEntryEntityTable}
-                    WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
-                        AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-                        AND ${TransactionEntryEntityTable.createdAt} > ${this.getLastBalanceUpdatedAtSql()}
-                ),
-                0
-            )
-    `;
+        const transactionsSumSinceLastBalanceSql = sql`
+            SELECT ${this.getTransactionsSumSql()}
+            FROM ${TransactionEntryEntityTable}
+            WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
+              AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+              AND ${TransactionEntryEntityTable.createdAt} > (${lastCalculatedBalanceSql})
+        `;
+
+        return sql`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
     }
 
     private getTransactionsSumSql() {
@@ -140,16 +125,6 @@ export class AccountBalanceRepository {
                 END
             )
         `;
-    }
-
-    private getLastBalanceUpdatedAtSql() {
-        return sql`
-        (
-            SELECT COALESCE(MAX(${AccountBalanceEntityTable.updatedAt}), '1970-01-01')
-            FROM ${AccountBalanceEntityTable}
-            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
-        )
-    `;
     }
 
     private getDirectExchangeRateSql(defaultInstrumentId: number) {
