@@ -49,6 +49,7 @@
         "expo-local-authentication": "~17.0.8",
         "expo-localization": "~17.0.8",
         "expo-router": "~6.0.21",
+        "expo-screen-capture": "~8.0.9",
         "expo-secure-store": "~15.0.8",
         "expo-splash-screen": "~31.0.13",
         "expo-sqlite": "~16.0.10",
