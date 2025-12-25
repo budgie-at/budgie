@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1766081347212,
-      "tag": "0000_fluffy_golden_guardian",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1766697250370,
-      "tag": "0001_violet_iron_fist",
+      "when": 1766698325171,
+      "tag": "0000_nasty_warhawk",
       "breakpoints": true
     }
   ]
