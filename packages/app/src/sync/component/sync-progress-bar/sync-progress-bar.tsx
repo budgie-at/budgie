@@ -1,13 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { MONOBANK_LOGO } from '../../../../account/constant/monobank-logo.constant';
-import { Icon } from '../../../components/icon/icon';
-import { ICONS } from '../../../constant/icons.constant';
+import { Icon } from '../../../@generic/components/icon/icon';
+import { ICONS } from '../../../@generic/constant/icons.constant';
+import { MONOBANK_LOGO } from '../../../account/constant/monobank-logo.constant';
+import { useSyncContext } from '../../context/sync.context';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { SyncStepEnum } from '../../enum/sync-step.enum';
-import { useSyncContext } from '../../provider/sync.provider';
 
 const ANIMATION_DURATION = 300;
 const PROGRESS_ANIMATION_DURATION = 200;
@@ -92,19 +92,13 @@ export const SyncProgressBar = () => {
         }).start();
     }, [percentage]);
 
-    const heightStyle = useMemo(
-        () => ({
-            ...styles.container,
-            height: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, CARD_HEIGHT] }),
-            marginBottom: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, 16] })
-        }),
-        []
-    );
+    const heightStyle = {
+        ...styles.container,
+        height: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, CARD_HEIGHT] }),
+        marginBottom: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, 16] })
+    };
 
-    const widthStyle = useMemo(
-        () => ({ width: animatedProgress.current.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) }),
-        []
-    );
+    const widthStyle = { width: animatedProgress.current.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) };
 
     const handlePress = canDismiss ? resetSync : void 0;
 

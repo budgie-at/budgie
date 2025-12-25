@@ -17,13 +17,14 @@ import * as TaskManager from 'expo-task-manager';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { SyncStepEnum } from '../../@generic/sync/enum/sync-step.enum';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { SyncStepEnum } from '../../sync/enum/sync-step.enum';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
+import { SyncProgressCallbackType } from '../type/sync-progress-callback.type';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountService } from './account.service';
@@ -31,15 +32,6 @@ import { accountService } from './account.service';
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 const MONOBANK_BALANCE_DIVISOR = 100;
-
-interface SyncProgressDataInterface {
-    readonly step: SyncStepEnum;
-    readonly currentAccount?: number;
-    readonly totalAccounts?: number;
-    readonly currentBatch?: number;
-}
-
-type SyncProgressCallbackType = (data: SyncProgressDataInterface) => void;
 
 class AppMonobankSyncService {
     async openAuthPage(): Promise<void> {
