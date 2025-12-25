@@ -39,7 +39,6 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
 
     const handleAccountChange = (accountId: number) => {
         setValue(accountFieldName, accountId);
-        setValue('entries.0.accountId', accountId);
     };
 
     const renderAccountSelector = ({
@@ -80,7 +79,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name={accountFieldName} control={control} />
 
-                    <TransactionFormCategory setValue={setValue} control={control} variant={variant} />
+                    <TransactionFormCategory accountId={accountId ?? 0} setValue={setValue} control={control} variant={variant} />
 
                     <TransactionFormMetadataFields variant={variant} control={control} />
 

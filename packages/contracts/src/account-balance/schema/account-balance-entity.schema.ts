@@ -1,7 +1,7 @@
 import { createSelectSchema } from 'drizzle-zod';
 import { number } from 'zod';
 
-import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
+import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 export const AccountBalanceEntitySchema = createSelectSchema(AccountBalanceEntityTable, {

@@ -16,6 +16,7 @@ import {
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { accountService } from '../../account/service/account.service';
 
 class TransactionService {
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
@@ -37,6 +38,11 @@ class TransactionService {
                 throw new Error('Transfer must have exactly two entries');
             }
 
+            const [fromAccount, toAccount] = await Promise.all([
+                accountService.findByIdOrFail(fromEntry.accountId),
+                accountService.findByIdOrFail(toEntry.accountId)
+            ]);
+
             const fromAmount = convertToMicroUnits(fromEntry.amount);
             const toAmount = convertToMicroUnits(toEntry.amount);
 
@@ -46,30 +52,16 @@ class TransactionService {
                     externalId: null,
                     amount: fromAmount,
                     externalSource: null,
-                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
+                    exchangeRate: fromAccount.instrumentId === toAccount.instrumentId ? 1 : toAmount / fromAmount
                 },
                 tx
             );
 
-            await transactionEntryRepository.create(
-                {
-                    ...fromEntry,
-                    amount: fromAmount,
-                    transactionId: transaction.id,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    instrumentId: fromEntry.instrumentId
-                },
-                tx
-            );
-
-            await transactionEntryRepository.create(
-                {
-                    ...toEntry,
-                    amount: toAmount,
-                    transactionId: transaction.id,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    instrumentId: toEntry.instrumentId
-                },
+            await transactionEntryRepository.bulkCreate(
+                [
+                    { ...fromEntry, amount: fromAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT },
+                    { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT }
+                ],
                 tx
             );
 

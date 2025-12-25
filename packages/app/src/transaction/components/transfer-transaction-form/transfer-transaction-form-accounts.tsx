@@ -10,7 +10,8 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { syncTransferInstrumentAndCategory } from '../../utils/sync-transfer-instrument-and-category.util';
+import { getTransferCategoryId } from '../../utils/get-transfer-category-id.util';
+import { isDefined } from '@rnw-community/shared';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -30,7 +31,14 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
 
     useEffect(() => {
-        syncTransferInstrumentAndCategory(fromAccount, toAccount, setValue);
+        if (fromAccount && toAccount) {
+            const categoryId = getTransferCategoryId(fromAccount.type, toAccount.type);
+
+            if (isDefined(categoryId)) {
+                setValue('entries.0.categoryId', categoryId);
+                setValue('entries.1.categoryId', categoryId);
+            }
+        }
     }, [fromAccount, toAccount, setValue]);
 
     const handleAccountSelect = (entryIndex: 0 | 1, accountId: number) => {

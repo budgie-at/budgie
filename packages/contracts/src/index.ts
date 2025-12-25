@@ -1,12 +1,12 @@
-export { PRECISION } from './generic/constant/precision.constant';
+export { PRECISION } from './@generic/constant/precision.constant';
 
-export { ThemeEnum } from './generic/enum/theme.enum';
-export { CurrencyEnum } from './generic/enum/currency.enum';
-export { LanguageEnum } from './generic/enum/language.enum';
-export { DatePeriodEnum } from './generic/enum/date-period.enum';
-export { UserIconNameEnum } from './generic/enum/user-icon-name.enum';
+export { ThemeEnum } from './@generic/enum/theme.enum';
+export { CurrencyEnum } from './@generic/enum/currency.enum';
+export { LanguageEnum } from './@generic/enum/language.enum';
+export { DatePeriodEnum } from './@generic/enum/date-period.enum';
+export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
 
-export type { DateRangeInterface } from './generic/interface/date-range.interface';
+export type { DateRangeInterface } from './@generic/interface/date-range.interface';
 
 export { ACCOUNT_TITLE_MAX_LENGTH } from './account/constant/account-title-max-length.constant';
 export { ACCOUNT_TITLE_MIN_LENGTH } from './account/constant/account-title-min-length.constant';
