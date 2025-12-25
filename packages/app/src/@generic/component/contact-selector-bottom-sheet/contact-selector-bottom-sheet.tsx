@@ -1,4 +1,3 @@
-import { ContactWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -17,7 +16,7 @@ interface Props {
     readonly contacts: Contact[];
 }
 
-const keyExtractor = (item: ContactWithInstrumentEntityInterface) => item.id.toString();
+const keyExtractor = (item: Contact) => item.id;
 
 const flatListProps = {
     className: 'pt-3 px-xl',

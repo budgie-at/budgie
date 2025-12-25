@@ -1,13 +1,14 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
+import { Text, View } from 'react-native';
+
+import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { Text, View } from 'react-native';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Card } from '../../../@generic/component/card/card';
-import { cva } from 'class-variance-authority';
-import { ACCOUNT_DEBT_TYPE } from '../../constant/account-debt-type.constant';
 import { ACCOUNT_DEBT_TYPE_DESCRIPTION } from '../../constant/account-debt-type-description.constant';
 import { ACCOUNT_DEBT_TYPE_ICON } from '../../constant/account-debt-type-icon.constant';
+import { ACCOUNT_DEBT_TYPE } from '../../constant/account-debt-type.constant';
 
 interface Props {
     readonly isSelected: boolean;
