@@ -22,7 +22,6 @@ import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
-import { SyncProvider } from '../@generic/sync/provider/sync.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { monobankSyncService } from '../account/service/monobank-sync.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
@@ -32,6 +31,7 @@ import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sy
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { SyncProvider } from '../sync/provider/sync.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
