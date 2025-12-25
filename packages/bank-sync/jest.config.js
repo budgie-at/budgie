@@ -1,13 +1,16 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-    preset: 'ts-jest',
+    coverageReporters: ['text-summary', 'lcov'],
+    reporters: ['default'],
+    coveragePathIgnorePatterns: ['.mock.ts'],
+    displayName: 'banc-sync',
+    testRegex: './src/.*\\.spec\\.(ts?)$',
     testEnvironment: 'node',
-    roots: ['<rootDir>/src'],
-    testMatch: ['**/*.spec.ts'],
-    moduleFileExtensions: ['ts', 'js'],
-    transform: {
-        '^.+\\.tsx?$': ['babel-jest', { presets: ['@babel/preset-typescript'] }]
-    },
-    collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/**/index.ts']
+    coverageThreshold: {
+        global: {
+            statements: 69,
+            branches: 39,
+            lines: 66,
+            functions: 56
+        }
+    }
 };
-

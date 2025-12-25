@@ -20,7 +20,7 @@ import { monobankSyncService } from '../../service/monobank-sync.service';
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
 
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState(monobankSyncService.getToken());
     const [isLoading, setIsLoading] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -36,8 +36,8 @@ export const CreateMonobankAccount = () => {
         setIsLoading(true);
 
         try {
-            await monobankSyncService.saveToken(token.trim());
-            const { success, error, accounts, transactions } = await monobankSyncService.fullSync();
+            monobankSyncService.saveToken(token.trim());
+            const { success, error, accounts, transactions } = await monobankSyncService.sync();
 
             if (!success) {
                 Toast.show({ type: 'error', text1: t`Sync failed`, text2: error ?? t`Please check your token` });
