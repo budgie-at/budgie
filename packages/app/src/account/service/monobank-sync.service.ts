@@ -150,26 +150,20 @@ class MonobankSyncService {
         const accountsToCreate: AccountCreateEntityInterface[] = [];
 
         for (const bankAccount of bankAccounts) {
-            if (existingExternalIds.has(bankAccount.id)) {
-                continue;
-            }
-
             const instrument = this.findInstrumentByCode(instruments, bankAccount.currencyCode);
 
-            if (!isDefined(instrument)) {
-                continue;
+            if (isDefined(instrument) && existingExternalIds.has(bankAccount.id)) {
+                accountsToCreate.push({
+                    title: this.generateAccountTitle(bankAccount),
+                    type: AccountTypeEnum.BANK,
+                    nature: AccountNatureEnum.ASSET,
+                    icon: UserIconNameEnum.Landmark,
+                    instrumentId: instrument.id,
+                    currentBalance: bankAccount.balance / MONOBANK_BALANCE_DIVISOR,
+                    externalId: bankAccount.id,
+                    externalSource: ExternalSourceEnum.MONOBANK
+                });
             }
-
-            accountsToCreate.push({
-                title: this.generateAccountTitle(bankAccount),
-                type: AccountTypeEnum.BANK,
-                nature: AccountNatureEnum.ASSET,
-                icon: UserIconNameEnum.Landmark,
-                instrumentId: instrument.id,
-                currentBalance: bankAccount.balance / MONOBANK_BALANCE_DIVISOR,
-                externalId: bankAccount.id,
-                externalSource: ExternalSourceEnum.MONOBANK
-            });
         }
 
         if (!isNotEmptyArray(accountsToCreate)) {
@@ -191,27 +185,25 @@ class MonobankSyncService {
         const transactionsToCreate: TransactionCreateEntityInterface[] = [];
 
         for (const bankTx of bankTransactions) {
-            if (existingExternalIds.has(bankTx.id)) {
-                continue;
+            if (!existingExternalIds.has(bankTx.id)) {
+                const isExpense = bankTx.amount < 0;
+                const amount = convertToMicroUnits(Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR);
+
+                transactionsToCreate.push({
+                    title: bankTx.description,
+                    comment: bankTx.comment ?? '',
+                    type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
+                    amount,
+                    exchangeRate: 1,
+                    operatedAt: new Date(bankTx.time * 1000),
+                    externalId: bankTx.id,
+                    externalSource: ExternalSourceEnum.MONOBANK,
+                    fromAccountId: isExpense ? accountId : null,
+                    toAccountId: isExpense ? null : accountId,
+                    tagIds: [],
+                    entries: []
+                });
             }
-
-            const isExpense = bankTx.amount < 0;
-            const amount = convertToMicroUnits(Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR);
-
-            transactionsToCreate.push({
-                title: bankTx.description,
-                comment: bankTx.comment ?? '',
-                type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
-                amount,
-                exchangeRate: 1,
-                operatedAt: new Date(bankTx.time * 1000),
-                externalId: bankTx.id,
-                externalSource: ExternalSourceEnum.MONOBANK,
-                fromAccountId: isExpense ? accountId : null,
-                toAccountId: isExpense ? null : accountId,
-                tagIds: [],
-                entries: []
-            });
         }
 
         if (!isNotEmptyArray(transactionsToCreate)) {
