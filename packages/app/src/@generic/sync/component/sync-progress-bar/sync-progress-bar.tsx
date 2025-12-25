@@ -126,7 +126,7 @@ export const SyncProgressBar = () => {
                     <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>{renderIcon()}</View>
                     <View className="flex-1">
                         <Text className="text-foreground font-medium text-sm" numberOfLines={1}>
-                            {stepText}
+                            {stepText()}
                         </Text>
                         {totalAccounts > 0 && isSyncing && (
                             <Text className="text-muted-foreground text-xs mt-0.5">
