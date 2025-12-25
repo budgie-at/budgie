@@ -1,21 +1,22 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useMemo, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { MONOBANK_LOGO } from '../../../../account/constant/monobank-logo.constant';
 import { Icon } from '../../../components/icon/icon';
 import { ICONS } from '../../../constant/icons.constant';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { SyncStepEnum } from '../../enum/sync-step.enum';
 import { useSyncContext } from '../../provider/sync.provider';
 
-import type { SyncProgressInterface } from '../../interface/sync-progress.interface';
-
 const ANIMATION_DURATION = 300;
 const PROGRESS_ANIMATION_DURATION = 200;
 const CARD_HEIGHT = 88;
+const ICON_SIZE = 24;
 
 const styles = StyleSheet.create({
-    container: { overflow: 'hidden' }
+    container: { overflow: 'hidden' },
+    monobankIcon: { width: ICON_SIZE, height: ICON_SIZE, borderRadius: 6 }
 });
 
 const getStatusConfig = (status: SyncStatusEnum) => {
@@ -47,26 +48,11 @@ const getStatusConfig = (status: SyncStatusEnum) => {
     }
 };
 
-const getStepText = (progress: SyncProgressInterface, t: ReturnType<typeof useLingui>['t']): string => {
-    switch (progress.step) {
-        case SyncStepEnum.SYNCING_ACCOUNTS:
-            return t`Syncing accounts...`;
-        case SyncStepEnum.SYNCING_TRANSACTIONS: {
-            return t`Syncing Monobank...`;
-        }
-        case SyncStepEnum.COMPLETED:
-            return t`Sync completed successfully`;
-        case SyncStepEnum.ERROR:
-            return progress.error ?? t`Sync failed`;
-        default:
-            return '';
-    }
-};
-
 // eslint-disable-next-line max-statements
 export const SyncProgressBar = () => {
     const { t } = useLingui();
     const { progress, isSyncing, resetSync } = useSyncContext();
+
     const animatedHeight = useRef(new Animated.Value(0));
     const animatedProgress = useRef(new Animated.Value(0));
 
@@ -74,6 +60,21 @@ export const SyncProgressBar = () => {
     const isVisible = isSyncing || progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
     const canDismiss = progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
     const config = getStatusConfig(progress.status);
+
+    const stepText = useMemo(() => {
+        switch (progress.step) {
+            case SyncStepEnum.SYNCING_ACCOUNTS:
+                return t`Syncing accounts...`;
+            case SyncStepEnum.SYNCING_TRANSACTIONS:
+                return t`Syncing Monobank...`;
+            case SyncStepEnum.COMPLETED:
+                return t`Sync completed successfully`;
+            case SyncStepEnum.ERROR:
+                return progress.error ?? t`Sync failed`;
+            default:
+                return '';
+        }
+    }, [progress.step, progress.error, t]);
 
     useEffect(() => {
         Animated.timing(animatedHeight.current, {
@@ -108,17 +109,24 @@ export const SyncProgressBar = () => {
     const handlePress = canDismiss ? resetSync : void 0;
 
     const { totalAccounts, currentAccount } = progress;
+    const showMonobankIcon = isSyncing || progress.step === SyncStepEnum.SYNCING_TRANSACTIONS;
+
+    const renderIcon = () => {
+        if (showMonobankIcon) {
+            return <Image source={MONOBANK_LOGO} style={styles.monobankIcon} />;
+        }
+
+        return <Icon icon={config.icon} className={config.iconColor} size="sm" />;
+    };
 
     return (
         <Animated.View style={heightStyle}>
             <Pressable onPress={handlePress} className={`rounded-2xl border ${config.bgColor} ${config.borderColor} p-4`}>
                 <View className="flex-row items-center gap-3">
-                    <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>
-                        <Icon icon={config.icon} className={config.iconColor} size="sm" />
-                    </View>
+                    <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>{renderIcon()}</View>
                     <View className="flex-1">
                         <Text className="text-foreground font-medium text-sm" numberOfLines={1}>
-                            {getStepText(progress, t)}
+                            {stepText}
                         </Text>
                         {totalAccounts > 0 && isSyncing && (
                             <Text className="text-muted-foreground text-xs mt-0.5">
