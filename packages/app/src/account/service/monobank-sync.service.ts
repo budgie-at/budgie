@@ -164,7 +164,7 @@ class AppMonobankSyncService {
             if (isDefined(account) && !existingIds.has(bankTx.id)) {
                 const isExpense = bankTx.amount < 0;
                 const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
-                const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+                const entryType = isExpense ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
                 transactionsToCreate.push({
                     title: bankTx.description,
