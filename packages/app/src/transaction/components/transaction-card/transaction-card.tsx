@@ -10,9 +10,9 @@ import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
-import { TransactionAmount } from '../transaction-amount/transaction-amount';
 
 export interface TransactionCardPureProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
