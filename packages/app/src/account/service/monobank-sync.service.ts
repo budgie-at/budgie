@@ -12,6 +12,7 @@ import {
     AccountTypeEnum,
     ExternalSourceEnum,
     TransactionCreateEntityInterface,
+    TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
@@ -20,8 +21,8 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_AUTH_URL } from '../constant/monobank-auth-url.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 
@@ -34,6 +35,14 @@ interface MonobankSyncResultInterface {
     readonly accounts: AccountEntityInterface[];
     readonly transactions: TransactionEntityInterface[];
     readonly error?: string;
+}
+
+interface TransactionInputParamsInterface {
+    readonly bankTx: BankTransactionInterface;
+    readonly isExpense: boolean;
+    readonly amount: number;
+    readonly accountId: number;
+    readonly instrumentId: number;
 }
 
 const MONOBANK_BALANCE_DIVISOR = 100;
@@ -86,7 +95,7 @@ class MonobankSyncService {
         return { success: true, accounts, transactions: [] };
     }
 
-    async syncTransactions(accountId: number, externalAccountId: string): Promise<MonobankSyncResultInterface> {
+    async syncTransactions(accountId: number, externalAccountId: string, instrumentId: number): Promise<MonobankSyncResultInterface> {
         const client = await this.getClient();
 
         const now = Math.floor(Date.now() / 1000);
@@ -98,7 +107,7 @@ class MonobankSyncService {
             return { success: false, accounts: [], transactions: [], error: transactionsResult.error.message };
         }
 
-        const transactions = await this.createTransactionsFromBankTransactions(transactionsResult.data, accountId);
+        const transactions = await this.createTransactionsFromBankTransactions(transactionsResult.data, accountId, instrumentId);
 
         return { success: true, accounts: [], transactions };
     }
@@ -115,7 +124,7 @@ class MonobankSyncService {
         for (const account of accountsResult.accounts) {
             if (isDefined(account.externalId)) {
                 // eslint-disable-next-line no-await-in-loop
-                const txResult = await this.syncTransactions(account.id, account.externalId);
+                const txResult = await this.syncTransactions(account.id, account.externalId, account.instrumentId);
 
                 if (txResult.success) {
                     allTransactions.push(...txResult.transactions);
@@ -152,7 +161,7 @@ class MonobankSyncService {
         for (const bankAccount of bankAccounts) {
             const instrument = this.findInstrumentByCode(instruments, bankAccount.currencyCode);
 
-            if (isDefined(instrument) && existingExternalIds.has(bankAccount.id)) {
+            if (isDefined(instrument) && !existingExternalIds.has(bankAccount.id)) {
                 accountsToCreate.push({
                     title: this.generateAccountTitle(bankAccount),
                     type: AccountTypeEnum.BANK,
@@ -177,9 +186,10 @@ class MonobankSyncService {
 
     private async createTransactionsFromBankTransactions(
         bankTransactions: BankTransactionInterface[],
-        accountId: number
+        accountId: number,
+        instrumentId: number
     ): Promise<TransactionEntityInterface[]> {
-        const existingTransactions = await transactionRepository.findByExternalSource(ExternalSourceEnum.MONOBANK);
+        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
         const existingExternalIds = new Set(existingTransactions.map((tx: TransactionEntityInterface) => tx.externalId));
 
         const transactionsToCreate: TransactionCreateEntityInterface[] = [];
@@ -187,22 +197,9 @@ class MonobankSyncService {
         for (const bankTx of bankTransactions) {
             if (!existingExternalIds.has(bankTx.id)) {
                 const isExpense = bankTx.amount < 0;
-                const amount = convertToMicroUnits(Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR);
+                const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
 
-                transactionsToCreate.push({
-                    title: bankTx.description,
-                    comment: bankTx.comment ?? '',
-                    type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
-                    amount,
-                    exchangeRate: 1,
-                    operatedAt: new Date(bankTx.time * 1000),
-                    externalId: bankTx.id,
-                    externalSource: ExternalSourceEnum.MONOBANK,
-                    fromAccountId: isExpense ? accountId : null,
-                    toAccountId: isExpense ? null : accountId,
-                    tagIds: [],
-                    entries: []
-                });
+                transactionsToCreate.push(this.createTransactionInput({ bankTx, isExpense, amount, accountId, instrumentId }));
             }
         }
 
@@ -210,9 +207,37 @@ class MonobankSyncService {
             return existingTransactions;
         }
 
-        const createdTransactions = await transactionRepository.bulkCreate(transactionsToCreate);
+        const createdTransactions = await transactionService.bulkCreate(transactionsToCreate);
 
         return [...existingTransactions, ...createdTransactions];
+    }
+
+    private createTransactionInput(params: TransactionInputParamsInterface): TransactionCreateEntityInterface {
+        const { bankTx, isExpense, amount, accountId, instrumentId } = params;
+        const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+
+        return {
+            title: bankTx.description,
+            comment: bankTx.comment ?? '',
+            type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
+            amount,
+            exchangeRate: 1,
+            operatedAt: new Date(bankTx.time * 1000),
+            externalId: bankTx.id,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            fromAccountId: isExpense ? accountId : null,
+            toAccountId: isExpense ? null : accountId,
+            tagIds: [],
+            entries: [
+                {
+                    accountId,
+                    instrumentId,
+                    type: entryType,
+                    amount,
+                    categoryId: null
+                }
+            ]
+        };
     }
 
     private findInstrumentByCode(instruments: InstrumentEntityInterface[], currencyCode: string): InstrumentEntityInterface | undefined {
