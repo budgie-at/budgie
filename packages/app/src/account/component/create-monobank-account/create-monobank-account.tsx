@@ -37,10 +37,10 @@ export const CreateMonobankAccount = () => {
 
         try {
             await monobankSyncService.saveToken(token.trim());
-            const result = await monobankSyncService.fullSync();
+            const { success, error, accounts, transactions } = await monobankSyncService.fullSync();
 
-            if (!result.success) {
-                Toast.show({ type: 'error', text1: t`Sync failed`, text2: result.error ?? t`Please check your token` });
+            if (!success) {
+                Toast.show({ type: 'error', text1: t`Sync failed`, text2: error ?? t`Please check your token` });
 
                 return;
             }
@@ -48,7 +48,8 @@ export const CreateMonobankAccount = () => {
             Toast.show({
                 type: 'success',
                 text1: t`Sync completed`,
-                text2: t`${result.accounts.length} accounts, ${resulttransactions.length} transactions`
+                // eslint-disable-next-line lingui/no-expression-in-message
+                text2: t`${accounts.length} accounts, ${transactions.length} transactions`
             });
 
             void router.replace('/');
