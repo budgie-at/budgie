@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
 import { ICONS } from '../../../@generic/constant/icons.constant';
@@ -11,7 +13,6 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { getTransferCategoryId } from '../../utils/get-transfer-category-id.util';
-import { isDefined } from '@rnw-community/shared';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
