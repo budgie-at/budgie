@@ -1,17 +1,10 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import {
-    BankAccountInterface,
-    BankClientInfoInterface,
-    BankSyncResultInterface,
-    BankTransactionInterface,
-    MonobankClient
-} from '@budgie/bank-sync';
+/* eslint-disable lingui/no-unlocalized-strings,no-await-in-loop */
+import { BankAccountInterface, BankTransactionInterface, MONOBANK_AUTH_URL, MonobankSyncService } from '@budgie/bank-sync';
 import {
     AccountCreateEntityInterface,
     AccountNatureEnum,
     AccountTypeEnum,
     ExternalSourceEnum,
-    TransactionCreateEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -23,8 +16,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { MONOBANK_AUTH_URL } from '../constant/monobank-auth-url.constant';
-import { MAX_SYNC_PERIOD_SECONDS, MONOBANK_BALANCE_DIVISOR, SYNC_RATE_LIMIT_MS } from '../constant/monobank-sync.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
 
@@ -32,186 +23,76 @@ import { accountService } from './account.service';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
-class MonobankSyncService {
-    private client: MonobankClient | undefined;
+const MONOBANK_BALANCE_DIVISOR = 100;
 
+class AppMonobankSyncService {
     async openAuthPage(): Promise<void> {
         await Linking.openURL(MONOBANK_AUTH_URL);
     }
 
-    async saveToken(token: string): Promise<void> {
-        await SecureStore.setItemAsync(MONOBANK_TOKEN_KEY, token);
-        this.client = new MonobankClient(token);
+    saveToken(token: string): void {
+        SecureStore.setItem(MONOBANK_TOKEN_KEY, token);
     }
 
-    async getToken(): Promise<string | null> {
-        return SecureStore.getItemAsync(MONOBANK_TOKEN_KEY);
+    getToken(): string {
+        return SecureStore.getItem(MONOBANK_TOKEN_KEY) ?? '';
     }
 
     async deleteToken(): Promise<void> {
         await SecureStore.deleteItemAsync(MONOBANK_TOKEN_KEY);
-        this.client = void 0;
     }
 
     async hasToken(): Promise<boolean> {
-        return isDefined(await this.getToken());
+        return isDefined(this.getToken());
     }
 
-    async getClientInfo(): Promise<BankSyncResultInterface<BankClientInfoInterface>> {
-        return (await this.getClient()).getClientInfo();
-    }
+    async sync(): Promise<MonobankSyncResultInterface> {
+        const syncService = new MonobankSyncService(this.getToken());
 
-    async syncAccounts(): Promise<MonobankSyncResultInterface> {
-        const accountsResult = await (await this.getClient()).getAccounts();
-        if (!accountsResult.success) {
-            return { success: false, accounts: [], transactions: [], error: accountsResult.error.message };
-        }
+        const bankAccounts = await syncService.syncAccounts();
+        const accounts = await this.createAccounts(bankAccounts);
 
-        return { success: true, accounts: await this.createAccountsFromBankAccounts(accountsResult.data), transactions: [] };
-    }
+        const transactions: TransactionEntityInterface[] = [];
+        for (const account of bankAccounts) {
+            const latestTxTime = await this.getLatestTransactionTime(account.id);
 
-    async syncTransactions(accountId: number, externalAccountId: string, instrumentId: number): Promise<MonobankSyncResultInterface> {
-        const existingTransactions = await transactionService.findByAccountId(accountId);
-
-        return isNotEmptyArray(existingTransactions)
-            ? this.performIncrementalSync(accountId, externalAccountId, instrumentId, existingTransactions)
-            : this.performInitialSync(accountId, externalAccountId, instrumentId);
-    }
-
-    async fullSync(): Promise<MonobankSyncResultInterface> {
-        const accountsResult = await this.syncAccounts();
-        if (!accountsResult.success) {
-            return accountsResult;
-        }
-
-        const allTransactions: TransactionEntityInterface[] = [];
-        for (const account of accountsResult.accounts) {
-            if (isDefined(account.externalId)) {
-                // eslint-disable-next-line no-await-in-loop
-                const txResult = await this.syncTransactions(account.id, account.externalId, account.instrumentId);
-                if (txResult.success) {
-                    allTransactions.push(...txResult.transactions);
-                }
+            for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
+                transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
             }
         }
 
-        return { success: true, accounts: accountsResult.accounts, transactions: allTransactions };
+        return { success: true, accounts, transactions };
     }
 
-    private async performIncrementalSync(
-        accountId: number,
-        externalAccountId: string,
-        instrumentId: number,
-        existingTransactions: TransactionEntityInterface[]
-    ): Promise<MonobankSyncResultInterface> {
-        const { fromTime, toTime } = this.calculateSyncPeriod(existingTransactions);
-        const result = await (await this.getClient()).getTransactions(externalAccountId, fromTime, toTime);
-        if (!result.success) {
-            return { success: false, accounts: [], transactions: [], error: result.error.message };
+    private async getLatestTransactionTime(externalId: string): Promise<number | null> {
+        const account = await accountRepository.findByExternalId(externalId);
+        if (!isDefined(account)) {
+            return null;
         }
 
-        const existingIds = new Set(existingTransactions.map(tx => tx.externalId));
-        const newTx = await transactionService.bulkCreate(this.filterAndMapTransactions(result.data, existingIds, accountId, instrumentId));
+        const transactions = await transactionService.findByAccountId(account.id);
+        const nonAdjustmentTx = transactions.filter(tx => tx.type !== TransactionTypeEnum.ADJUSTMENT);
 
-        return { success: true, accounts: [], transactions: [...existingTransactions, ...newTx] };
-    }
-
-    // eslint-disable-next-line max-statements
-    private async performInitialSync(
-        accountId: number,
-        externalAccountId: string,
-        instrumentId: number
-    ): Promise<MonobankSyncResultInterface> {
-        const client = await this.getClient();
-        const allTx: TransactionCreateEntityInterface[] = [];
-        const existingIds = new Set<string | null>();
-        let toTime = Math.floor(Date.now() / 1000);
-        let hasMore = true;
-
-        while (hasMore) {
-            const fromTime = toTime - MAX_SYNC_PERIOD_SECONDS;
-            // eslint-disable-next-line no-await-in-loop
-            const result = await client.getTransactions(externalAccountId, fromTime, toTime);
-
-            if (!result.success) {
-                if (isNotEmptyArray(allTx)) {
-                    break;
-                }
-
-                return { success: false, accounts: [], transactions: [], error: result.error.message };
-            }
-
-            if (isNotEmptyArray(result.data)) {
-                allTx.push(...this.filterAndMapTransactions(result.data, existingIds, accountId, instrumentId));
-                result.data.forEach(tx => existingIds.add(tx.id));
-                toTime = fromTime;
-                // eslint-disable-next-line no-await-in-loop
-                await this.delay(SYNC_RATE_LIMIT_MS);
-            } else {
-                hasMore = false;
-            }
+        if (!isNotEmptyArray(nonAdjustmentTx)) {
+            return null;
         }
 
-        return { success: true, accounts: [], transactions: await transactionService.bulkCreate(allTx) };
+        const latestTx = nonAdjustmentTx.reduce((latest, tx) =>
+            new Date(tx.operatedAt).getTime() > new Date(latest.operatedAt).getTime() ? tx : latest
+        );
+
+        return Math.floor(new Date(latestTx.operatedAt).getTime() / 1000);
     }
 
-    private filterAndMapTransactions(
-        bankTx: BankTransactionInterface[],
-        existingIds: Set<string | null>,
-        accountId: number,
-        instrumentId: number
-    ): TransactionCreateEntityInterface[] {
-        return bankTx
-            .filter(tx => !existingIds.has(tx.id))
-            .map(tx => {
-                const isExpense = tx.amount < 0;
-                const amount = Math.abs(tx.amount) / MONOBANK_BALANCE_DIVISOR;
-                const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
-
-                return {
-                    title: tx.description,
-                    comment: tx.comment ?? '',
-                    type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
-                    amount,
-                    exchangeRate: 1,
-                    operatedAt: new Date(tx.time * 1000),
-                    externalId: tx.id,
-                    externalSource: ExternalSourceEnum.MONOBANK,
-                    fromAccountId: isExpense ? accountId : null,
-                    toAccountId: isExpense ? null : accountId,
-                    tagIds: [],
-                    entries: [{ accountId, instrumentId, type: entryType, amount, categoryId: null }]
-                };
-            });
-    }
-
-    private delay(ms: number): Promise<void> {
-        return new Promise(resolve => {
-            setTimeout(resolve, ms);
-        });
-    }
-
-    private async getClient(): Promise<MonobankClient> {
-        if (isDefined(this.client)) {
-            return this.client;
-        }
-        const token = await this.getToken();
-        if (!isDefined(token)) {
-            throw new Error('Monobank token not found');
-        }
-        this.client = new MonobankClient(token);
-
-        return this.client;
-    }
-
-    private async createAccountsFromBankAccounts(bankAccounts: BankAccountInterface[]): Promise<AccountEntityInterface[]> {
+    private async createAccounts(bankAccounts: BankAccountInterface[]): Promise<AccountEntityInterface[]> {
         const instruments = await instrumentRepository.getAll();
-        const existingAccounts = await accountRepository.findByExternalSource(ExternalSourceEnum.MONOBANK);
+        const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
         const existingIds = new Set(existingAccounts.map(acc => acc.externalId));
 
         const toCreate: AccountCreateEntityInterface[] = [];
         for (const bankAccount of bankAccounts) {
             const instrument = instruments.find(i => i.code === bankAccount.currencyCode);
+
             if (isDefined(instrument) && !existingIds.has(bankAccount.id)) {
                 toCreate.push({
                     title: this.generateAccountTitle(bankAccount),
@@ -225,6 +106,7 @@ class MonobankSyncService {
                 });
             }
         }
+
         if (!isNotEmptyArray(toCreate)) {
             return existingAccounts;
         }
@@ -232,17 +114,41 @@ class MonobankSyncService {
         return [...existingAccounts, ...Object.values(await accountService.bulkCreate(toCreate))];
     }
 
-    private calculateSyncPeriod(existingTransactions: TransactionEntityInterface[]): { fromTime: number; toTime: number } {
-        const now = Math.floor(Date.now() / 1000);
-        if (!isNotEmptyArray(existingTransactions)) {
-            return { fromTime: now - MAX_SYNC_PERIOD_SECONDS, toTime: now };
+    private async createTransactions(
+        bankTransactions: BankTransactionInterface[],
+        accounts: AccountEntityInterface[]
+    ): Promise<TransactionEntityInterface[]> {
+        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
+        const existingIds = new Set(existingTransactions.map(tx => tx.externalId));
+        const accountsMap = new Map(accounts.map(acc => [acc.externalId, acc]));
+
+        const transactionsToCreate = [];
+        for (const bankTx of bankTransactions) {
+            const account = accountsMap.get(bankTx.accountId);
+
+            if (isDefined(account) && !existingIds.has(bankTx.id)) {
+                const isExpense = bankTx.amount < 0;
+                const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
+                const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+
+                transactionsToCreate.push({
+                    title: bankTx.description,
+                    comment: bankTx.comment ?? '',
+                    type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
+                    amount,
+                    exchangeRate: 1,
+                    operatedAt: new Date(bankTx.time * 1000),
+                    externalId: bankTx.id,
+                    externalSource: ExternalSourceEnum.MONOBANK,
+                    fromAccountId: isExpense ? account.id : null,
+                    toAccountId: isExpense ? null : account.id,
+                    tagIds: [],
+                    entries: [{ accountId: account.id, instrumentId: account.instrumentId, type: entryType, amount, categoryId: null }]
+                });
+            }
         }
 
-        const latestTx = existingTransactions.reduce((latest, tx) =>
-            new Date(tx.operatedAt).getTime() > new Date(latest.operatedAt).getTime() ? tx : latest
-        );
-
-        return { fromTime: Math.floor(new Date(latestTx.operatedAt).getTime() / 1000), toTime: now };
+        return await transactionService.bulkCreate(transactionsToCreate);
     }
 
     private generateAccountTitle(bankAccount: BankAccountInterface): string {
@@ -255,4 +161,4 @@ class MonobankSyncService {
     }
 }
 
-export const monobankSyncService = new MonobankSyncService();
+export const monobankSyncService = new AppMonobankSyncService();

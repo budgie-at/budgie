@@ -1,3 +1,0 @@
-export const MONOBANK_BALANCE_DIVISOR = 100;
-export const MAX_SYNC_PERIOD_SECONDS = 2682000;
-export const SYNC_RATE_LIMIT_MS = 61000;
