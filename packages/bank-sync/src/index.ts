@@ -10,15 +10,22 @@ export type { BankProviderClientInterface } from './core/interface/bank-provider
 export type { BankSyncErrorInterface } from './core/interface/bank-sync-error.interface';
 export type { BankSyncResultInterface } from './core/interface/bank-sync-result.interface';
 export type { BankTransactionInterface } from './core/interface/bank-transaction.interface';
+export type { BankTokenStorageInterface } from './core/interface/bank-token-storage.interface';
+export type { BankSyncOptionsInterface } from './core/interface/bank-sync-options.interface';
+export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.interface';
 
 export { BankSyncError } from './core/error/bank-sync.error';
 export { BaseBankProviderClient } from './core/client/base-bank-provider.client';
+export { BaseBankSyncService } from './core/service/base-bank-sync.service';
 
 export { MonobankClient } from './monobank/client/monobank.client';
+export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MonobankAccountTypeEnum } from './monobank/enum/monobank-account-type.enum';
 export { MonobankCashbackTypeEnum } from './monobank/enum/monobank-cashback-type.enum';
 export { MONOBANK_API_BASE_URL } from './monobank/constant/monobank-api-base-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
+export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
+export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 
 export type { MonobankAccountApiInterface } from './monobank/interface/monobank-account-api.interface';
 export type { MonobankClientInfoApiInterface } from './monobank/interface/monobank-client-info-api.interface';
@@ -29,9 +36,6 @@ export { MonobankAccountApiSchema } from './monobank/schema/monobank-account-api
 export { MonobankClientInfoApiSchema } from './monobank/schema/monobank-client-info-api.schema';
 export { MonobankJarApiSchema } from './monobank/schema/monobank-jar-api.schema';
 export { MonobankTransactionApiSchema, MonobankTransactionListApiSchema } from './monobank/schema/monobank-transaction-api.schema';
-
-export { bankProviderFactory } from './factory/bank-provider.factory';
-export type { BankProviderFactoryInterface } from './factory/bank-provider-factory.interface';
 
 export { monobankCurrencyCodeMapper } from './monobank/mapper/monobank-currency-code.mapper';
 export { monobankAccountTypeMapper } from './monobank/mapper/monobank-account-type.mapper';
