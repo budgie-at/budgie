@@ -25,6 +25,7 @@ import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
 
+import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountService } from './account.service';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
@@ -94,9 +95,13 @@ class AppMonobankSyncService {
                     totalAccounts: bankAccounts.length,
                     currentBatch: batchCount
                 });
+
                 await microPause();
                 transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
+                await microPause();
             }
+
+            await accountBalanceIncrementalService.updateAllBalances(new Date(0));
         }
 
         return { success: true, accounts, transactions };
