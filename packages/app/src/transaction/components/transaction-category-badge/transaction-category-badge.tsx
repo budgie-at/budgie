@@ -1,7 +1,8 @@
 import {
+    TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
-    TransactionWithRelationsEntityInterface
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -17,7 +18,7 @@ interface Props {
 const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background';
 const textClassName = 'text-secondary-foreground/70 text-xxs font-medium';
 
-export const TransactionCategoryBadgePure = ({ transaction, categoryLabel }: Props) => {
+export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
@@ -49,7 +50,7 @@ export const TransactionCategoryBadgePure = ({ transaction, categoryLabel }: Pro
     }
 
     return (
-        <View className={'flex-row'}>
+        <View className="flex-row">
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>
