@@ -1,4 +1,4 @@
-import { AccountCreateEntityInterface, AccountNatureEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, LiabilityAccountCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -34,12 +34,14 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     const { control, handleSubmit, instrument } = useAccountForm({
         type,
+        order: 0,
         iban: '',
         title: '',
-        currentBalance: 0,
+        parentId: null,
+        targetBalance: 0,
         icon: DEFAULT_ICON,
+        includeInNetWorth: true,
         instrumentId: defaultInstrument.id,
-        nature: AccountNatureEnum.LIABILITY
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -48,7 +50,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         return <EmptyScreen />;
     }
 
-    const handleCreate = async (values: AccountCreateEntityInterface) => {
+    const handleCreate = async (values: LiabilityAccountCreateInputInterface) => {
         try {
             await accountService.create(values);
 

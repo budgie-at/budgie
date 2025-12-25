@@ -1,21 +1,18 @@
-import { ACCOUNT_TITLE_MAX_LENGTH, AccountCreateEntityInterface } from '@budgie/contracts';
+import { ACCOUNT_TITLE_MAX_LENGTH } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
 
-interface Props {
-    readonly control: Control<AccountCreateEntityInterface>;
+interface Props<T extends { title: string }> {
+    readonly control: Control<T>;
 }
 
-export const UpdateAccountTitleField = ({ control }: Props) => {
+export const UpdateAccountTitleField = <T extends { title: string }>({ control }: Props<T>) => {
     const { t } = useLingui();
 
-    const renderAccountTitle = ({
-        field: { value, onChange },
-        fieldState: { error, invalid }
-    }: UseControllerReturn<AccountCreateEntityInterface, 'title'>) => {
+    const renderAccountTitle = ({ field: { value, onChange }, fieldState: { error, invalid } }: UseControllerReturn<T, FieldPath<T>>) => {
         const status = invalid ? 'error' : 'default';
 
         return (
@@ -33,5 +30,5 @@ export const UpdateAccountTitleField = ({ control }: Props) => {
         );
     };
 
-    return <Controller control={control} name="title" render={renderAccountTitle} />;
+    return <Controller control={control} name={'title' as FieldPath<T>} render={renderAccountTitle} />;
 };

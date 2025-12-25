@@ -14,15 +14,18 @@ export const AccountEntityTable = sqliteTable(
     withBaseEntityTableColumns({
         icon: text({ enum: convertEnumToDrizzleEnum(UserIconNameEnum) })
             .$type<UserIconNameEnum>()
+            .default(UserIconNameEnum.Home)
             .notNull(),
         parentId: int('parent_id', { mode: 'number' }),
         order: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),
         type: text('type', { enum: convertEnumToDrizzleEnum(AccountTypeEnum) })
             .$type<AccountTypeEnum>()
+            .default(AccountTypeEnum.CASH)
             .notNull(),
         nature: text('nature', { enum: convertEnumToDrizzleEnum(AccountNatureEnum) })
             .$type<AccountNatureEnum>()
+            .default(AccountNatureEnum.LIABILITY)
             .notNull(),
         debtType: text('debt_type', { enum: convertEnumToDrizzleEnum(AccountDebtTypeEnum) })
             .$type<AccountDebtTypeEnum>()
@@ -33,8 +36,8 @@ export const AccountEntityTable = sqliteTable(
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         externalId: text('external_id'),
         contactId: text('contact_id'),
-        returnAt: int('return_at', { mode: 'timestamp' }),
-        amountToReturn: int('amount_to_return', { mode: 'number' }).default(0).notNull(),
+        deadline: int('deadline', { mode: 'timestamp' }),
+        targetBalance: int('target_balance', { mode: 'number' }).default(0).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()

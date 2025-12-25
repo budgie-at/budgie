@@ -1,8 +1,9 @@
 import {
-    AccountCreateEntityInterface,
+    AccountDebtTypeEnum,
     AccountEntityInterface,
-    AccountUpdateEntityInterface,
+    AccountNatureEnum,
     DebtAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -19,20 +20,27 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 
 class AccountService {
-    async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
+    async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const hasAnyAccount = await accountRepository.hasAnyAccount();
+            const [{ count }] = await accountRepository.count();
 
-            const account = await accountRepository.create(input, tx);
+            const account = await accountRepository.create(
+                {
+                    ...input,
+                    order: count + 1,
+                    nature: AccountNatureEnum.LIABILITY
+                },
+                tx
+            );
 
-            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+            await this.adjustBalanceTo(account.id, input.targetBalance, tx);
 
-            if (!hasAnyAccount) {
+            if (!isPositiveNumber(count)) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
             }
 
@@ -42,16 +50,28 @@ class AccountService {
 
     async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
+            const [{ count }] = await accountRepository.count();
+
             const account = await accountRepository.create(
                 {
                     ...input,
-                    amountToReturn: convertToMicroUnits(input.amountToReturn),
-                    includeInNetWorth: false
+                    parentId: null,
+                    order: count + 1,
+                    externalId: null,
+                    externalSource: null,
+                    includeInNetWorth: false,
+                    nature: AccountNatureEnum.LIABILITY,
+                    targetBalance: convertToMicroUnits(input.targetBalance)
                 },
                 tx
             );
 
-            await this.adjustBalanceTo(account.id, account.instrumentId, input.amountToReturn ?? 0, tx);
+            const isBorrow = input.debtType === AccountDebtTypeEnum.BORROW;
+
+            await this.adjustBalanceTo(account.id, account.instrumentId, 0, tx);
+
+            const fromAccountId = isBorrow ? account.id : input.accountId;
+            const toAccountId = isBorrow ? input.accountId : account.id;
 
             await microPause();
 
@@ -60,28 +80,28 @@ class AccountService {
                 comment: '',
                 tagIds: [],
                 operatedAt: new Date(),
-                type: TransactionTypeEnum.TRANSFER,
+                type: TransactionTypeEnum.DEBT,
                 externalId: null,
                 externalSource: null,
                 exchangeRate: 1,
-                amount: input.amountToReturn ?? 0,
-                fromAccountId: account.id,
-                toAccountId: input.accountId,
+                amount: input.targetBalance,
+                fromAccountId,
+                toAccountId,
                 entries: [
                     {
                         categoryId: 1,
-                        accountId: input.accountId,
-                        amount: input.amountToReturn ?? 0,
+                        accountId: toAccountId,
+                        amount: input.targetBalance,
                         instrumentId: account.instrumentId,
                         type: TransactionEntryTypeEnum.CREDIT
                     },
                     {
                         categoryId: 1,
-                        accountId: account.id,
-                        amount: input.amountToReturn ?? 0,
+                        accountId: fromAccountId,
+                        amount: input.targetBalance,
                         instrumentId: account.instrumentId,
                         type: TransactionEntryTypeEnum.DEBIT
-                    },
+                    }
                 ]
             });
 
@@ -89,18 +109,18 @@ class AccountService {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
+    async bulkCreate(inputs: LiabilityAccountCreateInputInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
         const result = await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
 
         return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
-    async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: Partial<LiabilityAccountCreateInputInterface>): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
             const account = await accountRepository.updateById(id, input, tx);
 
-            if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+            if (isNumber(input.targetBalance)) {
+                await this.adjustBalanceTo(account.id, input.targetBalance, tx);
             }
 
             return account;
@@ -174,11 +194,16 @@ class AccountService {
         );
     }
 
-    private async processBatch(batch: AccountCreateEntityInterface[]): Promise<AccountEntityInterface[]> {
+    private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {
         return await db.transaction(async tx => {
-            const accounts = await accountRepository.bulkCreate(batch, tx);
+            const [{ count }] = await accountRepository.count();
 
-            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
+            const accounts = await accountRepository.bulkCreate(
+                batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
+                tx
+            );
+
+            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].targetBalance, tx)));
 
             return accounts;
         });

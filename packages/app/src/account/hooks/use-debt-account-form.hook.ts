@@ -1,6 +1,5 @@
 import {
     AccountDebtTypeEnum,
-    AccountNatureEnum,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
     DebtAccountCreateInputSchema,
@@ -16,13 +15,13 @@ export const useDebtAccountForm = (defaultValues: DebtAccountCreateInputInterfac
         resolver: zodResolver(DebtAccountCreateInputSchema),
         mode: 'onSubmit',
         defaultValues: {
-            nature: AccountNatureEnum.LIABILITY,
             debtType: AccountDebtTypeEnum.LENT,
             icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.DEBT,
-            currentBalance: 0,
+            targetBalance: 0,
             instrumentId: 0,
-            returnAt: null,
+            contactId: null,
+            deadline: null,
             accountId: 0,
             title: ''
         },

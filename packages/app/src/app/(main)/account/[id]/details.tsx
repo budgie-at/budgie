@@ -1,4 +1,4 @@
-import { CurrencyEnum } from '@budgie/contracts';
+import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';
@@ -23,6 +23,7 @@ import { useAccountBalanceQuery } from '../../../../account/query/use-account-ba
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
+import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
@@ -73,8 +74,12 @@ export default function Account() {
             }
             contentClassName="px-0 flex-1"
         >
-            <View className="py-[30px]">
-                <AccountBalance currency={currency} balance={balance} />
+            <View className="pb-[30px]">
+                {type === AccountTypeEnum.DEBT ? (
+                    <DebtAccountBalance balance={balance} currency={currency} targetAmount={account.targetBalance} />
+                ) : (
+                    <AccountBalance currency={currency} balance={balance} />
+                )}
             </View>
 
             <TransactionList accountId={id} />

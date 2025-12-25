@@ -14,11 +14,11 @@ interface Props {
 export const AccountFormDateField = ({ control, variant }: Props) => {
     const { t } = useLingui();
 
-    const renderDateInput = ({ field: { value, onChange } }: UseControllerReturn<DebtAccountCreateInputInterface, 'returnAt'>) => (
+    const renderDateInput = ({ field: { value, onChange } }: UseControllerReturn<DebtAccountCreateInputInterface, 'deadline'>) => (
         <FormItem className="w-auto flex-1" label={t`Expected Return Date (Optional)`}>
             <AccountFormDatePicker variant={variant} date={value} onChange={onChange} />
         </FormItem>
     );
 
-    return <Controller render={renderDateInput} name='returnAt' control={control} />;
+    return <Controller render={renderDateInput} name='deadline' control={control} />;
 };

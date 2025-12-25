@@ -12,16 +12,6 @@ import type { AccountEntityInterface } from '../entity/account-entity.interface'
 export class AccountRepository {
     constructor(private db: DB) {}
 
-    async hasAnyAccount(): Promise<boolean> {
-        const result = await this.db
-            .select({ count: count() })
-            .from(AccountEntityTable)
-            .where(isNull(AccountEntityTable.deletedAt))
-            .limit(1);
-
-        return result[0].count > 0;
-    }
-
     async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
 
@@ -29,7 +19,7 @@ export class AccountRepository {
     }
 
     count() {
-        return this.db.select({ count: count() }).from(AccountEntityTable);
+        return this.db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {

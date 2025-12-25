@@ -1,56 +1,70 @@
 import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { DebtAccountCard } from './debt-account-card';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon' | 'type' | 'returnAt' | 'debtType' | 'amountToReturn'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'> {
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
 
-export const AccountCard = ({ icon, title, returnAt, type, amountToReturn, className, id, debtType, instrumentSymbol }: Props) => {
+const textVariant = cva('text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
+});
+
+export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol }: Props) => {
     const showCents = useSetting('showCents');
-    const { decimalPlaces } = useSettingsContext();
+    const { decimalPlaces, defaultCurrency } = useSettingsContext();
+    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, false);
+    const { formatCompactFullDate } = useFormatDate();
+
     const { balance } = useAccountBalanceQuery(id);
 
-    const format = useFormatDigits(showCents ? 0 : decimalPlaces);
+    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
-    const formattedBalance = format(convertFromMicroUnits(balance).toString());
+    const isDebtAccount = type === AccountTypeEnum.DEBT;
 
-    if (type === AccountTypeEnum.DEBT) {
-        return (
-            <DebtAccountCard
-                amountToReturn={amountToReturn}
-                id={id}
-                returnAt={returnAt}
-                title={title}
-                instrumentSymbol={instrumentSymbol}
-                debtType={debtType}
-                className={className}
-            />
-        );
-    }
+    const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
+
+    const mainAmount = isDebtAccount
+        ? formatMoney(targetBalance - balance)
+        : `${instrumentSymbol}${formatDigits(convertFromMicroUnits(balance).toString())}`;
 
     return (
         <Card onPress={navigateToAccount} className={cn('gap-3 active:scale-xs', className)}>
-            <View className="flex-row justify-between">
-                <CircleIcon border={false} icon={ICONS[icon]} variant="ghost" />
+            <View className="flex-row items-center justify-between">
+                <View className="flex-row items-center gap-x-lg">
+                    <CircleIcon icon={ICONS[icon]} variant={circleVariant} border={false} />
+
+                    {isDebtAccount && isDefined(deadline) ? (
+                        <View className="flex-row items-center gap-x-xs">
+                            <Icon icon={ICONS.Calendar} className="text-secondary-foreground" size={12} />
+                            <Text className="text-secondary-foreground text-xxs font-medium">{formatCompactFullDate(deadline)}</Text>
+                        </View>
+                    ) : null}
+                </View>
 
                 <HapticPressable className="rounded-full p-xs active:bg-secondary-background" onPress={navigateToEditAccount}>
                     <Icon className="text-primary" icon={ICONS.EllipsisVertical} size={14} />
@@ -62,10 +76,18 @@ export const AccountCard = ({ icon, title, returnAt, type, amountToReturn, class
                     {title}
                 </Text>
 
-                <ProtectedText className="text-primary font-semibold" placeholderText={`${instrumentSymbol}999.99`}>
-                    {instrumentSymbol}
-                    {formattedBalance}
-                </ProtectedText>
+                {isDebtAccount ? (
+                    <View className="flex-row items-center justify-between">
+                        <Text className="text-primary font-medium">{mainAmount}</Text>
+
+                        <View>
+                            <Text className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>{formatMoney(balance)}</Text>
+                            <Text className="text-secondary-foreground text-xxs font-medium text-right">{formatMoney(targetBalance)}</Text>
+                        </View>
+                    </View>
+                ) : (
+                    <Text className="text-primary font-medium">{mainAmount}</Text>
+                )}
             </View>
         </Card>
     );
