@@ -9,8 +9,10 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import * as BackgroundTask from 'expo-background-task';
 import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
+import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -18,7 +20,9 @@ import { accountRepository, instrumentRepository } from '../../@generic/drizzle/
 import { SyncStepEnum } from '../../@generic/sync/enum/sync-step.enum';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
+import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
+import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
 
 import { accountService } from './account.service';
@@ -55,6 +59,16 @@ class AppMonobankSyncService {
 
     async hasToken(): Promise<boolean> {
         return isDefined(this.getToken());
+    }
+
+    async registerBackgroundTask(): Promise<void> {
+        if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
+            return;
+        }
+
+        await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
+            minimumInterval: ONE_HOUR_IN_SECONDS
+        });
     }
 
     // eslint-disable-next-line max-statements
