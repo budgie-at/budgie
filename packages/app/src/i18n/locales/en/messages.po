@@ -44,6 +44,10 @@ msgstr "{archivedAccountsCount} account"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
+#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:133
+msgid "{currentAccount} of {totalAccounts} accounts"
+msgstr "{currentAccount} of {totalAccounts} accounts"
+
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
 msgstr "{formattedBalance} available"
@@ -229,6 +233,10 @@ msgstr "Archived Accounts"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
+#: src/app/(main)/create-account/index.tsx:41
+msgid "Auto-sync accounts and transactions from Monobank"
+msgstr "Auto-sync accounts and transactions from Monobank"
+
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
 msgstr "Available Columns"
@@ -244,6 +252,10 @@ msgstr "Balance Adjustment"
 #: src/account/constant/account-type.constant.ts:6
 msgid "Bank"
 msgstr "Bank"
+
+#: src/app/(main)/create-account/index.tsx:38
+msgid "Bank Sync"
+msgstr "Bank Sync"
 
 #: src/@generic/components/currency-selector/currency-selector.tsx:61
 msgid "Base currency"
@@ -303,7 +315,7 @@ msgid "Change PIN"
 msgstr "Change PIN"
 
 #: src/account/component/create-bank-account/create-bank-account.tsx:9
-#: src/app/(main)/create-account/index.tsx:26
+#: src/app/(main)/create-account/index.tsx:28
 msgid "Checking Account"
 msgstr "Checking Account"
 
@@ -319,7 +331,7 @@ msgstr "Choose a type to get started"
 msgid "Choose Icon"
 msgstr "Choose Icon"
 
-#: src/app/(main)/create-account/index.tsx:19
+#: src/app/(main)/create-account/index.tsx:21
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
 
@@ -367,6 +379,14 @@ msgstr "Confirm"
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
 
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:49
+msgid "Connect & Sync"
+msgstr "Connect & Sync"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:56
+msgid "Connect Monobank"
+msgstr "Connect Monobank"
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
 msgstr "Continue"
@@ -384,7 +404,7 @@ msgid "Could not create tag"
 msgstr "Could not create tag"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:102
+#: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
@@ -548,7 +568,7 @@ msgstr "Edit Income"
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
-#: src/app/(main)/create-account/index.tsx:30
+#: src/app/(main)/create-account/index.tsx:32
 msgid "Emergency fund and savings goals"
 msgstr "Emergency fund and savings goals"
 
@@ -606,6 +626,10 @@ msgstr "Enter your {PIN_LENGTH}-digit PIN"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
 
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:86
+msgid "Enter your Monobank API token"
+msgstr "Enter your Monobank API token"
+
 #: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
@@ -615,7 +639,7 @@ msgstr "Enter your PIN"
 msgid "Error"
 msgstr "Error"
 
-#: src/app/(main)/create-account/index.tsx:24
+#: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
 
@@ -687,6 +711,10 @@ msgstr "German"
 #: src/i18n/constant/locales.constant.ts:70
 msgid "German (Germany)"
 msgstr "German (Germany)"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:74
+msgid "Get API Token"
+msgstr "Get API Token"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
@@ -783,6 +811,10 @@ msgstr "Money you earn"
 msgid "Money you spend"
 msgstr "Money you spend"
 
+#: src/app/(main)/create-account/index.tsx:43
+msgid "Monobank"
+msgstr "Monobank"
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
 msgstr "Move between accounts"
@@ -791,7 +823,7 @@ msgstr "Move between accounts"
 msgid "Move Money"
 msgstr "Move Money"
 
-#: src/app/(main)/create-account/index.tsx:19
+#: src/app/(main)/create-account/index.tsx:21
 msgid "New Account"
 msgstr "New Account"
 
@@ -909,6 +941,10 @@ msgstr "None selected"
 msgid "Note (optional)"
 msgstr "Note (optional)"
 
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:75
+msgid "Open Monobank to get your token"
+msgstr "Open Monobank to get your token"
+
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
 msgstr "Organization"
@@ -921,6 +957,10 @@ msgstr "Over:"
 msgid "Overview"
 msgstr "Overview"
 
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:82
+msgid "Paste your API token below:"
+msgstr "Paste your API token below:"
+
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -929,6 +969,10 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 #: src/auth/hook/use-pin-setup.hook.tsx:94
 msgid "PINs do not match"
 msgstr "PINs do not match"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:39
+msgid "Please enter your Monobank API token"
+msgstr "Please enter your Monobank API token"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
@@ -978,7 +1022,7 @@ msgid "Savings"
 msgstr "Savings"
 
 #: src/account/component/create-cash-account/create-cash-account.tsx:9
-#: src/app/(main)/create-account/index.tsx:32
+#: src/app/(main)/create-account/index.tsx:34
 msgid "Savings Account"
 msgstr "Savings Account"
 
@@ -1107,7 +1151,7 @@ msgid "Something went wrong"
 msgstr "Something went wrong"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:101
+#: src/transaction/hook/use-create-transaction-form.hook.ts:95
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Something went wrong."
@@ -1165,6 +1209,30 @@ msgstr "Swipe left"
 #: src/settings/components/theme-switch/theme-switch.tsx:16
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
+
+#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:71
+msgid "Sync completed successfully"
+msgstr "Sync completed successfully"
+
+#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:73
+msgid "Sync failed"
+msgstr "Sync failed"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:57
+msgid "Sync your Monobank accounts and transactions"
+msgstr "Sync your Monobank accounts and transactions"
+
+#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:67
+msgid "Syncing accounts..."
+msgstr "Syncing accounts..."
+
+#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:69
+msgid "Syncing Monobank..."
+msgstr "Syncing Monobank..."
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:49
+msgid "Syncing..."
+msgstr "Syncing..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1234,6 +1302,10 @@ msgstr "To Currency"
 #: src/@generic/constant/date-period.constant.ts:7
 msgid "Today"
 msgstr "Today"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:39
+msgid "Token required"
+msgstr "Token required"
 
 #: src/@generic/components/total-balance/net-worth.tsx:15
 msgid "Total Balance"
@@ -1332,3 +1404,7 @@ msgstr "Your goal is to return ONE best matching category, ONLY THE NAME FROM th
 #: src/app/(main)/ai.tsx:77
 msgid "Your message:"
 msgstr "Your message:"
+
+#: src/account/component/create-monobank-account/create-monobank-account.tsx:97
+msgid "Your token is stored securely on device."
+msgstr "Your token is stored securely on device."
