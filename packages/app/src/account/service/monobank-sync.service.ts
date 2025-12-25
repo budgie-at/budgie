@@ -95,6 +95,7 @@ class MonobankSyncService {
         return { success: true, accounts, transactions: [] };
     }
 
+    // eslint-disable-next-line max-statements
     async syncTransactions(accountId: number, externalAccountId: string, instrumentId: number): Promise<MonobankSyncResultInterface> {
         const client = await this.getClient();
 
@@ -102,14 +103,28 @@ class MonobankSyncService {
         const from = now - THIRTY_DAYS_IN_SECONDS;
 
         const transactionsResult = await client.getTransactions(externalAccountId, from, now);
-
         if (!transactionsResult.success) {
             return { success: false, accounts: [], transactions: [], error: transactionsResult.error.message };
         }
 
-        const transactions = await this.createTransactionsFromBankTransactions(transactionsResult.data, accountId, instrumentId);
+        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
+        const existingExternalIds = new Set(existingTransactions.map(tx => tx.externalId));
 
-        return { success: true, accounts: [], transactions };
+        const transactionsToCreate: TransactionCreateEntityInterface[] = [];
+        for (const bankTx of transactionsResult.data) {
+            if (!existingExternalIds.has(bankTx.id)) {
+                const isExpense = bankTx.amount < 0;
+                const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
+
+                transactionsToCreate.push(this.createTransactionInput({ bankTx, isExpense, amount, accountId, instrumentId }));
+            }
+        }
+
+        return {
+            success: true,
+            accounts: [],
+            transactions: [...existingTransactions, ...(await transactionService.bulkCreate(transactionsToCreate))]
+        };
     }
 
     async fullSync(): Promise<MonobankSyncResultInterface> {
@@ -182,34 +197,6 @@ class MonobankSyncService {
         const createdAccounts = await accountService.bulkCreate(accountsToCreate);
 
         return [...existingAccounts, ...Object.values(createdAccounts)];
-    }
-
-    private async createTransactionsFromBankTransactions(
-        bankTransactions: BankTransactionInterface[],
-        accountId: number,
-        instrumentId: number
-    ): Promise<TransactionEntityInterface[]> {
-        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
-        const existingExternalIds = new Set(existingTransactions.map((tx: TransactionEntityInterface) => tx.externalId));
-
-        const transactionsToCreate: TransactionCreateEntityInterface[] = [];
-
-        for (const bankTx of bankTransactions) {
-            if (!existingExternalIds.has(bankTx.id)) {
-                const isExpense = bankTx.amount < 0;
-                const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
-
-                transactionsToCreate.push(this.createTransactionInput({ bankTx, isExpense, amount, accountId, instrumentId }));
-            }
-        }
-
-        if (!isNotEmptyArray(transactionsToCreate)) {
-            return existingTransactions;
-        }
-
-        const createdTransactions = await transactionService.bulkCreate(transactionsToCreate);
-
-        return [...existingTransactions, ...createdTransactions];
     }
 
     private createTransactionInput(params: TransactionInputParamsInterface): TransactionCreateEntityInterface {
