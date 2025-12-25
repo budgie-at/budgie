@@ -25,6 +25,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     iban: schema => schema.nullable().default(null).describe('The IBAN of the account.'),
     instrumentId: schema => schema.positive().describe('The id of the instrument.'),
     parentId: schema => schema.positive().nullable().default(null).describe('The id of the parent account.'),
-    returnAt: schema => schema.nullable().default(null).describe('The date when the debt should be returned.'),
-    amountToReturn: schema => schema.positive().describe('The amount to return when the debt is returned.')
+    deadline: schema => schema.nullable().default(null).describe('The deadline of the account.'),
+    targetBalance: schema => schema.positive().describe('The target balance of the account.'),
+    contactId: schema => schema.nullable().default(null).describe('The id of the contact associated with the account.'),
 });

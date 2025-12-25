@@ -1,4 +1,4 @@
-import { AccountCreateEntityInterface, AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -21,8 +21,8 @@ import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
-import { ArchiveAccount } from '../archive-account/archive-account';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
+import { ArchiveAccount } from '../archive-account/archive-account';
 import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
 import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
 
@@ -31,9 +31,7 @@ interface Props {
 }
 
 const descriptionVariants = cva('uppercase', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 export const UpdateLiabilityAccount = ({ account }: Props) => {
@@ -45,14 +43,16 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         type: account.type,
         icon: account.icon,
         title: account.title,
-        nature: account.nature,
+        order: account.order,
+        parentId: account.parentId,
         instrumentId: account.instrumentId,
-        currentBalance: convertFromMicroUnits(balance)
+        includeInNetWorth: account.includeInNetWorth,
+        targetBalance: convertFromMicroUnits(balance),
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
 
-    const handleUpdate = async (values: AccountCreateEntityInterface) => {
+    const handleUpdate = async (values: LiabilityAccountCreateInputInterface) => {
         try {
             await accountService.updateById(account.id, values);
 
