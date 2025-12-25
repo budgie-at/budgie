@@ -123,7 +123,7 @@ class AppMonobankSyncService {
                     nature: AccountNatureEnum.ASSET,
                     icon: UserIconNameEnum.Landmark,
                     instrumentId: instrument.id,
-                    currentBalance: bankAccount.balance / MONOBANK_BALANCE_DIVISOR,
+                    currentBalance: 0,
                     externalId: bankAccount.id,
                     externalSource: ExternalSourceEnum.MONOBANK
                 });
