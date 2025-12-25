@@ -15,8 +15,8 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { useMonobankSync } from '../../../sync/hook/use-monobank-sync.hook';
 import { MONOBANK_LOGO } from '../../constant/monobank-logo.constant';
-import { useMonobankSync } from '../../hook/use-monobank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 
 const LOGO_SIZE = 32;

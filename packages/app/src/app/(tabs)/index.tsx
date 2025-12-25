@@ -10,12 +10,12 @@ import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { NetWorth } from '../../@generic/components/total-balance/net-worth';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { SyncProgressBar } from '../../@generic/sync/component/sync-progress-bar/sync-progress-bar';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
+import { SyncProgressBar } from '../../sync/component/sync-progress-bar/sync-progress-bar';
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery();
