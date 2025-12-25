@@ -1,7 +1,7 @@
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -10,7 +10,6 @@ import { Icon } from '../../@generic/components/icon/icon';
 import { Page } from '../../@generic/components/page/page';
 import { NetWorth } from '../../@generic/components/total-balance/net-worth';
 import { ICONS } from '../../@generic/constant/icons.constant';
-import { SyncProgressBar } from '../../@generic/sync/component/sync-progress-bar/sync-progress-bar';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
@@ -35,11 +34,6 @@ export default function HomePage() {
                 </HapticPressable>
 
                 <NetWorth />
-
-                <View className="px-4 mt-4">
-                    <SyncProgressBar />
-                </View>
-
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (
