@@ -1280,7 +1280,7 @@ msgstr "Ucraniano"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:43
 msgid "Unknown"
-msgstr ""
+msgstr "Desconocido"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
 msgid "Unknown Category"
