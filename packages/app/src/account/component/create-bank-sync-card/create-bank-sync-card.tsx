@@ -1,13 +1,13 @@
 import { cva } from 'class-variance-authority';
 import { Href, router } from 'expo-router';
-import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, StyleSheet, View } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { AccountCardContent } from '../account-card-content/account-card-content';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
 
@@ -62,12 +62,7 @@ export const CreateBankSyncCard = ({ title, description, route, icon, image, var
         <Card className="p-5xl items-center flex-row gap-x-3xl active:scale-xs" onPress={handleNavigate}>
             {renderIcon()}
 
-            <View className="flex-1">
-                <Text className="text-primary text-md font-medium mb-xs">{title}</Text>
-                <Text className="text-secondary-foreground text-sm">{description}</Text>
-            </View>
-
-            <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
+            <AccountCardContent title={title} description={description} />
         </Card>
     );
 };
