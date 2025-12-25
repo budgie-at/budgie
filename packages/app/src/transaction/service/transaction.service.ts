@@ -18,6 +18,10 @@ class TransactionService {
         return transactionRepository.findByExternalSource(externalSource);
     }
 
+    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
+        return transactionRepository.findByAccountId(accountId);
+    }
+
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input]);
 

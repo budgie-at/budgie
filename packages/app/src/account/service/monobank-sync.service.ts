@@ -46,7 +46,7 @@ interface TransactionInputParamsInterface {
 }
 
 const MONOBANK_BALANCE_DIVISOR = 100;
-const THIRTY_DAYS_IN_SECONDS = 2592000;
+const MAX_SYNC_PERIOD_SECONDS = 2682000;
 
 class MonobankSyncService {
     private client: MonobankClient | undefined;
@@ -99,15 +99,14 @@ class MonobankSyncService {
     async syncTransactions(accountId: number, externalAccountId: string, instrumentId: number): Promise<MonobankSyncResultInterface> {
         const client = await this.getClient();
 
-        const now = Math.floor(Date.now() / 1000);
-        const from = now - THIRTY_DAYS_IN_SECONDS;
+        const existingTransactions = await transactionService.findByAccountId(accountId);
+        const { fromTime, toTime } = this.calculateSyncPeriod(existingTransactions);
 
-        const transactionsResult = await client.getTransactions(externalAccountId, from, now);
+        const transactionsResult = await client.getTransactions(externalAccountId, fromTime, toTime);
         if (!transactionsResult.success) {
             return { success: false, accounts: [], transactions: [], error: transactionsResult.error.message };
         }
 
-        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
         const existingExternalIds = new Set(existingTransactions.map(tx => tx.externalId));
 
         const transactionsToCreate: TransactionCreateEntityInterface[] = [];
@@ -229,6 +228,25 @@ class MonobankSyncService {
 
     private findInstrumentByCode(instruments: InstrumentEntityInterface[], currencyCode: string): InstrumentEntityInterface | undefined {
         return instruments.find(inst => inst.code === currencyCode);
+    }
+
+    private calculateSyncPeriod(existingTransactions: TransactionEntityInterface[]): { fromTime: number; toTime: number } {
+        const now = Math.floor(Date.now() / 1000);
+
+        if (!isNotEmptyArray(existingTransactions)) {
+            return { fromTime: now - MAX_SYNC_PERIOD_SECONDS, toTime: now };
+        }
+
+        const latestTransaction = existingTransactions.reduce((latest, tx) => {
+            const txTime = new Date(tx.operatedAt).getTime();
+            const latestTime = new Date(latest.operatedAt).getTime();
+
+            return txTime > latestTime ? tx : latest;
+        });
+
+        const lastSyncTime = Math.floor(new Date(latestTransaction.operatedAt).getTime() / 1000);
+
+        return { fromTime: lastSyncTime, toTime: now };
     }
 
     private generateAccountTitle(bankAccount: BankAccountInterface): string {

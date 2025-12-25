@@ -152,6 +152,13 @@ export class TransactionRepository {
         });
     }
 
+    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
+        });
+    }
+
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
         return this.db
             .select({
