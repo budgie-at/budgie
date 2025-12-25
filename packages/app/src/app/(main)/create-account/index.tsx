@@ -8,6 +8,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
 import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
+import { MONOBANK_LOGO } from '../../../account/constant/monobank-logo.constant';
 
 export default function Index() {
     const { t } = useLingui();
@@ -38,7 +39,7 @@ export default function Index() {
 
                 <CreateBankSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
-                    icon="Landmark"
+                    image={MONOBANK_LOGO}
                     title={t`Monobank`}
                     route="/create-account/monobank"
                     variant="default"

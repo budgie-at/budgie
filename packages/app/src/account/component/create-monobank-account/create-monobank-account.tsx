@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
@@ -15,8 +15,15 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { MONOBANK_LOGO } from '../../constant/monobank-logo.constant';
 import { useMonobankSync } from '../../hook/use-monobank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+
+const LOGO_SIZE = 32;
+
+const styles = StyleSheet.create({
+    logo: { width: LOGO_SIZE, height: LOGO_SIZE, borderRadius: 8 }
+});
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
@@ -60,8 +67,8 @@ export const CreateMonobankAccount = () => {
                 <FormLayoutGroup>
                     <Card className="p-5xl" onPress={handleOpenMonobank}>
                         <View className="flex-row items-center gap-x-3xl">
-                            <View className="w-12 h-12 rounded-full bg-primary/10 items-center justify-center">
-                                <Icon icon={ICONS.ExternalLink} className="text-primary" />
+                            <View className="w-12 h-12 rounded-xl bg-black items-center justify-center">
+                                <Image source={MONOBANK_LOGO} style={styles.logo} />
                             </View>
                             <View className="flex-1">
                                 <Text className="text-primary text-md font-medium mb-xs">{t`Get API Token`}</Text>
