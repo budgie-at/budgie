@@ -1,7 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { useCallback } from 'react';
 
-import { SyncStepEnum } from '../../@generic/sync/enum/sync-step.enum';
 import { useSyncContext } from '../../@generic/sync/provider/sync.provider';
 import { monobankSyncService } from '../service/monobank-sync.service';
 
