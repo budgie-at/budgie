@@ -32,7 +32,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
     const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
 
     useEffect(() => {
-        if (fromAccount && toAccount) {
+        if (isDefined(fromAccount) && isDefined(toAccount)) {
             const categoryId = getTransferCategoryId(fromAccount.type, toAccount.type);
 
             if (isDefined(categoryId)) {
