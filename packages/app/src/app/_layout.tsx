@@ -61,7 +61,9 @@ export default function RootLayout() {
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
             void monobankSyncService.registerBackgroundTask();
-            void SplashScreen.hideAsync();
+
+            // HINT: We need to time for db to return data
+            setTimeout(() => void SplashScreen.hideAsync(), 200);
         }
     }, [success]);
 
