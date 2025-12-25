@@ -61,7 +61,7 @@ export const SyncProgressBar = () => {
     const canDismiss = progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
     const config = getStatusConfig(progress.status);
 
-    const stepText = useMemo(() => {
+    const stepText = () => {
         switch (progress.step) {
             case SyncStepEnum.SYNCING_ACCOUNTS:
                 return t`Syncing accounts...`;
@@ -74,7 +74,7 @@ export const SyncProgressBar = () => {
             default:
                 return '';
         }
-    }, [progress.step, progress.error, t]);
+    };
 
     useEffect(() => {
         Animated.timing(animatedHeight.current, {
