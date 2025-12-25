@@ -15,7 +15,7 @@ export const AccountBalance = ({ balance, currency }: Props) => {
 
     return (
         <View className="p-5xl border border-default-corner bg-default-background gap-y-md rounded-3xl">
-            <Text className="font-medium text-xs uppercase text-secondary-foreground">
+            <Text className="font-medium text-xs uppercase text-secondary-foreground text-center">
                 <Trans>Current Balance</Trans>
             </Text>
 

@@ -1,8 +1,7 @@
 import {
-    AccountCreateEntityInterface,
-    AccountCreateEntitySchema,
-    AccountNatureEnum,
     AccountTypeEnum,
+    LiabilityAccountCreateInputInterface,
+    LiabilityAccountCreateInputSchema,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,15 +9,14 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
-export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
+export const useAccountForm = (defaultValues: LiabilityAccountCreateInputInterface) => {
     const form = useForm({
-        resolver: zodResolver(AccountCreateEntitySchema),
+        resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
         defaultValues: {
-            nature: AccountNatureEnum.LIABILITY,
             icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.BANK,
-            currentBalance: 0,
+            targetBalance: 0,
             instrumentId: 1,
             title: ''
         },
