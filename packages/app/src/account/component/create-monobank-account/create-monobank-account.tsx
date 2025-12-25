@@ -42,7 +42,7 @@ export const CreateMonobankAccount = () => {
         }
 
         monobankSyncService.saveToken(token.trim());
-        await sync();
+        void sync();
         void router.replace('/');
     };
 
