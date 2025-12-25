@@ -44,7 +44,7 @@ msgstr "{archivedAccountsCount} account"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:133
+#: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:127
 msgid "{currentAccount} of {totalAccounts} accounts"
 msgstr "{currentAccount} of {totalAccounts} accounts"
 
@@ -1210,11 +1210,11 @@ msgstr "Swipe left"
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
 
-#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:71
+#: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:71
 msgid "Sync completed successfully"
 msgstr "Sync completed successfully"
 
-#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:73
+#: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:73
 msgid "Sync failed"
 msgstr "Sync failed"
 
@@ -1222,11 +1222,11 @@ msgstr "Sync failed"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
-#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:67
+#: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:67
 msgid "Syncing accounts..."
 msgstr "Syncing accounts..."
 
-#: src/@generic/sync/component/sync-progress-bar/sync-progress-bar.tsx:69
+#: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:69
 msgid "Syncing Monobank..."
 msgstr "Syncing Monobank..."
 
