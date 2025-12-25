@@ -1,5 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import {
+    ExternalSourceEnum,
     TransactionCreateEntityInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum
@@ -7,17 +8,16 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import {
-    db,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class TransactionService {
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
+        return transactionRepository.findByExternalSource(externalSource);
+    }
+
     async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input]);
 
