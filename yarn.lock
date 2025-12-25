@@ -1139,7 +1139,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
-    "@budgie/contracts": "npm:^1.83.0"
+    "@budgie/bank-sync": "workspace:*"
+    "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.15.4"
     "@formatjs/intl": "npm:^3.1.8"
     "@gorhom/bottom-sheet": "npm:^5.2.6"
@@ -1289,7 +1290,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/bank-sync@workspace:packages/bank-sync":
+"@budgie/bank-sync@workspace:*, @budgie/bank-sync@workspace:packages/bank-sync":
   version: 0.0.0-use.local
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
@@ -1298,7 +1299,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@npm:^1.83.0, @budgie/contracts@workspace:packages/contracts":
+"@budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
