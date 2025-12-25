@@ -125,11 +125,11 @@ export const SyncProgressBar = () => {
                 <View className="flex-row items-center gap-3">
                     <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>{renderIcon()}</View>
                     <View className="flex-1">
-                        <Text className="text-foreground font-medium text-sm" numberOfLines={1}>
+                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={1}>
                             {stepText()}
                         </Text>
                         {totalAccounts > 0 && isSyncing && (
-                            <Text className="text-muted-foreground text-xs mt-0.5">
+                            <Text className="text-primary text-muted-foreground text-xs mt-0.5">
                                 {t`${currentAccount} of ${totalAccounts} accounts`}
                             </Text>
                         )}
