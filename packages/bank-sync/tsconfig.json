@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.build-esm.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist/esm",
+        "declaration": true,
+        "declarationDir": "./dist/esm",
+        "composite": true,
+        "declarationMap": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["**/*.spec.ts", "**/*.test.ts", "dist", "node_modules"]
+}
