@@ -28,6 +28,7 @@ import {
     DollarSign,
     Dumbbell,
     EllipsisVertical,
+    ExternalLink,
     FileText,
     Fingerprint,
     Folder,
@@ -39,6 +40,7 @@ import {
     HashIcon,
     HeartPulse,
     Home,
+    Info,
     KeyRound,
     Landmark,
     Layers,
@@ -162,7 +164,9 @@ export const ICONS = {
     Shirt,
     CircleDot,
     Square,
-    AlertTriangle
+    AlertTriangle,
+    ExternalLink,
+    Info
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
