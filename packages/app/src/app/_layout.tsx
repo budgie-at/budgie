@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
+import '../account/task/monobank-sync.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
@@ -23,6 +24,7 @@ import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { SyncProvider } from '../@generic/sync/provider/sync.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { monobankSyncService } from '../account/service/monobank-sync.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
@@ -58,6 +60,7 @@ export default function RootLayout() {
             void exchangeRatesService.registerBackgroundTask();
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
+            void monobankSyncService.registerBackgroundTask();
             void SplashScreen.hideAsync();
         }
     }, [success]);
