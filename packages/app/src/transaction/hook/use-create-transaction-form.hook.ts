@@ -28,15 +28,9 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     amount?: number;
 }
 
-export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>({
-    type,
-    schema,
-    onSubmit,
-    fromAccountId,
-    toAccountId,
-    amount = 0,
-    categoryId = 0
-}: UseTransactionFormConfig<T>) => {
+export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>(props: UseTransactionFormConfig<T>) => {
+    const { type, schema, onSubmit, fromAccountId, toAccountId, amount = 0, categoryId = 0 } = props;
+
     const { t } = useLingui();
     const { defaultInstrument, defaultAccount } = useSettingsContext();
 
