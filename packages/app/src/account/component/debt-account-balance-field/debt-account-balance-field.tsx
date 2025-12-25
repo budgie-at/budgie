@@ -11,9 +11,9 @@ interface Props {
 }
 
 export const DebtAccountBalanceField = ({ control, instrumentSymbol, variant }: Props) => {
-    const renderInput = ({ field: { value, onChange } }: UseControllerReturn<DebtAccountCreateInputInterface, 'amountToReturn'>) => (
+    const renderInput = ({ field: { value, onChange } }: UseControllerReturn<DebtAccountCreateInputInterface, 'targetBalance'>) => (
         <FormAmountInput value={value} instrumentSymbol={instrumentSymbol} variant={variant} onChange={onChange} />
     );
 
-    return <Controller control={control} name="amountToReturn" render={renderInput} />;
+    return <Controller control={control} name="targetBalance" render={renderInput} />;
 };

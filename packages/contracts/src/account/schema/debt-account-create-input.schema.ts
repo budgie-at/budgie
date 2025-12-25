@@ -1,7 +1,24 @@
 import { number } from 'zod';
 
-import { AccountCreateEntitySchema } from './account-create-entity.schema';
+import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
 
-export const DebtAccountCreateInputSchema = AccountCreateEntitySchema.extend({
-    accountId: number().positive()
-});
+import { AccountEntitySchema } from './account-entity.schema';
+
+export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema)
+    .omit({
+        order: true,
+        nature: true,
+        parentId: true,
+        externalId: true,
+        targetBalance: true,
+        externalSource: true,
+        includeInNetWorth: true
+    })
+    .required({
+        contactId: true,
+        deadline: true
+    })
+    .extend({
+        accountId: number().positive(),
+        targetBalance: number().positive()
+    });

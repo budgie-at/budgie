@@ -30,8 +30,7 @@ export const CategorySelector = ({ variant, categoryId, onSelect, status }: Prop
             variant={variant}
             icon={icon}
             status={status}
-            emptyStateText={t`Select category`}
-            title={selectedCategory?.title}
+            title={selectedCategory?.title ?? t`Select category`}
             renderBottomSheet={renderBottomSheet}
         />
     );
