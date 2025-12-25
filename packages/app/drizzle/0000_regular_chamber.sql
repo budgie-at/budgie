@@ -213,3 +213,4 @@ VALUES
     (true, 'Clothing & Accessories',     'Shirt',                NULL, false),
     (true, 'Other',                      'CircleDot',            NULL, false),
     (true, 'Emergency Fund',             'AlertTriangle',        NULL, false);
+

@@ -4,6 +4,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
+import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -23,7 +24,11 @@ export class TransactionRepository {
     private transactionRelations = {
         [TransactionAssociationEnum.ENTRIES]: {
             with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: true,
+                [TransactionEntryAssociationEnum.ACCOUNT]: {
+                    with: {
+                        [AccountAssociationEnum.INSTRUMENT]: true,
+                    }
+                },
                 [TransactionEntryAssociationEnum.CATEGORY]: true
             }
         },

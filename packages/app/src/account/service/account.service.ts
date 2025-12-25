@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isDefined, isNumber } from '@rnw-community/shared';
+import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -90,7 +90,7 @@ class AccountService {
             return;
         }
 
-        const isDebit = delta > 0;
+        const isIncome = isPositiveNumber(delta);
         const absDelta = Math.abs(delta);
 
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
@@ -107,8 +107,8 @@ class AccountService {
                 exchangeRate: 1,
                 tagIds: [],
                 entries: [],
-                fromAccountId: isDebit ? null : accountId,
-                toAccountId: isDebit ? accountId : null
+                fromAccountId: isIncome ? null : accountId,
+                toAccountId: isIncome ? accountId : null
             },
             tx
         );
@@ -119,7 +119,7 @@ class AccountService {
                 transactionId: transaction.id,
                 categoryId: null,
                 amount: absDelta,
-                type: isDebit ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
+                type: isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT
             },
             tx
         );

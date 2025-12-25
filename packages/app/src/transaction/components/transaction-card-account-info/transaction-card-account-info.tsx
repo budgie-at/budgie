@@ -15,14 +15,14 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
 
     if (isDefined(fromAccount) && isDefined(toAccount)) {
         return (
-            <View className="flex-row items-center gap-x-sm mb-8">
+            <View className="flex-row items-center gap-x-sm">
                 <Icon icon={ICONS[fromAccount.icon]} className="text-secondary-foreground" size={12} />
-                <Text className="text-xs font-medium text-primary">{fromAccount.title}</Text>
+                <Text className="text-xs font-medium text-secondary-foreground">{fromAccount.title}</Text>
 
-                <Icon icon={ICONS.ArrowRightIcon} className="text-primary" size={12} />
+                <Icon icon={ICONS.ArrowRightIcon} className="text-secondary-foreground" size={12} />
 
                 <Icon icon={ICONS[toAccount.icon]} className="text-secondary-foreground" size={12} />
-                <Text className="text-xs font-medium text-primary">{toAccount.title}</Text>
+                <Text className="text-xs font-medium text-secondary-foreground">{toAccount.title}</Text>
             </View>
         );
     }
