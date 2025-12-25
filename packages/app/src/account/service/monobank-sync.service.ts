@@ -16,6 +16,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { SyncStepEnum } from '../../@generic/sync/enum/sync-step.enum';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
@@ -65,7 +66,6 @@ class AppMonobankSyncService {
         const accounts = await this.createAccounts(bankAccounts);
 
         const transactions: TransactionEntityInterface[] = [];
-        const totalAccounts = bankAccounts.length;
 
         for (let i = 0; i < bankAccounts.length; i += 1) {
             const account = bankAccounts[i];
@@ -77,9 +77,10 @@ class AppMonobankSyncService {
                 onProgress?.({
                     step: SyncStepEnum.SYNCING_TRANSACTIONS,
                     currentAccount: i + 1,
-                    totalAccounts,
+                    totalAccounts: bankAccounts.length,
                     currentBatch: batchCount
                 });
+                await microPause();
                 transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
             }
         }
