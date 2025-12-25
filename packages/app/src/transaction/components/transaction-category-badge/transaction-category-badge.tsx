@@ -1,7 +1,7 @@
 import {
+    TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
-    isPositiveAdjustmentTransaction,
-    TransactionWithRelationsEntityInterface
+    isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -49,7 +49,7 @@ export const TransactionCategoryBadgePure = ({ transaction, categoryLabel }: Pro
     }
 
     return (
-        <View className={'flex-row'}>
+        <View className="flex-row">
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>
