@@ -82,7 +82,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:52
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Рахунок"
 
@@ -128,7 +128,7 @@ msgstr "Додайте новий тег для організації ваши�
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "Add Expense"
 msgstr "Додати витрату"
 
@@ -136,7 +136,7 @@ msgstr "Додати витрату"
 msgid "Add Income"
 msgstr "Додати дохід"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:111
+#: src/transaction/components/transaction-split/transaction-split.tsx:113
 msgid "Add Split"
 msgstr "Додати поділ"
 
@@ -284,7 +284,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:189
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Категорія"
 
@@ -442,9 +442,9 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:58
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:70
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:95
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати транзакції"
 
@@ -658,7 +658,7 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
 msgid "FROM"
 msgstr "З"
 
@@ -793,7 +793,7 @@ msgstr "Переказати гроші"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:49
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "New Expense"
 msgstr "Нова витрата"
 
@@ -861,7 +861,7 @@ msgstr "Мов не знайдено"
 msgid "No locales found"
 msgstr "Регіональні налаштування не знайдено"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:85
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -891,7 +891,7 @@ msgstr "Ще немає тегів"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:85
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1050,7 +1050,7 @@ msgid "Select category"
 msgstr "Виберіть категорію"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:71
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:70
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1130,7 +1130,7 @@ msgstr "Витрати за категоріями"
 msgid "Spent"
 msgstr "Витрачено"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:84
+#: src/transaction/components/transaction-split/transaction-split.tsx:86
 msgid "Split by Category"
 msgstr "Поділ за категоріями"
 
@@ -1138,7 +1138,7 @@ msgstr "Поділ за категоріями"
 msgid "Start Import"
 msgstr "Почати імпорт"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:86
+#: src/transaction/components/transaction-list/transaction-list.tsx:88
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -1217,7 +1217,7 @@ msgstr "Цього тижня"
 msgid "This Year"
 msgstr "Цього року"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:99
 msgid "TO"
 msgstr "НА"
 
@@ -1261,7 +1261,7 @@ msgstr "Переказ"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:85
+#: src/transaction/components/transaction-list/transaction-list.tsx:87
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -1277,6 +1277,10 @@ msgstr "Тип ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Українська"
+
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:43
+msgid "Unknown"
+msgstr ""
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
 msgid "Unknown Category"
