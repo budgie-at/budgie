@@ -1,7 +1,7 @@
 import { createSelectSchema } from 'drizzle-zod';
 import { enum as zodEnum } from 'zod';
 
-import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
+import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
