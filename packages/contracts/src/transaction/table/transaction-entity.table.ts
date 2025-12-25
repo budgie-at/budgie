@@ -2,9 +2,9 @@ import { int, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { CURRENT_TIMESTAMP } from '../../generic/constant/current-timestamp.constant';
-import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
+import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export const TransactionEntityTable = sqliteTable(

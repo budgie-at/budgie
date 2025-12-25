@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionAssociationEnum, TransactionFilterInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ import { useGetTransactionsQuery } from '../../query/use-get-transactions.query'
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
-import { TransactionCardPure } from '../transaction-card/transaction-card';
+import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
@@ -33,7 +33,7 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
         </View>
     ) : (
-        <TransactionCardPure
+        <TransactionCard
             transaction={item.data.transaction}
             formattedAmount={item.data.formattedAmount}
             formattedDate={item.data.formattedDate}
@@ -52,7 +52,7 @@ export const TransactionList = ({ accountId }: Props) => {
     const { sections, loadMore } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
     const { intl } = useI18nContext();
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
+    const { decimalPlaces, defaultCurrency, defaultInstrument } = useSettingsContext();
     const { formatMonthAndDayWithTime } = useFormatDate();
     const { instrumentsMap } = useGetInstrumentsMapQuery();
 
@@ -62,7 +62,9 @@ export const TransactionList = ({ accountId }: Props) => {
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
         ...transactions.map(transaction => {
-            const [{ instrumentId }] = transaction[TransactionAssociationEnum.ENTRIES];
+            // TODO
+            const instrumentId = transaction.entries.at(0)?.account.instrumentId ?? defaultInstrument.id;
+
             const instrument = instrumentsMap.get(instrumentId);
             const currencyCode = instrument?.code ?? defaultCurrency;
             const formatTransactionMoney = createFormatMoney(intl, decimalPlaces, currencyCode, true);
