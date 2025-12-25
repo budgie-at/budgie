@@ -9,6 +9,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     db,
+    exchangeRateRepository,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository
@@ -30,6 +31,7 @@ class TransactionService {
     }
 
     async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+        // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
             const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
@@ -43,16 +45,22 @@ class TransactionService {
                 accountService.findByIdOrFail(toEntry.accountId)
             ]);
 
+            const rate = await exchangeRateRepository.findByBaseAndQuoteIds(
+                toAccount.instrumentId,
+                fromAccount.instrumentId,
+            )
+            const exchangeRate = rate?.rate ?? 1;
+
             const fromAmount = convertToMicroUnits(fromEntry.amount);
-            const toAmount = convertToMicroUnits(toEntry.amount);
+            const toAmount = convertToMicroUnits(fromAmount / exchangeRate);
 
             const transaction = await transactionRepository.create(
                 {
                     ...input,
+                    exchangeRate,
                     externalId: null,
                     amount: fromAmount,
                     externalSource: null,
-                    exchangeRate: fromAccount.instrumentId === toAccount.instrumentId ? 1 : toAmount / fromAmount
                 },
                 tx
             );

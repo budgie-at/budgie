@@ -72,12 +72,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              type: TransactionEntryTypeEnum.CREDIT
+                              type: TransactionEntryTypeEnum.DEBIT
                           }),
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              type: TransactionEntryTypeEnum.DEBIT
+                              type: TransactionEntryTypeEnum.CREDIT
                           })
                       ]
                     : [])
