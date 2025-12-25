@@ -9,8 +9,8 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { getTransactionType } from '../../utils/get-transaction-type.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
