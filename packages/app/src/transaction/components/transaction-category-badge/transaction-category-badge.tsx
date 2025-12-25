@@ -2,7 +2,6 @@ import {
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
-    TransactionTypeEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';

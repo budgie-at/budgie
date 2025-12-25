@@ -35,7 +35,6 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
     ) : (
         <TransactionCard
             transaction={item.data.transaction}
-            formattedAmount={item.data.formattedAmount}
             formattedDate={item.data.formattedDate}
             categoryLabel={item.data.categoryLabel}
         />

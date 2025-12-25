@@ -1,5 +1,4 @@
 import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -7,7 +6,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
@@ -18,12 +16,11 @@ import { TransactionAmount } from '../transaction-amount/transaction-amount';
 
 export interface TransactionCardPureProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly formattedAmount: string;
     readonly formattedDate: string;
     readonly categoryLabel: string;
 }
 
-export const TransactionCard = ({ transaction, formattedAmount, formattedDate, categoryLabel }: TransactionCardPureProps) => {
+export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardPureProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
