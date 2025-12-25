@@ -1,11 +1,12 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CreateAccountCard } from '../../../account/component/create-account-card/create-account-card';
+import { CreateBankSyncCard } from '../../../account/component/create-bank-sync-card/create-bank-sync-card';
 import { ACCOUNT_ICON } from '../../../account/constant/account-icon.constant';
 
 export default function Index() {
@@ -31,6 +32,16 @@ export default function Index() {
                     icon={ACCOUNT_ICON.CASH}
                     title={t`Savings Account`}
                     type={AccountTypeEnum.CASH}
+                />
+
+                <Text className="text-secondary-foreground text-sm px-md mt-xl">{t`Bank Sync`}</Text>
+
+                <CreateBankSyncCard
+                    description={t`Auto-sync accounts and transactions from Monobank`}
+                    icon="Landmark"
+                    title={t`Monobank`}
+                    route="/create-account/monobank"
+                    variant="default"
                 />
             </ScrollView>
         </Page>

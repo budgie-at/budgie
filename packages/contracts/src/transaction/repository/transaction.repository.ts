@@ -2,6 +2,7 @@ import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, o
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DateRangeInterface } from '../../generic/interface/date-range.interface';
@@ -143,6 +144,12 @@ export class TransactionRepository {
 
     async truncate(): Promise<void> {
         await this.db.delete(TransactionEntityTable);
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: eq(TransactionEntityTable.externalSource, externalSource)
+        });
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

@@ -5,6 +5,7 @@ import { AccountCreateEntityInterface } from '../entity/account-create-entity.in
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
+import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
@@ -96,6 +97,12 @@ export class AccountRepository {
         return this.db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<AccountEntityInterface[]> {
+        return await this.db.query.AccountEntityTable.findMany({
+            where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
         });
     }
 
