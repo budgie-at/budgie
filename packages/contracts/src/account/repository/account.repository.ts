@@ -1,11 +1,10 @@
-import { and, count, eq, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
-import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
@@ -100,9 +99,15 @@ export class AccountRepository {
         });
     }
 
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<AccountEntityInterface[]> {
+    async findByExternalId(externalId: string): Promise<AccountEntityInterface | undefined> {
+        return await this.db.query.AccountEntityTable.findFirst({
+            where: and(eq(AccountEntityTable.externalId, externalId), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
         return await this.db.query.AccountEntityTable.findMany({
-            where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
+            where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
         });
     }
 
