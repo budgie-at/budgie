@@ -1,4 +1,5 @@
 import {
+    AlertCircle,
     AlertTriangle,
     Archive,
     ArrowLeftRight,
@@ -16,6 +17,7 @@ import {
     Car,
     ChartNoAxesColumn,
     Check,
+    CheckCircle,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
@@ -60,6 +62,7 @@ import {
     Plus,
     Popcorn,
     Receipt,
+    RefreshCw,
     Repeat,
     RotateCcw,
     Search,
@@ -166,7 +169,10 @@ export const ICONS = {
     Square,
     AlertTriangle,
     ExternalLink,
-    Info
+    Info,
+    CheckCircle,
+    AlertCircle,
+    RefreshCw
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

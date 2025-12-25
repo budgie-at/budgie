@@ -21,6 +21,7 @@ import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
+import { SyncProvider } from '../@generic/sync/provider/sync.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
@@ -75,30 +76,32 @@ export default function RootLayout() {
                                 <BottomSheetsProvider>
                                     <AuthProvider>
                                         <AuthGuard>
-                                            <LlmProvider>
-                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                    <Stack.Screen name="(tabs)" />
+                                            <SyncProvider>
+                                                <LlmProvider>
+                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                        <Stack.Screen name="(tabs)" />
 
-                                                    <Stack.Screen name="(main)/pin" />
-                                                    <Stack.Screen name="(main)/create-account" />
+                                                        <Stack.Screen name="(main)/pin" />
+                                                        <Stack.Screen name="(main)/create-account" />
 
-                                                    <Stack.Screen name="(main)/account/[id]/update" />
-                                                    <Stack.Screen name="(main)/account/[id]/details" />
+                                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                                        <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                    <Stack.Screen name="(main)/transactions/[id]" />
+                                                        <Stack.Screen name="(main)/transactions/[id]" />
 
-                                                    <Stack.Screen name="(main)/settings/index" />
-                                                    <Stack.Screen name="(main)/settings/pin" />
-                                                    <Stack.Screen name="(main)/settings/categories" />
-                                                    <Stack.Screen name="(main)/settings/tags" />
-                                                    <Stack.Screen name="(main)/settings/archived" />
-                                                    <Stack.Screen name="(main)/settings/import" />
+                                                        <Stack.Screen name="(main)/settings/index" />
+                                                        <Stack.Screen name="(main)/settings/pin" />
+                                                        <Stack.Screen name="(main)/settings/categories" />
+                                                        <Stack.Screen name="(main)/settings/tags" />
+                                                        <Stack.Screen name="(main)/settings/archived" />
+                                                        <Stack.Screen name="(main)/settings/import" />
 
-                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
 
-                                                    <Toast />
-                                                </Stack>
-                                            </LlmProvider>
+                                                        <Toast />
+                                                    </Stack>
+                                                </LlmProvider>
+                                            </SyncProvider>
                                         </AuthGuard>
                                     </AuthProvider>
                                 </BottomSheetsProvider>

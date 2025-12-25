@@ -15,17 +15,18 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { useMonobankSync } from '../../hook/use-monobank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
+    const { sync, isSyncing } = useMonobankSync();
 
     const [token, setToken] = useState(monobankSyncService.getToken());
-    const [isLoading, setIsLoading] = useState(false);
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleOpenMonobank = async () => monobankSyncService.openAuthPage();
-    // eslint-disable-next-line max-statements
+
     const handleSync = async () => {
         if (token.trim().length === 0) {
             Toast.show({ type: 'error', text1: t`Token required`, text2: t`Please enter your Monobank API token` });
@@ -33,34 +34,12 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        setIsLoading(true);
-
-        try {
-            monobankSyncService.saveToken(token.trim());
-            const { success, error, accounts, transactions } = await monobankSyncService.sync();
-
-            if (!success) {
-                Toast.show({ type: 'error', text1: t`Sync failed`, text2: error ?? t`Please check your token` });
-
-                return;
-            }
-
-            Toast.show({
-                type: 'success',
-                text1: t`Sync completed`,
-                // eslint-disable-next-line lingui/no-expression-in-message
-                text2: t`${accounts.length} accounts, ${transactions.length} transactions`
-            });
-
-            void router.replace('/');
-        } catch {
-            Toast.show({ type: 'error', text1: t`Something went wrong`, text2: t`Please try again later` });
-        } finally {
-            setIsLoading(false);
-        }
+        monobankSyncService.saveToken(token.trim());
+        await sync();
+        void router.replace('/');
     };
 
-    const buttonContent = isLoading ? t`Syncing...` : t`Connect & Sync`;
+    const buttonContent = isSyncing ? t`Syncing...` : t`Connect & Sync`;
 
     return (
         <Page
@@ -73,7 +52,7 @@ export const CreateMonobankAccount = () => {
             }
             footer={
                 <Footer>
-                    <Button variant="default" onPress={handleSync} content={buttonContent} disabled={isLoading} />
+                    <Button variant="default" onPress={handleSync} content={buttonContent} disabled={isSyncing} />
                 </Footer>
             }
         >
