@@ -44,7 +44,7 @@ msgstr "{availableCount} Spalten verfügbar"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:127
 msgid "{currentAccount} of {totalAccounts} accounts"
-msgstr ""
+msgstr "{currentAccount} von {totalAccounts} Konten"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -233,7 +233,7 @@ msgstr "Sind Sie sicher?"
 
 #: src/app/(main)/create-account/index.tsx:41
 msgid "Auto-sync accounts and transactions from Monobank"
-msgstr ""
+msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -253,7 +253,7 @@ msgstr "Bank"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Bank Sync"
-msgstr ""
+msgstr "Bank-Synchronisation"
 
 #: src/@generic/components/currency-selector/currency-selector.tsx:61
 msgid "Base currency"
@@ -379,11 +379,11 @@ msgstr "PIN bestätigen"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:49
 msgid "Connect & Sync"
-msgstr ""
+msgstr "Verbinden & Synchronisieren"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:56
 msgid "Connect Monobank"
-msgstr ""
+msgstr "Monobank verbinden"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
@@ -626,7 +626,7 @@ msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:86
 msgid "Enter your Monobank API token"
-msgstr ""
+msgstr "Geben Sie Ihren Monobank API-Token ein"
 
 #: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
@@ -712,7 +712,7 @@ msgstr "Deutsch (Deutschland)"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:74
 msgid "Get API Token"
-msgstr ""
+msgstr "API-Token abrufen"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
@@ -811,7 +811,7 @@ msgstr "Geld, das Sie ausgeben"
 
 #: src/app/(main)/create-account/index.tsx:43
 msgid "Monobank"
-msgstr ""
+msgstr "Monobank"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
@@ -941,7 +941,7 @@ msgstr "Notiz (optional)"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:75
 msgid "Open Monobank to get your token"
-msgstr ""
+msgstr "Öffnen Sie Monobank, um Ihren Token zu erhalten"
 
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
@@ -957,7 +957,7 @@ msgstr "Übersicht"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Paste your API token below:"
-msgstr ""
+msgstr "Fügen Sie Ihren API-Token unten ein:"
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -970,7 +970,7 @@ msgstr "PINs stimmen nicht überein"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Please enter your Monobank API token"
-msgstr ""
+msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
@@ -1210,27 +1210,27 @@ msgstr "Zwischen hellem und dunklem Design wechseln"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:71
 msgid "Sync completed successfully"
-msgstr ""
+msgstr "Synchronisation erfolgreich abgeschlossen"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:73
 msgid "Sync failed"
-msgstr ""
+msgstr "Synchronisation fehlgeschlagen"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:57
 msgid "Sync your Monobank accounts and transactions"
-msgstr ""
+msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:67
 msgid "Syncing accounts..."
-msgstr ""
+msgstr "Konten werden synchronisiert..."
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:69
 msgid "Syncing Monobank..."
-msgstr ""
+msgstr "Monobank wird synchronisiert..."
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:49
 msgid "Syncing..."
-msgstr ""
+msgstr "Wird synchronisiert..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1303,7 +1303,7 @@ msgstr "Heute"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Token required"
-msgstr ""
+msgstr "Token erforderlich"
 
 #: src/@generic/components/total-balance/net-worth.tsx:15
 msgid "Total Balance"
@@ -1405,4 +1405,4 @@ msgstr "Ihre Nachricht:"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:97
 msgid "Your token is stored securely on device."
-msgstr ""
+msgstr "Ihr Token wird sicher auf dem Gerät gespeichert."
