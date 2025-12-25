@@ -44,7 +44,7 @@ msgstr "{availableCount} стовпців доступно"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:127
 msgid "{currentAccount} of {totalAccounts} accounts"
-msgstr ""
+msgstr "{currentAccount} з {totalAccounts} рахунків"
 
 #: src/account/component/account-selector/account-selector.tsx:28
 msgid "{formattedBalance} available"
@@ -233,7 +233,7 @@ msgstr "Ви впевнені?"
 
 #: src/app/(main)/create-account/index.tsx:41
 msgid "Auto-sync accounts and transactions from Monobank"
-msgstr ""
+msgstr "Автоматична синхронізація рахунків та транзакцій з Монобанку"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -253,7 +253,7 @@ msgstr "Банк"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Bank Sync"
-msgstr ""
+msgstr "Синхронізація з банком"
 
 #: src/@generic/components/currency-selector/currency-selector.tsx:61
 msgid "Base currency"
@@ -379,11 +379,11 @@ msgstr "Підтвердити PIN-код"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:49
 msgid "Connect & Sync"
-msgstr ""
+msgstr "Підключити та синхронізувати"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:56
 msgid "Connect Monobank"
-msgstr ""
+msgstr "Підключити Монобанк"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
@@ -626,7 +626,7 @@ msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для р
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:86
 msgid "Enter your Monobank API token"
-msgstr ""
+msgstr "Введіть ваш API-токен Монобанку"
 
 #: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
@@ -712,7 +712,7 @@ msgstr "Німецька (Німеччина)"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:74
 msgid "Get API Token"
-msgstr ""
+msgstr "Отримати API-токен"
 
 #: src/app/(main)/settings/index.tsx:59
 msgid "Hide account balances and net worth when taking screenshots"
@@ -811,7 +811,7 @@ msgstr "Гроші, які ви витрачаєте"
 
 #: src/app/(main)/create-account/index.tsx:43
 msgid "Monobank"
-msgstr ""
+msgstr "Монобанк"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Move between accounts"
@@ -941,7 +941,7 @@ msgstr "Нотатка (необов'язково)"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:75
 msgid "Open Monobank to get your token"
-msgstr ""
+msgstr "Відкрийте Монобанк, щоб отримати токен"
 
 #: src/app/(main)/settings/index.tsx:78
 msgid "Organization"
@@ -957,7 +957,7 @@ msgstr "Огляд"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Paste your API token below:"
-msgstr ""
+msgstr "Вставте ваш API-токен нижче:"
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -970,7 +970,7 @@ msgstr "PIN-коди не збігаються"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Please enter your Monobank API token"
-msgstr ""
+msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
@@ -1210,27 +1210,27 @@ msgstr "Перемикайтеся між світлою та темною те�
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:71
 msgid "Sync completed successfully"
-msgstr ""
+msgstr "Синхронізацію завершено успішно"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:73
 msgid "Sync failed"
-msgstr ""
+msgstr "Помилка синхронізації"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:57
 msgid "Sync your Monobank accounts and transactions"
-msgstr ""
+msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:67
 msgid "Syncing accounts..."
-msgstr ""
+msgstr "Синхронізація рахунків..."
 
 #: src/sync/component/sync-progress-bar/sync-progress-bar.tsx:69
 msgid "Syncing Monobank..."
-msgstr ""
+msgstr "Синхронізація Монобанку..."
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:49
 msgid "Syncing..."
-msgstr ""
+msgstr "Синхронізація..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1303,7 +1303,7 @@ msgstr "Сьогодні"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:39
 msgid "Token required"
-msgstr ""
+msgstr "Потрібен токен"
 
 #: src/@generic/components/total-balance/net-worth.tsx:15
 msgid "Total Balance"
@@ -1405,4 +1405,4 @@ msgstr "Ваше повідомлення:"
 
 #: src/account/component/create-monobank-account/create-monobank-account.tsx:97
 msgid "Your token is stored securely on device."
-msgstr ""
+msgstr "Ваш токен зберігається безпечно на пристрої."
