@@ -15,6 +15,7 @@ import * as SecureStore from 'expo-secure-store';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { SyncStepEnum } from '../../@generic/sync/enum/sync-step.enum';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
@@ -24,6 +25,15 @@ import { accountService } from './account.service';
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
 const MONOBANK_BALANCE_DIVISOR = 100;
+
+interface SyncProgressDataInterface {
+    readonly step: SyncStepEnum;
+    readonly currentAccount?: number;
+    readonly totalAccounts?: number;
+    readonly currentBatch?: number;
+}
+
+type SyncProgressCallbackType = (data: SyncProgressDataInterface) => void;
 
 class AppMonobankSyncService {
     async openAuthPage(): Promise<void> {
@@ -46,17 +56,30 @@ class AppMonobankSyncService {
         return isDefined(this.getToken());
     }
 
-    async sync(): Promise<MonobankSyncResultInterface> {
+    // eslint-disable-next-line max-statements
+    async sync(onProgress?: SyncProgressCallbackType): Promise<MonobankSyncResultInterface> {
         const syncService = new MonobankSyncService(this.getToken());
 
+        onProgress?.({ step: SyncStepEnum.SYNCING_ACCOUNTS });
         const bankAccounts = await syncService.syncAccounts();
         const accounts = await this.createAccounts(bankAccounts);
 
         const transactions: TransactionEntityInterface[] = [];
-        for (const account of bankAccounts) {
+        const totalAccounts = bankAccounts.length;
+
+        for (let i = 0; i < bankAccounts.length; i += 1) {
+            const account = bankAccounts[i];
             const latestTxTime = await this.getLatestTransactionTime(account.id);
+            let batchCount = 0;
 
             for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
+                batchCount += 1;
+                onProgress?.({
+                    step: SyncStepEnum.SYNCING_TRANSACTIONS,
+                    currentAccount: i + 1,
+                    totalAccounts,
+                    currentBatch: batchCount
+                });
                 transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
             }
         }
