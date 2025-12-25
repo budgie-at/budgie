@@ -1,0 +1,34 @@
+{
+    "name": "@budgie/bank-sync",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Bank synchronization package with multi-bank support",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/esm/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "default": "./dist/esm/index.js",
+            "react-native": "./dist/esm/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "main": "./dist/esm/index.js",
+    "types": "./dist/esm/index.d.ts",
+    "react-native": "./dist/esm/index.js",
+    "scripts": {
+        "build": "run -T tsc -p tsconfig.json",
+        "build:watch": "yarn build --watch",
+        "clear": "run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
+        "format": "run -T prettier --write src",
+        "lint": "run -T eslint --fix src",
+        "ts": "run -T tsc -p .",
+        "test": "run -T jest",
+        "test:watch": "run -T jest --watch",
+        "test:cov": "run -T jest --coverage"
+    },
+    "dependencies": {
+        "@rnw-community/shared": "^1.8.2",
+        "zod": "^4.1.12"
+    }
+}
