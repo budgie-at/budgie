@@ -9,6 +9,7 @@ import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-c
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
 export class AccountBalanceRepository {
     constructor(private db: DB) {}
