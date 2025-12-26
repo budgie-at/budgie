@@ -1,3 +1,4 @@
+/* eslint-disable id-length, react/no-multi-comp */
 import type { MDXComponents } from 'mdx/types';
 
 const ownComponents: MDXComponents = {
