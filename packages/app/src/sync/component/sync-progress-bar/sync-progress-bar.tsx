@@ -14,12 +14,10 @@ import { SyncStepEnum } from '../../enum/sync-step.enum';
 
 const ANIMATION_DURATION = 300;
 const PROGRESS_ANIMATION_DURATION = 200;
-const CARD_HEIGHT = 88;
-const ICON_SIZE = 24;
+const CARD_HEIGHT = 100;
 
 const styles = StyleSheet.create({
-    container: { overflow: 'hidden' },
-    monobankIcon: { width: ICON_SIZE, height: ICON_SIZE, borderRadius: 6 }
+    container: { overflow: 'hidden' }
 });
 
 const getStatusConfig = (status: SyncStatusEnum) => {
@@ -111,11 +109,9 @@ export const SyncProgressBar = () => {
         <Animated.View style={heightStyle}>
             <Pressable onPress={handlePress} className={`rounded-2xl border ${config.bgColor} ${config.borderColor} p-4`}>
                 <View className="flex-row items-center gap-3">
-                    <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>
-                        <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
-                    </View>
+                    <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
                     <View className="flex-1">
-                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={1}>
+                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
                             {stepText()}
                         </Text>
                         {totalAccounts > 0 && isSyncing && (

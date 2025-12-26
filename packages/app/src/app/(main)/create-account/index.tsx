@@ -42,7 +42,7 @@ export default function Index() {
                 <CreateBankSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
                     title={t`Monobank`}
-                    route="/create-account/monobank"
+                    route={`/create-account/${BankProviderEnum.MONOBANK}`}
                     bankProvider={BankProviderEnum.MONOBANK}
                 />
             </ScrollView>
