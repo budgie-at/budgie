@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { Control } from 'react-hook-form';
 
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
@@ -7,7 +7,7 @@ import { TransactionFormDateField } from '../transaction-form-date-field/transac
 import { TransactionFormTagsField } from '../transaction-form-tags-field/transaction-form-tags-field';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
 }
 

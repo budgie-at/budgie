@@ -99,7 +99,6 @@ CREATE TABLE `transactions` (
 	`external_id` text,
 	`operated_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`comment` text DEFAULT '' NOT NULL,
-	`amount` integer DEFAULT 0 NOT NULL,
 	`to_account_id` integer,
 	`from_account_id` integer,
 	`exchange_rate` real NOT NULL,

@@ -1,5 +1,5 @@
 import {
-    TransactionCreateEntityInterface,
+    TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
@@ -17,8 +17,8 @@ import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
 
-interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
-    onSubmit: (data: TransactionCreateEntityInterface) => Promise<TransactionEntityInterface>;
+interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
+    onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
     fromAccountId: number | null;
     toAccountId: number | null;
     type: TransactionTypeEnum;
@@ -27,14 +27,20 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     amount?: number;
 }
 
-export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>(props: UseTransactionFormConfig<T>) => {
-    const { type, schema, onSubmit, fromAccountId, toAccountId, amount = 0, categoryId = 0 } = props;
-
+export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
+    type,
+    schema,
+    onSubmit,
+    fromAccountId,
+    toAccountId,
+    amount = 0,
+    categoryId = 0
+}: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
     const form = useForm({
         mode: 'onSubmit',
-        resolver: zodResolver<TransactionCreateEntityInterface, unknown, TransactionCreateEntityInterface>(schema),
+        resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema),
         values: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,
@@ -79,7 +85,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
         })
     });
 
-    const handleSubmit: SubmitHandler<TransactionCreateEntityInterface> = async data => {
+    const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
             await onSubmit(data);
             router.back();

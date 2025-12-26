@@ -28,6 +28,7 @@
         "react-compiler-runtime",
         "babel-jest",
         "tsx",
+        "@jest/globals",
         "babel-plugin-inline-import",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",

@@ -100,7 +100,6 @@ export { TransactionEntityTable } from './transaction/table/transaction-entity.t
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
-export type { TransactionCreateEntityInterface } from './transaction/entity/transaction-create-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
@@ -110,18 +109,14 @@ export type { TransactionPositiveAdjustmentWithRelationsEntityInterface } from '
 export type { TransactionNegativeAdjustmentWithRelationsEntityInterface } from './transaction/entity/transaction-negative-adjustment-with-relations-entity.interface';
 
 export type { ExpenseTransactionEntityInterface } from './transaction/entity/expense-transaction-entity.interface';
-export type { ExpenseTransactionCreateEntityInterface } from './transaction/entity/expense-transaction-create-entity.interface';
-
-export type { IncomeTransactionCreateEntityInterface } from './transaction/entity/income-transaction-create-entity.interface';
-
 export type { TransferTransactionEntityInterface } from './transaction/entity/transfer-transaction-entity.interface';
-export type { TransferTransactionCreateEntityInterface } from './transaction/entity/transfer-transaction-create-entity.interface';
 
 export { TRANSACTION_COMMENT_MAX_LENGTH } from './transaction/constant/transaction-comment-max-length.constant';
 export { TRANSACTION_TITLE_MAX_LENGTH } from './transaction/constant/transaction-title-max-length.constant';
 
-export { TransactionEntitySchema } from './transaction/schema/transaction-entity.schema';
-export { TransactionCreateEntitySchema } from './transaction/schema/transaction-create-entity.schema';
+export { TransactionCreateInputSchema } from './transaction/schema/transaction-create-input.schema';
+
+export type { TransactionCreateInputInterface } from './transaction/input/transaction-create-input.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 
@@ -138,16 +133,16 @@ export type { TransactionTagsCreateEntityInterface } from './transaction-tags/en
 
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
 
-export { ExpenseTransactionCreateEntitySchema } from './transaction/schema/expense-transaction-create-entity.schema';
+export { ExpenseTransactionCreateInputSchema } from './transaction/schema/expense-transaction-create-input.schema';
 
-export { IncomeTransactionCreateEntitySchema } from './transaction/schema/income-transaction-create-entity.schema';
+export { IncomeTransactionCreateInputSchema } from './transaction/schema/income-transaction-create-input.schema';
 
 export { TransferTransactionEntitySchema } from './transaction/schema/transfer-transaction-entity.schema';
-export { TransferTransactionCreateEntitySchema } from './transaction/schema/transfer-transaction-create-entity.schema';
+export { TransferTransactionCreateInputSchema } from './transaction/schema/transfer-transaction-create-input.schema';
 
 export { BuyAssetTransactionCreateEntitySchema } from './transaction/schema/buy-asset-transaction-create-entity.schema';
 export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sell-asset-transaction-create-entity.schema';
-export { TransferAssetTransactionCreateEntitySchema } from './transaction/schema/transfer-asset-transaction-create-entity.schema';
+export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/transfer-asset-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 
@@ -165,6 +160,10 @@ export { TransactionEntryEntityRelations } from './transaction-entry/relations/t
 
 export { TransactionEntryEntitySchema } from './transaction-entry/schema/transaction-entry-entity.schema';
 export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/transaction-entry-create-entity.schema';
+
+export { TransactionEntryCreateInputSchema } from './transaction-entry/schema/transaction-entry-create-input.schema';
+
+export type { TransactionEntryCreateInputInterface } from './transaction-entry/input/transaction-entry-create-input.interface';
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';

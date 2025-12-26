@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface, TransferTransactionCreateEntitySchema } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
@@ -14,7 +14,7 @@ export const UpdateTransferTransaction = ({ transaction }: Props) => {
 
     const { form, handleSubmit } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
-        schema: TransferTransactionCreateEntitySchema,
+        schema: TransferTransactionCreateInputSchema,
         id: transaction.id
     });
 

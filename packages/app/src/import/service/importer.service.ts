@@ -8,7 +8,8 @@ import {
     CategoryEntityInterface,
     ExternalSourceEnum,
     InstrumentEntityInterface,
-    TransactionCreateEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -125,8 +126,8 @@ export class ImporterService {
         };
     }
 
-    private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateEntityInterface[]> {
-        const transactions: TransactionCreateEntityInterface[] = [];
+    private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateInputInterface[]> {
+        const transactions: TransactionCreateInputInterface[] = [];
 
         await this.processRows(csvText, (normalizedRow, row) => {
             progress.processed += 1;
@@ -144,7 +145,7 @@ export class ImporterService {
         return transactions;
     }
 
-    private createTransaction(normalizedRow: NormalizedRow): TransactionCreateEntityInterface {
+    private createTransaction(normalizedRow: NormalizedRow): TransactionCreateInputInterface {
         const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
             this.parseRow(normalizedRow);
 
@@ -200,7 +201,7 @@ export class ImporterService {
         source,
         dest,
         externalId
-    }: CreateEntriesParamsInterface): TransactionCreateEntityInterface['entries'] {
+    }: CreateEntriesParamsInterface): TransactionEntryCreateInputInterface[] {
         const entryExternalId = externalId ?? null;
 
         if (type === TransactionTypeEnum.INCOME) {
