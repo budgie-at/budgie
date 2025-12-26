@@ -1295,6 +1295,7 @@ __metadata:
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
     "@rnw-community/shared": "npm:^1.8.2"
+    ky: "npm:^1.14.1"
     zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
@@ -13656,6 +13657,13 @@ __metadata:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
   checksum: 10/dc447c35f0ea810f0a912bcf290077ea7c909f22f03c9fe322b3025297dc2d89df7c14318e4017b770804a2db048dee3391c98959fe9a11ee4503fe29b089b27
+  languageName: node
+  linkType: hard
+
+"ky@npm:^1.14.1":
+  version: 1.14.1
+  resolution: "ky@npm:1.14.1"
+  checksum: 10/dc10c13e42384be2358752ba5d3005423662e3b86d716de3991c38985f49ccb6cbf34694a8a701fd0da132db1511e112eb82367de272fc016372d2d30a8544d0
   languageName: node
   linkType: hard
 
