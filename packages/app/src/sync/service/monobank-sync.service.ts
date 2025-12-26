@@ -39,8 +39,6 @@ import { bankSyncStorageService } from './bank-sync-storage.service';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
-const MONOBANK_BALANCE_DIVISOR = 100;
-
 class AppMonobankSyncService {
     private readonly provider = BankProviderEnum.MONOBANK;
 
@@ -205,7 +203,7 @@ class AppMonobankSyncService {
 
             if (isDefined(account)) {
                 const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
-                const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
+                const amount = Math.abs(bankTx.amount);
                 const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
 
                 transactionsToCreate.push({
@@ -236,8 +234,8 @@ class AppMonobankSyncService {
         counterAccount: AccountEntityInterface
     ): TransactionCreateEntityInterface {
         const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
-        const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
-        const operationAmount = Math.abs(bankTx.operationAmount) / MONOBANK_BALANCE_DIVISOR;
+        const amount = Math.abs(bankTx.amount);
+        const operationAmount = Math.abs(bankTx.operationAmount);
 
         const sourceAccount = isIncome ? counterAccount : account;
         const destAccount = isIncome ? account : counterAccount;

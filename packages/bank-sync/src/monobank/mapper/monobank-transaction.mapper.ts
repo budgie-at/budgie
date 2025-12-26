@@ -2,6 +2,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
+import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
 import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.interface';
@@ -17,12 +18,12 @@ export const monobankTransactionMapper = (transaction: MonobankTransactionApiInt
     description: transaction.description,
     mcc: transaction.mcc,
     originalMcc: transaction.originalMcc,
-    amount: transaction.amount,
-    operationAmount: transaction.operationAmount,
+    amount: transaction.amount / MONOBANK_BALANCE_DIVISOR,
+    operationAmount: transaction.operationAmount / MONOBANK_BALANCE_DIVISOR,
     currencyCode: transaction.currencyCode,
-    commissionRate: transaction.commissionRate,
-    cashbackAmount: transaction.cashbackAmount,
-    balance: transaction.balance,
+    commissionRate: transaction.commissionRate / MONOBANK_BALANCE_DIVISOR,
+    cashbackAmount: transaction.cashbackAmount / MONOBANK_BALANCE_DIVISOR,
+    balance: transaction.balance / MONOBANK_BALANCE_DIVISOR,
     hold: transaction.hold,
     type: getTransactionType(transaction.amount),
     receiptId: transaction.receiptId,

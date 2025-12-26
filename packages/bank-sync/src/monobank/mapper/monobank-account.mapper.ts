@@ -1,4 +1,5 @@
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
+import { MONOBANK_BALANCE_DIVISOR } from '../constant/monobank-balance-divisor.constant';
 
 import { monobankAccountTypeMapper } from './monobank-account-type.mapper';
 import { monobankCashbackTypeMapper } from './monobank-cashback-type.mapper';
@@ -12,11 +13,10 @@ export const monobankAccountMapper = (account: MonobankAccountApiInterface): Ban
     provider: BankProviderEnum.MONOBANK,
     currencyCode: monobankCurrencyCodeMapper(account.currencyCode),
     currencyCodeNumeric: account.currencyCode,
-    balance: account.balance,
-    creditLimit: account.creditLimit,
+    balance: account.balance / MONOBANK_BALANCE_DIVISOR,
+    creditLimit: account.creditLimit / MONOBANK_BALANCE_DIVISOR,
     type: monobankAccountTypeMapper(account.type),
     iban: account.iban,
     maskedPan: account.maskedPan,
     cashbackType: monobankCashbackTypeMapper(account.cashbackType)
 });
-
