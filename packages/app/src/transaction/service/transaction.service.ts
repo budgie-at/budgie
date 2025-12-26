@@ -49,7 +49,7 @@ class TransactionService {
                 toAccount.instrumentId,
                 fromAccount.instrumentId,
             )
-            const exchangeRate = rate?.rate ?? 1;
+            const exchangeRate = rate?.rate ?? convertToMicroUnits(1);
 
             const fromAmount = convertToMicroUnits(fromEntry.amount);
             const toAmount = convertToMicroUnits(fromAmount / exchangeRate);
