@@ -11,6 +11,7 @@ import {
     AccountNatureEnum,
     AccountTypeEnum,
     ExternalSourceEnum,
+    TransactionCreateEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -20,7 +21,7 @@ import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
 import * as TaskManager from 'expo-task-manager';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -77,18 +78,34 @@ class AppMonobankSyncService {
         onProgress?.({ step: SyncStepEnum.SYNCING_ACCOUNTS });
         const bankAccounts = await syncService.syncAccounts();
         const accounts = await this.createAccounts(bankAccounts);
+        const externalIdAccountMap = new Map<string, AccountEntityInterface>();
+        const ibanToAccountMap = new Map<string, AccountEntityInterface>();
+        for (const account of accounts) {
+            if (isNotEmptyString(account.iban)) {
+                ibanToAccountMap.set(account.iban, account);
+            }
+            if (isNotEmptyString(account.externalId)) {
+                externalIdAccountMap.set(account.externalId, account);
+            }
+        }
 
         await microPause();
 
         const transactions: TransactionEntityInterface[] = [];
+        const importedTransactions: BankTransactionInterface[] = [];
+        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
+        const existingTransactionIds = new Set(existingTransactions.map(tx => tx.externalId));
 
         for (let i = 0; i < bankAccounts.length; i += 1) {
             const account = bankAccounts[i];
             const latestTxTime = await this.getLatestTransactionTime(account.id);
+
             let batchCount = 0;
 
             for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
-                transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
+                importedTransactions.push(...bankTransactions);
+                transactions.push(...(await this.createTransactions(bankTransactions, externalIdAccountMap, existingTransactionIds)));
+
                 await microPause();
 
                 onProgress?.({
@@ -101,6 +118,26 @@ class AppMonobankSyncService {
 
             await accountBalanceIncrementalService.updateAllBalances(new Date(0));
             await microPause();
+        }
+
+        for (const bankTx of importedTransactions) {
+            const fromAccount = externalIdAccountMap.get(bankTx.accountId);
+            const toAccount = ibanToAccountMap.get(bankTx.counterIban ?? '');
+
+            if (isDefined(fromAccount) && isDefined(toAccount)) {
+                const counterBankTx = importedTransactions.find(tx => {
+                    const counterFromAccount = externalIdAccountMap.get(tx.accountId);
+                    const counterToAccount = ibanToAccountMap.get(tx.counterIban ?? '');
+
+                    if (isDefined(counterFromAccount) && isDefined(counterToAccount)) {
+                        return tx.id !== bankTx.id && counterFromAccount.id === toAccount.id && counterToAccount.id === fromAccount.id;
+                    }
+
+                    return false;
+                });
+
+                console.log('Found transfer', { bankTx, counterBankTx });
+            }
         }
 
         return { success: true, accounts, transactions };
@@ -162,17 +199,14 @@ class AppMonobankSyncService {
 
     private async createTransactions(
         bankTransactions: BankTransactionInterface[],
-        accounts: AccountEntityInterface[]
+        accountsMap: Map<string | null, AccountEntityInterface>,
+        existingTransactionIds: Set<string | null>
     ): Promise<TransactionEntityInterface[]> {
-        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
-        const existingIds = new Set(existingTransactions.map(tx => tx.externalId));
-        const accountsMap = new Map(accounts.map(acc => [acc.externalId, acc]));
-
         const transactionsToCreate = [];
         for (const bankTx of bankTransactions) {
             const account = accountsMap.get(bankTx.accountId);
 
-            if (isDefined(account) && !existingIds.has(bankTx.id)) {
+            if (isDefined(account) && !existingTransactionIds.has(bankTx.id)) {
                 const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
                 const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
                 const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
@@ -195,6 +229,55 @@ class AppMonobankSyncService {
         }
 
         return await transactionService.bulkCreate(transactionsToCreate);
+    }
+
+    private createTransferTransaction(
+        bankTx: BankTransactionInterface,
+        account: AccountEntityInterface,
+        counterAccount: AccountEntityInterface
+    ): TransactionCreateEntityInterface {
+        const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
+        const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
+        const operationAmount = Math.abs(bankTx.operationAmount) / MONOBANK_BALANCE_DIVISOR;
+
+        const sourceAccount = isIncome ? counterAccount : account;
+        const destAccount = isIncome ? account : counterAccount;
+
+        const sourceAmount = isIncome ? operationAmount : amount;
+        const destAmount = isIncome ? amount : operationAmount;
+
+        const hasCurrencyExchange = sourceAccount.instrumentId !== destAccount.instrumentId;
+        const exchangeRate = hasCurrencyExchange && sourceAmount > 0 ? destAmount / sourceAmount : 1;
+
+        return {
+            amount: destAmount,
+            title: bankTx.description,
+            comment: bankTx.comment ?? '',
+            type: TransactionTypeEnum.TRANSFER,
+            exchangeRate,
+            operatedAt: new Date(bankTx.time * 1000),
+            externalId: bankTx.id,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            fromAccountId: sourceAccount.id,
+            toAccountId: destAccount.id,
+            tagIds: [],
+            entries: [
+                {
+                    accountId: sourceAccount.id,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: sourceAmount,
+                    categoryId: null,
+                    externalId: bankTx.id
+                },
+                {
+                    accountId: destAccount.id,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: destAmount,
+                    categoryId: null,
+                    externalId: bankTx.id
+                }
+            ]
+        };
     }
 
     private generateAccountTitle(bankAccount: BankAccountInterface): string {
