@@ -189,7 +189,7 @@ class AppMonobankSyncService {
                     fromAccountId: isIncome ? null : account.id,
                     toAccountId: isIncome ? account.id : null,
                     tagIds: [],
-                    entries: [{ accountId: account.id, type: entryType, amount, categoryId: null }]
+                    entries: [{ accountId: account.id, type: entryType, amount, categoryId: null, externalId: bankTx.id }]
                 });
             }
         }

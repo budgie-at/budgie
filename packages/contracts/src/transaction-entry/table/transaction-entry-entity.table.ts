@@ -20,6 +20,7 @@ export const TransactionEntryEntityTable = sqliteTable(
         transactionId: int('transaction_id', { mode: 'number' })
             .notNull()
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),
-        amount: int('amount', { mode: 'number' }).notNull()
+        amount: int('amount', { mode: 'number' }).notNull(),
+        externalId: text('external_id')
     })
 );
