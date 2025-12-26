@@ -487,7 +487,7 @@ msgstr "Dunkler Modus"
 
 #: src/app/(main)/settings/index.tsx:112
 msgid "Data management"
-msgstr ""
+msgstr "Datenverwaltung"
 
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
@@ -515,11 +515,11 @@ msgstr "Löschen"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:33
 msgid "Delete all transactions and settings"
-msgstr ""
+msgstr "Alle Transaktionen und Einstellungen löschen"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:42
 msgid "Delete data"
-msgstr ""
+msgstr "Daten löschen"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
