@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "ff44370b-3fd3-49b1-9ec1-af91147ec031",
+  "id": "caa5f7d3-0ec0-4e90-a2aa-b67a675f1a2b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account_balances": {
@@ -676,14 +676,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "''"
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
         },
         "to_account_id": {
           "name": "to_account_id",
