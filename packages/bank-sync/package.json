@@ -29,7 +29,6 @@
     },
     "dependencies": {
         "@rnw-community/shared": "^1.8.2",
-        "ky": "^1.14.1",
-        "zod": "^4.1.12"
+        "ky": "^1.14.1"
     }
 }
