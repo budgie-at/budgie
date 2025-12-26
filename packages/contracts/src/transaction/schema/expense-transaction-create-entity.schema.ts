@@ -14,11 +14,11 @@ export const ExpenseTransactionCreateEntitySchema = TransactionCreateEntitySchem
     }
 
     entries.forEach((transactionEntry, entryIndex) => {
-        if (transactionEntry.type !== TransactionEntryTypeEnum.CREDIT) {
+        if (transactionEntry.type !== TransactionEntryTypeEnum.DEBIT) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, entryIndex, 'type'],
-                message: "expense entry must be 'credit' (outflow)."
+                message: "expense entry must be 'debit' (outflow)."
             });
         }
     });

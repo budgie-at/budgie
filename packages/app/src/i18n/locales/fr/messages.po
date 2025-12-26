@@ -82,7 +82,7 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:52
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Compte"
 
@@ -128,7 +128,7 @@ msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 msgid "Add a note..."
 msgstr "Ajouter une note..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "Add Expense"
 msgstr "Ajouter une dépense"
 
@@ -136,7 +136,7 @@ msgstr "Ajouter une dépense"
 msgid "Add Income"
 msgstr "Ajouter un revenu"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:111
+#: src/transaction/components/transaction-split/transaction-split.tsx:113
 msgid "Add Split"
 msgstr "Ajouter une répartition"
 
@@ -235,7 +235,7 @@ msgstr "Colonnes disponibles"
 msgid "Balance"
 msgstr "Solde"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:59
+#: src/transaction/components/transaction-list/transaction-list.tsx:58
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
@@ -274,7 +274,7 @@ msgstr "Espèces"
 #: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:55
-#: src/transaction/components/transaction-list/transaction-list.tsx:60
+#: src/transaction/components/transaction-list/transaction-list.tsx:59
 msgid "Categories"
 msgstr "Catégories"
 
@@ -284,7 +284,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:189
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Catégorie"
 
@@ -381,8 +381,8 @@ msgstr "Impossible de créer la catégorie"
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:102
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:45
+#: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
@@ -442,9 +442,9 @@ msgstr "Créer des étiquettes"
 msgid "Create tags to organize your transactions"
 msgstr "Créez des étiquettes pour organiser vos transactions"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:58
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:70
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:95
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:79
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:104
 msgid "Create your first account to start tracking transactions"
 msgstr "Créez votre premier compte pour commencer à suivre vos transactions"
 
@@ -621,7 +621,7 @@ msgstr "Transactions et dépenses quotidiennes"
 msgid "Expense"
 msgstr "Dépense"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:37
 msgid "Expense created"
 msgstr "Dépense créée"
 
@@ -658,7 +658,7 @@ msgstr "Français"
 msgid "French (France)"
 msgstr "Français (France)"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 msgid "FROM"
 msgstr "DE"
 
@@ -785,7 +785,7 @@ msgstr "Argent que vous dépensez"
 msgid "Move between accounts"
 msgstr "Transférer entre comptes"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:46
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:53
 msgid "Move Money"
 msgstr "Transférer de l'argent"
 
@@ -793,7 +793,7 @@ msgstr "Transférer de l'argent"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:49
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
@@ -861,7 +861,7 @@ msgstr "Aucune langue trouvée"
 msgid "No locales found"
 msgstr "Aucun paramètre régional trouvé"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:84
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
@@ -891,7 +891,7 @@ msgstr "Pas encore d'étiquette"
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:84
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
@@ -1050,7 +1050,7 @@ msgid "Select category"
 msgstr "Sélectionner une catégorie"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:71
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:70
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
 
@@ -1104,8 +1104,8 @@ msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:101
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:44
+#: src/transaction/hook/use-create-transaction-form.hook.ts:95
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
@@ -1130,7 +1130,7 @@ msgstr "Dépenses par catégorie"
 msgid "Spent"
 msgstr "Dépensé"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:84
+#: src/transaction/components/transaction-split/transaction-split.tsx:86
 msgid "Split by Category"
 msgstr "Répartir par catégorie"
 
@@ -1138,7 +1138,7 @@ msgstr "Répartir par catégorie"
 msgid "Start Import"
 msgstr "Démarrer l'importation"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:86
+#: src/transaction/components/transaction-list/transaction-list.tsx:87
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
@@ -1217,7 +1217,7 @@ msgstr "Cette semaine"
 msgid "This Year"
 msgstr "Cette année"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:100
 msgid "TO"
 msgstr "VERS"
 
@@ -1261,7 +1261,7 @@ msgstr "Virement"
 msgid "Try a different search term"
 msgstr "Essayez un autre terme de recherche"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:85
+#: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 
@@ -1277,6 +1277,10 @@ msgstr "Type ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Ukrainien"
+
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:31
+msgid "Unknown"
+msgstr "Inconnu"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
 msgid "Unknown Category"
@@ -1319,7 +1323,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
 msgstr "Votre dépense a été enregistrée avec succès."
 

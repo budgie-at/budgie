@@ -2,10 +2,11 @@ import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, o
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
+import { DB, TX } from '../../@generic/type/db.type';
+import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { DateRangeInterface } from '../../generic/interface/date-range.interface';
-import { DB, TX } from '../../generic/type/db.type';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -23,7 +24,11 @@ export class TransactionRepository {
     private transactionRelations = {
         [TransactionAssociationEnum.ENTRIES]: {
             with: {
-                [TransactionEntryAssociationEnum.ACCOUNT]: true,
+                [TransactionEntryAssociationEnum.ACCOUNT]: {
+                    with: {
+                        [AccountAssociationEnum.INSTRUMENT]: true,
+                    }
+                },
                 [TransactionEntryAssociationEnum.CATEGORY]: true
             }
         },

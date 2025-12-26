@@ -1,8 +1,8 @@
 import { createSelectSchema } from 'drizzle-zod';
 import { enum as zodEnum } from 'zod';
 
-import { LanguageEnum } from '../../generic/enum/language.enum';
-import { ThemeEnum } from '../../generic/enum/theme.enum';
+import { LanguageEnum } from '../../@generic/enum/language.enum';
+import { ThemeEnum } from '../../@generic/enum/theme.enum';
 import { SettingsEntityTable } from '../table/settings-entity.table';
 
 export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
