@@ -1,6 +1,6 @@
 import { and, count, eq, isNotNull, isNull, sql } from 'drizzle-orm';
 
-import { DB, TX } from '../../generic/type/db.type';
+import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';

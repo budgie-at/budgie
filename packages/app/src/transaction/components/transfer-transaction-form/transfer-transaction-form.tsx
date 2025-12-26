@@ -1,6 +1,6 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, UseFormSetValue } from 'react-hook-form';
+import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -8,6 +8,7 @@ import { EmptyFn } from '@rnw-community/shared';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionFormAmountBase } from '../transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
@@ -19,8 +20,8 @@ import { TransferTransactionFormAccounts } from './transfer-transaction-form-acc
 interface Props {
     readonly icon: IconName;
     readonly onSubmit: EmptyFn;
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
@@ -30,8 +31,13 @@ export const TransferTransactionForm = ({ onSubmit, icon, control, setValue, tit
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
+    const fromAccountId = useWatch({
+        control,
+        name: 'fromAccountId'
+    })
+    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
+
     const handleAmountChange = (amount: number) => {
-        setValue('amount', amount);
         setValue('entries.0.amount', amount);
         setValue('entries.1.amount', amount);
     };
@@ -55,7 +61,7 @@ export const TransferTransactionForm = ({ onSubmit, icon, control, setValue, tit
                 <TransactionFormAmountBase
                     variant={variant}
                     control={control}
-                    instrumentSymbol={defaultInstrument.symbol}
+                    instrumentSymbol={account?.instrument.symbol ?? defaultInstrument.symbol}
                     onAmountChange={handleAmountChange}
                 />
 

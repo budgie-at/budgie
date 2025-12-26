@@ -1,4 +1,4 @@
-import { TransactionAssociationEnum, TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 
@@ -8,23 +8,24 @@ import { CategorySelector } from '../../../category/components/category-selector
 import { TransactionSplit } from '../transaction-split/transaction-split';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
+    readonly accountId: number;
 }
 
-export const TransactionFormCategory = ({ variant, control }: Props) => {
+export const TransactionFormCategory = ({ variant, control, accountId }: Props) => {
     const { t } = useLingui();
 
-    const entries = useWatch({
+    const [entries, totalAmount] = useWatch({
         control,
-        name: TransactionAssociationEnum.ENTRIES
+        name: ['entries', 'amount']
     });
 
     const renderCategorySelector = ({
         field: { value, onChange },
         fieldState: { invalid, error }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'entries.0.categoryId'>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, 'entries.0.categoryId'>) => {
         const status = invalid ? 'error' : 'default';
 
         return (
@@ -38,7 +39,7 @@ export const TransactionFormCategory = ({ variant, control }: Props) => {
         <FormItem label={t`Category`}>
             {entries.length === 1 ? <Controller render={renderCategorySelector} name="entries.0.categoryId" control={control} /> : null}
 
-            <TransactionSplit variant={variant} control={control} />
+            <TransactionSplit totalAmount={totalAmount} accountId={accountId} entries={entries} variant={variant} control={control} />
         </FormItem>
     );
 };
