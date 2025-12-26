@@ -17,7 +17,7 @@ export const getTransactionCategoryLabel = (
         return categoriesLabel;
     }
 
-    const [entry] = transaction.entries;
+    const entry = transaction.entries.at(0);
 
-    return entry.category?.title ?? transaction.type;
+    return entry?.category?.title ?? transaction.type;
 };
