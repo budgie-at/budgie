@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.86.0](https://github.com/budgie-at/budgie/compare/v1.85.0...v1.86.0) (2025-12-26)
+
+### Bug Fixes
+
+- add account name to the transaction card ([7d88799](https://github.com/budgie-at/budgie/commit/7d8879948922895189ce5fe2f160e0f06e6ef72e))
+- bottom-tabs jumping ([6b79d43](https://github.com/budgie-at/budgie/commit/6b79d43c3347dc5713af4b7b5a9e8ad6ebd7b869))
+- change import ([484d2b1](https://github.com/budgie-at/budgie/commit/484d2b1af330ea96937c70252fc9ee984cab9e90))
+- fill all missing translations in FR, ES, UK, DE locales ([73063b8](https://github.com/budgie-at/budgie/commit/73063b87d998caf6e1a50f840861c2b8f444f10c))
+- fill missing translations for FR, ES, UK, DE locales ([3b8909f](https://github.com/budgie-at/budgie/commit/3b8909f935108b4929c4046c2c9ee0457d516d6c))
+- sync translations ([9c67897](https://github.com/budgie-at/budgie/commit/9c67897994e3d1ec52fce8c2d245c9ab657c5d53))
+- sync translations ([05165ac](https://github.com/budgie-at/budgie/commit/05165accbdc278fb22567abc71c17da8a98ea51b))
+
+### Features
+
+- add "truncate data" setting ([9783abc](https://github.com/budgie-at/budgie/commit/9783abc3c9ed653bd7a7c9f4731ce07cff4430ea))
+- fill missing translations for truncate data feature ([f34cddc](https://github.com/budgie-at/budgie/commit/f34cddc2676e9f38fd9e12aa3a3e77023cfb94a5))
+
 # [1.85.0](https://github.com/budgie-at/budgie/compare/v1.84.1...v1.85.0) (2025-12-26)
 
 ### Bug Fixes
