@@ -1,4 +1,4 @@
-import { IncomeTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -12,7 +12,7 @@ export const CreateIncomeTransaction = () => {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
-        schema: IncomeTransactionCreateEntitySchema,
+        schema: IncomeTransactionCreateInputSchema,
         toAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,
         fromAccountId: null

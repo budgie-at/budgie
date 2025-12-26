@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
@@ -11,14 +11,14 @@ interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly onAmountChange: (amount: number) => void;
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
 }
 
 export const TransactionFormAmountBase = ({ variant, control, instrumentSymbol, onAmountChange }: Props) => {
     const renderAmountInput = ({
         field: { value },
         fieldState: { error }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'amount'>) => (
+    }: UseControllerReturn<TransactionCreateInputInterface, 'amount'>) => (
         <View>
             <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={onAmountChange} />
 

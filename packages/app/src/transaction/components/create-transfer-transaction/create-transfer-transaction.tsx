@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, TransferTransactionCreateEntitySchema } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
@@ -12,7 +12,7 @@ export const CreateTransferTransaction = () => {
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternalTransfer(data),
         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-        schema: TransferTransactionCreateEntitySchema,
+        schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
         fromAccountId: 0,
         toAccountId: 0
