@@ -1139,7 +1139,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
-    "@budgie/contracts": "npm:^1.84.1"
+    "@budgie/bank-sync": "workspace:*"
+    "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.15.4"
     "@formatjs/intl": "npm:^3.1.8"
     "@gorhom/bottom-sheet": "npm:^5.2.6"
@@ -1204,6 +1205,7 @@ __metadata:
     react-native-toast-message: "npm:^2.3.3"
     react-native-ui-datepicker: "npm:^3.1.2"
     react-native-web: "npm:^0.21.0"
+    react-native-webview: "npm:^13.16.0"
     react-native-worklets: "npm:^0.5.1"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.14"
@@ -1289,7 +1291,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/contracts@npm:^1.84.1, @budgie/contracts@workspace:packages/contracts":
+"@budgie/bank-sync@workspace:*, @budgie/bank-sync@workspace:packages/bank-sync":
+  version: 0.0.0-use.local
+  resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
+  dependencies:
+    "@rnw-community/shared": "npm:^1.8.2"
+    ky: "npm:^1.14.1"
+  languageName: unknown
+  linkType: soft
+
+"@budgie/contracts@workspace:^, @budgie/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@budgie/contracts@workspace:packages/contracts"
   dependencies:
@@ -12185,7 +12196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -13646,6 +13657,13 @@ __metadata:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
   checksum: 10/dc447c35f0ea810f0a912bcf290077ea7c909f22f03c9fe322b3025297dc2d89df7c14318e4017b770804a2db048dee3391c98959fe9a11ee4503fe29b089b27
+  languageName: node
+  linkType: hard
+
+"ky@npm:^1.14.1":
+  version: 1.14.1
+  resolution: "ky@npm:1.14.1"
+  checksum: 10/dc10c13e42384be2358752ba5d3005423662e3b86d716de3991c38985f49ccb6cbf34694a8a701fd0da132db1511e112eb82367de272fc016372d2d30a8544d0
   languageName: node
   linkType: hard
 
@@ -17547,6 +17565,19 @@ __metadata:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
   checksum: 10/32f785541660c25326d6ef863afb7b07259b884c2faf083b2d9ea44677bf2423a5b805478f83531be7c9b0260d98997def720000c033d178fd55fecfe6336211
+  languageName: node
+  linkType: hard
+
+"react-native-webview@npm:^13.16.0":
+  version: 13.16.0
+  resolution: "react-native-webview@npm:13.16.0"
+  dependencies:
+    escape-string-regexp: "npm:^4.0.0"
+    invariant: "npm:2.2.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/dc3d84c4785676bac3f316ec2119d3239f64fd8b18400dcc1cf8fa4f05b9bf677cf167aa4e7da72c9f60760eb6303c99da22324e15ff5fb380a3b1b31f531132
   languageName: node
   linkType: hard
 

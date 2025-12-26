@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
+import '../sync/task/monobank-sync.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
@@ -29,6 +30,7 @@ import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sy
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -57,7 +59,13 @@ export default function RootLayout() {
             void exchangeRatesService.registerBackgroundTask();
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
-            void SplashScreen.hideAsync();
+
+            if (monobankSyncService.isEnabled()) {
+                void monobankSyncService.registerBackgroundTask();
+            }
+
+            // HINT: We need to time for db to return data
+            setTimeout(() => void SplashScreen.hideAsync(), 200);
         }
     }, [success]);
 
@@ -95,9 +103,8 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/settings/import" />
 
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-
-                                                    <Toast />
                                                 </Stack>
+                                                <Toast />
                                             </LlmProvider>
                                         </AuthGuard>
                                     </AuthProvider>

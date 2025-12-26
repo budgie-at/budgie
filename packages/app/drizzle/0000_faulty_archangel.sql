@@ -23,6 +23,7 @@ CREATE TABLE `accounts` (
 	`external_id` text,
 	`external_source` text,
 	`include_in_net_worth` integer DEFAULT true NOT NULL,
+    `iban` text,
 	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
@@ -116,6 +117,7 @@ CREATE TABLE `transaction_entries` (
 	`category_id` integer,
 	`transaction_id` integer NOT NULL,
 	`amount` integer NOT NULL,
+    `external_id` text,
 	FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`transaction_id`) REFERENCES `transactions`(`id`) ON UPDATE no action ON DELETE cascade
