@@ -49,7 +49,7 @@ const getStatusConfig = (status: SyncStatusEnum) => {
 };
 
 // eslint-disable-next-line max-statements
-export const SyncProgressBar = () => {
+export const SyncProgressBadge = () => {
     const { t } = useLingui();
     const { state, isSyncing } = useBankSyncState(BankProviderEnum.MONOBANK);
     const { progress } = state;

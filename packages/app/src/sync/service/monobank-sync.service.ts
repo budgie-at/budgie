@@ -21,12 +21,11 @@ import * as BackgroundTask from 'expo-background-task';
 import * as Linking from 'expo-linking';
 import * as TaskManager from 'expo-task-manager';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
-import { MonobankSyncResultInterface } from '../../account/interface/monobank-sync-result.interface';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -93,7 +92,7 @@ class AppMonobankSyncService {
     }
 
     // eslint-disable-next-line max-statements
-    async sync(): Promise<MonobankSyncResultInterface> {
+    async sync(): Promise<void> {
         const syncService = new MonobankSyncService(this.getToken());
 
         try {
@@ -147,13 +146,8 @@ class AppMonobankSyncService {
 
             await accountBalanceIncrementalService.updateAllBalances(new Date(0));
             bankSyncStorageService.completeSync(this.provider, importedTransactions.length);
-
-            return { success: true, accounts, transactions };
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            bankSyncStorageService.failSync(this.provider, errorMessage);
-
-            return { success: false, accounts: [], transactions: [], error: errorMessage };
+        } catch (error: unknown) {
+            bankSyncStorageService.failSync(this.provider, getErrorMessage(error, 'Unknown error'));
         }
     }
 
