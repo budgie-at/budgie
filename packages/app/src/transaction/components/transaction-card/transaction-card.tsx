@@ -14,13 +14,13 @@ import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
-export interface TransactionCardPureProps {
+export interface TransactionCardProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly formattedDate: string;
     readonly categoryLabel: string;
 }
 
-export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardPureProps) => {
+export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardProps) => {
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
