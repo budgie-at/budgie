@@ -4,4 +4,3 @@ export enum BankProviderEnum {
     REVOLUT = 'REVOLUT',
     WISE = 'WISE'
 }
-
