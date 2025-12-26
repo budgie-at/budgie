@@ -56,7 +56,7 @@ class AccountService {
     }
 
     async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findById(id)
+        const account = await accountRepository.findById(id);
 
         if (!isDefined(account)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
@@ -126,9 +126,7 @@ class AccountService {
         return await db.transaction(async tx => {
             const accounts = await accountRepository.bulkCreate(batch, tx);
 
-            await Promise.all(
-                accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx))
-            );
+            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
 
             return accounts;
         });

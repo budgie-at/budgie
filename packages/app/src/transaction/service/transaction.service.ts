@@ -1,5 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import {
+    ExternalSourceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum
@@ -20,6 +21,18 @@ import { processInputWithBatches } from '../../@generic/utils/process-input-with
 import { accountService } from '../../account/service/account.service';
 
 class TransactionService {
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
+        return transactionRepository.findByExternalSource(externalSource);
+    }
+
+    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
+        return transactionRepository.findByAccountId(accountId);
+    }
+
+    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
+        return transactionRepository.getLatestTransactionTimeByAccountExternalId(externalId);
+    }
+
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input]);
 
@@ -45,10 +58,7 @@ class TransactionService {
                 accountService.findByIdOrFail(toEntry.accountId)
             ]);
 
-            const rate = await exchangeRateRepository.findByBaseAndQuoteIds(
-                toAccount.instrumentId,
-                fromAccount.instrumentId,
-            )
+            const rate = await exchangeRateRepository.findByBaseAndQuoteIds(toAccount.instrumentId, fromAccount.instrumentId);
             const exchangeRate = rate?.rate ?? convertToMicroUnits(1);
 
             const fromAmount = convertToMicroUnits(fromEntry.amount);
@@ -59,7 +69,7 @@ class TransactionService {
                     ...input,
                     exchangeRate,
                     externalId: null,
-                    externalSource: null,
+                    externalSource: null
                 },
                 tx
             );
