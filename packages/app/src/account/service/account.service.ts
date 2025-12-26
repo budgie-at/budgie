@@ -68,7 +68,7 @@ class AccountService {
 
             const isBorrow = input.debtType === AccountDebtTypeEnum.BORROW;
 
-            await this.adjustBalanceTo(account.id, account.instrumentId, 0, tx);
+            await this.adjustBalanceTo(account.id, account.instrumentId, tx);
 
             const fromAccountId = isBorrow ? account.id : input.accountId;
             const toAccountId = isBorrow ? input.accountId : account.id;
@@ -92,14 +92,12 @@ class AccountService {
                         categoryId: 1,
                         accountId: toAccountId,
                         amount: input.targetBalance,
-                        instrumentId: account.instrumentId,
                         type: TransactionEntryTypeEnum.CREDIT
                     },
                     {
                         categoryId: 1,
                         accountId: fromAccountId,
                         amount: input.targetBalance,
-                        instrumentId: account.instrumentId,
                         type: TransactionEntryTypeEnum.DEBIT
                     }
                 ]
