@@ -23,8 +23,9 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async *syncTransactions(accountId: string, fromTime: number = 0): AsyncGenerator<BankTransactionInterface[]> {
+    async *syncTransactions(accountId: string, fromDate: Date | null = new Date(0)): AsyncGenerator<BankTransactionInterface[]> {
         const allTransactions: BankTransactionInterface[] = [];
+        const fromTime = (fromDate ?? new Date(0)).getTime() / 1000;
         let toTime = Math.floor(Date.now() / 1000);
 
         do {
