@@ -1,10 +1,13 @@
-import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
+import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
@@ -46,12 +49,15 @@ export class AccountRepository {
         return await this.db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    findBySearchQuery(search: string) {
+    findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
+        const { excludeTypes } = filter;
+
         return this.db.query.AccountEntityTable.findMany({
             where: and(
                 isNull(AccountEntityTable.parentId),
                 isNull(AccountEntityTable.deletedAt),
-                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`
+                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
+                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`
             ),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
