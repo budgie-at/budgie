@@ -5,7 +5,15 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 
 class ExchangeRatesService {
-    async convert(fromInstrumentId: number, toInstrumentId: number, fromAmountInMicroUnits: number): Promise<{amount: number; exchangeRate: number}> {
+    async convert(
+        fromInstrumentId: number,
+        toInstrumentId: number,
+        fromAmountInMicroUnits: number
+    ): Promise<{ amount: number; exchangeRate: number }> {
+        if (fromInstrumentId === toInstrumentId) {
+            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
+        }
+
         const exchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId);
 
         if (isDefined(exchangeRate)) {
