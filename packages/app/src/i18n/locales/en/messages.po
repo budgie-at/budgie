@@ -13,21 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:96
-msgid "Processing..."
-msgstr "Processing..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Recording..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Tap to speak"
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -371,16 +356,14 @@ msgstr "Clear"
 msgid "Clear All"
 msgstr "Clear All"
 
-<<<<<<< HEAD
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
 msgstr "Clear All Data"
-=======
+
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
 msgstr "Close"
->>>>>>> origin/main
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -747,15 +730,11 @@ msgstr "German"
 msgid "German (Germany)"
 msgstr "German (Germany)"
 
-<<<<<<< HEAD
-#: src/app/(main)/settings/index.tsx:60
-=======
 #: src/sync/component/get-token-card/get-token-card.tsx:35
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(main)/settings/index.tsx:59
->>>>>>> origin/main
+#: src/app/(main)/settings/index.tsx:60
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -817,6 +796,10 @@ msgstr "Italian (Italy)"
 #: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Language"
+
+#: src/ai/component/record-button/record-button.tsx:93
+msgid "Loading AI... {progress}%"
+msgstr "Loading AI... {progress}%"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -1040,9 +1023,17 @@ msgstr "Preview"
 msgid "Privacy"
 msgstr "Privacy"
 
+#: src/ai/component/record-button/record-button.tsx:97
+msgid "Processing..."
+msgstr "Processing..."
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
+
+#: src/ai/component/record-button/record-button.tsx:101
+msgid "Recording..."
+msgstr "Recording..."
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1299,6 +1290,10 @@ msgstr "Tap to choose"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Tap to clear"
+
+#: src/ai/component/record-button/record-button.tsx:104
+msgid "Tap to speak"
+msgstr "Tap to speak"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""

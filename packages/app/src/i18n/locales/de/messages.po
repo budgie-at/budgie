@@ -11,21 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:96
-msgid "Processing..."
-msgstr "Verarbeitung..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Aufnahme läuft..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Zum Sprechen tippen"
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
@@ -367,18 +352,13 @@ msgstr "Löschen"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx:44
 msgid "Clear All"
-msgstr "Alle löschen"
 
-<<<<<<< HEAD
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
-msgstr "Alle Daten löschen"
-=======
+
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
-msgstr ""
->>>>>>> origin/main
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -743,17 +723,12 @@ msgstr "Deutsch"
 
 #: src/i18n/constant/locales.constant.ts:70
 msgid "German (Germany)"
-msgstr "Deutsch (Deutschland)"
 
-<<<<<<< HEAD
-#: src/app/(main)/settings/index.tsx:60
-=======
 #: src/sync/component/get-token-card/get-token-card.tsx:35
 msgid "Get API Token"
 msgstr "API-Token abrufen"
 
-#: src/app/(main)/settings/index.tsx:59
->>>>>>> origin/main
+#: src/app/(main)/settings/index.tsx:60
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 
@@ -815,6 +790,10 @@ msgstr "Italienisch (Italien)"
 #: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Sprache"
+
+#: src/ai/component/record-button/record-button.tsx:93
+msgid "Loading AI... {progress}%"
+msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -1038,9 +1017,17 @@ msgstr "Vorschau"
 msgid "Privacy"
 msgstr "Privatsphäre"
 
+#: src/ai/component/record-button/record-button.tsx:97
+msgid "Processing..."
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
+
+#: src/ai/component/record-button/record-button.tsx:101
+msgid "Recording..."
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1297,6 +1284,10 @@ msgstr "Zum Auswählen tippen"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Tippen zum Leeren"
+
+#: src/ai/component/record-button/record-button.tsx:104
+msgid "Tap to speak"
+msgstr ""
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""

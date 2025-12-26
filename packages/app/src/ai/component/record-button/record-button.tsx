@@ -1,4 +1,5 @@
 import { i18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
@@ -89,18 +90,18 @@ const getLabel = (llm: LlmType, variant: RecordButtonVariant): string => {
     if (variant === 'loading') {
         const progress = Math.round(llm.downloadProgress * 100);
 
-        return i18n._(`Loading AI... ${progress}%`);
+        return i18n._(msg`Loading AI... ${progress}%`);
     }
 
     if (variant === 'processing') {
-        return i18n._(`Processing...`);
+        return i18n._(msg`Processing...`);
     }
 
     if (variant === 'recording') {
-        return i18n._(`Recording...`);
+        return i18n._(msg`Recording...`);
     }
 
-    return i18n._(`Tap to speak`);
+    return i18n._(msg`Tap to speak`);
 };
 
 export const RecordButton = (props: Props) => {

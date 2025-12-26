@@ -11,21 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:96
-msgid "Processing..."
-msgstr "Обробка..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:100
-msgid "Recording..."
-msgstr "Запис..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:103
-msgid "Tap to speak"
-msgstr "Натисніть, щоб говорити"
-
 #: src/account/component/accounts-group/accounts-group.tsx:69
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -367,18 +352,13 @@ msgstr "Очистити"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx:44
 msgid "Clear All"
-msgstr "Очистити все"
 
-<<<<<<< HEAD
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
-msgstr "Очистити всі дані"
-=======
+
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
-msgstr ""
->>>>>>> origin/main
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -743,17 +723,12 @@ msgstr "Німецька"
 
 #: src/i18n/constant/locales.constant.ts:70
 msgid "German (Germany)"
-msgstr "Німецька (Німеччина)"
 
-<<<<<<< HEAD
-#: src/app/(main)/settings/index.tsx:60
-=======
 #: src/sync/component/get-token-card/get-token-card.tsx:35
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(main)/settings/index.tsx:59
->>>>>>> origin/main
+#: src/app/(main)/settings/index.tsx:60
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -815,6 +790,10 @@ msgstr "Італійська (Італія)"
 #: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Мова"
+
+#: src/ai/component/record-button/record-button.tsx:93
+msgid "Loading AI... {progress}%"
+msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -1038,9 +1017,17 @@ msgstr "Попередній перегляд"
 msgid "Privacy"
 msgstr "Конфіденційність"
 
+#: src/ai/component/record-button/record-button.tsx:97
+msgid "Processing..."
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
+
+#: src/ai/component/record-button/record-button.tsx:101
+msgid "Recording..."
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1297,6 +1284,10 @@ msgstr "Натисніть, щоб вибрати"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
+
+#: src/ai/component/record-button/record-button.tsx:104
+msgid "Tap to speak"
+msgstr ""
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
