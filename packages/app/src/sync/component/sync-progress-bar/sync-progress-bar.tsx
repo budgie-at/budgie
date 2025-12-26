@@ -113,11 +113,11 @@ export const SyncProgressBar = () => {
                 <View className="flex-row items-center gap-3">
                     <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
                     <View className="flex-1">
-                        <Text className="text-foreground font-medium text-sm" numberOfLines={2}>
+                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
                             {stepText()}
                         </Text>
                         {totalTransactions > 0 && isSyncing && (
-                            <Text className="text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
+                            <Text className="text-primary text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
                         )}
                     </View>
                     {canDismiss && <Icon icon={ICONS.X} className="text-muted-foreground" size="sm" />}
