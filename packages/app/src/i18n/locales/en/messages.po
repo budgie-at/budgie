@@ -76,11 +76,11 @@ msgstr "{tagsCount} tags available"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:48
+#: src/app/(main)/settings/index.tsx:49
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(main)/settings/index.tsx:112
+#: src/app/(main)/settings/index.tsx:117
 msgid "About"
 msgstr "About"
 
@@ -162,7 +162,7 @@ msgstr "AI"
 msgid "AI Suggestion"
 msgstr "AI Suggestion"
 
-#: src/app/(main)/settings/index.tsx:116
+#: src/app/(main)/settings/index.tsx:121
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
 "Version 1.0.0"
@@ -178,7 +178,7 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(main)/settings/index.tsx:49
+#: src/app/(main)/settings/index.tsx:50
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -225,6 +225,10 @@ msgstr "Archive Account?"
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
+#: src/settings/components/truncate-data/truncate-data.tsx:41
+msgid "Are you sure you want to delete all your data? This action cannot be undone."
+msgstr "Are you sure you want to delete all your data? This action cannot be undone."
+
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Are you sure?"
@@ -257,12 +261,12 @@ msgstr "Biometric Authentication"
 msgid "Browse"
 msgstr "Browse"
 
-#: src/app/(main)/settings/index.tsx:114
+#: src/app/(main)/settings/index.tsx:119
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
-#: src/@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:66
+#: src/@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/components/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:264
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:73
@@ -350,6 +354,11 @@ msgstr "Clear"
 #: src/transaction/components/transaction-filters/transaction-filters.tsx:44
 msgid "Clear All"
 msgstr "Clear All"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:32
+#: src/settings/components/truncate-data/truncate-data.tsx:45
+msgid "Clear All Data"
+msgstr "Clear All Data"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -478,6 +487,10 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
+#: src/app/(main)/settings/index.tsx:112
+msgid "Data management"
+msgstr "Data management"
+
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
 #: src/app/(main)/settings/import.tsx:197
@@ -501,6 +514,14 @@ msgstr "Default Account"
 #: src/@generic/components/deletable-row/deletable-row.tsx:25
 msgid "Delete"
 msgstr "Delete"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:33
+msgid "Delete all transactions and settings"
+msgstr "Delete all transactions and settings"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:42
+msgid "Delete data"
+msgstr "Delete data"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
@@ -676,7 +697,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(main)/settings/index.tsx:70
+#: src/app/(main)/settings/index.tsx:71
 msgid "General"
 msgstr "General"
 
@@ -688,7 +709,7 @@ msgstr "German"
 msgid "German (Germany)"
 msgstr "German (Germany)"
 
-#: src/app/(main)/settings/index.tsx:59
+#: src/app/(main)/settings/index.tsx:60
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -953,7 +974,7 @@ msgstr "Preset applied. Adjust columns below if needed."
 msgid "Preview"
 msgstr "Preview"
 
-#: src/app/(main)/settings/index.tsx:45
+#: src/app/(main)/settings/index.tsx:46
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -982,7 +1003,7 @@ msgstr "Savings"
 msgid "Savings Account"
 msgstr "Savings Account"
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:59
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1022,7 +1043,7 @@ msgstr "Search tags..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(main)/settings/index.tsx:54
+#: src/app/(main)/settings/index.tsx:55
 msgid "Security"
 msgstr "Security"
 
@@ -1092,7 +1113,7 @@ msgstr "Selected"
 msgid "Selected {selectedTagsCount}"
 msgstr "Selected {selectedTagsCount}"
 
-#: src/app/(main)/settings/index.tsx:42
+#: src/app/(main)/settings/index.tsx:43
 msgid "Settings"
 msgstr "Settings"
 
