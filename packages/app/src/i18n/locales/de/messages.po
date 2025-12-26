@@ -72,7 +72,7 @@ msgstr "{tagsCount} Tags verfügbar"
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:77
 msgid "{totalTransactions} transactions synced"
-msgstr ""
+msgstr "{totalTransactions} Transaktionen synchronisiert"
 
 #: src/@generic/components/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -241,7 +241,7 @@ msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
 msgid "Automatically sync every hour"
-msgstr ""
+msgstr "Automatisch stündlich synchronisieren"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -376,7 +376,7 @@ msgstr "Alle Daten löschen"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -441,7 +441,7 @@ msgstr "Konten erstellen"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:49
 msgid "Create and copy the personal token"
-msgstr ""
+msgstr "Persönlichen Token erstellen und kopieren"
 
 #: src/app/(main)/settings/index.tsx:89
 msgid "Create and organize transaction tags"
@@ -515,7 +515,7 @@ msgstr "Dunkler Modus"
 
 #: src/app/(main)/settings/index.tsx:112
 msgid "Data management"
-msgstr ""
+msgstr "Datenverwaltung"
 
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
@@ -543,11 +543,11 @@ msgstr "Löschen"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:33
 msgid "Delete all transactions and settings"
-msgstr ""
+msgstr "Alle Transaktionen und Einstellungen löschen"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:42
 msgid "Delete data"
-msgstr ""
+msgstr "Daten löschen"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
@@ -605,7 +605,7 @@ msgstr "Aktivieren"
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:17
 msgid "Enable Auto-Sync"
-msgstr ""
+msgstr "Automatische Synchronisation aktivieren"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
 #: src/auth/util/get-pin-setup-meta.util.ts:23
@@ -1259,11 +1259,11 @@ msgstr "Konten werden synchronisiert..."
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
 msgid "Syncing in progress..."
-msgstr ""
+msgstr "Synchronisierung läuft..."
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:46
 msgid "Syncing transactions..."
-msgstr ""
+msgstr "Transaktionen werden synchronisiert..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1442,4 +1442,4 @@ msgstr "Ihre Nachricht:"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:96
 msgid "Your token is stored securely on device. Sync continues in the background."
-msgstr ""
+msgstr "Ihr Token wird sicher auf dem Gerät gespeichert. Die Synchronisierung läuft im Hintergrund weiter."
