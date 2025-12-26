@@ -6,9 +6,7 @@ import { monobankSyncService } from '../service/monobank-sync.service';
 
 TaskManager.defineTask(MONOBANK_SYNC_TASK, async () => {
     try {
-        const isEnabled = await monobankSyncService.isEnabled();
-
-        if (!isEnabled || !monobankSyncService.hasToken()) {
+        if (!monobankSyncService.isEnabled() || !monobankSyncService.hasToken()) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
