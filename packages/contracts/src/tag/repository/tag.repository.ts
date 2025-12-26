@@ -1,5 +1,6 @@
 import { count, eq, inArray, sql } from 'drizzle-orm';
 
+import { TX } from '../../generic/type/db.type';
 import * as schema from '../../schema';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
@@ -41,5 +42,9 @@ export class TagRepository {
 
     async deleteById(id: number): Promise<void> {
         await this.db.delete(TagEntityTable).where(eq(TagEntityTable.id, id));
+    }
+
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TagEntityTable);
     }
 }

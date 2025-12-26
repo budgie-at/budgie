@@ -1,12 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { RefObject } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName, ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
@@ -17,7 +17,9 @@ import { CircleIcon } from '../circle-icon/circle-icon';
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly variant: ColorPaletteVariant;
+    readonly isDisabled?: boolean;
     readonly description: string;
+    readonly isLoading?: boolean;
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly icon: IconName;
@@ -39,11 +41,15 @@ const cardVariants = cva('mx-5xl rounded-5xl overflow-hidden border-2 shadow-[0p
     }
 });
 
-export const ConfirmActionBottomSheet = ({ ref, icon, onSubmit, variant, title, buttonText, description }: Props) => {
+export const ConfirmActionBottomSheet = (props: Props) => {
+    const { ref, icon, isLoading, isDisabled, onSubmit, variant, title, buttonText, description } = props;
     const { bottom } = useSafeAreaInsets();
     const { t } = useLingui();
 
     const handleCancel = () => void ref.current?.close();
+    const buttonDisabled = isLoading || isDisabled;
+
+    const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : buttonText;
 
     return (
         <BottomSheet
@@ -62,7 +68,13 @@ export const ConfirmActionBottomSheet = ({ ref, icon, onSubmit, variant, title, 
                 <Text className="text-secondary-foreground text-center text-sm mb-3xl">{description}</Text>
 
                 <View className="gap-y-md">
-                    <Button content={buttonText} onPress={onSubmit} variant={variant} size="md" />
+                    <Button
+                        content={submitButtonContent}
+                        disabled={buttonDisabled}
+                        onPress={onSubmit}
+                        variant={variant}
+                        size="md"
+                    />
                     <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" />
                 </View>
             </BottomSheetView>
