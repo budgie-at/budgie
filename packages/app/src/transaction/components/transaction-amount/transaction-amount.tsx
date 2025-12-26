@@ -43,7 +43,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
     }
 
     if (isDefined(fromEntry)) {
-        return <Text className={amountVariants({ type: 'default' })}>{formatFromAmount(fromEntry.amount)}</Text>;
+        return <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatFromAmount(fromEntry.amount)}</Text>;
     }
 
     if (isDefined(toEntry)) {
