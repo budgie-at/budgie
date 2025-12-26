@@ -72,7 +72,7 @@ msgstr "{tagsCount} тегів доступно"
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:77
 msgid "{totalTransactions} transactions synced"
-msgstr ""
+msgstr "{totalTransactions} транзакцій синхронізовано"
 
 #: src/@generic/components/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -241,7 +241,7 @@ msgstr "Автоматична синхронізація рахунків та 
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
 msgid "Automatically sync every hour"
-msgstr ""
+msgstr "Автоматично синхронізувати кожну годину"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -376,7 +376,7 @@ msgstr "Очистити всі дані"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
-msgstr ""
+msgstr "Закрити"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
@@ -441,7 +441,7 @@ msgstr "Створити рахунки"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:49
 msgid "Create and copy the personal token"
-msgstr ""
+msgstr "Створити та скопіювати персональний токен"
 
 #: src/app/(main)/settings/index.tsx:89
 msgid "Create and organize transaction tags"
@@ -515,7 +515,7 @@ msgstr "Темний режим"
 
 #: src/app/(main)/settings/index.tsx:112
 msgid "Data management"
-msgstr ""
+msgstr "Управління даними"
 
 #: src/@generic/components/date-filter/date-filter.tsx:48
 #: src/@generic/components/date-filter/date-filter.tsx:69
@@ -543,11 +543,11 @@ msgstr "Видалити"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:33
 msgid "Delete all transactions and settings"
-msgstr ""
+msgstr "Видалити всі транзакції та налаштування"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:42
 msgid "Delete data"
-msgstr ""
+msgstr "Видалити дані"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
@@ -605,7 +605,7 @@ msgstr "Увімкнути"
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:17
 msgid "Enable Auto-Sync"
-msgstr ""
+msgstr "Увімкнути автоматичну синхронізацію"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:29
 #: src/auth/util/get-pin-setup-meta.util.ts:23
@@ -1259,11 +1259,11 @@ msgstr "Синхронізація рахунків..."
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
 msgid "Syncing in progress..."
-msgstr ""
+msgstr "Синхронізація виконується..."
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:46
 msgid "Syncing transactions..."
-msgstr ""
+msgstr "Синхронізація транзакцій..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1442,4 +1442,4 @@ msgstr "Ваше повідомлення:"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:96
 msgid "Your token is stored securely on device. Sync continues in the background."
-msgstr ""
+msgstr "Ваш токен зберігається безпечно на пристрої. Синхронізація продовжується у фоновому режимі."
