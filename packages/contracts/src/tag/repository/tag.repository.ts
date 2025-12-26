@@ -1,6 +1,6 @@
 import { count, eq, inArray, sql } from 'drizzle-orm';
 
-import { TX } from '../../generic/type/db.type';
+import { TX } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
