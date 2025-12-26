@@ -121,7 +121,6 @@ class AppMonobankSyncService {
                 const account = bankAccounts[i];
                 // eslint-disable-next-line no-await-in-loop
                 const latestTxTime = await transactionService.getLatestTransactionTimeByAccountExternalId(account.id);
-                let batchCount = 0;
 
                 // eslint-disable-next-line no-await-in-loop
                 for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime)) {
@@ -129,14 +128,11 @@ class AppMonobankSyncService {
                     transactions.push(...(await this.createTransactions(newBankTransactions, externalIdAccountMap)));
                     importedTransactions.push(...newBankTransactions);
 
-                    batchCount += 1;
-
                     bankSyncStorageService.updateProgress(this.provider, {
                         step: SyncStepEnum.SYNCING_TRANSACTIONS,
                         currentAccount: i + 1,
                         totalAccounts: bankAccounts.length,
-                        totalTransactions: importedTransactions.length,
-                        currentBatch: batchCount
+                        totalTransactions: importedTransactions.length
                     });
 
                     await microPause();

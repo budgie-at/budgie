@@ -56,7 +56,7 @@ export const CreateMonobankAccount = () => {
         }
     };
 
-    const isSyncing = syncState.progress.status === SyncStatusEnum.SYNCING;
+    const isSyncing = syncState.status === SyncStatusEnum.SYNCING;
 
     return (
         <Page

@@ -1,7 +1,7 @@
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
