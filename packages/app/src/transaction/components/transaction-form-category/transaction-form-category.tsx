@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 
@@ -8,8 +8,8 @@ import { CategorySelector } from '../../../category/components/category-selector
 import { TransactionSplit } from '../transaction-split/transaction-split';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
     readonly accountId: number;
 }
@@ -25,7 +25,7 @@ export const TransactionFormCategory = ({ variant, control, accountId }: Props) 
     const renderCategorySelector = ({
         field: { value, onChange },
         fieldState: { invalid, error }
-    }: UseControllerReturn<TransactionCreateEntityInterface, 'entries.0.categoryId'>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, 'entries.0.categoryId'>) => {
         const status = invalid ? 'error' : 'default';
 
         return (

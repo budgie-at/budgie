@@ -5,7 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useI18nContext } from '../context/i18n.context';
 
-export const createFormatMoney =
+const createFormatMoney =
     (intl: IntlShape, decimalPlaces: number, currency: string, showSign = false) =>
     (rawAmount: number) => {
         const amount = convertFromMicroUnits(rawAmount).toString();
