@@ -1,1 +1,0 @@
-ALTER TABLE `accounts` RENAME COLUMN "target_amount" TO "target_balance";
