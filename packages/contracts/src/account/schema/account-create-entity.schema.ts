@@ -12,6 +12,7 @@ export const AccountCreateEntitySchema = AccountEntitySchema.pick({
     externalId: true,
     instrumentId: true,
     externalSource: true,
+    iban: true,
     includeInNetWorth: true
 })
     .partial({
@@ -19,6 +20,7 @@ export const AccountCreateEntitySchema = AccountEntitySchema.pick({
         parentId: true,
         externalId: true,
         externalSource: true,
+        iban: true,
         includeInNetWorth: true
     })
     .extend({

@@ -20,6 +20,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     nature: zodEnum(AccountNatureEnum).describe('The account nature.'),
     externalId: schema => schema.nullable().default(null).describe('The external id of the account.'),
     externalSource: zodEnum(ExternalSourceEnum).nullable().default(null).describe('The external source of the account.'),
+    iban: schema => schema.nullable().default(null).describe('The IBAN of the account.'),
     instrumentId: schema => schema.positive().describe('The id of the instrument.'),
     parentId: schema => schema.positive().nullable().default(null).describe('The id of the parent account.')
 });
