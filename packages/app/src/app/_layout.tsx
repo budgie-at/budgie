@@ -102,9 +102,8 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/settings/import" />
 
                                                         <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-
-                                                        <Toast />
                                                     </Stack>
+                                                    <Toast />
                                                 </LlmProvider>
                                             </SyncProvider>
                                         </AuthGuard>
