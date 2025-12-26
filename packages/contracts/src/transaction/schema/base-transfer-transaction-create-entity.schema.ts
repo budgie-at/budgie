@@ -61,21 +61,21 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
             return;
         }
 
-        if (fromEntry.type === TransactionEntryTypeEnum.DEBIT) {
+        if (fromEntry.type !== TransactionEntryTypeEnum.DEBIT) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, fromEntryIndex, 'type'],
-                message: '"from" entry must be "credit"'
+                message: '"from" entry must be "debit"'
             });
 
             return;
         }
 
-        if (toEntry.type === TransactionEntryTypeEnum.CREDIT) {
+        if (toEntry.type !== TransactionEntryTypeEnum.CREDIT) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, toEntryIndex, 'type'],
-                message: '"to" entry must be "debit"'
+                message: '"to" entry must be "credit"'
             });
 
             return;
@@ -84,11 +84,11 @@ export const BaseTransferTransactionCreateEntitySchema = TransactionCreateEntity
         const feeEntryIndex = entries.findIndex(entry => entry.accountId !== fromAccountId && entry.accountId !== toAccountId);
         const feeEntry = feeEntryIndex >= 0 ? entries[feeEntryIndex] : null;
 
-        if (isDefined(feeEntry) && feeEntry.type !== TransactionEntryTypeEnum.DEBIT) {
+        if (isDefined(feeEntry) && feeEntry.type !== TransactionEntryTypeEnum.CREDIT) {
             context.addIssue({
                 code: 'custom',
                 path: [TransactionAssociationEnum.ENTRIES, feeEntryIndex, 'type'],
-                message: '"fee" entry must be "debit"'
+                message: '"fee" entry must be "credit"'
             });
         }
     }

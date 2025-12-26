@@ -1,6 +1,6 @@
 import { array, number } from 'zod';
 
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 import { TransactionEntryCreateEntitySchema } from '../../transaction-entry/schema/transaction-entry-create-entity.schema';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';

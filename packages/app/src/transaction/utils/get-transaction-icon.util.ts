@@ -1,11 +1,13 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionEntryTypeEnum, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 import { IconName } from '../../@generic/constant/icons.constant';
 
 export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): IconName => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-        return 'BadgePlus';
+        const [entry] = transaction.entries;
+
+        return entry.type === TransactionEntryTypeEnum.DEBIT ? 'BadgeMinus' : 'BadgePlus';
     }
 
     if (transaction.type === TransactionTypeEnum.TRANSFER) {

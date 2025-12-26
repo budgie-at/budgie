@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isNumber } from '@rnw-community/shared';
+import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -27,7 +27,7 @@ class AccountService {
 
             const account = await accountRepository.create(input, tx);
 
-            await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
+            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
             if (!hasAnyAccount) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
@@ -48,11 +48,22 @@ class AccountService {
             const account = await accountRepository.updateById(id, input, tx);
 
             if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(account.id, account.instrumentId, input.currentBalance, tx);
+                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
             }
 
             return account;
         });
+    }
+
+    async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
+        const account = await accountRepository.findById(id)
+
+        if (!isDefined(account)) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings
+            throw new Error(`Account with id ${id} not found`);
+        }
+
+        return account;
     }
 
     async archiveById(id: number): Promise<AccountEntityInterface> {
@@ -68,7 +79,7 @@ class AccountService {
         });
     }
 
-    private async adjustBalanceTo(accountId: number, instrumentId: number, targetBalance: number, tx: Transaction): Promise<void> {
+    private async adjustBalanceTo(accountId: number, targetBalance: number, tx: Transaction): Promise<void> {
         const result = await accountBalanceRepository.getByAccountId(accountId);
         const currentBalanceMicro = result.at(0)?.balance ?? 0;
 
@@ -79,7 +90,7 @@ class AccountService {
             return;
         }
 
-        const isDebit = delta > 0;
+        const isIncome = isPositiveNumber(delta);
         const absDelta = Math.abs(delta);
 
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
@@ -96,8 +107,8 @@ class AccountService {
                 exchangeRate: 1,
                 tagIds: [],
                 entries: [],
-                fromAccountId: isDebit ? null : accountId,
-                toAccountId: isDebit ? accountId : null
+                fromAccountId: isIncome ? null : accountId,
+                toAccountId: isIncome ? accountId : null
             },
             tx
         );
@@ -105,11 +116,10 @@ class AccountService {
         await transactionEntryRepository.create(
             {
                 accountId,
-                instrumentId,
                 transactionId: transaction.id,
                 categoryId: null,
                 amount: absDelta,
-                type: isDebit ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
+                type: isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT
             },
             tx
         );
@@ -120,7 +130,7 @@ class AccountService {
             const accounts = await accountRepository.bulkCreate(batch, tx);
 
             await Promise.all(
-                accounts.map((account, index) => this.adjustBalanceTo(account.id, account.instrumentId, batch[index].currentBalance, tx))
+                accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx))
             );
 
             return accounts;
