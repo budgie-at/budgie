@@ -13,7 +13,7 @@ import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
-import '../account/task/monobank-sync.task';
+import '../sync/task/monobank-sync.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
@@ -23,7 +23,6 @@ import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
-import { monobankSyncService } from '../account/service/monobank-sync.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
@@ -31,6 +30,7 @@ import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sy
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
