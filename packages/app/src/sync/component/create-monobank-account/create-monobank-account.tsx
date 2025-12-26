@@ -16,8 +16,8 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { monobankSyncService } from '../../../account/service/monobank-sync.service';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
+import { monobankSyncService } from '../../service/monobank-sync.service';
 import { GetTokenCard } from '../get-token-card/get-token-card';
 import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
 
