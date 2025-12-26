@@ -8,7 +8,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';

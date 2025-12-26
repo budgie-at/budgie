@@ -4,12 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
-import { useAppState } from '../../@generic/hooks/use-app-state.hook';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';
 import { authService } from '../../auth/service/auth.service';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { useAppState } from '../../@generic/hook/use-app-state.hook';
 
 interface AuthFormStateInterface {
     input: string;

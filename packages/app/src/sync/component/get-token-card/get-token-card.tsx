@@ -4,10 +4,10 @@ import { useRef, useState } from 'react';
 import { Modal, Text, View } from 'react-native';
 import WebView from 'react-native-webview';
 
-import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
-import { Button } from '../../../@generic/components/button/button';
-import { Card } from '../../../@generic/components/card/card';
-import { Icon } from '../../../@generic/components/icon/icon';
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { Button } from '../../../@generic/component/button/button';
+import { Card } from '../../../@generic/component/card/card';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 
 const webViewSource = { uri: MONOBANK_AUTH_URL };
