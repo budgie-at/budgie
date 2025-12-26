@@ -16,10 +16,10 @@ export const GetTokenCard = ({ onPress }: Props) => (
         <View className="flex-row items-center gap-x-3xl">
             <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
             <View className="flex-1">
-                <Text className="text-foreground text-md font-medium mb-xs">
+                <Text className="text-primary text-foreground text-md font-medium mb-xs">
                     <Trans>Get API Token</Trans>
                 </Text>
-                <Text className="text-muted-foreground text-sm">
+                <Text className="text-primary text-muted-foreground text-sm">
                     <Trans>Open Monobank to get your token</Trans>
                 </Text>
             </View>

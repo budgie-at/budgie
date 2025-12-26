@@ -13,10 +13,10 @@ export const SyncToggleCard = ({ isSyncing, syncEnabled, onToggle }: Props) => (
     <Card className="p-5xl">
         <View className="flex-row items-center justify-between">
             <View className="flex-1">
-                <Text className="text-foreground text-md font-medium mb-xs">
+                <Text className="text-primary text-foreground text-md font-medium mb-xs">
                     <Trans>Enable Auto-Sync</Trans>
                 </Text>
-                <Text className="text-muted-foreground text-sm">
+                <Text className="text-primary text-muted-foreground text-sm">
                     {isSyncing ? <Trans>Syncing in progress...</Trans> : <Trans>Automatically sync every hour</Trans>}
                 </Text>
             </View>
