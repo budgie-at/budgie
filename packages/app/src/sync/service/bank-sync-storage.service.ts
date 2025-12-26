@@ -6,21 +6,14 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncStepEnum } from '../enum/sync-step.enum';
-import { BankSyncStateInterface } from '../interface/bank-sync-state.interface';
-import { SyncProgressInterface, emptySyncProgress } from '../interface/sync-progress.interface';
+import { BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
 
 class BankSyncStorageService {
     getState(provider: BankProviderEnum): BankSyncStateInterface {
         const data = SecureStore.getItem(getBankSyncStorageKey(provider));
 
         if (!isDefined(data)) {
-            return {
-                provider,
-                enabled: false,
-                token: null,
-                progress: emptySyncProgress,
-                lastSyncAt: null
-            };
+            return emptyBankSyncState(provider);
         }
 
         return JSON.parse(data) as BankSyncStateInterface;
@@ -30,46 +23,45 @@ class BankSyncStorageService {
         SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify({ ...this.getState(provider), ...state }));
     }
 
-    updateProgress(provider: BankProviderEnum, progress: Partial<SyncProgressInterface>): void {
-        this.setState(provider, { progress: { ...this.getState(provider).progress, ...progress } });
-    }
-
     startSync(provider: BankProviderEnum, totalAccounts: number): void {
         this.setState(provider, {
-            progress: {
-                ...emptySyncProgress,
-                status: SyncStatusEnum.SYNCING,
-                step: SyncStepEnum.SYNCING_ACCOUNTS,
-                totalAccounts
-            }
+            status: SyncStatusEnum.SYNCING,
+            step: SyncStepEnum.SYNCING_ACCOUNTS,
+            totalAccounts,
+            currentAccount: 0,
+            totalTransactions: 0
         });
+    }
+
+    updateProgress(provider: BankProviderEnum, update: Partial<BankSyncStateInterface>): void {
+        this.setState(provider, update);
     }
 
     completeSync(provider: BankProviderEnum, totalTransactions: number): void {
         this.setState(provider, {
-            progress: {
-                ...emptySyncProgress,
-                status: SyncStatusEnum.SUCCESS,
-                step: SyncStepEnum.COMPLETED,
-                totalTransactions
-            },
+            status: SyncStatusEnum.SUCCESS,
+            step: SyncStepEnum.COMPLETED,
+            totalTransactions,
             lastSyncAt: new Date().toISOString()
         });
     }
 
     failSync(provider: BankProviderEnum, error: string): void {
         this.setState(provider, {
-            progress: {
-                ...this.getState(provider).progress,
-                status: SyncStatusEnum.ERROR,
-                step: SyncStepEnum.ERROR,
-                error
-            }
+            status: SyncStatusEnum.ERROR,
+            step: SyncStepEnum.ERROR,
+            error
         });
     }
 
     resetSync(provider: BankProviderEnum): void {
-        this.setState(provider, { progress: emptySyncProgress });
+        this.setState(provider, {
+            status: SyncStatusEnum.IDLE,
+            step: SyncStepEnum.IDLE,
+            currentAccount: 0,
+            totalAccounts: 0,
+            totalTransactions: 0
+        });
     }
 
     isEnabled(provider: BankProviderEnum): boolean {
@@ -95,7 +87,7 @@ class BankSyncStorageService {
     getAllActiveStates(): BankSyncStateInterface[] {
         const providers = Object.values(BankProviderEnum);
 
-        return providers.map(provider => this.getState(provider)).filter(state => state.progress.status !== SyncStatusEnum.IDLE);
+        return providers.map(provider => this.getState(provider)).filter(state => state.status !== SyncStatusEnum.IDLE);
     }
 }
 
