@@ -1,0 +1,1 @@
+export const MONOBANK_BALANCE_DIVISOR = 100;
