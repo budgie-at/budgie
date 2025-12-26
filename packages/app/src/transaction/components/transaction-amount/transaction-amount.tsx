@@ -30,8 +30,6 @@ export const TransactionAmount = ({ transaction }: Props) => {
     const formatFromAmount = useFormatMoney(decimalPlaces, fromEntry?.account.instrument.code ?? defaultCurrency);
     const formatToAmount = useFormatMoney(decimalPlaces, toEntry?.account.instrument.code ?? defaultCurrency);
 
-    console.log({ fromEntry: fromEntry?.account.instrument, toEntry: toEntry?.account.instrument });
-
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
             <View className="gap-y-xxl items-end">
