@@ -1,4 +1,4 @@
-import { ExpenseTransactionCreateEntitySchema, TransactionTypeEnum } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 
@@ -19,7 +19,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
-        schema: ExpenseTransactionCreateEntitySchema,
+        schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,

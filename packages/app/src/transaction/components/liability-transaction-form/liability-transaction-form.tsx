@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -20,9 +20,9 @@ import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/t
 
 interface Props {
     readonly onSubmit: EmptyFn;
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly icon: IconName;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
@@ -44,7 +44,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
     const renderAccountSelector = ({
         field: { value },
         fieldState: { error, invalid }
-    }: UseControllerReturn<TransactionCreateEntityInterface, typeof accountFieldName>) => {
+    }: UseControllerReturn<TransactionCreateInputInterface, typeof accountFieldName>) => {
         const status = invalid ? 'error' : 'default';
 
         return (
