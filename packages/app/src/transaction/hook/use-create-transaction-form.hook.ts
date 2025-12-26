@@ -1,5 +1,5 @@
 import {
-    TransactionCreateEntityInterface,
+    TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
@@ -12,14 +12,13 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useSettingsContext } from '../../settings/context/settings.context';
 import { createTransactionEntryInput } from '../utils/create-transaction-entry-input.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
 
-interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
-    onSubmit: (data: TransactionCreateEntityInterface) => Promise<TransactionEntityInterface>;
+interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
+    onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
     fromAccountId: number | null;
     toAccountId: number | null;
     type: TransactionTypeEnum;
@@ -28,7 +27,7 @@ interface UseTransactionFormConfig<T extends TransactionCreateEntityInterface> {
     amount?: number;
 }
 
-export const useCreateTransactionForm = <T extends TransactionCreateEntityInterface>({
+export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
     type,
     schema,
     onSubmit,
@@ -38,11 +37,10 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
     categoryId = 0
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
-    const { defaultInstrument, defaultAccount } = useSettingsContext();
 
     const form = useForm({
         mode: 'onSubmit',
-        resolver: zodResolver<TransactionCreateEntityInterface, unknown, TransactionCreateEntityInterface>(schema),
+        resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema),
         values: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,
@@ -54,7 +52,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: fromAccountId,
                               type: TransactionEntryTypeEnum.DEBIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId
                           })
@@ -65,7 +62,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: toAccountId,
                               type: TransactionEntryTypeEnum.CREDIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId
                           })
@@ -76,14 +72,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              instrumentId: defaultInstrument.id,
-                              type: TransactionEntryTypeEnum.CREDIT
+                              type: TransactionEntryTypeEnum.DEBIT
                           }),
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              instrumentId: defaultInstrument.id,
-                              type: TransactionEntryTypeEnum.DEBIT
+                              type: TransactionEntryTypeEnum.CREDIT
                           })
                       ]
                     : [])
@@ -91,7 +85,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
         })
     });
 
-    const handleSubmit: SubmitHandler<TransactionCreateEntityInterface> = async data => {
+    const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
             await onSubmit(data);
             router.back();

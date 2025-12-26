@@ -1,6 +1,6 @@
 import { and, count, eq, sql } from 'drizzle-orm';
 
-import { TX } from '../../generic/type/db.type';
+import { TX } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';

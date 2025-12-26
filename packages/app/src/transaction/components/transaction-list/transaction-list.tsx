@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionAssociationEnum, TransactionFilterInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
@@ -7,16 +7,12 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
-import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { createFormatMoney } from '../../../i18n/hook/use-format-money.hook';
-import { useGetInstrumentsMapQuery } from '../../../instrument/query/use-get-instruments-map.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
-import { TransactionCardPure } from '../transaction-card/transaction-card';
+import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
@@ -33,15 +29,13 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
         </View>
     ) : (
-        <TransactionCardPure
+        <TransactionCard
             transaction={item.data.transaction}
-            formattedAmount={item.data.formattedAmount}
             formattedDate={item.data.formattedDate}
             categoryLabel={item.data.categoryLabel}
         />
     );
 
-// eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -51,33 +45,22 @@ export const TransactionList = ({ accountId }: Props) => {
     const hasFiltersSelected = checkIfFiltersSelected(accountId, filters);
     const { sections, loadMore } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
-    const { intl } = useI18nContext();
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
     const { formatMonthAndDayWithTime } = useFormatDate();
-    const { instrumentsMap } = useGetInstrumentsMapQuery();
 
     const balanceAdjustmentLabel = t`Balance Adjustment`;
     const categoriesLabel = t`Categories`;
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
-        ...transactions.map(transaction => {
-            const [{ instrumentId }] = transaction[TransactionAssociationEnum.ENTRIES];
-            const instrument = instrumentsMap.get(instrumentId);
-            const currencyCode = instrument?.code ?? defaultCurrency;
-            const formatTransactionMoney = createFormatMoney(intl, decimalPlaces, currencyCode, true);
-
-            return {
-                type: 'transaction' as const,
-                id: `transaction-${transaction.id}`,
-                data: {
-                    transaction,
-                    formattedAmount: formatTransactionMoney(transaction.amount),
-                    formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
-                    categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
-                }
-            };
-        })
+        ...transactions.map(transaction => ({
+            type: 'transaction' as const,
+            id: `transaction-${transaction.id}`,
+            data: {
+                transaction,
+                formattedDate: formatMonthAndDayWithTime(transaction.operatedAt),
+                categoryLabel: getTransactionCategoryLabel(transaction, balanceAdjustmentLabel, categoriesLabel)
+            }
+        }))
     ]);
 
     const emptyTitle = hasFiltersSelected ? t`No matching transactions` : t`No transactions yet`;

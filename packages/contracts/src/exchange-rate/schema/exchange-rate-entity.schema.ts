@@ -1,6 +1,6 @@
 import { createSelectSchema } from 'drizzle-zod';
 
-import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
+import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
 export const ExchangeRateEntitySchema = createSelectSchema(ExchangeRateEntityTable, {
