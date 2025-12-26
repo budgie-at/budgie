@@ -32,6 +32,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
             form.setValue('amount', amount);
         }
     }, [amount, form]);
+
     useEffect(() => {
         if (isPositiveNumber(categoryId)) {
             form.setValue('entries.0.categoryId', categoryId);
