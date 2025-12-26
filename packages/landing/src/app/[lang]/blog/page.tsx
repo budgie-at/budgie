@@ -9,18 +9,18 @@ import { Motion } from '../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 interface Props extends PageLangParam {
-    searchParams: Promise<{ q?: string; page?: string }>;
+    searchParams: Promise<{ query?: string; page?: string }>;
 }
 
 // eslint-disable-next-line max-lines-per-function
 export default async function BlogPage(props: Props) {
     const { lang } = await props.params;
-    const { q = '', page = '1' } = await props.searchParams;
+    const { query = '', page = '1' } = await props.searchParams;
 
     initLingui(lang);
 
     const allArticles = getArticles();
-    const searchQuery = q.toLowerCase() || '';
+    const searchQuery = query.toLowerCase() || '';
     const currentPage = Number.parseInt(page, 10);
     const articlesPerPage = 9;
 
