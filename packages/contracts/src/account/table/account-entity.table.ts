@@ -28,6 +28,7 @@ export const AccountEntityTable = sqliteTable(
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
         externalId: text('external_id'),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
+        iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()
     })
 );
