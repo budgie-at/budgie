@@ -10,6 +10,5 @@ export const createTransactionEntryInput = (
     amount,
     categoryId,
     accountId: 0,
-    instrumentId: 0,
     transactionId: 0
 });
