@@ -17,13 +17,13 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { isEnumValue } from '../../../../@generic/type-guard/is-enum-value.type-guard';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
+import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
-import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }

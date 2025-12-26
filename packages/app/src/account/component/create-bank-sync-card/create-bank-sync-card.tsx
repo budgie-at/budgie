@@ -1,8 +1,8 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { Href, router } from 'expo-router';
 
-import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
-import { Card } from '../../../@generic/components/card/card';
+import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
+import { Card } from '../../../@generic/component/card/card';
 import { AccountCardContent } from '../account-card-content/account-card-content';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
