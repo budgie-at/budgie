@@ -1,5 +1,11 @@
 /* eslint-disable lingui/no-unlocalized-strings,no-await-in-loop */
-import { BankAccountInterface, BankTransactionInterface, MONOBANK_AUTH_URL, MonobankSyncService } from '@budgie/bank-sync';
+import {
+    BankAccountInterface,
+    BankTransactionInterface,
+    BankTransactionTypeEnum,
+    MONOBANK_AUTH_URL,
+    MonobankSyncService
+} from '@budgie/bank-sync';
 import {
     AccountCreateEntityInterface,
     AccountNatureEnum,
@@ -82,19 +88,19 @@ class AppMonobankSyncService {
             let batchCount = 0;
 
             for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
-                batchCount += 1;
+                transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
+                await microPause();
+
                 onProgress?.({
                     step: SyncStepEnum.SYNCING_TRANSACTIONS,
                     currentAccount: i + 1,
                     totalAccounts: bankAccounts.length,
-                    currentBatch: batchCount
+                    currentBatch: (batchCount += 1)
                 });
-
-                transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
-                await microPause();
             }
 
             await accountBalanceIncrementalService.updateAllBalances(new Date(0));
+            await microPause();
         }
 
         return { success: true, accounts, transactions };
@@ -121,8 +127,11 @@ class AppMonobankSyncService {
     }
 
     private async createAccounts(bankAccounts: BankAccountInterface[]): Promise<AccountEntityInterface[]> {
-        const instruments = await instrumentRepository.getAll();
-        const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(account => account.id));
+        const [instruments, existingAccounts] = await Promise.all([
+            instrumentRepository.getAll(),
+            accountRepository.findByExternalIds(bankAccounts.map(account => account.id))
+        ]);
+
         const existingIds = new Set(existingAccounts.map(acc => acc.externalId));
 
         const toCreate: AccountCreateEntityInterface[] = [];
@@ -163,21 +172,21 @@ class AppMonobankSyncService {
             const account = accountsMap.get(bankTx.accountId);
 
             if (isDefined(account) && !existingIds.has(bankTx.id)) {
-                const isExpense = bankTx.amount < 0;
+                const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
                 const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
-                const entryType = isExpense ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
+                const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
 
                 transactionsToCreate.push({
                     amount,
                     title: bankTx.description,
                     comment: bankTx.comment ?? '',
-                    type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
+                    type: isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE,
                     exchangeRate: 1,
                     operatedAt: new Date(bankTx.time * 1000),
                     externalId: bankTx.id,
                     externalSource: ExternalSourceEnum.MONOBANK,
-                    fromAccountId: isExpense ? account.id : null,
-                    toAccountId: isExpense ? null : account.id,
+                    fromAccountId: isIncome ? null : account.id,
+                    toAccountId: isIncome ? account.id : null,
                     tagIds: [],
                     entries: [{ accountId: account.id, type: entryType, amount, categoryId: null }]
                 });
