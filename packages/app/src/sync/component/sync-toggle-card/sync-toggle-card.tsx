@@ -20,7 +20,7 @@ export const SyncToggleCard = ({ isSyncing, syncEnabled, onToggle }: Props) => (
                     {isSyncing ? <Trans>Syncing in progress...</Trans> : <Trans>Automatically sync every hour</Trans>}
                 </Text>
             </View>
-            <Switch value={syncEnabled} onValueChange={onToggle} disabled={isSyncing} />
+            <Switch value={syncEnabled} onValueChange={onToggle} />
         </View>
     </Card>
 );
