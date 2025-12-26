@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
