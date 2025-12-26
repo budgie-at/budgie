@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -20,8 +20,8 @@ import { TransferTransactionFormAccounts } from './transfer-transaction-form-acc
 interface Props {
     readonly icon: IconName;
     readonly onSubmit: EmptyFn;
-    readonly control: Control<TransactionCreateEntityInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
+    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
@@ -38,7 +38,6 @@ export const TransferTransactionForm = ({ onSubmit, icon, control, setValue, tit
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
 
     const handleAmountChange = (amount: number) => {
-        setValue('amount', amount);
         setValue('entries.0.amount', amount);
         setValue('entries.1.amount', amount);
     };

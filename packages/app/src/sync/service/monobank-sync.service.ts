@@ -12,7 +12,6 @@ import {
     AccountNatureEnum,
     AccountTypeEnum,
     ExternalSourceEnum,
-    TransactionCreateEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -216,57 +215,6 @@ class AppMonobankSyncService {
         }
 
         return await transactionService.bulkCreate(transactionsToCreate);
-    }
-
-    // TODO: Will be used for automatic transfer detection
-    // @ts-expect-error - Will be used for automatic transfer detection
-    private createTransferTransaction(
-        bankTx: BankTransactionInterface,
-        account: AccountEntityInterface,
-        counterAccount: AccountEntityInterface
-    ): TransactionCreateEntityInterface {
-        const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
-        const amount = Math.abs(bankTx.amount);
-        const operationAmount = Math.abs(bankTx.operationAmount);
-
-        const sourceAccount = isIncome ? counterAccount : account;
-        const destAccount = isIncome ? account : counterAccount;
-
-        const sourceAmount = isIncome ? operationAmount : amount;
-        const destAmount = isIncome ? amount : operationAmount;
-
-        const hasCurrencyExchange = sourceAccount.instrumentId !== destAccount.instrumentId;
-        const exchangeRate = hasCurrencyExchange && sourceAmount > 0 ? destAmount / sourceAmount : 1;
-
-        return {
-            amount: destAmount,
-            title: bankTx.description,
-            comment: bankTx.comment ?? '',
-            type: TransactionTypeEnum.TRANSFER,
-            exchangeRate,
-            operatedAt: new Date(bankTx.time * 1000),
-            externalId: bankTx.id,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            fromAccountId: sourceAccount.id,
-            toAccountId: destAccount.id,
-            tagIds: [],
-            entries: [
-                {
-                    accountId: sourceAccount.id,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: sourceAmount,
-                    categoryId: null,
-                    externalId: bankTx.id
-                },
-                {
-                    accountId: destAccount.id,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: destAmount,
-                    categoryId: null,
-                    externalId: bankTx.id
-                }
-            ]
-        };
     }
 
     private generateAccountTitle(bankAccount: BankAccountInterface): string {
