@@ -1,6 +1,5 @@
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
-import { PRECISION } from '../../@generic/constant/precision.constant';
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
@@ -130,7 +129,7 @@ export class AccountBalanceRepository {
     private getDirectExchangeRateSql(defaultInstrumentId: number) {
         return sql`
         (
-            SELECT ${ExchangeRateEntityTable.rate} * 1.0 / ${PRECISION}
+            SELECT ${ExchangeRateEntityTable.rate} * 1.0
             FROM ${ExchangeRateEntityTable}
             WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
                 AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
@@ -144,7 +143,7 @@ export class AccountBalanceRepository {
     private getInverseExchangeRateSql(defaultInstrumentId: number) {
         return sql`
         (
-            SELECT ${PRECISION} * 1.0 / ${ExchangeRateEntityTable.rate}
+            SELECT 1.0 / ${ExchangeRateEntityTable.rate}
             FROM ${ExchangeRateEntityTable}
             WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
                 AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
