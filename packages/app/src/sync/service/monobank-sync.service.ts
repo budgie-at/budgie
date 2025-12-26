@@ -26,16 +26,16 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { SyncStepEnum } from '../../sync/enum/sync-step.enum';
-import { bankSyncStorageService } from '../../sync/service/bank-sync-storage.service';
+import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
+import { MonobankSyncResultInterface } from '../../account/interface/monobank-sync-result.interface';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
-import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
-import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
+import { SyncStepEnum } from '../enum/sync-step.enum';
 
-import { accountBalanceIncrementalService } from './account-balance-incremental.service';
-import { accountService } from './account.service';
+import { bankSyncStorageService } from './bank-sync-storage.service';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -84,7 +84,7 @@ class AppMonobankSyncService {
         }
 
         await BackgroundTask.registerTaskAsync(MONOBANK_SYNC_TASK, {
-            minimumInterval: ONE_HOUR_IN_SECONDS
+            minimumInterval: FIFTEEN_MINUTES_IN_SECONDS
         });
     }
 
