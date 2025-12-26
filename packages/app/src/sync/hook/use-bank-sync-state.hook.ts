@@ -10,13 +10,9 @@ export const useBankSyncState = (provider: BankProviderEnum) => {
     const [state, setState] = useState<BankSyncStateInterface>(bankSyncStorageService.getState(provider));
 
     useEffect(() => {
-        const loadState = () => {
+        const interval = setInterval(() => {
             setState(bankSyncStorageService.getState(provider));
-        };
-
-        loadState();
-
-        const interval = setInterval(loadState, POLL_INTERVAL_MS);
+        }, POLL_INTERVAL_MS);
 
         return () => {
             clearInterval(interval);
