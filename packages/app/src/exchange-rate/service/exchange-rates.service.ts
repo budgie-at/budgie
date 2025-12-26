@@ -17,19 +17,13 @@ class ExchangeRatesService {
         const exchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId);
 
         if (isDefined(exchangeRate)) {
-            return {
-                amount: fromAmountInMicroUnits / exchangeRate.rate,
-                exchangeRate: exchangeRate.rate
-            };
+            return { amount: fromAmountInMicroUnits / exchangeRate.rate, exchangeRate: exchangeRate.rate };
         }
 
         const baseInstrument = await this.getBaseInstrument();
 
         if (!isDefined(baseInstrument)) {
-            return {
-                amount: fromAmountInMicroUnits,
-                exchangeRate: 1
-            };
+            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
         }
 
         const [baseFromExchangeRate, baseToExchangeRate] = await Promise.all([
@@ -38,16 +32,11 @@ class ExchangeRatesService {
         ]);
 
         if (!isDefined(baseFromExchangeRate) || !isDefined(baseToExchangeRate)) {
-            return {
-                amount: fromAmountInMicroUnits,
-                exchangeRate: 1
-            };
+            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
         }
 
-        const toAmount = fromAmountInMicroUnits / baseFromExchangeRate.rate;
-
         return {
-            amount: toAmount / baseToExchangeRate.rate,
+            amount: fromAmountInMicroUnits / baseFromExchangeRate.rate / baseToExchangeRate.rate,
             exchangeRate: baseToExchangeRate.rate
         };
     }
