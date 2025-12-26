@@ -27,7 +27,7 @@ export class TransactionRepository {
             with: {
                 [TransactionEntryAssociationEnum.ACCOUNT]: {
                     with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true,
+                        [AccountAssociationEnum.INSTRUMENT]: true
                     }
                 },
                 [TransactionEntryAssociationEnum.CATEGORY]: true
@@ -162,6 +162,30 @@ export class TransactionRepository {
             where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
         });
+    }
+
+    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
+        const result = await this.db
+            .select({ operatedAt: sql<string>`MAX(${TransactionEntityTable.operatedAt})` })
+            .from(TransactionEntityTable)
+            .innerJoin(
+                AccountEntityTable,
+                or(
+                    eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id),
+                    eq(TransactionEntityTable.toAccountId, AccountEntityTable.id)
+                )
+            )
+            .where(
+                and(eq(AccountEntityTable.externalId, externalId), sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`)
+            );
+
+        const time = result[0]?.operatedAt;
+
+        if (!isDefined(time)) {
+            return null;
+        }
+
+        return new Date(time);
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
