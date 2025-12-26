@@ -6,6 +6,7 @@ export interface SyncProgressInterface {
     readonly step: SyncStepEnum;
     readonly currentAccount: number;
     readonly totalAccounts: number;
+    readonly totalTransactions: number;
     readonly currentBatch: number;
     readonly error?: string;
 }
@@ -15,5 +16,6 @@ export const emptySyncProgress: SyncProgressInterface = {
     step: SyncStepEnum.IDLE,
     currentAccount: 0,
     totalAccounts: 0,
+    totalTransactions: 0,
     currentBatch: 0
 };
