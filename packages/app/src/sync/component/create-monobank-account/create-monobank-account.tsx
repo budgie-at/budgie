@@ -33,7 +33,6 @@ export const CreateMonobankAccount = () => {
     }, [isEnabled]);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleOpenMonobank = () => void monobankSyncService.openAuthPage();
 
     const handleToggleSync = (enabled: boolean) => {
         const trimmedToken = token.trim();
@@ -69,7 +68,7 @@ export const CreateMonobankAccount = () => {
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    <GetTokenCard onPress={handleOpenMonobank} />
+                    <GetTokenCard />
 
                     <View className="gap-y-md">
                         <Text className="text-primary text-muted-foreground text-sm px-md">
