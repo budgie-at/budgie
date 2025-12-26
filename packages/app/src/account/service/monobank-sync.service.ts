@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings,no-await-in-loop */
+/* eslint-disable lingui/no-unlocalized-strings */
 import {
     BankAccountInterface,
     BankTransactionInterface,
@@ -76,6 +76,7 @@ class AppMonobankSyncService {
         const syncService = new MonobankSyncService(this.getToken());
 
         onProgress?.({ step: SyncStepEnum.SYNCING_ACCOUNTS });
+
         const bankAccounts = await syncService.syncAccounts();
         const accounts = await this.createAccounts(bankAccounts);
         const externalIdAccountMap = new Map<string, AccountEntityInterface>();
@@ -91,34 +92,40 @@ class AppMonobankSyncService {
 
         await microPause();
 
-        const transactions: TransactionEntityInterface[] = [];
+        // TODO: This is a bad solution as this will grow over time, we need a better approach
+        const transactions: TransactionEntityInterface[] = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
         const importedTransactions: BankTransactionInterface[] = [];
-        const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
-        const existingTransactionIds = new Set(existingTransactions.map(tx => tx.externalId));
 
-        for (let i = 0; i < bankAccounts.length; i += 1) {
-            const account = bankAccounts[i];
-            const latestTxTime = await this.getLatestTransactionTime(account.id);
+        const existingTransactionIds = new Set(transactions.map(tx => tx.externalId));
 
-            let batchCount = 0;
+        await Promise.all(
+            bankAccounts.map(async (account, i) => {
+                const latestTxTime = await this.getLatestTransactionTime(account.id);
 
-            for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
-                importedTransactions.push(...bankTransactions);
-                transactions.push(...(await this.createTransactions(bankTransactions, externalIdAccountMap, existingTransactionIds)));
+                let batchCount = 0;
 
-                await microPause();
+                for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
+                    console.log(bankTransactions.length, 'transactions to import for account', account.id);
+                    // TODO: This is a bad solution as this will grow over time, we need a better approach
+                    const newBankTransactions = bankTransactions.filter(tx => !existingTransactionIds.has(tx.id));
+                    transactions.push(...(await this.createTransactions(newBankTransactions, externalIdAccountMap)));
+                    importedTransactions.push(...newBankTransactions);
 
-                onProgress?.({
-                    step: SyncStepEnum.SYNCING_TRANSACTIONS,
-                    currentAccount: i + 1,
-                    totalAccounts: bankAccounts.length,
-                    currentBatch: (batchCount += 1)
-                });
-            }
+                    await microPause();
 
-            await accountBalanceIncrementalService.updateAllBalances(new Date(0));
-            await microPause();
-        }
+                    onProgress?.({
+                        step: SyncStepEnum.SYNCING_TRANSACTIONS,
+                        currentAccount: i + 1,
+                        totalAccounts: bankAccounts.length,
+                        totalTransactions: importedTransactions.length,
+                        currentBatch: (batchCount += 1)
+                    });
+                }
+            })
+        );
+
+        await accountBalanceIncrementalService.updateAllBalances(new Date(0));
+        await microPause();
 
         for (const bankTx of importedTransactions) {
             const fromAccount = externalIdAccountMap.get(bankTx.accountId);
@@ -199,14 +206,13 @@ class AppMonobankSyncService {
 
     private async createTransactions(
         bankTransactions: BankTransactionInterface[],
-        accountsMap: Map<string | null, AccountEntityInterface>,
-        existingTransactionIds: Set<string | null>
+        accountsMap: Map<string | null, AccountEntityInterface>
     ): Promise<TransactionEntityInterface[]> {
         const transactionsToCreate = [];
         for (const bankTx of bankTransactions) {
             const account = accountsMap.get(bankTx.accountId);
 
-            if (isDefined(account) && !existingTransactionIds.has(bankTx.id)) {
+            if (isDefined(account)) {
                 const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
                 const amount = Math.abs(bankTx.amount) / MONOBANK_BALANCE_DIVISOR;
                 const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
