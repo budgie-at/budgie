@@ -1,7 +1,6 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { useEffect, useState } from 'react';
 
-import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { BankSyncStateInterface } from '../interface/bank-sync-state.interface';
 import { bankSyncStorageService } from '../service/bank-sync-storage.service';
 
@@ -24,8 +23,5 @@ export const useBankSyncState = (provider: BankProviderEnum) => {
         };
     }, [provider]);
 
-    const isSyncing = state.progress.status === SyncStatusEnum.SYNCING;
-    const isEnabled = state.enabled;
-
-    return { state, isEnabled, isSyncing };
+    return state;
 };

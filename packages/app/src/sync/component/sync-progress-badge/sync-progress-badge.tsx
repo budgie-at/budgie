@@ -1,7 +1,6 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
 import { Icon } from '../../../@generic/components/icon/icon';
@@ -10,14 +9,6 @@ import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { SyncStepEnum } from '../../enum/sync-step.enum';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { bankSyncStorageService } from '../../service/bank-sync-storage.service';
-
-const ANIMATION_DURATION = 300;
-const PROGRESS_ANIMATION_DURATION = 200;
-const CARD_HEIGHT = 100;
-
-const styles = StyleSheet.create({
-    container: { overflow: 'hidden' }
-});
 
 const getStatusConfig = (status: SyncStatusEnum) => {
     switch (status) {
@@ -48,17 +39,11 @@ const getStatusConfig = (status: SyncStatusEnum) => {
     }
 };
 
-// eslint-disable-next-line max-statements
 export const SyncProgressBadge = () => {
     const { t } = useLingui();
-    const { state, isSyncing } = useBankSyncState(BankProviderEnum.MONOBANK);
-    const { progress } = state;
+    const { progress, enabled } = useBankSyncState(BankProviderEnum.MONOBANK);
 
-    const animatedHeight = useRef(new Animated.Value(0));
-    const animatedProgress = useRef(new Animated.Value(0));
-
-    const percentage = progress.totalAccounts > 0 ? (progress.currentAccount / progress.totalAccounts) * 100 : 0;
-    const isVisible = isSyncing || progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
+    const isSyncing = progress.status === SyncStatusEnum.SYNCING;
     const canDismiss = progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
     const config = getStatusConfig(progress.status);
 
@@ -77,28 +62,6 @@ export const SyncProgressBadge = () => {
         }
     };
 
-    useEffect(() => {
-        Animated.timing(animatedHeight.current, {
-            toValue: isVisible ? 1 : 0,
-            duration: ANIMATION_DURATION,
-            useNativeDriver: false
-        }).start();
-    }, [isVisible]);
-
-    useEffect(() => {
-        Animated.timing(animatedProgress.current, {
-            toValue: percentage,
-            duration: PROGRESS_ANIMATION_DURATION,
-            useNativeDriver: false
-        }).start();
-    }, [percentage]);
-
-    const heightStyle = {
-        ...styles.container,
-        height: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, CARD_HEIGHT] }),
-        marginBottom: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, 16] })
-    };
-
     const handlePress = () => {
         if (canDismiss) {
             bankSyncStorageService.resetSync(BankProviderEnum.MONOBANK);
@@ -107,22 +70,24 @@ export const SyncProgressBadge = () => {
 
     const { totalTransactions } = progress;
 
+    if (!enabled || progress.status === SyncStatusEnum.IDLE) {
+        return null;
+    }
+
     return (
-        <Animated.View style={heightStyle}>
-            <Pressable onPress={handlePress} className={`rounded-2xl border ${config.bgColor} ${config.borderColor} p-4`}>
-                <View className="flex-row items-center gap-3">
-                    <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
-                    <View className="flex-1">
-                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
-                            {stepText()}
-                        </Text>
-                        {totalTransactions > 0 && isSyncing && (
-                            <Text className="text-primary text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
-                        )}
-                    </View>
-                    {canDismiss && <Icon icon={ICONS.X} className="text-muted-foreground" size="sm" />}
+        <Pressable onPress={handlePress} className={`rounded-2xl border ${config.bgColor} ${config.borderColor} p-4 px-4 mt-4 mb-8`}>
+            <View className="flex-row items-center gap-3">
+                <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
+                <View className="flex-1">
+                    <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
+                        {stepText()}
+                    </Text>
+                    {totalTransactions > 0 && isSyncing && (
+                        <Text className="text-primary text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
+                    )}
                 </View>
-            </Pressable>
-        </Animated.View>
+                {canDismiss && <Icon icon={ICONS.X} className="text-muted-foreground" size="sm" />}
+            </View>
+        </Pressable>
     );
 };
