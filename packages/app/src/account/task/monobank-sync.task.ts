@@ -6,16 +6,16 @@ import { monobankSyncService } from '../service/monobank-sync.service';
 
 TaskManager.defineTask(MONOBANK_SYNC_TASK, async () => {
     try {
-        const hasToken = await monobankSyncService.hasToken();
+        const isEnabled = await monobankSyncService.isEnabled();
 
-        if (!hasToken) {
+        if (!isEnabled || !monobankSyncService.hasToken()) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
         await monobankSyncService.sync();
+
+        return BackgroundTask.BackgroundTaskResult.Success;
     } catch {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }
-
-    return BackgroundTask.BackgroundTaskResult.Success;
 });

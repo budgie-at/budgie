@@ -3,14 +3,13 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { useSyncContext } from '../../context/sync.context';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { SyncStepEnum } from '../../enum/sync-step.enum';
+import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
+import { bankSyncStorageService } from '../../service/bank-sync-storage.service';
 
 const ANIMATION_DURATION = 300;
 const PROGRESS_ANIMATION_DURATION = 200;
@@ -52,7 +51,8 @@ const getStatusConfig = (status: SyncStatusEnum) => {
 // eslint-disable-next-line max-statements
 export const SyncProgressBar = () => {
     const { t } = useLingui();
-    const { progress, isSyncing, resetSync } = useSyncContext();
+    const { state, isSyncing } = useBankSyncState(BankProviderEnum.MONOBANK);
+    const { progress } = state;
 
     const animatedHeight = useRef(new Animated.Value(0));
     const animatedProgress = useRef(new Animated.Value(0));
@@ -99,7 +99,11 @@ export const SyncProgressBar = () => {
         marginBottom: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, 16] })
     };
 
-    const handlePress = canDismiss ? resetSync : emptyFn;
+    const handlePress = () => {
+        if (canDismiss) {
+            void bankSyncStorageService.resetSync(BankProviderEnum.MONOBANK);
+        }
+    };
 
     const { totalTransactions } = progress;
 
@@ -109,13 +113,11 @@ export const SyncProgressBar = () => {
                 <View className="flex-row items-center gap-3">
                     <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
                     <View className="flex-1">
-                        <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
+                        <Text className="text-foreground font-medium text-sm" numberOfLines={2}>
                             {stepText()}
                         </Text>
                         {totalTransactions > 0 && isSyncing && (
-                            <Text className="text-primary text-muted-foreground text-xs mt-0.5">
-                                {t`${totalTransactions} transactions synced`}
-                            </Text>
+                            <Text className="text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
                         )}
                     </View>
                     {canDismiss && <Icon icon={ICONS.X} className="text-muted-foreground" size="sm" />}

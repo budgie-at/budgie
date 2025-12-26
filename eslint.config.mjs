@@ -344,6 +344,7 @@ export default defineConfig(
                     children: 'never'
                 }
             ],
+            'react/no-multi-comp': 'error',
             'react/react-in-jsx-scope': 'off',
             'react/jsx-curly-newline': 'off',
             'react/display-name': 'off',
