@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
@@ -101,7 +103,7 @@ export const SyncProgressBar = () => {
 
     const widthStyle = { width: animatedProgress.current.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) };
 
-    const handlePress = canDismiss ? resetSync : void 0;
+    const handlePress = canDismiss ? resetSync : emptyFn;
 
     const { totalAccounts, currentAccount } = progress;
 
