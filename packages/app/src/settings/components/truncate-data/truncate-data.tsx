@@ -2,8 +2,8 @@ import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { appService } from '../../../@generic/service/app.service';

@@ -3,8 +3,8 @@ import { ComponentProps } from 'react';
 
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useAppState } from '../../hooks/use-app-state.hook';
-import { useScreenshotProtection } from '../../hooks/use-screenshot-protection.hook';
+import { useAppState } from '../../hook/use-app-state.hook';
+import { useScreenshotProtection } from '../../hook/use-screenshot-protection.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
 

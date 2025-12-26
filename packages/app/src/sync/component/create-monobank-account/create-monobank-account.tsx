@@ -7,12 +7,12 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { Input } from '../../../@generic/components/input/input';
-import { FullPage } from '../../../@generic/components/page/full-page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Card } from '../../../@generic/component/card/card';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { Input } from '../../../@generic/component/input/input';
+import { FullPage } from '../../../@generic/component/page/full-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';

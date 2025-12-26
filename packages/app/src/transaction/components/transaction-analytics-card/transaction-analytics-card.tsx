@@ -2,7 +2,7 @@ import { Text } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
