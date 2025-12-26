@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
-import { ComponentProps } from 'react';
+import { ComponentProps, ReactNode } from 'react';
 import { Text } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -15,7 +15,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof HapticPressable> {
-    readonly content: string;
+    readonly content: ReactNode;
     readonly leftIcon?: IconName;
     readonly rightIcon?: IconName;
     readonly size?: ButtonSizeType;
