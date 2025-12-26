@@ -11,8 +11,7 @@ import { SyncProgressInterface, emptySyncProgress } from '../interface/sync-prog
 
 class BankSyncStorageService {
     async getState(provider: BankProviderEnum): Promise<BankSyncStateInterface> {
-        const key = getBankSyncStorageKey(provider);
-        const data = SecureStore.getItem(key);
+        const data = SecureStore.getItem(getBankSyncStorageKey(provider));
 
         if (!isDefined(data)) {
             return this.createEmptyState(provider);
@@ -22,11 +21,10 @@ class BankSyncStorageService {
     }
 
     async setState(provider: BankProviderEnum, state: Partial<BankSyncStateInterface>): Promise<void> {
-        const key = getBankSyncStorageKey(provider);
         const currentState = await this.getState(provider);
         const newState: BankSyncStateInterface = { ...currentState, ...state };
 
-        SecureStore.setItem(key, JSON.stringify(newState));
+        SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify(newState));
     }
 
     async updateProgress(provider: BankProviderEnum, progress: Partial<SyncProgressInterface>): Promise<void> {
@@ -83,16 +81,13 @@ class BankSyncStorageService {
     }
 
     async isEnabled(provider: BankProviderEnum): Promise<boolean> {
-        const key = getBankSyncEnabledKey(provider);
-        const value = SecureStore.getItem(key);
+        const value = SecureStore.getItem(getBankSyncEnabledKey(provider));
 
         return value === 'true';
     }
 
     async setEnabled(provider: BankProviderEnum, enabled: boolean): Promise<void> {
-        const key = getBankSyncEnabledKey(provider);
-
-        SecureStore.setItem(key, enabled ? 'true' : 'false');
+        SecureStore.setItem(getBankSyncEnabledKey(provider), enabled ? 'true' : 'false');
     }
 
     async getAllStates(): Promise<BankSyncStateInterface[]> {
