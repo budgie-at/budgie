@@ -8,5 +8,4 @@ export interface BankSyncStateInterface {
     readonly token: string | null;
     readonly progress: SyncProgressInterface;
     readonly lastSyncAt: string | null;
-    readonly lastError: string | null;
 }
