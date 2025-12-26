@@ -1,7 +1,7 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import {
-    TransactionCreateInputInterface,
     ExternalSourceEnum,
+    TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';

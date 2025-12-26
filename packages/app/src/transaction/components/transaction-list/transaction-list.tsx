@@ -39,7 +39,7 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: TransactionListItemType[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item.type === 'header' ? [...headers, idx] : headers), []);
 
-// eslint-disable-next-line max-statements
+ 
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
