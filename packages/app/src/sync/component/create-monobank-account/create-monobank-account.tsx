@@ -16,8 +16,8 @@ import { Page } from '../../../@generic/components/page/page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { useBankSyncState } from '../../../sync/hook/use-bank-sync-state.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { monobankSyncService } from '../../../account/service/monobank-sync.service';
+import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { GetTokenCard } from '../get-token-card/get-token-card';
 import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
 
@@ -72,7 +72,7 @@ export const CreateMonobankAccount = () => {
                     <GetTokenCard onPress={handleOpenMonobank} />
 
                     <View className="gap-y-md">
-                        <Text className="text-muted-foreground text-sm px-md">
+                        <Text className="text-primary text-muted-foreground text-sm px-md">
                             <Trans>Paste your API token below:</Trans>
                         </Text>
                         <Input
@@ -91,7 +91,7 @@ export const CreateMonobankAccount = () => {
                     <Card className="p-4xl bg-warning/10">
                         <View className="flex-row items-start gap-x-md">
                             <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
-                            <Text className="text-foreground text-sm flex-1">
+                            <Text className="text-primary text-foreground text-sm flex-1">
                                 <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
                             </Text>
                         </View>
