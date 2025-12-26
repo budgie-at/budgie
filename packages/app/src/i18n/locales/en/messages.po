@@ -371,14 +371,14 @@ msgstr "Clear"
 msgid "Clear All"
 msgstr "Clear All"
 
-#: src/sync/component/get-token-card/get-token-card.tsx:51
-msgid "Close"
-msgstr "Close"
-
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
 msgstr "Clear All Data"
+
+#: src/sync/component/get-token-card/get-token-card.tsx:51
+msgid "Close"
+msgstr "Close"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
