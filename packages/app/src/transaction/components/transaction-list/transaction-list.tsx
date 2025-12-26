@@ -40,6 +40,9 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
         />
     );
 
+const getStickyIndices = (sections: TransactionListItemType[]) =>
+    sections.reduce<number[]>((headers, item, idx) => (item.type === 'header' ? [...headers, idx] : headers), []);
+
 // eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
@@ -105,6 +108,7 @@ export const TransactionList = ({ accountId }: Props) => {
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
                 estimatedItemSize={80}
+                stickyIndices={getStickyIndices(flatData)}
                 recycleItems
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.3}
