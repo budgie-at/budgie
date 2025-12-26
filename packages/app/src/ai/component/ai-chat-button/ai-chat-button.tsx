@@ -19,7 +19,7 @@ export const AiChatButton = () => {
                 </Link>
             ) : (
                 <View className="bg-primary p-7xl rounded-full mb-sm -translate-y-[30px] items-center">
-                    <ActivityIndicator size="small" className="color-gray-700 " />
+                    <ActivityIndicator size="small" className="color-gray-700 w-[16px] h-[16px]" />
                 </View>
             )}
 
