@@ -4,26 +4,22 @@ import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
+import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 
-import type { InstrumentEntityInterface } from '@budgie/contracts';
+import { exchangeRatesService } from './exchange-rates.service';
 
-class ExchangeRatesService {
+class ExchangeRatesSyncService {
     async sync(): Promise<void> {
-        const baseInstrument = await this.getBaseInstrument();
+        const baseInstrument = await exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument)) {
             return;
         }
 
         const apiData = await this.fetch(baseInstrument.code);
-
-        if (!isDefined(baseInstrument)) {
-            return;
-        }
 
         for (const instrument of await instrumentRepository.getAll()) {
             if (instrument.code !== baseInstrument.code) {
@@ -53,16 +49,6 @@ class ExchangeRatesService {
         return (await response.json().catch(() => emptyExchangeRateApiResponse)) as ExchangeRateApiResponseInterface;
     }
 
-    private async getBaseInstrument(): Promise<InstrumentEntityInterface | undefined> {
-        const settings = await settingsRepository.getSettings();
-
-        if (isPositiveNumber(settings.defaultInstrumentId)) {
-            return await instrumentRepository.findById(settings.defaultInstrumentId);
-        }
-
-        return await instrumentRepository.findByCode('USD');
-    }
-
     private async updateInstrumentRate(
         baseInstrumentId: number,
         instrument: { id: number; code: string },
@@ -85,4 +71,4 @@ class ExchangeRatesService {
     }
 }
 
-export const exchangeRatesService = new ExchangeRatesService();
+export const exchangeRatesSyncService = new ExchangeRatesSyncService();

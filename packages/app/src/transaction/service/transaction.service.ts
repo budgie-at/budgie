@@ -10,7 +10,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     db,
-    exchangeRateRepository,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository
@@ -19,6 +18,7 @@ import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountService } from '../../account/service/account.service';
+import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
@@ -44,7 +44,6 @@ class TransactionService {
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
             const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
@@ -58,11 +57,13 @@ class TransactionService {
                 accountService.findByIdOrFail(toEntry.accountId)
             ]);
 
-            const rate = await exchangeRateRepository.findByBaseAndQuoteIds(toAccount.instrumentId, fromAccount.instrumentId);
-            const exchangeRate = rate?.rate ?? convertToMicroUnits(1);
+            const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
 
-            const fromAmount = convertToMicroUnits(fromEntry.amount);
-            const toAmount = convertToMicroUnits(fromAmount / exchangeRate);
+            const { amount: toAmount, exchangeRate } = await exchangeRatesService.convert(
+                fromAccount.instrumentId,
+                toAccount.instrumentId,
+                fromAmountInMicroUnits
+            );
 
             const transaction = await transactionRepository.create(
                 {
@@ -76,7 +77,7 @@ class TransactionService {
 
             await transactionEntryRepository.bulkCreate(
                 [
-                    { ...fromEntry, amount: fromAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT },
+                    { ...fromEntry, amount: fromAmountInMicroUnits, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT },
                     { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT }
                 ],
                 tx

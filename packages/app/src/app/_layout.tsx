@@ -26,7 +26,7 @@ import { accountBalanceIncrementalService } from '../account/service/account-bal
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
-import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sync.service';
+import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
@@ -55,8 +55,8 @@ export default function RootLayout() {
 
     useEffect(() => {
         if (success) {
-            void exchangeRatesService.sync();
-            void exchangeRatesService.registerBackgroundTask();
+            void exchangeRatesSyncService.sync();
+            void exchangeRatesSyncService.registerBackgroundTask();
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
 
