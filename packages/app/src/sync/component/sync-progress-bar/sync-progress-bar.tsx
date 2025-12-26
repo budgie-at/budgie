@@ -67,7 +67,7 @@ export const SyncProgressBar = () => {
             case SyncStepEnum.SYNCING_ACCOUNTS:
                 return t`Syncing accounts...`;
             case SyncStepEnum.SYNCING_TRANSACTIONS:
-                return t`Syncing Monobank...`;
+                return t`Syncing transactions...`;
             case SyncStepEnum.COMPLETED:
                 return t`Sync completed successfully`;
             case SyncStepEnum.ERROR:
@@ -99,11 +99,9 @@ export const SyncProgressBar = () => {
         marginBottom: animatedHeight.current.interpolate({ inputRange: [0, 1], outputRange: [0, 16] })
     };
 
-    const widthStyle = { width: animatedProgress.current.interpolate({ inputRange: [0, 100], outputRange: ['0%', '100%'] }) };
-
     const handlePress = canDismiss ? resetSync : emptyFn;
 
-    const { totalAccounts, currentAccount } = progress;
+    const { totalTransactions } = progress;
 
     return (
         <Animated.View style={heightStyle}>
@@ -114,19 +112,14 @@ export const SyncProgressBar = () => {
                         <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
                             {stepText()}
                         </Text>
-                        {totalAccounts > 0 && isSyncing && (
+                        {totalTransactions > 0 && isSyncing && (
                             <Text className="text-primary text-muted-foreground text-xs mt-0.5">
-                                {t`${currentAccount} of ${totalAccounts} accounts`}
+                                {t`${totalTransactions} transactions synced`}
                             </Text>
                         )}
                     </View>
                     {canDismiss && <Icon icon={ICONS.X} className="text-muted-foreground" size="sm" />}
                 </View>
-                {isSyncing && (
-                    <View className="h-1 bg-muted/50 rounded-full overflow-hidden mt-3">
-                        <Animated.View style={widthStyle} className={`h-full rounded-full ${config.progressColor}`} />
-                    </View>
-                )}
             </Pressable>
         </Animated.View>
     );
