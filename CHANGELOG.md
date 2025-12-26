@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.85.0](https://github.com/budgie-at/budgie/compare/v1.84.1...v1.85.0) (2025-12-26)
+
+### Bug Fixes
+
+- **app:** fix expense/income transaction creation ([5210bc3](https://github.com/budgie-at/budgie/commit/5210bc375fa4fe0e1eaaefebda48086782c2d3e3))
+- **app:** fix monobank entries ([b4efcf1](https://github.com/budgie-at/budgie/commit/b4efcf1d73ca58741933e080d41d4b71fac96e02))
+- **app:** recalculate balances after account transactions created ([83cb4d6](https://github.com/budgie-at/budgie/commit/83cb4d6bbae0a54f2bbd4c8b95a8c9bbf046ed61))
+- **app:** recalculate balances after account transactions created ([4b4644a](https://github.com/budgie-at/budgie/commit/4b4644ad9c75cf2a249cd2a50651324d9788d355))
+- **app:** sync progress colors ([b713fff](https://github.com/budgie-at/budgie/commit/b713fffe84e800c0355b2d78adefe427d1092d08))
+- **app:** sync progress colors ([62bbfdb](https://github.com/budgie-at/budgie/commit/62bbfdbf2e11d3bdcdeceac55aebfbe38f25d420))
+- **app:** sync progress colors ([2874bc5](https://github.com/budgie-at/budgie/commit/2874bc515c2ea92ff21bb90e6074215b0ca2fb6e))
+- new lint ([88de63d](https://github.com/budgie-at/budgie/commit/88de63d053a482cd9eb6cd3cb26d38c79a36a335))
+
+### Features
+
+- **app:** added account iban field ([6273a2b](https://github.com/budgie-at/budgie/commit/6273a2bbf932494e590de04debb20c0bec5bf4a6))
+- **app:** added entry externalId ([0f92f8d](https://github.com/budgie-at/budgie/commit/0f92f8d323a8203039223ce7b1d91628f6584236))
+- **app:** added entry externalId ([b69fbc7](https://github.com/budgie-at/budgie/commit/b69fbc7bb8f6da6efc39f8deaf74000b051c4194))
+- **app:** added entry externalId ([5480117](https://github.com/budgie-at/budgie/commit/5480117e565e3e6c79d0c057a42c205891f4f0df))
+- **app:** clean bank-sync exports ([524c28d](https://github.com/budgie-at/budgie/commit/524c28dd2b3409ccc57846da80a3488849bfd37d))
+- **app:** fix transaction card ([0358b73](https://github.com/budgie-at/budgie/commit/0358b739acef8a026b76c1ac4a09b48f66ec9048))
+- **app:** fix transaction card ([aa03afd](https://github.com/budgie-at/budgie/commit/aa03afda9ca1d96d92e9610ee881d2be4c9ab783))
+- **app:** fix transaction card ([a9a7199](https://github.com/budgie-at/budgie/commit/a9a7199eb08d815c53a7b3964f93083a92d6dbdb))
+- **app:** fix transaction list sticky headers ([af37bf7](https://github.com/budgie-at/budgie/commit/af37bf71c6af7f55ae8faca73e77e2893fb18d86))
+- **app:** improve securestorage for sync ([9b9fcf4](https://github.com/budgie-at/budgie/commit/9b9fcf40bf79cef29baa0bdb0ff521c2994e2723))
+- **app:** migrate to ky ([b67d690](https://github.com/budgie-at/budgie/commit/b67d690cabcdc861d9352de2a6297a809bb3bda9))
+- **app:** optimize lastaccount transaction date ([7cd8eda](https://github.com/budgie-at/budgie/commit/7cd8edaab1d1ed01cdf8366f434501c7644906f1))
+- **app:** optimize lastaccount transaction date ([79c85d3](https://github.com/budgie-at/budgie/commit/79c85d39d1acd7f883d311a87677d192ec14b571))
+- **app:** reimplement sync through bg task and secure storage ([110f9ae](https://github.com/budgie-at/budgie/commit/110f9aebad29845a9bc5b27fb38a76c3a4a962d3))
+- **app:** reimplement sync through bg task and secure storage ([a70235a](https://github.com/budgie-at/budgie/commit/a70235a04e1c76b25dd38b6754b638f5168c0f90))
+- **app:** reimplement sync through bg task and secure storage ([eea41f5](https://github.com/budgie-at/budgie/commit/eea41f5ddf147701f034a141a9e588efdb37d641))
+- **app:** reimplement sync through bg task and secure storage ([54124c2](https://github.com/budgie-at/budgie/commit/54124c2e413ebd4ef1bf44963250287e0342efcf))
+- **app:** transfer parsing ([f27b4d5](https://github.com/budgie-at/budgie/commit/f27b4d5eb7ee9418d71fce9f5e37688039c94d4b))
+- **app:** wait a bit before removing splash ([4a0767a](https://github.com/budgie-at/budgie/commit/4a0767a88e8f5120fdeeaee744388035ecda63e9))
+- **banc-sync:** poc for monobank ([e9026d6](https://github.com/budgie-at/budgie/commit/e9026d6b009009ebe7e7b5845054e56c7f4506bc))
+- **banc-sync:** poc for monobank ui/ux ([9196aa5](https://github.com/budgie-at/budgie/commit/9196aa5d0043424506a50aa2196a95e4ecc456b7))
+- **banc-sync:** poc for monobank ui/ux ([3c49b5a](https://github.com/budgie-at/budgie/commit/3c49b5abe1f1af24c18f201ceb6d67faff0e2086))
+- **banc-sync:** poc for monobank ui/ux ([bc68189](https://github.com/budgie-at/budgie/commit/bc681898f6e9c52ce256413e10674dfe0c463b85))
+- **i18n:** add missing translations for Monobank sync feature ([be82362](https://github.com/budgie-at/budgie/commit/be823623c2b1965cd03b758c9038ee237ff7b02e))
+
 ## [1.84.1](https://github.com/budgie-at/budgie/compare/v1.84.0...v1.84.1) (2025-12-26)
 
 ### Bug Fixes

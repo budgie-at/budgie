@@ -1,4 +1,5 @@
 import {
+    AlertCircle,
     AlertTriangle,
     Archive,
     ArrowLeftRight,
@@ -17,6 +18,7 @@ import {
     Car,
     ChartNoAxesColumn,
     Check,
+    CheckCircle,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
@@ -29,6 +31,7 @@ import {
     DollarSign,
     Dumbbell,
     EllipsisVertical,
+    ExternalLink,
     FileText,
     Fingerprint,
     Folder,
@@ -40,6 +43,7 @@ import {
     HashIcon,
     HeartPulse,
     Home,
+    Info,
     KeyRound,
     Landmark,
     Layers,
@@ -60,6 +64,7 @@ import {
     Plus,
     Popcorn,
     Receipt,
+    RefreshCw,
     Repeat,
     RotateCcw,
     Search,
@@ -168,7 +173,12 @@ export const ICONS = {
     Shirt,
     CircleDot,
     Square,
-    AlertTriangle
+    AlertTriangle,
+    ExternalLink,
+    Info,
+    CheckCircle,
+    AlertCircle,
+    RefreshCw
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
