@@ -43,7 +43,7 @@ export class TransactionRepository {
         const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.INCOME,
-            TransactionEntryTypeEnum.DEBIT
+            TransactionEntryTypeEnum.CREDIT
         );
 
         return this.buildCategoryBreakdownQuery(incomeTransactionIds);
@@ -53,7 +53,7 @@ export class TransactionRepository {
         const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.EXPENSE,
-            TransactionEntryTypeEnum.CREDIT
+            TransactionEntryTypeEnum.DEBIT
         );
 
         return this.buildCategoryBreakdownQuery(expenseTransactionIds);
@@ -65,11 +65,11 @@ export class TransactionRepository {
         return this.db
             .select({
                 income: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                                   THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
             `.as('income'),
                 expense: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                                   THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
             `.as('expense')
             })
