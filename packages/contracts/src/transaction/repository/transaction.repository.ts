@@ -141,8 +141,8 @@ export class TransactionRepository {
         });
     }
 
-    async truncate(): Promise<void> {
-        await this.db.delete(TransactionEntityTable);
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

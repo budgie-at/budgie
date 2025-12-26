@@ -29,7 +29,7 @@ export class TransactionEntryRepository {
         await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId));
     }
 
-    async truncate(): Promise<void> {
-        await this.db.delete(TransactionEntryEntityTable);
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntryEntityTable);
     }
 }
