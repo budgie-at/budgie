@@ -1,1 +1,0 @@
-ALTER TABLE `accounts` RENAME COLUMN "amount_to_return" TO "target_amount";

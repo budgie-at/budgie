@@ -24,9 +24,6 @@ export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, va
     });
     const { t } = useLingui();
 
-    // eslint-disable-next-line no-undefined
-    // const description = hasAccount ? t`${formattedBalance} available` : undefined;
-
     const titleVariant = isDefined(selectedAccount) ? 'primary' : 'secondary';
     const iconVariant = isDefined(selectedAccount) ? variant : 'secondary';
 

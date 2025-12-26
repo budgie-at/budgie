@@ -1,7 +1,7 @@
 import { Text, TextProps } from 'react-native';
 
-import { useAppState } from '../../hooks/use-app-state.hook';
-import { useScreenshotProtection } from '../../hooks/use-screenshot-protection.hook';
+import { useAppState } from '../../hook/use-app-state.hook';
+import { useScreenshotProtection } from '../../hook/use-screenshot-protection.hook';
 
 interface Props extends TextProps {
     readonly placeholderText?: string;
