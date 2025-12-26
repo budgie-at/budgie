@@ -1,7 +1,7 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import * as SecureStore from 'expo-secure-store';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
@@ -14,24 +14,25 @@ class BankSyncStorageService {
         const data = SecureStore.getItem(getBankSyncStorageKey(provider));
 
         if (!isDefined(data)) {
-            return this.createEmptyState(provider);
+            return {
+                provider,
+                enabled: false,
+                token: null,
+                progress: emptySyncProgress,
+                lastSyncAt: null,
+                lastError: null
+            };
         }
 
         return JSON.parse(data) as BankSyncStateInterface;
     }
 
     setState(provider: BankProviderEnum, state: Partial<BankSyncStateInterface>): void {
-        const currentState = this.getState(provider);
-        const newState: BankSyncStateInterface = { ...currentState, ...state };
-
-        SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify(newState));
+        SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify({ ...this.getState(provider), ...state }));
     }
 
     updateProgress(provider: BankProviderEnum, progress: Partial<SyncProgressInterface>): void {
-        const currentState = this.getState(provider);
-        const newProgress: SyncProgressInterface = { ...currentState.progress, ...progress };
-
-        this.setState(provider, { progress: newProgress });
+        this.setState(provider, { progress: { ...this.getState(provider).progress, ...progress } });
     }
 
     startSync(provider: BankProviderEnum, totalAccounts: number): void {
@@ -60,11 +61,9 @@ class BankSyncStorageService {
     }
 
     failSync(provider: BankProviderEnum, error: string): void {
-        const currentState = this.getState(provider);
-
         this.setState(provider, {
             progress: {
-                ...currentState.progress,
+                ...this.getState(provider).progress,
                 status: SyncStatusEnum.ERROR,
                 step: SyncStepEnum.ERROR,
                 error
@@ -74,10 +73,7 @@ class BankSyncStorageService {
     }
 
     resetSync(provider: BankProviderEnum): void {
-        this.setState(provider, {
-            progress: emptySyncProgress,
-            lastError: null
-        });
+        this.setState(provider, { progress: emptySyncProgress, lastError: null });
     }
 
     isEnabled(provider: BankProviderEnum): boolean {
@@ -97,26 +93,13 @@ class BankSyncStorageService {
     }
 
     hasToken(provider: BankProviderEnum): boolean {
-        const token = this.getToken(provider);
-
-        return isDefined(token) && token.length > 0;
+        return isNotEmptyString(this.getToken(provider));
     }
 
     getAllActiveStates(): BankSyncStateInterface[] {
         const providers = Object.values(BankProviderEnum);
 
         return providers.map(provider => this.getState(provider)).filter(state => state.progress.status !== SyncStatusEnum.IDLE);
-    }
-
-    private createEmptyState(provider: BankProviderEnum): BankSyncStateInterface {
-        return {
-            provider,
-            enabled: false,
-            token: null,
-            progress: emptySyncProgress,
-            lastSyncAt: null,
-            lastError: null
-        };
     }
 }
 
