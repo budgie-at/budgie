@@ -34,7 +34,7 @@ export const TransferTransactionForm = ({ onSubmit, icon, control, setValue, tit
     const fromAccountId = useWatch({
         control,
         name: 'fromAccountId'
-    })
+    });
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
 
     const handleAmountChange = (amount: number) => {
