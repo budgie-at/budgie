@@ -1,6 +1,6 @@
 import { number } from 'zod';
 
-import { convertToCreateEntitySchema } from '../../generic/util/convert-to-create-entity-schema.util';
+import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
 
 import { AccountEntitySchema } from './account-entity.schema';
 
