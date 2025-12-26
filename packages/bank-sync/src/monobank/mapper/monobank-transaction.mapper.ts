@@ -1,3 +1,5 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankTransactionTypeEnum } from '../../core/enum/bank-transaction-type.enum';
 
@@ -5,7 +7,7 @@ import type { BankTransactionInterface } from '../../core/interface/bank-transac
 import type { MonobankTransactionApiInterface } from '../interface/monobank-transaction-api.interface';
 
 const getTransactionType = (amount: number): BankTransactionTypeEnum =>
-    amount >= 0 ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
+    isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
 export const monobankTransactionMapper = (transaction: MonobankTransactionApiInterface, accountId: string): BankTransactionInterface => ({
     id: transaction.id,

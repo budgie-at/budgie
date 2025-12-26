@@ -1,6 +1,6 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { AccountTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
 import { Page } from '../../../@generic/components/page/page';
@@ -35,7 +35,9 @@ export default function Index() {
                     type={AccountTypeEnum.CASH}
                 />
 
-                <Text className="text-secondary-foreground text-sm px-md mt-xl">{t`Bank Sync`}</Text>
+                <Text className="text-secondary-foreground text-sm px-md mt-xl">
+                    <Trans>Bank Sync</Trans>
+                </Text>
 
                 <CreateBankSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
