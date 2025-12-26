@@ -19,6 +19,7 @@ import { PinCard } from '../../../settings/components/security-settings/pin-card
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
+import { TruncateData } from '../../../settings/components/truncate-data/truncate-data';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
@@ -72,7 +73,6 @@ export default function SettingsPage() {
                         <DefaultCurrencySelector />
                         <LocaleSelector />
                         <DefaultAccountSelector />
-                        <ImportCsv />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Organization`}>
@@ -107,6 +107,11 @@ export default function SettingsPage() {
                             right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={!showCents} />}
                             left={<CircleIcon size="1_5xl" icon={ICONS.DollarSign} variant="positive" border={false} />}
                         />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Data management`}>
+                        <ImportCsv />
+                        <TruncateData />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`About`}>
