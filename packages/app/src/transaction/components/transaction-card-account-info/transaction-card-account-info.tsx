@@ -32,6 +32,7 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
             <View className="flex-row items-center gap-x-sm">
                 <Text className="text-xs text-secondary-foreground">from</Text>
                 <Icon icon={ICONS[fromAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Text className="text-xs font-medium text-secondary-foreground">{fromAccount.title}</Text>
             </View>
         );
     }
@@ -39,8 +40,9 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
     if (isDefined(toAccount)) {
         return (
             <View className="flex-row items-center gap-x-sm">
-                <Text className="text-xs text-secondary-foreground">from</Text>
+                <Text className="text-xs text-secondary-foreground">to</Text>
                 <Icon icon={ICONS[toAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Text className="text-xs font-medium text-secondary-foreground">{toAccount.title}</Text>
             </View>
         );
     }
