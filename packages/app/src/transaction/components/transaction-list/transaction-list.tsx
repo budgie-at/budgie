@@ -39,7 +39,6 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: TransactionListItemType[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item.type === 'header' ? [...headers, idx] : headers), []);
 
- 
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
