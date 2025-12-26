@@ -1,9 +1,4 @@
-import {
-    TransactionAssociationEnum,
-    TransactionCreateEntityInterface,
-    TransactionEntryCreateEntityInterface,
-    TransactionEntryTypeEnum
-} from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Control, useFieldArray } from 'react-hook-form';
@@ -22,8 +17,8 @@ import { TransactionEntry } from '../transaction-entry/transaction-entry';
 import { TransactionSplitAllocation } from './transaction-split-allocation';
 
 interface Props {
-    readonly entries: Omit<TransactionEntryCreateEntityInterface, 'transactionId'>[];
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly entries: TransactionEntryCreateInputInterface[];
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
     readonly totalAmount: number;
     readonly accountId: number;
@@ -40,7 +35,7 @@ const categoryVariants = cva('text-sm font-medium flex-1', {
 export const TransactionSplit = ({ control, variant, entries, accountId, totalAmount }: Props) => {
     const { fields, append, remove } = useFieldArray({
         control,
-        name: TransactionAssociationEnum.ENTRIES
+        name: 'entries'
     });
 
     const selectedCategoryIds = entries.map(entry => entry.categoryId).filter(isDefined);
