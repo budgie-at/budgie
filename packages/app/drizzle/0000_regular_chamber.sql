@@ -75,7 +75,7 @@ CREATE TABLE `settings` (
 	`is_biometric_enabled` integer DEFAULT false NOT NULL,
 	`show_cents` integer DEFAULT true NOT NULL,
 	`is_vibration_enabled` integer DEFAULT true NOT NULL,
-    `is_screenshot_protection_enabled` integer DEFAULT true NOT NULL,
+	`is_screenshot_protection_enabled` integer DEFAULT true NOT NULL,
 	FOREIGN KEY (`default_account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`default_instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE no action
 );
@@ -115,12 +115,10 @@ CREATE TABLE `transaction_entries` (
 	`type` text NOT NULL,
 	`account_id` integer NOT NULL,
 	`category_id` integer,
-	`instrument_id` integer NOT NULL,
 	`transaction_id` integer NOT NULL,
 	`amount` integer NOT NULL,
 	FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`instrument_id`) REFERENCES `instruments`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`transaction_id`) REFERENCES `transactions`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
@@ -215,3 +213,4 @@ VALUES
     (true, 'Clothing & Accessories',     'Shirt',                NULL, false),
     (true, 'Other',                      'CircleDot',            NULL, false),
     (true, 'Emergency Fund',             'AlertTriangle',        NULL, false);
+

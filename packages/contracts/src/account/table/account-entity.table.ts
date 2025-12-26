@@ -1,8 +1,8 @@
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
-import { convertEnumToDrizzleEnum } from '../../generic/util/convert-enum-to-drizzle-enum.util';
-import { withBaseEntityTableColumns } from '../../generic/util/with-base-entity-table-columns.util';
+import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
+import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { AccountNatureEnum } from '../enum/account-nature.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
