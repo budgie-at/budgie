@@ -1,7 +1,7 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import {
+    TransactionCreateInputInterface,
     ExternalSourceEnum,
-    TransactionCreateEntityInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
@@ -33,17 +33,17 @@ class TransactionService {
         return transactionRepository.getLatestTransactionTimeByAccountExternalId(externalId);
     }
 
-    async createInternal(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input]);
 
         return transaction;
     }
 
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], batchSize = 500): Promise<TransactionEntityInterface[]> {
+    async bulkCreate(inputs: TransactionCreateInputInterface[], batchSize = 500): Promise<TransactionEntityInterface[]> {
         return await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
     }
 
-    async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
@@ -69,8 +69,7 @@ class TransactionService {
                     ...input,
                     exchangeRate,
                     externalId: null,
-                    amount: fromAmount,
-                    externalSource: null
+                    externalSource: null,
                 },
                 tx
             );
@@ -94,9 +93,9 @@ class TransactionService {
         });
     }
 
-    async updateById(id: number, input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+    async updateById(id: number, input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
-            const transaction = await transactionRepository.updateById(id, { ...input, amount: convertToMicroUnits(input.amount) }, tx);
+            const transaction = await transactionRepository.updateById(id, input, tx);
 
             await this.upsertEntriesAndTags(id, input, tx);
 
@@ -104,14 +103,9 @@ class TransactionService {
         });
     }
 
-    private processBatch(batch: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> {
+    private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
         return db.transaction(async tx => {
-            const preparedInputs = batch.map(input => ({
-                ...input,
-                amount: convertToMicroUnits(input.amount)
-            }));
-
-            const transactions = await transactionRepository.bulkCreate(preparedInputs, tx);
+            const transactions = await transactionRepository.bulkCreate(batch, tx);
 
             // HINT: This will work if bulkCreate will preserve the order of the inputs.
             const batchEntries = transactions.flatMap((transaction, index) =>
@@ -133,7 +127,7 @@ class TransactionService {
         });
     }
 
-    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateEntityInterface, tx: Transaction): Promise<void> {
+    private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: Transaction): Promise<void> {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
