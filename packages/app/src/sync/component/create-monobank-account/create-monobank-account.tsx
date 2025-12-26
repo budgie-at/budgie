@@ -35,7 +35,7 @@ export const CreateMonobankAccount = () => {
     const handleGoBack = () => void goBackOrReplace('/');
     const handleOpenMonobank = () => void monobankSyncService.openAuthPage();
 
-    const handleToggleSync = async (enabled: boolean) => {
+    const handleToggleSync = (enabled: boolean) => {
         const trimmedToken = token.trim();
 
         if (enabled && !isNotEmptyString(trimmedToken)) {
@@ -49,7 +49,7 @@ export const CreateMonobankAccount = () => {
         }
 
         setSyncEnabled(enabled);
-        await monobankSyncService.setEnabled(enabled);
+        monobankSyncService.setEnabled(enabled);
 
         if (enabled) {
             void monobankSyncService.sync();

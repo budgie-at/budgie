@@ -10,6 +10,8 @@ const POLL_INTERVAL_MS = 1000;
 
 const createEmptyState = (provider: BankProviderEnum): BankSyncStateInterface => ({
     provider,
+    enabled: false,
+    token: null,
     progress: emptySyncProgress,
     lastSyncAt: null,
     lastError: null
@@ -17,36 +19,23 @@ const createEmptyState = (provider: BankProviderEnum): BankSyncStateInterface =>
 
 export const useBankSyncState = (provider: BankProviderEnum) => {
     const [state, setState] = useState<BankSyncStateInterface>(createEmptyState(provider));
-    const [isEnabled, setIsEnabled] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
-
-        const loadState = async () => {
-            const [syncState, enabled] = await Promise.all([
-                bankSyncStorageService.getState(provider),
-                bankSyncStorageService.isEnabled(provider)
-            ]);
-
-            if (isMounted) {
-                setState(syncState);
-                setIsEnabled(enabled);
-            }
+        const loadState = () => {
+            setState(bankSyncStorageService.getState(provider));
         };
 
-        void loadState();
+        loadState();
 
-        const interval = setInterval(() => {
-            void loadState();
-        }, POLL_INTERVAL_MS);
+        const interval = setInterval(loadState, POLL_INTERVAL_MS);
 
         return () => {
-            isMounted = false;
             clearInterval(interval);
         };
     }, [provider]);
 
     const isSyncing = state.progress.status === SyncStatusEnum.SYNCING;
+    const isEnabled = state.enabled;
 
     return { state, isEnabled, isSyncing };
 };

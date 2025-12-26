@@ -101,7 +101,7 @@ export const SyncProgressBar = () => {
 
     const handlePress = () => {
         if (canDismiss) {
-            void bankSyncStorageService.resetSync(BankProviderEnum.MONOBANK);
+            bankSyncStorageService.resetSync(BankProviderEnum.MONOBANK);
         }
     };
 
