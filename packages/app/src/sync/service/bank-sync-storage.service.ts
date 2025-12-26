@@ -19,8 +19,7 @@ class BankSyncStorageService {
                 enabled: false,
                 token: null,
                 progress: emptySyncProgress,
-                lastSyncAt: null,
-                lastError: null
+                lastSyncAt: null
             };
         }
 
@@ -42,8 +41,7 @@ class BankSyncStorageService {
                 status: SyncStatusEnum.SYNCING,
                 step: SyncStepEnum.SYNCING_ACCOUNTS,
                 totalAccounts
-            },
-            lastError: null
+            }
         });
     }
 
@@ -55,8 +53,7 @@ class BankSyncStorageService {
                 step: SyncStepEnum.COMPLETED,
                 totalTransactions
             },
-            lastSyncAt: new Date().toISOString(),
-            lastError: null
+            lastSyncAt: new Date().toISOString()
         });
     }
 
@@ -67,13 +64,12 @@ class BankSyncStorageService {
                 status: SyncStatusEnum.ERROR,
                 step: SyncStepEnum.ERROR,
                 error
-            },
-            lastError: error
+            }
         });
     }
 
     resetSync(provider: BankProviderEnum): void {
-        this.setState(provider, { progress: emptySyncProgress, lastError: null });
+        this.setState(provider, { progress: emptySyncProgress });
     }
 
     isEnabled(provider: BankProviderEnum): boolean {
