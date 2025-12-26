@@ -1,10 +1,11 @@
+import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef } from 'react';
-import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
-import { MONOBANK_LOGO } from '../../../account/constant/monobank-logo.constant';
 import { useSyncContext } from '../../context/sync.context';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { SyncStepEnum } from '../../enum/sync-step.enum';
@@ -103,21 +104,14 @@ export const SyncProgressBar = () => {
     const handlePress = canDismiss ? resetSync : void 0;
 
     const { totalAccounts, currentAccount } = progress;
-    const showMonobankIcon = isSyncing || progress.step === SyncStepEnum.SYNCING_TRANSACTIONS;
-
-    const renderIcon = () => {
-        if (showMonobankIcon) {
-            return <Image source={MONOBANK_LOGO} style={styles.monobankIcon} />;
-        }
-
-        return <Icon icon={config.icon} className={config.iconColor} size="sm" />;
-    };
 
     return (
         <Animated.View style={heightStyle}>
             <Pressable onPress={handlePress} className={`rounded-2xl border ${config.bgColor} ${config.borderColor} p-4`}>
                 <View className="flex-row items-center gap-3">
-                    <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>{renderIcon()}</View>
+                    <View className={`w-10 h-10 rounded-full ${config.bgColor} items-center justify-center`}>
+                        <BankLogo bankProvider={BankProviderEnum.MONOBANK} />
+                    </View>
                     <View className="flex-1">
                         <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={1}>
                             {stepText()}

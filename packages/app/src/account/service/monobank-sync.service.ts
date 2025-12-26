@@ -72,6 +72,8 @@ class AppMonobankSyncService {
         const bankAccounts = await syncService.syncAccounts();
         const accounts = await this.createAccounts(bankAccounts);
 
+        await microPause();
+
         const transactions: TransactionEntityInterface[] = [];
 
         for (let i = 0; i < bankAccounts.length; i += 1) {
@@ -88,7 +90,6 @@ class AppMonobankSyncService {
                     currentBatch: batchCount
                 });
 
-                await microPause();
                 transactions.push(...(await this.createTransactions(bankTransactions, accounts)));
                 await microPause();
             }
@@ -167,10 +168,10 @@ class AppMonobankSyncService {
                 const entryType = isExpense ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
                 transactionsToCreate.push({
+                    amount,
                     title: bankTx.description,
                     comment: bankTx.comment ?? '',
                     type: isExpense ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
-                    amount,
                     exchangeRate: 1,
                     operatedAt: new Date(bankTx.time * 1000),
                     externalId: bankTx.id,
@@ -178,7 +179,7 @@ class AppMonobankSyncService {
                     fromAccountId: isExpense ? account.id : null,
                     toAccountId: isExpense ? null : account.id,
                     tagIds: [],
-                    entries: [{ accountId: account.id, instrumentId: account.instrumentId, type: entryType, amount, categoryId: null }]
+                    entries: [{ accountId: account.id, type: entryType, amount, categoryId: null }]
                 });
             }
         }
