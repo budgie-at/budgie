@@ -35,9 +35,9 @@ export default function HomePage() {
                 </HapticPressable>
 
                 <NetWorth />
-                <View className="px-4 mt-4">
-                    <SyncProgressBadge />
-                </View>
+
+                <SyncProgressBadge />
+
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (
