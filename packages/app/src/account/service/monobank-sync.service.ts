@@ -147,7 +147,8 @@ class AppMonobankSyncService {
                     instrumentId: instrument.id,
                     currentBalance: 0,
                     externalId: bankAccount.id,
-                    externalSource: ExternalSourceEnum.MONOBANK
+                    externalSource: ExternalSourceEnum.MONOBANK,
+                    iban: bankAccount.iban
                 });
             }
         }
