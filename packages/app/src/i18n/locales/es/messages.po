@@ -1278,7 +1278,7 @@ msgstr "Tipo ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ucraniano"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:43
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:31
 msgid "Unknown"
 msgstr "Desconocido"
 
