@@ -77,6 +77,7 @@
         "react-native-toast-message": "^2.3.3",
         "react-native-ui-datepicker": "^3.1.2",
         "react-native-web": "^0.21.0",
+        "react-native-webview": "^13.16.0",
         "react-native-worklets": "^0.5.1",
         "tailwind-merge": "^3.3.1",
         "zod": "^4.1.12"
