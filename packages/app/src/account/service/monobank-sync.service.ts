@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings,max-lines */
+/* eslint-disable lingui/no-unlocalized-strings */
 import {
     BankAccountInterface,
     BankProviderEnum,
@@ -126,11 +126,11 @@ class AppMonobankSyncService {
             for (let i = 0; i < bankAccounts.length; i += 1) {
                 const account = bankAccounts[i];
                 // eslint-disable-next-line no-await-in-loop
-                const latestTxTime = await this.getLatestTransactionTime(account.id);
+                const latestTxTime = await transactionService.getLatestTransactionTimeByAccountExternalId(account.id);
                 let batchCount = 0;
 
                 // eslint-disable-next-line no-await-in-loop
-                for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
+                for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime)) {
                     const newBankTransactions = bankTransactions.filter(tx => !existingTransactionIds.has(tx.id));
                     transactions.push(...(await this.createTransactions(newBankTransactions, externalIdAccountMap)));
                     importedTransactions.push(...newBankTransactions);
@@ -159,26 +159,6 @@ class AppMonobankSyncService {
 
             return { success: false, accounts: [], transactions: [], error: errorMessage };
         }
-    }
-
-    private async getLatestTransactionTime(externalId: string): Promise<number | null> {
-        const account = await accountRepository.findByExternalId(externalId);
-        if (!isDefined(account)) {
-            return null;
-        }
-
-        const transactions = await transactionService.findByAccountId(account.id);
-        const nonAdjustmentTx = transactions.filter(tx => tx.type !== TransactionTypeEnum.ADJUSTMENT);
-
-        if (!isNotEmptyArray(nonAdjustmentTx)) {
-            return null;
-        }
-
-        const latestTx = nonAdjustmentTx.reduce((latest, tx) =>
-            new Date(tx.operatedAt).getTime() > new Date(latest.operatedAt).getTime() ? tx : latest
-        );
-
-        return Math.floor(new Date(latestTx.operatedAt).getTime() / 1000);
     }
 
     private async createAccounts(bankAccounts: BankAccountInterface[]): Promise<AccountEntityInterface[]> {
