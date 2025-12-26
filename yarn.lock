@@ -1297,7 +1297,6 @@ __metadata:
   dependencies:
     "@rnw-community/shared": "npm:^1.8.2"
     ky: "npm:^1.14.1"
-    zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
 
