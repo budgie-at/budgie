@@ -115,7 +115,7 @@ export class AccountRepository {
         return await (tx ?? this.db).insert(AccountEntityTable).values(inputs).returning();
     }
 
-    async truncate(): Promise<void> {
-        await this.db.delete(AccountEntityTable);
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(AccountEntityTable);
     }
 }
