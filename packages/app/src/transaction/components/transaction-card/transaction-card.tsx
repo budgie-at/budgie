@@ -1,58 +1,64 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
-import { router } from 'expo-router';
+import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
-import { TransactionCategoryBadgePure } from '../transaction-category-badge/transaction-category-badge';
+import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 export interface TransactionCardPureProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly formattedAmount: string;
     readonly formattedDate: string;
     readonly categoryLabel: string;
 }
 
-const amountVariants = cva('text-md', {
-    variants: {
-        type: FOREGROUND_COLOR_PALETTE
-    }
-});
-
-export const TransactionCardPure = ({ transaction, formattedAmount, formattedDate, categoryLabel }: TransactionCardPureProps) => {
+export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: TransactionCardPureProps) => {
     const categoryIcon = getTransactionIcon(transaction);
-    const transactionType = getTransactionType(transaction);
+    const type = getTransactionType(transaction);
 
-    const handleNavigate = () => void router.push(`/transactions/${transaction.id}`);
+    const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
+    const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
 
     return (
-        <Card onPress={handleNavigate} className="flex-row items-center gap-x-xl p-xl relative">
-            <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[transactionType]} />
+        <Link href={`/transactions/${transaction.id}`} asChild>
+            <Card className="p-xl gap-y-[32px]">
+                <View className="flex-row gap-x-xl">
+                    <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[type]} />
 
-            <View className="flex-1 gap-y-xxs">
-                {isNotEmptyString(transaction.title) ? <Text className="text-primary text-sm">{transaction.title}</Text> : null}
+                    <View className="flex-1 gap-y-xs pt-xxs">
+                        {isNotEmptyString(title) ? (
+                            <Text className="text-primary text-sm font-semibold" numberOfLines={2} ellipsizeMode="tail">
+                                {title}
+                            </Text>
+                        ) : null}
+                        {isNotEmptyString(comment) ? (
+                            <Text className="text-secondary-foreground text-xs" numberOfLines={2} ellipsizeMode="tail">
+                                {comment}
+                            </Text>
+                        ) : null}
 
-                <View className="gap-y-md">
-                    <View className="flex-row items-center gap-x-sm ">
-                        {isNotEmptyString(transaction.comment) ? <Text className="text-primary text-sm">{transaction.comment}</Text> : null}
-                        <TransactionCardAccountInfo transaction={transaction} />
+                        {transaction.type === TransactionTypeEnum.TRANSFER ? null : (
+                            <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
+                        )}
                     </View>
 
-                    <TransactionCategoryBadgePure transaction={transaction} categoryLabel={categoryLabel} />
+                    <TransactionAmount transaction={transaction} />
                 </View>
-            </View>
 
-            <Text className={amountVariants({ type: TRANSACTION_COLOR[transactionType] })}>{formattedAmount}</Text>
-            <Text className="text-xxs text-secondary-foreground absolute right-[12px] bottom-[8px]">{formattedDate}</Text>
-        </Card>
+                <View className="flex-row justify-between items-center">
+                    <TransactionCardAccountInfo transaction={transaction} />
+
+                    <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                </View>
+            </Card>
+        </Link>
     );
 };
