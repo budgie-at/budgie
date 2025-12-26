@@ -69,7 +69,7 @@ class TransactionService {
                     ...input,
                     exchangeRate,
                     externalId: null,
-                    externalSource: null,
+                    externalSource: null
                 },
                 tx
             );

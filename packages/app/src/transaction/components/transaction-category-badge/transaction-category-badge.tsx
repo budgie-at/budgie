@@ -1,6 +1,4 @@
-import {
-    TransactionWithRelationsEntityInterface,
-} from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
