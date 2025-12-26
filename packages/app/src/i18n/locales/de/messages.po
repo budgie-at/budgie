@@ -229,7 +229,7 @@ msgstr "Archivierte Konten"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:41
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 
 #: src/@generic/components/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
@@ -376,7 +376,7 @@ msgstr ""
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
-msgstr ""
+msgstr "Alle Daten löschen"
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
