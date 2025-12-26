@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -17,6 +17,8 @@ import { TransactionFormCategory } from '../transaction-form-category/transactio
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
+
+const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
 interface Props {
     readonly onSubmit: EmptyFn;
@@ -54,6 +56,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
                     variant={variant}
                     accountId={value}
                     onSelect={handleAccountChange}
+                    excludeAccountTypes={EXCLUDED_ACCOUNT_TYPES}
                     emptyStateDescription={t`Create your first account to start tracking transactions`}
                 />
             </FormItem>

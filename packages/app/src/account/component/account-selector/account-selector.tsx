@@ -1,10 +1,12 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
-import { isDefined } from '@rnw-community/shared';
 
 interface Props {
     readonly emptyStateDescription?: string;
@@ -14,12 +16,15 @@ interface Props {
     readonly className?: string;
     readonly status?: FormFieldStatus;
     readonly description?: string;
+    readonly excludeAccountTypes?: AccountTypeEnum[];
 }
 
-export const AccountSelector = ({ emptyStateDescription, accountId, onSelect, variant, className, status, description }: Props) => {
+export const AccountSelector = (props: Props) => {
+    const { emptyStateDescription, accountId, onSelect, variant, className, status, description, excludeAccountTypes } = props;
     const { selectedAccount, icon, renderBottomSheet } = useAccountSelector({
         onSelect,
         accountId,
+        excludeAccountTypes,
         emptyStateDescription
     });
     const { t } = useLingui();

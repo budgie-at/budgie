@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { RefObject } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -14,10 +14,12 @@ interface UseAccountSelectorParams {
     readonly accountId: number | null;
     readonly emptyStateDescription?: string;
     readonly excludeAccountId?: number | null;
+    readonly excludeAccountTypes?: AccountTypeEnum[];
     readonly onSelect: (accountId: number) => Promise<void> | void;
 }
 
-export const useAccountSelector = ({ accountId, excludeAccountId = null, emptyStateDescription, onSelect }: UseAccountSelectorParams) => {
+export const useAccountSelector = (args: UseAccountSelectorParams) => {
+    const { accountId, excludeAccountId = null, excludeAccountTypes, emptyStateDescription, onSelect } = args;
     const { defaultCurrency, decimalPlaces } = useSettingsContext();
 
     const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
@@ -33,6 +35,7 @@ export const useAccountSelector = ({ accountId, excludeAccountId = null, emptySt
             emptyStateDescription={emptyStateDescription}
             selectedAccount={selectedAccount}
             excludeAccountId={excludeAccountId}
+            excludeAccountTypes={excludeAccountTypes}
             onSelect={onSelect}
             ref={ref}
         />
