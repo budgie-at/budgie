@@ -12,7 +12,6 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useSettingsContext } from '../../settings/context/settings.context';
 import { createTransactionEntryInput } from '../utils/create-transaction-entry-input.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
@@ -32,7 +31,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
     const { type, schema, onSubmit, fromAccountId, toAccountId, amount = 0, categoryId = 0 } = props;
 
     const { t } = useLingui();
-    const { defaultInstrument, defaultAccount } = useSettingsContext();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -48,7 +46,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: fromAccountId,
                               type: TransactionEntryTypeEnum.DEBIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId
                           })
@@ -59,7 +56,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               accountId: toAccountId,
                               type: TransactionEntryTypeEnum.CREDIT,
-                              instrumentId: defaultAccount?.instrumentId ?? defaultInstrument.id,
                               amount,
                               categoryId
                           })
@@ -70,14 +66,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateEntityInterf
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              instrumentId: defaultInstrument.id,
-                              type: TransactionEntryTypeEnum.CREDIT
+                              type: TransactionEntryTypeEnum.DEBIT
                           }),
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              instrumentId: defaultInstrument.id,
-                              type: TransactionEntryTypeEnum.DEBIT
+                              type: TransactionEntryTypeEnum.CREDIT
                           })
                       ]
                     : [])

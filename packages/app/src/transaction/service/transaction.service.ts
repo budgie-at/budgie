@@ -8,10 +8,17 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    exchangeRateRepository,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
+import { accountService } from '../../account/service/account.service';
 
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
@@ -33,6 +40,7 @@ class TransactionService {
     }
 
     async createInternalTransfer(input: TransactionCreateEntityInterface): Promise<TransactionEntityInterface> {
+        // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
             const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
@@ -41,39 +49,36 @@ class TransactionService {
                 throw new Error('Transfer must have exactly two entries');
             }
 
+            const [fromAccount, toAccount] = await Promise.all([
+                accountService.findByIdOrFail(fromEntry.accountId),
+                accountService.findByIdOrFail(toEntry.accountId)
+            ]);
+
+            const rate = await exchangeRateRepository.findByBaseAndQuoteIds(
+                toAccount.instrumentId,
+                fromAccount.instrumentId,
+            )
+            const exchangeRate = rate?.rate ?? convertToMicroUnits(1);
+
             const fromAmount = convertToMicroUnits(fromEntry.amount);
-            const toAmount = convertToMicroUnits(toEntry.amount);
+            const toAmount = convertToMicroUnits(fromAmount / exchangeRate);
 
             const transaction = await transactionRepository.create(
                 {
                     ...input,
+                    exchangeRate,
                     externalId: null,
                     amount: fromAmount,
                     externalSource: null,
-                    exchangeRate: fromEntry.instrumentId === toEntry.instrumentId ? 1 : toAmount / fromAmount
                 },
                 tx
             );
 
-            await transactionEntryRepository.create(
-                {
-                    ...fromEntry,
-                    amount: fromAmount,
-                    transactionId: transaction.id,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    instrumentId: fromEntry.instrumentId
-                },
-                tx
-            );
-
-            await transactionEntryRepository.create(
-                {
-                    ...toEntry,
-                    amount: toAmount,
-                    transactionId: transaction.id,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    instrumentId: toEntry.instrumentId
-                },
+            await transactionEntryRepository.bulkCreate(
+                [
+                    { ...fromEntry, amount: fromAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT },
+                    { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT }
+                ],
                 tx
             );
 

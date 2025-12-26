@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { DB, TX } from '../../generic/type/db.type';
+import { DB, TX } from '../../@generic/type/db.type';
 import { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 

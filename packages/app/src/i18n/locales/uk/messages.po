@@ -86,7 +86,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:52
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Рахунок"
 
@@ -132,7 +132,7 @@ msgstr "Додайте новий тег для організації ваши�
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "Add Expense"
 msgstr "Додати витрату"
 
@@ -140,7 +140,7 @@ msgstr "Додати витрату"
 msgid "Add Income"
 msgstr "Додати дохід"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:111
+#: src/transaction/components/transaction-split/transaction-split.tsx:113
 msgid "Add Split"
 msgstr "Додати поділ"
 
@@ -243,7 +243,7 @@ msgstr "Доступні стовпці"
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:59
+#: src/transaction/components/transaction-list/transaction-list.tsx:58
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -286,7 +286,7 @@ msgstr "Готівка"
 #: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:55
-#: src/transaction/components/transaction-list/transaction-list.tsx:60
+#: src/transaction/components/transaction-list/transaction-list.tsx:59
 msgid "Categories"
 msgstr "Категорії"
 
@@ -296,7 +296,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:189
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:50
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:38
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Категорія"
 
@@ -401,8 +401,8 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:47
-#: src/transaction/hook/use-create-transaction-form.hook.ts:96
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:45
+#: src/transaction/hook/use-create-transaction-form.hook.ts:90
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
@@ -462,9 +462,9 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:58
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:70
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:95
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:79
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:104
 msgid "Create your first account to start tracking transactions"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати транзакції"
 
@@ -645,7 +645,7 @@ msgstr "Щоденні транзакції та витрати"
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:37
 msgid "Expense created"
 msgstr "Витрату створено"
 
@@ -682,7 +682,7 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:69
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 msgid "FROM"
 msgstr "З"
 
@@ -817,7 +817,7 @@ msgstr "Монобанк"
 msgid "Move between accounts"
 msgstr "Переказ між рахунками"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:46
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:53
 msgid "Move Money"
 msgstr "Переказати гроші"
 
@@ -825,7 +825,7 @@ msgstr "Переказати гроші"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:49
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
 msgid "New Expense"
 msgstr "Нова витрата"
 
@@ -893,7 +893,7 @@ msgstr "Мов не знайдено"
 msgid "No locales found"
 msgstr "Регіональні налаштування не знайдено"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:84
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -923,7 +923,7 @@ msgstr "Ще немає тегів"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:83
+#: src/transaction/components/transaction-list/transaction-list.tsx:84
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1094,7 +1094,7 @@ msgid "Select category"
 msgstr "Виберіть категорію"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:71
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:70
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1148,8 +1148,8 @@ msgstr "Показувати $1 234,56 замість $1 235"
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:46
-#: src/transaction/hook/use-create-transaction-form.hook.ts:95
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:44
+#: src/transaction/hook/use-create-transaction-form.hook.ts:89
 #: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
@@ -1174,7 +1174,7 @@ msgstr "Витрати за категоріями"
 msgid "Spent"
 msgstr "Витрачено"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:84
+#: src/transaction/components/transaction-split/transaction-split.tsx:86
 msgid "Split by Category"
 msgstr "Поділ за категоріями"
 
@@ -1182,7 +1182,7 @@ msgstr "Поділ за категоріями"
 msgid "Start Import"
 msgstr "Почати імпорт"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:86
+#: src/transaction/components/transaction-list/transaction-list.tsx:87
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -1285,7 +1285,7 @@ msgstr "Цього тижня"
 msgid "This Year"
 msgstr "Цього року"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:91
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:100
 msgid "TO"
 msgstr "НА"
 
@@ -1333,7 +1333,7 @@ msgstr "Переказ"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:85
+#: src/transaction/components/transaction-list/transaction-list.tsx:86
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -1349,6 +1349,10 @@ msgstr "Тип ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Українська"
+
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:31
+msgid "Unknown"
+msgstr "Невідомо"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
 msgid "Unknown Category"
@@ -1391,7 +1395,7 @@ msgstr "Перегляд та видалення власних категорі
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
 msgstr "Ваша витрата була успішно зафіксована."
 

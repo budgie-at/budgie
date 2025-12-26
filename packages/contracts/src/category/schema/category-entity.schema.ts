@@ -1,8 +1,8 @@
 import { createSelectSchema } from 'drizzle-zod';
 import { enum as zodEnum } from 'zod';
 
-import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
-import { UserIconNameEnum } from '../../generic/enum/user-icon-name.enum';
+import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
+import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { CATEGORY_TITLE_MAX_LENGTH } from '../constant/category-title-max-length.constant';
 import { CATEGORY_TITLE_MIN_LENGTH } from '../constant/category-title-min-length.constant';
 import { CategoryEntityTable } from '../table/category-entity.table';

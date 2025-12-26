@@ -197,7 +197,6 @@ export class ImporterService {
                 {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
-                    instrumentId: source.instrument.id,
                     accountId: source.account.id,
                     categoryId: category.id
                 }
@@ -207,7 +206,6 @@ export class ImporterService {
                 {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
-                    instrumentId: source.instrument.id,
                     accountId: source.account.id,
                     categoryId: category.id
                 }
@@ -217,14 +215,12 @@ export class ImporterService {
                 {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
-                    instrumentId: source.instrument.id,
                     accountId: source.account.id,
                     categoryId: category.id
                 },
                 {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(dest.amount),
-                    instrumentId: dest.instrument.id,
                     accountId: dest.account.id,
                     categoryId: category.id
                 }

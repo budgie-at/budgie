@@ -1,6 +1,6 @@
 import { isDefined } from '@rnw-community/shared';
 
-import { PRECISION } from '../../generic/constant/precision.constant';
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { TOLERANCE_MICRO } from '../constant/tolerance-micro.constant';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 import { getTotalSignedEntryMicroUnits } from '../util/get-total-signed-entry-micro-units.util';

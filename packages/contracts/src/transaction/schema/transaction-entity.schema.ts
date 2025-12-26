@@ -1,8 +1,8 @@
 import { createSelectSchema } from 'drizzle-zod';
 import { number, enum as zodEnum } from 'zod';
 
+import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { BaseEntityFields } from '../../generic/constant/base-entity-fields.constant';
 import { TRANSACTION_COMMENT_MAX_LENGTH } from '../constant/transaction-comment-max-length.constant';
 import { TRANSACTION_TITLE_MAX_LENGTH } from '../constant/transaction-title-max-length.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';

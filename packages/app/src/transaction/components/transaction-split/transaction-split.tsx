@@ -1,7 +1,12 @@
-import { TransactionAssociationEnum, TransactionCreateEntityInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    TransactionAssociationEnum,
+    TransactionCreateEntityInterface,
+    TransactionEntryCreateEntityInterface,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Control, useFieldArray, useWatch } from 'react-hook-form';
+import { Control, useFieldArray } from 'react-hook-form';
 import { Switch, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,28 +22,26 @@ import { TransactionEntry } from '../transaction-entry/transaction-entry';
 import { TransactionSplitAllocation } from './transaction-split-allocation';
 
 interface Props {
+    readonly entries: Omit<TransactionEntryCreateEntityInterface, 'transactionId'>[];
     readonly control: Control<TransactionCreateEntityInterface>;
     readonly variant: ColorPaletteVariant;
+    readonly totalAmount: number;
+    readonly accountId: number;
 }
 
 const iconVariants = cva('', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 const categoryVariants = cva('text-sm font-medium flex-1', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const TransactionSplit = ({ control, variant }: Props) => {
+export const TransactionSplit = ({ control, variant, entries, accountId, totalAmount }: Props) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name: TransactionAssociationEnum.ENTRIES
     });
-    const [entries, amount] = useWatch({ control, name: ['entries', 'amount'] });
 
     const selectedCategoryIds = entries.map(entry => entry.categoryId).filter(isDefined);
 
@@ -46,14 +49,13 @@ export const TransactionSplit = ({ control, variant }: Props) => {
 
     const entriesAmount = sumEntriesAmount(entries);
 
-    const showSummary = amount !== 0 || entriesAmount !== 0;
+    const showSummary = totalAmount !== 0 || entriesAmount !== 0;
 
     const handleInsert = () => {
         append({
             amount: 0,
-            accountId: 0,
+            accountId,
             categoryId: 0,
-            instrumentId: 0,
             type: TransactionEntryTypeEnum.DEBIT
         });
     };
@@ -113,7 +115,7 @@ export const TransactionSplit = ({ control, variant }: Props) => {
                         />
                     </View>
 
-                    {showSummary ? <TransactionSplitAllocation entriesAmount={entriesAmount} totalAmount={amount} /> : null}
+                    {showSummary ? <TransactionSplitAllocation entriesAmount={entriesAmount} totalAmount={totalAmount} /> : null}
                 </>
             ) : null}
         </View>

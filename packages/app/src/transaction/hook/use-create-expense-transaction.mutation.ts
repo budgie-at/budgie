@@ -10,11 +10,10 @@ import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 export const useCreateExpenseTransactionMutation = () => {
     const { t } = useLingui();
-    const { defaultInstrument, defaultAccount } = useSettingsContext();
+    const { defaultAccount } = useSettingsContext();
 
     return async (amount: number, categoryId: number) => {
         const accountId = defaultAccount?.id ?? 0;
-        const instrumentId = defaultAccount?.instrumentId ?? defaultInstrument.id;
 
         const transactionData = createTransactionInput({
             exchangeRate: 1,
@@ -25,7 +24,6 @@ export const useCreateExpenseTransactionMutation = () => {
                 createTransactionEntryInput({
                     accountId,
                     type: TransactionEntryTypeEnum.CREDIT,
-                    instrumentId,
                     amount,
                     categoryId
                 })
