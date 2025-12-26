@@ -31,7 +31,6 @@ import { exchangeRatesService } from '../exchange-rate/service/exchange-rates-sy
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
-import { SyncProvider } from '../sync/provider/sync.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -60,7 +59,14 @@ export default function RootLayout() {
             void exchangeRatesService.registerBackgroundTask();
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
-            void monobankSyncService.registerBackgroundTask();
+
+            void monobankSyncService.isEnabled().then(enabled => {
+                if (enabled) {
+                    void monobankSyncService.registerBackgroundTask();
+                }
+
+                return enabled;
+            });
 
             // HINT: We need to time for db to return data
             setTimeout(() => void SplashScreen.hideAsync(), 200);
@@ -81,31 +87,29 @@ export default function RootLayout() {
                                 <BottomSheetsProvider>
                                     <AuthProvider>
                                         <AuthGuard>
-                                            <SyncProvider>
-                                                <LlmProvider>
-                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                        <Stack.Screen name="(tabs)" />
+                                            <LlmProvider>
+                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                    <Stack.Screen name="(tabs)" />
 
-                                                        <Stack.Screen name="(main)/pin" />
-                                                        <Stack.Screen name="(main)/create-account" />
+                                                    <Stack.Screen name="(main)/pin" />
+                                                    <Stack.Screen name="(main)/create-account" />
 
-                                                        <Stack.Screen name="(main)/account/[id]/update" />
-                                                        <Stack.Screen name="(main)/account/[id]/details" />
+                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                    <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                        <Stack.Screen name="(main)/transactions/[id]" />
+                                                    <Stack.Screen name="(main)/transactions/[id]" />
 
-                                                        <Stack.Screen name="(main)/settings/index" />
-                                                        <Stack.Screen name="(main)/settings/pin" />
-                                                        <Stack.Screen name="(main)/settings/categories" />
-                                                        <Stack.Screen name="(main)/settings/tags" />
-                                                        <Stack.Screen name="(main)/settings/archived" />
-                                                        <Stack.Screen name="(main)/settings/import" />
+                                                    <Stack.Screen name="(main)/settings/index" />
+                                                    <Stack.Screen name="(main)/settings/pin" />
+                                                    <Stack.Screen name="(main)/settings/categories" />
+                                                    <Stack.Screen name="(main)/settings/tags" />
+                                                    <Stack.Screen name="(main)/settings/archived" />
+                                                    <Stack.Screen name="(main)/settings/import" />
 
-                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                                    </Stack>
-                                                    <Toast />
-                                                </LlmProvider>
-                                            </SyncProvider>
+                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                </Stack>
+                                                <Toast />
+                                            </LlmProvider>
                                         </AuthGuard>
                                     </AuthProvider>
                                 </BottomSheetsProvider>
