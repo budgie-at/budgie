@@ -369,14 +369,14 @@ msgstr "Limpiar"
 msgid "Clear All"
 msgstr "Limpiar todo"
 
-#: src/sync/component/get-token-card/get-token-card.tsx:51
-msgid "Close"
-msgstr ""
-
 #: src/settings/components/truncate-data/truncate-data.tsx:32
 #: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Clear All Data"
 msgstr "Borrar todos los datos"
+
+#: src/sync/component/get-token-card/get-token-card.tsx:51
+msgid "Close"
+msgstr ""
 
 #: src/app/(main)/settings/import.tsx:249
 msgid "Comment"
