@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 'use client';
 
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';

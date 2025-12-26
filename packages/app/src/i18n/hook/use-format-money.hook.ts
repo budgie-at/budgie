@@ -27,7 +27,7 @@ const createFormatMoney =
                 minimumFractionDigits: decimalPlaces,
                 signDisplay: showSign ? 'always' : 'never'
             })
-            .replace('UAH ', '₴');
+            .replace('UAH ', '₴');
     };
 
 export const useFormatMoney = (decimalPlaces: number, currency: string, showSign = false) => {

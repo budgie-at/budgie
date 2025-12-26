@@ -32,4 +32,3 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         toCurrency: 'outcomeCurrency'
     }
 };
-

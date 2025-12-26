@@ -1,14 +1,13 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
 import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { AccountCardContent } from '../account-card-content/account-card-content';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
 
@@ -37,12 +36,7 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
                 variant="ghost"
             />
 
-            <View className="flex-1">
-                <Text className="text-primary text-md font-medium mb-xs">{title}</Text>
-                <Text className="text-secondary-foreground text-sm">{description}</Text>
-            </View>
-
-            <Icon className="text-primary/40" icon={ICONS.ChevronRight} />
+            <AccountCardContent title={title} description={description} />
         </Card>
     );
 };

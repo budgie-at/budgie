@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -5,6 +6,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
+import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -26,7 +28,7 @@ export class TransactionRepository {
             with: {
                 [TransactionEntryAssociationEnum.ACCOUNT]: {
                     with: {
-                        [AccountAssociationEnum.INSTRUMENT]: true,
+                        [AccountAssociationEnum.INSTRUMENT]: true
                     }
                 },
                 [TransactionEntryAssociationEnum.CATEGORY]: true
@@ -129,6 +131,43 @@ export class TransactionRepository {
 
     async truncate(): Promise<void> {
         await this.db.delete(TransactionEntityTable);
+    }
+
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: eq(TransactionEntityTable.externalSource, externalSource)
+        });
+    }
+
+    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
+        });
+    }
+
+    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
+        const result = await this.db
+            .select({ operatedAt: sql<string>`MAX(${TransactionEntityTable.operatedAt})` })
+            .from(TransactionEntityTable)
+            .innerJoin(
+                AccountEntityTable,
+                or(
+                    eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id),
+                    eq(TransactionEntityTable.toAccountId, AccountEntityTable.id)
+                )
+            )
+            .where(
+                and(eq(AccountEntityTable.externalId, externalId), sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`)
+            );
+
+        const time = result[0]?.operatedAt;
+
+        if (!isDefined(time)) {
+            return null;
+        }
+
+        return new Date(time);
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

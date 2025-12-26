@@ -35,6 +35,14 @@ interface EntryParams {
     instrument: InstrumentEntityInterface;
 }
 
+interface CreateEntriesParamsInterface {
+    type: TransactionTypeEnum;
+    category: CategoryEntityInterface;
+    source: EntryParams;
+    dest: EntryParams | null;
+    externalId?: string;
+}
+
 interface ValidationParams {
     normalizedRow: NormalizedRow;
     toAccount?: AccountEntityInterface;
@@ -171,7 +179,7 @@ export class ImporterService {
             toAccountId: source.account.id,
             fromAccountId: dest?.account.id ?? null,
             tagIds: [],
-            entries: this.createEntries(type, category, source, dest)
+            entries: this.createEntries({ type, category, source, dest, externalId: normalizedRow.externalId })
         };
     }
 
@@ -187,19 +195,23 @@ export class ImporterService {
         return TransactionTypeEnum.EXPENSE;
     }
 
-    private createEntries(
-        type: TransactionTypeEnum,
-        category: CategoryEntityInterface,
-        source: EntryParams,
-        dest: EntryParams | null
-    ): TransactionEntryCreateInputInterface[] {
+    private createEntries({
+        type,
+        category,
+        source,
+        dest,
+        externalId
+    }: CreateEntriesParamsInterface): TransactionEntryCreateInputInterface[] {
+        const entryExternalId = externalId ?? null;
+
         if (type === TransactionTypeEnum.INCOME) {
             return [
                 {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id
+                    categoryId: category.id,
+                    externalId: entryExternalId
                 }
             ];
         } else if (type === TransactionTypeEnum.EXPENSE) {
@@ -208,7 +220,8 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id
+                    categoryId: category.id,
+                    externalId: entryExternalId
                 }
             ];
         } else if (type === TransactionTypeEnum.TRANSFER && isDefined(dest)) {
@@ -217,13 +230,15 @@ export class ImporterService {
                     type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
-                    categoryId: category.id
+                    categoryId: category.id,
+                    externalId: entryExternalId
                 },
                 {
                     type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(dest.amount),
                     accountId: dest.account.id,
-                    categoryId: category.id
+                    categoryId: category.id,
+                    externalId: entryExternalId
                 }
             ];
         }

@@ -1,4 +1,4 @@
-export const microPause = () =>
+export const microPause = (delay = 0) =>
     new Promise(resolve => {
-        setTimeout(resolve, 0);
+        setTimeout(resolve, delay);
     });

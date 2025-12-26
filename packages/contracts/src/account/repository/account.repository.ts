@@ -1,4 +1,4 @@
-import { and, count, eq, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
@@ -96,6 +96,18 @@ export class AccountRepository {
         return this.db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
+    async findByExternalId(externalId: string): Promise<AccountEntityInterface | undefined> {
+        return await this.db.query.AccountEntityTable.findFirst({
+            where: and(eq(AccountEntityTable.externalId, externalId), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
+        return await this.db.query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
         });
     }
 
