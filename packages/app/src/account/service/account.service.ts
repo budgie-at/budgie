@@ -103,10 +103,7 @@ class AccountService {
                 externalId: null,
                 externalSource: null,
                 operatedAt: new Date(),
-                amount: absDelta,
                 exchangeRate: 1,
-                tagIds: [],
-                entries: [],
                 fromAccountId: isIncome ? null : accountId,
                 toAccountId: isIncome ? accountId : null
             },

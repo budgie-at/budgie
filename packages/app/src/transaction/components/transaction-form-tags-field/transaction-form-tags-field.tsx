@@ -1,4 +1,4 @@
-import { TransactionCreateEntityInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
@@ -7,14 +7,14 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { TagsSelector } from '../../../tag/components/tags-selector/tags-selector';
 
 interface Props {
-    readonly control: Control<TransactionCreateEntityInterface>;
+    readonly control: Control<TransactionCreateInputInterface>;
     readonly variant: ColorPaletteVariant;
 }
 
 export const TransactionFormTagsField = ({ control, variant }: Props) => {
     const { t } = useLingui();
 
-    const renderTagsSelector = ({ field: { value, onChange } }: UseControllerReturn<TransactionCreateEntityInterface, 'tagIds'>) => (
+    const renderTagsSelector = ({ field: { value, onChange } }: UseControllerReturn<TransactionCreateInputInterface, 'tagIds'>) => (
         <FormItem className="w-auto flex-1" label={t`Tags`}>
             <TagsSelector tagIds={value} onChange={onChange} variant={variant} />
         </FormItem>

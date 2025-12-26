@@ -1,5 +1,5 @@
 import {
-    ExpenseTransactionCreateEntitySchema,
+    ExpenseTransactionCreateInputSchema,
     TransactionExpenseWithRelationsEntityInterface,
     TransactionNegativeAdjustmentWithRelationsEntityInterface
 } from '@budgie/contracts';
@@ -18,7 +18,7 @@ export const UpdateExpenseTransaction = ({ transaction }: Props) => {
 
     const { form, handleSubmit } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
-        schema: ExpenseTransactionCreateEntitySchema,
+        schema: ExpenseTransactionCreateInputSchema,
         id: transaction.id
     });
 
