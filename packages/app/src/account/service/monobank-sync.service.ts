@@ -1,6 +1,7 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+/* eslint-disable lingui/no-unlocalized-strings,max-lines */
 import {
     BankAccountInterface,
+    BankProviderEnum,
     BankTransactionInterface,
     BankTransactionTypeEnum,
     MONOBANK_AUTH_URL,
@@ -26,12 +27,12 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { SyncStepEnum } from '../../sync/enum/sync-step.enum';
+import { bankSyncStorageService } from '../../sync/service/bank-sync-storage.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { ONE_HOUR_IN_SECONDS } from '../constant/one-hour-in-seconds.constant';
 import { MonobankSyncResultInterface } from '../interface/monobank-sync-result.interface';
-import { SyncProgressCallbackType } from '../type/sync-progress-callback.type';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
 import { accountService } from './account.service';
@@ -41,6 +42,8 @@ import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie
 const MONOBANK_BALANCE_DIVISOR = 100;
 
 class AppMonobankSyncService {
+    private readonly provider = BankProviderEnum.MONOBANK;
+
     async openAuthPage(): Promise<void> {
         await Linking.openURL(MONOBANK_AUTH_URL);
     }
@@ -57,8 +60,22 @@ class AppMonobankSyncService {
         await SecureStore.deleteItemAsync(MONOBANK_TOKEN_KEY);
     }
 
-    async hasToken(): Promise<boolean> {
-        return isDefined(this.getToken());
+    hasToken(): boolean {
+        return isNotEmptyString(this.getToken());
+    }
+
+    async isEnabled(): Promise<boolean> {
+        return bankSyncStorageService.isEnabled(this.provider);
+    }
+
+    async setEnabled(enabled: boolean): Promise<void> {
+        await bankSyncStorageService.setEnabled(this.provider, enabled);
+
+        if (enabled) {
+            await this.registerBackgroundTask();
+        } else {
+            await this.unregisterBackgroundTask();
+        }
     }
 
     async registerBackgroundTask(): Promise<void> {
@@ -71,83 +88,77 @@ class AppMonobankSyncService {
         });
     }
 
-    // eslint-disable-next-line max-statements
-    async sync(onProgress?: SyncProgressCallbackType): Promise<MonobankSyncResultInterface> {
-        const syncService = new MonobankSyncService(this.getToken());
-
-        onProgress?.({ step: SyncStepEnum.SYNCING_ACCOUNTS });
-
-        const bankAccounts = await syncService.syncAccounts();
-        const accounts = await this.createAccounts(bankAccounts);
-        const externalIdAccountMap = new Map<string, AccountEntityInterface>();
-        const ibanToAccountMap = new Map<string, AccountEntityInterface>();
-        for (const account of accounts) {
-            if (isNotEmptyString(account.iban)) {
-                ibanToAccountMap.set(account.iban, account);
-            }
-            if (isNotEmptyString(account.externalId)) {
-                externalIdAccountMap.set(account.externalId, account);
-            }
+    async unregisterBackgroundTask(): Promise<void> {
+        if (!(await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK))) {
+            return;
         }
 
-        await microPause();
+        await BackgroundTask.unregisterTaskAsync(MONOBANK_SYNC_TASK);
+    }
 
-        // TODO: This is a bad solution as this will grow over time, we need a better approach
-        const transactions: TransactionEntityInterface[] = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
-        const importedTransactions: BankTransactionInterface[] = [];
+    // eslint-disable-next-line max-statements
+    async sync(): Promise<MonobankSyncResultInterface> {
+        const syncService = new MonobankSyncService(this.getToken());
 
-        const existingTransactionIds = new Set(transactions.map(tx => tx.externalId));
+        try {
+            const bankAccounts = await syncService.syncAccounts();
+            await bankSyncStorageService.startSync(this.provider, bankAccounts.length);
 
-        await Promise.all(
-            bankAccounts.map(async (account, i) => {
+            const accounts = await this.createAccounts(bankAccounts);
+            const externalIdAccountMap = new Map<string, AccountEntityInterface>();
+            const ibanToAccountMap = new Map<string, AccountEntityInterface>();
+
+            for (const account of accounts) {
+                if (isNotEmptyString(account.iban)) {
+                    ibanToAccountMap.set(account.iban, account);
+                }
+                if (isNotEmptyString(account.externalId)) {
+                    externalIdAccountMap.set(account.externalId, account);
+                }
+            }
+
+            await microPause();
+
+            const transactions: TransactionEntityInterface[] = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
+            const importedTransactions: BankTransactionInterface[] = [];
+            const existingTransactionIds = new Set(transactions.map(tx => tx.externalId));
+
+            for (let i = 0; i < bankAccounts.length; i += 1) {
+                const account = bankAccounts[i];
+                // eslint-disable-next-line no-await-in-loop
                 const latestTxTime = await this.getLatestTransactionTime(account.id);
-
                 let batchCount = 0;
 
+                // eslint-disable-next-line no-await-in-loop
                 for await (const bankTransactions of syncService.syncTransactions(account.id, latestTxTime ?? 0)) {
-                    console.log(bankTransactions.length, 'transactions to import for account', account.id);
-                    // TODO: This is a bad solution as this will grow over time, we need a better approach
                     const newBankTransactions = bankTransactions.filter(tx => !existingTransactionIds.has(tx.id));
                     transactions.push(...(await this.createTransactions(newBankTransactions, externalIdAccountMap)));
                     importedTransactions.push(...newBankTransactions);
 
-                    await microPause();
+                    batchCount += 1;
 
-                    onProgress?.({
+                    await bankSyncStorageService.updateProgress(this.provider, {
                         step: SyncStepEnum.SYNCING_TRANSACTIONS,
                         currentAccount: i + 1,
                         totalAccounts: bankAccounts.length,
                         totalTransactions: importedTransactions.length,
-                        currentBatch: (batchCount += 1)
+                        currentBatch: batchCount
                     });
+
+                    await microPause();
                 }
-            })
-        );
-
-        await accountBalanceIncrementalService.updateAllBalances(new Date(0));
-        await microPause();
-
-        for (const bankTx of importedTransactions) {
-            const fromAccount = externalIdAccountMap.get(bankTx.accountId);
-            const toAccount = ibanToAccountMap.get(bankTx.counterIban ?? '');
-
-            if (isDefined(fromAccount) && isDefined(toAccount)) {
-                const counterBankTx = importedTransactions.find(tx => {
-                    const counterFromAccount = externalIdAccountMap.get(tx.accountId);
-                    const counterToAccount = ibanToAccountMap.get(tx.counterIban ?? '');
-
-                    if (isDefined(counterFromAccount) && isDefined(counterToAccount)) {
-                        return tx.id !== bankTx.id && counterFromAccount.id === toAccount.id && counterToAccount.id === fromAccount.id;
-                    }
-
-                    return false;
-                });
-
-                console.log('Found transfer', { bankTx, counterBankTx });
             }
-        }
 
-        return { success: true, accounts, transactions };
+            await accountBalanceIncrementalService.updateAllBalances(new Date(0));
+            await bankSyncStorageService.completeSync(this.provider, importedTransactions.length);
+
+            return { success: true, accounts, transactions };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            await bankSyncStorageService.failSync(this.provider, errorMessage);
+
+            return { success: false, accounts: [], transactions: [], error: errorMessage };
+        }
     }
 
     private async getLatestTransactionTime(externalId: string): Promise<number | null> {
@@ -237,6 +248,8 @@ class AppMonobankSyncService {
         return await transactionService.bulkCreate(transactionsToCreate);
     }
 
+    // TODO: Will be used for automatic transfer detection
+    // @ts-expect-error - Will be used for automatic transfer detection
     private createTransferTransaction(
         bankTx: BankTransactionInterface,
         account: AccountEntityInterface,
