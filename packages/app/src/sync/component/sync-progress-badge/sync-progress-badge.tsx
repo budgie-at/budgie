@@ -14,41 +14,32 @@ const getStatusConfig = (status: SyncStatusEnum) => {
     switch (status) {
         case SyncStatusEnum.SUCCESS:
             return {
-                icon: ICONS.CheckCircle,
-                iconColor: 'text-green-500',
                 bgColor: 'bg-green-500/10',
-                borderColor: 'border-green-500/20',
-                progressColor: 'bg-green-500'
+                borderColor: 'border-green-500/20'
             };
         case SyncStatusEnum.ERROR:
             return {
-                icon: ICONS.AlertCircle,
-                iconColor: 'text-red-500',
                 bgColor: 'bg-red-500/10',
-                borderColor: 'border-red-500/20',
-                progressColor: 'bg-red-500'
+                borderColor: 'border-red-500/20'
             };
         default:
             return {
-                icon: ICONS.RefreshCw,
-                iconColor: 'text-primary',
                 bgColor: 'bg-primary/5',
-                borderColor: 'border-primary/10',
-                progressColor: 'bg-primary'
+                borderColor: 'border-primary/10'
             };
     }
 };
 
 export const SyncProgressBadge = () => {
     const { t } = useLingui();
-    const { progress, enabled } = useBankSyncState(BankProviderEnum.MONOBANK);
+    const state = useBankSyncState(BankProviderEnum.MONOBANK);
 
-    const isSyncing = progress.status === SyncStatusEnum.SYNCING;
-    const canDismiss = progress.status === SyncStatusEnum.SUCCESS || progress.status === SyncStatusEnum.ERROR;
-    const config = getStatusConfig(progress.status);
+    const isSyncing = state.status === SyncStatusEnum.SYNCING;
+    const canDismiss = state.status === SyncStatusEnum.SUCCESS || state.status === SyncStatusEnum.ERROR;
+    const config = getStatusConfig(state.status);
 
     const stepText = () => {
-        switch (progress.step) {
+        switch (state.step) {
             case SyncStepEnum.SYNCING_ACCOUNTS:
                 return t`Syncing accounts...`;
             case SyncStepEnum.SYNCING_TRANSACTIONS:
@@ -56,7 +47,7 @@ export const SyncProgressBadge = () => {
             case SyncStepEnum.COMPLETED:
                 return t`Sync completed successfully`;
             case SyncStepEnum.ERROR:
-                return progress.error ?? t`Sync failed`;
+                return state.error ?? t`Sync failed`;
             default:
                 return '';
         }
@@ -68,9 +59,9 @@ export const SyncProgressBadge = () => {
         }
     };
 
-    const { totalTransactions } = progress;
+    const { totalTransactions, enabled } = state;
 
-    if (!enabled || progress.status === SyncStatusEnum.IDLE) {
+    if (!enabled || state.status === SyncStatusEnum.IDLE) {
         return null;
     }
 
