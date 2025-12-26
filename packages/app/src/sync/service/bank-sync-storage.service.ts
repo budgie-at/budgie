@@ -3,14 +3,14 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { getBankSyncEnabledKey, getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
+import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncStepEnum } from '../enum/sync-step.enum';
 import { BankSyncStateInterface } from '../interface/bank-sync-state.interface';
 import { SyncProgressInterface, emptySyncProgress } from '../interface/sync-progress.interface';
 
 class BankSyncStorageService {
-    async getState(provider: BankProviderEnum): Promise<BankSyncStateInterface> {
+    getState(provider: BankProviderEnum): BankSyncStateInterface {
         const data = SecureStore.getItem(getBankSyncStorageKey(provider));
 
         if (!isDefined(data)) {
@@ -20,22 +20,22 @@ class BankSyncStorageService {
         return JSON.parse(data) as BankSyncStateInterface;
     }
 
-    async setState(provider: BankProviderEnum, state: Partial<BankSyncStateInterface>): Promise<void> {
-        const currentState = await this.getState(provider);
+    setState(provider: BankProviderEnum, state: Partial<BankSyncStateInterface>): void {
+        const currentState = this.getState(provider);
         const newState: BankSyncStateInterface = { ...currentState, ...state };
 
         SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify(newState));
     }
 
-    async updateProgress(provider: BankProviderEnum, progress: Partial<SyncProgressInterface>): Promise<void> {
-        const currentState = await this.getState(provider);
+    updateProgress(provider: BankProviderEnum, progress: Partial<SyncProgressInterface>): void {
+        const currentState = this.getState(provider);
         const newProgress: SyncProgressInterface = { ...currentState.progress, ...progress };
 
-        await this.setState(provider, { progress: newProgress });
+        this.setState(provider, { progress: newProgress });
     }
 
-    async startSync(provider: BankProviderEnum, totalAccounts: number): Promise<void> {
-        await this.setState(provider, {
+    startSync(provider: BankProviderEnum, totalAccounts: number): void {
+        this.setState(provider, {
             progress: {
                 ...emptySyncProgress,
                 status: SyncStatusEnum.SYNCING,
@@ -46,8 +46,8 @@ class BankSyncStorageService {
         });
     }
 
-    async completeSync(provider: BankProviderEnum, totalTransactions: number): Promise<void> {
-        await this.setState(provider, {
+    completeSync(provider: BankProviderEnum, totalTransactions: number): void {
+        this.setState(provider, {
             progress: {
                 ...emptySyncProgress,
                 status: SyncStatusEnum.SUCCESS,
@@ -59,10 +59,10 @@ class BankSyncStorageService {
         });
     }
 
-    async failSync(provider: BankProviderEnum, error: string): Promise<void> {
-        const currentState = await this.getState(provider);
+    failSync(provider: BankProviderEnum, error: string): void {
+        const currentState = this.getState(provider);
 
-        await this.setState(provider, {
+        this.setState(provider, {
             progress: {
                 ...currentState.progress,
                 status: SyncStatusEnum.ERROR,
@@ -73,33 +73,46 @@ class BankSyncStorageService {
         });
     }
 
-    async resetSync(provider: BankProviderEnum): Promise<void> {
-        await this.setState(provider, {
+    resetSync(provider: BankProviderEnum): void {
+        this.setState(provider, {
             progress: emptySyncProgress,
             lastError: null
         });
     }
 
-    async isEnabled(provider: BankProviderEnum): Promise<boolean> {
-        const value = SecureStore.getItem(getBankSyncEnabledKey(provider));
-
-        return value === 'true';
+    isEnabled(provider: BankProviderEnum): boolean {
+        return this.getState(provider).enabled;
     }
 
-    async setEnabled(provider: BankProviderEnum, enabled: boolean): Promise<void> {
-        SecureStore.setItem(getBankSyncEnabledKey(provider), enabled ? 'true' : 'false');
+    setEnabled(provider: BankProviderEnum, enabled: boolean): void {
+        this.setState(provider, { enabled });
     }
 
-    async getAllStates(): Promise<BankSyncStateInterface[]> {
+    getToken(provider: BankProviderEnum): string | null {
+        return this.getState(provider).token;
+    }
+
+    setToken(provider: BankProviderEnum, token: string | null): void {
+        this.setState(provider, { token });
+    }
+
+    hasToken(provider: BankProviderEnum): boolean {
+        const token = this.getToken(provider);
+
+        return isDefined(token) && token.length > 0;
+    }
+
+    getAllActiveStates(): BankSyncStateInterface[] {
         const providers = Object.values(BankProviderEnum);
-        const states = await Promise.all(providers.map(provider => this.getState(provider)));
 
-        return states.filter(state => state.progress.status !== SyncStatusEnum.IDLE);
+        return providers.map(provider => this.getState(provider)).filter(state => state.progress.status !== SyncStatusEnum.IDLE);
     }
 
     private createEmptyState(provider: BankProviderEnum): BankSyncStateInterface {
         return {
             provider,
+            enabled: false,
+            token: null,
             progress: emptySyncProgress,
             lastSyncAt: null,
             lastError: null

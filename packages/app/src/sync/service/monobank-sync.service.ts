@@ -19,7 +19,6 @@ import {
 } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as Linking from 'expo-linking';
-import * as SecureStore from 'expo-secure-store';
 import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -32,7 +31,6 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
-import { MONOBANK_TOKEN_KEY } from '../constant/monobank-token-key.constant';
 import { SyncStepEnum } from '../enum/sync-step.enum';
 
 import { bankSyncStorageService } from './bank-sync-storage.service';
@@ -47,32 +45,32 @@ class AppMonobankSyncService {
     }
 
     saveToken(token: string): void {
-        SecureStore.setItem(MONOBANK_TOKEN_KEY, token);
+        bankSyncStorageService.setToken(this.provider, token);
     }
 
     getToken(): string {
-        return SecureStore.getItem(MONOBANK_TOKEN_KEY) ?? '';
+        return bankSyncStorageService.getToken(this.provider) ?? '';
     }
 
-    async deleteToken(): Promise<void> {
-        await SecureStore.deleteItemAsync(MONOBANK_TOKEN_KEY);
+    deleteToken(): void {
+        bankSyncStorageService.setToken(this.provider, null);
     }
 
     hasToken(): boolean {
-        return isNotEmptyString(this.getToken());
+        return bankSyncStorageService.hasToken(this.provider);
     }
 
-    async isEnabled(): Promise<boolean> {
+    isEnabled(): boolean {
         return bankSyncStorageService.isEnabled(this.provider);
     }
 
-    async setEnabled(enabled: boolean): Promise<void> {
-        await bankSyncStorageService.setEnabled(this.provider, enabled);
+    setEnabled(enabled: boolean): void {
+        bankSyncStorageService.setEnabled(this.provider, enabled);
 
         if (enabled) {
-            await this.registerBackgroundTask();
+            void this.registerBackgroundTask();
         } else {
-            await this.unregisterBackgroundTask();
+            void this.unregisterBackgroundTask();
         }
     }
 
@@ -100,7 +98,7 @@ class AppMonobankSyncService {
 
         try {
             const bankAccounts = await syncService.syncAccounts();
-            await bankSyncStorageService.startSync(this.provider, bankAccounts.length);
+            bankSyncStorageService.startSync(this.provider, bankAccounts.length);
 
             const accounts = await this.createAccounts(bankAccounts);
             const externalIdAccountMap = new Map<string, AccountEntityInterface>();
@@ -135,7 +133,7 @@ class AppMonobankSyncService {
 
                     batchCount += 1;
 
-                    await bankSyncStorageService.updateProgress(this.provider, {
+                    bankSyncStorageService.updateProgress(this.provider, {
                         step: SyncStepEnum.SYNCING_TRANSACTIONS,
                         currentAccount: i + 1,
                         totalAccounts: bankAccounts.length,
@@ -148,12 +146,12 @@ class AppMonobankSyncService {
             }
 
             await accountBalanceIncrementalService.updateAllBalances(new Date(0));
-            await bankSyncStorageService.completeSync(this.provider, importedTransactions.length);
+            bankSyncStorageService.completeSync(this.provider, importedTransactions.length);
 
             return { success: true, accounts, transactions };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            await bankSyncStorageService.failSync(this.provider, errorMessage);
+            bankSyncStorageService.failSync(this.provider, errorMessage);
 
             return { success: false, accounts: [], transactions: [], error: errorMessage };
         }
