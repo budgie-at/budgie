@@ -30,9 +30,11 @@ export const TransactionAmount = ({ transaction }: Props) => {
     const formatFromAmount = useFormatMoney(decimalPlaces, fromEntry?.account.instrument.code ?? defaultCurrency);
     const formatToAmount = useFormatMoney(decimalPlaces, toEntry?.account.instrument.code ?? defaultCurrency);
 
+    console.log({ fromEntry: fromEntry?.account.instrument, toEntry: toEntry?.account.instrument });
+
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
-            <View className='gap-y-xxl items-end'>
+            <View className="gap-y-xxl items-end">
                 <Text className={amountVariants({ type: 'default' })}>{formatFromAmount(fromEntry.amount)}</Text>
                 <View className="flex-row items-center gap-x-xs">
                     <Icon icon={ICONS.ArrowRightIcon} className="text-secondary-foreground" size={12} />
@@ -47,7 +49,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
     }
 
     if (isDefined(toEntry)) {
-        return <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatFromAmount(toEntry.amount)}</Text>;
+        return <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatToAmount(toEntry.amount)}</Text>;
     }
 
     return null;
