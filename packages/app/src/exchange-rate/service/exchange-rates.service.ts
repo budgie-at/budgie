@@ -3,7 +3,6 @@ import { InstrumentEntityInterface } from '@budgie/contracts';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { exchangeRateRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
-import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 class ExchangeRatesService {
     async convert(fromInstrumentId: number, toInstrumentId: number, fromAmountInMicroUnits: number): Promise<{amount: number; exchangeRate: number}> {
@@ -11,7 +10,7 @@ class ExchangeRatesService {
 
         if (isDefined(exchangeRate)) {
             return {
-                amount: convertToMicroUnits(fromAmountInMicroUnits / exchangeRate.rate),
+                amount: fromAmountInMicroUnits / exchangeRate.rate,
                 exchangeRate: exchangeRate.rate
             };
         }
@@ -21,7 +20,7 @@ class ExchangeRatesService {
         if (!isDefined(baseInstrument)) {
             return {
                 amount: fromAmountInMicroUnits,
-                exchangeRate: convertToMicroUnits(1)
+                exchangeRate: 1
             };
         }
 
@@ -33,14 +32,14 @@ class ExchangeRatesService {
         if (!isDefined(baseFromExchangeRate) || !isDefined(baseToExchangeRate)) {
             return {
                 amount: fromAmountInMicroUnits,
-                exchangeRate: convertToMicroUnits(1)
+                exchangeRate: 1
             };
         }
 
-        const toAmountInMicroUnits = convertToMicroUnits(fromAmountInMicroUnits / baseFromExchangeRate.rate);
+        const toAmount = fromAmountInMicroUnits / baseFromExchangeRate.rate;
 
         return {
-            amount: convertToMicroUnits(toAmountInMicroUnits / baseToExchangeRate.rate),
+            amount: toAmount / baseToExchangeRate.rate,
             exchangeRate: baseToExchangeRate.rate
         };
     }

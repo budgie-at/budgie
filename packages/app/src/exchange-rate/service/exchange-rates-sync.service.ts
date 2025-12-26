@@ -1,4 +1,3 @@
-import { PRECISION } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -60,14 +59,11 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        const directInteger = Math.round(rate * PRECISION);
+        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, rate, 'exchangerate-api.com');
 
-        await exchangeRateRepository.upsert(baseInstrumentId, instrument.id, directInteger, 'exchangerate-api.com');
+        const reverseRate = 1 / rate;
 
-        const reverse = 1 / rate;
-        const reverseInteger = Math.round(reverse * PRECISION);
-
-        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseInteger, 'exchangerate-api.com');
+        await exchangeRateRepository.upsert(instrument.id, baseInstrumentId, reverseRate, 'exchangerate-api.com');
     }
 }
 
