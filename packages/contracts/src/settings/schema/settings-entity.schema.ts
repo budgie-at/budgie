@@ -15,5 +15,6 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     defaultInstrumentId: schema => schema.positive().nullable().describe('Id of the default instrument for new transactions and accounts.'),
     isBiometricEnabled: schema => schema.describe('Determines whether biometric authentication is enabled in the application.'),
     isPinEnabled: schema => schema.describe('Determines whether PIN authentication is enabled in the application.'),
-    isScreenshotProtectionEnabled: schema => schema.describe('Determines whether screenshot protection is enabled to hide sensitive financial data.')
+    isScreenshotProtectionEnabled: schema =>
+        schema.describe('Determines whether screenshot protection is enabled to hide sensitive financial data.')
 });
