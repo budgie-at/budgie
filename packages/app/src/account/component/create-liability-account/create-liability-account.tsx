@@ -34,6 +34,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     const { control, handleSubmit, instrument } = useAccountForm({
         type,
+        iban: '',
         title: '',
         currentBalance: 0,
         icon: DEFAULT_ICON,
