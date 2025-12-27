@@ -13,7 +13,6 @@ import Toast from 'react-native-toast-message';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
-import '../sync/task/monobank-sync.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/components/screen-layout/screen-layout';
@@ -21,6 +20,7 @@ import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-option
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
+import { useAppState } from '../@generic/hooks/use-app-state.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
@@ -57,17 +57,21 @@ export default function RootLayout() {
         if (success) {
             void exchangeRatesService.sync();
             void exchangeRatesService.registerBackgroundTask();
+
             void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
 
             if (monobankSyncService.isEnabled()) {
                 void monobankSyncService.registerBackgroundTask();
+                void monobankSyncService.sync();
             }
 
             // HINT: We need to time for db to return data
             setTimeout(() => void SplashScreen.hideAsync(), 200);
         }
     }, [success]);
+
+    useAppState(isActive => void (isActive && monobankSyncService.sync()));
 
     if (!success) {
         return null;
