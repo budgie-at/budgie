@@ -78,15 +78,19 @@ export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, de
 
                 {isDebtAccount ? (
                     <View className="flex-row items-center justify-between">
-                        <Text className="text-primary font-medium">{mainAmount}</Text>
+                        <ProtectedText className="text-primary font-medium">{mainAmount}</ProtectedText>
 
                         <View>
-                            <Text className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>{formatMoney(balance)}</Text>
-                            <Text className="text-secondary-foreground text-xxs font-medium text-right">{formatMoney(targetBalance)}</Text>
+                            <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
+                                {formatMoney(balance)}
+                            </ProtectedText>
+                            <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right">
+                                {formatMoney(targetBalance)}
+                            </ProtectedText>
                         </View>
                     </View>
                 ) : (
-                    <Text className="text-primary font-medium">{mainAmount}</Text>
+                    <ProtectedText className="text-primary font-medium">{mainAmount}</ProtectedText>
                 )}
             </View>
         </Card>
