@@ -1,7 +1,7 @@
-import { AccountDebtTypeEnum, DebtAccountCreateInputInterface } from '@budgie/contracts';
+import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+import { Control, Controller, Path, UseControllerReturn } from 'react-hook-form';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -9,8 +9,8 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { AccountSelector } from '../account-selector/account-selector';
 
-interface Props {
-    readonly control: Control<DebtAccountCreateInputInterface>;
+interface Props<T extends { accountId: number | null }> {
+    readonly control: Control<T>;
     readonly debtType: AccountDebtTypeEnum;
 }
 
@@ -25,10 +25,10 @@ const descriptionMap = {
     }
 } as const;
 
-export const DebtAccountAccountField = ({ control, debtType }: Props) => {
+export const DebtAccountAccountField = <T extends { accountId: number | null }>({ control, debtType }: Props<T>) => {
     const { t, i18n } = useLingui();
 
-    const render = ({ field: { value, onChange } }: UseControllerReturn<DebtAccountCreateInputInterface, 'accountId'>) => {
+    const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => {
         const description = isPositiveNumber(value) ? descriptionMap[debtType].selected : descriptionMap[debtType].empty;
 
         return (
@@ -38,5 +38,5 @@ export const DebtAccountAccountField = ({ control, debtType }: Props) => {
         );
     };
 
-    return <Controller render={render} name="accountId" control={control} />;
+    return <Controller render={render} name={'accountId' as Path<T>} control={control} />;
 };
