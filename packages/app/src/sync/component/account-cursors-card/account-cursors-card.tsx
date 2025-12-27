@@ -33,9 +33,7 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
             return null;
         }
 
-        const endTime = cursor.completedAt ?? new Date();
-
-        return formatDistanceStrict(cursor.startedAt, endTime);
+        return formatDistanceStrict(cursor.completedAt ?? new Date(), cursor.startedAt);
     };
 
     return (
