@@ -146,20 +146,20 @@ export class TransactionRepository {
         });
     }
 
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+    async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
         const result = await this.db
-            .select({ operatedAt: sql<string>`MIN(${TransactionEntityTable.operatedAt})` })
+            .select({ operatedAt: sql<string | null>`MAX(${TransactionEntityTable.operatedAt})` })
             .from(TransactionEntityTable)
             .where(
                 and(
                     or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
-                    sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
                 )
             );
 
         const time = result[0]?.operatedAt;
 
-        if (!isDefined(time)) {
+        if (!isDefined(time) || time === '') {
             return null;
         }
 

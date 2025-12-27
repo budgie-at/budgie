@@ -29,8 +29,8 @@ class TransactionService {
         return transactionRepository.findByAccountId(accountId);
     }
 
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getEarliestTransactionTimeByAccountId(accountId);
+    async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getLatestTransactionTimeByAccountId(accountId);
     }
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
