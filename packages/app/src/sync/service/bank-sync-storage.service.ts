@@ -111,28 +111,23 @@ class BankSyncStorageService {
         });
     }
 
-    resetSync(provider: BankProviderEnum): void {
-        const state = this.getState(provider);
-        const baseState = emptyBankSyncState(provider);
-
-        this.setState(provider, {
-            ...baseState,
-            token: state.token,
-            enabled: state.enabled,
-            accountCursors: state.accountCursors
-        });
-    }
-
     isEnabled(provider: BankProviderEnum): boolean {
         return this.getState(provider).enabled;
     }
 
     setEnabled(provider: BankProviderEnum, enabled: boolean): void {
         if (!enabled) {
-            this.resetSync(provider);
-        }
+            const state = this.getState(provider);
 
-        this.setState(provider, { enabled });
+            this.setState(provider, {
+                ...emptyBankSyncState(provider),
+                token: state.token,
+                enabled: state.enabled,
+                accountCursors: state.accountCursors
+            });
+        } else {
+            this.setState(provider, { enabled });
+        }
     }
 
     getToken(provider: BankProviderEnum): string | null {
