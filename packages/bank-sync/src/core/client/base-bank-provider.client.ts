@@ -71,8 +71,7 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
                 retry: {
                     limit: this.retryLimit,
                     methods: ['get'],
-                    statusCodes: this.retryStatusCodes,
-                    backoffLimit: this.timeoutMs
+                    statusCodes: this.retryStatusCodes
                 }
             }).json<T>();
 
