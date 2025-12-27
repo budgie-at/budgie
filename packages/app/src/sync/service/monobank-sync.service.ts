@@ -99,7 +99,7 @@ class AppMonobankSyncService {
     // eslint-disable-next-line max-statements
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
         const state = bankSyncStorageService.getState(this.provider);
-        if (this.isRunning && state.status !== SyncStatusEnum.IDLE) {
+        if (this.isRunning) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
