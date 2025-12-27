@@ -180,7 +180,7 @@ class AppMonobankSyncService {
 
     private async syncBatch(cursor: AccountSyncCursorInterface): Promise<BankSyncBatchResultInterface> {
         const syncService = new MonobankSyncService(this.getToken());
-        const result = await syncService.syncTransactionsBatch(cursor.externalAccountId, cursor.toTime);
+        const result = await syncService.syncTransactions(cursor.externalAccountId, cursor.toTime);
 
         await microPause();
 
