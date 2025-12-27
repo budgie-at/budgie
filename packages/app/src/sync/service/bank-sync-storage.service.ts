@@ -146,8 +146,7 @@ class BankSyncStorageService {
             this.setState(provider, {
                 ...emptyBankSyncState(provider),
                 enabled: false,
-                token: state.token,
-                accountCursors: state.accountCursors
+                token: state.token
             });
         }
     }
