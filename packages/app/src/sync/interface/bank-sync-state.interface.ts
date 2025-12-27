@@ -1,13 +1,12 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 
 import { SyncStatusEnum } from '../enum/sync-status.enum';
-import { SyncStepEnum } from '../enum/sync-step.enum';
 
 export interface AccountSyncCursorInterface {
     readonly accountId: number;
     readonly externalAccountId: string;
-    readonly fromTime: number;
-    readonly toTime: number;
+    readonly fromTime: Date;
+    readonly toTime: Date;
     readonly completed: boolean;
 }
 
@@ -16,7 +15,6 @@ export interface BankSyncStateInterface {
     readonly enabled: boolean;
     readonly token: string | null;
     readonly status: SyncStatusEnum;
-    readonly step: SyncStepEnum;
     readonly currentAccount: number;
     readonly totalAccounts: number;
     readonly totalTransactions: number;
@@ -30,7 +28,6 @@ export const emptyBankSyncState = (provider: BankProviderEnum): BankSyncStateInt
     enabled: false,
     token: null,
     status: SyncStatusEnum.IDLE,
-    step: SyncStepEnum.IDLE,
     currentAccount: 0,
     totalAccounts: 0,
     totalTransactions: 0,

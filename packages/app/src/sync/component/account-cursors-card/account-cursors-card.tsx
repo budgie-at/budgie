@@ -1,4 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
+import { format } from 'date-fns';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/components/card/card';
@@ -7,8 +8,6 @@ import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.inte
 interface Props {
     readonly cursors: AccountSyncCursorInterface[];
 }
-
-const formatTimestamp = (timestamp: number): string => new Date(timestamp * 1000).toLocaleDateString();
 
 export const AccountCursorsCard = ({ cursors }: Props) => {
     const { t } = useLingui();
@@ -33,13 +32,13 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
                             <Text className="text-primary text-xs">
                                 <Trans>From</Trans>
                             </Text>
-                            <Text className="text-primary text-xs">{formatTimestamp(cursor.fromTime)}</Text>
+                            <Text className="text-primary text-xs">{format(cursor.fromTime, 'dd MMMM yyy')}</Text>
                         </View>
                         <View className="flex-row justify-between">
                             <Text className="text-primary text-xs">
                                 <Trans>To</Trans>
                             </Text>
-                            <Text className="text-primary text-xs">{formatTimestamp(cursor.toTime)}</Text>
+                            <Text className="text-primary text-xs">{format(cursor.toTime, 'dd MMMM yyy')}</Text>
                         </View>
                     </View>
                 ))}

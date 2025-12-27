@@ -16,7 +16,6 @@ import { PageHeader } from '../../../@generic/components/page-header/page-header
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
-import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 import { AccountCursorsCard } from '../account-cursors-card/account-cursors-card';
@@ -53,8 +52,6 @@ export const CreateMonobankAccount = () => {
         }
     };
 
-    const isSyncing = syncState.status === SyncStatusEnum.SYNCING;
-
     return (
         <Page
             header={
@@ -67,40 +64,35 @@ export const CreateMonobankAccount = () => {
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    {isNotEmptyString(syncState.token) ? (
-                        !syncState.enabled && (
-                            <>
-                                <Card className="p-4xl bg-warning/10">
-                                    <View className="flex-row items-start gap-x-md">
-                                        <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
-                                        <Text className="text-primary text-foreground text-sm flex-1">
-                                            <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
-                                        </Text>
-                                    </View>
-                                </Card>
-                                <View className="gap-y-md">
-                                    <Text className="text-primary text-muted-foreground text-sm px-md">
-                                        <Trans>Paste your API token below:</Trans>
-                                    </Text>
-                                    <Input
-                                        value={token}
-                                        onChangeText={setToken}
-                                        placeholder={t`Enter your Monobank API token`}
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        secureTextEntry
-                                        editable={!syncState.enabled}
-                                    />
-                                </View>
-                            </>
-                        )
-                    ) : (
+                    <SyncToggleCard syncEnabled={syncState.enabled} onToggle={handleToggleSync} />
+
+                    {!syncState.enabled && (
                         <>
                             <GetTokenCard />
+                            <Card className="p-4xl bg-warning/10">
+                                <View className="flex-row items-start gap-x-md">
+                                    <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
+                                    <Text className="text-primary text-foreground text-sm flex-1">
+                                        <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
+                                    </Text>
+                                </View>
+                            </Card>
+                            <View className="gap-y-md">
+                                <Text className="text-primary text-muted-foreground text-sm px-md">
+                                    <Trans>Paste your API token below:</Trans>
+                                </Text>
+                                <Input
+                                    value={token}
+                                    onChangeText={setToken}
+                                    placeholder={t`Enter your Monobank API token`}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    secureTextEntry
+                                    editable={!syncState.enabled}
+                                />
+                            </View>
                         </>
                     )}
-
-                    <SyncToggleCard isSyncing={isSyncing} syncEnabled={syncState.enabled} onToggle={handleToggleSync} />
 
                     {syncState.enabled && (
                         <>

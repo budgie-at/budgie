@@ -6,7 +6,6 @@ import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
-import { SyncStepEnum } from '../../enum/sync-step.enum';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { bankSyncStorageService } from '../../service/bank-sync-storage.service';
 
@@ -38,15 +37,13 @@ export const SyncProgressBadge = () => {
     const config = getStatusConfig(state.status);
 
     const stepText = () => {
-        switch (state.step) {
-            case SyncStepEnum.SYNCING_ACCOUNTS:
-                return t`Syncing accounts...`;
-            case SyncStepEnum.SYNCING_TRANSACTIONS:
+        switch (state.status) {
+            case SyncStatusEnum.SYNCING:
                 return t`Syncing transactions...`;
-            case SyncStepEnum.COMPLETED:
+            case SyncStatusEnum.SUCCESS:
                 return t`Sync completed successfully`;
-            case SyncStepEnum.ERROR:
-                return state.error ?? t`Sync failed`;
+            case SyncStatusEnum.ERROR:
+                return t`Sync failed`;
             default:
                 return '';
         }

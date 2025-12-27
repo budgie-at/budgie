@@ -1,3 +1,7 @@
+import { addSeconds } from 'date-fns';
+
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 
@@ -20,19 +24,25 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async syncTransactionsBatch(accountId: string, fromTime: number, toTime: number): Promise<BankSyncBatchResultInterface> {
-        const periodFromTime = Math.max(toTime - this.options.maxPeriodSeconds, fromTime);
-        const result = await this.client.getTransactions(accountId, periodFromTime, toTime);
+    async syncTransactionsBatch(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+        const from = addSeconds(to, -this.options.maxPeriodSeconds);
+
+        const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
-            throw new Error('Failed to fetch transactions');
+            throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
         return {
             transactions: result.data,
-            nextToTime: periodFromTime,
-            completed: periodFromTime <= fromTime
+            nextTo: from,
+            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
+            completed: result.data.length === 0
         };
+    }
+
+    protected toSeconds(date: Date): number {
+        return Math.floor(date.getTime() / 1000);
     }
 
     protected delay(ms: number): Promise<void> {
