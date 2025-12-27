@@ -7,6 +7,8 @@ export interface AccountSyncCursorInterface {
     readonly externalAccountId: string;
     readonly fromTime: Date;
     readonly toTime: Date;
+    readonly startedAt: Date | null;
+    readonly completedAt: Date | null;
     readonly completed: boolean;
 }
 
