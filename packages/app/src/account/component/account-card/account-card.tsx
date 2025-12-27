@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -41,6 +41,15 @@ const cardVariants = cva('gap-3 active:scale-xs overflow-hidden', {
         deadlinePriority: {
             high: 'border-dark-warning-corner',
             normal: 'border-secondary-corner'
+        }
+    }
+});
+
+const progressVariants = cva('absolute bottom-0 left-0 h-1', {
+    variants: {
+        debtType: {
+            [AccountDebtTypeEnum.LENT]: 'bg-positive-foreground',
+            [AccountDebtTypeEnum.BORROW]: 'bg-warning-foreground'
         }
     }
 });
@@ -113,7 +122,7 @@ export const AccountCard = (props: Props) => {
                 )}
             </View>
 
-            {isDebtAccount ? <View className="absolute bottom-0 left-0 h-1 bg-warning-foreground" style={progressStyle} /> : null}
+            {isDebtAccount ? <View className={progressVariants({ debtType })} style={progressStyle} /> : null}
         </Card>
     );
 };
