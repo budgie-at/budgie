@@ -2,6 +2,8 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { format } from 'date-fns';
 import { Text, View } from 'react-native';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { Card } from '../../../@generic/components/card/card';
 import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.interface';
 
@@ -11,6 +13,10 @@ interface Props {
 
 export const AccountCursorsCard = ({ cursors }: Props) => {
     const { t } = useLingui();
+
+    if (!isNotEmptyArray(cursors)) {
+        return null;
+    }
 
     return (
         <Card className="p-4xl">
