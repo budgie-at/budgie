@@ -63,6 +63,7 @@ class AppMonobankSyncService {
     setEnabled(enabled: boolean): void {
         bankSyncStorageService.setEnabled(this.provider, enabled);
 
+        this.isRunning = false;
         if (enabled) {
             void this.registerBackgroundTask();
         } else {
