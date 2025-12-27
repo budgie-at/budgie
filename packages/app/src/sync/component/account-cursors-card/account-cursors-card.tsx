@@ -62,7 +62,7 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
                                 {format(cursor.fromTime, 'dd MMMM yyyy')} - {format(cursor.toTime, 'dd MMMM yyyy')}
                             </Text>
                         </View>
-                        {isDefined(cursor.completedAt) && (
+                        {isDefined(cursor.startedAt) && (
                             <View className="flex-row justify-between">
                                 <Text className="text-primary text-xs">
                                     <Trans>Elapsed</Trans>
