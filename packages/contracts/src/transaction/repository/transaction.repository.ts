@@ -146,9 +146,14 @@ export class TransactionRepository {
         });
     }
 
-    async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+    async getTransactionTimeByAccountId(accountId: number, mode: 'latest' | 'earliest'): Promise<Date | null> {
+        const aggregateSql =
+            mode === 'latest'
+                ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
+                : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
+
         const result = await this.db
-            .select({ operatedAt: sql<number | null>`MAX(${TransactionEntityTable.operatedAt})` })
+            .select({ operatedAt: aggregateSql })
             .from(TransactionEntityTable)
             .where(
                 and(
