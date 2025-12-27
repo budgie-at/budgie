@@ -120,8 +120,6 @@ class AppMonobankSyncService {
 
             const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
             if (isDefined(cursor)) {
-                const latestTxTime = await transactionService.getLatestTransactionTimeByAccountId(cursor.accountId);
-
                 const result = await this.syncBatch(cursor);
 
                 bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
