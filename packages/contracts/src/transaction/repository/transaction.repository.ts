@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
@@ -148,7 +148,7 @@ export class TransactionRepository {
 
     async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
         const result = await this.db
-            .select({ operatedAt: sql<string | null>`MAX(${TransactionEntityTable.operatedAt})` })
+            .select({ operatedAt: sql<number | null>`MAX(${TransactionEntityTable.operatedAt})` })
             .from(TransactionEntityTable)
             .where(
                 and(
@@ -158,12 +158,11 @@ export class TransactionRepository {
             );
 
         const time = result[0]?.operatedAt;
-
-        if (!isDefined(time) || time === '') {
-            return null;
+        if (isPositiveNumber(time)) {
+            return new Date(time * 1000);
         }
 
-        return new Date(time);
+        return null;
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
