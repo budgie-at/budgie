@@ -22,6 +22,7 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
+import { ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 interface Props extends Pick<
     AccountEntityInterface,
@@ -35,7 +36,7 @@ const textVariant = cva('text-xxs font-semibold text-right border-b border-b-sec
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-const cardVariants = cva('gap-3 active:scale-xs', {
+const cardVariants = cva('gap-3 active:scale-xs overflow-hidden', {
     variants: {
         deadlinePriority: {
             high: 'border-dark-warning-corner',
@@ -67,6 +68,8 @@ export const AccountCard = (props: Props) => {
     const accountBalance = `${instrumentSymbol}${formatDigits(convertFromMicroUnits(balance).toString())}`;
 
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
+
+    const progressStyle: ViewStyle = { width: `${(balance / targetBalance) * 100}%` };
 
     return (
         <Card onPress={navigateToAccount} className={cn(cardVariants({ deadlinePriority }), className)}>
@@ -109,6 +112,8 @@ export const AccountCard = (props: Props) => {
                     <ProtectedText className="text-primary font-medium">{accountBalance}</ProtectedText>
                 )}
             </View>
+
+            {isDebtAccount ? <View className="absolute bottom-0 left-0 h-1 bg-warning-foreground" style={progressStyle} /> : null}
         </Card>
     );
 };
