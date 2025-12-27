@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
+import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { BankSyncStateInterface } from '../../interface/bank-sync-state.interface';
 
 interface Props {
@@ -23,12 +24,14 @@ export const SyncStatusCard = ({ syncState }: Props) => (
                     </Text>
                     <Text className="text-primary text-sm font-medium">{syncState.status}</Text>
                 </View>
-                <View className="flex-row justify-between">
-                    <Text className="text-primary text-sm">
-                        <Trans>Step</Trans>
-                    </Text>
-                    <Text className="text-primary text-sm font-medium">{syncState.step}</Text>
-                </View>
+                {syncState.status === SyncStatusEnum.ERROR && (
+                    <View className="flex-row justify-between">
+                        <Text className="text-primary text-sm">
+                            <Trans>Error</Trans>
+                        </Text>
+                        <Text className="text-primary text-sm font-medium">{syncState.error}</Text>
+                    </View>
+                )}
                 <View className="flex-row justify-between">
                     <Text className="text-primary text-sm">
                         <Trans>Accounts</Trans>
