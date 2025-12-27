@@ -99,10 +99,7 @@ class AppMonobankSyncService {
      */
 
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
-        console.log('Syncing...');
         if (this.isRunning) {
-            console.log('Sync is already running, skipping this sync cycle.');
-
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
@@ -116,14 +113,12 @@ class AppMonobankSyncService {
         const state = bankSyncStorageService.getState(this.provider);
         try {
             if (!state.enabled) {
-                console.log('Sync is disabled, skipping this sync cycle.');
                 this.isRunning = false;
 
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
             if (state.status !== SyncStatusEnum.SYNCING) {
-                console.log('Sync is not in syncing state, starting new sync cycle.');
                 const syncedAccounts = await this.syncAccounts();
 
                 await bankSyncStorageService.startSync(this.provider, syncedAccounts);
@@ -133,7 +128,6 @@ class AppMonobankSyncService {
 
             const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
             if (isDefined(cursor)) {
-                console.log(`Syncing account ID ${cursor.accountId}, ${cursor.fromTime}-${cursor?.toTime}`);
                 const result = await this.syncBatch(cursor);
 
                 bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
@@ -143,22 +137,18 @@ class AppMonobankSyncService {
                 return await this.syncInternal();
             }
 
-            console.log('No more pending accounts to sync, finishing sync cycle.');
             bankSyncStorageService.completeSync(this.provider);
             this.isRunning = false;
 
             return BackgroundTask.BackgroundTaskResult.Success;
         } catch (error: unknown) {
             if (state.errorCount < SYNC_ERROR_THRESHOLD) {
-                console.log(`Sync failed, retrying in ${MONOBANK_RATE_LIMIT_MS / 1000} seconds.`, error);
                 bankSyncStorageService.failSync(this.provider, getErrorMessage(error, 'Unknown error'));
 
                 await microPause(MONOBANK_RATE_LIMIT_MS);
 
                 return await this.syncInternal();
             }
-
-            console.log(`Sync failed after ${state.errorCount} retries, disabling sync.`, error);
 
             bankSyncStorageService.failedSync(this.provider, getErrorMessage(error));
             bankSyncStorageService.setEnabled(this.provider, false);
