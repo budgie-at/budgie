@@ -117,6 +117,7 @@ class AppMonobankSyncService {
         try {
             if (!state.enabled) {
                 console.log('Sync is disabled, skipping this sync cycle.');
+                this.isRunning = false;
 
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
