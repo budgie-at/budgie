@@ -96,25 +96,30 @@ class BankSyncStorageService {
     completeSync(provider: BankProviderEnum): void {
         this.setState(provider, {
             status: SyncStatusEnum.SUCCESS,
+            errorCount: 0,
             lastSyncAt: new Date().toISOString(),
             accountCursors: {}
         });
     }
 
     failSync(provider: BankProviderEnum, error: string): void {
+        const state = this.getState(provider);
+
         this.setState(provider, {
             status: SyncStatusEnum.ERROR,
-            error
+            error,
+            errorCount: state.errorCount + 1
         });
     }
 
     resetSync(provider: BankProviderEnum): void {
+        const state = this.getState(provider);
+        const baseState = emptyBankSyncState(provider);
+
         this.setState(provider, {
-            status: SyncStatusEnum.IDLE,
-            currentAccount: 0,
-            totalAccounts: 0,
-            totalTransactions: 0,
-            accountCursors: {}
+            ...baseState,
+            token: state.token,
+            enabled: state.enabled
         });
     }
 
