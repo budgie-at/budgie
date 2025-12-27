@@ -11,9 +11,9 @@ const getTransactionType = (amount: number): BankTransactionTypeEnum =>
     isPositiveNumber(amount) ? BankTransactionTypeEnum.INCOME : BankTransactionTypeEnum.EXPENSE;
 
 export const monobankTransactionMapper = (transaction: MonobankTransactionApiInterface, accountId: string): BankTransactionInterface => ({
+    accountId,
     id: transaction.id,
     provider: BankProviderEnum.MONOBANK,
-    accountId,
     time: transaction.time,
     description: transaction.description,
     mcc: transaction.mcc,
