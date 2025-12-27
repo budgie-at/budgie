@@ -137,7 +137,9 @@ class AppMonobankSyncService {
             if (state.errorCount < SYNC_ERROR_THRESHOLD) {
                 bankSyncStorageService.failSync(this.provider, getErrorMessage(error, 'Unknown error'));
 
-                return BackgroundTask.BackgroundTaskResult.Success;
+                await microPause(MONOBANK_RATE_LIMIT_MS);
+
+                return await this.sync();
             }
 
             bankSyncStorageService.setEnabled(this.provider, false);
