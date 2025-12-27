@@ -146,19 +146,15 @@ export class TransactionRepository {
         });
     }
 
-    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
         const result = await this.db
-            .select({ operatedAt: sql<string>`MAX(${TransactionEntityTable.operatedAt})` })
+            .select({ operatedAt: sql<string>`MIN(${TransactionEntityTable.operatedAt})` })
             .from(TransactionEntityTable)
-            .innerJoin(
-                AccountEntityTable,
-                or(
-                    eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id),
-                    eq(TransactionEntityTable.toAccountId, AccountEntityTable.id)
-                )
-            )
             .where(
-                and(eq(AccountEntityTable.externalId, externalId), sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`)
+                and(
+                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+                    sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`
+                )
             );
 
         const time = result[0]?.operatedAt;
