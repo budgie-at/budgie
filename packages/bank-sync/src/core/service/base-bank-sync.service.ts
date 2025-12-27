@@ -24,7 +24,7 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async syncTransactionsBatch(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+    async syncTransactions(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
 
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
@@ -33,7 +33,21 @@ export class BaseBankSyncService {
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
+        const maxTransactionsPerRequest = 500;
+        const hasMoreInPeriod = result.data.length === maxTransactionsPerRequest;
         const lastTransaction = result.data.at(-1);
+
+        if (hasMoreInPeriod && isDefined(lastTransaction)) {
+            const nextTo = addSeconds(new Date(lastTransaction.time * 1000), -1);
+
+            return {
+                nextTo,
+                transactions: result.data,
+                nextFrom: from,
+                completed: false
+            };
+        }
+
         const nextTo = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : from;
 
         return {
