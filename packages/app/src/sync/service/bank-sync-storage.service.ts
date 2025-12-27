@@ -45,13 +45,13 @@ class BankSyncStorageService {
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
                 // eslint-disable-next-line no-await-in-loop
-                const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
+                const latestTxTime = await transactionService.getLatestTransactionTimeByAccountId(account.id);
 
                 accountCursors[account.id] = {
                     accountId: account.id,
                     externalAccountId: account.externalId,
                     fromTime: new Date(),
-                    toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
+                    toTime: isDefined(latestTxTime) ? latestTxTime : new Date(),
                     completed: false
                 };
             }
