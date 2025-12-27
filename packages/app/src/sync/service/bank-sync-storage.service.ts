@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
-import { SyncStepEnum } from '../enum/sync-step.enum';
 import { AccountSyncCursorInterface, BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
 
 class BankSyncStorageService {
@@ -18,7 +17,22 @@ class BankSyncStorageService {
             return emptyBankSyncState(provider);
         }
 
-        return JSON.parse(data) as BankSyncStateInterface;
+        const serialized = JSON.parse(data) as BankSyncStateInterface;
+
+        return {
+            ...serialized,
+            accountCursors: Object.keys(serialized.accountCursors).reduce(
+                (acc, key) => ({
+                    ...acc,
+                    [Number(key)]: {
+                        ...serialized.accountCursors[Number(key)],
+                        fromTime: new Date(serialized.accountCursors[Number(key)].fromTime),
+                        toTime: new Date(serialized.accountCursors[Number(key)].toTime)
+                    }
+                }),
+                {}
+            )
+        };
     }
 
     setState(provider: BankProviderEnum, state: Partial<BankSyncStateInterface>): void {
@@ -26,20 +40,18 @@ class BankSyncStorageService {
     }
 
     async startSync(provider: BankProviderEnum, accounts: AccountEntityInterface[]) {
-        const nowSeconds = Math.floor(Date.now() / 1000);
-
         const accountCursors: Record<number, AccountSyncCursorInterface> = {};
 
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
                 // eslint-disable-next-line no-await-in-loop
-                const latestTxTime = await transactionService.getLatestTransactionTimeByAccountExternalId(account.externalId);
+                const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
 
                 accountCursors[account.id] = {
                     accountId: account.id,
                     externalAccountId: account.externalId,
-                    fromTime: isDefined(latestTxTime) ? Math.floor(latestTxTime.getTime() / 1000) : 0,
-                    toTime: nowSeconds,
+                    fromTime: new Date(),
+                    toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
                     completed: false
                 };
             }
@@ -47,7 +59,6 @@ class BankSyncStorageService {
 
         this.setState(provider, {
             status: SyncStatusEnum.SYNCING,
-            step: SyncStepEnum.SYNCING_ACCOUNTS,
             totalAccounts: Object.keys(accountCursors).length,
             currentAccount: 0,
             totalTransactions: 0,
@@ -61,11 +72,10 @@ class BankSyncStorageService {
         const existingCursor = state.accountCursors[accountId];
         if (isDefined(existingCursor)) {
             this.setState(provider, {
-                step: SyncStepEnum.SYNCING_TRANSACTIONS,
                 totalTransactions: state.totalTransactions + result.transactions.length,
                 accountCursors: {
                     ...state.accountCursors,
-                    [accountId]: { ...existingCursor, toTime: result.nextToTime, completed: result.completed }
+                    [accountId]: { ...existingCursor, toTime: result.nextTo, fromTime: result.nextFrom, completed: result.completed }
                 }
             });
         }
@@ -86,15 +96,14 @@ class BankSyncStorageService {
     completeSync(provider: BankProviderEnum): void {
         this.setState(provider, {
             status: SyncStatusEnum.SUCCESS,
-            step: SyncStepEnum.COMPLETED,
-            lastSyncAt: new Date().toISOString()
+            lastSyncAt: new Date().toISOString(),
+            accountCursors: {}
         });
     }
 
     failSync(provider: BankProviderEnum, error: string): void {
         this.setState(provider, {
             status: SyncStatusEnum.ERROR,
-            step: SyncStepEnum.ERROR,
             error
         });
     }
@@ -102,7 +111,6 @@ class BankSyncStorageService {
     resetSync(provider: BankProviderEnum): void {
         this.setState(provider, {
             status: SyncStatusEnum.IDLE,
-            step: SyncStepEnum.IDLE,
             currentAccount: 0,
             totalAccounts: 0,
             totalTransactions: 0,
@@ -115,6 +123,10 @@ class BankSyncStorageService {
     }
 
     setEnabled(provider: BankProviderEnum, enabled: boolean): void {
+        if (!enabled) {
+            this.resetSync(provider);
+        }
+
         this.setState(provider, { enabled });
     }
 
