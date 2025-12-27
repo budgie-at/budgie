@@ -1,8 +1,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { format } from 'date-fns';
+import { format, formatDistanceStrict } from 'date-fns';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.interface';
@@ -18,6 +18,26 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
         return null;
     }
 
+    const getStatusMessage = (cursor: AccountSyncCursorInterface) => {
+        if (cursor.completed) {
+            return t`Completed`;
+        } else if (isDefined(cursor.startedAt)) {
+            return t`In Progress`;
+        }
+
+        return t`Waiting`;
+    };
+
+    const getElapsedTime = (cursor: AccountSyncCursorInterface): string | null => {
+        if (!isDefined(cursor.startedAt)) {
+            return null;
+        }
+
+        const endTime = cursor.completedAt ?? new Date();
+
+        return formatDistanceStrict(cursor.startedAt, endTime);
+    };
+
     return (
         <Card className="p-4xl">
             <View className="gap-y-md">
@@ -31,21 +51,25 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
                                 {t`Account`} #{cursor.accountId}
                             </Text>
                             <Text className={`text-sm font-medium ${cursor.completed ? 'text-success' : 'text-warning'}`}>
-                                {cursor.completed ? t`Completed` : t`In Progress`}
+                                {getStatusMessage(cursor)}
                             </Text>
                         </View>
                         <View className="flex-row justify-between">
                             <Text className="text-primary text-xs">
-                                <Trans>From</Trans>
+                                <Trans>Last period</Trans>
                             </Text>
-                            <Text className="text-primary text-xs">{format(cursor.fromTime, 'dd MMMM yyy')}</Text>
-                        </View>
-                        <View className="flex-row justify-between">
                             <Text className="text-primary text-xs">
-                                <Trans>To</Trans>
+                                {format(cursor.fromTime, 'dd MMMM yyyy')} - {format(cursor.toTime, 'dd MMMM yyyy')}
                             </Text>
-                            <Text className="text-primary text-xs">{format(cursor.toTime, 'dd MMMM yyy')}</Text>
                         </View>
+                        {isDefined(getElapsedTime(cursor)) && (
+                            <View className="flex-row justify-between">
+                                <Text className="text-primary text-xs">
+                                    <Trans>Elapsed</Trans>
+                                </Text>
+                                <Text className="text-primary text-xs">{getElapsedTime(cursor)}</Text>
+                            </View>
+                        )}
                     </View>
                 ))}
             </View>

@@ -16,7 +16,7 @@ const getStatusConfig = (status: SyncStatusEnum) => {
                 bgColor: 'bg-green-500/10',
                 borderColor: 'border-green-500/20'
             };
-        case SyncStatusEnum.ERROR:
+        case SyncStatusEnum.FAILED:
             return {
                 bgColor: 'bg-red-500/10',
                 borderColor: 'border-red-500/20'
@@ -33,7 +33,7 @@ export const SyncProgressBadge = () => {
     const { t } = useLingui();
 
     const state = useBankSyncState(BankProviderEnum.MONOBANK);
-    const canDismiss = state.status === SyncStatusEnum.SUCCESS || state.status === SyncStatusEnum.ERROR;
+    const canDismiss = state.status === SyncStatusEnum.SUCCESS || state.status === SyncStatusEnum.FAILED;
 
     const [isVisible, setIsVisible] = useState(true);
 
@@ -45,7 +45,7 @@ export const SyncProgressBadge = () => {
                 return t`Syncing transactions...`;
             case SyncStatusEnum.SUCCESS:
                 return t`Sync completed successfully`;
-            case SyncStatusEnum.ERROR:
+            case SyncStatusEnum.FAILED:
                 return t`Sync failed`;
             default:
                 return '';

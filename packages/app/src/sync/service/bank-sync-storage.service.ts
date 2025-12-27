@@ -52,6 +52,8 @@ class BankSyncStorageService {
                     externalAccountId: account.externalId,
                     fromTime: new Date(),
                     toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
+                    completedAt: null,
+                    startedAt: null,
                     completed: false
                 };
             }
@@ -69,6 +71,8 @@ class BankSyncStorageService {
         const state = this.getState(provider);
 
         this.setState(provider, {
+            error: '',
+            errorCount: 0,
             totalTransactions: state.totalTransactions + result.transactions.length,
             accountCursors: {
                 ...state.accountCursors,
@@ -76,7 +80,8 @@ class BankSyncStorageService {
                     ...state.accountCursors[accountId],
                     toTime: result.nextTo,
                     fromTime: result.nextFrom,
-                    completed: result.completed
+                    completed: result.completed,
+                    ...(result.completed && { completedAt: new Date() })
                 }
             }
         });
@@ -87,6 +92,13 @@ class BankSyncStorageService {
 
         for (const cursor of Object.values(state.accountCursors)) {
             if (isDefined(cursor) && !cursor.completed) {
+                this.setState(provider, {
+                    accountCursors: {
+                        ...state.accountCursors,
+                        [cursor.accountId]: { ...cursor, startedAt: new Date() }
+                    }
+                });
+
                 return cursor;
             }
         }
