@@ -36,9 +36,7 @@ export const SyncStatusCard = ({ syncState }: Props) => (
                     <Text className="text-primary text-sm">
                         <Trans>Accounts</Trans>
                     </Text>
-                    <Text className="text-primary text-sm font-medium">
-                        {syncState.currentAccount} / {syncState.totalAccounts}
-                    </Text>
+                    <Text className="text-primary text-sm font-medium">{syncState.totalAccounts}</Text>
                 </View>
                 <View className="flex-row justify-between">
                     <Text className="text-primary text-sm">
