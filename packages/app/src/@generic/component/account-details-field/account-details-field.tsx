@@ -13,7 +13,7 @@ type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconNameEnum
     readonly variant: ColorPaletteVariant;
 };
 
-export const CreateAccountDetailsField = <T extends { title: string; icon: UserIconNameEnum }>({
+export const AccountDetailsField = <T extends { title: string; icon: UserIconNameEnum }>({
     control,
     variant
 }: AccountDetailsFieldsProps<T>) => {
