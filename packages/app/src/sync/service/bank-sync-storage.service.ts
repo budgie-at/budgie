@@ -116,7 +116,9 @@ class BankSyncStorageService {
     }
 
     setEnabled(provider: BankProviderEnum, enabled: boolean): void {
-        if (!enabled) {
+        if (enabled) {
+            this.setState(provider, { enabled });
+        } else {
             const state = this.getState(provider);
 
             this.setState(provider, {
@@ -125,8 +127,6 @@ class BankSyncStorageService {
                 enabled: state.enabled,
                 accountCursors: state.accountCursors
             });
-        } else {
-            this.setState(provider, { enabled });
         }
     }
 
