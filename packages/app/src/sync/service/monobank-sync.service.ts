@@ -28,6 +28,7 @@ import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minut
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
+import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { AccountSyncCursorInterface } from '../interface/bank-sync-state.interface';
 
@@ -97,7 +98,7 @@ class AppMonobankSyncService {
      */
     // eslint-disable-next-line max-statements
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
-        const state = bankSyncStorageService.getState(BankProviderEnum.MONOBANK);
+        const state = bankSyncStorageService.getState(this.provider);
         if (this.isRunning && state.status !== SyncStatusEnum.IDLE) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
@@ -105,21 +106,23 @@ class AppMonobankSyncService {
         try {
             this.isRunning = true;
 
-            if (!state.enabled || !bankSyncStorageService.hasToken(BankProviderEnum.MONOBANK)) {
+            if (!state.enabled || !bankSyncStorageService.hasToken(this.provider)) {
+                this.isRunning = false;
+
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
             if (state.status !== SyncStatusEnum.SYNCING) {
                 const syncedAccounts = await this.syncAccounts();
 
-                await bankSyncStorageService.startSync(BankProviderEnum.MONOBANK, syncedAccounts);
+                await bankSyncStorageService.startSync(this.provider, syncedAccounts);
             }
 
-            const cursor = bankSyncStorageService.getNextPendingAccountId(BankProviderEnum.MONOBANK);
+            const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
             if (isDefined(cursor)) {
                 const result = await this.syncBatch(cursor);
 
-                bankSyncStorageService.updateAccountCursor(BankProviderEnum.MONOBANK, cursor.accountId, result);
+                bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
 
                 await microPause(MONOBANK_RATE_LIMIT_MS);
 
@@ -127,10 +130,17 @@ class AppMonobankSyncService {
             }
 
             bankSyncStorageService.completeSync(this.provider);
+            this.isRunning = false;
 
             return BackgroundTask.BackgroundTaskResult.Success;
         } catch (error: unknown) {
-            bankSyncStorageService.failSync(BankProviderEnum.MONOBANK, getErrorMessage(error, 'Unknown error'));
+            if (state.errorCount < SYNC_ERROR_THRESHOLD) {
+                bankSyncStorageService.failSync(this.provider, getErrorMessage(error, 'Unknown error'));
+
+                return BackgroundTask.BackgroundTaskResult.Success;
+            }
+
+            bankSyncStorageService.setEnabled(this.provider, false);
 
             return BackgroundTask.BackgroundTaskResult.Failed;
         }

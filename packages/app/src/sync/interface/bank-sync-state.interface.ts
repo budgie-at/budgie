@@ -18,6 +18,7 @@ export interface BankSyncStateInterface {
     readonly currentAccount: number;
     readonly totalAccounts: number;
     readonly totalTransactions: number;
+    readonly errorCount: number;
     readonly error?: string;
     readonly lastSyncAt: string | null;
     readonly accountCursors: Record<number, AccountSyncCursorInterface>;
@@ -31,6 +32,7 @@ export const emptyBankSyncState = (provider: BankProviderEnum): BankSyncStateInt
     currentAccount: 0,
     totalAccounts: 0,
     totalTransactions: 0,
+    errorCount: 0,
     lastSyncAt: null,
     accountCursors: {}
 });
