@@ -97,7 +97,7 @@ class AppMonobankSyncService {
      * - App foreground state
      * - App background task
      */
-    // eslint-disable-next-line max-statements
+
     async sync(): Promise<BackgroundTask.BackgroundTaskResult> {
         console.log('Syncing...');
         if (this.isRunning) {
@@ -108,9 +108,45 @@ class AppMonobankSyncService {
 
         this.isRunning = true;
 
+        return await this.syncInternal();
+    }
+
+    // eslint-disable-next-line max-statements
+    private async syncInternal(): Promise<BackgroundTask.BackgroundTaskResult> {
         const state = bankSyncStorageService.getState(this.provider);
         try {
-            return await this.syncInternal();
+            if (!state.enabled) {
+                console.log('Sync is disabled, skipping this sync cycle.');
+
+                return BackgroundTask.BackgroundTaskResult.Success;
+            }
+
+            if (state.status !== SyncStatusEnum.SYNCING) {
+                console.log('Sync is not in syncing state, starting new sync cycle.');
+                const syncedAccounts = await this.syncAccounts();
+
+                await bankSyncStorageService.startSync(this.provider, syncedAccounts);
+
+                await microPause();
+            }
+
+            const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
+            if (isDefined(cursor)) {
+                console.log(`Syncing account ID ${cursor.accountId}, ${cursor.fromTime}-${cursor?.toTime}`);
+                const result = await this.syncBatch(cursor);
+
+                bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
+
+                await microPause(MONOBANK_RATE_LIMIT_MS);
+
+                return await this.syncInternal();
+            }
+
+            console.log('No more pending accounts to sync, finishing sync cycle.');
+            bankSyncStorageService.completeSync(this.provider);
+            this.isRunning = false;
+
+            return BackgroundTask.BackgroundTaskResult.Success;
         } catch (error: unknown) {
             if (state.errorCount < SYNC_ERROR_THRESHOLD) {
                 console.log(`Sync failed, retrying in ${MONOBANK_RATE_LIMIT_MS / 1000} seconds.`);
@@ -128,44 +164,6 @@ class AppMonobankSyncService {
 
             return BackgroundTask.BackgroundTaskResult.Failed;
         }
-    }
-
-    // eslint-disable-next-line max-statements
-    private async syncInternal(): Promise<BackgroundTask.BackgroundTaskResult> {
-        const state = bankSyncStorageService.getState(this.provider);
-
-        if (!state.enabled) {
-            console.log('Sync is disabled, skipping this sync cycle.');
-
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-
-        if (state.status !== SyncStatusEnum.SYNCING) {
-            console.log('Sync is not in syncing state, starting new sync cycle.');
-            const syncedAccounts = await this.syncAccounts();
-
-            await bankSyncStorageService.startSync(this.provider, syncedAccounts);
-
-            await microPause();
-        }
-
-        const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
-        if (isDefined(cursor)) {
-            console.log(`Syncing account ID ${cursor.accountId}, ${cursor.fromTime}-${cursor?.toTime}`);
-            const result = await this.syncBatch(cursor);
-
-            bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
-
-            await microPause(MONOBANK_RATE_LIMIT_MS);
-
-            return await this.syncInternal();
-        }
-
-        console.log('No more pending accounts to sync, finishing sync cycle.');
-        bankSyncStorageService.completeSync(this.provider);
-        this.isRunning = false;
-
-        return BackgroundTask.BackgroundTaskResult.Success;
     }
 
     private async syncAccounts(): Promise<AccountEntityInterface[]> {
