@@ -138,8 +138,6 @@ class AppMonobankSyncService {
 
                 bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
 
-                console.log(`Received `, result);
-
                 await microPause(MONOBANK_RATE_LIMIT_MS);
 
                 return await this.syncInternal();
