@@ -1,6 +1,6 @@
 import { addSeconds } from 'date-fns';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
@@ -33,10 +33,13 @@ export class BaseBankSyncService {
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
+        const lastTransaction = result.data.at(-1);
+        const nextTo = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : from;
+
         return {
+            nextTo,
             transactions: result.data,
-            nextTo: from,
-            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
+            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
             completed: result.data.length === 0
         };
     }
