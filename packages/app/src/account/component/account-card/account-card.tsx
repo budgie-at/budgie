@@ -21,8 +21,12 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'> {
+interface Props extends Pick<
+    AccountEntityInterface,
+    'id' | 'createdAt' | 'title' | 'type' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'
+> {
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
@@ -31,7 +35,18 @@ const textVariant = cva('text-xxs font-semibold text-right border-b border-b-sec
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol }: Props) => {
+const cardVariants = cva('gap-3 active:scale-xs', {
+    variants: {
+        deadlinePriority: {
+            high: 'border-dark-warning-corner',
+            normal: 'border-secondary-corner'
+        }
+    }
+});
+
+export const AccountCard = (props: Props) => {
+    const { id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol, createdAt } = props;
+
     const showCents = useSetting('showCents');
     const { decimalPlaces, defaultCurrency } = useSettingsContext();
     const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, false);
@@ -48,12 +63,13 @@ export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, de
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
-    const mainAmount = isDebtAccount
-        ? formatMoney(targetBalance - balance)
-        : `${instrumentSymbol}${formatDigits(convertFromMicroUnits(balance).toString())}`;
+    const amountLeft = formatMoney(targetBalance - balance);
+    const accountBalance = `${instrumentSymbol}${formatDigits(convertFromMicroUnits(balance).toString())}`;
+
+    const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
 
     return (
-        <Card onPress={navigateToAccount} className={cn('gap-3 active:scale-xs', className)}>
+        <Card onPress={navigateToAccount} className={cn(cardVariants({ deadlinePriority }), className)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
                     <CircleIcon icon={ICONS[icon]} variant={circleVariant} border={false} />
@@ -78,7 +94,7 @@ export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, de
 
                 {isDebtAccount ? (
                     <View className="flex-row items-center justify-between">
-                        <ProtectedText className="text-primary font-medium">{mainAmount}</ProtectedText>
+                        <ProtectedText className="text-primary font-medium">{amountLeft}</ProtectedText>
 
                         <View>
                             <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
@@ -90,7 +106,7 @@ export const AccountCard = ({ id, title, type, icon, debtType, targetBalance, de
                         </View>
                     </View>
                 ) : (
-                    <ProtectedText className="text-primary font-medium">{mainAmount}</ProtectedText>
+                    <ProtectedText className="text-primary font-medium">{accountBalance}</ProtectedText>
                 )}
             </View>
         </Card>
