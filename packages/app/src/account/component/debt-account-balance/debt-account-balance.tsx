@@ -2,9 +2,9 @@ import { CurrencyEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View, ViewStyle } from 'react-native';
 
-import { FormattedMoney } from '../../../@generic/component/formatted-money/formatted-money';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 
 interface Props {
     readonly balance: number;
@@ -28,9 +28,9 @@ export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) =
                 <Trans>Current Balance</Trans>
             </Text>
 
-            <FormattedMoney className="justify-start" minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
+            <ProtectedMoney className="justify-start" minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
                 {balance}
-            </FormattedMoney>
+            </ProtectedMoney>
 
             <View className="my-3xl h-[1px] bg-secondary-corner" />
 

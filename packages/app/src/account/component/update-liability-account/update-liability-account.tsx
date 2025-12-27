@@ -8,9 +8,9 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -23,8 +23,6 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
-import { UpdateAccountIconField } from '../create-account-icon-field/update-account-icon-field';
-import { UpdateAccountTitleField } from '../update-account-title-field/update-account-title-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -40,6 +38,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
 
     const { control, handleSubmit, instrument } = useAccountForm({
+        iban: account.iban,
         type: account.type,
         icon: account.icon,
         title: account.title,
@@ -47,7 +46,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         parentId: account.parentId,
         instrumentId: account.instrumentId,
         includeInNetWorth: account.includeInNetWorth,
-        targetBalance: convertFromMicroUnits(balance),
+        targetBalance: convertFromMicroUnits(balance)
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -85,13 +84,16 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                 />
             }
         >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+            <KeyboardAwareScrollView
+                contentContainerClassName="flex-1"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <View className="flex-1">
+                    <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-                <FormLayoutGroup className="mb-8xl">
-                    <UpdateAccountTitleField control={control} />
-                    <UpdateAccountIconField variant={variant} control={control} />
-                </FormLayoutGroup>
+                    <AccountDetailsField control={control} variant={variant} />
+                </View>
 
                 <View className="gap-y-xl">
                     <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
