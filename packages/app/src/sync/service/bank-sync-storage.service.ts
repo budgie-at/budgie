@@ -95,7 +95,7 @@ class BankSyncStorageService {
                 this.setState(provider, {
                     accountCursors: {
                         ...state.accountCursors,
-                        [cursor.accountId]: { ...cursor, startedAt: new Date() }
+                        [cursor.accountId]: { ...cursor, ...(!isDefined(cursor.startedAt) && { startedAt: new Date() }) }
                     }
                 });
 
