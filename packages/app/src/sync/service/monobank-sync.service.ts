@@ -106,7 +106,7 @@ class AppMonobankSyncService {
         try {
             this.isRunning = true;
 
-            if (!state.enabled || !bankSyncStorageService.hasToken(this.provider)) {
+            if (!state.enabled) {
                 this.isRunning = false;
 
                 return BackgroundTask.BackgroundTaskResult.Success;
@@ -116,6 +116,8 @@ class AppMonobankSyncService {
                 const syncedAccounts = await this.syncAccounts();
 
                 await bankSyncStorageService.startSync(this.provider, syncedAccounts);
+
+                await microPause();
             }
 
             const cursor = bankSyncStorageService.getNextPendingAccountId(this.provider);
