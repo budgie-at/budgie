@@ -1,12 +1,14 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
+import { BankProviderEnum, BankSyncBatchResultInterface } from '@budgie/bank-sync';
+import { AccountEntityInterface } from '@budgie/contracts';
 import * as SecureStore from 'expo-secure-store';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { transactionService } from '../../transaction/service/transaction.service';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncStepEnum } from '../enum/sync-step.enum';
-import { BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
+import { AccountSyncCursorInterface, BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
 
 class BankSyncStorageService {
     getState(provider: BankProviderEnum): BankSyncStateInterface {
@@ -23,25 +25,68 @@ class BankSyncStorageService {
         SecureStore.setItem(getBankSyncStorageKey(provider), JSON.stringify({ ...this.getState(provider), ...state }));
     }
 
-    startSync(provider: BankProviderEnum, totalAccounts: number): void {
+    async startSync(provider: BankProviderEnum, accounts: AccountEntityInterface[]) {
+        const nowSeconds = Math.floor(Date.now() / 1000);
+
+        const accountCursors: Record<number, AccountSyncCursorInterface> = {};
+
+        for (const account of accounts) {
+            if (isNotEmptyString(account.externalId)) {
+                // eslint-disable-next-line no-await-in-loop
+                const latestTxTime = await transactionService.getLatestTransactionTimeByAccountExternalId(account.externalId);
+
+                accountCursors[account.id] = {
+                    accountId: account.id,
+                    externalAccountId: account.externalId,
+                    fromTime: isDefined(latestTxTime) ? Math.floor(latestTxTime.getTime() / 1000) : 0,
+                    toTime: nowSeconds,
+                    completed: false
+                };
+            }
+        }
+
         this.setState(provider, {
             status: SyncStatusEnum.SYNCING,
             step: SyncStepEnum.SYNCING_ACCOUNTS,
-            totalAccounts,
+            totalAccounts: Object.keys(accountCursors).length,
             currentAccount: 0,
-            totalTransactions: 0
+            totalTransactions: 0,
+            accountCursors
         });
     }
 
-    updateProgress(provider: BankProviderEnum, update: Partial<BankSyncStateInterface>): void {
-        this.setState(provider, update);
+    updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): void {
+        const state = this.getState(provider);
+
+        const existingCursor = state.accountCursors[accountId];
+        if (isDefined(existingCursor)) {
+            this.setState(provider, {
+                step: SyncStepEnum.SYNCING_TRANSACTIONS,
+                totalTransactions: state.totalTransactions + result.transactions.length,
+                accountCursors: {
+                    ...state.accountCursors,
+                    [accountId]: { ...existingCursor, toTime: result.nextToTime, completed: result.completed }
+                }
+            });
+        }
     }
 
-    completeSync(provider: BankProviderEnum, totalTransactions: number): void {
+    getNextPendingAccountId(provider: BankProviderEnum): AccountSyncCursorInterface | null {
+        const state = this.getState(provider);
+
+        for (const cursor of Object.values(state.accountCursors)) {
+            if (isDefined(cursor) && !cursor.completed) {
+                return cursor;
+            }
+        }
+
+        return null;
+    }
+
+    completeSync(provider: BankProviderEnum): void {
         this.setState(provider, {
             status: SyncStatusEnum.SUCCESS,
             step: SyncStepEnum.COMPLETED,
-            totalTransactions,
             lastSyncAt: new Date().toISOString()
         });
     }
@@ -60,7 +105,8 @@ class BankSyncStorageService {
             step: SyncStepEnum.IDLE,
             currentAccount: 0,
             totalAccounts: 0,
-            totalTransactions: 0
+            totalTransactions: 0,
+            accountCursors: {}
         });
     }
 

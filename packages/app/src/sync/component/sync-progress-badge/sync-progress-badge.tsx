@@ -34,7 +34,6 @@ export const SyncProgressBadge = () => {
     const { t } = useLingui();
     const state = useBankSyncState(BankProviderEnum.MONOBANK);
 
-    const isSyncing = state.status === SyncStatusEnum.SYNCING;
     const canDismiss = state.status === SyncStatusEnum.SUCCESS || state.status === SyncStatusEnum.ERROR;
     const config = getStatusConfig(state.status);
 
@@ -73,7 +72,7 @@ export const SyncProgressBadge = () => {
                     <Text className="text-primary text-foreground font-medium text-sm" numberOfLines={2}>
                         {stepText()}
                     </Text>
-                    {totalTransactions > 0 && isSyncing && (
+                    {totalTransactions > 0 && (
                         <Text className="text-primary text-muted-foreground text-xs mt-0.5">{t`${totalTransactions} transactions synced`}</Text>
                     )}
                 </View>

@@ -1,11 +1,8 @@
-/* eslint-disable no-await-in-loop */
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { BankAccountInterface } from '../interface/bank-account.interface';
+import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
-import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
 export class BaseBankSyncService {
     constructor(
@@ -23,28 +20,19 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async *syncTransactions(accountId: string, fromDate: Date | null = new Date(0)): AsyncGenerator<BankTransactionInterface[]> {
-        const allTransactions: BankTransactionInterface[] = [];
-        const fromTime = (fromDate ?? new Date(0)).getTime() / 1000;
-        let toTime = Math.floor(Date.now() / 1000);
+    async syncTransactionsBatch(accountId: string, fromTime: number, toTime: number): Promise<BankSyncBatchResultInterface> {
+        const periodFromTime = Math.max(toTime - this.options.maxPeriodSeconds, fromTime);
+        const result = await this.client.getTransactions(accountId, periodFromTime, toTime);
 
-        do {
-            const periodFromTime = Math.max(toTime - this.options.maxPeriodSeconds, fromTime);
+        if (!result.success) {
+            throw new Error('Failed to fetch transactions');
+        }
 
-            const result = await this.client.getTransactions(accountId, periodFromTime, toTime);
-
-            if (!result.success || !isNotEmptyArray(result.data)) {
-                break;
-            }
-
-            yield result.data;
-
-            toTime = periodFromTime;
-
-            await this.delay(this.options.rateLimitMs);
-        } while (toTime > fromTime);
-
-        return allTransactions;
+        return {
+            transactions: result.data,
+            nextToTime: periodFromTime,
+            completed: periodFromTime <= fromTime
+        };
     }
 
     protected delay(ms: number): Promise<void> {
