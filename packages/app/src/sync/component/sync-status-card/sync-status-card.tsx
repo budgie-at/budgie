@@ -14,15 +14,19 @@ interface Props {
 export const SyncStatusCard = ({ syncState }: Props) => (
     <Card className="p-4xl">
         <View className="gap-y-md">
-            <Text className="text-primary font-semibold text-base">
-                <Trans>Sync Status</Trans>
-            </Text>
-            <View className="gap-y-sm">
+            <View className="flex-row justify-between">
+                <Text className="text-primary font-semibold text-base">
+                    <Trans>Sync Status</Trans>
+                </Text>
+                <Text className="text-amber-600 text-sm font-medium">{syncState.status}</Text>
+            </View>
+
+            <View className="gap-y-sm border-t border-secondary-corner pt-md">
                 <View className="flex-row justify-between">
                     <Text className="text-primary text-sm">
-                        <Trans>Status</Trans>
+                        <Trans>Errors count</Trans>
                     </Text>
-                    <Text className="text-primary text-sm font-medium">{syncState.status}</Text>
+                    <Text className="text-primary text-sm font-medium">{syncState.errorCount}</Text>
                 </View>
                 {syncState.status === SyncStatusEnum.ERROR && (
                     <View className="flex-row justify-between">
