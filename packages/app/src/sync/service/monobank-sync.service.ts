@@ -144,6 +144,8 @@ class AppMonobankSyncService {
 
             bankSyncStorageService.setEnabled(this.provider, false);
 
+            this.isRunning = false;
+
             return BackgroundTask.BackgroundTaskResult.Failed;
         }
     }
