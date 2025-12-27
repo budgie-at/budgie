@@ -31,6 +31,7 @@ export const CreateDebtAccount = () => {
     const { t } = useLingui();
 
     const { control, handleSubmit, instrument, debtType } = useDebtAccountForm({
+        iban: '',
         title: '',
         accountId: 0,
         deadline: null,
