@@ -9,6 +9,7 @@ export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEnti
     parentId: true,
     contactId: true,
     externalId: true,
-    targetAmount: true,
+    targetBalance: true,
     externalSource: true,
-})
+    includeInNetWorth:true
+});

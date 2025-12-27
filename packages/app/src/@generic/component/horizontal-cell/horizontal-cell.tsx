@@ -1,14 +1,14 @@
 import { cva } from 'class-variance-authority';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName, ICONS } from '../../constant/icons.constant';
+import { ICONS, IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { Card } from '../card/card';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { ReactNode } from 'react';
 
 interface Props {
     readonly icon: IconName;

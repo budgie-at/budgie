@@ -6,9 +6,9 @@ import {
     CategoryEntityInterface,
     ExternalSourceEnum,
     InstrumentEntityInterface,
+    LiabilityAccountCreateInputInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
-    LiabilityAccountCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -117,9 +117,8 @@ export class ImporterService {
     private createAccountInput(title: string, currency: string): LiabilityAccountCreateInputInterface {
         return {
             title,
-            order: 0,
             parentId: null,
-            targetBalance: 0,
+            currentBalance: 0,
             includeInNetWorth: true,
             type: AccountTypeEnum.BANK,
             icon: UserIconNameEnum.Home,

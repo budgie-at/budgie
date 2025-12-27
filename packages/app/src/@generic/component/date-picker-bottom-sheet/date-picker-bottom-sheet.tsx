@@ -2,6 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -10,7 +12,6 @@ import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-
 import { BottomSheetView } from '../bottom-sheet-view/bottom-sheet-view';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { SingleDatePicker } from '../date-picker/single-date-picker';
-import { isDefined } from '@rnw-community/shared';
 
 interface Props {
     readonly date: Date | null;

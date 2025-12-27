@@ -1,8 +1,10 @@
+import { useLingui } from '@lingui/react/macro';
 import * as Contacts from 'expo-contacts';
 import { useEffect, useState } from 'react';
-import { useLingui } from '@lingui/react/macro';
-import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import Toast from 'react-native-toast-message';
+
+import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+
 
 export type Contact = Contacts.ExistingContact;
 

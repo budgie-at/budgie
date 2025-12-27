@@ -2,9 +2,9 @@ import { CurrencyEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View, ViewStyle } from 'react-native';
 
+import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 
 interface Props {
     readonly balance: number;

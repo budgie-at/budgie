@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ComponentProps, useState } from 'react';
 
 import { isEmptyString, isNotEmptyString } from '@rnw-community/shared';
 
@@ -12,15 +12,14 @@ import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separat
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
 import { Input } from '../input/input';
 
-interface Props {
+interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly value: number;
-    readonly placeholder?: string;
     readonly inputClassName?: string;
     readonly status?: FormFieldStatus;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, status, placeholder }: Props) => {
+export const AmountInput = ({ value, onChangeValue, inputClassName, status, ...rest }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -72,9 +71,9 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, status, plac
             onChangeText={handleChangeText}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            placeholder={placeholder}
             keyboardType="decimal-pad"
             className={inputClassName}
+            {...rest}
         />
     );
 };

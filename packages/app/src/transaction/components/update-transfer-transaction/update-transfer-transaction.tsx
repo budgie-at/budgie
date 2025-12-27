@@ -22,6 +22,8 @@ export const UpdateTransferTransaction = ({ transaction }: Props) => {
         <TransferTransactionForm
             control={form.control}
             setValue={form.setValue}
+            setError={form.setError}
+            clearErrors={form.clearErrors}
             title={t`Edit Transfer`}
             variant="default"
             icon="ArrowRightLeft"

@@ -58,6 +58,8 @@ export const TransferTransactionForm = (props: Props) => {
 
     const handleAmountChange = (newAmount: number) => {
         setValue('amount', newAmount);
+        setValue('entries.0.amount', newAmount);
+        setValue('entries.1.amount', newAmount);
     };
 
     return (

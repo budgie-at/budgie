@@ -45,7 +45,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                             </Text>
                         ) : null}
 
-                        {transaction.type === TransactionTypeEnum.TRANSFER ? null : (
+                        {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
                             <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
                         )}
                     </View>

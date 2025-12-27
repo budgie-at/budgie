@@ -90,9 +90,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
         name: ['entries', 'fromAccountId', 'toAccountId']
     })
 
-    const errors = form.formState.errors
-    console.log(JSON.stringify({ errors, entries, from, to }, null, 4));
-
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
             await onSubmit(data);

@@ -38,7 +38,7 @@ class AccountService {
                 tx
             );
 
-            await this.adjustBalanceTo(account.id, input.targetBalance, tx);
+            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
             if (!isPositiveNumber(count)) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
@@ -55,10 +55,7 @@ class AccountService {
             const account = await accountRepository.create(
                 {
                     ...input,
-                    parentId: null,
                     order: count + 1,
-                    externalId: null,
-                    externalSource: null,
                     includeInNetWorth: false,
                     nature: AccountNatureEnum.LIABILITY,
                     targetBalance: convertToMicroUnits(input.targetBalance)
@@ -68,7 +65,7 @@ class AccountService {
 
             const isBorrow = input.debtType === AccountDebtTypeEnum.BORROW;
 
-            await this.adjustBalanceTo(account.id, account.instrumentId, tx);
+            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
             const fromAccountId = isBorrow ? account.id : input.accountId;
             const toAccountId = isBorrow ? input.accountId : account.id;
@@ -117,8 +114,8 @@ class AccountService {
         return db.transaction(async tx => {
             const account = await accountRepository.updateById(id, input, tx);
 
-            if (isNumber(input.targetBalance)) {
-                await this.adjustBalanceTo(account.id, input.targetBalance, tx);
+            if (isNumber(input.currentBalance)) {
+                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
             }
 
             return account;
@@ -201,7 +198,7 @@ class AccountService {
                 tx
             );
 
-            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].targetBalance, tx)));
+            await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
 
             return accounts;
         });

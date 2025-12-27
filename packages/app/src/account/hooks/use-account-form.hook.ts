@@ -16,7 +16,7 @@ export const useAccountForm = (defaultValues: LiabilityAccountCreateInputInterfa
         defaultValues: {
             icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.BANK,
-            targetBalance: 0,
+            currentBalance: 0,
             instrumentId: 1,
             title: ''
         },

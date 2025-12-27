@@ -18,7 +18,7 @@ export const AccountList = ({ accounts, type }: Props) => {
             <Text className="text-xs uppercase text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
 
             <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-[30px]">
-                {accounts.map(({ id, title, icon, instrument, deadline, debtType, targetBalance }) => (
+                {accounts.map(({ id, title, icon, instrument, deadline, debtType, targetBalance, createdAt }) => (
                     <View className="w-1/2 px-1.5" key={id}>
                         <AccountCard
                             targetBalance={targetBalance}
@@ -28,6 +28,7 @@ export const AccountList = ({ accounts, type }: Props) => {
                             debtType={debtType}
                             icon={icon}
                             title={title}
+                            createdAt={createdAt}
                             instrumentSymbol={instrument.symbol}
                         />
                     </View>
