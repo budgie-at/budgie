@@ -1,5 +1,6 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { BankLogo } from '../../../@generic/components/bank-logo/bank-logo';
@@ -7,7 +8,6 @@ import { Icon } from '../../../@generic/components/icon/icon';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { SyncStatusEnum } from '../../enum/sync-status.enum';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
-import { bankSyncStorageService } from '../../service/bank-sync-storage.service';
 
 const getStatusConfig = (status: SyncStatusEnum) => {
     switch (status) {
@@ -31,9 +31,12 @@ const getStatusConfig = (status: SyncStatusEnum) => {
 
 export const SyncProgressBadge = () => {
     const { t } = useLingui();
-    const state = useBankSyncState(BankProviderEnum.MONOBANK);
 
+    const state = useBankSyncState(BankProviderEnum.MONOBANK);
     const canDismiss = state.status === SyncStatusEnum.SUCCESS || state.status === SyncStatusEnum.ERROR;
+
+    const [isVisible, setIsVisible] = useState(true);
+
     const config = getStatusConfig(state.status);
 
     const stepText = () => {
@@ -51,13 +54,13 @@ export const SyncProgressBadge = () => {
 
     const handlePress = () => {
         if (canDismiss) {
-            bankSyncStorageService.resetSync(BankProviderEnum.MONOBANK);
+            setIsVisible(false);
         }
     };
 
     const { totalTransactions, enabled } = state;
 
-    if (!enabled || state.status === SyncStatusEnum.IDLE) {
+    if (!enabled || state.status === SyncStatusEnum.IDLE || !isVisible) {
         return null;
     }
 
