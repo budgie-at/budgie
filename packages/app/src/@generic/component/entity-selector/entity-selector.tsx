@@ -6,8 +6,8 @@ import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormFieldStatus } from '../../type/form-field-status.type';
-import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { cn } from '../../utils/cn.util';
+import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 
 interface Props {
     readonly variant: ColorPaletteVariant;

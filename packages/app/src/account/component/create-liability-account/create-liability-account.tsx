@@ -6,9 +6,9 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
@@ -34,14 +34,10 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
     const { control, handleSubmit, instrument } = useAccountForm({
         type,
-        order: 0,
-        iban: '',
         title: '',
-        parentId: null,
-        targetBalance: 0,
+        currentBalance: 0,
         icon: DEFAULT_ICON,
-        includeInNetWorth: true,
-        instrumentId: defaultInstrument.id,
+        instrumentId: defaultInstrument.id
     });
 
     const handleGoBack = () => void goBackOrReplace('/');

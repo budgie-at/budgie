@@ -14,6 +14,10 @@ export const getTransactionIcon = (transaction: TransactionWithRelationsEntityIn
         return 'ArrowRightLeft';
     }
 
+    if (transaction.type === TransactionTypeEnum.DEBT) {
+        return 'HandCoins';
+    }
+
     if (transaction.entries.length > 1) {
         return 'SplitIcon';
     }
