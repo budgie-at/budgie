@@ -95,9 +95,10 @@ class BankSyncStorageService {
     completeSync(provider: BankProviderEnum): void {
         this.setState(provider, {
             status: SyncStatusEnum.SUCCESS,
+            // eslint-disable-next-line no-undefined
+            error: undefined,
             errorCount: 0,
-            lastSyncAt: new Date().toISOString(),
-            accountCursors: {}
+            lastSyncAt: new Date().toISOString()
         });
     }
 
@@ -105,8 +106,8 @@ class BankSyncStorageService {
         const state = this.getState(provider);
 
         this.setState(provider, {
-            status: SyncStatusEnum.ERROR,
             error,
+            status: SyncStatusEnum.ERROR,
             errorCount: state.errorCount + 1
         });
     }
