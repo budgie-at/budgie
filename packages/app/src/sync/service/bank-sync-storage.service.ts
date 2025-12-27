@@ -60,7 +60,6 @@ class BankSyncStorageService {
         this.setState(provider, {
             status: SyncStatusEnum.SYNCING,
             totalAccounts: Object.keys(accountCursors).length,
-            currentAccount: 0,
             totalTransactions: 0,
             accountCursors
         });

@@ -15,7 +15,6 @@ export interface BankSyncStateInterface {
     readonly enabled: boolean;
     readonly token: string | null;
     readonly status: SyncStatusEnum;
-    readonly currentAccount: number;
     readonly totalAccounts: number;
     readonly totalTransactions: number;
     readonly errorCount: number;
@@ -29,7 +28,6 @@ export const emptyBankSyncState = (provider: BankProviderEnum): BankSyncStateInt
     enabled: false,
     token: null,
     status: SyncStatusEnum.IDLE,
-    currentAccount: 0,
     totalAccounts: 0,
     totalTransactions: 0,
     errorCount: 0,
