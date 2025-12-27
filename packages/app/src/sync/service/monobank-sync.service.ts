@@ -138,6 +138,8 @@ class AppMonobankSyncService {
 
                 bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
 
+                console.log(`Received `, result);
+
                 await microPause(MONOBANK_RATE_LIMIT_MS);
 
                 return await this.syncInternal();
@@ -150,7 +152,7 @@ class AppMonobankSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         } catch (error: unknown) {
             if (state.errorCount < SYNC_ERROR_THRESHOLD) {
-                console.log(`Sync failed, retrying in ${MONOBANK_RATE_LIMIT_MS / 1000} seconds.`);
+                console.log(`Sync failed, retrying in ${MONOBANK_RATE_LIMIT_MS / 1000} seconds.`, error);
                 bankSyncStorageService.failSync(this.provider, getErrorMessage(error, 'Unknown error'));
 
                 await microPause(MONOBANK_RATE_LIMIT_MS);
@@ -158,9 +160,11 @@ class AppMonobankSyncService {
                 return await this.syncInternal();
             }
 
-            console.log(`Sync failed after ${state.errorCount} retries, disabling sync.`);
+            console.log(`Sync failed after ${state.errorCount} retries, disabling sync.`, error);
 
+            bankSyncStorageService.failedSync(this.provider, getErrorMessage(error));
             bankSyncStorageService.setEnabled(this.provider, false);
+
             this.isRunning = false;
 
             return BackgroundTask.BackgroundTaskResult.Failed;

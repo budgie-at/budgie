@@ -68,16 +68,18 @@ class BankSyncStorageService {
     updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): void {
         const state = this.getState(provider);
 
-        const existingCursor = state.accountCursors[accountId];
-        if (isDefined(existingCursor)) {
-            this.setState(provider, {
-                totalTransactions: state.totalTransactions + result.transactions.length,
-                accountCursors: {
-                    ...state.accountCursors,
-                    [accountId]: { ...existingCursor, toTime: result.nextTo, fromTime: result.nextFrom, completed: result.completed }
+        this.setState(provider, {
+            totalTransactions: state.totalTransactions + result.transactions.length,
+            accountCursors: {
+                ...state.accountCursors,
+                [accountId]: {
+                    ...state.accountCursors[accountId],
+                    toTime: result.nextTo,
+                    fromTime: result.nextFrom,
+                    completed: result.completed
                 }
-            });
-        }
+            }
+        });
     }
 
     getNextPendingAccountId(provider: BankProviderEnum): AccountSyncCursorInterface | null {
@@ -107,13 +109,20 @@ class BankSyncStorageService {
 
         this.setState(provider, {
             error,
-            status: SyncStatusEnum.ERROR,
             errorCount: state.errorCount + 1
         });
     }
 
     isEnabled(provider: BankProviderEnum): boolean {
         return this.getState(provider).enabled;
+    }
+
+    failedSync(provider: BankProviderEnum, error: string): void {
+        this.setState(provider, {
+            error,
+            enabled: false,
+            status: SyncStatusEnum.FAILED
+        });
     }
 
     setEnabled(provider: BankProviderEnum, enabled: boolean): void {
@@ -124,7 +133,7 @@ class BankSyncStorageService {
 
             this.setState(provider, {
                 ...emptyBankSyncState(provider),
-                enabled,
+                enabled: false,
                 token: state.token,
                 accountCursors: state.accountCursors
             });
