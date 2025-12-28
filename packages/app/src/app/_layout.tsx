@@ -58,7 +58,6 @@ export default function RootLayout() {
             void exchangeRatesSyncService.sync();
             void exchangeRatesSyncService.registerBackgroundTask();
 
-            void accountBalanceIncrementalService.updateAllBalances();
             void accountBalanceIncrementalService.registerBackgroundTask();
 
             if (monobankSyncService.isEnabled()) {
