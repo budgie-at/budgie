@@ -55,8 +55,8 @@ export const PageHeader = ({
                 <CircleIcon icon={icon} variant={iconVariant} size={50} iconSize={24} radius={16} className="rounded-3xl" />
             ) : null}
 
-            <View className="gap-y-xs mr-auto">
-                <Text className="text-primary font-medium text-3xl">{title}</Text>
+            <View className="gap-y-xs mr-auto flex-1">
+                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>{title}</Text>
 
                 {isNotEmptyString(description) ? (
                     <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>
