@@ -95,18 +95,21 @@ export class AccountBalanceRepository {
             WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
             LIMIT 1`;
 
+        const lastBalanceUpdatedAtSql = sql`
+            SELECT MAX(${AccountBalanceEntityTable.updatedAt})
+            FROM ${AccountBalanceEntityTable}
+            WHERE ${AccountBalanceEntityTable.accountId} = accounts.id
+        `;
+
         const transactionsSumSinceLastBalanceSql = sql<number>`
             SELECT ${this.getTransactionsSumSql()}
             FROM ${TransactionEntryEntityTable}
-            LEFT JOIN (
-                SELECT ${AccountBalanceEntityTable.accountId} as ab_account_id,
-                       COALESCE(MAX(${AccountBalanceEntityTable.updatedAt}), '1970-01-01') as last_balance_at
-                FROM ${AccountBalanceEntityTable}
-                GROUP BY ${AccountBalanceEntityTable.accountId}
-            ) ab_max ON ab_max.ab_account_id = ${TransactionEntryEntityTable.accountId}
             WHERE ${TransactionEntryEntityTable.accountId} = accounts.id
               AND ${TransactionEntryEntityTable.deletedAt} IS NULL
-              AND ${TransactionEntryEntityTable.createdAt} > COALESCE(ab_max.last_balance_at, '1970-01-01')
+              AND (
+                  (${lastBalanceUpdatedAtSql}) IS NULL
+                  OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql})
+              )
         `;
 
         return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + COALESCE((${transactionsSumSinceLastBalanceSql}), 0)`;
