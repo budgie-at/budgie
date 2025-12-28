@@ -4,6 +4,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
@@ -116,7 +117,11 @@ class BankSyncStorageService {
 
         const needsBackwardSync = Object.values(state.accountCursors).filter(cursor => cursor.enabled && !cursor.completed);
         const needsForwardSync = Object.values(state.accountCursors).filter(
-            cursor => cursor.enabled && cursor.completed && isDefined(cursor.historySyncedTill)
+            cursor =>
+                cursor.enabled &&
+                cursor.completed &&
+                isDefined(cursor.historySyncedTill) &&
+                Date.now() - cursor.fromTime.getTime() > FIFTEEN_MINUTES_IN_SECONDS
         );
 
         const cursor = needsBackwardSync.at(0) ?? needsForwardSync.at(0) ?? null;
