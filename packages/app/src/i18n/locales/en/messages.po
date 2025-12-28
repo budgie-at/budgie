@@ -88,7 +88,7 @@ msgstr "100% Offline & Private"
 msgid "About"
 msgstr "About"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:51
+#: src/sync/component/account-sync-card/account-sync-card.tsx:54
 #: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Account"
@@ -236,7 +236,7 @@ msgstr "Archive Account?"
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:41
+#: src/settings/components/truncate-data/truncate-data.tsx:44
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
@@ -378,8 +378,8 @@ msgstr "Clear"
 msgid "Clear All"
 msgstr "Clear All"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:32
-#: src/settings/components/truncate-data/truncate-data.tsx:45
+#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Clear All Data"
 
@@ -554,11 +554,11 @@ msgstr "Default Account"
 msgid "Delete"
 msgstr "Delete"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:33
+#: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:42
+#: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Delete data"
 msgstr "Delete data"
 
@@ -579,7 +579,7 @@ msgstr "Done"
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:87
+#: src/sync/component/account-sync-card/account-sync-card.tsx:99
 msgid "Duration"
 msgstr "Duration"
 
@@ -725,6 +725,10 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Fetching new..."
+msgstr "Fetching new..."
+
 #: src/account/component/create-liability-account/create-liability-account.tsx:69
 msgid "Fill in the account details"
 msgstr "Fill in the account details"
@@ -780,6 +784,10 @@ msgstr "Hide account balances and net worth when taking screenshots"
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
 msgstr "Hide Cents"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:24
+msgid "Historical sync done"
+msgstr "Historical sync done"
 
 #: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
@@ -843,6 +851,10 @@ msgstr "Language"
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:57
 msgid "Last period"
 msgstr "Last period"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:90
+msgid "Last sync"
+msgstr "Last sync"
 
 #: src/sync/component/sync-status-card/sync-status-card.tsx:53
 msgid "Last Sync"
@@ -1029,10 +1041,6 @@ msgstr "Overview"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
 msgstr "Paste your API token below:"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:77
-msgid "Period"
-msgstr "Period"
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1299,17 +1307,17 @@ msgstr "Sync Status"
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:21
-msgid "Synced"
-msgstr "Synced"
+#: src/sync/component/account-sync-card/account-sync-card.tsx:81
+msgid "Synced until"
+msgstr "Synced until"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Syncing history..."
+msgstr "Syncing history..."
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:45
 msgid "Syncing transactions..."
 msgstr "Syncing transactions..."
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:23
-msgid "Syncing..."
-msgstr "Syncing..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1397,7 +1405,7 @@ msgid "Transaction Type"
 msgstr "Transaction Type"
 
 #: src/app/(tabs)/transactions.tsx:11
-#: src/sync/component/account-sync-card/account-sync-card.tsx:70
+#: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/sync-status-card/sync-status-card.tsx:46
 msgid "Transactions"
 msgstr "Transactions"
@@ -1439,6 +1447,10 @@ msgstr "Unknown"
 msgid "Unknown Category"
 msgstr "Unknown Category"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:22
+msgid "Up to date"
+msgstr "Up to date"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Update Account"
 msgstr "Update Account"
@@ -1477,7 +1489,7 @@ msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:28
-#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+#: src/sync/component/account-sync-card/account-sync-card.tsx:29
 msgid "Waiting"
 msgstr "Waiting"
 
