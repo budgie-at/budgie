@@ -19,23 +19,29 @@ class BankSyncStorageService {
             return emptyBankSyncState(provider);
         }
 
-        const serialized = JSON.parse(data) as BankSyncStateInterface;
+        const serialized = JSON.parse(data) as Partial<BankSyncStateInterface>;
+        const accountCursors = serialized.accountCursors ?? {};
 
         return {
             ...emptyBankSyncState(provider),
             ...serialized,
-            accountCursors: Object.keys(serialized.accountCursors).reduce(
-                (acc, key) => ({
+            accountCursors: Object.keys(accountCursors).reduce((acc, key) => {
+                const cursor = accountCursors[Number(key)];
+
+                if (!isDefined(cursor)) {
+                    return acc;
+                }
+
+                return {
                     ...acc,
                     [Number(key)]: {
                         ...emptyAccountSyncCursor(),
-                        ...serialized.accountCursors[Number(key)],
-                        fromTime: new Date(serialized.accountCursors[Number(key)].fromTime),
-                        toTime: new Date(serialized.accountCursors[Number(key)].toTime)
+                        ...cursor,
+                        fromTime: new Date(cursor.fromTime),
+                        toTime: new Date(cursor.toTime)
                     }
-                }),
-                {}
-            )
+                };
+            }, {})
         };
     }
 
