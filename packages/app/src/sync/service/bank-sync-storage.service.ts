@@ -113,7 +113,11 @@ class BankSyncStorageService {
         const state = this.getState(provider);
 
         for (const cursor of Object.values(state.accountCursors)) {
-            if (isDefined(cursor) && cursor.enabled && !cursor.completed) {
+            const needsBackwardSync = cursor.enabled && !cursor.completed;
+            const needsForwardSync =
+                cursor.enabled && cursor.completed && isDefined(cursor.lastSyncedAt) && cursor.fromTime < cursor.lastSyncedAt;
+
+            if (needsForwardSync || needsBackwardSync) {
                 this.setState(provider, {
                     accountCursors: {
                         ...state.accountCursors,
