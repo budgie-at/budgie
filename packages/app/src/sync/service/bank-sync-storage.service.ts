@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
@@ -90,7 +91,7 @@ class BankSyncStorageService {
         });
     }
 
-    updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): void {
+    async updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): Promise<void> {
         const state = this.getState(provider);
         const cursor = state.accountCursors[accountId];
         const now = new Date();
@@ -111,11 +112,15 @@ class BankSyncStorageService {
                         completedAt: now,
                         fromTime: now,
                         toTime: now,
-                        historySyncedTill: cursor.fromTime
+                        ...(!isDefined(cursor.historySyncedTill) && { historySyncedTill: cursor.fromTime })
                     })
                 }
             }
         });
+
+        if (result.completed) {
+            await accountBalanceIncrementalService.updateAllBalances();
+        }
     }
 
     getNextPendingAccountId(provider: BankProviderEnum): AccountSyncCursorInterface | null {
