@@ -1,6 +1,6 @@
 import { addSeconds } from 'date-fns';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
@@ -68,7 +68,7 @@ export class BaseBankSyncService {
             nextTo,
             nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
             transactions,
-            completed: transactions.length === 0
+            completed: isEmptyArray(transactions)
         };
     }
 
