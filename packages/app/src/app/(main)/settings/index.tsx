@@ -6,6 +6,7 @@ import { ScrollView, View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -39,23 +40,27 @@ export default function SettingsPage() {
         await updateSettingsMutation({ [key]: checked });
     };
 
+    const privacyIconParams = { variant: 'positive', border: false, size: 40, iconSize: 20 } as const;
+    const screenShotIconParams = { variant: 'pink', border: false, size: 40, iconSize: 20 } as const;
+
     return (
         <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
-                        <SettingsCard
-                            className="items-baseline"
+                        <SimpleHorizontalCell
+                            icon="Shield"
+                            iconParams={privacyIconParams}
                             title={t`100% Offline & Private`}
                             description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
-                            left={<CircleIcon size="1_5xl" icon={ICONS.Shield} variant="positive" border={false} />}
                         />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Security`}>
                         <PinCard />
-                        <SettingsCard
-                            left={<CircleIcon size="1_5xl" icon={ICONS.ShieldCheck} variant="pink" border={false} />}
+                        <SimpleHorizontalCell
+                            icon="ShieldCheck"
+                            iconParams={screenShotIconParams}
                             title={t`Screenshot Protection`}
                             description={t`Hide account balances and net worth when taking screenshots`}
                             right={
