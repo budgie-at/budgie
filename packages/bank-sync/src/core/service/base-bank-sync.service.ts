@@ -37,12 +37,11 @@ export class BaseBankSyncService {
         const hasMoreInPeriod = result.data.length === maxTransactionsPerRequest;
 
         const lastTransaction = result.data.at(-1);
-        const lastTransactionDate = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : null;
 
-        if (hasMoreInPeriod && isDefined(lastTransactionDate)) {
+        if (hasMoreInPeriod && isDefined(lastTransaction)) {
             return {
                 // HINT: Maybe we should get a first transaction
-                nextTo: lastTransactionDate,
+                nextTo: addSeconds(new Date(lastTransaction.time * 1000), -1),
                 nextFrom: from,
                 transactions: result.data,
                 completed: false
