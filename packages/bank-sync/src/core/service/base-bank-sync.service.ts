@@ -30,7 +30,6 @@ export class BaseBankSyncService {
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
-            console.log('Failed sync', { from, to, error: result.error });
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
@@ -39,8 +38,6 @@ export class BaseBankSyncService {
 
         const lastTransaction = result.data.at(-1);
         const lastTransactionDate = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : null;
-
-        console.log('Success sync', { to, from, lastTransaction, lastTransactionDate });
 
         if (hasMoreInPeriod && isDefined(lastTransactionDate)) {
             return {
