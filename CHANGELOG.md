@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.87.1](https://github.com/budgie-at/budgie/compare/v1.87.0...v1.87.1) (2025-12-28)
+
+### Bug Fixes
+
+- **app:** account calculation ([699e9ed](https://github.com/budgie-at/budgie/commit/699e9ed80801acd691218e0d178707a50bc78b94))
+- **app:** account calculation ([b3bdca2](https://github.com/budgie-at/budgie/commit/b3bdca2182fbfc456efde949633c7a6d7eff7ce4))
+- **app:** account calculation ([a272ab8](https://github.com/budgie-at/budgie/commit/a272ab850648b237ce8ea535ed115ffd6ce24f96))
+- **app:** account calculation ([80e7b43](https://github.com/budgie-at/budgie/commit/80e7b4307688c5f9c113bf2b243ea4ddae93beed))
+- **app:** account calculation ([e9b4ee0](https://github.com/budgie-at/budgie/commit/e9b4ee0ba5c884c64b3e7d9f9735b98dfaabb948))
+- **app:** fix text colors ([4c7568f](https://github.com/budgie-at/budgie/commit/4c7568fad29dd085f6d03793f19967ff4a2202c1))
+- **app:** review fixes ([6fd0d30](https://github.com/budgie-at/budgie/commit/6fd0d309c72c0a03dc523137ccb351ba0bc92df5))
+- **app:** rewriting backwardsync date ([6af1018](https://github.com/budgie-at/budgie/commit/6af1018cd21fa9c81e0c321010a91ea5ddb7e39b))
+- **app:** rewriting backwardsync date ([fa170d5](https://github.com/budgie-at/budgie/commit/fa170d586424e9417dcbc8c7d95df6a4a688365b))
+
 # [1.87.0](https://github.com/budgie-at/budgie/compare/v1.86.1...v1.87.0) (2025-12-28)
 
 ### Bug Fixes
