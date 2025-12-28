@@ -52,6 +52,8 @@ export const CreateMonobankAccount = () => {
         }
     };
 
+    const cursors = Object.values(syncState.accountCursors);
+
     return (
         <FullPage
             header={
@@ -98,16 +100,14 @@ export const CreateMonobankAccount = () => {
                         <>
                             <SyncStatusCard syncState={syncState} />
 
-                            {isNotEmptyArray(Object.values(syncState.accountCursors)) && (
-                                <View className="gap-y-md">
-                                    <Text className="text-primary text-muted-foreground text-sm px-md">
-                                        <Trans>Accounts</Trans>
-                                    </Text>
-                                    {Object.values(syncState.accountCursors).map(cursor => (
-                                        <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
-                                    ))}
-                                </View>
-                            )}
+                            <View className="gap-y-md">
+                                <Text className="text-primary text-muted-foreground text-sm px-md">
+                                    <Trans>Accounts</Trans>
+                                </Text>
+                                {cursors.map(cursor => (
+                                    <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
+                                ))}
+                            </View>
                         </>
                     )}
                 </FormLayoutGroup>
