@@ -13,6 +13,7 @@ export interface AccountSyncCursorInterface {
     readonly completedAt: Date | null;
     readonly completed: boolean;
     readonly transactionCount: number;
+    readonly lastSyncedAt: Date | null;
 }
 
 export interface BankSyncStateInterface {
