@@ -4,12 +4,11 @@ import { Switch, Text, View } from 'react-native';
 import { Card } from '../../../@generic/components/card/card';
 
 interface Props {
-    readonly isSyncing: boolean;
     readonly syncEnabled: boolean;
     readonly onToggle: (enabled: boolean) => void;
 }
 
-export const SyncToggleCard = ({ isSyncing, syncEnabled, onToggle }: Props) => (
+export const SyncToggleCard = ({ syncEnabled, onToggle }: Props) => (
     <Card className="p-5xl">
         <View className="flex-row items-center justify-between">
             <View className="flex-1">
@@ -17,7 +16,7 @@ export const SyncToggleCard = ({ isSyncing, syncEnabled, onToggle }: Props) => (
                     <Trans>Enable Auto-Sync</Trans>
                 </Text>
                 <Text className="text-primary text-muted-foreground text-sm">
-                    {isSyncing ? <Trans>Syncing in progress...</Trans> : <Trans>Automatically sync every hour</Trans>}
+                    <Trans>Automatically sync your accounts and transactions</Trans>
                 </Text>
             </View>
             <Switch value={syncEnabled} onValueChange={onToggle} />
