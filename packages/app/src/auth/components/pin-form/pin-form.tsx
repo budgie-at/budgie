@@ -63,7 +63,7 @@ export const PinForm = (props: Props) => {
                     <HapticPressable
                         disabled={!canScan}
                         onPress={onScanPress}
-                        className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-[92px]"
+                        className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
                     >
                         {canScan ? <Icon icon="LucideScanFace" className="text-primary" size={16} /> : null}
                     </HapticPressable>
@@ -73,7 +73,7 @@ export const PinForm = (props: Props) => {
                     <HapticPressable
                         disabled={!canDelete}
                         onPress={onDeletePress}
-                        className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-[92px]"
+                        className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-23"
                     >
                         <Icon icon="Delete" className="text-primary" size={16} />
                     </HapticPressable>

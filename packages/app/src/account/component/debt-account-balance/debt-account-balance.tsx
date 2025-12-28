@@ -44,7 +44,7 @@ export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) =
                 </View>
 
                 <View className="rounded-5xl bg-secondary-background overflow-hidden">
-                    <View className="rounded-5xl bg-dark-warning-foreground min-w-[2px] h-[8px]" style={barStyle} />
+                    <View className="rounded-5xl bg-dark-warning-foreground min-w-0.5 h-2" style={barStyle} />
                 </View>
 
                 <View className="flex-row items-center justify-between">
