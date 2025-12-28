@@ -16,7 +16,7 @@ export const PinFormButton = ({ digit, onPress, disabled }: Props) => {
         <HapticPressable
             onPress={handlePress}
             disabled={disabled}
-            className="flex-1 max-w-[92px] justify-center items-center rounded-3xl bg-secondary-background border border-secondary-corner aspect-square"
+            className="flex-1 max-w-23 justify-center items-center rounded-3xl bg-secondary-background border border-secondary-corner aspect-square"
         >
             <Text className="text-xl text-primary">{digit}</Text>
         </HapticPressable>
