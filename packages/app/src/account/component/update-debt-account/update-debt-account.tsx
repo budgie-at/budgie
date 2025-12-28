@@ -26,7 +26,6 @@ import { AccountBalanceField } from '../account-balance-field/account-balance-fi
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
-import { DebtAccountAccountField } from '../debt-account-account-field/debt-account-account-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 
 interface Props {
@@ -56,7 +55,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         targetBalance: convertFromMicroUnits(account.targetBalance)
     });
     const errors = formState.errors;
-    console.log({errors});
+    console.log({ errors });
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -102,8 +101,6 @@ export const UpdateDebtAccount = ({ account }: Props) => {
                     <AccountDetailsField control={control} variant={variant} />
 
                     <DebtAccountContactField control={control} />
-
-                    <DebtAccountAccountField debtType={account.debtType} control={control} />
 
                     <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
 

@@ -1,5 +1,4 @@
 import {
-    AccountDebtTypeEnum,
     AccountEntityInterface,
     AccountNatureEnum,
     DebtAccountCreateInputInterface,
@@ -20,9 +19,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
-import { transactionService } from '../../transaction/service/transaction.service';
 
 class AccountService {
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
@@ -63,42 +60,7 @@ class AccountService {
                 tx
             );
 
-            const isBorrow = input.debtType === AccountDebtTypeEnum.BORROW;
-
             await this.adjustBalanceTo(account.id, input.currentBalance, tx);
-
-            const fromAccountId = isBorrow ? account.id : input.accountId;
-            const toAccountId = isBorrow ? input.accountId : account.id;
-
-            await microPause();
-
-            await transactionService.createInternal({
-                title: '',
-                comment: '',
-                tagIds: [],
-                operatedAt: new Date(),
-                type: TransactionTypeEnum.DEBT,
-                externalId: null,
-                externalSource: null,
-                exchangeRate: 1,
-                amount: input.targetBalance,
-                fromAccountId,
-                toAccountId,
-                entries: [
-                    {
-                        categoryId: 1,
-                        accountId: toAccountId,
-                        amount: input.targetBalance,
-                        type: TransactionEntryTypeEnum.CREDIT
-                    },
-                    {
-                        categoryId: 1,
-                        accountId: fromAccountId,
-                        amount: input.targetBalance,
-                        type: TransactionEntryTypeEnum.DEBIT
-                    }
-                ]
-            });
 
             return account;
         });

@@ -21,7 +21,6 @@ import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
-import { DebtAccountAccountField } from '../debt-account-account-field/debt-account-account-field';
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
 
@@ -76,7 +75,11 @@ export const CreateDebtAccount = () => {
                 </KeyboardStickyView>
             }
         >
-            <KeyboardAwareScrollView contentContainerClassName='pb-5xl' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView
+                contentContainerClassName="pb-5xl"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
                 <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
                 <FormLayoutGroup>
@@ -87,8 +90,6 @@ export const CreateDebtAccount = () => {
                     <DebtAccountTypeField control={control} />
 
                     <DebtAccountContactField control={control} />
-
-                    <DebtAccountAccountField debtType={debtType} control={control} />
 
                     <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
                 </FormLayoutGroup>
