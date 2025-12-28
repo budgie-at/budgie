@@ -30,7 +30,7 @@ export const CreateMonobankAccount = () => {
     const [token, setToken] = useState(monobankSyncService.getToken());
 
     const handleGoBack = () => void goBackOrReplace('/');
-
+    const handleToggleAccount = (accountId: number, enabled: boolean) => void monobankSyncService.setAccountEnabled(accountId, enabled);
     const handleToggleSync = async (enabled: boolean) => {
         const trimmedToken = token.trim();
 
@@ -104,11 +104,7 @@ export const CreateMonobankAccount = () => {
                                         <Trans>Accounts</Trans>
                                     </Text>
                                     {Object.values(syncState.accountCursors).map(cursor => (
-                                        <AccountSyncCard
-                                            key={cursor.accountId}
-                                            cursor={cursor}
-                                            onToggle={monobankSyncService.setAccountEnabled.bind(monobankSyncService)}
-                                        />
+                                        <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
                                     ))}
                                 </View>
                             )}
