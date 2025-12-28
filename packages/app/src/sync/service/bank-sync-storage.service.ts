@@ -7,7 +7,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { getBankSyncStorageKey } from '../constant/bank-sync-storage-key.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
-import { AccountSyncCursorInterface, BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
+import { AccountSyncCursorInterface, emptyAccountSyncCursor } from '../interface/account-sync-cursor.interface';
+import { BankSyncStateInterface, emptyBankSyncState } from '../interface/bank-sync-state.interface';
 
 class BankSyncStorageService {
     getState(provider: BankProviderEnum): BankSyncStateInterface {
@@ -20,11 +21,13 @@ class BankSyncStorageService {
         const serialized = JSON.parse(data) as BankSyncStateInterface;
 
         return {
+            ...emptyBankSyncState(provider),
             ...serialized,
             accountCursors: Object.keys(serialized.accountCursors).reduce(
                 (acc, key) => ({
                     ...acc,
                     [Number(key)]: {
+                        ...emptyAccountSyncCursor(),
                         ...serialized.accountCursors[Number(key)],
                         fromTime: new Date(serialized.accountCursors[Number(key)].fromTime),
                         toTime: new Date(serialized.accountCursors[Number(key)].toTime)
@@ -49,30 +52,24 @@ class BankSyncStorageService {
                 // eslint-disable-next-line no-await-in-loop
                 const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
                 const existingCursor = state.accountCursors[account.id];
-                const hasCompletedHistoricalSync = isDefined(existingCursor.lastSyncedAt);
+                const hasCompletedHistoricalSync = isDefined(existingCursor) && isDefined(existingCursor.lastSyncedAt);
 
                 if (hasCompletedHistoricalSync) {
                     accountCursors[account.id] = {
+                        ...emptyAccountSyncCursor(),
                         ...existingCursor,
                         fromTime: existingCursor.lastSyncedAt,
-                        toTime: now,
-                        completedAt: null,
-                        startedAt: null,
-                        completed: false
+                        toTime: now
                     };
                 } else {
                     accountCursors[account.id] = {
+                        ...emptyAccountSyncCursor(),
+                        ...existingCursor,
                         accountId: account.id,
                         accountName: account.title,
                         externalAccountId: account.externalId,
-                        enabled: isDefined(existingCursor) ? existingCursor.enabled : true,
-                        transactionCount: isDefined(existingCursor) ? existingCursor.transactionCount : 0,
-                        lastSyncedAt: null,
                         fromTime: now,
-                        toTime: isDefined(earliestTxTime) ? earliestTxTime : now,
-                        completedAt: null,
-                        startedAt: null,
-                        completed: false
+                        toTime: isDefined(earliestTxTime) ? earliestTxTime : now
                     };
                 }
             }
@@ -209,14 +206,13 @@ class BankSyncStorageService {
         this.setState(provider, { token });
     }
 
-    hasToken(provider: BankProviderEnum): boolean {
-        return isNotEmptyString(this.getToken(provider));
-    }
+    truncate(): void {
+        const state = this.getState(BankProviderEnum.MONOBANK);
 
-    getAllActiveStates(): BankSyncStateInterface[] {
-        const providers = Object.values(BankProviderEnum);
-
-        return providers.map(provider => this.getState(provider)).filter(state => state.status !== SyncStatusEnum.IDLE);
+        this.setState(BankProviderEnum.MONOBANK, {
+            ...emptyBankSyncState(BankProviderEnum.MONOBANK),
+            token: state.token
+        });
     }
 }
 
