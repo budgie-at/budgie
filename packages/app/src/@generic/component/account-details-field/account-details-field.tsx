@@ -3,7 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { ICONS } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormItem } from '../form-item/form-item';
 import { IconSelector } from '../icon-selector/icon-selector';
 import { Input } from '../input/input';
@@ -20,7 +22,12 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
     const { t } = useLingui();
 
     const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
-        <IconSelector size="sm" icon={value as UserIconNameEnum} variant={variant} onSelect={onChange} />
+        <IconSelector
+            variant={variant}
+            onSelect={onChange}
+            icon={value as UserIconNameEnum}
+            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={ICONS[value as UserIconNameEnum]} />}
+        />
     );
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<T, FieldPath<T>>) => {

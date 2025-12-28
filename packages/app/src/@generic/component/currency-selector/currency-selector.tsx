@@ -10,18 +10,16 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
-import { cn } from '../../utils/cn.util';
-import { Card } from '../card/card';
 import { CurrencySelectorBottomSheet } from '../currency-selector-bottom-sheet/currency-selector-bottom-sheet';
+import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
 interface Props {
-    readonly className?: string;
     readonly instrumentId?: number;
     readonly onChange: (instrumentId: number) => void;
 }
 
-export const CurrencySelector = ({ instrumentId, onChange, className }: Props) => {
+export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(InstrumentTypeEnum.FIAT);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
@@ -36,6 +34,7 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
 
     const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
     const { code: defaultInstrumentCode } = defaultInstrument;
+
     const convertedAmount = isDefined(rate) ? rate.rate : 1;
     const isBaseCurrency = !isDefined(rate);
 
@@ -43,14 +42,16 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
 
     return (
         <>
-            <Card
-                className={cn('rounded-3xl border border-secondary-corner p-3xl flex-row gap-x-xl items-center', className)}
+            <HorizontalCell
+                left={
+                    <View className="rounded-5xl bg-secondary-background p-lg w-12 h-12 items-center justify-center">
+                        <Text className="text-primary text-4xl">{symbol}</Text>
+                    </View>
+                }
+                right={<Icon icon={ICONS.Sparkles} className="text-secondary-foreground/50" size={16} />}
                 onPress={handleOpen}
+                size="lg"
             >
-                <View className="rounded-5xl bg-secondary-background p-lg w-[48px] h-[48px] items-center justify-center">
-                    <Text className="text-primary text-4xl">{symbol}</Text>
-                </View>
-
                 <View className="gap-y-xs flex-1">
                     <Text className="text-primary font-medium text-sm">
                         {name} <Text className="text-primary">{selectedCurrencyCode}</Text>
@@ -66,9 +67,7 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
                         )}
                     </Text>
                 </View>
-
-                <Icon icon={ICONS.Sparkles} className="text-secondary-foreground/50" size={16} />
-            </Card>
+            </HorizontalCell>
 
             <CurrencySelectorBottomSheet selectedInstrumentId={instrumentId} onSelect={onChange} ref={ref} />
         </>

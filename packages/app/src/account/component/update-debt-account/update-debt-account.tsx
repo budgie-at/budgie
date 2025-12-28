@@ -25,6 +25,9 @@ import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
+import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
+import { DebtAccountAccountField } from '../debt-account-account-field/debt-account-account-field';
+import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -39,7 +42,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
 
     const { balance } = useAccountBalanceQuery(account.id);
 
-    const { control, handleSubmit, instrument } = useDebtAccountForm({
+    const { control, handleSubmit, instrument, formState } = useDebtAccountForm({
         accountId: 0,
         iban: account.iban,
         type: account.type,
@@ -52,6 +55,8 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         currentBalance: convertFromMicroUnits(balance),
         targetBalance: convertFromMicroUnits(account.targetBalance)
     });
+    const errors = formState.errors;
+    console.log({errors});
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -88,25 +93,25 @@ export const UpdateDebtAccount = ({ account }: Props) => {
                 />
             }
         >
-            <KeyboardAwareScrollView
-                contentContainerClassName="flex-1"
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-            >
-                <View className="flex-1">
-                    <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
 
-                    <FormLayoutGroup>
-                        <AccountTargetBalanceField control={control} />
+                <FormLayoutGroup>
+                    <AccountTargetBalanceField control={control} />
 
-                        <AccountDetailsField control={control} variant={variant} />
-                    </FormLayoutGroup>
-                </View>
+                    <AccountDetailsField control={control} variant={variant} />
 
-                <View className="gap-y-xl">
-                    <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
-                    <ArchiveAccount accountId={account.id} />
-                </View>
+                    <DebtAccountContactField control={control} />
+
+                    <DebtAccountAccountField debtType={account.debtType} control={control} />
+
+                    <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
+
+                    <View className="gap-y-xl">
+                        <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
+                        <ArchiveAccount accountId={account.id} />
+                    </View>
+                </FormLayoutGroup>
             </KeyboardAwareScrollView>
         </FullPage>
     );

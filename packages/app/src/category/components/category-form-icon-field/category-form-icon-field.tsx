@@ -14,7 +14,7 @@ export const CategoryFormIconField = ({ control }: Props) => {
 
     const render = ({ field: { value, onChange }, fieldState: { error } }: UseControllerReturn<CategoryCreateEntityInterface, 'icon'>) => (
         <FormItem label={t`Icon`} error={error?.message}>
-            <IconSelector variant="default" size="md" icon={value} onSelect={onChange} />
+            <IconSelector variant="default" icon={value} onSelect={onChange} />
         </FormItem>
     );
 
