@@ -62,11 +62,9 @@ export class BaseBankSyncService {
             };
         }
 
-        const nextTo = from;
-
         return {
-            nextTo,
-            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
+            nextTo: from,
+            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions,
             completed: isEmptyArray(transactions)
         };
