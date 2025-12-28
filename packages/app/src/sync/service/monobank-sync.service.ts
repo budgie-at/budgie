@@ -175,8 +175,8 @@ class AppMonobankSyncService {
         const isForwardSync = isDefined(cursor.lastSyncedAt);
 
         const result = isForwardSync
-            ? await syncService.syncTransactionsForward(cursor.externalAccountId, cursor.fromTime, cursor.toTime)
-            : await syncService.syncTransactionsBackward(cursor.externalAccountId, cursor.fromTime, cursor.toTime);
+            ? await syncService.syncTransactionsForward(cursor.externalAccountId, cursor.fromTime)
+            : await syncService.syncTransactionsBackward(cursor.externalAccountId, cursor.toTime);
 
         await microPause();
 

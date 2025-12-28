@@ -49,8 +49,6 @@ class BankSyncStorageService {
 
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
-                // eslint-disable-next-line no-await-in-loop
-                const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
                 const existingCursor = state.accountCursors[account.id];
                 const hasCompletedHistoricalSync = isDefined(existingCursor) && isDefined(existingCursor.lastSyncedAt);
 
@@ -62,6 +60,9 @@ class BankSyncStorageService {
                         toTime: now
                     };
                 } else {
+                    // eslint-disable-next-line no-await-in-loop
+                    const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
+
                     accountCursors[account.id] = {
                         ...emptyAccountSyncCursor(),
                         ...existingCursor,
@@ -134,6 +135,7 @@ class BankSyncStorageService {
         const state = this.getState(provider);
         const cursor = state.accountCursors[accountId];
 
+        // TODO: Improve this logic
         if (isDefined(cursor)) {
             this.setState(provider, {
                 accountCursors: {
@@ -166,10 +168,7 @@ class BankSyncStorageService {
     failSync(provider: BankProviderEnum, error: string): void {
         const state = this.getState(provider);
 
-        this.setState(provider, {
-            error,
-            errorCount: state.errorCount + 1
-        });
+        this.setState(provider, { error, errorCount: state.errorCount + 1 });
     }
 
     isEnabled(provider: BankProviderEnum): boolean {
@@ -206,11 +205,11 @@ class BankSyncStorageService {
         this.setState(provider, { token });
     }
 
-    truncate(): void {
-        const state = this.getState(BankProviderEnum.MONOBANK);
+    truncate(provider: BankProviderEnum): void {
+        const state = this.getState(provider);
 
-        this.setState(BankProviderEnum.MONOBANK, {
-            ...emptyBankSyncState(BankProviderEnum.MONOBANK),
+        this.setState(provider, {
+            ...emptyBankSyncState(provider),
             token: state.token
         });
     }
