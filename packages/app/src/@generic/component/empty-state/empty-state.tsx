@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName } from '../../constant/icons.constant';
 import { cn } from '../../utils/cn.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
@@ -33,13 +33,12 @@ export const EmptyState = (props: Props) => {
 
     return (
         <View className={cn(wrapperVariants({ hasIcon: isNotEmptyString(icon) }), className)}>
-            {isNotEmptyString(icon) && (
-                <Icon icon={ICONS[icon]} className={cn('text-secondary-foreground mb-xl', iconClassName)} size={48} />
-            )}
+            {isNotEmptyString(icon) && <Icon icon={icon} className={cn('text-secondary-foreground mb-xl', iconClassName)} size={48} />}
             {isNotEmptyString(circleIcon) && (
                 <CircleIcon
-                    icon={ICONS[circleIcon]}
-                    size="3xl"
+                    icon={circleIcon}
+                    size={64}
+                    iconSize={32}
                     variant="ghost"
                     className={cn('text-secondary-foreground mb-xl rounded-5xl', iconClassName)}
                 />

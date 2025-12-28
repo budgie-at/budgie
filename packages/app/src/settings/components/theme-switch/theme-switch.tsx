@@ -1,8 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { SettingsCard } from '../settings-card/settings-card';
 
@@ -12,10 +10,11 @@ export const ThemeSwitch = () => {
 
     return (
         <SettingsCard
+            variant="ghost"
             title={t`Dark Mode`}
             description={t`Switch between light and dark themes`}
             right={<ThemedSwitch className="my-auto" onChange={toggleColorSchema} value={isDarkColorSchema} />}
-            left={<CircleIcon size="1_5xl" icon={ICONS.Moon} variant="ghost" border={false} />}
+            icon="Moon"
         />
     );
 };

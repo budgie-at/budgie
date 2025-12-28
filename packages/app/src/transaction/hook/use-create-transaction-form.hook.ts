@@ -7,7 +7,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -84,11 +84,6 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             ]
         })
     });
-
-    const [entries, from, to] = useWatch({
-        control: form.control,
-        name: ['entries', 'fromAccountId', 'toAccountId']
-    })
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {

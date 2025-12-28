@@ -3,18 +3,18 @@ import { View, ViewStyle } from 'react-native';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
 
 import type { ClassValue } from 'clsx';
-import type { LucideIcon } from 'lucide-react-native';
 
 interface Props {
     readonly size?: number;
+    readonly icon: IconName;
     readonly radius?: number;
     readonly border?: boolean;
-    readonly icon: LucideIcon;
     readonly iconSize?: number;
     readonly className?: string;
     readonly iconClassName?: string;

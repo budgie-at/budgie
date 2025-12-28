@@ -9,7 +9,7 @@ import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
-import type { IconType } from '../../constant/icons.constant';
+import type { IconName } from '../../constant/icons.constant';
 
 interface Props {
     readonly onSelect: (name: UserIconNameEnum) => void;
@@ -17,7 +17,7 @@ interface Props {
     readonly name: UserIconNameEnum;
     readonly isSelected: boolean;
     readonly className?: string;
-    readonly icon: IconType;
+    readonly icon: IconName;
 }
 
 const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md', {

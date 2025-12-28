@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName } from '../../constant/icons.constant';
 import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -61,7 +61,7 @@ export const BottomSheetHeader = (props: Props) => {
 
     return (
         <View className={cn(headerVariant({ align }), className)}>
-            {isNotEmptyString(icon) ? <Icon icon={ICONS[icon]} /> : null}
+            {isNotEmptyString(icon) ? <Icon icon={icon} /> : null}
             <Text className={cn(titleVariants({ size, align }), titleClassName)}>{title}</Text>
             <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
         </View>

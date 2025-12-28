@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
@@ -67,7 +66,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
             <Controller render={renderAmountInput} name={`entries.${index}.amount`} control={control} />
 
             <HapticPressable onPress={handleRemove} className="p-md">
-                <Icon size={16} icon={ICONS.X} className="text-primary" />
+                <Icon size={16} icon="X" className="text-primary" />
             </HapticPressable>
         </View>
     );

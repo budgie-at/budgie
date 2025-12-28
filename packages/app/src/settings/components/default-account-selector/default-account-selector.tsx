@@ -7,7 +7,7 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
+import { SettingsCard } from '../settings-card/settings-card';
 
 export const DefaultAccountSelector = () => {
     const ref = useRef<BottomSheetInterface | null>(null);
@@ -31,9 +31,9 @@ export const DefaultAccountSelector = () => {
 
     return (
         <>
-            <GenericSelectorCard
+            <SettingsCard
                 icon={icon}
-                iconVariant="ghost"
+                variant="ghost"
                 onPress={handleOpen}
                 title={t`Default Account`}
                 description={description ?? t`None selected`}

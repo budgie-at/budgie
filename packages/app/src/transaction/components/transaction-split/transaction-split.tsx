@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { sumEntriesAmount } from '../../../transaction-entry/utils/sum-entries-amount.util';
 import { TransactionEntry } from '../transaction-entry/transaction-entry';
@@ -75,7 +74,7 @@ export const TransactionSplit = ({ control, variant, entries, accountId, totalAm
     return (
         <View>
             <View className="flex-row gap-x-md py-lg px-xl items-center rounded-5xl border border-secondary-corner mb-3xl">
-                <Icon size={16} className={iconVariants({ variant })} icon={ICONS.SplitIcon} />
+                <Icon size={16} className={iconVariants({ variant })} icon="SplitIcon" />
 
                 <Text className={categoryVariants({ variant })}>
                     <Trans>Split by Category</Trans>
