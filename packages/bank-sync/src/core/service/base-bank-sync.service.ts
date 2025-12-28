@@ -2,6 +2,7 @@ import { addSeconds } from 'date-fns';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 
@@ -31,6 +32,16 @@ export class BaseBankSyncService {
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
+            // HINT: For wrong dates API returns 400 instead
+            if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+                return {
+                    nextTo: to,
+                    nextFrom: from,
+                    transactions: [],
+                    completed: true
+                };
+            }
+
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
@@ -60,6 +71,16 @@ export class BaseBankSyncService {
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
+            // HINT: For wrong dates API returns 400 instead
+            if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+                return {
+                    nextTo: to,
+                    nextFrom: from,
+                    transactions: [],
+                    completed: true
+                };
+            }
+
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
