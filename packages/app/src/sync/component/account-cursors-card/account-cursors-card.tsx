@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
-import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.interface';
+import { AccountSyncCursorInterface } from '../../interface/account-sync-cursor.interface';
 
 interface Props {
     readonly cursors: AccountSyncCursorInterface[];
