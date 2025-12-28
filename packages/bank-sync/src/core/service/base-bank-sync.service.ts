@@ -72,8 +72,8 @@ export class BaseBankSyncService {
 
         if (hasMoreInPeriod && isDefined(oldestTransaction)) {
             return {
-                nextFrom: addSeconds(new Date(oldestTransaction.time * 1000), -1),
-                nextTo: to,
+                nextFrom: isForward ? addSeconds(new Date(oldestTransaction.time * 1000), -1) : from,
+                nextTo: isForward ? to : addSeconds(new Date(oldestTransaction.time * 1000), -1),
                 transactions: result.data,
                 completed: false
             };
