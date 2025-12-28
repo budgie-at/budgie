@@ -26,7 +26,8 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async syncTransactionsForward(accountId: string, from: Date, to: Date): Promise<BankSyncBatchResultInterface> {
+    async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
+        const to = new Date();
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
@@ -38,8 +39,8 @@ export class BaseBankSyncService {
 
         if (hasMoreInPeriod && isDefined(oldestTransaction)) {
             return {
-                nextFrom: from,
-                nextTo: addSeconds(new Date(oldestTransaction.time * 1000), -1),
+                nextFrom: addSeconds(new Date(oldestTransaction.time * 1000), -1),
+                nextTo: to,
                 transactions: result.data,
                 completed: false
             };
@@ -53,8 +54,10 @@ export class BaseBankSyncService {
         };
     }
 
-    async syncTransactionsBackward(accountId: string, from: Date, to: Date): Promise<BankSyncBatchResultInterface> {
-        const result = await this.client.getTransactions(accountId, this.toSeconds(to), this.toSeconds(from));
+    async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+        const from = addSeconds(to, -this.options.maxPeriodSeconds);
+
+        const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
@@ -72,11 +75,9 @@ export class BaseBankSyncService {
             };
         }
 
-        const nextTo = addSeconds(to, -this.options.maxPeriodSeconds);
-
         return {
-            nextTo,
-            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
+            nextTo: from,
+            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions: result.data,
             completed: result.data.length === 0
         };
