@@ -25,7 +25,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
-import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
@@ -136,7 +135,6 @@ class AppMonobankSyncService {
             }
 
             bankSyncStorageService.completeSync(this.provider);
-            await accountBalanceIncrementalService.updateAllBalances(new Date(0));
 
             this.isRunning = false;
 
