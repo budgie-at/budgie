@@ -13,14 +13,13 @@ interface Props {
     readonly accountId: number | null;
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (accountId: number) => void;
-    readonly className?: string;
     readonly status?: FormFieldStatus;
     readonly description?: string;
     readonly excludeAccountTypes?: AccountTypeEnum[];
 }
 
 export const AccountSelector = (props: Props) => {
-    const { emptyStateDescription, accountId, onSelect, variant, className, status, description, excludeAccountTypes } = props;
+    const { emptyStateDescription, accountId, onSelect, variant, status, description, excludeAccountTypes } = props;
     const { selectedAccount, icon, renderBottomSheet } = useAccountSelector({
         onSelect,
         accountId,
@@ -29,7 +28,6 @@ export const AccountSelector = (props: Props) => {
     });
     const { t } = useLingui();
 
-    const titleVariant = isDefined(selectedAccount) ? 'primary' : 'secondary';
     const iconVariant = isDefined(selectedAccount) ? variant : 'secondary';
 
     return (
@@ -38,9 +36,7 @@ export const AccountSelector = (props: Props) => {
             status={status}
             variant={variant}
             iconVariant={iconVariant}
-            className={className}
             description={description}
-            titleVariant={titleVariant}
             renderBottomSheet={renderBottomSheet}
             title={selectedAccount?.title ?? t`Select account`}
         />

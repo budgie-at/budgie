@@ -1,8 +1,8 @@
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ImportColumnMapFormValues } from '../../schema/import-column-map.schema';
 import { ImportColumnMapper } from '../import-column-mapper/import-column-mapper';
 
@@ -20,11 +20,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
         const handleClear = () => void onChange('');
 
         return (
-            <View className="gap-y-xs">
-                <View className="flex-row items-center gap-x-xs">
-                    <Text className="text-secondary-foreground text-sm font-medium">{label}</Text>
-                    {isRequired && <Text className="text-destructive-foreground text-sm">*</Text>}
-                </View>
+            <FormItem isRequired={isRequired} label={label} error={error?.message} className="gap-y-xs">
                 <ImportColumnMapper
                     value={value}
                     headers={headers}
@@ -34,14 +30,9 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
                     onClear={handleClear}
                     hasError={isNotEmptyString(error)}
                 />
-                {isNotEmptyString(error) && <Text className="text-destructive-foreground text-xs">{error}</Text>}
-            </View>
+            </FormItem>
         );
     };
 
-    return (
-        <View>
-            <Controller control={control} name={name} render={renderField} />
-        </View>
-    );
+    return <Controller control={control} name={name} render={renderField} />;
 };

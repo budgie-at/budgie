@@ -6,7 +6,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
@@ -57,7 +56,7 @@ export const CategorySelectorCard = (props: Props) => {
 
     return (
         <HapticPressable disabled={isSelected} className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
-            <CircleIcon size="lg" className="rounded-5xl" icon={ICONS[icon]} variant={iconVariant} border={false} />
+            <CircleIcon size={34} iconSize={18} className="rounded-5xl" icon={icon} variant={iconVariant} border={false} />
 
             <Text className={textVariants({ isSelected, variant })}>{title}</Text>
         </HapticPressable>

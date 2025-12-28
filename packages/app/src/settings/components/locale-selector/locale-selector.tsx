@@ -8,7 +8,7 @@ import { LocaleSelectorBottomSheet } from '../../../i18n/components/locale-selec
 import { LOCALES } from '../../../i18n/constant/locales.constant';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
+import { SettingsCard } from '../settings-card/settings-card';
 
 export const LocaleSelector = () => {
     const { i18n, t } = useLingui();
@@ -31,11 +31,11 @@ export const LocaleSelector = () => {
 
     return (
         <>
-            <GenericSelectorCard
+            <SettingsCard
                 icon="MapPinIcon"
                 title={t`Locale`}
+                variant="warning"
                 onPress={handleOpen}
-                iconVariant="warning"
                 description={`${selectedLocale.emoji} ${i18n.t(selectedLocale.name)}`}
             />
 

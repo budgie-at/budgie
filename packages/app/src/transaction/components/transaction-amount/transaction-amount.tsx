@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
@@ -35,7 +34,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
             <View className="gap-y-xxl items-end">
                 <Text className={amountVariants({ type: 'default' })}>{formatFromAmount(fromEntry.amount)}</Text>
                 <View className="flex-row items-center gap-x-xs">
-                    <Icon icon={ICONS.ArrowRightIcon} className="text-secondary-foreground" size={12} />
+                    <Icon icon="ArrowRightIcon" className="text-secondary-foreground" size={12} />
                     <Text className="text-secondary-foreground text-xxs">{formatToAmount(toEntry.amount)}</Text>
                 </View>
             </View>

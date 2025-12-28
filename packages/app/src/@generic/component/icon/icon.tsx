@@ -1,13 +1,15 @@
 import { styled } from 'nativewind';
 
-import type { LucideIcon, LucideProps } from 'lucide-react-native';
+import { ICONS, IconName } from '../../constant/icons.constant';
+
+import type { LucideProps } from 'lucide-react-native';
 
 interface IconProps extends LucideProps {
-    readonly icon: LucideIcon;
+    readonly icon: IconName;
 }
 
 export const Icon = ({ icon, ...rest }: IconProps) => {
-    const IconToRender = styled(icon, { className: { target: 'style' } });
+    const IconToRender = styled(ICONS[icon], { className: { target: 'style' } });
 
     // TODO: We need to improve here
     // eslint-disable-next-line react-hooks/static-components

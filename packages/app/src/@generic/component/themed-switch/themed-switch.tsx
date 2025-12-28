@@ -5,16 +5,24 @@ import { Switch } from 'react-native';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { PRIMARY_COLOR, PRIMARY_REVERSE_COLOR } from '../../constant/colors.constant';
 
+const getThumbColor = (isDarkTheme: boolean, value: boolean) => {
+    if (isDarkTheme) {
+        return value ? PRIMARY_REVERSE_COLOR : PRIMARY_COLOR;
+    }
+
+    return value ? PRIMARY_COLOR : PRIMARY_REVERSE_COLOR;
+};
+
 export const ThemedSwitch = (props: ComponentProps<typeof Switch>) => {
     const theme = useSetting('theme');
     const isDarkTheme = theme === ThemeEnum.DARK;
 
-    const thumbColor = isDarkTheme ? PRIMARY_COLOR : PRIMARY_REVERSE_COLOR;
+    const thumbColor = getThumbColor(isDarkTheme, props.value ?? false);
     const iosBackgroundColor = isDarkTheme ? PRIMARY_REVERSE_COLOR : PRIMARY_COLOR;
 
     const trackColor = {
-        false: isDarkTheme ? PRIMARY_COLOR : PRIMARY_REVERSE_COLOR,
-        true: isDarkTheme ? PRIMARY_REVERSE_COLOR : PRIMARY_COLOR
+        true: isDarkTheme ? PRIMARY_COLOR : PRIMARY_REVERSE_COLOR,
+        false: isDarkTheme ? PRIMARY_REVERSE_COLOR : PRIMARY_COLOR
     };
 
     return (

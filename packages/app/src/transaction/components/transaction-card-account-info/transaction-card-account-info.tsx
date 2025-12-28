@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -16,12 +15,12 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
     if (isDefined(fromAccount) && isDefined(toAccount)) {
         return (
             <View className="flex-row items-center gap-x-sm">
-                <Icon icon={ICONS[fromAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Icon icon={fromAccount.icon} className="text-secondary-foreground" size={12} />
                 <Text className="text-xs font-medium text-secondary-foreground">{fromAccount.title}</Text>
 
-                <Icon icon={ICONS.ArrowRightIcon} className="text-secondary-foreground" size={12} />
+                <Icon icon="ArrowRightIcon" className="text-secondary-foreground" size={12} />
 
-                <Icon icon={ICONS[toAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Icon icon={toAccount.icon} className="text-secondary-foreground" size={12} />
                 <Text className="text-xs font-medium text-secondary-foreground">{toAccount.title}</Text>
             </View>
         );
@@ -31,7 +30,7 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
         return (
             <View className="flex-row items-center gap-x-sm">
                 <Text className="text-xs text-secondary-foreground">from</Text>
-                <Icon icon={ICONS[fromAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Icon icon={fromAccount.icon} className="text-secondary-foreground" size={12} />
                 <Text className="text-xs font-medium text-secondary-foreground">{fromAccount.title}</Text>
             </View>
         );
@@ -41,7 +40,7 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
         return (
             <View className="flex-row items-center gap-x-sm">
                 <Text className="text-xs text-secondary-foreground">to</Text>
-                <Icon icon={ICONS[toAccount.icon]} className="text-secondary-foreground" size={12} />
+                <Icon icon={toAccount.icon} className="text-secondary-foreground" size={12} />
                 <Text className="text-xs font-medium text-secondary-foreground">{toAccount.title}</Text>
             </View>
         );

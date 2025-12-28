@@ -89,9 +89,8 @@ const USER_ICONS: Record<UserIconNameEnum, LucideIcon> = {
     AlertTriangle
 };
 
-export const USER_ICONS_LIST: UserIcon[] = typedObjectEntries(USER_ICONS).map(([name, icon]) => ({ name, icon }));
+export const USER_ICONS_LIST: UserIcon[] = typedObjectEntries(USER_ICONS).map(([name]) => ({ name }));
 
 export interface UserIcon {
     name: UserIconNameEnum;
-    icon: LucideIcon;
 }

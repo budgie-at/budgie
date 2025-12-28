@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
@@ -39,7 +38,7 @@ export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
         <BottomSheet enableDynamicSizing ref={ref}>
             <BottomSheetView>
                 <View className="flex-row items-center gap-x-xl px-5xl border-b border-b-secondary-corner pb-3xl">
-                    <CircleIcon size="1_25xl" variant="ghost" icon={ICONS.Calendar} />
+                    <CircleIcon size={36} iconSize={20} border={false} variant="ghost" icon="Calendar" />
 
                     <Text className="text-primary font-semibold">
                         <Trans>Select Date</Trans>

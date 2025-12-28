@@ -5,10 +5,9 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useGetTagByIdsQuery } from '../../query/use-get-tag-by-ids.query';
@@ -21,9 +20,7 @@ interface Props {
 }
 
 const iconVariants = cva('', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
@@ -43,9 +40,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
 
     return (
         <>
-            <Card onPress={handleOpen} className="flex-row items-center gap-x-xl">
-                <Icon size={16} icon={ICONS.Tag} className={iconVariants({ variant })} />
-
+            <HorizontalCell onPress={handleOpen} left={<Icon size={16} icon="Tag" className={iconVariants({ variant })} />} size="lg">
                 {isNotEmptyArray(selectedTags) ? (
                     <View className="mr-auto flex-row items-baseline">
                         <Text className="text-sm text-primary font-semibold">{selectedTags[0].title}</Text>
@@ -59,9 +54,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                         <Trans>None</Trans>
                     </Text>
                 )}
-
-                <View className="w-8.5" />
-            </Card>
+            </HorizontalCell>
 
             <TagsSelectorBottomSheet onRemoveSelection={handleRemoveSelection} onSelect={handleSelect} selectedTagIds={tagIds} ref={ref} />
         </>

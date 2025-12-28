@@ -5,7 +5,6 @@ import { Text, View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -31,7 +30,7 @@ export const AccountSelectorCard = (props: Props) => {
             isSelected={isSelected}
             onSelect={onSelect}
             className={className}
-            iconSlot={<CircleIcon size="2xl" className="rounded-5xl" icon={ICONS[icon]} variant="ghost" border={false} />}
+            iconSlot={<CircleIcon size={48} iconSize={24} className="rounded-5xl" icon={icon} variant="ghost" border={false} />}
             title={title}
             subtitle={
                 <View className="flex-row items-center">

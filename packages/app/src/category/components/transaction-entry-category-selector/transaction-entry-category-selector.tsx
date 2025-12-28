@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
@@ -44,7 +43,7 @@ export const TransactionEntryCategorySelector = ({ variant, categoryId, excludeC
     return (
         <>
             <Card onPress={handleOpen} className={cardVariants({ status })}>
-                {isDefined(category) ? <Icon icon={ICONS[category.icon]} size={14} className="text-primary" /> : null}
+                {isDefined(category) ? <Icon icon={category.icon} size={14} className="text-primary" /> : null}
 
                 <Text className="text-primary text-xs flex-1" numberOfLines={1} ellipsizeMode="tail">
                     {isDefined(category) ? category.title : <Trans>Category</Trans>}

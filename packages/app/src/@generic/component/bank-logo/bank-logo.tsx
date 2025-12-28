@@ -5,7 +5,6 @@ import { Image } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { ICONS } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 
@@ -33,16 +32,15 @@ export const BankLogo = ({ bankProvider, variant = 'default' }: Props) => {
     const logo = getLogo(bankProvider);
 
     if (isDefined(logo)) {
-        return <Image className="rounded-xl bg-black items-center justify-center w-[52px] h-[52px]" source={logo} />;
+        return <Image className="rounded-xl bg-black items-center justify-center w-13 h-13" source={logo} />;
     }
 
     return (
         <CircleIcon
             border={false}
-            className="rounded-5xl w-[52px] h-[52px]"
-            icon={ICONS.PiggyBank}
+            className="rounded-5xl w-13 h-13"
+            icon="PiggyBank"
             iconClassName={iconVariant({ variant })}
-            size="xl"
             variant="ghost"
         />
     );

@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelectorSquare } from '../../../account/component/account-selector-square/account-selector-square';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
@@ -111,7 +110,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
             <Controller render={renderFromAccount} control={control} name="fromAccountId" />
 
             <HapticPressable onPress={handleSwitchAccounts}>
-                <CircleIcon size="xxs" variant="ghost" icon={ICONS.ArrowRightIcon} />
+                <CircleIcon size={28} iconSize={12} variant="ghost" icon="ArrowRightIcon" />
             </HapticPressable>
 
             <Controller render={renderToAccount} name="toAccountId" control={control} />

@@ -10,7 +10,6 @@ import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-
 import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ImportColumnMapperOption } from '../import-column-mapper-option/import-column-mapper-option';
 
@@ -60,7 +59,7 @@ export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, c
                         <Text className="text-primary text-sm font-semibold">{currentValue}</Text>
                         <View className="flex-row items-center gap-x-sm">
                             <Text className="text-destructive-foreground text-xs">{t`Tap to clear`}</Text>
-                            <Icon icon={ICONS.X} size={16} className="text-destructive-foreground" />
+                            <Icon icon="X" size={16} className="text-destructive-foreground" />
                         </View>
                     </Pressable>
                 </View>

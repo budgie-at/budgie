@@ -1,7 +1,5 @@
 import React from 'react';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-
-import { ICONS } from '../../constant/icons.constant';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -18,7 +16,7 @@ export const DeletableRowAction = ({ drag, onPress }: Props) => {
     return (
         <Reanimated.View style={styleAnimation}>
             <HapticPressable onPress={onPress} className="justify-center items-center w-[70px] h-full">
-                <Icon className="text-primary" icon={ICONS.Trash} />
+                <Icon className="text-primary" icon="Trash" />
             </HapticPressable>
         </Reanimated.View>
     );

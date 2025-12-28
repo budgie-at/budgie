@@ -1,25 +1,22 @@
-import { Trans } from '@lingui/react/macro';
-import { Switch, Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { Switch } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
     readonly syncEnabled: boolean;
     readonly onToggle: (enabled: boolean) => void;
 }
 
-export const SyncToggleCard = ({ syncEnabled, onToggle }: Props) => (
-    <Card className="p-5xl">
-        <View className="flex-row items-center justify-between">
-            <View className="flex-1">
-                <Text className="text-primary text-foreground text-md font-medium mb-xs">
-                    <Trans>Enable Auto-Sync</Trans>
-                </Text>
-                <Text className="text-primary text-muted-foreground text-sm">
-                    <Trans>Automatically sync your accounts and transactions</Trans>
-                </Text>
-            </View>
-            <Switch value={syncEnabled} onValueChange={onToggle} />
-        </View>
-    </Card>
-);
+export const SyncToggleCard = ({ syncEnabled, onToggle }: Props) => {
+    const { t } = useLingui();
+
+    return (
+        <SimpleHorizontalCell
+            right={<Switch className='my-auto' value={syncEnabled} onValueChange={onToggle} />}
+            title={t`Enable Auto-Sync`}
+            description={t`Automatically sync your accounts and transactions`}
+            size="lg"
+        />
+    );
+};

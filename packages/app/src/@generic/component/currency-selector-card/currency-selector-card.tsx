@@ -16,7 +16,7 @@ export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, co
         onSelect={onSelect}
         className={className}
         iconSlot={
-            <View className="w-[48px] h-[48px] bg-secondary-background rounded-5xl items-center justify-center">
+            <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
                 <Text className="text-primary text-md">{symbol}</Text>
             </View>
         }
