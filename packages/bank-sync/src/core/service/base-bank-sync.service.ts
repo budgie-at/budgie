@@ -8,6 +8,8 @@ import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-resul
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
 
+const MAX_TRANSACTIONS_PER_REQUEST = 500;
+
 export class BaseBankSyncService {
     constructor(
         protected readonly client: BankProviderClientInterface,
@@ -24,33 +26,57 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async syncTransactions(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
-        const from = addSeconds(to, -this.options.maxPeriodSeconds);
-
+    async syncTransactionsForward(accountId: string, from: Date, to: Date): Promise<BankSyncBatchResultInterface> {
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
 
         if (!result.success) {
             throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
         }
 
-        const maxTransactionsPerRequest = 500;
-        const hasMoreInPeriod = result.data.length === maxTransactionsPerRequest;
+        const hasMoreInPeriod = result.data.length === MAX_TRANSACTIONS_PER_REQUEST;
+        const oldestTransaction = result.data.at(-1);
 
-        const lastTransaction = result.data.at(-1);
-
-        if (hasMoreInPeriod && isDefined(lastTransaction)) {
+        if (hasMoreInPeriod && isDefined(oldestTransaction)) {
             return {
-                // HINT: Maybe we should get a first transaction
-                nextTo: addSeconds(new Date(lastTransaction.time * 1000), -1),
                 nextFrom: from,
+                nextTo: addSeconds(new Date(oldestTransaction.time * 1000), -1),
                 transactions: result.data,
                 completed: false
             };
         }
 
         return {
-            nextTo: from,
-            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
+            nextFrom: to,
+            nextTo: to,
+            transactions: result.data,
+            completed: true
+        };
+    }
+
+    async syncTransactionsBackward(accountId: string, from: Date, to: Date): Promise<BankSyncBatchResultInterface> {
+        const result = await this.client.getTransactions(accountId, this.toSeconds(to), this.toSeconds(from));
+
+        if (!result.success) {
+            throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+        }
+
+        const hasMoreInPeriod = result.data.length === MAX_TRANSACTIONS_PER_REQUEST;
+        const oldestTransaction = result.data.at(-1);
+
+        if (hasMoreInPeriod && isDefined(oldestTransaction)) {
+            return {
+                nextTo: addSeconds(new Date(oldestTransaction.time * 1000), -1),
+                nextFrom: from,
+                transactions: result.data,
+                completed: false
+            };
+        }
+
+        const nextTo = addSeconds(to, -this.options.maxPeriodSeconds);
+
+        return {
+            nextTo,
+            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
             transactions: result.data,
             completed: result.data.length === 0
         };

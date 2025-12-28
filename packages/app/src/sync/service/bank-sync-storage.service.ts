@@ -42,28 +42,39 @@ class BankSyncStorageService {
     async startSync(provider: BankProviderEnum, accounts: AccountEntityInterface[]) {
         const state = this.getState(provider);
         const accountCursors: Record<number, AccountSyncCursorInterface> = {};
+        const now = new Date();
 
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
                 // eslint-disable-next-line no-await-in-loop
                 const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
                 const existingCursor = state.accountCursors[account.id];
+                const hasCompletedHistoricalSync = isDefined(existingCursor.lastSyncedAt);
 
-                accountCursors[account.id] = {
-                    ...existingCursor,
-                    ...(!isDefined(existingCursor) && {
-                        enabled: true,
-                        transactionCount: 0
-                    }),
-                    accountId: account.id,
-                    accountName: account.title,
-                    externalAccountId: account.externalId,
-                    fromTime: new Date(),
-                    toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
-                    completedAt: null,
-                    startedAt: null,
-                    completed: false
-                };
+                if (hasCompletedHistoricalSync) {
+                    accountCursors[account.id] = {
+                        ...existingCursor,
+                        fromTime: existingCursor.lastSyncedAt,
+                        toTime: now,
+                        completedAt: null,
+                        startedAt: null,
+                        completed: false
+                    };
+                } else {
+                    accountCursors[account.id] = {
+                        accountId: account.id,
+                        accountName: account.title,
+                        externalAccountId: account.externalId,
+                        enabled: isDefined(existingCursor) ? existingCursor.enabled : true,
+                        transactionCount: isDefined(existingCursor) ? existingCursor.transactionCount : 0,
+                        lastSyncedAt: null,
+                        fromTime: now,
+                        toTime: isDefined(earliestTxTime) ? earliestTxTime : now,
+                        completedAt: null,
+                        startedAt: null,
+                        completed: false
+                    };
+                }
             }
         }
 
@@ -77,6 +88,7 @@ class BankSyncStorageService {
     updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): void {
         const state = this.getState(provider);
         const cursor = state.accountCursors[accountId];
+        const now = new Date();
 
         this.setState(provider, {
             error: '',
@@ -90,7 +102,10 @@ class BankSyncStorageService {
                     fromTime: result.nextFrom,
                     completed: result.completed,
                     transactionCount: cursor.transactionCount + result.transactions.length,
-                    ...(result.completed && { completedAt: new Date() })
+                    ...(result.completed && {
+                        completedAt: now,
+                        lastSyncedAt: now
+                    })
                 }
             }
         });
