@@ -93,7 +93,7 @@ msgstr "Cuenta"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:43
 msgid "Account Import Progress"
-msgstr ""
+msgstr "Progreso de importación de cuenta"
 
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:22
 msgid "Account Name"
@@ -248,7 +248,7 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 
 #: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:19
 msgid "Automatically sync your accounts and transactions"
-msgstr ""
+msgstr "Sincronizar automáticamente tus cuentas y transacciones"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -395,7 +395,7 @@ msgstr "Etiquetas frecuentes"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:23
 msgid "Completed"
-msgstr ""
+msgstr "Completado"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
 msgid "Confirm"
@@ -579,7 +579,7 @@ msgstr "Listo ({selectedTagsCount})"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:99
 msgid "Duration"
-msgstr ""
+msgstr "Duración"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -612,7 +612,7 @@ msgstr "Editar transferencia"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:66
 msgid "Elapsed"
-msgstr ""
+msgstr "Transcurrido"
 
 #: src/app/(main)/create-account/index.tsx:32
 msgid "Emergency fund and savings goals"
@@ -692,7 +692,7 @@ msgstr "Error"
 
 #: src/sync/component/sync-status-card/sync-status-card.tsx:26
 msgid "Errors count"
-msgstr ""
+msgstr "Cantidad de errores"
 
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
@@ -725,7 +725,7 @@ msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:26
 msgid "Fetching new..."
-msgstr ""
+msgstr "Obteniendo nuevos..."
 
 #: src/account/component/create-liability-account/create-liability-account.tsx:69
 msgid "Fill in the account details"
@@ -785,7 +785,7 @@ msgstr "Ocultar centavos"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:24
 msgid "Historical sync done"
-msgstr ""
+msgstr "Sincronización histórica completada"
 
 #: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
@@ -818,7 +818,7 @@ msgstr "Importar transacciones desde un archivo CSV"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:25
 msgid "In Progress"
-msgstr ""
+msgstr "En progreso"
 
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -848,15 +848,15 @@ msgstr "Idioma"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:57
 msgid "Last period"
-msgstr ""
+msgstr "Último período"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:90
 msgid "Last sync"
-msgstr ""
+msgstr "Última sincronización"
 
 #: src/sync/component/sync-status-card/sync-status-card.tsx:53
 msgid "Last Sync"
-msgstr ""
+msgstr "Última sincronización"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -1299,7 +1299,7 @@ msgstr "Error en la sincronización"
 
 #: src/sync/component/sync-status-card/sync-status-card.tsx:18
 msgid "Sync Status"
-msgstr ""
+msgstr "Estado de sincronización"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:59
 msgid "Sync your Monobank accounts and transactions"
@@ -1307,11 +1307,11 @@ msgstr "Sincronice sus cuentas y transacciones de Monobank"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:81
 msgid "Synced until"
-msgstr ""
+msgstr "Sincronizado hasta"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:26
 msgid "Syncing history..."
-msgstr ""
+msgstr "Sincronizando historial..."
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:45
 msgid "Syncing transactions..."
@@ -1447,7 +1447,7 @@ msgstr "Categoría desconocida"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:22
 msgid "Up to date"
-msgstr ""
+msgstr "Actualizado"
 
 #: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Update Account"
@@ -1489,7 +1489,7 @@ msgstr "Ver y restaurar cuentas archivadas"
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:28
 #: src/sync/component/account-sync-card/account-sync-card.tsx:29
 msgid "Waiting"
-msgstr ""
+msgstr "Esperando"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
