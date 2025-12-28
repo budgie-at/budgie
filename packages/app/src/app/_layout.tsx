@@ -62,8 +62,8 @@ export default function RootLayout() {
             void accountBalanceIncrementalService.registerBackgroundTask();
 
             if (monobankSyncService.isEnabled()) {
-                void monobankSyncService.registerBackgroundTask();
                 void monobankSyncService.sync();
+                void monobankSyncService.registerBackgroundTask();
             }
 
             // HINT: We need to time for db to return data
