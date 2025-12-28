@@ -20,7 +20,7 @@ import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-option
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
-import { useAppState } from '../@generic/hooks/use-app-state.hook';
+import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';

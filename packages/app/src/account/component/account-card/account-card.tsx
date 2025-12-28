@@ -12,7 +12,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -84,18 +83,18 @@ export const AccountCard = (props: Props) => {
         <Card onPress={navigateToAccount} className={cn(cardVariants({ deadlinePriority }), className)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon icon={ICONS[icon]} variant={circleVariant} border={false} />
+                    <CircleIcon icon={icon} variant={circleVariant} border={false} />
 
                     {isDebtAccount && isDefined(deadline) ? (
                         <View className="flex-row items-center gap-x-xs">
-                            <Icon icon={ICONS.Calendar} className="text-secondary-foreground" size={12} />
+                            <Icon icon="Calendar" className="text-secondary-foreground" size={12} />
                             <Text className="text-secondary-foreground text-xxs font-medium">{formatCompactFullDate(deadline)}</Text>
                         </View>
                     ) : null}
                 </View>
 
                 <HapticPressable className="rounded-full p-xs active:bg-secondary-background" onPress={navigateToEditAccount}>
-                    <Icon className="text-primary" icon={ICONS.EllipsisVertical} size={14} />
+                    <Icon className="text-primary" icon="EllipsisVertical" size={14} />
                 </HapticPressable>
             </View>
 

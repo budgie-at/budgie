@@ -9,7 +9,6 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
@@ -43,7 +42,8 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
         <>
             <Card className="mt-4 p-5xl gap-y-4xl">
                 <HapticPressable onPress={handleOpenCategorySheet} className="flex-row items-center gap-x-lg">
-                    <CircleIcon size="lg" icon={ICONS[icon]} variant={variant} />
+                    <CircleIcon size={34} iconSize={18} icon={icon} variant={variant} />
+
                     <View className="flex-1">
                         <Text className="text-secondary-foreground text-xs uppercase">
                             <Trans>AI Suggestion</Trans>
@@ -52,7 +52,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                             {isDefined(category) ? category.title : t`Unknown Category`}
                         </Text>
                     </View>
-                    <Icon icon={ICONS.ChevronRight} size={20} className="text-secondary-foreground" />
+                    <Icon icon="ChevronRight" size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
                 <View className="bg-secondary-background rounded-2xl p-4xl">
@@ -68,7 +68,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                         className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center"
                     >
                         <View className="flex-row items-center gap-x-sm">
-                            <Icon icon={ICONS.X} size={18} className="text-secondary-foreground" />
+                            <Icon icon="X" size={18} className="text-secondary-foreground" />
                             <Text className="text-secondary-foreground font-medium">
                                 <Trans>Cancel</Trans>
                             </Text>
@@ -80,7 +80,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                         className="flex-1 py-4xl rounded-2xl bg-positive-background items-center justify-center"
                     >
                         <View className="flex-row items-center gap-x-sm">
-                            <Icon icon={ICONS.Check} size={18} className="text-positive-foreground" />
+                            <Icon icon="Check" size={18} className="text-positive-foreground" />
                             <Text className="text-positive-foreground font-medium">
                                 <Trans>Confirm</Trans>
                             </Text>
