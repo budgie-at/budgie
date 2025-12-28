@@ -49,6 +49,7 @@ class BankSyncStorageService {
 
                 accountCursors[account.id] = {
                     accountId: account.id,
+                    accountName: account.title,
                     externalAccountId: account.externalId,
                     fromTime: new Date(),
                     toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),

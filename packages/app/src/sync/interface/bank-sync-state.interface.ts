@@ -4,6 +4,7 @@ import { SyncStatusEnum } from '../enum/sync-status.enum';
 
 export interface AccountSyncCursorInterface {
     readonly accountId: number;
+    readonly accountName: string;
     readonly externalAccountId: string;
     readonly fromTime: Date;
     readonly toTime: Date;
