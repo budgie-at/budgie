@@ -6,11 +6,13 @@ export interface AccountSyncCursorInterface {
     readonly accountId: number;
     readonly accountName: string;
     readonly externalAccountId: string;
+    readonly enabled: boolean;
     readonly fromTime: Date;
     readonly toTime: Date;
     readonly startedAt: Date | null;
     readonly completedAt: Date | null;
     readonly completed: boolean;
+    readonly transactionCount: number;
 }
 
 export interface BankSyncStateInterface {

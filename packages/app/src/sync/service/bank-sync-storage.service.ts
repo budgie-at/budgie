@@ -40,12 +40,14 @@ class BankSyncStorageService {
     }
 
     async startSync(provider: BankProviderEnum, accounts: AccountEntityInterface[]) {
+        const state = this.getState(provider);
         const accountCursors: Record<number, AccountSyncCursorInterface> = {};
 
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
                 // eslint-disable-next-line no-await-in-loop
                 const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(account.id);
+                const existingCursor = state.accountCursors[account.id];
 
                 accountCursors[account.id] = {
                     accountId: account.id,
@@ -55,7 +57,9 @@ class BankSyncStorageService {
                     toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
                     completedAt: null,
                     startedAt: null,
-                    completed: false
+                    completed: false,
+                    enabled: isDefined(existingCursor) ? existingCursor.enabled : true,
+                    transactionCount: isDefined(existingCursor) ? existingCursor.transactionCount : 0
                 };
             }
         }
@@ -70,6 +74,7 @@ class BankSyncStorageService {
 
     updateAccountCursor(provider: BankProviderEnum, accountId: number, result: BankSyncBatchResultInterface): void {
         const state = this.getState(provider);
+        const cursor = state.accountCursors[accountId];
 
         this.setState(provider, {
             error: '',
@@ -78,10 +83,11 @@ class BankSyncStorageService {
             accountCursors: {
                 ...state.accountCursors,
                 [accountId]: {
-                    ...state.accountCursors[accountId],
+                    ...cursor,
                     toTime: result.nextTo,
                     fromTime: result.nextFrom,
                     completed: result.completed,
+                    transactionCount: cursor.transactionCount + result.transactions.length,
                     ...(result.completed && { completedAt: new Date() })
                 }
             }
@@ -92,7 +98,7 @@ class BankSyncStorageService {
         const state = this.getState(provider);
 
         for (const cursor of Object.values(state.accountCursors)) {
-            if (isDefined(cursor) && !cursor.completed) {
+            if (isDefined(cursor) && cursor.enabled && !cursor.completed) {
                 this.setState(provider, {
                     accountCursors: {
                         ...state.accountCursors,
@@ -108,6 +114,29 @@ class BankSyncStorageService {
         }
 
         return null;
+    }
+
+    setAccountEnabled(provider: BankProviderEnum, accountId: number, enabled: boolean): void {
+        const state = this.getState(provider);
+        const cursor = state.accountCursors[accountId];
+
+        if (isDefined(cursor)) {
+            this.setState(provider, {
+                accountCursors: {
+                    ...state.accountCursors,
+                    [accountId]: {
+                        ...cursor,
+                        enabled,
+                        ...(enabled &&
+                            cursor.completed && {
+                                completed: false,
+                                startedAt: null,
+                                completedAt: null
+                            })
+                    }
+                }
+            });
+        }
     }
 
     completeSync(provider: BankProviderEnum): void {
