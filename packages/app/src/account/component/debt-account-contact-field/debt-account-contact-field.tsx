@@ -13,7 +13,7 @@ export const DebtAccountContactField = <T extends { contactId: string | null }>(
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormItem label={t`Contact (optional)`}>
-            <ContactSelector contactId={value} onSelect={onChange} />
+            <ContactSelector variant='dark-warning' contactId={value} onSelect={onChange} />
         </FormItem>
     );
 

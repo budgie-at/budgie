@@ -19,7 +19,7 @@ export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountE
         deadline: true
     })
     .extend({
-        accountId: number().positive(),
         targetBalance: number().positive(),
         currentBalance: number().nonnegative(),
+        accountId: number().positive().nullable(),
     });
