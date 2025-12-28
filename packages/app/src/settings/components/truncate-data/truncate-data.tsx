@@ -6,6 +6,7 @@ import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-a
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { appService } from '../../../@generic/service/app.service';
+import { bankSyncStorageService } from '../../../sync/service/bank-sync-storage.service';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const TruncateData = () => {
@@ -19,6 +20,7 @@ export const TruncateData = () => {
         try {
             setIsLoading(true);
             await appService.truncateData();
+            bankSyncStorageService.truncate();
             ref.current?.close();
         } finally {
             setIsLoading(false);

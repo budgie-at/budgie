@@ -2,19 +2,7 @@ import { BankProviderEnum } from '@budgie/bank-sync';
 
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 
-export interface AccountSyncCursorInterface {
-    readonly accountId: number;
-    readonly accountName: string;
-    readonly externalAccountId: string;
-    readonly enabled: boolean;
-    readonly fromTime: Date;
-    readonly toTime: Date;
-    readonly startedAt: Date | null;
-    readonly completedAt: Date | null;
-    readonly completed: boolean;
-    readonly transactionCount: number;
-    readonly lastSyncedAt: Date | null;
-}
+import { AccountSyncCursorInterface } from './account-sync-cursor.interface';
 
 export interface BankSyncStateInterface {
     readonly provider: BankProviderEnum;
