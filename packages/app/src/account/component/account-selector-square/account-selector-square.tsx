@@ -65,7 +65,7 @@ export const AccountSelectorSquare = ({
                     <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
                 </View>
 
-                <Text className="text-primary mb-xs">{subtitle}</Text>
+                <Text className="text-primary mb-xs" numberOfLines={1}>{subtitle}</Text>
                 <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
             </Card>
 
