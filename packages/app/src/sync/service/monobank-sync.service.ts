@@ -127,7 +127,7 @@ class AppMonobankSyncService {
             if (isDefined(cursor)) {
                 const result = await this.syncBatch(cursor);
 
-                bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
+                await bankSyncStorageService.updateAccountCursor(this.provider, cursor.accountId, result);
 
                 await microPause(MONOBANK_RATE_LIMIT_MS);
 
