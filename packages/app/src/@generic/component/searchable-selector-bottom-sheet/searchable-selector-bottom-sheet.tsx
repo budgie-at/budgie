@@ -70,7 +70,7 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
                 isSelected={itemKey === selectedValue}
                 onSelect={handleSelect}
                 iconSlot={
-                    <View className="w-[48px] h-[48px] bg-secondary-background rounded-5xl items-center justify-center">
+                    <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
                         <Text className="text-primary text-4xl">{item.emoji}</Text>
                     </View>
                 }
