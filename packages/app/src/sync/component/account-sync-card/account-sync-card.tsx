@@ -80,7 +80,7 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
                                 <Text className="text-primary text-xs text-muted-foreground">
                                     <Trans>Synced until</Trans>
                                 </Text>
-                                <Text className="text-primary text-xs">{format(cursor.toTime, 'dd MMM yyyy')}</Text>
+                                <Text className="text-primary text-xs">{format(cursor.fromTime, 'dd MMM yyyy')}</Text>
                             </View>
                         )}
 
