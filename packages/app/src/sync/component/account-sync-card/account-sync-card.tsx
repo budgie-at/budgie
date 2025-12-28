@@ -13,6 +13,7 @@ interface Props {
     readonly onToggle: (accountId: number, enabled: boolean) => void;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
     const { t } = useLingui();
     const hasCompletedHistoricalSync = isDefined(cursor.historySyncedTill);
