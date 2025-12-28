@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly icon: UserIconNameEnum;
@@ -18,7 +17,7 @@ export const CategoryPreview = ({ icon, title }: Props) => (
         </Text>
 
         <View className="flex-row items-center gap-x-xl">
-            <CircleIcon size="1_5xl" icon={ICONS[icon]} variant="default" />
+            <CircleIcon size={42} iconSize={20} icon={icon} variant="default" />
 
             <Text className="text-primary flex-1">{title}</Text>
         </View>

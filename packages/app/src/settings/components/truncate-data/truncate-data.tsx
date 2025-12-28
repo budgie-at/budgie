@@ -2,9 +2,7 @@ import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { appService } from '../../../@generic/service/app.service';
 import { bankSyncStorageService } from '../../../sync/service/bank-sync-storage.service';
@@ -34,7 +32,8 @@ export const TruncateData = () => {
                 onPress={handleOpen}
                 title={t`Clear All Data`}
                 description={t`Delete all transactions and settings`}
-                left={<CircleIcon size="1_5xl" icon={ICONS.Trash2} variant="destructive" border={false} />}
+                icon="Trash2"
+                variant="destructive"
             />
 
             <ConfirmActionBottomSheet

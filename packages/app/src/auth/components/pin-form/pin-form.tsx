@@ -6,7 +6,6 @@ import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
 
@@ -29,7 +28,7 @@ export const PinForm = (props: Props) => {
     return (
         <View className="flex-1 justify-center">
             <View className="border border-secondary-corner bg-secondary-background rounded-7xl p-5xl mx-auto mb-7xl">
-                <Icon icon={ICONS.Lock} className="text-primary" size={40} />
+                <Icon icon="Lock" className="text-primary" size={40} />
             </View>
 
             <Text className="text-3xl font-semibold text-primary text-center mb-md">{title}</Text>
@@ -66,7 +65,7 @@ export const PinForm = (props: Props) => {
                         onPress={onScanPress}
                         className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-[92px]"
                     >
-                        {canScan ? <Icon icon={ICONS.LucideScanFace} className="text-primary" size={16} /> : null}
+                        {canScan ? <Icon icon="LucideScanFace" className="text-primary" size={16} /> : null}
                     </HapticPressable>
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />
@@ -76,7 +75,7 @@ export const PinForm = (props: Props) => {
                         onPress={onDeletePress}
                         className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-[92px]"
                     >
-                        <Icon icon={ICONS.Delete} className="text-primary" size={16} />
+                        <Icon icon="Delete" className="text-primary" size={16} />
                     </HapticPressable>
                 </View>
             </View>

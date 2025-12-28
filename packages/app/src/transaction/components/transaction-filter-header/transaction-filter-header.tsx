@@ -5,7 +5,7 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
+import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly title: string;
@@ -16,7 +16,7 @@ interface Props {
 
 export const TransactionFilterHeader = ({ onClear, showClear, title, icon }: Props) => (
     <View className="flex-row items-center gap-x-xl px-7xl py-3xl border-b border-b-secondary-corner">
-        <CircleIcon icon={ICONS[icon]} variant="ghost" size="xl" />
+        <CircleIcon icon={icon} variant="ghost" size={36} iconSize={20} />
 
         <Text className="text-primary font-semibold text-3xl mr-auto">{title}</Text>
 

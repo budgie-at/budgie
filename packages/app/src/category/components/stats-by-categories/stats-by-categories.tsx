@@ -6,7 +6,6 @@ import { Text, View, ViewStyle } from 'react-native';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -35,7 +34,8 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
             warning: 'bg-warning-foreground',
             default: 'bg-default-foreground',
             ghost: 'bg-ghost-foreground',
-            pink: 'bg-pink-foreground'
+            pink: 'bg-pink-foreground',
+            primary: 'bg-primary'
         }
     }
 });
@@ -51,12 +51,12 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
         return (
             <View key={category.id} className="gap-y-md">
                 <View className="flex-row items-center gap-x-md">
-                    <CircleIcon icon={ICONS[category.icon]} variant={variant} />
+                    <CircleIcon icon={category.icon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
                     <Text className={amountVariants({ variant })}>{format(amount)}</Text>
                 </View>
 
-                <View className="rounded-5xl bg-secondary-corner h-[8px]">
+                <View className="rounded-5xl bg-secondary-corner h-2">
                     <View style={style} className={barVariants({ variant })} />
                 </View>
 

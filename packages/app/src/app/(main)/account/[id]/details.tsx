@@ -12,7 +12,6 @@ import { HapticPressable } from '../../../../@generic/component/haptic-pressable
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../../@generic/constant/icons.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { isEnumValue } from '../../../../@generic/type-guard/is-enum-value.type-guard';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
@@ -64,7 +63,7 @@ export default function Account() {
                     right={
                         <Link href={`/account/${id}/update`} asChild>
                             <HapticPressable className="ml-auto">
-                                <CircleIcon icon={ICONS.EllipsisVertical} variant="ghost" size="lg" border={false} />
+                                <CircleIcon icon="EllipsisVertical" variant="ghost" size={40} iconSize={24} border={false} />
                             </HapticPressable>
                         </Link>
                     }
@@ -74,7 +73,7 @@ export default function Account() {
             }
             contentClassName="px-0 flex-1"
         >
-            <View className="pb-[30px]">
+            <View className="pb-7.5">
                 {type === AccountTypeEnum.DEBT ? (
                     <DebtAccountBalance balance={balance} currency={currency} targetAmount={account.targetBalance} />
                 ) : (
