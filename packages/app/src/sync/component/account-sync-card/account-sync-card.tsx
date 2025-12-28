@@ -15,12 +15,15 @@ interface Props {
 
 export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
     const { t } = useLingui();
+    const hasCompletedHistoricalSync = isDefined(cursor.lastSyncedAt);
 
     const getStatusLabel = () => {
-        if (cursor.completed) {
-            return t`Synced`;
+        if (cursor.completed && hasCompletedHistoricalSync) {
+            return t`Up to date`;
+        } else if (cursor.completed) {
+            return t`Historical sync done`;
         } else if (isDefined(cursor.startedAt)) {
-            return t`Syncing...`;
+            return hasCompletedHistoricalSync ? t`Fetching new...` : t`Syncing history...`;
         }
 
         return t`Waiting`;
@@ -72,14 +75,23 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
                             <Text className="text-primary text-xs font-medium">{cursor.transactionCount}</Text>
                         </View>
 
-                        <View className="flex-row justify-between">
-                            <Text className="text-primary text-xs text-muted-foreground">
-                                <Trans>Period</Trans>
-                            </Text>
-                            <Text className="text-primary text-xs">
-                                {format(cursor.fromTime, 'dd MMM yyyy')} — {format(cursor.toTime, 'dd MMM yyyy')}
-                            </Text>
-                        </View>
+                        {!hasCompletedHistoricalSync && (
+                            <View className="flex-row justify-between">
+                                <Text className="text-primary text-xs text-muted-foreground">
+                                    <Trans>Synced until</Trans>
+                                </Text>
+                                <Text className="text-primary text-xs">{format(cursor.toTime, 'dd MMM yyyy')}</Text>
+                            </View>
+                        )}
+
+                        {isDefined(cursor.lastSyncedAt) && (
+                            <View className="flex-row justify-between">
+                                <Text className="text-primary text-xs text-muted-foreground">
+                                    <Trans>Last sync</Trans>
+                                </Text>
+                                <Text className="text-primary text-xs">{format(cursor.lastSyncedAt, 'dd MMM yyyy, HH:mm')}</Text>
+                            </View>
+                        )}
 
                         {isDefined(getElapsedTime()) && (
                             <View className="flex-row justify-between">

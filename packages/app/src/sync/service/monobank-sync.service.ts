@@ -172,11 +172,14 @@ class AppMonobankSyncService {
 
     private async syncBatch(cursor: AccountSyncCursorInterface): Promise<BankSyncBatchResultInterface> {
         const syncService = new MonobankSyncService(this.getToken());
-        const result = await syncService.syncTransactions(cursor.externalAccountId, cursor.toTime);
+        const isForwardSync = isDefined(cursor.lastSyncedAt);
+
+        const result = isForwardSync
+            ? await syncService.syncTransactionsForward(cursor.externalAccountId, cursor.fromTime, cursor.toTime)
+            : await syncService.syncTransactionsBackward(cursor.externalAccountId, cursor.fromTime, cursor.toTime);
 
         await microPause();
 
-        // TODO: Get transactions for this account
         const existingTransactions = await transactionService.findByExternalSource(ExternalSourceEnum.MONOBANK);
         const existingTxIds = new Set(existingTransactions.map(tx => tx.externalId));
 
