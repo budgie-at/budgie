@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@rnw-community/shared": "^1.8.2",
+        "date-fns": "^4.1.0",
         "ky": "^1.14.1"
     }
 }

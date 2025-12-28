@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, or, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
@@ -146,28 +146,28 @@ export class TransactionRepository {
         });
     }
 
-    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
+    async getTransactionTimeByAccountId(accountId: number, mode: 'latest' | 'earliest'): Promise<Date | null> {
+        const aggregateSql =
+            mode === 'latest'
+                ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
+                : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
+
         const result = await this.db
-            .select({ operatedAt: sql<string>`MAX(${TransactionEntityTable.operatedAt})` })
+            .select({ operatedAt: aggregateSql })
             .from(TransactionEntityTable)
-            .innerJoin(
-                AccountEntityTable,
-                or(
-                    eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id),
-                    eq(TransactionEntityTable.toAccountId, AccountEntityTable.id)
-                )
-            )
             .where(
-                and(eq(AccountEntityTable.externalId, externalId), sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}`)
+                and(
+                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
+                )
             );
 
         const time = result[0]?.operatedAt;
-
-        if (!isDefined(time)) {
-            return null;
+        if (isPositiveNumber(time)) {
+            return new Date(time * 1000);
         }
 
-        return new Date(time);
+        return null;
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

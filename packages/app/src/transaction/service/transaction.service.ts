@@ -29,8 +29,12 @@ class TransactionService {
         return transactionRepository.findByAccountId(accountId);
     }
 
-    async getLatestTransactionTimeByAccountExternalId(externalId: string): Promise<Date | null> {
-        return transactionRepository.getLatestTransactionTimeByAccountExternalId(externalId);
+    async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'latest');
+    }
+
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {

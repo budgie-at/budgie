@@ -10,6 +10,8 @@ import type { BankProviderClientInterface } from '../interface/bank-provider-cli
 import type { BankSyncResultInterface } from '../interface/bank-sync-result.interface';
 import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
+const HTTP_STATUS_BAD_REQUEST = 400;
+
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_REQUEST_TIMEOUT = 408;
 const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
@@ -71,8 +73,7 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
                 retry: {
                     limit: this.retryLimit,
                     methods: ['get'],
-                    statusCodes: this.retryStatusCodes,
-                    backoffLimit: this.timeoutMs
+                    statusCodes: this.retryStatusCodes
                 }
             }).json<T>();
 
@@ -92,6 +93,10 @@ export abstract class BaseBankProviderClient implements BankProviderClientInterf
 
             if (status === HTTP_STATUS_TOO_MANY_REQUESTS) {
                 return this.failure(BankSyncError.rateLimited(this.provider));
+            }
+
+            if (status === HTTP_STATUS_BAD_REQUEST) {
+                return this.failure(BankSyncError.invalidResponse(this.provider));
             }
 
             return this.failure(new BankSyncError(BankSyncErrorCodeEnum.UNKNOWN, `HTTP ${status}: ${statusText}`, this.provider));

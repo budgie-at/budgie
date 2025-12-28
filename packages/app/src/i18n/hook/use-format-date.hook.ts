@@ -12,5 +12,8 @@ export const useFormatDate = () => {
 
     const formatDayAndMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric' });
 
-    return { formatMonthAndDay, formatMonthAndYear, formatDayAndMonthAndYear, formatMonthAndDayWithTime };
+    const formatDayAndMonthAndYearWithTime = (date: Date | string) =>
+        intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
+
+    return { formatMonthAndDay, formatMonthAndYear, formatDayAndMonthAndYear, formatMonthAndDayWithTime, formatDayAndMonthAndYearWithTime };
 };

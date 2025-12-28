@@ -1,11 +1,15 @@
-/* eslint-disable no-await-in-loop */
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { addSeconds } from 'date-fns';
 
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+
+import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
+import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
-import type { BankTransactionInterface } from '../interface/bank-transaction.interface';
+
+const MAX_TRANSACTIONS_PER_REQUEST = 500;
 
 export class BaseBankSyncService {
     constructor(
@@ -23,33 +27,63 @@ export class BaseBankSyncService {
         return [];
     }
 
-    async *syncTransactions(accountId: string, fromDate: Date | null = new Date(0)): AsyncGenerator<BankTransactionInterface[]> {
-        const allTransactions: BankTransactionInterface[] = [];
-        const fromTime = (fromDate ?? new Date(0)).getTime() / 1000;
-        let toTime = Math.floor(Date.now() / 1000);
+    async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
+        const to = new Date();
 
-        do {
-            const periodFromTime = Math.max(toTime - this.options.maxPeriodSeconds, fromTime);
+        return await this.syncTransactions(accountId, from, to, 'forward');
+    }
 
-            const result = await this.client.getTransactions(accountId, periodFromTime, toTime);
+    async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
+        const from = addSeconds(to, -this.options.maxPeriodSeconds);
 
-            if (!result.success || !isNotEmptyArray(result.data)) {
-                break;
-            }
+        return await this.syncTransactions(accountId, from, to, 'backward');
+    }
 
-            yield result.data;
-
-            toTime = periodFromTime;
-
-            await this.delay(this.options.rateLimitMs);
-        } while (toTime > fromTime);
-
-        return allTransactions;
+    protected toSeconds(date: Date): number {
+        return Math.floor(date.getTime() / 1000);
     }
 
     protected delay(ms: number): Promise<void> {
         return new Promise(resolve => {
             setTimeout(resolve, ms);
         });
+    }
+
+    private async syncTransactions(accountId: string, from: Date, to: Date, direction: 'forward' | 'backward') {
+        const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
+        const isForward = direction === 'forward';
+
+        if (!result.success) {
+            // HINT: For wrong dates API returns 400 instead
+            if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+                return {
+                    nextTo: to,
+                    nextFrom: from,
+                    transactions: [],
+                    completed: true
+                };
+            }
+
+            throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+        }
+
+        const hasMoreInPeriod = result.data.length === MAX_TRANSACTIONS_PER_REQUEST;
+        const oldestTransaction = result.data.at(-1);
+
+        if (hasMoreInPeriod && isDefined(oldestTransaction)) {
+            return {
+                nextFrom: isForward ? addSeconds(new Date(oldestTransaction.time * 1000), -1) : from,
+                nextTo: isForward ? to : addSeconds(new Date(oldestTransaction.time * 1000), -1),
+                transactions: result.data,
+                completed: false
+            };
+        }
+
+        return {
+            nextFrom: to,
+            transactions: result.data,
+            completed: isForward ? true : isEmptyArray(result.data),
+            nextTo: isForward ? to : addSeconds(from, -this.options.maxPeriodSeconds)
+        };
     }
 }

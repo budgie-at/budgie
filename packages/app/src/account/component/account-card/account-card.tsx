@@ -12,6 +12,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
 interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
@@ -20,9 +21,11 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
 }
 
 export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Props) => {
+    const showCents = useSetting('showCents');
     const { decimalPlaces } = useSettingsContext();
-    const format = useFormatDigits(decimalPlaces);
     const { balance } = useAccountBalanceQuery(id);
+
+    const format = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);

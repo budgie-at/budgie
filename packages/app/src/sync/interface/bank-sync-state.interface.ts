@@ -1,19 +1,20 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 
 import { SyncStatusEnum } from '../enum/sync-status.enum';
-import { SyncStepEnum } from '../enum/sync-step.enum';
+
+import { AccountSyncCursorInterface } from './account-sync-cursor.interface';
 
 export interface BankSyncStateInterface {
     readonly provider: BankProviderEnum;
     readonly enabled: boolean;
     readonly token: string | null;
     readonly status: SyncStatusEnum;
-    readonly step: SyncStepEnum;
-    readonly currentAccount: number;
     readonly totalAccounts: number;
     readonly totalTransactions: number;
+    readonly errorCount: number;
     readonly error?: string;
     readonly lastSyncAt: string | null;
+    readonly accountCursors: Record<number, AccountSyncCursorInterface>;
 }
 
 export const emptyBankSyncState = (provider: BankProviderEnum): BankSyncStateInterface => ({
@@ -21,9 +22,9 @@ export const emptyBankSyncState = (provider: BankProviderEnum): BankSyncStateInt
     enabled: false,
     token: null,
     status: SyncStatusEnum.IDLE,
-    step: SyncStepEnum.IDLE,
-    currentAccount: 0,
     totalAccounts: 0,
     totalTransactions: 0,
-    lastSyncAt: null
+    errorCount: 0,
+    lastSyncAt: null,
+    accountCursors: {}
 });

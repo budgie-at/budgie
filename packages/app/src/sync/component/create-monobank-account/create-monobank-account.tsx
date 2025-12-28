@@ -1,7 +1,6 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
@@ -12,14 +11,16 @@ import { Card } from '../../../@generic/components/card/card';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { Input } from '../../../@generic/components/input/input';
-import { Page } from '../../../@generic/components/page/page';
+import { FullPage } from '../../../@generic/components/page/full-page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { SyncStatusEnum } from '../../enum/sync-status.enum';
+import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+import { AccountSyncCard } from '../account-sync-card/account-sync-card';
 import { GetTokenCard } from '../get-token-card/get-token-card';
+import { SyncStatusCard } from '../sync-status-card/sync-status-card';
 import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
 
 export const CreateMonobankAccount = () => {
@@ -27,14 +28,10 @@ export const CreateMonobankAccount = () => {
     const syncState = useBankSyncState(BankProviderEnum.MONOBANK);
 
     const [token, setToken] = useState(monobankSyncService.getToken());
-    const [syncEnabled, setSyncEnabled] = useState(syncState.enabled);
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    useEffect(() => void setSyncEnabled(syncState.enabled), [syncState]);
 
     const handleGoBack = () => void goBackOrReplace('/');
-
-    const handleToggleSync = (enabled: boolean) => {
+    const handleToggleAccount = (accountId: number, enabled: boolean) => void monobankSyncService.setAccountEnabled(accountId, enabled);
+    const handleToggleSync = async (enabled: boolean) => {
         const trimmedToken = token.trim();
 
         if (enabled && !isNotEmptyString(trimmedToken)) {
@@ -43,23 +40,18 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        if (enabled) {
-            monobankSyncService.saveToken(trimmedToken);
-        }
-
-        setSyncEnabled(enabled);
-        monobankSyncService.setEnabled(enabled);
+        monobankSyncService.setEnabled(enabled, trimmedToken);
 
         if (enabled) {
+            await microPause();
             void monobankSyncService.sync();
-            void router.replace('/');
         }
     };
 
-    const isSyncing = syncState.status === SyncStatusEnum.SYNCING;
+    const cursors = Object.values(syncState.accountCursors);
 
     return (
-        <Page
+        <FullPage
             header={
                 <PageHeader
                     onGoBack={handleGoBack}
@@ -70,35 +62,52 @@ export const CreateMonobankAccount = () => {
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    <GetTokenCard />
+                    <SyncToggleCard syncEnabled={syncState.enabled} onToggle={handleToggleSync} />
 
-                    <View className="gap-y-md">
-                        <Text className="text-primary text-muted-foreground text-sm px-md">
-                            <Trans>Paste your API token below:</Trans>
-                        </Text>
-                        <Input
-                            value={token}
-                            onChangeText={setToken}
-                            placeholder={t`Enter your Monobank API token`}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            editable={!syncEnabled}
-                        />
-                    </View>
+                    {!syncState.enabled && (
+                        <>
+                            <GetTokenCard />
+                            <Card className="p-4xl bg-warning/10">
+                                <View className="flex-row items-start gap-x-md">
+                                    <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
+                                    <Text className="text-primary text-foreground text-sm flex-1">
+                                        <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
+                                    </Text>
+                                </View>
+                            </Card>
+                            <View className="gap-y-md">
+                                <Text className="text-primary text-muted-foreground text-sm px-md">
+                                    <Trans>Paste your API token below:</Trans>
+                                </Text>
+                                <Input
+                                    value={token}
+                                    onChangeText={setToken}
+                                    placeholder={t`Enter your Monobank API token`}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    secureTextEntry
+                                    editable={!syncState.enabled}
+                                />
+                            </View>
+                        </>
+                    )}
 
-                    <SyncToggleCard isSyncing={isSyncing} syncEnabled={syncEnabled} onToggle={handleToggleSync} />
+                    {syncState.enabled && (
+                        <>
+                            <SyncStatusCard syncState={syncState} />
 
-                    <Card className="p-4xl bg-warning/10">
-                        <View className="flex-row items-start gap-x-md">
-                            <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
-                            <Text className="text-primary text-foreground text-sm flex-1">
-                                <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
-                            </Text>
-                        </View>
-                    </Card>
+                            <View className="gap-y-md">
+                                <Text className="text-primary text-muted-foreground text-sm px-md">
+                                    <Trans>Accounts</Trans>
+                                </Text>
+                                {cursors.map(cursor => (
+                                    <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
+                                ))}
+                            </View>
+                        </>
+                    )}
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
-        </Page>
+        </FullPage>
     );
 };
