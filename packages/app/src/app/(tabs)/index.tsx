@@ -15,7 +15,6 @@ import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
-import { SyncProgressBadge } from '../../sync/component/sync-progress-badge/sync-progress-badge';
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery();
