@@ -50,13 +50,13 @@ class BankSyncStorageService {
         for (const account of accounts) {
             if (isNotEmptyString(account.externalId)) {
                 const existingCursor = state.accountCursors[account.id];
-                const hasCompletedHistoricalSync = isDefined(existingCursor) && isDefined(existingCursor.lastSyncedAt);
+                const hasCompletedHistoricalSync = isDefined(existingCursor) && isDefined(existingCursor.historySyncedTill);
 
                 if (hasCompletedHistoricalSync) {
                     accountCursors[account.id] = {
                         ...emptyAccountSyncCursor(),
                         ...existingCursor,
-                        fromTime: existingCursor.lastSyncedAt,
+                        fromTime: now,
                         toTime: now
                     };
                 } else {
@@ -102,7 +102,7 @@ class BankSyncStorageService {
                     transactionCount: cursor.transactionCount + result.transactions.length,
                     ...(result.completed && {
                         completedAt: now,
-                        lastSyncedAt: now
+                        historySyncedTill: cursor.fromTime
                     })
                 }
             }
@@ -114,8 +114,7 @@ class BankSyncStorageService {
 
         for (const cursor of Object.values(state.accountCursors)) {
             const needsBackwardSync = cursor.enabled && !cursor.completed;
-            const needsForwardSync =
-                cursor.enabled && cursor.completed && isDefined(cursor.lastSyncedAt) && cursor.fromTime < cursor.lastSyncedAt;
+            const needsForwardSync = cursor.enabled && cursor.completed && isDefined(cursor.historySyncedTill);
 
             if (needsForwardSync || needsBackwardSync) {
                 this.setState(provider, {
