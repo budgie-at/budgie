@@ -35,19 +35,21 @@ export class BaseBankSyncService {
 
         const maxTransactionsPerRequest = 500;
         const hasMoreInPeriod = result.data.length === maxTransactionsPerRequest;
-        const lastTransaction = result.data.at(0);
+        const lastTransaction = result.data.at(-1);
 
-        if (hasMoreInPeriod && isDefined(lastTransaction)) {
+        const lastTransactionDate = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : null;
+
+        if (hasMoreInPeriod && isDefined(lastTransactionDate)) {
             return {
                 // HINT: Maybe we should get a first transaction
-                nextTo: addSeconds(new Date(lastTransaction.time * 1000), -1),
+                nextTo: lastTransactionDate,
                 transactions: result.data,
                 nextFrom: from,
                 completed: false
             };
         }
 
-        const nextTo = isDefined(lastTransaction) ? addSeconds(new Date(lastTransaction.time * 1000), -1) : from;
+        const nextTo = lastTransactionDate ?? from;
 
         return {
             nextTo,
