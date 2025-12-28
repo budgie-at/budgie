@@ -42,13 +42,17 @@ export class AccountBalanceRepository {
                 and(
                     isNull(TransactionEntryEntityTable.deletedAt),
                     inArray(TransactionEntryEntityTable.accountId, accountIds),
-                    sql`
-                        ${TransactionEntryEntityTable.createdAt} > (
-                            SELECT COALESCE(MAX(ab."updated_at"), '1970-01-01')
-                            FROM "account_balances" ab
-                            WHERE ab."account_id" = ${TransactionEntryEntityTable.accountId}
+                    sql`(
+                        NOT EXISTS (
+                            SELECT 1 FROM ${AccountBalanceEntityTable}
+                            WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId}
                         )
-                    `
+                        OR ${TransactionEntryEntityTable.createdAt} > (
+                            SELECT MAX(${AccountBalanceEntityTable.updatedAt})
+                            FROM ${AccountBalanceEntityTable}
+                            WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId}
+                        )
+                    )`
                 )
             )
             .groupBy(TransactionEntryEntityTable.accountId);
