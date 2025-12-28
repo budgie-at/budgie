@@ -1,10 +1,11 @@
 import { addSeconds } from 'date-fns';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { BankSyncErrorCodeEnum } from '../enum/bank-sync-error-code.enum';
 import { BankAccountInterface } from '../interface/bank-account.interface';
 import { BankSyncBatchResultInterface } from '../interface/bank-sync-batch-result.interface';
+import { BankTransactionInterface } from '../interface/bank-transaction.interface';
 
 import type { BankProviderClientInterface } from '../interface/bank-provider-client.interface';
 import type { BankSyncOptionsInterface } from '../interface/bank-sync-options.interface';
@@ -30,13 +31,45 @@ export class BaseBankSyncService {
     async syncTransactionsForward(accountId: string, from: Date): Promise<BankSyncBatchResultInterface> {
         const to = new Date();
 
-        return await this.syncTransactions(accountId, from, to, 'forward');
+        const transactions = await this.fetchTransactions(accountId, from, to);
+
+        const oldestTransaction = transactions.at(-1);
+
+        if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+            return {
+                nextFrom: this.getNextTimeFromTransaction(oldestTransaction),
+                nextTo: to,
+                transactions,
+                completed: false
+            };
+        }
+
+        return { nextFrom: to, nextTo: to, transactions, completed: true };
     }
 
     async syncTransactionsBackward(accountId: string, to: Date): Promise<BankSyncBatchResultInterface> {
         const from = addSeconds(to, -this.options.maxPeriodSeconds);
 
-        return await this.syncTransactions(accountId, from, to, 'backward');
+        const transactions = await this.fetchTransactions(accountId, from, to);
+        const oldestTransaction = transactions.at(-1);
+
+        if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+            return {
+                nextTo: this.getNextTimeFromTransaction(oldestTransaction),
+                nextFrom: from,
+                transactions,
+                completed: false
+            };
+        }
+
+        const nextTo = from;
+
+        return {
+            nextTo,
+            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
+            transactions,
+            completed: transactions.length === 0
+        };
     }
 
     protected toSeconds(date: Date): number {
@@ -49,41 +82,25 @@ export class BaseBankSyncService {
         });
     }
 
-    private async syncTransactions(accountId: string, from: Date, to: Date, direction: 'forward' | 'backward') {
+    private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<BankTransactionInterface[]> {
         const result = await this.client.getTransactions(accountId, this.toSeconds(from), this.toSeconds(to));
-        const isForward = direction === 'forward';
 
-        if (!result.success) {
-            // HINT: For wrong dates API returns 400 instead
-            if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
-                return {
-                    nextTo: to,
-                    nextFrom: from,
-                    transactions: [],
-                    completed: true
-                };
-            }
-
-            throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+        if (result.success) {
+            return result.data;
         }
 
-        const hasMoreInPeriod = result.data.length === MAX_TRANSACTIONS_PER_REQUEST;
-        const oldestTransaction = result.data.at(-1);
-
-        if (hasMoreInPeriod && isDefined(oldestTransaction)) {
-            return {
-                nextFrom: isForward ? addSeconds(new Date(oldestTransaction.time * 1000), -1) : from,
-                nextTo: isForward ? to : addSeconds(new Date(oldestTransaction.time * 1000), -1),
-                transactions: result.data,
-                completed: false
-            };
+        if (result.error.code === BankSyncErrorCodeEnum.INVALID_RESPONSE) {
+            return [];
         }
 
-        return {
-            nextFrom: to,
-            transactions: result.data,
-            completed: isForward ? true : isEmptyArray(result.data),
-            nextTo: isForward ? to : addSeconds(from, -this.options.maxPeriodSeconds)
-        };
+        throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
+    }
+
+    private hasMoreTransactions(transactions: BankTransactionInterface[]): boolean {
+        return transactions.length === MAX_TRANSACTIONS_PER_REQUEST;
+    }
+
+    private getNextTimeFromTransaction(transaction: BankTransactionInterface): Date {
+        return addSeconds(new Date(transaction.time * 1000), -1);
     }
 }
