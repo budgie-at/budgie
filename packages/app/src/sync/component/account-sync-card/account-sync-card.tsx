@@ -6,7 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { ThemedSwitch } from '../../../@generic/components/themed-switch/themed-switch';
-import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.interface';
+import { AccountSyncCursorInterface } from '../../interface/account-sync-cursor.interface';
 
 interface Props {
     readonly cursor: AccountSyncCursorInterface;

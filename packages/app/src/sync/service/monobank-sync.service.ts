@@ -31,7 +31,7 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
-import { AccountSyncCursorInterface } from '../interface/bank-sync-state.interface';
+import { AccountSyncCursorInterface } from '../interface/account-sync-cursor.interface';
 
 import { bankSyncStorageService } from './bank-sync-storage.service';
 
