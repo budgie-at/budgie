@@ -75,12 +75,19 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
                             <Text className="text-primary text-xs font-medium">{cursor.transactionCount}</Text>
                         </View>
 
-                        {isDefined(cursor.historySyncedTill) && (
+                        {isDefined(cursor.historySyncedTill) ? (
                             <View className="flex-row justify-between">
                                 <Text className="text-primary text-xs text-muted-foreground">
                                     <Trans>Synced until</Trans>
                                 </Text>
                                 <Text className="text-primary text-xs">{format(cursor.historySyncedTill, 'dd MMM yyyy')}</Text>
+                            </View>
+                        ) : (
+                            <View className="flex-row justify-between">
+                                <Text className="text-primary text-xs text-muted-foreground">
+                                    <Trans>Synced until</Trans>
+                                </Text>
+                                <Text className="text-primary text-xs">{format(cursor.fromTime, 'dd MMM yyyy')}</Text>
                             </View>
                         )}
 
