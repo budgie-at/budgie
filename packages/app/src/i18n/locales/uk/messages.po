@@ -70,7 +70,7 @@ msgstr "{successCount} транзакцій імпортовано"
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} тегів доступно"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:77
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:76
 msgid "{totalTransactions} transactions synced"
 msgstr "{totalTransactions} транзакцій синхронізовано"
 
@@ -86,9 +86,14 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:54
 #: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Рахунок"
+
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:43
+msgid "Account Import Progress"
+msgstr "Прогрес імпорту рахунку"
 
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:22
 msgid "Account Name"
@@ -103,6 +108,8 @@ msgid "Account Settings"
 msgstr "Налаштування рахунку"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:12
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:101
+#: src/sync/component/sync-status-card/sync-status-card.tsx:40
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:27
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:58
 msgid "Accounts"
@@ -227,7 +234,7 @@ msgstr "Архівувати рахунок?"
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:41
+#: src/settings/components/truncate-data/truncate-data.tsx:44
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
@@ -239,9 +246,9 @@ msgstr "Ви впевнені?"
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Автоматична синхронізація рахунків та транзакцій з Монобанку"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
-msgid "Automatically sync every hour"
-msgstr "Автоматично синхронізувати кожну годину"
+#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:19
+msgid "Automatically sync your accounts and transactions"
+msgstr "Автоматично синхронізувати ваші рахунки та транзакції"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -369,8 +376,8 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:32
-#: src/settings/components/truncate-data/truncate-data.tsx:45
+#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
@@ -386,6 +393,10 @@ msgstr "Коментар"
 msgid "Common Tags"
 msgstr "Поширені теги"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:23
+msgid "Completed"
+msgstr "Завершено"
+
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
 msgid "Confirm"
 msgstr "Підтвердити"
@@ -394,7 +405,7 @@ msgstr "Підтвердити"
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:66
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:58
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
 
@@ -541,11 +552,11 @@ msgstr "Рахунок за замовчуванням"
 msgid "Delete"
 msgstr "Видалити"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:33
+#: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:42
+#: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Delete data"
 msgstr "Видалити дані"
 
@@ -565,6 +576,10 @@ msgstr "Готово"
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:36
 msgid "Done ({selectedTagsCount})"
 msgstr "Готово ({selectedTagsCount})"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:99
+msgid "Duration"
+msgstr "Тривалість"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -595,6 +610,10 @@ msgstr "Редагувати дохід"
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:66
+msgid "Elapsed"
+msgstr "Минуло"
+
 #: src/app/(main)/create-account/index.tsx:32
 msgid "Emergency fund and savings goals"
 msgstr "Резервний фонд та цілі заощаджень"
@@ -603,7 +622,7 @@ msgstr "Резервний фонд та цілі заощаджень"
 msgid "Enable"
 msgstr "Увімкнути"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:17
+#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:16
 msgid "Enable Auto-Sync"
 msgstr "Увімкнути автоматичну синхронізацію"
 
@@ -657,7 +676,7 @@ msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код для розблокування"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:85
 msgid "Enter your Monobank API token"
 msgstr "Введіть ваш API-токен Монобанку"
 
@@ -667,8 +686,13 @@ msgstr "Введіть свій PIN-код"
 
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
+#: src/sync/component/sync-status-card/sync-status-card.tsx:33
 msgid "Error"
 msgstr "Помилка"
+
+#: src/sync/component/sync-status-card/sync-status-card.tsx:26
+msgid "Errors count"
+msgstr "Кількість помилок"
 
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
@@ -699,7 +723,11 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:68
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Fetching new..."
+msgstr "Завантаження нових..."
+
+#: src/account/component/create-liability-account/create-liability-account.tsx:69
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
@@ -755,6 +783,10 @@ msgstr "Приховувати баланси рахунків та загаль
 msgid "Hide Cents"
 msgstr "Приховати копійки"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:24
+msgid "Historical sync done"
+msgstr "Історична синхронізація завершена"
+
 #: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
 msgid "Icon"
@@ -784,6 +816,10 @@ msgstr "Імпорт з додатку SmartBudget2 з російськими с
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:25
+msgid "In Progress"
+msgstr "Виконується"
+
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -809,6 +845,18 @@ msgstr "Італійська (Італія)"
 #: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Мова"
+
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:57
+msgid "Last period"
+msgstr "Останній період"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:90
+msgid "Last sync"
+msgstr "Остання синхронізація"
+
+#: src/sync/component/sync-status-card/sync-status-card.tsx:53
+msgid "Last Sync"
+msgstr "Остання синхронізація"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -988,7 +1036,7 @@ msgstr "Перевищення:"
 msgid "Overview"
 msgstr "Огляд"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:77
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
 
@@ -1001,11 +1049,11 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:59
+#: src/account/component/create-liability-account/create-liability-account.tsx:60
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
@@ -1176,7 +1224,7 @@ msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
 #: src/account/component/archive-account/archive-account.tsx:27
-#: src/account/component/create-liability-account/create-liability-account.tsx:58
+#: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/account/component/update-liability-account/update-liability-account.tsx:63
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
@@ -1228,7 +1276,7 @@ msgid "Stocks"
 msgstr "Акції"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
-#: src/account/component/create-liability-account/create-liability-account.tsx:72
+#: src/account/component/create-liability-account/create-liability-account.tsx:73
 msgid "Submit"
 msgstr "Відправити"
 
@@ -1241,27 +1289,31 @@ msgstr "Проведіть вліво"
 msgid "Switch between light and dark themes"
 msgstr "Перемикайтеся між світлою та темною темами"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:48
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:47
 msgid "Sync completed successfully"
 msgstr "Синхронізацію завершено успішно"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:50
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:49
 msgid "Sync failed"
 msgstr "Помилка синхронізації"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:67
+#: src/sync/component/sync-status-card/sync-status-card.tsx:18
+msgid "Sync Status"
+msgstr "Статус синхронізації"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:59
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:44
-msgid "Syncing accounts..."
-msgstr "Синхронізація рахунків..."
+#: src/sync/component/account-sync-card/account-sync-card.tsx:81
+msgid "Synced until"
+msgstr "Синхронізовано до"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
-msgid "Syncing in progress..."
-msgstr "Синхронізація виконується..."
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Syncing history..."
+msgstr "Синхронізація історії..."
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:46
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:45
 msgid "Syncing transactions..."
 msgstr "Синхронізація транзакцій..."
 
@@ -1334,7 +1386,7 @@ msgstr "Валюта на"
 msgid "Today"
 msgstr "Сьогодні"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Token required"
 msgstr "Потрібен токен"
 
@@ -1351,6 +1403,8 @@ msgid "Transaction Type"
 msgstr "Тип транзакції"
 
 #: src/app/(tabs)/transactions.tsx:11
+#: src/sync/component/account-sync-card/account-sync-card.tsx:73
+#: src/sync/component/sync-status-card/sync-status-card.tsx:46
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -1391,6 +1445,10 @@ msgstr "Невідомо"
 msgid "Unknown Category"
 msgstr "Невідома категорія"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:22
+msgid "Up to date"
+msgstr "Актуальний"
+
 #: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Update Account"
 msgstr "Оновити рахунок"
@@ -1428,6 +1486,11 @@ msgstr "Перегляд та видалення власних категорі
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:28
+#: src/sync/component/account-sync-card/account-sync-card.tsx:29
+msgid "Waiting"
+msgstr "Очікування"
+
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
 msgstr "Ваша витрата була успішно зафіксована."
@@ -1440,6 +1503,6 @@ msgstr "Ваша мета - повернути ОДНУ найкращу від�
 msgid "Your message:"
 msgstr "Ваше повідомлення:"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:96
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:74
 msgid "Your token is stored securely on device. Sync continues in the background."
 msgstr "Ваш токен зберігається безпечно на пристрої. Синхронізація продовжується у фоновому режимі."

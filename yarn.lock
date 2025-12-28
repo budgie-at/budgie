@@ -1296,6 +1296,7 @@ __metadata:
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"
   dependencies:
     "@rnw-community/shared": "npm:^1.8.2"
+    date-fns: "npm:^4.1.0"
     ky: "npm:^1.14.1"
   languageName: unknown
   linkType: soft
