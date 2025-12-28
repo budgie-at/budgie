@@ -83,7 +83,7 @@ export const AccountCard = (props: Props) => {
         <Card onPress={navigateToAccount} className={cn(cardVariants({ deadlinePriority }), className)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon icon={icon} variant={circleVariant} border={false} />
+                    <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
 
                     {isDebtAccount && isDefined(deadline) ? (
                         <View className="flex-row items-center gap-x-xs">
@@ -93,7 +93,7 @@ export const AccountCard = (props: Props) => {
                     ) : null}
                 </View>
 
-                <HapticPressable className="rounded-full p-xs active:bg-secondary-background" onPress={navigateToEditAccount}>
+                <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
                     <Icon className="text-primary" icon="EllipsisVertical" size={14} />
                 </HapticPressable>
             </View>
