@@ -40,27 +40,16 @@ class AppMonobankSyncService {
     private readonly provider = BankProviderEnum.MONOBANK;
     private isRunning = false;
 
-    saveToken(token: string): void {
-        bankSyncStorageService.setToken(this.provider, token);
-    }
-
     getToken(): string {
         return bankSyncStorageService.getToken(this.provider) ?? '';
-    }
-
-    deleteToken(): void {
-        bankSyncStorageService.setToken(this.provider, null);
-    }
-
-    hasToken(): boolean {
-        return bankSyncStorageService.hasToken(this.provider);
     }
 
     isEnabled(): boolean {
         return bankSyncStorageService.isEnabled(this.provider);
     }
 
-    setEnabled(enabled: boolean): void {
+    setEnabled(enabled: boolean, token: string): void {
+        bankSyncStorageService.setToken(this.provider, token);
         bankSyncStorageService.setEnabled(this.provider, enabled);
 
         this.isRunning = false;

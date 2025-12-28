@@ -40,11 +40,7 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        if (enabled) {
-            monobankSyncService.saveToken(trimmedToken);
-        }
-
-        monobankSyncService.setEnabled(enabled);
+        monobankSyncService.setEnabled(enabled, trimmedToken);
 
         if (enabled) {
             await microPause();
