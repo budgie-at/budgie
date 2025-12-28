@@ -32,7 +32,9 @@ export const SyncStatusCard = ({ syncState }: Props) => (
                         <Text className="text-primary text-sm">
                             <Trans>Error</Trans>
                         </Text>
-                        <Text className="text-primary text-sm font-medium">{syncState.error}</Text>
+                        <Text className="text-primary text-destructive text-xs max-w-3/5" numberOfLines={3}>
+                            {syncState.error}
+                        </Text>
                     </View>
                 )}
                 <View className="flex-row justify-between">
