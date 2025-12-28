@@ -111,7 +111,7 @@ class BankSyncStorageService {
                         completedAt: now,
                         fromTime: now,
                         toTime: now,
-                        historySyncedTill: cursor.fromTime
+                        ...(!isDefined(cursor.historySyncedTill) && { historySyncedTill: cursor.fromTime })
                     })
                 }
             }
