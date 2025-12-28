@@ -71,6 +71,14 @@ class AppMonobankSyncService {
         }
     }
 
+    setAccountEnabled(accountId: number, enabled: boolean): void {
+        bankSyncStorageService.setAccountEnabled(this.provider, accountId, enabled);
+
+        if (enabled) {
+            void this.sync();
+        }
+    }
+
     async registerBackgroundTask(): Promise<void> {
         if (await TaskManager.isTaskRegisteredAsync(MONOBANK_SYNC_TASK)) {
             return;

@@ -5,20 +5,20 @@ import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
 import { Icon } from '../../../@generic/components/icon/icon';
 import { Input } from '../../../@generic/components/input/input';
-import { Page } from '../../../@generic/components/page/page';
+import { FullPage } from '../../../@generic/components/page/full-page';
 import { PageHeader } from '../../../@generic/components/page-header/page-header';
 import { ICONS } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
-import { AccountCursorsCard } from '../account-cursors-card/account-cursors-card';
+import { AccountSyncCard } from '../account-sync-card/account-sync-card';
 import { GetTokenCard } from '../get-token-card/get-token-card';
 import { SyncStatusCard } from '../sync-status-card/sync-status-card';
 import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
@@ -53,7 +53,7 @@ export const CreateMonobankAccount = () => {
     };
 
     return (
-        <Page
+        <FullPage
             header={
                 <PageHeader
                     onGoBack={handleGoBack}
@@ -97,11 +97,25 @@ export const CreateMonobankAccount = () => {
                     {syncState.enabled && (
                         <>
                             <SyncStatusCard syncState={syncState} />
-                            <AccountCursorsCard cursors={Object.values(syncState.accountCursors)} />
+
+                            {isNotEmptyArray(Object.values(syncState.accountCursors)) && (
+                                <View className="gap-y-md">
+                                    <Text className="text-primary text-muted-foreground text-sm px-md">
+                                        <Trans>Accounts</Trans>
+                                    </Text>
+                                    {Object.values(syncState.accountCursors).map(cursor => (
+                                        <AccountSyncCard
+                                            key={cursor.accountId}
+                                            cursor={cursor}
+                                            onToggle={monobankSyncService.setAccountEnabled.bind(monobankSyncService)}
+                                        />
+                                    ))}
+                                </View>
+                            )}
                         </>
                     )}
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
-        </Page>
+        </FullPage>
     );
 };
