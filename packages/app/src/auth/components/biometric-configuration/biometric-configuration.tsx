@@ -1,10 +1,11 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 
 interface Props {
     readonly onSubmit: (enableBiometrics: boolean) => void;
@@ -37,7 +38,7 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
                 variant="ghost"
                 title={t`Biometric Authentication`}
                 description={t`Face ID / Touch ID`}
-                right={<Switch className="my-auto" onValueChange={setEnableBiometrics} value={enableBiometrics} />}
+                right={<ThemedSwitch className="my-auto" onValueChange={setEnableBiometrics} value={enableBiometrics} />}
             />
 
             <Button onPress={handleContinue} content={t`Continue`} />
