@@ -11,10 +11,11 @@ import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizonta
 
 interface Props {
     readonly contactId: string | null;
+    readonly variant: ColorPaletteVariant;
     readonly onSelect: (contactId: string) => void;
 }
 
-export const ContactSelector = ({ contactId, onSelect }: Props) => {
+export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
     const { contacts, error, loadContacts } = useContacts();
     const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
@@ -32,10 +33,10 @@ export const ContactSelector = ({ contactId, onSelect }: Props) => {
     const title = isNotEmptyString(contactId) ? (contacts.find(({ id }) => id === contactId)?.name ?? '') : t`Select a contact`;
 
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
-    const variant: ColorPaletteVariant = isDefined(contact) ? 'ghost' : 'secondary';
+    const iconVariant: ColorPaletteVariant = isDefined(contact) ? variant : 'secondary';
 
     const description = isDefined(contact) ? t`Owes you` : t`Who owes you?`;
-    const iconParams = { variant };
+    const iconParams = { variant: iconVariant };
 
     return (
         <>

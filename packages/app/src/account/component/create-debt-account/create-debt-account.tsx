@@ -34,9 +34,9 @@ export const CreateDebtAccount = () => {
     const { control, handleSubmit, instrument, debtType } = useDebtAccountForm({
         iban: '',
         title: '',
-        accountId: 0,
         deadline: null,
         contactId: null,
+        accountId: null,
         targetBalance: 0,
         currentBalance: 0,
         icon: DEFAULT_ICON,

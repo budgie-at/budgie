@@ -7,6 +7,6 @@ export const ACCOUNT_COLOR: Record<AccountTypeEnum, ColorPaletteVariant> = {
     [AccountTypeEnum.CASH]: 'positive',
     [AccountTypeEnum.CRYPTO]: 'warning',
     [AccountTypeEnum.STOCKS]: 'pink',
-    [AccountTypeEnum.DEBT]: 'dark-warning',
+    [AccountTypeEnum.DEBT]: 'warning',
     [AccountTypeEnum.SAVINGS]: 'positive'
 };
