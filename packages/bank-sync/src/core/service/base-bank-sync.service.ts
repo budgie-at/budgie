@@ -49,11 +49,9 @@ export class BaseBankSyncService {
             };
         }
 
-        const nextTo = !isDefined(lastTransactionDate) || Number.isNaN(lastTransactionDate) ? from : lastTransactionDate;
-
         return {
-            nextTo,
-            nextFrom: addSeconds(nextTo, -this.options.maxPeriodSeconds),
+            nextTo: from,
+            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions: result.data,
             completed: result.data.length === 0
         };
