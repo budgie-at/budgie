@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum, PRECISION } from '@budgie/contracts';
+import { InstrumentTypeEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -36,7 +36,7 @@ export const CurrencySelector = ({ instrumentId, onChange, className }: Props) =
 
     const { code: selectedCurrencyCode, name, symbol } = selectedCurrency;
     const { code: defaultInstrumentCode } = defaultInstrument;
-    const convertedAmount = isDefined(rate) ? rate.rate / PRECISION : 1;
+    const convertedAmount = isDefined(rate) ? rate.rate : 1;
     const isBaseCurrency = !isDefined(rate);
 
     const handleOpen = () => ref.current?.open();
