@@ -6,7 +6,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
@@ -29,9 +28,9 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
 
     return (
         <Link href={`/transactions/${transaction.id}`} asChild>
-            <Card className="p-xl gap-y-[32px]">
+            <Card className="p-xl gap-y-8">
                 <View className="flex-row gap-x-xl">
-                    <CircleIcon size="md" icon={ICONS[categoryIcon]} variant={TRANSACTION_COLOR[type]} />
+                    <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />
 
                     <View className="flex-1 gap-y-xs pt-xxs">
                         {isNotEmptyString(title) ? (
@@ -39,6 +38,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                                 {title}
                             </Text>
                         ) : null}
+
                         {isNotEmptyString(comment) ? (
                             <Text className="text-secondary-foreground text-xs" numberOfLines={2} ellipsizeMode="tail">
                                 {comment}

@@ -2,9 +2,9 @@ import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { ICONS } from '../../constant/icons.constant';
+import { emptyFn } from '@rnw-community/shared';
 import { cn } from '../../utils/cn.util';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
 interface Props<T = number> {
@@ -34,26 +34,25 @@ const cardVariants = cva(`rounded-3xl p-3xl border-2 border-secondary-corner gap
 
 export const SelectorCard = <T = number,>(props: Props<T>) => {
     const { className, verticalAlign = 'middle', isSelected, title, subtitle, onSelect, identifier, iconSlot } = props;
-    const handleSelect = () => void onSelect(identifier);
+    const handleSelect = isSelected ? emptyFn : () => void onSelect(identifier);
+
+    const right = isSelected ? (
+        <View className="bg-primary rounded-full p-xs">
+            <Icon className="text-primary-reverse" icon="Check" size={16} />
+        </View>
+    ) : null;
 
     return (
-        <HapticPressable
-            disabled={isSelected}
+        <HorizontalCell
+            right={right}
+            left={iconSlot}
             className={cn(cardVariants({ isSelected, verticalAlign }), className)}
             onPress={handleSelect}
         >
-            {iconSlot}
-
             <View className="gap-y-xxs flex-1">
                 <Text className="text-md font-semibold text-primary">{title}</Text>
                 {subtitle}
             </View>
-
-            {isSelected ? (
-                <View className="bg-primary rounded-full p-xs">
-                    <Icon className="text-primary-reverse" icon={ICONS.Check} size={16} />
-                </View>
-            ) : null}
-        </HapticPressable>
+        </HorizontalCell>
     );
 };

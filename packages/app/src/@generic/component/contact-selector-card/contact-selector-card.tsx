@@ -4,8 +4,6 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
-import { ICONS } from '../../constant/icons.constant';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
 import { SelectorCard } from '../selector-card/selector-card';
@@ -30,15 +28,9 @@ export const ContactSelectorCard = (props: Props) => {
     const { isSelected, onSelect, title, id, image, emails, phoneNumbers } = props;
 
     const icon = isNotEmptyString(image) ? (
-        <StyledImage
-            className="w-[32px] h-[32px] rounded-full"
-            source={image}
-            placeholder={placeholder}
-            contentFit="cover"
-            transition={1000}
-        />
+        <StyledImage className="w-8 h-8 rounded-full" source={image} placeholder={placeholder} contentFit="cover" transition={1000} />
     ) : (
-        <CircleIcon icon={ICONS.User} variant="secondary" size="xl" />
+        <CircleIcon icon="User" variant="secondary" size={32} iconSize={16} />
     );
 
     const hasEmails = isNotEmptyArray(emails);
@@ -49,13 +41,13 @@ export const ContactSelectorCard = (props: Props) => {
             <View className="gap-y-xs">
                 {emails.map(email => (
                     <View key={email} className="flex-row items-center gap-x-sm">
-                        <Icon icon={ICONS.LucideMail} className="text-secondary-foreground" size={12} />
+                        <Icon icon="LucideMail" className="text-secondary-foreground" size={12} />
                         <Text className="text-secondary-foreground">{email}</Text>
                     </View>
                 ))}
                 {phoneNumbers.map(phoneNumber => (
                     <View key={phoneNumber} className="flex-row items-center gap-x-sm">
-                        <Icon icon={ICONS.Phone} className="text-secondary-foreground" size={12} />
+                        <Icon icon="Phone" className="text-secondary-foreground" size={12} />
                         <Text className="text-secondary-foreground">{phoneNumber}</Text>
                     </View>
                 ))}

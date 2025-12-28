@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { CurrencySelectorBottomSheet } from '../currency-selector-bottom-sheet/currency-selector-bottom-sheet';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
@@ -48,7 +47,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
                         <Text className="text-primary text-4xl">{symbol}</Text>
                     </View>
                 }
-                right={<Icon icon={ICONS.Sparkles} className="text-secondary-foreground/50" size={16} />}
+                right={<Icon icon="Sparkles" className="text-secondary-foreground/50" size={16} />}
                 onPress={handleOpen}
                 size="lg"
             >

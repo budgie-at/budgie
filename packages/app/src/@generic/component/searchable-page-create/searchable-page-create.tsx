@@ -1,8 +1,6 @@
 import { ComponentProps, useRef } from 'react';
 import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
-
-import { ICONS } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -24,7 +22,7 @@ export const SearchablePageCreate = <T extends IdInterface>({
                         onPress={handleOpen}
                         className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
                     >
-                        <Icon icon={ICONS.Plus} className="text-primary-reverse" size={32} />
+                        <Icon icon="Plus" className="text-primary-reverse" size={32} />
                     </HapticPressable>
                 </Animated.View>
             </View>

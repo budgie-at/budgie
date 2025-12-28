@@ -9,7 +9,6 @@ import { HapticPressable } from '../../@generic/component/haptic-pressable/hapti
 import { Icon } from '../../@generic/component/icon/icon';
 import { Page } from '../../@generic/component/page/page';
 import { NetWorth } from '../../@generic/component/total-balance/net-worth';
-import { ICONS } from '../../@generic/constant/icons.constant';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
@@ -30,7 +29,7 @@ export default function HomePage() {
         <Page>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 <HapticPressable className="ml-auto p-md" onPress={navigateToSettings} hitSlop={10}>
-                    <Icon className="text-primary" icon={ICONS.Settings} size={16} />
+                    <Icon className="text-primary" icon="Settings" size={16} />
                 </HapticPressable>
 
                 <NetWorth />

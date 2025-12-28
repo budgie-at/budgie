@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
@@ -51,7 +51,9 @@ export const PageHeader = ({
         <View className="flex-row items-center gap-x-xl">
             {isDefined(onGoBack) ? <GoBackButton onPress={onGoBack} /> : null}
 
-            {isNotEmptyString(icon) ? <CircleIcon icon={ICONS[icon]} variant={iconVariant} size="2xl" className="rounded-3xl" /> : null}
+            {isNotEmptyString(icon) ? (
+                <CircleIcon icon={icon} variant={iconVariant} size={50} iconSize={24} radius={16} className="rounded-3xl" />
+            ) : null}
 
             <View className="gap-y-xs mr-auto">
                 <Text className="text-primary font-medium text-3xl">{title}</Text>

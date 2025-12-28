@@ -62,6 +62,7 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
                 label={t`Category Name`}
                 control={control}
             />
+
             <CategoryFormIconField control={control} />
 
             <CategoryPreview icon={icon} title={title} />

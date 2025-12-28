@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { ICONS } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormItem } from '../form-item/form-item';
@@ -26,7 +25,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
             variant={variant}
             onSelect={onChange}
             icon={value as UserIconNameEnum}
-            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={ICONS[value as UserIconNameEnum]} />}
+            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconNameEnum} />}
         />
     );
 

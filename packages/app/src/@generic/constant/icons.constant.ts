@@ -1,6 +1,7 @@
 import {
     AlertCircle,
     AlertTriangle,
+    Dot,
     Archive,
     ArrowLeftRight,
     ArrowRightIcon,
@@ -166,6 +167,7 @@ export const ICONS = {
     ShoppingBag,
     Repeat,
     Popcorn,
+    Dot,
     GraduationCap,
     Gift,
     Baby,
@@ -190,4 +192,3 @@ export const ICONS = {
 } as const satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
-export type IconType = (typeof ICONS)[IconName];
