@@ -168,7 +168,7 @@ class BankSyncStorageService {
 
     completeSync(provider: BankProviderEnum): void {
         this.setState(provider, {
-            status: SyncStatusEnum.SUCCESS,
+            status: SyncStatusEnum.IDLE,
             // eslint-disable-next-line no-undefined
             error: undefined,
             errorCount: 0,

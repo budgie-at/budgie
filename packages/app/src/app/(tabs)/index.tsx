@@ -36,8 +36,6 @@ export default function HomePage() {
 
                 <NetWorth />
 
-                <SyncProgressBadge />
-
                 <AccountsHeading />
 
                 {isNotEmptyArray(accountEntries) ? (
