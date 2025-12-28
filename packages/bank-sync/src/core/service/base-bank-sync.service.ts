@@ -49,7 +49,7 @@ export class BaseBankSyncService {
             };
         }
 
-        const nextTo = lastTransactionDate ?? from;
+        const nextTo = !isDefined(lastTransactionDate) || Number.isNaN(lastTransactionDate) ? from : lastTransactionDate;
 
         return {
             nextTo,
