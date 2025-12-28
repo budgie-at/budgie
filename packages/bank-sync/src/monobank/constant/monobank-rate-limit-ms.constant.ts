@@ -1,1 +1,1 @@
-export const MONOBANK_RATE_LIMIT_MS = 61000;
+export const MONOBANK_RATE_LIMIT_MS = 60000;

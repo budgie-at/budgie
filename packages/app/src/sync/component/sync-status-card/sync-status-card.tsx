@@ -4,60 +4,67 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BankSyncStateInterface } from '../../interface/bank-sync-state.interface';
 
 interface Props {
     readonly syncState: BankSyncStateInterface;
 }
 
-export const SyncStatusCard = ({ syncState }: Props) => (
-    <Card className="p-4xl">
-        <View className="gap-y-md">
-            <View className="flex-row justify-between">
-                <Text className="text-primary font-semibold text-base">
-                    <Trans>Sync Status</Trans>
-                </Text>
-                <Text className="text-amber-600 text-sm font-medium">{syncState.status}</Text>
-            </View>
+export const SyncStatusCard = ({ syncState }: Props) => {
+    const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
-            <View className="gap-y-sm border-t border-secondary-corner pt-md">
+    return (
+        <Card className="p-4xl">
+            <View className="gap-y-md">
                 <View className="flex-row justify-between">
-                    <Text className="text-primary text-sm">
-                        <Trans>Errors count</Trans>
+                    <Text className="text-primary font-semibold text-base">
+                        <Trans>Sync Status</Trans>
                     </Text>
-                    <Text className="text-primary text-sm font-medium">{syncState.errorCount}</Text>
+                    <Text className="text-amber-600 text-sm font-medium">{syncState.status}</Text>
                 </View>
-                {isNotEmptyString(syncState.error) && (
+
+                <View className="gap-y-sm border-t border-secondary-corner pt-md">
                     <View className="flex-row justify-between">
                         <Text className="text-primary text-sm">
-                            <Trans>Error</Trans>
+                            <Trans>Errors count</Trans>
                         </Text>
-                        <Text className="text-primary text-destructive text-xs max-w-3/5" numberOfLines={3}>
-                            {syncState.error}
-                        </Text>
+                        <Text className="text-primary text-sm font-medium">{syncState.errorCount}</Text>
                     </View>
-                )}
-                <View className="flex-row justify-between">
-                    <Text className="text-primary text-sm">
-                        <Trans>Accounts</Trans>
-                    </Text>
-                    <Text className="text-primary text-sm font-medium">{syncState.totalAccounts}</Text>
-                </View>
-                <View className="flex-row justify-between">
-                    <Text className="text-primary text-sm">
-                        <Trans>Transactions</Trans>
-                    </Text>
-                    <Text className="text-primary text-sm font-medium">{syncState.totalTransactions}</Text>
-                </View>
-                {isNotEmptyString(syncState.lastSyncAt) && (
+                    {isNotEmptyString(syncState.error) && (
+                        <View className="flex-row justify-between">
+                            <Text className="text-primary text-sm">
+                                <Trans>Error</Trans>
+                            </Text>
+                            <Text className="text-primary text-destructive text-xs max-w-3/5" numberOfLines={3}>
+                                {syncState.error}
+                            </Text>
+                        </View>
+                    )}
                     <View className="flex-row justify-between">
                         <Text className="text-primary text-sm">
-                            <Trans>Last Sync</Trans>
+                            <Trans>Accounts</Trans>
                         </Text>
-                        <Text className="text-primary text-sm font-medium">{new Date(syncState.lastSyncAt).toLocaleString()}</Text>
+                        <Text className="text-primary text-sm font-medium">{syncState.totalAccounts}</Text>
                     </View>
-                )}
+                    <View className="flex-row justify-between">
+                        <Text className="text-primary text-sm">
+                            <Trans>Transactions</Trans>
+                        </Text>
+                        <Text className="text-primary text-sm font-medium">{syncState.totalTransactions}</Text>
+                    </View>
+                    {isNotEmptyString(syncState.lastSyncAt) && (
+                        <View className="flex-row justify-between">
+                            <Text className="text-primary text-sm">
+                                <Trans>Last Sync</Trans>
+                            </Text>
+                            <Text className="text-primary text-sm font-medium">
+                                {formatDayAndMonthAndYearWithTime(syncState.lastSyncAt)}
+                            </Text>
+                        </View>
+                    )}
+                </View>
             </View>
-        </View>
-    </Card>
-);
+        </Card>
+    );
+};
