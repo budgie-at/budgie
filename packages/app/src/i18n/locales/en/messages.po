@@ -72,7 +72,7 @@ msgstr "{successCount} transactions imported"
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} tags available"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:77
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:76
 msgid "{totalTransactions} transactions synced"
 msgstr "{totalTransactions} transactions synced"
 
@@ -88,9 +88,14 @@ msgstr "100% Offline & Private"
 msgid "About"
 msgstr "About"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:51
 #: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Account"
+
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:43
+msgid "Account Import Progress"
+msgstr "Account Import Progress"
 
 #: src/account/component/update-account-title-field/update-account-title-field.tsx:22
 msgid "Account Name"
@@ -105,6 +110,8 @@ msgid "Account Settings"
 msgstr "Account Settings"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:12
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:101
+#: src/sync/component/sync-status-card/sync-status-card.tsx:40
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:27
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:58
 msgid "Accounts"
@@ -241,9 +248,9 @@ msgstr "Are you sure?"
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Auto-sync accounts and transactions from Monobank"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
-msgid "Automatically sync every hour"
-msgstr "Automatically sync every hour"
+#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:19
+msgid "Automatically sync your accounts and transactions"
+msgstr "Automatically sync your accounts and transactions"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -388,6 +395,10 @@ msgstr "Comment"
 msgid "Common Tags"
 msgstr "Common Tags"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:23
+msgid "Completed"
+msgstr "Completed"
+
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
 msgid "Confirm"
 msgstr "Confirm"
@@ -396,7 +407,7 @@ msgstr "Confirm"
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:66
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:58
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
@@ -568,6 +579,10 @@ msgstr "Done"
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:87
+msgid "Duration"
+msgstr "Duration"
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Dutch (Netherlands)"
@@ -597,6 +612,10 @@ msgstr "Edit Income"
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:66
+msgid "Elapsed"
+msgstr "Elapsed"
+
 #: src/app/(main)/create-account/index.tsx:32
 msgid "Emergency fund and savings goals"
 msgstr "Emergency fund and savings goals"
@@ -605,7 +624,7 @@ msgstr "Emergency fund and savings goals"
 msgid "Enable"
 msgstr "Enable"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:17
+#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:16
 msgid "Enable Auto-Sync"
 msgstr "Enable Auto-Sync"
 
@@ -659,7 +678,7 @@ msgstr "Enter your {PIN_LENGTH}-digit PIN"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Enter your {PIN_LENGTH}-digit PIN to unlock"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:85
 msgid "Enter your Monobank API token"
 msgstr "Enter your Monobank API token"
 
@@ -669,8 +688,13 @@ msgstr "Enter your PIN"
 
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
+#: src/sync/component/sync-status-card/sync-status-card.tsx:33
 msgid "Error"
 msgstr "Error"
+
+#: src/sync/component/sync-status-card/sync-status-card.tsx:26
+msgid "Errors count"
+msgstr "Errors count"
 
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
@@ -701,7 +725,7 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:68
+#: src/account/component/create-liability-account/create-liability-account.tsx:69
 msgid "Fill in the account details"
 msgstr "Fill in the account details"
 
@@ -786,6 +810,10 @@ msgstr "Import from SmartBudget2 app with Russian columns"
 msgid "Import transactions from a CSV file"
 msgstr "Import transactions from a CSV file"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:25
+msgid "In Progress"
+msgstr "In Progress"
+
 #: src/app/(tabs)/analytics.tsx:54
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -811,6 +839,14 @@ msgstr "Italian (Italy)"
 #: src/settings/components/language-selector/language-selector.tsx:37
 msgid "Language"
 msgstr "Language"
+
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:57
+msgid "Last period"
+msgstr "Last period"
+
+#: src/sync/component/sync-status-card/sync-status-card.tsx:53
+msgid "Last Sync"
+msgstr "Last Sync"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -990,9 +1026,13 @@ msgstr "Over:"
 msgid "Overview"
 msgstr "Overview"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:77
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
 msgstr "Paste your API token below:"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:77
+msgid "Period"
+msgstr "Period"
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1003,11 +1043,11 @@ msgstr "PIN must be {PIN_LENGTH} digits"
 msgid "PINs do not match"
 msgstr "PINs do not match"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
-#: src/account/component/create-liability-account/create-liability-account.tsx:59
+#: src/account/component/create-liability-account/create-liability-account.tsx:60
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
@@ -1178,7 +1218,7 @@ msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
 #: src/account/component/archive-account/archive-account.tsx:27
-#: src/account/component/create-liability-account/create-liability-account.tsx:58
+#: src/account/component/create-liability-account/create-liability-account.tsx:59
 #: src/account/component/update-liability-account/update-liability-account.tsx:63
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -1230,7 +1270,7 @@ msgid "Stocks"
 msgstr "Stocks"
 
 #: src/@generic/components/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:32
-#: src/account/component/create-liability-account/create-liability-account.tsx:72
+#: src/account/component/create-liability-account/create-liability-account.tsx:73
 msgid "Submit"
 msgstr "Submit"
 
@@ -1243,29 +1283,33 @@ msgstr "Swipe left"
 msgid "Switch between light and dark themes"
 msgstr "Switch between light and dark themes"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:48
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:47
 msgid "Sync completed successfully"
 msgstr "Sync completed successfully"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:50
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:49
 msgid "Sync failed"
 msgstr "Sync failed"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:67
+#: src/sync/component/sync-status-card/sync-status-card.tsx:18
+msgid "Sync Status"
+msgstr "Sync Status"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:59
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Sync your Monobank accounts and transactions"
 
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:44
-msgid "Syncing accounts..."
-msgstr "Syncing accounts..."
+#: src/sync/component/account-sync-card/account-sync-card.tsx:21
+msgid "Synced"
+msgstr "Synced"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:20
-msgid "Syncing in progress..."
-msgstr "Syncing in progress..."
-
-#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:46
+#: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:45
 msgid "Syncing transactions..."
 msgstr "Syncing transactions..."
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:23
+msgid "Syncing..."
+msgstr "Syncing..."
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1336,7 +1380,7 @@ msgstr "To Currency"
 msgid "Today"
 msgstr "Today"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:41
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:38
 msgid "Token required"
 msgstr "Token required"
 
@@ -1353,6 +1397,8 @@ msgid "Transaction Type"
 msgstr "Transaction Type"
 
 #: src/app/(tabs)/transactions.tsx:11
+#: src/sync/component/account-sync-card/account-sync-card.tsx:70
+#: src/sync/component/sync-status-card/sync-status-card.tsx:46
 msgid "Transactions"
 msgstr "Transactions"
 
@@ -1430,6 +1476,11 @@ msgstr "View and delete custom categories"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
+#: src/sync/component/account-cursors-card/account-cursors-card.tsx:28
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Waiting"
+msgstr "Waiting"
+
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
 msgstr "Your expense has been recorded successfully."
@@ -1442,6 +1493,6 @@ msgstr "Your goal is to return ONE best matching category, ONLY THE NAME FROM th
 msgid "Your message:"
 msgstr "Your message:"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:96
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:74
 msgid "Your token is stored securely on device. Sync continues in the background."
 msgstr "Your token is stored securely on device. Sync continues in the background."
