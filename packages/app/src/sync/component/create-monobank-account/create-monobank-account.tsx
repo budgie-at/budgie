@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
