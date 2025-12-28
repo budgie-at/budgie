@@ -14,7 +14,6 @@ interface Props {
     readonly onToggle: (accountId: number, enabled: boolean) => void;
 }
 
-// eslint-disable-next-line max-lines-per-function
 export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
     const { t } = useLingui();
 
@@ -31,16 +30,6 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
         }
 
         return t`Waiting`;
-    };
-
-    const getStatusColor = () => {
-        if (cursor.completed) {
-            return 'text-success';
-        } else if (isDefined(cursor.startedAt)) {
-            return 'text-warning';
-        }
-
-        return 'text-muted-foreground';
     };
 
     const getElapsedTime = (): string | null => {
@@ -64,7 +53,7 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
                     <Text className="text-primary font-semibold text-base" numberOfLines={1}>
                         {accountTitle}
                     </Text>
-                    <Text className={`text-xs ${getStatusColor()}`}>{getStatusLabel()}</Text>
+                    <Text className="text-xs text-primary">{getStatusLabel()}</Text>
                 </View>
                 <ThemedSwitch value={cursor.enabled} onValueChange={handleToggle} />
             </View>

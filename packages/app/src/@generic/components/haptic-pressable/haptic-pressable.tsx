@@ -14,5 +14,5 @@ export const HapticPressable = ({ onPress, className, ...rest }: ComponentProps<
         onPress?.(event);
     };
 
-    return <Pressable className={cn('active:scale-xs', className)} onPress={handlePress} {...rest} />;
+    return <Pressable className={cn('active:scale-xs', className)} hitSlop={10} onPress={handlePress} {...rest} />;
 };
