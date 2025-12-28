@@ -86,7 +86,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:51
+#: src/sync/component/account-sync-card/account-sync-card.tsx:54
 #: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:51
 msgid "Account"
 msgstr "Рахунок"
@@ -234,7 +234,7 @@ msgstr "Архівувати рахунок?"
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:41
+#: src/settings/components/truncate-data/truncate-data.tsx:44
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
@@ -376,8 +376,8 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:32
-#: src/settings/components/truncate-data/truncate-data.tsx:45
+#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
@@ -552,11 +552,11 @@ msgstr "Рахунок за замовчуванням"
 msgid "Delete"
 msgstr "Видалити"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:33
+#: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:42
+#: src/settings/components/truncate-data/truncate-data.tsx:45
 msgid "Delete data"
 msgstr "Видалити дані"
 
@@ -577,7 +577,7 @@ msgstr "Готово"
 msgid "Done ({selectedTagsCount})"
 msgstr "Готово ({selectedTagsCount})"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:87
+#: src/sync/component/account-sync-card/account-sync-card.tsx:99
 msgid "Duration"
 msgstr ""
 
@@ -723,6 +723,10 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Fetching new..."
+msgstr ""
+
 #: src/account/component/create-liability-account/create-liability-account.tsx:69
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
@@ -778,6 +782,10 @@ msgstr "Приховувати баланси рахунків та загаль
 #: src/app/(main)/settings/index.tsx:105
 msgid "Hide Cents"
 msgstr "Приховати копійки"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:24
+msgid "Historical sync done"
+msgstr ""
 
 #: src/account/component/create-account-icon-field/update-account-icon-field.tsx:18
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:16
@@ -840,6 +848,10 @@ msgstr "Мова"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:57
 msgid "Last period"
+msgstr ""
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:90
+msgid "Last sync"
 msgstr ""
 
 #: src/sync/component/sync-status-card/sync-status-card.tsx:53
@@ -1027,10 +1039,6 @@ msgstr "Огляд"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:77
-msgid "Period"
-msgstr ""
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1297,17 +1305,17 @@ msgstr ""
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:21
-msgid "Synced"
+#: src/sync/component/account-sync-card/account-sync-card.tsx:81
+msgid "Synced until"
+msgstr ""
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+msgid "Syncing history..."
 msgstr ""
 
 #: src/sync/component/sync-progress-badge/sync-progress-badge.tsx:45
 msgid "Syncing transactions..."
 msgstr "Синхронізація транзакцій..."
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:23
-msgid "Syncing..."
-msgstr ""
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "Tag Name"
@@ -1395,7 +1403,7 @@ msgid "Transaction Type"
 msgstr "Тип транзакції"
 
 #: src/app/(tabs)/transactions.tsx:11
-#: src/sync/component/account-sync-card/account-sync-card.tsx:70
+#: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/sync-status-card/sync-status-card.tsx:46
 msgid "Transactions"
 msgstr "Транзакції"
@@ -1437,6 +1445,10 @@ msgstr "Невідомо"
 msgid "Unknown Category"
 msgstr "Невідома категорія"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx:22
+msgid "Up to date"
+msgstr ""
+
 #: src/account/component/update-liability-account/update-liability-account.tsx:97
 msgid "Update Account"
 msgstr "Оновити рахунок"
@@ -1475,7 +1487,7 @@ msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
 #: src/sync/component/account-cursors-card/account-cursors-card.tsx:28
-#: src/sync/component/account-sync-card/account-sync-card.tsx:26
+#: src/sync/component/account-sync-card/account-sync-card.tsx:29
 msgid "Waiting"
 msgstr ""
 
