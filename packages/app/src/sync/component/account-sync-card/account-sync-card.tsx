@@ -15,7 +15,7 @@ interface Props {
 
 export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
     const { t } = useLingui();
-    const hasCompletedHistoricalSync = isDefined(cursor.lastSyncedAt);
+    const hasCompletedHistoricalSync = isDefined(cursor.historySyncedTill);
 
     const getStatusLabel = () => {
         if (cursor.completed && hasCompletedHistoricalSync) {
@@ -75,21 +75,21 @@ export const AccountSyncCard = ({ cursor, onToggle }: Props) => {
                             <Text className="text-primary text-xs font-medium">{cursor.transactionCount}</Text>
                         </View>
 
-                        {!hasCompletedHistoricalSync && (
+                        {isDefined(cursor.historySyncedTill) && (
                             <View className="flex-row justify-between">
                                 <Text className="text-primary text-xs text-muted-foreground">
                                     <Trans>Synced until</Trans>
                                 </Text>
-                                <Text className="text-primary text-xs">{format(cursor.fromTime, 'dd MMM yyyy')}</Text>
+                                <Text className="text-primary text-xs">{format(cursor.historySyncedTill, 'dd MMM yyyy')}</Text>
                             </View>
                         )}
 
-                        {isDefined(cursor.lastSyncedAt) && (
+                        {isDefined(cursor.toTime) && (
                             <View className="flex-row justify-between">
                                 <Text className="text-primary text-xs text-muted-foreground">
                                     <Trans>Last sync</Trans>
                                 </Text>
-                                <Text className="text-primary text-xs">{format(cursor.lastSyncedAt, 'dd MMM yyyy, HH:mm')}</Text>
+                                <Text className="text-primary text-xs">{format(cursor.toTime, 'dd MMM yyyy, HH:mm')}</Text>
                             </View>
                         )}
 
