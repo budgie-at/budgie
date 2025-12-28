@@ -28,10 +28,6 @@ export class BankSyncError extends Error implements BankSyncErrorInterface {
         return new BankSyncError(BankSyncErrorCodeEnum.NETWORK_ERROR, 'Network error occurred', provider, originalError);
     }
 
-    static invalidToken(provider: BankProviderEnum, originalError?: unknown): BankSyncError {
-        return new BankSyncError(BankSyncErrorCodeEnum.INVALID_TOKEN, 'Invalid API token', provider, originalError);
-    }
-
     static invalidResponse(provider: BankProviderEnum, originalError?: unknown): BankSyncError {
         return new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, 'Invalid API response', provider, originalError);
     }
