@@ -102,6 +102,8 @@ class BankSyncStorageService {
                     transactionCount: cursor.transactionCount + result.transactions.length,
                     ...(result.completed && {
                         completedAt: now,
+                        fromTime: now,
+                        toTime: now,
                         historySyncedTill: cursor.fromTime
                     })
                 }
@@ -112,23 +114,24 @@ class BankSyncStorageService {
     getNextPendingAccountId(provider: BankProviderEnum): AccountSyncCursorInterface | null {
         const state = this.getState(provider);
 
-        for (const cursor of Object.values(state.accountCursors)) {
-            const needsBackwardSync = cursor.enabled && !cursor.completed;
-            const needsForwardSync = cursor.enabled && cursor.completed && isDefined(cursor.historySyncedTill);
+        const needsBackwardSync = Object.values(state.accountCursors).filter(cursor => cursor.enabled && !cursor.completed);
+        const needsForwardSync = Object.values(state.accountCursors).filter(
+            cursor => cursor.enabled && cursor.completed && isDefined(cursor.historySyncedTill)
+        );
 
-            if (needsForwardSync || needsBackwardSync) {
-                this.setState(provider, {
-                    accountCursors: {
-                        ...state.accountCursors,
-                        [cursor.accountId]: {
-                            ...cursor,
-                            ...(!isDefined(cursor.startedAt) && { startedAt: new Date() })
-                        }
+        const cursor = needsBackwardSync.at(0) ?? needsForwardSync.at(0) ?? null;
+        if (isDefined(cursor)) {
+            this.setState(provider, {
+                accountCursors: {
+                    ...state.accountCursors,
+                    [cursor.accountId]: {
+                        ...cursor,
+                        ...(!isDefined(cursor.startedAt) && { startedAt: new Date() })
                     }
-                });
+                }
+            });
 
-                return cursor;
-            }
+            return cursor;
         }
 
         return null;
