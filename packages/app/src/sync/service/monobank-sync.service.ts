@@ -172,7 +172,7 @@ class AppMonobankSyncService {
 
     private async syncBatch(cursor: AccountSyncCursorInterface): Promise<BankSyncBatchResultInterface> {
         const syncService = new MonobankSyncService(this.getToken());
-        const isForwardSync = isDefined(cursor.lastSyncedAt);
+        const isForwardSync = isDefined(cursor.historySyncedTill);
 
         const result = isForwardSync
             ? await syncService.syncTransactionsForward(cursor.externalAccountId, cursor.fromTime)

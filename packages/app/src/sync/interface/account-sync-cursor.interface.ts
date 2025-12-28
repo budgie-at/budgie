@@ -9,7 +9,7 @@ export interface AccountSyncCursorInterface {
     readonly completedAt: Date | null;
     readonly completed: boolean;
     readonly transactionCount: number;
-    readonly lastSyncedAt: Date | null;
+    readonly historySyncedTill: Date | null;
 }
 
 export const emptyAccountSyncCursor = (): AccountSyncCursorInterface => ({
@@ -23,5 +23,5 @@ export const emptyAccountSyncCursor = (): AccountSyncCursorInterface => ({
     completedAt: null,
     completed: false,
     transactionCount: 0,
-    lastSyncedAt: null
+    historySyncedTill: null
 });
