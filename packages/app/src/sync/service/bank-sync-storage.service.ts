@@ -121,7 +121,7 @@ class BankSyncStorageService {
                 cursor.enabled &&
                 cursor.completed &&
                 isDefined(cursor.historySyncedTill) &&
-                Date.now() - cursor.fromTime.getTime() > FIFTEEN_MINUTES_IN_SECONDS
+                Date.now() - cursor.fromTime.getTime() > FIFTEEN_MINUTES_IN_SECONDS * 1000
         );
 
         const cursor = needsBackwardSync.at(0) ?? needsForwardSync.at(0) ?? null;
