@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.87.0](https://github.com/budgie-at/budgie/compare/v1.86.1...v1.87.0) (2025-12-28)
+
+### Bug Fixes
+
+- **app:** add mono 500 transactions limit handling ([63a8edd](https://github.com/budgie-at/budgie/commit/63a8edded9168cc372000bf22fbd29e412cb2e95))
+- **app:** added per account sync config ([da285ca](https://github.com/budgie-at/budgie/commit/da285ca7b12fae01cc36bbbffff0fc5181054043))
+- **app:** added per account sync config ([3b2b897](https://github.com/budgie-at/budgie/commit/3b2b8975bc27062cdf084f5ed6d46172f9a670c2))
+- **app:** added per account sync config ([566f1e8](https://github.com/budgie-at/budgie/commit/566f1e8e00f6879cb62e937b42f0243ccb80b7d5))
+- **app:** added per account sync config ([f9ab774](https://github.com/budgie-at/budgie/commit/f9ab774276c6cdd7ade68f3d392d127f34f85b07))
+- **app:** added per account sync config ([5233da9](https://github.com/budgie-at/budgie/commit/5233da9d75cd737678026d78f1bbde2e7e8876bb))
+- **app:** added per account sync config ([8021436](https://github.com/budgie-at/budgie/commit/80214368cea0e513eb1d235b847d9954bd4a8b85))
+- **app:** added per account sync config ([2b73ff2](https://github.com/budgie-at/budgie/commit/2b73ff24151ea6e687978fa45f1fa32d11ca10b6))
+- **app:** added per account sync config ([3c1fd37](https://github.com/budgie-at/budgie/commit/3c1fd37ea61a84979b584b046597623ce65e404f))
+- **app:** added per account sync config ([0ff5d0f](https://github.com/budgie-at/budgie/commit/0ff5d0fc342200b4547f71f4fa6fc2ba4ca664a2))
+- **app:** added per account sync config ([cfef6ba](https://github.com/budgie-at/budgie/commit/cfef6badc60630d982eae1e987824c0481180038))
+- **app:** added per account sync config ([ff21c9e](https://github.com/budgie-at/budgie/commit/ff21c9e9ec0fd58c97addb375fddcee5e5f35ff9))
+- **app:** added per account sync config ([8dd1277](https://github.com/budgie-at/budgie/commit/8dd1277cc2ddf76974e8722f508c0d177957cc29))
+- **app:** added per account sync config ([0ca721d](https://github.com/budgie-at/budgie/commit/0ca721dcc853e4581bcfbdbce906f4b3b41eb7e8))
+- **app:** block secondary sync calls ([9bc0a8b](https://github.com/budgie-at/budgie/commit/9bc0a8b7f0cbf6d2e26fa8eeaa24a51e4d4a70ce))
+- **app:** fix last transaction ([0f4627d](https://github.com/budgie-at/budgie/commit/0f4627d10b5b42d3cf576ef4a5a258dce50588cf))
+- **app:** fix last transaction ([1db6f8e](https://github.com/budgie-at/budgie/commit/1db6f8e7719bdad925e3df4274181e1c81e27360))
+- **app:** fix last transaction ([0a3e43f](https://github.com/budgie-at/budgie/commit/0a3e43fc39b4264d8e71eee026cf0e73d9048bcf))
+- **app:** fix last transaction ([5523e2d](https://github.com/budgie-at/budgie/commit/5523e2d043e40853b18b46a24fd3d8cc763f4e10))
+- **app:** fix last transaction ([a933360](https://github.com/budgie-at/budgie/commit/a933360102e26fd0ebf05fc99b35bb53ead203f8))
+- **app:** fix last transaction ([3d6b20f](https://github.com/budgie-at/budgie/commit/3d6b20f4b8f0bf8ed48de0a8342e13f19e029b2e))
+- **app:** fix last transaction ([bb2594e](https://github.com/budgie-at/budgie/commit/bb2594e068531601d17334ff4722b5795692fcd4))
+- **app:** fix last transaction ([d06b833](https://github.com/budgie-at/budgie/commit/d06b8337e7dd462a0b50faff20f0fe8bbc095423))
+- **app:** fix last transaction ([7ed59a4](https://github.com/budgie-at/budgie/commit/7ed59a457237f966bed0bacd6ace4dd21b3604de))
+- **app:** fix last transaction ([3b8b17d](https://github.com/budgie-at/budgie/commit/3b8b17d9e7350bcf31f55497281636f6faa1bf79))
+- **app:** fix last transaction ([cb562e1](https://github.com/budgie-at/budgie/commit/cb562e10f09ffb0d827d8e50eb400fbd04ad6ed4))
+- **app:** fix last transaction ([6602cdb](https://github.com/budgie-at/budgie/commit/6602cdbfa104c39b85c2d4b31403eb3a3343cdc8))
+- **app:** fix last transaction ([781c0e5](https://github.com/budgie-at/budgie/commit/781c0e54b0adc2c63be65d5ea566d67af119d4b8))
+- **app:** fix searching latest tx date ([9b2c5bd](https://github.com/budgie-at/budgie/commit/9b2c5bddb0f027490db7f418f9420f190e95c48c))
+- **app:** fix searching latest tx date ([7edc225](https://github.com/budgie-at/budgie/commit/7edc22548c08df3d31051345b4ce18b361cc9d69))
+- **app:** fix syncing back in time ([38391db](https://github.com/budgie-at/budgie/commit/38391dbcec9565c19035fff0b013700f25d026c0))
+- **app:** fix syncing back in time ([cf3a7e2](https://github.com/budgie-at/budgie/commit/cf3a7e2e308ec30733e2e955e77eeb850f292e06))
+- **app:** fix syncing back in time ([3a28f2f](https://github.com/budgie-at/budgie/commit/3a28f2fa9fd665ad808a27dabecf6a9dffffdb8a))
+- **app:** fix syncing back in time ([e79c186](https://github.com/budgie-at/budgie/commit/e79c186a67fa73f0edee353116f61e108ace368d))
+- **app:** fixed syncing ([70fb4c4](https://github.com/budgie-at/budgie/commit/70fb4c4a579658cf206e7494ecd4b873af3b932e))
+- **app:** fixed syncing ([57670a6](https://github.com/budgie-at/budgie/commit/57670a62d7c0f1ef9f65bab1789d57c1e1cfc0ee))
+- **app:** fixed syncing ([5bbee77](https://github.com/budgie-at/budgie/commit/5bbee7713b851e2becb8823151ce995ad0da04b1))
+- **app:** fixed syncing ([03c56b5](https://github.com/budgie-at/budgie/commit/03c56b5a50092a32fe6bd13e032d7ffc61bafd33))
+- **app:** fixed syncing ([581380f](https://github.com/budgie-at/budgie/commit/581380fd56e9efab90bfd543c34cc67618df1257))
+- **app:** fixed syncing ([2996a68](https://github.com/budgie-at/budgie/commit/2996a685bbee7c3b4836d8d58736f8512a60ae00))
+- **app:** fixed syncing ([e7b1059](https://github.com/budgie-at/budgie/commit/e7b105933110f040871a3ac12f282107bca4d9a2))
+- **app:** review fixes ([2c6738a](https://github.com/budgie-at/budgie/commit/2c6738a730bb3aa3cb953eec1beffd79137de113))
+- **app:** review fixes ([3e7857c](https://github.com/budgie-at/budgie/commit/3e7857c27754bf722a17428b7e1d36b9060c8a9c))
+- **app:** review fixes ([cecce6a](https://github.com/budgie-at/budgie/commit/cecce6aff3e7656a006db4005d6a7749b673eb08))
+- **app:** stop sync on 400 ([f7e4c82](https://github.com/budgie-at/budgie/commit/f7e4c82ec3c74af9780e025630f8b3609eac7ea9))
+- **app:** stop sync on 400 ([2bccb25](https://github.com/budgie-at/budgie/commit/2bccb25cc746ea984652fbe9866b6e784415bdb2))
+- **app:** stop sync on 400 ([045beac](https://github.com/budgie-at/budgie/commit/045beac9fc90ae31024b4586fcf150cff0a5c79b))
+- **app:** stop sync on 400 ([75d6002](https://github.com/budgie-at/budgie/commit/75d6002ef2954f1f7228e08acbf76cbf77cd2faf))
+- **app:** stop sync on 400 ([45dc594](https://github.com/budgie-at/budgie/commit/45dc5942587317e2873de2dc1b79d60971c4766c))
+- resolve cpd ([7d9ca9e](https://github.com/budgie-at/budgie/commit/7d9ca9ee5ff7415c5d215671069362c20daf18bf))
+
+### Features
+
+- **app:** add missing i18n translations for bank sync ([3ecbabc](https://github.com/budgie-at/budgie/commit/3ecbabc035e98f5959fc4c74d0c8d6100dcdfba7))
+
 ## [1.86.1](https://github.com/budgie-at/budgie/compare/v1.86.0...v1.86.1) (2025-12-26)
 
 ### Bug Fixes
