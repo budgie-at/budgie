@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { format, formatDistanceStrict } from 'date-fns';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/components/card/card';
 import { AccountSyncCursorInterface } from '../../interface/bank-sync-state.interface';
@@ -46,7 +46,7 @@ export const AccountCursorsCard = ({ cursors }: Props) => {
                     <View key={cursor.accountId} className="gap-y-xs border-t border-secondary-corner pt-md">
                         <View className="flex-row justify-between items-center">
                             <Text className="text-primary text-sm font-medium">
-                                {t`Account`} #{cursor.accountId}
+                                {isNotEmptyString(cursor.accountName) ? cursor.accountName : cursor.accountId}
                             </Text>
                             <Text className={`text-sm font-medium ${cursor.completed ? 'text-success' : 'text-warning'}`}>
                                 {getStatusMessage(cursor)}
