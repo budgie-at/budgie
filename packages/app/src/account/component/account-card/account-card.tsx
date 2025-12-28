@@ -47,7 +47,7 @@ export const AccountCard = ({ icon, title, className, id, instrumentSymbol }: Pr
                     {title}
                 </Text>
 
-                <ProtectedText className="text-primary font-medium" placeholderText={`${instrumentSymbol}999.99`}>
+                <ProtectedText className="text-primary font-semibold" placeholderText={`${instrumentSymbol}999.99`}>
                     {instrumentSymbol}
                     {formattedBalance}
                 </ProtectedText>
