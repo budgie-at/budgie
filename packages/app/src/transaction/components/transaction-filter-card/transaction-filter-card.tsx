@@ -5,7 +5,7 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
+import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
@@ -39,7 +39,7 @@ export const TransactionFilterCard = ({ isSelected, onPress, icon, label, varian
 
     return (
         <HapticPressable onPress={onPress} className={cardVariants({ isSelected })}>
-            <CircleIcon icon={ICONS[icon]} variant={iconVariant} />
+            <CircleIcon icon={icon} variant={iconVariant} />
             <Text className={textVariants({ isSelected })}>{label}</Text>
         </HapticPressable>
     );

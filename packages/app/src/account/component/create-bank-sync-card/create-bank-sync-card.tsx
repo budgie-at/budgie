@@ -2,8 +2,7 @@ import { BankProviderEnum } from '@budgie/bank-sync';
 import { Href, router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
-import { Card } from '../../../@generic/component/card/card';
-import { AccountCardContent } from '../account-card-content/account-card-content';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 import type { IconName } from '../../../@generic/constant/icons.constant';
 
@@ -19,10 +18,12 @@ export const CreateBankSyncCard = ({ title, description, route, bankProvider }: 
     const handleNavigate = () => void router.push(route);
 
     return (
-        <Card className="p-5xl items-center flex-row gap-x-3xl active:scale-xs" onPress={handleNavigate}>
-            <BankLogo bankProvider={bankProvider} />
-
-            <AccountCardContent title={title} description={description} />
-        </Card>
+        <SimpleHorizontalCell
+            size="lg"
+            left={<BankLogo bankProvider={bankProvider} />}
+            onPress={handleNavigate}
+            title={title}
+            description={description}
+        />
     );
 };

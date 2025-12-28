@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { TransactionAccountFilter } from '../transaction-account-filter/transaction-account-filter';
 import { TransactionCategoryFilter } from '../transaction-category-filter/transaction-category-filter';
 import { TransactionTagFilter } from '../transaction-tag-filter/transaction-tag-filter';
@@ -39,7 +38,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                         onPress={handleClear}
                         className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
                     >
-                        <Icon icon={ICONS.X} className="text-destructive-foreground" size={14} />
+                        <Icon icon="X" className="text-destructive-foreground" size={14} />
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>Clear All</Trans>
                         </Text>

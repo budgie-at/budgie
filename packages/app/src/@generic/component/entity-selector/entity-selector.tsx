@@ -9,12 +9,10 @@ import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizonta
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly iconVariant?: ColorPaletteVariant;
-    readonly className?: string;
     readonly icon: IconName;
     readonly title: string;
     readonly status?: FormFieldStatus;
-    readonly description: string;
-    readonly titleVariant?: 'primary' | 'secondary';
+    readonly description?: string;
     readonly renderBottomSheet: (ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
 
@@ -25,7 +23,7 @@ export const EntitySelector = (props: Props) => {
     const handleOpen = () => ref.current?.open();
 
     const cardVariant = status === 'error' ? 'destructive' : 'primary';
-    const iconParams = { variant: iconVariant ?? variant };
+    const iconParams = { variant: iconVariant ?? variant, size: 38, iconSize: 18 };
 
     return (
         <>
