@@ -50,6 +50,11 @@ class BankSyncStorageService {
                 const existingCursor = state.accountCursors[account.id];
 
                 accountCursors[account.id] = {
+                    ...existingCursor,
+                    ...(!isDefined(existingCursor) && {
+                        enabled: true,
+                        transactionCount: 0
+                    }),
                     accountId: account.id,
                     accountName: account.title,
                     externalAccountId: account.externalId,
@@ -57,9 +62,7 @@ class BankSyncStorageService {
                     toTime: isDefined(earliestTxTime) ? earliestTxTime : new Date(),
                     completedAt: null,
                     startedAt: null,
-                    completed: false,
-                    enabled: isDefined(existingCursor) ? existingCursor.enabled : true,
-                    transactionCount: isDefined(existingCursor) ? existingCursor.transactionCount : 0
+                    completed: false
                 };
             }
         }
@@ -67,7 +70,6 @@ class BankSyncStorageService {
         this.setState(provider, {
             status: SyncStatusEnum.SYNCING,
             totalAccounts: Object.keys(accountCursors).length,
-            totalTransactions: 0,
             accountCursors
         });
     }
