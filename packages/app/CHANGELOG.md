@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.86.1](https://github.com/budgie-at/budgie/compare/v1.86.0...v1.86.1) (2025-12-26)
+
+### Bug Fixes
+
+- add cross-exchanges for currencies ([4d4e8af](https://github.com/budgie-at/budgie/commit/4d4e8aff2f575afa971ae2de2339872674e65b4f))
+- change font weight ([13f7d44](https://github.com/budgie-at/budgie/commit/13f7d4435d36bfc09d805821d4a0742188ae65d5))
+- CI ([0de1111](https://github.com/budgie-at/budgie/commit/0de11110718d1d32b2929669dad381a92a72cb17))
+- store exchange rates not in micro units ([bf254c7](https://github.com/budgie-at/budgie/commit/bf254c73e3df8ad8c85537d5866952061152e50f))
+- store exchange rates not in micro units ([50aaf96](https://github.com/budgie-at/budgie/commit/50aaf96adb728b6c818e198845946e668cef27af))
+
 # [1.86.0](https://github.com/budgie-at/budgie/compare/v1.85.0...v1.86.0) (2025-12-26)
 
 ### Bug Fixes
