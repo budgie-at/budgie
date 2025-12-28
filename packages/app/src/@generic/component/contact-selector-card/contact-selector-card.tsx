@@ -3,7 +3,7 @@ import { styled } from 'nativewind';
 import React from 'react';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ICONS } from '../../constant/icons.constant';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -11,7 +11,7 @@ import { Icon } from '../icon/icon';
 import { SelectorCard } from '../selector-card/selector-card';
 
 interface Props {
-    readonly onSelect: () => void;
+    readonly onSelect: EmptyFn;
     readonly isSelected: boolean;
     readonly title: string;
     readonly id: string;

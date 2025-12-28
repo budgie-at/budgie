@@ -1,9 +1,10 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import {
+    AccountTypeEnum,
     ExternalSourceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
-    TransactionEntryTypeEnum
+    TransactionEntryTypeEnum, TransactionTypeEnum
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -69,12 +70,15 @@ class TransactionService {
                 fromAmountInMicroUnits
             );
 
+            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT
+
             const transaction = await transactionRepository.create(
                 {
                     ...input,
                     exchangeRate,
                     externalId: null,
-                    externalSource: null
+                    externalSource: null,
+                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : input.type,
                 },
                 tx
             );

@@ -1,49 +1,43 @@
 import { cva } from 'class-variance-authority';
-import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
-
-import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
-
-import { ICONS, IconName } from '../../constant/icons.constant';
-import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { ClassValue } from 'clsx';
+import { ComponentProps, ReactNode } from 'react';
+import { View } from 'react-native';
+import { CardSizeType } from '../../type/card-size.type';
+import { HorizontalCellAlignType } from '../../type/horizontal-cell-align.type';
 import { cn } from '../../utils/cn.util';
 import { Card } from '../card/card';
-import { CircleIcon } from '../circle-icon/circle-icon';
 
-interface Props {
-    readonly icon: IconName;
-    readonly title?: string;
-    readonly onPress: EmptyFn;
+interface Props extends ComponentProps<typeof Card> {
+    readonly left?: ReactNode;
     readonly right?: ReactNode;
-    readonly className?: string;
-    readonly description?: string;
-    readonly variant: ColorPaletteVariant;
-    readonly iconVariant?: ColorPaletteVariant;
-    readonly titleVariant?: 'primary' | 'secondary';
+    readonly align?: HorizontalCellAlignType;
 }
 
-const titleVariants = cva('text-sm font-medium', {
+const cardVariants = cva<{
+    size: Record<CardSizeType, ClassValue>;
+    align: Record<HorizontalCellAlignType, ClassValue>;
+}>('flex-row gap-x-xl', {
     variants: {
-        variant: {
-            primary: 'text-primary',
-            secondary: 'text-primary/70'
+        size: {
+            sm: 'gap-x-lg',
+            md: 'gap-x-xl',
+            lg: 'gap-x-3xl'
+        },
+        align: {
+            middle: 'items-center',
+            top: 'items-start'
         }
     }
 });
 
 export const HorizontalCell = (props: Props) => {
-    const { variant, iconVariant, onPress, className, title, description, right, icon, titleVariant = 'primary' } = props;
+    const { onPress, className, children, right, left, size = 'md', align = 'middle' } = props;
 
     return (
-        <Card onPress={onPress} className={cn('flex-row items-center gap-x-xl', className)}>
-            <CircleIcon border={false} icon={ICONS[icon]} size="2xl" variant={iconVariant ?? variant} />
+        <Card onPress={onPress} className={cn(cardVariants({ size, align }), className)} size={size}>
+            {left}
 
-            <View className="flex-1">
-                <Text className={titleVariants({ variant: titleVariant })}>{title}</Text>
-                {isNotEmptyString(description) ? (
-                    <Text className="text-sm font-medium text-secondary-foreground">{description}</Text>
-                ) : null}
-            </View>
+            <View className="flex-1">{children}</View>
 
             {right}
         </Card>

@@ -14,8 +14,6 @@ import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
-import type { CircleIconSize } from '../../type/circle-icon-size.type';
-
 interface Props {
     readonly icon: UserIconNameEnum;
     readonly hint?: string;
@@ -28,26 +26,38 @@ interface Props {
 }
 
 const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('rounded-3xl border p-3xl flex-row gap-x-xl items-center', {
-    variants: {
-        variant: BACKGROUND_COLOR_PALETTE
-    }
+    variants: { variant: BACKGROUND_COLOR_PALETTE }
 });
 
-const CIRCLE_ICON_SIZES: Record<IconDisplayCardSize, CircleIconSize> = {
-    sm: '3xl',
-    md: '1_25xl',
-    lg: '2_5xl'
+const CIRCLE_SIZES: Record<IconDisplayCardSize, number> = {
+    sm: 62,
+    md: 10,
+    lg: 15
+};
+
+const CIRCLE_ICON_SIZES: Record<IconDisplayCardSize, number> = {
+    sm: 28,
+    md: 0,
+    lg: 0
 };
 
 export const IconDisplayCard = (props: Props) => {
     const { className, icon, onPress, description, hint, variant = 'default', size } = props;
 
-    const circleSize = CIRCLE_ICON_SIZES[size];
+    const circleSize = CIRCLE_SIZES[size];
+    const circleIconSize = CIRCLE_ICON_SIZES[size];
     const cardClassName = size === 'sm' ? className : cn(cardVariants({ variant }), className);
 
     return (
         <HapticPressable onPress={onPress} className={cardClassName}>
-            <CircleIcon size={circleSize} icon={ICONS[icon]} variant={variant} className="rounded-5xl" border={size === 'lg'} />
+            <CircleIcon
+                size={circleSize}
+                iconSize={circleIconSize}
+                icon={ICONS[icon]}
+                variant={variant}
+                className="rounded-5xl"
+                border={size === 'lg'}
+            />
 
             {size === 'sm' ? null : (
                 <>
