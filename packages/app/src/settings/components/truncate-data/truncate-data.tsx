@@ -1,3 +1,4 @@
+import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
@@ -20,7 +21,7 @@ export const TruncateData = () => {
         try {
             setIsLoading(true);
             await appService.truncateData();
-            bankSyncStorageService.truncate();
+            bankSyncStorageService.truncate(BankProviderEnum.MONOBANK);
             ref.current?.close();
         } finally {
             setIsLoading(false);
