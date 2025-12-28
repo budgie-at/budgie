@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';
 import { styled } from 'nativewind';
-import { Switch, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -11,6 +11,7 @@ import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { useGetSettingsQuery } from '../../query/use-get-settings.query';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 
 const Gradient = styled(LinearGradient);
 const colors = ['rgba(1, 255, 136, 0.10)', 'rgba(0, 0, 0, 0)'] as const;
@@ -66,7 +67,7 @@ export const PinEnabledCard = () => {
                             {!isTouchIdAvailable && isFaceIdAvailable ? <Trans>Face ID</Trans> : null}
                         </Text>
 
-                        <Switch onValueChange={handleToggleBiometric} value={isBiometricEnabled} />
+                        <ThemedSwitch onValueChange={handleToggleBiometric} value={isBiometricEnabled} />
                     </View>
                 ) : null}
 
