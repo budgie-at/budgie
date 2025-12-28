@@ -1,15 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import React, { useRef } from 'react';
-import { View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ICONS } from '../../constant/icons.constant';
 import { Contact, useContacts } from '../../hook/use-contacts.hook';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
+import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { ContactSelectorBottomSheet } from '../contact-selector-bottom-sheet/contact-selector-bottom-sheet';
-import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
-import { Icon } from '../icon/icon';
+import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
     readonly contactId: string | null;
@@ -30,28 +28,20 @@ export const ContactSelector = ({ contactId, onSelect }: Props) => {
     };
 
     const handleSelect = (contact: Contact) => void onSelect(contact.id);
-    const icon = isNotEmptyString(error) ? 'RotateCcw' : 'ChevronRight';
 
     const title = isNotEmptyString(contactId) ? (contacts.find(({ id }) => id === contactId)?.name ?? '') : t`Select a contact`;
 
     const contact = contacts.find(({ id }) => id === contactId) ?? null;
+    const variant: ColorPaletteVariant = isDefined(contact) ? 'ghost' : 'secondary';
+
+    const description = isDefined(contact) ? t`Owes you` : t`Who owes you?`;
+    const iconParams = { variant };
 
     return (
         <>
-            <HorizontalCell
-                right={
-                    <View className="p-sm rounded-full">
-                        <Icon icon={ICONS[icon]} className="text-primary" size={16} />
-                    </View>
-                }
-                icon="User"
-                onPress={handleOpen}
-                variant="ghost"
-                title={title}
-                description={t`Who owes you?`}
-            />
+            <SimpleHorizontalCell title={title} description={description} icon="User" onPress={handleOpen} iconParams={iconParams} />
 
             <ContactSelectorBottomSheet selectedContact={contact} contacts={contacts} onSelect={handleSelect} ref={ref} />
         </>
     );
-}
+};

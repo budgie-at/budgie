@@ -76,7 +76,7 @@ export const CreateDebtAccount = () => {
                 </KeyboardStickyView>
             }
         >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView contentContainerClassName='pb-5xl' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <AccountBalanceField variant={ACCOUNT_COLOR.DEBT} instrumentSymbol={instrument.symbol} control={control} />
 
                 <FormLayoutGroup>

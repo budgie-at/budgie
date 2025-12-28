@@ -30,10 +30,11 @@ export const DebtAccountAccountField = <T extends { accountId: number | null }>(
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => {
         const description = isPositiveNumber(value) ? descriptionMap[debtType].selected : descriptionMap[debtType].empty;
+        const variant = isPositiveNumber(value) ? ACCOUNT_COLOR.DEBT : 'secondary';
 
         return (
             <FormItem label={t`Link to Account (Optional)`}>
-                <AccountSelector description={i18n.t(description)} accountId={value} variant={ACCOUNT_COLOR.DEBT} onSelect={onChange} />
+                <AccountSelector description={i18n.t(description)} accountId={value} variant={variant} onSelect={onChange} />
             </FormItem>
         );
     };
