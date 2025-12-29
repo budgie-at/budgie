@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import type { RefObject } from 'react';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -11,6 +10,7 @@ import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/botto
 import { IconSelectorCard } from '../icon-selector-card/icon-selector-card';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
+import type { RefObject } from 'react';
 
 interface Props {
     readonly onSelect: (icon: UserIconNameEnum) => void;

@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
 interface Props {
     readonly onSubmit: (enableBiometrics: boolean) => void;

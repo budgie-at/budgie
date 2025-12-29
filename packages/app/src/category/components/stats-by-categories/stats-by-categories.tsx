@@ -7,8 +7,8 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props {
     readonly title: string;
@@ -42,7 +42,7 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
 
 export const StatsByCategories = ({ title, stats, totalAmount, variant, getPercentageLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultInstrument.code);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
         const percentage = Number((totalAmount > 0 ? (amount / totalAmount) * 100 : 0).toFixed(2));
@@ -53,7 +53,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
                 <View className="flex-row items-center gap-x-md">
                     <CircleIcon icon={category.icon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                    <Text className={amountVariants({ variant })}>{format(amount)}</Text>
+                    <Text className={amountVariants({ variant })}>{formatDigits(amount, defaultInstrument.symbol)}</Text>
                 </View>
 
                 <View className="rounded-5xl bg-secondary-corner h-2">
