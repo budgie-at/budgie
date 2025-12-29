@@ -10,6 +10,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -32,12 +33,12 @@ export const TransactionAmount = ({ transaction }: Props) => {
         return (
             <View className="gap-y-xxl items-end">
                 <Text className={amountVariants({ type: 'default' })}>
-                    {formatDigits(fromEntry.amount, fromEntry.account.instrument.symbol)}
+                    {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
                 </Text>
                 <View className="flex-row items-center gap-x-xs">
                     <Icon icon="ArrowRightIcon" className="text-secondary-foreground" size={12} />
                     <Text className="text-secondary-foreground text-xxs">
-                        {formatDigits(toEntry.amount, toEntry.account.instrument.symbol)}
+                        {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
                     </Text>
                 </View>
             </View>
@@ -47,7 +48,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
     if (isDefined(fromEntry)) {
         return (
             <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(fromEntry.amount, fromEntry.account.instrument.symbol)}
+                {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
             </Text>
         );
     }
@@ -55,7 +56,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
     if (isDefined(toEntry)) {
         return (
             <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
-                {formatDigits(toEntry.amount, toEntry.account.instrument.symbol)}
+                {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
             </Text>
         );
     }

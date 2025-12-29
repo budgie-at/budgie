@@ -7,6 +7,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
@@ -19,9 +20,7 @@ interface Props {
 }
 
 const amountVariants = cva('text-xs', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h-[8px] rounded-5xl', {
@@ -45,7 +44,8 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
-        const percentage = Number((totalAmount > 0 ? (amount / totalAmount) * 100 : 0).toFixed(2));
+        const microAmount = convertFromMicroUnits(amount);
+        const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
         const style: ViewStyle = { width: `${percentage}%` };
 
         return (
@@ -53,7 +53,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
                 <View className="flex-row items-center gap-x-md">
                     <CircleIcon icon={category.icon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                    <Text className={amountVariants({ variant })}>{formatDigits(amount, defaultInstrument.symbol)}</Text>
+                    <Text className={amountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
                 </View>
 
                 <View className="rounded-5xl bg-secondary-corner h-2">

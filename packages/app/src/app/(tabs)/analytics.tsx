@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
+import { DatePeriodEnum, DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -7,6 +7,8 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../@generic/component/page/page';
 import { PageHeader } from '../../@generic/component/page-header/page-header';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../category/components/stats-by-categories/stats-by-categories';
 import { TransactionAnalyticsCard } from '../../transaction/components/transaction-analytics-card/transaction-analytics-card';
@@ -18,7 +20,10 @@ import { checkIfFiltersSelected } from '../../transaction/utils/check-if-filters
 
 export default function StatisticsPage() {
     const { t } = useLingui();
-    const [filters, setFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
+    const [filters, setFilters] = useState<TransactionFilterInterface>({
+        ...DEFAULT_TRANSACTION_FILTER,
+        date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
+    });
 
     const { incomeByCategory } = useGetIncomeByCategoryQuery(filters);
     const { expenseByCategory } = useGetExpenseByCategoryQuery(filters);
@@ -72,7 +77,7 @@ export default function StatisticsPage() {
                         variant="destructive"
                         title={t`Spending by Category`}
                         stats={expenseByCategory}
-                        totalAmount={expense}
+                        totalAmount={convertFromMicroUnits(expense)}
                     />
                 ) : null}
             </ScrollView>

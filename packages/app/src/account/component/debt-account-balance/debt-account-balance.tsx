@@ -1,4 +1,3 @@
-import { CurrencyEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View, ViewStyle } from 'react-native';
 
@@ -9,10 +8,10 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 interface Props {
     readonly balance: number;
     readonly targetAmount: number;
-    readonly currency: CurrencyEnum;
+    readonly instrumentSymbol: string;
 }
 
-export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) => {
+export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
@@ -28,7 +27,13 @@ export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) =
                 <Trans>Current Balance</Trans>
             </Text>
 
-            <ProtectedMoney className="justify-start" minFontSize={10} maxFontSize={36} decimalPlaces={decimalPlaces} currency={currency}>
+            <ProtectedMoney
+                className="justify-start"
+                minFontSize={10}
+                maxFontSize={36}
+                decimalPlaces={decimalPlaces}
+                instrumentSymbol={instrumentSymbol}
+            >
                 {balance}
             </ProtectedMoney>
 
