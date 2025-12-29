@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum, PRECISION } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -72,7 +72,7 @@ export const AccountCard = (props: Props) => {
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
-    const amountLeft = formatMoney(Math.max(targetBalance - balance, 0), defaultInstrument.symbol);
+    const amountLeft = formatMoney(Math.max(convertFromMicroUnits(targetBalance - balance), 0), defaultInstrument.symbol);
     const accountBalance = formatDigits(convertFromMicroUnits(balance), instrumentSymbol);
 
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
@@ -109,10 +109,12 @@ export const AccountCard = (props: Props) => {
 
                         <View className="flex-1">
                             <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
-                                {abbreviateNumber(balance / PRECISION, 2)}
+                                {instrumentSymbol}
+                                {abbreviateNumber(convertFromMicroUnits(balance), 2)}
                             </ProtectedText>
                             <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right">
-                                {abbreviateNumber(targetBalance / PRECISION, 2)}
+                                {instrumentSymbol}
+                                {abbreviateNumber(convertFromMicroUnits(targetBalance), 2)}
                             </ProtectedText>
                         </View>
                     </View>
