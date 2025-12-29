@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
@@ -25,5 +26,5 @@ export const useNetWorthQuery = () => {
         }, [data])
     );
 
-    return netWorthState;
+    return convertFromMicroUnits(netWorthState);
 };
