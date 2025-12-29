@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
+
 import { Footer } from '../footer/footer';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';

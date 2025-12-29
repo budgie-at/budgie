@@ -12,9 +12,9 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props {
     readonly amount: number;
@@ -29,8 +29,8 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
     const { t } = useLingui();
     const categorySheetRef = useRef<BottomSheetInterface | null>(null);
 
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, true);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const variant = TRANSACTION_COLOR[type];
     const icon = isDefined(category) ? category.icon : 'Receipt';
@@ -59,7 +59,9 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                     <Text className="text-secondary-foreground text-xs uppercase mb-xs">
                         <Trans>Amount</Trans>
                     </Text>
-                    <Text className="text-destructive-foreground text-2xl font-bold">{formatMoney(microAmount)}</Text>
+                    <Text className="text-destructive-foreground text-2xl font-bold">
+                        {formatDigits(microAmount, defaultInstrument.symbol)}
+                    </Text>
                 </View>
 
                 <View className="flex-row gap-x-lg">
