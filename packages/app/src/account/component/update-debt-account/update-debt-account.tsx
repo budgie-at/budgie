@@ -1,115 +1,50 @@
-import { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
-import { i18n } from '@lingui/core';
-import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Toast from 'react-native-toast-message';
+import { AccountEntityInterface } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { Button } from '../../../@generic/component/button/button';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FullPage } from '../../../@generic/component/page/full-page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
-import { AccountBalanceField } from '../account-balance-field/account-balance-field';
-import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
-import { ArchiveAccount } from '../archive-account/archive-account';
-import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
+import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
+import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
+import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
 }
 
-const descriptionVariants = cva('uppercase', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
-
 export const UpdateDebtAccount = ({ account }: Props) => {
-    const { t } = useLingui();
-
     const { balance } = useAccountBalanceQuery(account.id);
 
-    const { control, handleSubmit, instrument, formState } = useDebtAccountForm({
-        accountId: 0,
-        iban: account.iban,
-        type: account.type,
-        icon: account.icon,
-        title: account.title,
-        debtType: account.debtType,
-        deadline: account.deadline,
-        contactId: account.contactId,
-        instrumentId: account.instrumentId,
-        currentBalance: convertFromMicroUnits(balance),
-        targetBalance: convertFromMicroUnits(account.targetBalance)
-    });
-    const errors = formState.errors;
-    console.log({ errors });
-
-    const handleGoBack = () => void goBackOrReplace('/');
-
-    const handleUpdate = async (values: LiabilityAccountCreateInputInterface) => {
-        try {
-            await accountService.updateById(account.id, values);
-
-            handleGoBack();
-        } catch {
-            Toast.show({
-                type: 'error',
-                text1: t`Something went wrong`,
-                text2: t`Could not update account. Please try again later`
-            });
-        }
-    };
-
-    const variant = ACCOUNT_COLOR[account.type];
+    const { control, handleSubmit, instrument } = useDebtAccountForm(
+        {
+            iban: account.iban,
+            type: account.type,
+            icon: account.icon,
+            title: account.title,
+            debtType: account.debtType,
+            deadline: account.deadline,
+            contactId: account.contactId,
+            instrumentId: account.instrumentId,
+            currentBalance: convertFromMicroUnits(balance),
+            targetBalance: convertFromMicroUnits(account.targetBalance)
+        },
+        values => accountService.updateById(account.id, values)
+    );
 
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <FullPage
-            header={
-                <PageHeader
-                    onGoBack={handleGoBack}
-                    icon={account.icon}
-                    iconVariant={variant}
-                    title={t`Account Settings`}
-                    descriptionClassName={descriptionVariants({ variant })}
-                    description={i18n.t(ACCOUNT_TYPE[account.type])}
-                />
-            }
-        >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                <AccountBalanceField variant={variant} instrumentSymbol={instrument.symbol} control={control} />
-
-                <FormLayoutGroup>
-                    <AccountTargetBalanceField control={control} />
-
-                    <AccountDetailsField control={control} variant={variant} />
-
-                    <DebtAccountContactField control={control} />
-
-                    <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
-
-                    <View className="gap-y-xl">
-                        <Button onPress={handleSubmit(handleUpdate)} size="sm" variant={variant} content={t`Update Account`} />
-                        <ArchiveAccount accountId={account.id} />
-                    </View>
-                </FormLayoutGroup>
-            </KeyboardAwareScrollView>
-        </FullPage>
+        <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control}>
+            <AccountTargetBalanceField control={control} />
+            <DebtAccountContactField control={control} />
+            <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
+        </UpdateAccountScreen>
     );
 };

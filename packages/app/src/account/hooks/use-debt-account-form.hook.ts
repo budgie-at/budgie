@@ -1,5 +1,6 @@
 import {
     AccountDebtTypeEnum,
+    AccountEntityInterface,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
     DebtAccountCreateInputSchema,
@@ -8,9 +9,15 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useShowError } from '../../@generic/hook/use-show-error.hook';
+import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
-export const useDebtAccountForm = (defaultValues: DebtAccountCreateInputInterface) => {
+export const useDebtAccountForm = (
+    defaultValues: DebtAccountCreateInputInterface,
+    onSubmit: (values: DebtAccountCreateInputInterface) => Promise<AccountEntityInterface>
+) => {
+    const showError = useShowError();
     const form = useForm({
         resolver: zodResolver(DebtAccountCreateInputSchema),
         mode: 'onSubmit',
@@ -22,7 +29,6 @@ export const useDebtAccountForm = (defaultValues: DebtAccountCreateInputInterfac
             instrumentId: 0,
             contactId: null,
             deadline: null,
-            accountId: 0,
             title: ''
         },
         values: defaultValues
@@ -35,9 +41,20 @@ export const useDebtAccountForm = (defaultValues: DebtAccountCreateInputInterfac
 
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
 
+    const handleSubmit = async (values: DebtAccountCreateInputInterface) => {
+        try {
+            await onSubmit(values);
+
+            goBackOrReplace('/');
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
     return {
         ...form,
         debtType,
-        instrument
+        instrument,
+        handleSubmit: form.handleSubmit(handleSubmit)
     };
 };

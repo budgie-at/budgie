@@ -1,4 +1,5 @@
 import {
+    AccountEntityInterface,
     AccountTypeEnum,
     LiabilityAccountCreateInputInterface,
     LiabilityAccountCreateInputSchema,
@@ -7,9 +8,15 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
+import { useShowError } from '../../@generic/hook/use-show-error.hook';
 
-export const useAccountForm = (defaultValues: LiabilityAccountCreateInputInterface) => {
+export const useAccountForm = (
+    defaultValues: LiabilityAccountCreateInputInterface,
+    onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
+) => {
+    const showError = useShowError();
     const form = useForm({
         resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
@@ -28,10 +35,21 @@ export const useAccountForm = (defaultValues: LiabilityAccountCreateInputInterfa
         name: 'instrumentId'
     });
 
+    const handleSubmit = async (values: LiabilityAccountCreateInputInterface) => {
+        try {
+            await onSubmit(values);
+
+            goBackOrReplace('/');
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
 
     return {
         ...form,
-        instrument
+        instrument,
+        handleSubmit: form.handleSubmit(handleSubmit)
     };
 };
