@@ -1,6 +1,7 @@
 import { ComponentProps, useRef } from 'react';
 import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
+
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';

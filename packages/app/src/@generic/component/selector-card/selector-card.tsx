@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
+
 import { cn } from '../../utils/cn.util';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';

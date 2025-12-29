@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
@@ -22,7 +22,7 @@ export const AccountSelectorCard = (props: Props) => {
     const { i18n } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const { balance } = useAccountBalanceQuery(id);
-    const formatMoney = useFormatMoney(decimalPlaces, instrument.code);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     return (
         <SelectorCard
@@ -36,7 +36,7 @@ export const AccountSelectorCard = (props: Props) => {
                 <View className="flex-row items-center">
                     <Text className="text-secondary-foreground text-xs">{i18n.t(ACCOUNT_TYPE[type])}</Text>
                     <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-                    <ProtectedText className="text-sm font-medium text-primary">{formatMoney(balance)}</ProtectedText>
+                    <ProtectedText className="text-sm font-medium text-primary">{formatDigits(balance, instrument.symbol)}</ProtectedText>
                 </View>
             }
         />
