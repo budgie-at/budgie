@@ -4,7 +4,9 @@ import {
     ExternalSourceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
-    TransactionEntryTypeEnum, TransactionTypeEnum
+    TransactionEntryCreateInputInterface,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -50,12 +52,7 @@ class TransactionService {
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         return await db.transaction(async tx => {
-            const fromEntry = input.entries.find(({ accountId }) => accountId === input.fromAccountId);
-            const toEntry = input.entries.find(({ accountId }) => accountId === input.toAccountId);
-
-            if (!isDefined(fromEntry) || !isDefined(toEntry)) {
-                throw new Error('Transfer must have exactly two entries');
-            }
+            const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
 
             const [fromAccount, toAccount] = await Promise.all([
                 accountService.findByIdOrFail(fromEntry.accountId),
@@ -70,7 +67,7 @@ class TransactionService {
                 fromAmountInMicroUnits
             );
 
-            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT
+            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
 
             const transaction = await transactionRepository.create(
                 {
@@ -78,7 +75,7 @@ class TransactionService {
                     exchangeRate,
                     externalId: null,
                     externalSource: null,
-                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : input.type,
+                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : input.type
                 },
                 tx
             );
@@ -110,6 +107,17 @@ class TransactionService {
 
             return transaction;
         });
+    }
+
+    private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
+        const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
+        const toEntry = entries.find(({ accountId }) => accountId === toAccountId);
+
+        if (!isDefined(fromEntry) || !isDefined(toEntry)) {
+            throw new Error('Transfer must have exactly two entries');
+        }
+
+        return { fromEntry, toEntry };
     }
 
     private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
