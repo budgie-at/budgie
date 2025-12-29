@@ -72,8 +72,8 @@ export const AccountCard = (props: Props) => {
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
-    const amountLeft = formatMoney(Math.max(convertFromMicroUnits(targetBalance - balance), 0), defaultInstrument.symbol);
-    const accountBalance = formatDigits(convertFromMicroUnits(balance), instrumentSymbol);
+    const amountLeft = formatMoney(Math.max(targetBalance - balance, 0), defaultInstrument.symbol);
+    const accountBalance = formatDigits(balance, instrumentSymbol);
 
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
 

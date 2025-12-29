@@ -43,7 +43,6 @@ export const useAccountSelector = (args: UseAccountSelectorParams) => {
 
     return {
         icon,
-        balance,
         hasAccount,
         selectedAccount,
         formattedBalance,
