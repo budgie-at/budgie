@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountCard } from '../account-card/account-card';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 
 interface Props {
     readonly accounts: AccountWithInstrumentEntityInterface[];
@@ -17,11 +18,11 @@ export const AccountList = ({ accounts, type }: Props) => {
         <View className="gap-y-xl">
             <Text className="text-xs uppercase text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
 
-            <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-[30px]">
+            <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-7.5">
                 {accounts.map(({ id, title, icon, instrument, deadline, debtType, targetBalance, createdAt }) => (
                     <View className="w-1/2 px-1.5" key={id}>
                         <AccountCard
-                            targetBalance={targetBalance}
+                            targetBalance={convertFromMicroUnits(targetBalance)}
                             type={type}
                             id={id}
                             deadline={deadline}
