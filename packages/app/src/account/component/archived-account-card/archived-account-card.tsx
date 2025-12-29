@@ -11,7 +11,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
@@ -24,8 +24,8 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const { icon, title, type, id } = account;
 
     const { balance } = useAccountBalanceQuery(id);
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
     const ref = useRef<BottomSheetInterface | null>(null);
     const { i18n, t } = useLingui();
 
@@ -54,7 +54,9 @@ export const ArchivedAccountCard = ({ account }: Props) => {
             <SimpleHorizontalCell
                 right={
                     <View className="flex-row items-center gap-x-xl">
-                        <ProtectedText className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</ProtectedText>
+                        <ProtectedText className="text-destructive-foreground text-sm font-semibold">
+                            {formatDigits(balance, defaultInstrument.symbol)}
+                        </ProtectedText>
 
                         <HapticPressable onPress={onRestore}>
                             <CircleIcon variant="positive" icon="RotateCcw" />

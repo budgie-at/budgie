@@ -5,8 +5,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props {
     readonly label: string;
@@ -17,7 +17,7 @@ interface Props {
 
 export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultInstrument.code);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     return (
         <Card className="flex-1 items-center p-[16px]">
@@ -25,7 +25,7 @@ export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props
 
             <Text className="text-xs text-secondary-foreground">{label}</Text>
 
-            <ProtectedText className="text-primary text-md">{format(amount)}</ProtectedText>
+            <ProtectedText className="text-primary text-md">{formatDigits(amount, defaultInstrument.symbol)}</ProtectedText>
         </Card>
     );
 };

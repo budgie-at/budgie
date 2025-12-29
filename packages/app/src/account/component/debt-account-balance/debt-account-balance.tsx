@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro';
 import { Text, View, ViewStyle } from 'react-native';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -13,14 +13,14 @@ interface Props {
 }
 
 export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) => {
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const percentage = Number((targetAmount > 0 ? (balance / targetAmount) * 100 : 0).toFixed(2));
     const barStyle: ViewStyle = { width: `${percentage}%` };
 
-    const formattedBalance = format(balance);
-    const formattedAmountToReturn = format(targetAmount);
+    const formattedBalance = formatDigits(balance, defaultInstrument.symbol);
+    const formattedAmountToReturn = formatDigits(targetAmount, defaultInstrument.symbol);
 
     return (
         <View className="p-5xl border border-warning-corner bg-warning-background gap-y-md rounded-3xl">
@@ -32,7 +32,7 @@ export const DebtAccountBalance = ({ balance, currency, targetAmount }: Props) =
                 {balance}
             </ProtectedMoney>
 
-            <View className="my-3xl h-[1px] bg-secondary-corner" />
+            <View className="my-3xl h-px bg-secondary-corner" />
 
             <View className="gap-y-xl">
                 <View className="flex-row items-center justify-between">

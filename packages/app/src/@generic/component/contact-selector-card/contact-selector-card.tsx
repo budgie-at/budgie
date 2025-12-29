@@ -4,6 +4,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
 import { SelectorCard } from '../selector-card/selector-card';

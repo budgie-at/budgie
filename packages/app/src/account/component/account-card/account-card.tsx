@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum, PRECISION } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -12,11 +12,11 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
@@ -31,7 +31,7 @@ interface Props extends Pick<
     readonly instrumentSymbol: string;
 }
 
-const textVariant = cva('text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
+const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
@@ -57,13 +57,13 @@ export const AccountCard = (props: Props) => {
     const { id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol, createdAt } = props;
 
     const showCents = useSetting('showCents');
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency, false);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatMoney = useFormatDigits(decimalPlaces);
+    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
+
     const { formatCompactFullDate } = useFormatDate();
 
     const { balance } = useAccountBalanceQuery(id);
-
-    const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
@@ -72,8 +72,8 @@ export const AccountCard = (props: Props) => {
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
-    const amountLeft = formatMoney(Math.max(targetBalance - balance, 0));
-    const accountBalance = `${instrumentSymbol}${formatDigits(convertFromMicroUnits(balance).toString())}`;
+    const amountLeft = formatMoney(Math.max(targetBalance - balance, 0), defaultInstrument.symbol);
+    const accountBalance = formatDigits(convertFromMicroUnits(balance), instrumentSymbol);
 
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
 
@@ -107,12 +107,12 @@ export const AccountCard = (props: Props) => {
                     <View className="flex-row items-center justify-between">
                         <ProtectedText className="text-primary font-medium">{amountLeft}</ProtectedText>
 
-                        <View>
+                        <View className="flex-1">
                             <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
-                                {formatMoney(balance)}
+                                {abbreviateNumber(balance / PRECISION, 2)}
                             </ProtectedText>
                             <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right">
-                                {formatMoney(targetBalance)}
+                                {abbreviateNumber(targetBalance / PRECISION, 2)}
                             </ProtectedText>
                         </View>
                     </View>

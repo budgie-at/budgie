@@ -6,10 +6,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
+
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { Input } from '../../../@generic/component/input/input';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
@@ -18,7 +20,6 @@ import { AccountSyncCard } from '../account-sync-card/account-sync-card';
 import { GetTokenCard } from '../get-token-card/get-token-card';
 import { SyncStatusCard } from '../sync-status-card/sync-status-card';
 import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();

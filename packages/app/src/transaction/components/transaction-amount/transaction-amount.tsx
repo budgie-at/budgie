@@ -6,10 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -21,32 +21,43 @@ const amountVariants = cva('text-sm font-semibold text-right', {
 
 export const TransactionAmount = ({ transaction }: Props) => {
     const type = getTransactionType(transaction);
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
 
     const fromEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
     const toEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
 
-    const formatFromAmount = useFormatMoney(decimalPlaces, fromEntry?.account.instrument.code ?? defaultCurrency);
-    const formatToAmount = useFormatMoney(decimalPlaces, toEntry?.account.instrument.code ?? defaultCurrency);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
         return (
             <View className="gap-y-xxl items-end">
-                <Text className={amountVariants({ type: 'default' })}>{formatFromAmount(fromEntry.amount)}</Text>
+                <Text className={amountVariants({ type: 'default' })}>
+                    {formatDigits(fromEntry.amount, fromEntry.account.instrument.symbol)}
+                </Text>
                 <View className="flex-row items-center gap-x-xs">
                     <Icon icon="ArrowRightIcon" className="text-secondary-foreground" size={12} />
-                    <Text className="text-secondary-foreground text-xxs">{formatToAmount(toEntry.amount)}</Text>
+                    <Text className="text-secondary-foreground text-xxs">
+                        {formatDigits(toEntry.amount, toEntry.account.instrument.symbol)}
+                    </Text>
                 </View>
             </View>
         );
     }
 
     if (isDefined(fromEntry)) {
-        return <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatFromAmount(fromEntry.amount)}</Text>;
+        return (
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
+                {formatDigits(fromEntry.amount, fromEntry.account.instrument.symbol)}
+            </Text>
+        );
     }
 
     if (isDefined(toEntry)) {
-        return <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>{formatToAmount(toEntry.amount)}</Text>;
+        return (
+            <Text className={amountVariants({ type: TRANSACTION_COLOR[type] })}>
+                {formatDigits(toEntry.amount, toEntry.account.instrument.symbol)}
+            </Text>
+        );
     }
 
     return null;

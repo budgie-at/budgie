@@ -1,5 +1,6 @@
 import React from 'react';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 

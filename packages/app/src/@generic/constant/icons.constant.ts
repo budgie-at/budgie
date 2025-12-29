@@ -1,7 +1,6 @@
 import {
     AlertCircle,
     AlertTriangle,
-    Dot,
     Archive,
     ArrowLeftRight,
     ArrowRightIcon,
@@ -30,6 +29,7 @@ import {
     Database,
     Delete,
     DollarSign,
+    Dot,
     Dumbbell,
     EllipsisVertical,
     ExternalLink,
