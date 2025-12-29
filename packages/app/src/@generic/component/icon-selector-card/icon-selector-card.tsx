@@ -6,6 +6,8 @@ import { Text, View } from 'react-native';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
+import { typedObjectEntries } from '../../utils/typed-object-entries.util';
+import { typedObjectFromEntries } from '../../utils/typed-object-from-entries.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
@@ -29,23 +31,26 @@ const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondar
     }
 });
 
-const iconVariant = cva<{ variant: Record<ColorPaletteVariant, ClassValue>; isSelected: Record<'false', ClassValue> }>('', {
+const iconVariant = cva<{ variant: Record<ColorPaletteVariant, ClassValue>; isSelected: Record<`true` | `false`, ClassValue> }>('', {
     variants: {
-        variant: FOREGROUND_COLOR_PALETTE,
-        isSelected: { false: 'text-primary' }
+        variant: typedObjectFromEntries(typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key]) => [key, ''])),
+        isSelected: {
+            true: '',
+            false: 'text-primary'
+        }
     },
     compoundVariants: [
-        {
-            isSelected: true,
-            variant: 'default',
-            className: FOREGROUND_COLOR_PALETTE.default
-        },
-        {
-            isSelected: true,
-            variant: 'positive',
-            className: FOREGROUND_COLOR_PALETTE.positive
-        }
-    ]
+        ...typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key]) => ({
+            className: FOREGROUND_COLOR_PALETTE.secondary,
+            isSelected: false,
+            variant: key
+        })),
+        ...typedObjectEntries(FOREGROUND_COLOR_PALETTE).map(([key, value]) => ({ isSelected: true, className: value, variant: key }))
+    ],
+    defaultVariants: {
+        variant: 'default',
+        isSelected: false
+    }
 });
 
 const nameVariants = cva('font-medium text-xxs px-lg', {
