@@ -7,8 +7,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props {
     readonly onRemove: (index: number) => void;
@@ -19,8 +19,8 @@ interface Props {
 }
 
 export const TransactionEntry = ({ variant, control, index, onRemove, selectedCategoryIds }: Props) => {
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { defaultInstrument, decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const handleRemove = () => void onRemove(index);
 
@@ -53,7 +53,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
                 value={value}
                 status={status}
                 onChangeValue={onChange}
-                placeholder={formatMoney(0)}
+                placeholder={formatDigits(0, defaultInstrument.symbol)}
                 inputClassName="text-sm/1 h-full flex-1 text-primary placeholder:text-secondary-foreground rounded-5xl px-lg"
             />
         );

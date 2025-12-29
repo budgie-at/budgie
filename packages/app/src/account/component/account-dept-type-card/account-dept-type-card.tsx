@@ -1,11 +1,12 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ACCOUNT_DEBT_TYPE_DESCRIPTION } from '../../constant/account-debt-type-description.constant';
 import { ACCOUNT_DEBT_TYPE_ICON } from '../../constant/account-debt-type-icon.constant';
 import { ACCOUNT_DEBT_TYPE } from '../../constant/account-debt-type.constant';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
     readonly isSelected: boolean;
