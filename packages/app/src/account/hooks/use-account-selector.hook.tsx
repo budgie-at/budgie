@@ -4,11 +4,11 @@ import { RefObject } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
+import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { AccountSelectorBottomSheet } from '../component/account-selector-bottom-sheet/account-selector-bottom-sheet';
 import { useAccountBalanceQuery } from '../query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
-import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 
 interface UseAccountSelectorParams {
     readonly accountId: number | null;

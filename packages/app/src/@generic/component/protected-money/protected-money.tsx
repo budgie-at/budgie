@@ -1,12 +1,12 @@
 import { CurrencyEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useAppState } from '../../hook/use-app-state.hook';
 import { useScreenshotProtection } from '../../hook/use-screenshot-protection.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
     readonly children: number;

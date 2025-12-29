@@ -5,8 +5,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly label: string;

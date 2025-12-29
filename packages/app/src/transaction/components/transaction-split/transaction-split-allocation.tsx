@@ -7,8 +7,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly entriesAmount: number;
