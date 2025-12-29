@@ -11,7 +11,7 @@ export const Footer = ({ children }: Props) => {
     const style = { paddingBottom: bottom };
 
     return (
-        <View className="gap-x-md pt-xl px-7xl border-t border-t-secondary-corner bg-primary-reverse" style={style}>
+        <View className="gap-md pt-xl px-7xl border-t border-t-secondary-corner bg-primary-reverse" style={style}>
             {children}
         </View>
     );
