@@ -6,7 +6,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ProtectedMoney } from '../protected-money/protected-money';
 
 export const NetWorth = () => {
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
+    const { defaultInstrument, decimalPlaces } = useSettingsContext();
     const netWorth = useNetWorthQuery();
 
     return (
@@ -15,7 +15,7 @@ export const NetWorth = () => {
                 <Trans>Total Balance</Trans>
             </Text>
 
-            <ProtectedMoney decimalPlaces={decimalPlaces} minFontSize={24} maxFontSize={60} currency={defaultCurrency}>
+            <ProtectedMoney decimalPlaces={decimalPlaces} minFontSize={24} maxFontSize={60} instrumentSymbol={defaultInstrument.symbol}>
                 {netWorth}
             </ProtectedMoney>
         </View>

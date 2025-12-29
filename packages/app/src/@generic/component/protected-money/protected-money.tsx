@@ -1,4 +1,3 @@
-import { CurrencyEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -12,12 +11,12 @@ interface Props extends Omit<ComponentProps<typeof Ticker>, 'number'> {
     readonly children: number;
     readonly className?: string;
     readonly decimalPlaces: number;
-    readonly currency: CurrencyEnum;
     readonly protectedText?: string;
+    readonly instrumentSymbol: string;
 }
 
 export const ProtectedMoney = (props: Props) => {
-    const { children, className, decimalPlaces, currency, protectedText = '$999.99', ...rest } = props;
+    const { children, className, decimalPlaces, instrumentSymbol, protectedText = '$999.99', ...rest } = props;
 
     const showCents = useSetting('showCents');
 
@@ -27,7 +26,7 @@ export const ProtectedMoney = (props: Props) => {
     const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const shouldProtect = !isActive && isScreenshotProtectionEnabled;
-    const formatted = shouldProtect ? protectedText : formatDigits(children);
+    const formatted = shouldProtect ? protectedText : formatDigits(children, instrumentSymbol);
 
     return (
         <Ticker hasAnimation={!shouldProtect} number={formatted} textClassName={cn('font-extralight text-primary', className)} {...rest} />
