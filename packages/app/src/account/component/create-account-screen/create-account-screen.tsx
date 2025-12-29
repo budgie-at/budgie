@@ -50,7 +50,7 @@ export const CreateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 </KeyboardStickyView>
             }
         >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView contentContainerClassName='pb-5xl' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
 
                 {children}
