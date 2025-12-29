@@ -2,8 +2,8 @@ import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
