@@ -3,7 +3,7 @@ import { Control, Controller, Path, UseControllerReturn } from 'react-hook-form'
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props<T extends { targetBalance: number }> {
@@ -12,12 +12,12 @@ interface Props<T extends { targetBalance: number }> {
 
 export const AccountTargetBalanceField = <T extends { targetBalance: number }>({ control }: Props<T>) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
         <FormItem label={t`Target balance`}>
-            <AmountInput placeholder={format(0)} size="lg" value={value} onChangeValue={onChange} />
+            <AmountInput placeholder={formatDigits(0, defaultInstrument.symbol)} size="lg" value={value} onChangeValue={onChange} />
         </FormItem>
     );
 

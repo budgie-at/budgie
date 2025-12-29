@@ -24,7 +24,7 @@ const textVariants = cva('text-[72px]', {
 
 export const FormAmountInput = ({ value, onChange, variant, textClassName, instrumentSymbol }: Props) => {
     const { decimalPlaces } = useSettingsContext();
-    const format = useFormatDigits(decimalPlaces);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     return (
         <View className="flex-row items-center justify-center py-5xl">
@@ -34,7 +34,7 @@ export const FormAmountInput = ({ value, onChange, variant, textClassName, instr
                 value={value}
                 onChangeValue={onChange}
                 inputClassName={cn('text-[72px] text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
-                placeholder={format('0.00')}
+                placeholder={formatDigits(0)}
             />
         </View>
     );
