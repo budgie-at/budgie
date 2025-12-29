@@ -21,6 +21,7 @@ import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
+import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
@@ -71,7 +72,11 @@ export default function Account() {
         >
             <View className="pb-7.5">
                 {type === AccountTypeEnum.DEBT ? (
-                    <DebtAccountBalance balance={balance} instrumentSymbol={instrument.symbol} targetAmount={account.targetBalance} />
+                    <DebtAccountBalance
+                        balance={balance}
+                        instrumentSymbol={instrument.symbol}
+                        targetAmount={convertFromMicroUnits(account.targetBalance)}
+                    />
                 ) : (
                     <AccountBalance instrumentSymbol={instrument.symbol} balance={balance} />
                 )}

@@ -9,7 +9,6 @@ import { EmptyFn } from '@rnw-community/shared';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -45,8 +44,7 @@ export const TransferTransactionForm = (props: Props) => {
     const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
 
     const isDebtAccount = account?.type === AccountTypeEnum.DEBT;
-    const amountInMicroUnits = convertToMicroUnits(amount);
-    const exceedsDebtBalance = isDebtAccount && amountInMicroUnits > balance;
+    const exceedsDebtBalance = isDebtAccount && amount > balance;
 
     useEffect(() => {
         if (exceedsDebtBalance) {
