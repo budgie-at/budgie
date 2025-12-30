@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.91.1](https://github.com/budgie-at/budgie/compare/v1.91.0...v1.91.1) (2025-12-30)
+
+### Bug Fixes
+
+- **app:** ui fix and i18n fix ([#124](https://github.com/budgie-at/budgie/issues/124)) ([3731c0c](https://github.com/budgie-at/budgie/commit/3731c0cc1094dae4b57bcf3734c621c4b679d66b))
+
 # [1.91.0](https://github.com/budgie-at/budgie/compare/v1.90.0...v1.91.0) (2025-12-30)
 
 ### Bug Fixes
