@@ -19,6 +19,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
+import { AccountTypeField } from '../account-type-field/account-type-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 
 interface Props<T extends FieldValues> {
@@ -71,6 +72,8 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
                 <FormLayoutGroup>
                     <AccountDetailsField control={control} variant={variant} />
+
+                    <AccountTypeField control={control} />
 
                     {children}
                 </FormLayoutGroup>
