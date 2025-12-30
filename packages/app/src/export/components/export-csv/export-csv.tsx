@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -24,8 +23,6 @@ export const ExportCsv = () => {
         }
     };
 
-    const rightSlot = isLoading ? <ActivityIndicator size="small" /> : null;
-
     return (
         <SettingsCard
             title={t`Export CSV`}
@@ -33,8 +30,7 @@ export const ExportCsv = () => {
             onPress={handleExport}
             icon="FileText"
             variant="default"
-            disabled={isLoading}
-            right={rightSlot}
+            isLoading={isLoading}
         />
     );
 };
