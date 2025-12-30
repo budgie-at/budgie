@@ -20,16 +20,19 @@ interface Props {
     readonly variant?: ColorPaletteVariant;
 }
 
-const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>('border rounded-5xl', {
-    variants: {
-        size: {
-            sm: 'p-xl',
-            md: 'p-3xl',
-            lg: 'p-5xl'
-        },
-        variant: BACKGROUND_COLOR_PALETTE
+const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>(
+    'border rounded-5xl',
+    {
+        variants: {
+            size: {
+                sm: 'p-xl',
+                md: 'p-3xl',
+                lg: 'p-5xl'
+            },
+            variant: BACKGROUND_COLOR_PALETTE
+        }
     }
-});
+);
 
 export const Card = ({ className, onPress, variant = 'primary', size = 'lg', ...rest }: PropsWithChildren<Props>) => {
     const Component = isDefined(onPress) ? HapticPressable : View;
