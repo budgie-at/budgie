@@ -96,7 +96,7 @@ class ExporterService {
                         rows.push(this.mapTransferTransaction(transaction, accountsMap, instrumentsMap, category));
                     }
 
-                    rows.push(this.mapIncomeExpenseTransaction(transaction, accountsMap, instrumentsMap, category));
+                    rows.push(...this.mapIncomeExpenseTransaction(transaction, accountsMap, instrumentsMap, category));
                 }
             }
 
@@ -130,7 +130,7 @@ class ExporterService {
             toAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
             toCurrency: toInstrument?.code ?? '',
             fromAccount: fromAccount?.title ?? '',
-            fromAmount: isDefined(fromEntry) ? String(convertFromMicroUnits(fromEntry.amount)) : '',
+            fromAmount: isDefined(fromEntry) ? String(-convertFromMicroUnits(fromEntry.amount)) : '',
             fromCurrency: fromInstrument?.code ?? '',
             category: category?.title ?? '',
             operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
@@ -143,27 +143,31 @@ class ExporterService {
         accountsMap: AccountsMap,
         instrumentsMap: InstrumentsMap,
         category: CategoryEntityInterface | null | undefined
-    ): ExportRowInterface {
+    ): ExportRowInterface[] {
         const toAccount = isDefined(transaction.toAccountId) ? accountsMap.get(transaction.toAccountId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
 
-        const entry = transaction.entries.at(0);
-        const amount = isDefined(entry) ? convertFromMicroUnits(entry.amount) : 0;
-        const signedAmount = transaction.type === TransactionTypeEnum.EXPENSE ? -amount : amount;
+        const rows: ExportRowInterface[] = [];
+        for (const entry of transaction.entries) {
+            const amount = isDefined(entry) ? convertFromMicroUnits(entry.amount) : 0;
+            const signedAmount = transaction.type === TransactionTypeEnum.EXPENSE ? -amount : amount;
 
-        return {
-            title: transaction.title,
-            externalId: transaction.externalId ?? '',
-            toAccount: toAccount?.title ?? '',
-            toAmount: String(signedAmount),
-            toCurrency: toInstrument?.code ?? '',
-            fromAccount: '',
-            fromAmount: '',
-            fromCurrency: '',
-            category: category?.title ?? '',
-            operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-            comment: transaction.comment
-        };
+            rows.push({
+                title: transaction.title,
+                externalId: transaction.externalId ?? '',
+                toAccount: toAccount?.title ?? '',
+                toAmount: String(signedAmount),
+                toCurrency: toInstrument?.code ?? '',
+                fromAccount: '',
+                fromAmount: '',
+                fromCurrency: '',
+                category: category?.title ?? '',
+                operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
+                comment: transaction.comment
+            });
+        }
+
+        return rows;
     }
 }
 
