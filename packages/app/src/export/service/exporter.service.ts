@@ -11,7 +11,7 @@ import { accountRepository, categoryRepository, instrumentRepository, transactio
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
-import { TransactionWithEntriesInterface } from '../interface/transaction-with-entries.interface';
+import { ExportTransactionInterface } from '../interface/export-transaction.interface';
 
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;
@@ -91,7 +91,7 @@ class ExporterService {
     }
 
     private mapTransactionToRow(
-        transaction: TransactionWithEntriesInterface,
+        transaction: ExportTransactionInterface,
         accountsMap: AccountsMap,
         categoriesMap: CategoriesMap,
         instrumentsMap: InstrumentsMap
