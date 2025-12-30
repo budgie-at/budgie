@@ -379,7 +379,7 @@ msgstr "Clear All"
 msgid "Clear All Data"
 msgstr "Clear All Data"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:35
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Clear cached balances and recalculate from transactions"
 
@@ -1071,12 +1071,12 @@ msgstr "Privacy"
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:44
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Recalculate"
 msgstr "Recalculate"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:47
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
@@ -1355,7 +1355,7 @@ msgstr "This Month"
 msgid "This Week"
 msgstr "This Week"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 

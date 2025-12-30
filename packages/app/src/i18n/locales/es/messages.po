@@ -256,7 +256,7 @@ msgstr "Ajuste de saldo"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 msgid "Balances recalculated successfully"
-msgstr ""
+msgstr "Saldos recalculados con éxito"
 
 #: src/account/constant/account-type.constant.ts:6
 msgid "Bank"
@@ -377,9 +377,9 @@ msgstr "Limpiar todo"
 msgid "Clear All Data"
 msgstr "Borrar todos los datos"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:35
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
 msgid "Clear cached balances and recalculate from transactions"
-msgstr ""
+msgstr "Borrar saldos en caché y recalcular"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
@@ -1069,14 +1069,14 @@ msgstr "Privacidad"
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:44
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Recalculate"
-msgstr ""
+msgstr "Recalcular"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:47
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
 msgid "Recalculate Balances"
-msgstr ""
+msgstr "Recalcular saldos"
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1276,7 +1276,7 @@ msgstr "Enviar"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 msgid "Success"
-msgstr ""
+msgstr "Éxito"
 
 #: src/category/components/category-card/category-card.tsx:22
 #: src/tag/components/tag-card/tag-card.tsx:23
@@ -1353,9 +1353,9 @@ msgstr "Este mes"
 msgid "This Week"
 msgstr "Esta semana"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
-msgstr ""
+msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
