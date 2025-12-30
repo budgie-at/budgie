@@ -21,7 +21,7 @@ export const SettingsCard = ({ className, title, description, onPress, right, le
 
         <View className="gap-y-xxs flex-1">
             <Text className="text-primary text-md">{title}</Text>
-            <Text className="text-secondary-foreground text-sm">{description}</Text>
+            <Text className="text-secondary-foreground text-sm break-words max-w-11/12">{description}</Text>
         </View>
 
         {right}
