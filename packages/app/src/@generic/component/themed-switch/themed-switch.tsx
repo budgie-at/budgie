@@ -2,19 +2,20 @@ import { ComponentProps } from 'react';
 import { Switch } from 'react-native';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
+import { PRIMARY_COLOR, PRIMARY_COLOR_REVERSE, SWITCH_TRACK_OFF_DARK, SWITCH_TRACK_OFF_LIGHT } from '../../constant/colors.constant';
 
 const LIGHT_THEME = {
-    thumbOn: '#ffffff',
-    thumbOff: '#ffffff',
-    trackOn: '#000000',
-    trackOff: '#e5e5e5'
+    thumbOn: PRIMARY_COLOR,
+    thumbOff: PRIMARY_COLOR,
+    trackOn: PRIMARY_COLOR_REVERSE,
+    trackOff: SWITCH_TRACK_OFF_LIGHT
 };
 
 const DARK_THEME = {
-    thumbOn: '#000000',
-    thumbOff: '#000000',
-    trackOn: '#ffffff',
-    trackOff: '#3a3a3c'
+    thumbOn: PRIMARY_COLOR_REVERSE,
+    thumbOff: PRIMARY_COLOR_REVERSE,
+    trackOn: PRIMARY_COLOR,
+    trackOff: SWITCH_TRACK_OFF_DARK
 };
 
 const getThumbColor = (isDarkTheme: boolean, value: boolean) => {
