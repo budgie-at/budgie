@@ -72,11 +72,11 @@ msgstr "{tagsCount} tags available"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:53
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:123
 msgid "About"
 msgstr "About"
 
@@ -157,13 +157,13 @@ msgstr "AI"
 msgid "AI Suggestion"
 msgstr "AI Suggestion"
 
-#: src/app/(main)/settings/index.tsx:122
+#: src/app/(main)/settings/index.tsx:128
 msgid ""
-"AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
-"Version 1.0.0"
+"AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
+"Version {appVersion}"
 msgstr ""
-"AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
-"Version 1.0.0"
+"AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
+"Version {appVersion}"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:84
 msgid "All columns have been assigned"
@@ -173,7 +173,7 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(main)/settings/index.tsx:51
+#: src/app/(main)/settings/index.tsx:54
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -195,7 +195,7 @@ msgstr "Amount exceeds debt account balance"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(main)/settings/index.tsx:103
+#: src/app/(main)/settings/index.tsx:106
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -220,11 +220,11 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:96
+#: src/app/(main)/settings/index.tsx:99
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:43
+#: src/settings/components/truncate-data/truncate-data.tsx:34
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
@@ -252,6 +252,10 @@ msgstr "Balance"
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+msgid "Balances recalculated successfully"
+msgstr "Balances recalculated successfully"
+
 #: src/account/constant/account-type.constant.ts:6
 msgid "Bank"
 msgstr "Bank"
@@ -272,7 +276,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/settings/index.tsx:123
+#: src/app/(main)/settings/index.tsx:126
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -366,10 +370,14 @@ msgstr "Clear"
 msgid "Clear All"
 msgstr "Clear All"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:33
-#: src/settings/components/truncate-data/truncate-data.tsx:47
+#: src/settings/components/truncate-data/truncate-data.tsx:24
+#: src/settings/components/truncate-data/truncate-data.tsx:38
 msgid "Clear All Data"
 msgstr "Clear All Data"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
+msgid "Clear cached balances and recalculate from transactions"
+msgstr "Clear cached balances and recalculate from transactions"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:42
 msgid "Close"
@@ -440,7 +448,7 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(main)/settings/index.tsx:90
+#: src/app/(main)/settings/index.tsx:93
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -512,7 +520,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(main)/settings/index.tsx:114
+#: src/app/(main)/settings/index.tsx:117
 msgid "Data management"
 msgstr "Data management"
 
@@ -545,11 +553,11 @@ msgstr "Default Account"
 msgid "Delete"
 msgstr "Delete"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:44
+#: src/settings/components/truncate-data/truncate-data.tsx:35
 msgid "Delete data"
 msgstr "Delete data"
 
@@ -674,6 +682,7 @@ msgstr "Enter your PIN"
 
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:23
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Error"
@@ -759,7 +768,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(main)/settings/index.tsx:72
+#: src/app/(main)/settings/index.tsx:75
 msgid "General"
 msgstr "General"
 
@@ -775,11 +784,11 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:64
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
-#: src/app/(main)/settings/index.tsx:106
+#: src/app/(main)/settings/index.tsx:109
 msgid "Hide Cents"
 msgstr "Hide Cents"
 
@@ -861,11 +870,11 @@ msgstr "Locale"
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(main)/settings/index.tsx:82
+#: src/app/(main)/settings/index.tsx:85
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:92
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1035,7 +1044,7 @@ msgstr "Note (optional)"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/app/(main)/settings/index.tsx:79
+#: src/app/(main)/settings/index.tsx:82
 msgid "Organization"
 msgstr "Organization"
 
@@ -1102,13 +1111,22 @@ msgstr "Preset applied. Adjust columns below if needed."
 msgid "Preview"
 msgstr "Preview"
 
-#: src/app/(main)/settings/index.tsx:46
+#: src/app/(main)/settings/index.tsx:49
 msgid "Privacy"
 msgstr "Privacy"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+msgid "Recalculate"
+msgstr "Recalculate"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
+msgid "Recalculate Balances"
+msgstr "Recalculate Balances"
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Remaining:"
@@ -1131,7 +1149,7 @@ msgstr "Savings"
 msgid "Savings Account"
 msgstr "Savings Account"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(main)/settings/index.tsx:63
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1175,7 +1193,7 @@ msgstr "Search tags..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(main)/settings/index.tsx:58
 msgid "Security"
 msgstr "Security"
 
@@ -1257,11 +1275,11 @@ msgstr "Selected {selectedTagsCount}"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(main)/settings/index.tsx:43
+#: src/app/(main)/settings/index.tsx:46
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(main)/settings/index.tsx:107
+#: src/app/(main)/settings/index.tsx:110
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
@@ -1320,6 +1338,10 @@ msgstr "Stocks"
 #: src/account/component/create-account-screen/create-account-screen.tsx:48
 msgid "Submit"
 msgstr "Submit"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+msgid "Success"
+msgstr "Success"
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1395,6 +1417,10 @@ msgstr "This Month"
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
 msgstr "This Week"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
+msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
@@ -1513,11 +1539,11 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/app/(main)/settings/index.tsx:83
+#: src/app/(main)/settings/index.tsx:86
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(main)/settings/index.tsx:97
+#: src/app/(main)/settings/index.tsx:100
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 

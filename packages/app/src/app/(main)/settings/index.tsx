@@ -1,5 +1,6 @@
 import { SettingsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
@@ -13,6 +14,7 @@ import { DefaultAccountSelector } from '../../../settings/components/default-acc
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
+import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -37,6 +39,7 @@ export default function SettingsPage() {
         await updateSettingsMutation({ [key]: checked });
     };
 
+    const appVersion = Constants.expoConfig?.version ?? '1.0.0';
     const privacyIconParams = { variant: 'positive', border: false, size: 40, iconSize: 20 } as const;
 
     return (
@@ -113,14 +116,16 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Data management`}>
                         <ImportCsv />
+                        <RecalculateBalances />
                         <TruncateData />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`About`}>
                         <SettingsCard
                             align="top"
-                            description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \nVersion 1.0.0`}
                             title={t`BudgetAI`}
+                            className="items-baseline"
+                            description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
                             icon="Database"
                             variant="ghost"
                         />
