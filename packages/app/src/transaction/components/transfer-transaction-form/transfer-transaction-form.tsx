@@ -29,10 +29,11 @@ interface Props {
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
+    readonly onDelete?: EmptyFn;
 }
 
 export const TransferTransactionForm = (props: Props) => {
-    const { onSubmit, icon, control, setValue, setError, clearErrors, title, buttonText, variant } = props;
+    const { onSubmit, icon, control, setValue, setError, clearErrors, title, buttonText, variant, onDelete } = props;
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -68,6 +69,7 @@ export const TransferTransactionForm = (props: Props) => {
             onSubmit={onSubmit}
             buttonText={buttonText}
             description={t`Move Money`}
+            onDelete={onDelete}
         >
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"

@@ -1,6 +1,7 @@
 import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { useDeleteTransactionMutation } from '../../hook/use-delete-transaction.mutation';
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
@@ -18,6 +19,10 @@ export const UpdateTransferTransaction = ({ transaction }: Props) => {
         id: transaction.id
     });
 
+    const { confirmDelete } = useDeleteTransactionMutation();
+
+    const handleDelete = () => void confirmDelete(transaction.id);
+
     return (
         <TransferTransactionForm
             control={form.control}
@@ -29,6 +34,7 @@ export const UpdateTransferTransaction = ({ transaction }: Props) => {
             icon="ArrowRightLeft"
             onSubmit={handleSubmit}
             buttonText={t`Update Transfer`}
+            onDelete={handleDelete}
         />
     );
 };

@@ -104,6 +104,14 @@ class TransactionService {
         });
     }
 
+    async deleteById(id: number): Promise<void> {
+        return void await db.transaction(async tx => {
+            await transactionEntryRepository.deleteByTransactionId(id, tx);
+            await transactionTagsRepository.deleteByTransactionId(id, tx);
+            await transactionRepository.deleteById(id, tx);
+        });
+    }
+
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
         const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
         const toEntry = entries.find(({ accountId }) => accountId === toAccountId);
