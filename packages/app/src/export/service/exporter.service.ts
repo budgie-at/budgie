@@ -8,6 +8,7 @@ import Papa from 'papaparse';
 import { isDefined } from '@rnw-community/shared';
 
 import { accountRepository, categoryRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
 import { TransactionWithEntriesInterface } from '../interface/transaction-with-entries.interface';
@@ -108,10 +109,10 @@ class ExporterService {
         return {
             externalId: transaction.externalId ?? '',
             toAccount: toAccount?.title ?? '',
-            toAmount: isDefined(toEntry) ? String(toEntry.amount / 100) : '',
+            toAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
             toCurrency: toInstrument?.code ?? '',
             fromAccount: fromAccount?.title ?? '',
-            fromAmount: isDefined(fromEntry) ? String(fromEntry.amount / 100) : '',
+            fromAmount: isDefined(fromEntry) ? String(convertFromMicroUnits(fromEntry.amount)) : '',
             fromCurrency: fromInstrument?.code ?? '',
             category: category?.title ?? '',
             operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
