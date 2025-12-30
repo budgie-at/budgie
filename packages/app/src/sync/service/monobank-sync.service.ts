@@ -205,7 +205,7 @@ class AppMonobankSyncService {
             if (isDefined(instrument) && !existingIds.has(bankAccount.id)) {
                 toCreate.push({
                     title: this.generateAccountTitle(bankAccount),
-                    type: AccountTypeEnum.BANK,
+                    type: AccountTypeEnum.BANK_SYNC,
                     icon: UserIconNameEnum.Landmark,
                     instrumentId: instrument.id,
                     currentBalance: 0,
