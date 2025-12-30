@@ -98,6 +98,8 @@ export default function ImportScreen() {
                 return;
             }
 
+            setIsLoading(true);
+
             try {
                 const response = await fetch(fileUri);
                 const text = await response.text();
@@ -110,6 +112,8 @@ export default function ImportScreen() {
                 Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
                 router.back();
             }
+
+            setIsLoading(false);
         };
 
         void loadFile();
@@ -165,8 +169,8 @@ export default function ImportScreen() {
                         title={t`Map CSV Columns`}
                         description={t`Match each field to a column from your CSV file`}
                         right={
-                            <View className="bg-secondary-background px-3xl py-md rounded-full">
-                                <Text className="text-primary text-sm font-medium">{rowCount}</Text>
+                            <View className="bg-primary px-3xl py-md rounded-full">
+                                <Text className="text-primary-reverse text-sm font-medium">{rowCount}</Text>
                             </View>
                         }
                     />
