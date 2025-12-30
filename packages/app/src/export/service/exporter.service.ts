@@ -4,7 +4,8 @@ import {
     CategoryEntityInterface,
     InstrumentEntityInterface,
     TransactionEntityInterface,
-    TransactionEntryEntityInterface
+    TransactionEntryEntityInterface,
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { format } from 'date-fns';
 import { File, Paths } from 'expo-file-system';
@@ -21,6 +22,8 @@ import { ExportRowInterface } from '../interface/export-row.interface';
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;
 type InstrumentsMap = Map<number, InstrumentEntityInterface>;
+
+type TransactionWithEntries = TransactionEntityInterface & { entries: TransactionEntryEntityInterface[] };
 
 class ExporterService {
     private readonly BATCH_SIZE = 750;
@@ -68,6 +71,7 @@ class ExporterService {
         }
     }
 
+    // eslint-disable-next-line max-statements
     private async processTransactionsInBatches(
         accountsMap: AccountsMap,
         categoriesMap: CategoriesMap,
@@ -84,7 +88,16 @@ class ExporterService {
             }
 
             for (const transaction of transactions) {
-                rows.push(...this.mapTransactionToRow(transaction, accountsMap, categoriesMap, instrumentsMap));
+                const entry = transaction.entries.at(0);
+                if (isDefined(entry)) {
+                    const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
+
+                    if (transaction.type === TransactionTypeEnum.TRANSFER) {
+                        rows.push(this.mapTransferTransaction(transaction, accountsMap, instrumentsMap, category));
+                    }
+
+                    rows.push(this.mapIncomeExpenseTransaction(transaction, accountsMap, instrumentsMap, category));
+                }
             }
 
             offset += this.BATCH_SIZE;
@@ -96,40 +109,61 @@ class ExporterService {
         return rows;
     }
 
-    private mapTransactionToRow(
-        transaction: TransactionEntityInterface & { entries: TransactionEntryEntityInterface[] },
+    private mapTransferTransaction(
+        transaction: TransactionWithEntries,
         accountsMap: AccountsMap,
-        categoriesMap: CategoriesMap,
-        instrumentsMap: InstrumentsMap
-    ): ExportRowInterface[] {
-        const toAccount = isDefined(transaction.toAccountId) ? accountsMap.get(transaction.toAccountId) : null;
+        instrumentsMap: InstrumentsMap,
+        category: CategoryEntityInterface | null | undefined
+    ): ExportRowInterface {
         const fromAccount = isDefined(transaction.fromAccountId) ? accountsMap.get(transaction.fromAccountId) : null;
-        const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
+        const toAccount = isDefined(transaction.toAccountId) ? accountsMap.get(transaction.toAccountId) : null;
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? instrumentsMap.get(fromAccount.instrumentId) : null;
+        const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
 
-        const toAccountEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
-        const [fromAccountEntry] = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
+        const fromEntry = transaction.entries.find(ent => ent.accountId === transaction.fromAccountId);
+        const toEntry = transaction.entries.find(ent => ent.accountId === transaction.toAccountId);
 
-        const rows: ExportRowInterface[] = [];
-        for (const entry of toAccountEntries) {
-            const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
+        return {
+            title: transaction.title,
+            externalId: transaction.externalId ?? '',
+            toAccount: toAccount?.title ?? '',
+            toAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
+            toCurrency: toInstrument?.code ?? '',
+            fromAccount: fromAccount?.title ?? '',
+            fromAmount: isDefined(fromEntry) ? String(convertFromMicroUnits(fromEntry.amount)) : '',
+            fromCurrency: fromInstrument?.code ?? '',
+            category: category?.title ?? '',
+            operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
+            comment: transaction.comment
+        };
+    }
 
-            rows.push({
-                title: transaction.title,
-                externalId: transaction.externalId ?? '',
-                category: category?.title ?? '',
-                operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-                comment: transaction.comment,
-                toAccount: toAccount?.title ?? '',
-                toAmount: String(convertFromMicroUnits(entry.amount)),
-                toCurrency: toInstrument?.code ?? '',
-                fromAccount: fromAccount?.title ?? '',
-                fromAmount: isDefined(fromAccountEntry) ? String(-convertFromMicroUnits(fromAccountEntry.amount)) : '',
-                fromCurrency: fromInstrument?.code ?? ''
-            });
-        }
+    private mapIncomeExpenseTransaction(
+        transaction: TransactionWithEntries,
+        accountsMap: AccountsMap,
+        instrumentsMap: InstrumentsMap,
+        category: CategoryEntityInterface | null | undefined
+    ): ExportRowInterface {
+        const toAccount = isDefined(transaction.toAccountId) ? accountsMap.get(transaction.toAccountId) : null;
+        const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
 
-        return rows;
+        const entry = transaction.entries.at(0);
+        const amount = isDefined(entry) ? convertFromMicroUnits(entry.amount) : 0;
+        const signedAmount = transaction.type === TransactionTypeEnum.EXPENSE ? -amount : amount;
+
+        return {
+            title: transaction.title,
+            externalId: transaction.externalId ?? '',
+            toAccount: toAccount?.title ?? '',
+            toAmount: String(signedAmount),
+            toCurrency: toInstrument?.code ?? '',
+            fromAccount: '',
+            fromAmount: '',
+            fromCurrency: '',
+            category: category?.title ?? '',
+            operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
+            comment: transaction.comment
+        };
     }
 }
 
