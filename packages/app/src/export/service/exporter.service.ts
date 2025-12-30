@@ -1,5 +1,11 @@
 /* eslint-disable no-await-in-loop */
-import { AccountEntityInterface, CategoryEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import {
+    AccountEntityInterface,
+    CategoryEntityInterface,
+    InstrumentEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryEntityInterface
+} from '@budgie/contracts';
 import { format } from 'date-fns';
 import { File, Paths } from 'expo-file-system';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
@@ -11,7 +17,6 @@ import { accountRepository, categoryRepository, instrumentRepository, transactio
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
-import { ExportTransactionInterface } from '../interface/export-transaction.interface';
 
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;
@@ -20,6 +25,7 @@ type InstrumentsMap = Map<number, InstrumentEntityInterface>;
 class ExporterService {
     private readonly BATCH_SIZE = 750;
     private readonly CSV_COLUMNS = [
+        'title',
         'externalId',
         'toAccount',
         'toAmount',
@@ -91,7 +97,7 @@ class ExporterService {
     }
 
     private mapTransactionToRow(
-        transaction: ExportTransactionInterface,
+        transaction: TransactionEntityInterface & { entries: TransactionEntryEntityInterface[] },
         accountsMap: AccountsMap,
         categoriesMap: CategoriesMap,
         instrumentsMap: InstrumentsMap
@@ -101,25 +107,25 @@ class ExporterService {
         const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? instrumentsMap.get(fromAccount.instrumentId) : null;
 
-        const rows: ExportRowInterface[] = [];
-        for (const entry of transaction.entries) {
-            const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
-            const amount = convertFromMicroUnits(entry.amount);
+        const toAccountEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
+        const [fromAccountEntry] = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
 
-            const isToEntry = entry.accountId === transaction.toAccountId;
-            const isFromEntry = entry.accountId === transaction.fromAccountId;
+        const rows: ExportRowInterface[] = [];
+        for (const entry of toAccountEntries) {
+            const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
 
             rows.push({
+                title: transaction.title,
                 externalId: transaction.externalId ?? '',
-                toAccount: toAccount?.title ?? '',
-                toAmount: isToEntry ? String(amount) : '',
-                toCurrency: toInstrument?.code ?? '',
-                fromAccount: fromAccount?.title ?? '',
-                fromAmount: isFromEntry ? String(amount) : '',
-                fromCurrency: fromInstrument?.code ?? '',
                 category: category?.title ?? '',
                 operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-                comment: transaction.comment
+                comment: transaction.comment,
+                toAccount: toAccount?.title ?? '',
+                toAmount: String(convertFromMicroUnits(entry.amount)),
+                toCurrency: toInstrument?.code ?? '',
+                fromAccount: fromAccount?.title ?? '',
+                fromAmount: isDefined(fromAccountEntry) ? String(-convertFromMicroUnits(fromAccountEntry.amount)) : '',
+                fromCurrency: fromInstrument?.code ?? ''
             });
         }
 
