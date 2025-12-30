@@ -48,4 +48,4 @@ jobs:
 
       - name: Build on EAS
         working-directory: packages/app
-        run: eas build --platform all --non-interactive --auto-submit --no-wait
+        run: eas build --platform ios --non-interactive --auto-submit --no-wait
