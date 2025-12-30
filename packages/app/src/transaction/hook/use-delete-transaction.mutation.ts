@@ -17,7 +17,7 @@ export const useDeleteTransactionMutation = () => {
                 text2: t`The transaction has been removed successfully.`
             });
             router.back();
-        } catch {
+        } catch (_error) {
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong.`,
