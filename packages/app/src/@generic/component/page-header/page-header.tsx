@@ -56,7 +56,9 @@ export const PageHeader = ({
             ) : null}
 
             <View className="gap-y-xs mr-auto flex-1">
-                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>{title}</Text>
+                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                    {title}
+                </Text>
 
                 {isNotEmptyString(description) ? (
                     <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>

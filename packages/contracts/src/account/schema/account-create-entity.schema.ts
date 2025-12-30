@@ -11,5 +11,5 @@ export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEnti
     externalId: true,
     targetBalance: true,
     externalSource: true,
-    includeInNetWorth:true
+    includeInNetWorth: true
 });

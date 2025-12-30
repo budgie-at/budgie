@@ -2,9 +2,9 @@ import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/c
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountCard } from '../account-card/account-card';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 
 interface Props {
     readonly accounts: AccountWithInstrumentEntityInterface[];

@@ -3,8 +3,8 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useSettingsContext } from '../../settings/context/settings.context';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();

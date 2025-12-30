@@ -6,11 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
