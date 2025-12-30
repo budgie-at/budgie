@@ -7,6 +7,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
+import { AccountTypeField } from '../account-type-field/account-type-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 
 interface Props {
@@ -32,5 +33,9 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         return <EmptyScreen />;
     }
 
-    return <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control} />;
+    return (
+        <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={account} control={control}>
+            <AccountTypeField control={control} />
+        </UpdateAccountScreen>
+    );
 };
