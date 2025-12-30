@@ -160,6 +160,8 @@ msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
 msgstr ""
+"Aplicación de presupuestos con IA y privacidad completa. Todo el procesamiento de datos ocurre localmente en tu dispositivo.\n"
+"Versión {appVersion}"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:84
 msgid "All columns have been assigned"
@@ -184,7 +186,7 @@ msgstr "Cantidad"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
 msgid "Amount exceeds debt account balance"
-msgstr ""
+msgstr "El monto excede el saldo de la cuenta de deuda"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:16
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -270,7 +272,7 @@ msgstr "Autenticación biométrica"
 
 #: src/account/constant/account-debt-type.constant.ts:7
 msgid "Borrowed"
-msgstr ""
+msgstr "Prestado"
 
 #: src/app/(main)/settings/index.tsx:126
 msgid "BudgetAI"
@@ -344,7 +346,7 @@ msgstr "Elige tu categoría principal"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:78
 msgid "Choose your main contact"
-msgstr ""
+msgstr "Elige tu contacto principal"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Choose your main currency"
@@ -401,7 +403,7 @@ msgstr "Conectar Monobank"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:16
 msgid "Contact (optional)"
-msgstr ""
+msgstr "Contacto (opcional)"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
@@ -539,7 +541,7 @@ msgstr "Deuda"
 #: src/account/component/create-debt-account/create-debt-account.tsx:50
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
-msgstr ""
+msgstr "Cuenta de deuda"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "Default Account"
@@ -693,11 +695,11 @@ msgstr "Transacciones y gastos diarios"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "Expected return date"
-msgstr ""
+msgstr "Fecha de devolución esperada"
 
 #: src/account/component/account-form-date-field/account-form-date-field.tsx:22
 msgid "Expected Return Date (Optional)"
-msgstr ""
+msgstr "Fecha de devolución esperada (Opcional)"
 
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
@@ -722,7 +724,7 @@ msgstr "Face ID / Touch ID"
 
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
-msgstr ""
+msgstr "Error al cargar los contactos."
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -856,7 +858,7 @@ msgstr "Última sincronización"
 
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
-msgstr ""
+msgstr "Prestado"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -884,7 +886,7 @@ msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
-msgstr ""
+msgstr "Dinero prestado o recibido"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -956,15 +958,15 @@ msgstr "Aún no hay categorías"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts found"
-msgstr ""
+msgstr "No se encontraron contactos"
 
 #: src/@generic/hook/use-contacts.hook.ts:43
 msgid "No contacts found on this device."
-msgstr ""
+msgstr "No se encontraron contactos en este dispositivo."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts yet"
-msgstr ""
+msgstr "Aún no hay contactos"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "No currencies found"
@@ -1054,11 +1056,11 @@ msgstr "Resumen"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Owes you"
-msgstr ""
+msgstr "Te debe"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:57
 msgid "Paid: {formattedBalance}"
-msgstr ""
+msgstr "Pagado: {formattedBalance}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
@@ -1066,11 +1068,11 @@ msgstr "Pegue su token API a continuación:"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:45
 msgid "Payment Progress"
-msgstr ""
+msgstr "Progreso del pago"
 
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
-msgstr ""
+msgstr "Se denegó el permiso para acceder a los contactos."
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1162,7 +1164,7 @@ msgstr "Buscar categorías..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:80
 msgid "Search contacts..."
-msgstr ""
+msgstr "Buscar contactos..."
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
 msgid "Search currencies..."
@@ -1195,7 +1197,7 @@ msgstr "Seguridad"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:33
 msgid "Select a contact"
-msgstr ""
+msgstr "Selecciona un contacto"
 
 #: src/app/(main)/settings/import.tsx:53
 #: src/app/(main)/settings/import.tsx:56
@@ -1233,7 +1235,7 @@ msgstr "Seleccionar columna..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:77
 msgid "Select Contact"
-msgstr ""
+msgstr "Seleccionar contacto"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1269,7 +1271,7 @@ msgstr "Seleccionadas: {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:26
 msgid "Set Return Date"
-msgstr ""
+msgstr "Establecer fecha de devolución"
 
 #: src/app/(main)/settings/index.tsx:46
 msgid "Settings"
@@ -1390,7 +1392,7 @@ msgstr "Toca para limpiar"
 
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:19
 msgid "Target balance"
-msgstr ""
+msgstr "Saldo objetivo"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1448,7 +1450,7 @@ msgstr "Saldo total"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
-msgstr ""
+msgstr "Total: {formattedAmountToReturn}"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Touch ID"
@@ -1549,19 +1551,19 @@ msgstr "Esperando"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "When should it be returned?"
-msgstr ""
+msgstr "¿Cuándo debería ser devuelto?"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Who owes you?"
-msgstr ""
+msgstr "¿Quién te debe dinero?"
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
-msgstr ""
+msgstr "Diste dinero"
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
-msgstr ""
+msgstr "Recibiste dinero"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
