@@ -36,11 +36,15 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
     const { t } = useLingui();
 
     const accountId = useWatch({ control, name: accountFieldName });
+    const entries = useWatch({ control, name: 'entries' });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
-    const handleAccountChange = (accountId: number) => {
-        setValue(accountFieldName, accountId);
+    const handleAccountChange = (newAccountId: number) => {
+        setValue(accountFieldName, newAccountId);
+        entries.forEach((_, index) => {
+            setValue(`entries.${index}.accountId`, newAccountId);
+        });
     };
 
     const renderAccountSelector = ({
