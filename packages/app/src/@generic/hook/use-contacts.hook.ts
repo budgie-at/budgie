@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Contacts from 'expo-contacts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -25,7 +25,7 @@ export const useContacts = () => {
     const [state, setState] = useState<ContactsState>(initialState);
     const { t } = useLingui();
 
-    const loadContacts = async () => {
+    const loadContacts = useCallback(async () => {
         setState(prev => ({ ...prev, loading: true, error: null }));
 
         try {
@@ -58,9 +58,12 @@ export const useContacts = () => {
                 error: t`Failed to load contacts.`
             }));
         }
-    };
+    }, [t]);
 
-    const reset = () => void setState(initialState);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        void loadContacts();
+    }, [loadContacts]);
 
     useEffect(() => {
         if (isNotEmptyString(state.error)) {
@@ -71,9 +74,5 @@ export const useContacts = () => {
         }
     }, [state.error]);
 
-    return {
-        ...state,
-        reset,
-        loadContacts
-    };
+    return state;
 };

@@ -79,7 +79,7 @@ msgid "About"
 msgstr "Acerca de"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:53
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
 msgid "Account"
 msgstr "Cuenta"
 
@@ -87,7 +87,7 @@ msgstr "Cuenta"
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:52
+#: src/account/component/create-account-screen/update-account-screen.tsx:58
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
@@ -483,7 +483,7 @@ msgstr "Crear etiquetas"
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:64
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -1062,7 +1062,7 @@ msgstr "Exceso:"
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:38
+#: src/@generic/component/contact-selector/contact-selector.tsx:36
 msgid "Owes you"
 msgstr "Te debe"
 
@@ -1203,7 +1203,7 @@ msgstr "Protege tu aplicación con PIN y Face ID"
 msgid "Security"
 msgstr "Seguridad"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:33
+#: src/@generic/component/contact-selector/contact-selector.tsx:31
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
 
@@ -1233,7 +1233,7 @@ msgid "Select category"
 msgstr "Seleccionar categoría"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:73
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:77
 msgid "Select Category"
 msgstr "Seleccionar categoría"
 
@@ -1516,7 +1516,7 @@ msgstr "Categoría desconocida"
 msgid "Up to date"
 msgstr "Actualizado"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:59
+#: src/account/component/create-account-screen/update-account-screen.tsx:65
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
@@ -1561,7 +1561,7 @@ msgstr "Esperando"
 msgid "When should it be returned?"
 msgstr "¿Cuándo debería ser devuelto?"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:38
+#: src/@generic/component/contact-selector/contact-selector.tsx:36
 msgid "Who owes you?"
 msgstr "¿Quién te debe dinero?"
 

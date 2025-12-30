@@ -79,7 +79,7 @@ msgid "About"
 msgstr "Про застосунок"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:53
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
 msgid "Account"
 msgstr "Рахунок"
 
@@ -87,7 +87,7 @@ msgstr "Рахунок"
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:52
+#: src/account/component/create-account-screen/update-account-screen.tsx:58
 msgid "Account Settings"
 msgstr "Налаштування рахунку"
 
@@ -483,7 +483,7 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:64
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -1062,7 +1062,7 @@ msgstr "Перевищення:"
 msgid "Overview"
 msgstr "Огляд"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:38
+#: src/@generic/component/contact-selector/contact-selector.tsx:36
 msgid "Owes you"
 msgstr "Винен вам"
 
@@ -1203,7 +1203,7 @@ msgstr "Захистіть свій додаток за допомогою PIN-�
 msgid "Security"
 msgstr "Безпека"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:33
+#: src/@generic/component/contact-selector/contact-selector.tsx:31
 msgid "Select a contact"
 msgstr "Виберіть контакт"
 
@@ -1233,7 +1233,7 @@ msgid "Select category"
 msgstr "Виберіть категорію"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:73
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:77
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1516,7 +1516,7 @@ msgstr "Невідома категорія"
 msgid "Up to date"
 msgstr "Актуальний"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:59
+#: src/account/component/create-account-screen/update-account-screen.tsx:65
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
@@ -1561,7 +1561,7 @@ msgstr "Очікування"
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
-#: src/@generic/component/contact-selector/contact-selector.tsx:38
+#: src/@generic/component/contact-selector/contact-selector.tsx:36
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
 

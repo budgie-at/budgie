@@ -33,7 +33,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             instrumentId: account.instrumentId,
             targetBalance: convertFromMicroUnits(account.targetBalance)
         },
-        values => accountService.updateById(account.id, values)
+        values => accountService.updateDebtById(account.id, values)
     );
 
     if (!isDefined(instrument)) {

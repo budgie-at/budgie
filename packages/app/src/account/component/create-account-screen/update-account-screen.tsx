@@ -1,4 +1,9 @@
-import { AccountEntityInterface, DebtAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import {
+    AccountEntityInterface,
+    AccountTypeEnum,
+    DebtAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface
+} from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -17,6 +22,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
@@ -39,7 +45,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const handleGoBack = () => void goBackOrReplace('/');
     const description = i18n.t(ACCOUNT_TYPE[account.type]);
-    const variant = ACCOUNT_COLOR[account.type];
+    const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
 
     return (
         <Page
@@ -63,7 +69,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
             }
         >
             <KeyboardAwareScrollView
-                contentContainerClassName="flex-1"
+                contentContainerClassName="pb-5xl"
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
