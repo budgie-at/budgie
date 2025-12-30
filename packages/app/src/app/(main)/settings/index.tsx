@@ -15,6 +15,7 @@ import { DefaultCurrencySelector } from '../../../settings/components/default-cu
 import { GenericSelectorCard } from '../../../settings/components/generic-selector-card/generic-selector-card';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
+import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -111,6 +112,7 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Data management`}>
                         <ImportCsv />
+                        <RecalculateBalances />
                         <TruncateData />
                     </SettingsGroup>
 
