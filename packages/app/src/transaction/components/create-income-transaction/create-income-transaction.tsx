@@ -28,6 +28,7 @@ export const CreateIncomeTransaction = () => {
             icon="TrendingUp"
             title={t`New Income`}
             buttonText={t`Add Income`}
+            transactionType={TransactionTypeEnum.INCOME}
         />
     );
 };
