@@ -256,7 +256,7 @@ msgstr "Коригування балансу"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 msgid "Balances recalculated successfully"
-msgstr ""
+msgstr "Баланси успішно перераховані"
 
 #: src/account/constant/account-type.constant.ts:6
 msgid "Bank"
@@ -377,9 +377,9 @@ msgstr "Очистити все"
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:35
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
 msgid "Clear cached balances and recalculate from transactions"
-msgstr ""
+msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:51
 msgid "Close"
@@ -1069,14 +1069,14 @@ msgstr "Конфіденційність"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:44
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Recalculate"
-msgstr ""
+msgstr "Перерахувати"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:47
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
 msgid "Recalculate Balances"
-msgstr ""
+msgstr "Перерахувати баланси"
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1276,7 +1276,7 @@ msgstr "Відправити"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 msgid "Success"
-msgstr ""
+msgstr "Успішно"
 
 #: src/category/components/category-card/category-card.tsx:22
 #: src/tag/components/tag-card/tag-card.tsx:23
@@ -1353,9 +1353,9 @@ msgstr "Цього місяця"
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
-msgstr ""
+msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
