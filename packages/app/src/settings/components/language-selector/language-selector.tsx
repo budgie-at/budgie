@@ -9,7 +9,7 @@ import { LanguageSelectorBottomSheet } from '../../../i18n/components/language-s
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { GenericSelectorCard } from '../generic-selector-card/generic-selector-card';
+import { SettingsCard } from '../settings-card/settings-card';
 
 export const LanguageSelector = () => {
     const language = useSetting('language');
@@ -32,11 +32,11 @@ export const LanguageSelector = () => {
 
     return (
         <>
-            <GenericSelectorCard
+            <SettingsCard
                 icon="Globe"
+                variant="default"
                 title={t`Language`}
                 onPress={handleOpen}
-                iconVariant="default"
                 description={`${selectedLanguage.emoji} ${i18n.t(selectedLanguage.name)}`}
             />
 

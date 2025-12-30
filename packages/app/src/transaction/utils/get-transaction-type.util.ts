@@ -9,7 +9,7 @@ import {
 
 export const getTransactionType = (
     transaction: TransactionWithRelationsEntityInterface
-): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME | TransactionTypeEnum.TRANSFER => {
+): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME | TransactionTypeEnum.TRANSFER | TransactionTypeEnum.DEBT => {
     switch (true) {
         case isPositiveAdjustmentTransaction(transaction):
             return TransactionTypeEnum.INCOME;
@@ -19,6 +19,8 @@ export const getTransactionType = (
             return TransactionTypeEnum.INCOME;
         case isExpenseTransaction(transaction):
             return TransactionTypeEnum.EXPENSE;
+        case transaction.type === TransactionTypeEnum.DEBT:
+            return TransactionTypeEnum.DEBT;
         default:
             return TransactionTypeEnum.TRANSFER;
     }
