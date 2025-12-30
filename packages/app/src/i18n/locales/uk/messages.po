@@ -186,7 +186,7 @@ msgstr "Сума"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
 msgid "Amount exceeds debt account balance"
-msgstr ""
+msgstr "Сума перевищує баланс боргового рахунку"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:16
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -268,7 +268,7 @@ msgstr "Біометрична автентифікація"
 
 #: src/account/constant/account-debt-type.constant.ts:7
 msgid "Borrowed"
-msgstr ""
+msgstr "Позичено"
 
 #: src/app/(main)/settings/index.tsx:123
 msgid "BudgetAI"
@@ -342,7 +342,7 @@ msgstr "Оберіть вашу основну категорію"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:78
 msgid "Choose your main contact"
-msgstr ""
+msgstr "Виберіть основний контакт"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Choose your main currency"
@@ -395,7 +395,7 @@ msgstr "Підключити Монобанк"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:16
 msgid "Contact (optional)"
-msgstr ""
+msgstr "Контакт (необов'язково)"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
@@ -533,7 +533,7 @@ msgstr "Борг"
 #: src/account/component/create-debt-account/create-debt-account.tsx:50
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
-msgstr ""
+msgstr "Борговий рахунок"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "Default Account"
@@ -686,11 +686,11 @@ msgstr "Щоденні транзакції та витрати"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "Expected return date"
-msgstr ""
+msgstr "Очікувана дата повернення"
 
 #: src/account/component/account-form-date-field/account-form-date-field.tsx:22
 msgid "Expected Return Date (Optional)"
-msgstr ""
+msgstr "Очікувана дата повернення (Необов'язково)"
 
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
@@ -715,7 +715,7 @@ msgstr "Face ID / Touch ID"
 
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
-msgstr ""
+msgstr "Не вдалося завантажити контакти."
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -849,7 +849,7 @@ msgstr "Остання синхронізація"
 
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
-msgstr ""
+msgstr "Позичено"
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -877,7 +877,7 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
-msgstr ""
+msgstr "Гроші позичені або взяті в борг"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -949,15 +949,15 @@ msgstr "Поки немає категорій"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts found"
-msgstr ""
+msgstr "Контакти не знайдено"
 
 #: src/@generic/hook/use-contacts.hook.ts:43
 msgid "No contacts found on this device."
-msgstr ""
+msgstr "На цьому пристрої контакти не знайдено."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts yet"
-msgstr ""
+msgstr "Поки немає контактів"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "No currencies found"
@@ -1047,11 +1047,11 @@ msgstr "Огляд"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Owes you"
-msgstr ""
+msgstr "Заборгував вам"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:57
 msgid "Paid: {formattedBalance}"
-msgstr ""
+msgstr "Сплачено: {formattedBalance}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
@@ -1059,11 +1059,11 @@ msgstr "Вставте ваш API-токен нижче:"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:45
 msgid "Payment Progress"
-msgstr ""
+msgstr "Прогрес платежу"
 
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
-msgstr ""
+msgstr "Доступ до контактів заборонено."
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1146,7 +1146,7 @@ msgstr "Пошук категорій..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:80
 msgid "Search contacts..."
-msgstr ""
+msgstr "Шукати контакти..."
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
 msgid "Search currencies..."
@@ -1179,7 +1179,7 @@ msgstr "Безпека"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:33
 msgid "Select a contact"
-msgstr ""
+msgstr "Вибрати контакт"
 
 #: src/app/(main)/settings/import.tsx:53
 #: src/app/(main)/settings/import.tsx:56
@@ -1217,7 +1217,7 @@ msgstr "Виберіть стовпець..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:77
 msgid "Select Contact"
-msgstr ""
+msgstr "Вибрати контакт"
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1253,7 +1253,7 @@ msgstr "Вибрано {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:26
 msgid "Set Return Date"
-msgstr ""
+msgstr "Встановити дату повернення"
 
 #: src/app/(main)/settings/index.tsx:43
 msgid "Settings"
@@ -1370,7 +1370,7 @@ msgstr "Натисніть, щоб очистити"
 
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:19
 msgid "Target balance"
-msgstr ""
+msgstr "Цільовий баланс"
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1424,7 +1424,7 @@ msgstr "Загальний баланс"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
-msgstr ""
+msgstr "Всього: {formattedAmountToReturn}"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Touch ID"
@@ -1525,19 +1525,19 @@ msgstr "Очікування"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "When should it be returned?"
-msgstr ""
+msgstr "Коли це має бути повернено?"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Who owes you?"
-msgstr ""
+msgstr "Хто вам заборгував?"
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
-msgstr ""
+msgstr "Ви дали гроші"
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
-msgstr ""
+msgstr "Ви отримали гроші"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
