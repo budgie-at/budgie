@@ -9,10 +9,14 @@ import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-in
 import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 class AccountBalanceIncrementalService {
-    async updateAllBalances(updatedAt?: Date): Promise<void> {
+    async updateAllBalances(truncate: boolean): Promise<void> {
         const accounts = await accountRepository.getAllActiveAccounts();
         if (isEmptyArray(accounts)) {
             return;
+        }
+
+        if (truncate) {
+            await accountBalanceRepository.truncate();
         }
 
         const accountIds = accounts.map(({ id }) => id);
@@ -31,7 +35,7 @@ class AccountBalanceIncrementalService {
             return {
                 amount: base + delta,
                 accountId: account.id,
-                updatedAt: updatedAt ?? new Date()
+                updatedAt: new Date()
             };
         });
 
