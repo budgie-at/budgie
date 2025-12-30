@@ -54,7 +54,9 @@ export const TransactionSplitAllocation = ({ entriesAmount, totalAmount }: Props
             </Text>
 
             {isPositiveNumber(amountToAllocate) ? (
-                <Text className={summaryTextVariants({ valid: isAllAllocated })}>{formatDigits(amountToAllocate, defaultInstrument.symbol)}</Text>
+                <Text className={summaryTextVariants({ valid: isAllAllocated })}>
+                    {formatDigits(amountToAllocate, defaultInstrument.symbol)}
+                </Text>
             ) : null}
         </View>
     );

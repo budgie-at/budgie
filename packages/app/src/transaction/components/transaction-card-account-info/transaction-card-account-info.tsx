@@ -35,7 +35,9 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
             <View className="flex-row items-center gap-x-sm flex-1">
                 <Text className="text-xs text-secondary-foreground">from</Text>
                 <Icon icon={fromAccount.icon} className="text-secondary-foreground" size={12} />
-                <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>{fromAccount.title}</Text>
+                <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
+                    {fromAccount.title}
+                </Text>
             </View>
         );
     }
@@ -45,7 +47,9 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
             <View className="flex-row items-center gap-x-sm flex-1">
                 <Text className="text-xs text-secondary-foreground">to</Text>
                 <Icon icon={toAccount.icon} className="text-secondary-foreground" size={12} />
-                <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>{toAccount.title}</Text>
+                <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
+                    {toAccount.title}
+                </Text>
             </View>
         );
     }

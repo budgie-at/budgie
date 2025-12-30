@@ -9,4 +9,4 @@ export const getDeadlinePriority = (createdAt: Date, deadline: Date): 'high' | '
     }
 
     return remainingMs <= totalMs * 0.3 ? 'high' : 'normal';
-}
+};

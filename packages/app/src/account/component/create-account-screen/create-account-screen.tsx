@@ -14,7 +14,6 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 
-
 interface Props<T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface> {
     readonly title: string;
     readonly description?: string;
@@ -50,7 +49,11 @@ export const CreateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 </KeyboardStickyView>
             }
         >
-            <KeyboardAwareScrollView contentContainerClassName='pb-5xl' keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <KeyboardAwareScrollView
+                contentContainerClassName="pb-5xl"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
                 <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
 
                 {children}

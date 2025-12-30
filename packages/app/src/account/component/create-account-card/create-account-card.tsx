@@ -18,5 +18,14 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
 
     const iconParams = { variant: ACCOUNT_COLOR[type], radius: 20, border: false, size: 52, iconSize: 24 };
 
-    return <SimpleHorizontalCell size='lg' icon={icon} title={title} onPress={handleNavigate} description={description} iconParams={iconParams} />;
+    return (
+        <SimpleHorizontalCell
+            size="lg"
+            icon={icon}
+            title={title}
+            onPress={handleNavigate}
+            description={description}
+            iconParams={iconParams}
+        />
+    );
 };

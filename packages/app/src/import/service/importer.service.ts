@@ -122,7 +122,7 @@ export class ImporterService {
             includeInNetWorth: true,
             type: AccountTypeEnum.BANK,
             icon: UserIconNameEnum.Home,
-            instrumentId: this.instrumentsMap[currency].id,
+            instrumentId: this.instrumentsMap[currency].id
         };
     }
 
