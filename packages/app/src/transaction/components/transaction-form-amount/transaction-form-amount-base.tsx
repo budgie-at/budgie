@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { FormAmountInput } from '../../../@generic/components/form-amount-input/form-amount-input';
+import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {

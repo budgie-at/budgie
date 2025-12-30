@@ -2,6 +2,7 @@ import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/c
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountCard } from '../account-card/account-card';
 
@@ -17,10 +18,20 @@ export const AccountList = ({ accounts, type }: Props) => {
         <View className="gap-y-xl">
             <Text className="text-xs uppercase text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
 
-            <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-[30px]">
-                {accounts.map(({ id, title, icon, instrument }) => (
+            <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-7.5">
+                {accounts.map(({ id, title, icon, instrument, deadline, debtType, targetBalance, createdAt }) => (
                     <View className="w-1/2 px-1.5" key={id}>
-                        <AccountCard id={id} icon={icon} title={title} instrumentSymbol={instrument.symbol} />
+                        <AccountCard
+                            targetBalance={convertFromMicroUnits(targetBalance)}
+                            type={type}
+                            id={id}
+                            deadline={deadline}
+                            debtType={debtType}
+                            icon={icon}
+                            title={title}
+                            createdAt={createdAt}
+                            instrumentSymbol={instrument.symbol}
+                        />
                     </View>
                 ))}
             </View>

@@ -3,9 +3,8 @@ import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { LlmType } from '../../type/llm.type';
 
@@ -114,9 +113,9 @@ export const RecordButton = (props: Props) => {
         <View className="items-center">
             <HapticPressable disabled={isDisabled} className={cn(buttonVariants({ variant, size }), className)} {...rest}>
                 {variant === 'loading' && <ActivityIndicator size={activityIndicatorSize[size]} color="white" />}
-                {variant === 'processing' && <Icon icon={ICONS.Sparkles} size={iconSize[size]} className="text-primary" />}
-                {variant === 'recording' && <Icon icon={ICONS.Square} size={iconSize[size]} className="text-primary" />}
-                {variant === 'default' && <Icon icon={ICONS.Mic} size={iconSize[size]} className="text-primary" />}
+                {variant === 'processing' && <Icon icon="Sparkles" size={iconSize[size]} className="text-primary" />}
+                {variant === 'recording' && <Icon icon="Square" size={iconSize[size]} className="text-primary" />}
+                {variant === 'default' && <Icon icon="Mic" size={iconSize[size]} className="text-primary" />}
             </HapticPressable>
 
             <Text className={cn('mt-3', labelVariants({ variant }), labelClassName)}>{label}</Text>

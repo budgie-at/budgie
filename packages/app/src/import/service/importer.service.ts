@@ -1,13 +1,12 @@
 /* eslint-disable lingui/no-unlocalized-strings,max-lines */
 import {
-    AccountCreateEntityInterface,
     AccountEntityInterface,
-    AccountNatureEnum,
     AccountTypeEnum,
     CategoryCreateEntityInterface,
     CategoryEntityInterface,
     ExternalSourceEnum,
     InstrumentEntityInterface,
+    LiabilityAccountCreateInputInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -90,10 +89,10 @@ export class ImporterService {
     }
 
     private async collectEntities(csvText: string): Promise<{
-        accountInputs: Map<string, AccountCreateEntityInterface>;
+        accountInputs: Map<string, LiabilityAccountCreateInputInterface>;
         categoryInputs: Map<string, CategoryCreateEntityInterface>;
     }> {
-        const accountInputs = new Map<string, AccountCreateEntityInterface>();
+        const accountInputs = new Map<string, LiabilityAccountCreateInputInterface>();
         const categoryInputs = new Map<string, CategoryCreateEntityInterface>();
 
         await this.processRows(csvText, normalizedRow => {
@@ -115,14 +114,15 @@ export class ImporterService {
         return { accountInputs, categoryInputs };
     }
 
-    private createAccountInput(title: string, currency: string): AccountCreateEntityInterface {
+    private createAccountInput(title: string, currency: string): LiabilityAccountCreateInputInterface {
         return {
             title,
+            parentId: null,
+            currentBalance: 0,
+            includeInNetWorth: true,
             type: AccountTypeEnum.BANK,
             icon: UserIconNameEnum.Home,
-            nature: AccountNatureEnum.LIABILITY,
-            instrumentId: this.instrumentsMap[currency].id,
-            currentBalance: 0
+            instrumentId: this.instrumentsMap[currency].id
         };
     }
 
