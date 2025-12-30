@@ -205,7 +205,7 @@ class AppMonobankSyncService {
             if (isDefined(instrument) && !existingIds.has(bankAccount.id)) {
                 toCreate.push({
                     title: this.generateAccountTitle(bankAccount),
-                    type: AccountTypeEnum.BANK,
+                    type: AccountTypeEnum.BANK_SYNC,
                     icon: UserIconNameEnum.Landmark,
                     instrumentId: instrument.id,
                     currentBalance: 0,
@@ -231,7 +231,7 @@ class AppMonobankSyncService {
         for (const bankTx of bankTransactions) {
             const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
             const amount = Math.abs(bankTx.amount);
-            const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+            const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
             transactionsToCreate.push({
                 amount,

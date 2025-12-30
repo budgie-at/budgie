@@ -29,7 +29,7 @@ export const DebtAccountCardSummary = ({ targetBalance, instrumentSymbol, curren
         <View className="flex-row items-center justify-between">
             <ProtectedText className="text-primary font-medium">{amountLeft}</ProtectedText>
 
-            <View className="flex-1">
+            <View>
                 <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
                     {instrumentSymbol}
                     {abbreviateNumber(currentBalance, 2)}

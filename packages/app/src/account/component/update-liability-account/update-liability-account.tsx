@@ -3,7 +3,6 @@ import { AccountEntityInterface } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
@@ -22,9 +21,9 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             type: account.type,
             icon: account.icon,
             title: account.title,
+            currentBalance: balance,
             instrumentId: account.instrumentId,
-            includeInNetWorth: account.includeInNetWorth,
-            currentBalance: convertFromMicroUnits(balance)
+            includeInNetWorth: account.includeInNetWorth
         },
         async values => await accountService.updateById(account.id, values)
     );

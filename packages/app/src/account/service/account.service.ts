@@ -84,6 +84,23 @@ class AccountService {
         });
     }
 
+    async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
+        return db.transaction(async tx => {
+            const account = await accountRepository.updateById(
+                id,
+                // eslint-disable-next-line no-undefined
+                { ...input, targetBalance: isNumber(input.targetBalance) ? convertToMicroUnits(input.targetBalance) : undefined },
+                tx
+            );
+
+            if (isNumber(input.currentBalance)) {
+                await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+            }
+
+            return account;
+        });
+    }
+
     async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
         const account = await accountRepository.findById(id);
 
@@ -145,7 +162,7 @@ class AccountService {
                 transactionId: transaction.id,
                 categoryId: null,
                 amount: absDelta,
-                type: isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT
+                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
             },
             tx
         );
