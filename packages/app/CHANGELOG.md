@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.91.0](https://github.com/budgie-at/budgie/compare/v1.90.0...v1.91.0) (2025-12-30)
+
+### Bug Fixes
+
+- **app:** ai chat button jumping ([9c271d5](https://github.com/budgie-at/budgie/commit/9c271d5146944153cd7e23c7fcc946d1d5f8ef26))
+- **app:** ai chat button jumping ([f40f3e3](https://github.com/budgie-at/budgie/commit/f40f3e3dd450fd79f3f1f2b1a1509741660ebe84))
+- **app:** export support multiple entries ([62a5a15](https://github.com/budgie-at/budgie/commit/62a5a1583e5ce8763181da47512c98858be5cca5))
+- **app:** transfer card styles ([d406fb6](https://github.com/budgie-at/budgie/commit/d406fb6df66e203fea2bfa43414714ba5c890b67))
+- **app:** transfer card styles ([f75076c](https://github.com/budgie-at/budgie/commit/f75076c41d9a25d5ad265041fcbd577571e5f821))
+- **app:** transfer card styles ([8db60e2](https://github.com/budgie-at/budgie/commit/8db60e22b2bec47561db161fbc8022f511c5c865))
+- **app:** transfer card styles ([e47e51a](https://github.com/budgie-at/budgie/commit/e47e51a69222acde404e67bb86d1882960d7289d))
+- **app:** transfer card styles ([09ea44d](https://github.com/budgie-at/budgie/commit/09ea44dcc3c2625445b2f613de5545696fef44b1))
+- **app:** transfer card styles ([03252da](https://github.com/budgie-at/budgie/commit/03252da0946dacd012dd1fd1e0b4d4935bf444bf))
+- **app:** transfer card styles ([eb3ec05](https://github.com/budgie-at/budgie/commit/eb3ec05a71591f31c8331b722b47ee515f3ba51a))
+- **app:** transfer card styles ([9ced2e9](https://github.com/budgie-at/budgie/commit/9ced2e9995de6523501a2cd3dcad5988e948a1d7))
+
+### Features
+
+- **app:** added disabled to settings card ([ea3e214](https://github.com/budgie-at/budgie/commit/ea3e2142e86ccf87b0eb6234bd4b96a5465aaec7))
+- **app:** fix import styles ([3436849](https://github.com/budgie-at/budgie/commit/343684932c1836e649ad2324a528dcd8f6b346d7))
+- **app:** fix import styles ([0548e0d](https://github.com/budgie-at/budgie/commit/0548e0db4425b7b1f42968291d5ea404df99230e))
+- **app:** refactor import ([0fbd9b4](https://github.com/budgie-at/budgie/commit/0fbd9b49acff72b48994cfc91d9e7e38347694bb))
+- export csv ([0b33a1b](https://github.com/budgie-at/budgie/commit/0b33a1b858d95ef624c7acc993f36b60c8b358d4))
+- export csv ([3b8d02f](https://github.com/budgie-at/budgie/commit/3b8d02f8a67586dd86c35bf44d35d287574843db))
+
 # [1.90.0](https://github.com/budgie-at/budgie/compare/v1.89.0...v1.90.0) (2025-12-30)
 
 ### Bug Fixes
