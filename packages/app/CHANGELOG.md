@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.88.0](https://github.com/budgie-at/budgie/compare/v1.87.1...v1.88.0) (2025-12-30)
+
+### Bug Fixes
+
+- **app:** add error handling and change variant to destructive for recalculate balances ([ea0ff8a](https://github.com/budgie-at/budgie/commit/ea0ff8a08a57c3da11d69e6bcd7e15a6b2622a3c))
+- **app:** remove error re-throw to prevent unhandled promise rejection ([040390a](https://github.com/budgie-at/budgie/commit/040390a9cb311b2f28fd351ea31c83756f4599ee))
+
+### Features
+
+- **app:** add recalculate balances setting ([b503ffc](https://github.com/budgie-at/budgie/commit/b503ffc6a61d772731d85f059c21ff865707d4ea))
+- **app:** add recalculate balances setting ([2e4c4e8](https://github.com/budgie-at/budgie/commit/2e4c4e80221257d54fb0dbf6bfd8db70cc764e8b))
+- **app:** add recalculate balances setting ([6821dae](https://github.com/budgie-at/budgie/commit/6821dae40c64ee75e41de8728427099351406acf))
+
 ## [1.87.1](https://github.com/budgie-at/budgie/compare/v1.87.0...v1.87.1) (2025-12-28)
 
 ### Bug Fixes
