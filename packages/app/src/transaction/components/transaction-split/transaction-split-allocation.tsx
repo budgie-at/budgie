@@ -4,11 +4,10 @@ import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -35,8 +34,8 @@ const summaryTextVariants = cva('text-xs', {
 });
 
 export const TransactionSplitAllocation = ({ entriesAmount, totalAmount }: Props) => {
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const isAllAllocated = entriesAmount === totalAmount;
     const isOverAllocated = entriesAmount > totalAmount;
@@ -46,7 +45,7 @@ export const TransactionSplitAllocation = ({ entriesAmount, totalAmount }: Props
 
     return (
         <View className={summaryVariants({ valid: isAllAllocated })}>
-            {isAllAllocated ? <Icon icon={ICONS.Check} size={14} className="text-positive-foreground" /> : null}
+            {isAllAllocated ? <Icon icon="Check" size={14} className="text-positive-foreground" /> : null}
 
             <Text className={cn(summaryTextVariants({ valid: isAllAllocated }), 'flex-1')}>
                 {isAllAllocated ? <Trans>Allocated</Trans> : null}
@@ -55,7 +54,9 @@ export const TransactionSplitAllocation = ({ entriesAmount, totalAmount }: Props
             </Text>
 
             {isPositiveNumber(amountToAllocate) ? (
-                <Text className={summaryTextVariants({ valid: isAllAllocated })}>{formatMoney(amountToAllocate)}</Text>
+                <Text className={summaryTextVariants({ valid: isAllAllocated })}>
+                    {formatDigits(amountToAllocate, defaultInstrument.symbol)}
+                </Text>
             ) : null}
         </View>
     );

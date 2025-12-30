@@ -4,6 +4,7 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { CreateBankAccount } from '../../../account/component/create-bank-account/create-bank-account';
 import { CreateCashAccount } from '../../../account/component/create-cash-account/create-cash-account';
+import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
 
 type AccountRouteType = AccountTypeEnum | 'monobank';
@@ -16,6 +17,8 @@ export default function CreateAccountType() {
             return <CreateCashAccount />;
         case AccountTypeEnum.BANK:
             return <CreateBankAccount />;
+        case AccountTypeEnum.DEBT:
+            return <CreateDebtAccount />;
         case BankProviderEnum.MONOBANK:
             return <CreateMonobankAccount />;
         default:

@@ -3,8 +3,8 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { BottomSheetTextInput } from '../../../@generic/components/bottom-sheet-text-input/bottom-sheet-text-input';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { BottomSheetTextInput } from '../../../@generic/component/bottom-sheet-text-input/bottom-sheet-text-input';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly search: string;

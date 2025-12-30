@@ -4,9 +4,8 @@ import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { AccountFilterCard } from '../account-filter-card/account-filter-card';
@@ -51,7 +50,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
 
     const handleSelectSingle = (id: number) => void onSelect(id);
 
-    const arrowIcon = isOpen ? ICONS.ChevronDown : ICONS.ChevronRight;
+    const arrowIcon = isOpen ? 'ChevronDown' : 'ChevronRight';
 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
@@ -61,7 +60,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
                 </HapticPressable>
 
                 <HapticPressable onPress={handleSelectAll} className="flex-row items-center gap-x-xl flex-1 px-3xl">
-                    <Icon size={16} icon={ICONS[ACCOUNT_ICON[type]]} className="text-secondary-foreground" />
+                    <Icon size={16} icon={ACCOUNT_ICON[type]} className="text-secondary-foreground" />
 
                     <View className="gap-y-xxs mr-auto">
                         <Text className="text-sm text-secondary-foreground font-medium">{i18n.t(ACCOUNT_TYPE[type])}</Text>
@@ -70,8 +69,8 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
                         </Text>
                     </View>
 
-                    {isAllSelected ? <Icon icon={ICONS.Check} size={16} className="text-primary" /> : null}
-                    {isPartiallySelected ? <Icon icon={ICONS.Circle} size={16} className="text-primary" /> : null}
+                    {isAllSelected ? <Icon icon="Check" size={16} className="text-primary" /> : null}
+                    {isPartiallySelected ? <Icon icon="Circle" size={16} className="text-primary" /> : null}
                 </HapticPressable>
             </View>
 

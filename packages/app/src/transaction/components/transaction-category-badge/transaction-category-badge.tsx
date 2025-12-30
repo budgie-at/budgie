@@ -2,7 +2,7 @@ import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -14,8 +14,8 @@ const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background';
 const textClassName = 'text-secondary-foreground/70 text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
     const hasMultipleEntries = transaction.entries.length > 1;
@@ -26,7 +26,8 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
                 {transaction.entries.map(entry => (
                     <View className="rounded-sm py-xxs px-sm bg-secondary-background" key={entry.id}>
                         <Text className={textClassName}>
-                            {entry.category?.title ?? t`Unknown`} <Text className="text-primary/70">{format(entry.amount)}</Text>
+                            {entry.category?.title ?? t`Unknown`}{' '}
+                            <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
                         </Text>
                     </View>
                 ))}

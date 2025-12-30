@@ -2,10 +2,9 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
@@ -37,9 +36,9 @@ export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }
 
     return (
         <HapticPressable onPress={handleSelect} className={categoryVariants({ isSelected })}>
-            <CircleIcon icon={ICONS[category.icon]} variant="ghost" size="sm" />
+            <CircleIcon icon={category.icon} variant="ghost" size={26} iconSize={12} />
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>{category.title}</Text>
-            {isSelected ? <Icon size={16} icon={ICONS.Check} className="text-primary" /> : null}
+            {isSelected ? <Icon size={16} icon="Check" className="text-primary" /> : null}
         </HapticPressable>
     );
 };

@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 
-import { TabButton } from '../../../@generic/components/tab-button/tab-button';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { TabButton } from '../../../@generic/component/tab-button/tab-button';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { CreateTransactionBottomSheet } from '../create-transaction-bottom-sheet/create-transaction-bottom-sheet';
 
@@ -12,7 +11,7 @@ export const CreateTransactionTab = () => {
 
     return (
         <>
-            <TabButton icon={ICONS.Plus} onPress={handleOpen} />
+            <TabButton icon="Plus" onPress={handleOpen} />
 
             <CreateTransactionBottomSheet ref={ref} />
         </>

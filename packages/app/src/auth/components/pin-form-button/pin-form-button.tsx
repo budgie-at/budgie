@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
     readonly digit: string;
@@ -16,7 +16,7 @@ export const PinFormButton = ({ digit, onPress, disabled }: Props) => {
         <HapticPressable
             onPress={handlePress}
             disabled={disabled}
-            className="flex-1 max-w-[92px] justify-center items-center rounded-3xl bg-secondary-background border border-secondary-corner aspect-square"
+            className="flex-1 max-w-23 justify-center items-center rounded-3xl bg-secondary-background border border-secondary-corner aspect-square"
         >
             <Text className="text-xl text-primary">{digit}</Text>
         </HapticPressable>

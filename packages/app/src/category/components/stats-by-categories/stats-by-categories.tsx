@@ -3,12 +3,12 @@ import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View, ViewStyle } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -20,9 +20,7 @@ interface Props {
 }
 
 const amountVariants = cva('text-xs', {
-    variants: {
-        variant: FOREGROUND_COLOR_PALETTE
-    }
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
 const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h-[8px] rounded-5xl', {
@@ -35,28 +33,30 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
             warning: 'bg-warning-foreground',
             default: 'bg-default-foreground',
             ghost: 'bg-ghost-foreground',
-            pink: 'bg-pink-foreground'
+            pink: 'bg-pink-foreground',
+            primary: 'bg-primary'
         }
     }
 });
 
 export const StatsByCategories = ({ title, stats, totalAmount, variant, getPercentageLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const format = useFormatMoney(decimalPlaces, defaultInstrument.code);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
-        const percentage = Number((totalAmount > 0 ? (amount / totalAmount) * 100 : 0).toFixed(2));
+        const microAmount = convertFromMicroUnits(amount);
+        const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
         const style: ViewStyle = { width: `${percentage}%` };
 
         return (
             <View key={category.id} className="gap-y-md">
                 <View className="flex-row items-center gap-x-md">
-                    <CircleIcon icon={ICONS[category.icon]} variant={variant} />
+                    <CircleIcon icon={category.icon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-                    <Text className={amountVariants({ variant })}>{format(amount)}</Text>
+                    <Text className={amountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
                 </View>
 
-                <View className="rounded-5xl bg-secondary-corner h-[8px]">
+                <View className="rounded-5xl bg-secondary-corner h-2">
                     <View style={style} className={barVariants({ variant })} />
                 </View>
 

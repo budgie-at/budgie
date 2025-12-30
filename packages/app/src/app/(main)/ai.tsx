@@ -4,7 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { Page } from '../../@generic/components/page/page';
+import { Page } from '../../@generic/component/page/page';
 import { BottomSheetsProvider } from '../../@generic/providers/bottom-sheets.provider';
 import { RecordButton } from '../../ai/component/record-button/record-button';
 import { useLlmContext } from '../../ai/context/llm.context';

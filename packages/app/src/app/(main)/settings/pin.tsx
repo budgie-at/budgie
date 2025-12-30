@@ -5,9 +5,9 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { GoBackButton } from '../../../@generic/components/go-back-button/go-back-button';
-import { LoadingOverlay } from '../../../@generic/components/loading-overlay/loading-overlay';
-import { FullPage } from '../../../@generic/components/page/full-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BiometricConfiguration } from '../../../auth/components/biometric-configuration/biometric-configuration';

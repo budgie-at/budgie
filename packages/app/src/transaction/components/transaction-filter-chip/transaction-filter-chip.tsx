@@ -3,9 +3,9 @@ import { Text } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS, IconName } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly label: string;
@@ -34,7 +34,7 @@ const textVariants = cva('text-sm', {
 
 export const TransactionFilterChip = ({ label, onPress, icon, isActive }: Props) => (
     <HapticPressable className={chipVariants({ isActive })} onPress={onPress}>
-        <Icon icon={ICONS[icon]} className={textVariants({ isActive })} size={14} />
+        <Icon icon={icon} className={textVariants({ isActive })} size={14} />
         <Text className={textVariants({ isActive })}>{label}</Text>
     </HapticPressable>
 );

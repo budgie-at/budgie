@@ -4,13 +4,12 @@ import { Pressable, Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetScrollView } from '../../../@generic/components/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { Button } from '../../../@generic/components/button/button';
-import { Footer } from '../../../@generic/components/footer/footer';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
+import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
+import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
+import { Button } from '../../../@generic/component/button/button';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ImportColumnMapperOption } from '../import-column-mapper-option/import-column-mapper-option';
 
@@ -60,7 +59,7 @@ export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, c
                         <Text className="text-primary text-sm font-semibold">{currentValue}</Text>
                         <View className="flex-row items-center gap-x-sm">
                             <Text className="text-destructive-foreground text-xs">{t`Tap to clear`}</Text>
-                            <Icon icon={ICONS.X} size={16} className="text-destructive-foreground" />
+                            <Icon icon="X" size={16} className="text-destructive-foreground" />
                         </View>
                     </Pressable>
                 </View>

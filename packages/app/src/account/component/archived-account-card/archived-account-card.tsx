@@ -1,18 +1,17 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { ProtectedText } from '../../../@generic/components/protected-text/protected-text';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
@@ -25,8 +24,8 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const { icon, title, type, id } = account;
 
     const { balance } = useAccountBalanceQuery(id);
-    const { decimalPlaces, defaultCurrency } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
     const ref = useRef<BottomSheetInterface | null>(null);
     const { i18n, t } = useLingui();
 
@@ -48,22 +47,27 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const accountTitle = account.title;
     const description = t`${accountTitle} will be restored to your main view and included in totals.`;
 
+    const iconParams = { size: 46, iconSize: 20, variant: 'dark-warning' } as const;
+
     return (
         <>
-            <Card className="flex-row items-center gap-x-xl">
-                <CircleIcon size="1_5xl" icon={ICONS[icon]} variant="dark-warning" />
+            <SimpleHorizontalCell
+                right={
+                    <View className="flex-row items-center gap-x-xl">
+                        <ProtectedText className="text-destructive-foreground text-sm font-semibold">
+                            {formatDigits(balance, defaultInstrument.symbol)}
+                        </ProtectedText>
 
-                <View className="mr-auto">
-                    <Text className="text-sm font-semibold text-primary">{title}</Text>
-                    <Text className="text-xs text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
-                </View>
-
-                <ProtectedText className="text-destructive-foreground text-sm font-semibold">{formatMoney(balance)}</ProtectedText>
-
-                <HapticPressable onPress={onRestore}>
-                    <CircleIcon variant="positive" icon={ICONS.RotateCcw} />
-                </HapticPressable>
-            </Card>
+                        <HapticPressable onPress={onRestore}>
+                            <CircleIcon variant="positive" icon="RotateCcw" />
+                        </HapticPressable>
+                    </View>
+                }
+                icon={icon}
+                title={title}
+                description={i18n.t(ACCOUNT_TYPE[type])}
+                iconParams={iconParams}
+            />
 
             <ConfirmActionBottomSheet
                 ref={ref}

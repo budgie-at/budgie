@@ -1,9 +1,8 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly title: string;
@@ -70,10 +69,10 @@ export const ImportPresetCard = ({ title, description, isSelected, onSelect }: P
     <HapticPressable className={cardVariants({ isSelected })} onPress={onSelect}>
         <View className="flex-row items-center justify-between">
             <View className={iconContainerVariants({ isSelected })}>
-                <Icon icon={ICONS.Database} size={20} className={iconVariants({ isSelected })} />
+                <Icon icon="Database" size={20} className={iconVariants({ isSelected })} />
             </View>
             <View className={checkIconContainerVariants({ isSelected })}>
-                {isSelected && <Icon icon={ICONS.Check} size={14} className="text-primary-reverse" />}
+                {isSelected && <Icon icon="Check" size={14} className="text-primary-reverse" />}
             </View>
         </View>
         <View className="gap-y-xs">

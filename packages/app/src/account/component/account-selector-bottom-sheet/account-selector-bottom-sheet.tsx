@@ -1,10 +1,10 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SearchableListBottomSheet } from '../../../@generic/components/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchAccountsQuery } from '../../query/use-search-accounts.query';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
@@ -12,6 +12,7 @@ import { AccountSelectorCard } from '../account-selector-card/account-selector-c
 interface Props {
     readonly emptyStateDescription?: string;
     readonly excludeAccountId: number | null;
+    readonly excludeAccountTypes?: AccountTypeEnum[];
     readonly onSelect: (accountId: number) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly selectedAccount: AccountEntityInterface | null;
@@ -24,9 +25,10 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg'
 };
 
-export const AccountSelectorBottomSheet = ({ ref, selectedAccount, excludeAccountId, onSelect, emptyStateDescription }: Props) => {
+export const AccountSelectorBottomSheet = (props: Props) => {
+    const { ref, selectedAccount, excludeAccountId, excludeAccountTypes, onSelect, emptyStateDescription } = props;
     const [search, setSearch] = useState('');
-    const { accounts } = useSearchAccountsQuery(search);
+    const { accounts } = useSearchAccountsQuery(search, { excludeTypes: excludeAccountTypes });
     const { t } = useLingui();
 
     const handleSelect = (accountId: number) => {

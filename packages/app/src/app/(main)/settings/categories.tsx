@@ -4,8 +4,8 @@ import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DeletableRow } from '../../../@generic/components/deletable-row/deletable-row';
-import { SearchablePage } from '../../../@generic/components/searchable-page/searchable-page';
+import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
+import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';

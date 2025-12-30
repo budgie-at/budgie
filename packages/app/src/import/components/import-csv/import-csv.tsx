@@ -5,10 +5,8 @@ import { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
 export const ImportCsv = () => {
@@ -19,13 +17,15 @@ export const ImportCsv = () => {
         setIsLoading(true);
         try {
             const result = await DocumentPicker.getDocumentAsync({ type: 'text/csv', copyToCacheDirectory: true });
-            if (result.canceled || !isDefined(result.assets[0]?.uri)) {
+            const { uri } = result.assets?.at(0) ?? {};
+
+            if (result.canceled || !isNotEmptyString(uri)) {
                 setIsLoading(false);
 
                 return;
             }
 
-            router.push({ pathname: '/settings/import', params: { fileUri: result.assets[0].uri } });
+            router.push({ pathname: '/settings/import', params: { fileUri: uri } });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
         } finally {
@@ -39,8 +39,9 @@ export const ImportCsv = () => {
         <SettingsCard
             title={t`Import CSV`}
             description={t`Import transactions from a CSV file`}
-            left={<CircleIcon size="1_5xl" icon={ICONS.Database} variant="ghost" border={false} />}
             onPress={handleSelectAndNavigate}
+            icon="Database"
+            variant="ghost"
             right={rightSlot}
         />
     );

@@ -1,1 +1,10 @@
-export type ColorPaletteVariant = 'default' | 'destructive' | 'warning' | 'dark-warning' | 'positive' | 'ghost' | 'pink' | 'secondary';
+export type ColorPaletteVariant =
+    | 'default'
+    | 'destructive'
+    | 'warning'
+    | 'dark-warning'
+    | 'positive'
+    | 'ghost'
+    | 'pink'
+    | 'secondary'
+    | 'primary';

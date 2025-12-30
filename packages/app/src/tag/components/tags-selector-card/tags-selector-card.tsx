@@ -2,9 +2,8 @@ import { TagEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
 
@@ -72,7 +71,7 @@ export const TagsSelectorCard = ({ className, isSelected, title, variant, onSele
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
             <Text className={textVariants({ isSelected, variant })}>{title}</Text>
 
-            {variant === 'removable' ? <Icon icon={ICONS.X} className="text-primary-reverse" size={14} /> : null}
+            {variant === 'removable' ? <Icon icon="X" className="text-primary-reverse" size={14} /> : null}
         </HapticPressable>
     );
 };

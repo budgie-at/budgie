@@ -3,8 +3,8 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-import { LoadingOverlay } from '../../@generic/components/loading-overlay/loading-overlay';
-import { useAppState } from '../../@generic/hooks/use-app-state.hook';
+import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
+import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../auth/constant/pin-length.constant';
 import { useAuthContext } from '../../auth/context/auth.context';

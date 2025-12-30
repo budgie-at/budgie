@@ -1,11 +1,10 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/components/button/button';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { Button } from '../../../@generic/component/button/button';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
 interface Props {
@@ -19,13 +18,13 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
     const handleContinue = () => void onSubmit(enableBiometrics);
 
     return (
-        <View className="gap-y-[32px] flex-1 justify-center">
-            <View className="rounded-full bg-secondary-background p-[32px] mx-auto">
-                <Icon icon={ICONS.Fingerprint} className="text-primary" size={80} />
+        <View className="gap-y-8 flex-1 justify-center">
+            <View className="rounded-full bg-secondary-background p-8 mx-auto">
+                <Icon icon="Fingerprint" className="text-primary" size={80} />
             </View>
 
             <View className="gap-y-xl">
-                <Text className="text-4_5xl font-semibold text-primary text-center">
+                <Text className="text-4.5xl font-semibold text-primary text-center">
                     <Trans>Enable biometric unlock?</Trans>
                 </Text>
 
@@ -35,10 +34,11 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
             </View>
 
             <SettingsCard
+                icon="Fingerprint"
+                variant="ghost"
                 title={t`Biometric Authentication`}
                 description={t`Face ID / Touch ID`}
-                right={<Switch className="my-auto" onValueChange={setEnableBiometrics} value={enableBiometrics} />}
-                left={<CircleIcon size="1_5xl" icon={ICONS.Fingerprint} variant="ghost" border={false} />}
+                right={<ThemedSwitch className="my-auto" onValueChange={setEnableBiometrics} value={enableBiometrics} />}
             />
 
             <Button onPress={handleContinue} content={t`Continue`} />

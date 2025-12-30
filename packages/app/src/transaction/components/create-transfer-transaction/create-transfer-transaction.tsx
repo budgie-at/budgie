@@ -22,6 +22,8 @@ export const CreateTransferTransaction = () => {
         <TransferTransactionForm
             control={form.control}
             setValue={form.setValue}
+            setError={form.setError}
+            clearErrors={form.clearErrors}
             title={t`New Transfer`}
             variant="default"
             icon="ArrowRightLeft"

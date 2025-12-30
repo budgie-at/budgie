@@ -7,13 +7,11 @@ import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { FormLayoutGroup } from '../../../@generic/components/form-layout-group/form-layout-group';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { Input } from '../../../@generic/components/input/input';
-import { FullPage } from '../../../@generic/components/page/full-page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Input } from '../../../@generic/component/input/input';
+import { FullPage } from '../../../@generic/component/page/full-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useBankSyncState } from '../../hook/use-bank-sync-state.hook';
@@ -49,6 +47,7 @@ export const CreateMonobankAccount = () => {
     };
 
     const cursors = Object.values(syncState.accountCursors);
+    const iconParams = { variant: 'warning', size: 15, iconSize: 15 } as const;
 
     return (
         <FullPage
@@ -67,18 +66,20 @@ export const CreateMonobankAccount = () => {
                     {!syncState.enabled && (
                         <>
                             <GetTokenCard />
-                            <Card className="p-4xl bg-warning/10">
-                                <View className="flex-row items-start gap-x-md">
-                                    <Icon icon={ICONS.Info} className="text-warning mt-xs" size="sm" />
-                                    <Text className="text-primary text-foreground text-sm flex-1">
-                                        <Trans>Your token is stored securely on device. Sync continues in the background.</Trans>
-                                    </Text>
-                                </View>
-                            </Card>
+
+                            <SimpleHorizontalCell
+                                icon="Info"
+                                iconParams={iconParams}
+                                size="lg"
+                                variant="warning"
+                                title={t`Your token is stored securely on device. Sync continues in the background.`}
+                            />
+
                             <View className="gap-y-md">
                                 <Text className="text-primary text-muted-foreground text-sm px-md">
                                     <Trans>Paste your API token below:</Trans>
                                 </Text>
+
                                 <Input
                                     value={token}
                                     onChangeText={setToken}
@@ -100,6 +101,7 @@ export const CreateMonobankAccount = () => {
                                 <Text className="text-primary text-muted-foreground text-sm px-md">
                                     <Trans>Accounts</Trans>
                                 </Text>
+
                                 {cursors.map(cursor => (
                                     <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
                                 ))}

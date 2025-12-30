@@ -3,6 +3,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
 import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useNetWorthQuery = () => {
@@ -25,5 +26,5 @@ export const useNetWorthQuery = () => {
         }, [data])
     );
 
-    return netWorthState;
+    return convertFromMicroUnits(netWorthState);
 };

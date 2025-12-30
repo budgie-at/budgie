@@ -9,7 +9,7 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EmptyScreen } from '../../../@generic/components/empty-screen/empty-screen';
+import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { UpdateExpenseTransaction } from '../../../transaction/components/update-expense-transaction/update-expense-transaction';
 import { UpdateIncomeTransaction } from '../../../transaction/components/update-income-transaction/update-income-transaction';

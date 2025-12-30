@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/components/card/card';
-import { ThemedSwitch } from '../../../@generic/components/themed-switch/themed-switch';
+import { Card } from '../../../@generic/component/card/card';
+import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { AccountSyncCursorInterface } from '../../interface/account-sync-cursor.interface';
 

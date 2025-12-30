@@ -1,0 +1,80 @@
+import { AccountEntityInterface, DebtAccountCreateInputInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import { i18n } from '@lingui/core';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
+import { ReactNode } from 'react';
+import { Control, FieldValues } from 'react-hook-form';
+import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
+
+import { EmptyFn } from '@rnw-community/shared';
+
+import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
+import { Button } from '../../../@generic/component/button/button';
+import { Footer } from '../../../@generic/component/footer/footer';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
+import { AccountBalanceField } from '../account-balance-field/account-balance-field';
+import { ArchiveAccount } from '../archive-account/archive-account';
+
+interface Props<T extends FieldValues> {
+    readonly account: AccountEntityInterface;
+    readonly instrumentSymbol: string;
+    readonly children?: ReactNode;
+    readonly control: Control<T>;
+    readonly onSubmit: EmptyFn;
+}
+
+const descriptionVariants = cva('uppercase', {
+    variants: { variant: FOREGROUND_COLOR_PALETTE }
+});
+
+export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
+    const { children, account, onSubmit, control, instrumentSymbol } = props;
+    const { t } = useLingui();
+
+    const handleGoBack = () => void goBackOrReplace('/');
+    const description = i18n.t(ACCOUNT_TYPE[account.type]);
+    const variant = ACCOUNT_COLOR[account.type];
+
+    return (
+        <Page
+            header={
+                <PageHeader
+                    icon={account.icon}
+                    iconVariant={variant}
+                    onGoBack={handleGoBack}
+                    description={description}
+                    title={t`Account Settings`}
+                    descriptionClassName={descriptionVariants({ variant })}
+                />
+            }
+            footer={
+                <KeyboardStickyView>
+                    <Footer>
+                        <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} />
+                        <ArchiveAccount accountId={account.id} />
+                    </Footer>
+                </KeyboardStickyView>
+            }
+        >
+            <KeyboardAwareScrollView
+                contentContainerClassName="flex-1"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+
+                <FormLayoutGroup>
+                    <AccountDetailsField control={control} variant={variant} />
+
+                    {children}
+                </FormLayoutGroup>
+            </KeyboardAwareScrollView>
+        </Page>
+    );
+};

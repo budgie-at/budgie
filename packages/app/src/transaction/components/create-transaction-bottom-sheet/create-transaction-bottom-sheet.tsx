@@ -4,9 +4,9 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BottomSheet } from '../../../@generic/components/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/components/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetView } from '../../../@generic/components/bottom-sheet-view/bottom-sheet-view';
+import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
+import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
+import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
