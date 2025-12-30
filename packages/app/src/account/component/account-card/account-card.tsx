@@ -11,10 +11,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
 import { cn } from '../../../@generic/utils/cn.util';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -22,6 +19,7 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
+import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 
 interface Props extends Pick<
     AccountEntityInterface,
@@ -30,10 +28,6 @@ interface Props extends Pick<
     readonly className?: string;
     readonly instrumentSymbol: string;
 }
-
-const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b border-b-secondary-corner pb-[2px]', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
 
 const cardVariants = cva('relative gap-3 active:scale-xs overflow-hidden', {
     variants: {
@@ -57,8 +51,7 @@ export const AccountCard = (props: Props) => {
     const { id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol, createdAt } = props;
 
     const showCents = useSetting('showCents');
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatMoney = useFormatDigits(decimalPlaces);
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(showCents ? 0 : decimalPlaces);
 
     const { formatCompactFullDate } = useFormatDate();
@@ -72,7 +65,6 @@ export const AccountCard = (props: Props) => {
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
-    const amountLeft = formatMoney(Math.max(targetBalance - balance, 0), defaultInstrument.symbol);
     const accountBalance = formatDigits(balance, instrumentSymbol);
 
     const deadlinePriority = isDefined(deadline) ? getDeadlinePriority(createdAt, deadline) : 'normal';
@@ -104,20 +96,12 @@ export const AccountCard = (props: Props) => {
                 </Text>
 
                 {isDebtAccount ? (
-                    <View className="flex-row items-center justify-between">
-                        <ProtectedText className="text-primary font-medium">{amountLeft}</ProtectedText>
-
-                        <View className="flex-1">
-                            <ProtectedText className={textVariant({ variant: ACCOUNT_DEBT_TYPE_COLOR[debtType] })}>
-                                {instrumentSymbol}
-                                {abbreviateNumber(convertFromMicroUnits(balance), 2)}
-                            </ProtectedText>
-                            <ProtectedText className="text-secondary-foreground text-xxs font-medium text-right">
-                                {instrumentSymbol}
-                                {abbreviateNumber(convertFromMicroUnits(targetBalance), 2)}
-                            </ProtectedText>
-                        </View>
-                    </View>
+                    <DebtAccountCardSummary
+                        debtType={debtType}
+                        currentBalance={balance}
+                        targetBalance={targetBalance}
+                        instrumentSymbol={instrumentSymbol}
+                    />
                 ) : (
                     <ProtectedText className="text-primary font-medium">{accountBalance}</ProtectedText>
                 )}
