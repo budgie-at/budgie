@@ -33,6 +33,7 @@ export const ExportCsv = () => {
             onPress={handleExport}
             icon="FileText"
             variant="default"
+            disabled={isLoading}
             right={rightSlot}
         />
     );
