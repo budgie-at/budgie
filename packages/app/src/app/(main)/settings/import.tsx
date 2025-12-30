@@ -93,6 +93,7 @@ export default function ImportScreen() {
     );
 
     useEffect(() => {
+        // eslint-disable-next-line max-statements
         const loadFile = async () => {
             if (!isNotEmptyString(fileUri)) {
                 return;
