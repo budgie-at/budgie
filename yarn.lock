@@ -1171,6 +1171,7 @@ __metadata:
     expo-dev-client: "npm:~6.0.20"
     expo-document-picker: "npm:^14.0.8"
     expo-drizzle-studio-plugin: "npm:^0.2.1"
+    expo-file-system: "npm:^19.0.21"
     expo-font: "npm:~14.0.10"
     expo-haptics: "npm:~15.0.8"
     expo-image: "npm:~3.0.11"
@@ -1181,6 +1182,7 @@ __metadata:
     expo-router: "npm:~6.0.21"
     expo-screen-capture: "npm:~8.0.9"
     expo-secure-store: "npm:~15.0.8"
+    expo-sharing: "npm:^14.0.8"
     expo-splash-screen: "npm:~31.0.13"
     expo-sqlite: "npm:~16.0.10"
     expo-system-ui: "npm:~6.0.9"
@@ -10456,7 +10458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~19.0.21":
+"expo-file-system@npm:^19.0.21, expo-file-system@npm:~19.0.21":
   version: 19.0.21
   resolution: "expo-file-system@npm:19.0.21"
   peerDependencies:
@@ -10691,6 +10693,15 @@ __metadata:
   version: 1.0.5
   resolution: "expo-server@npm:1.0.5"
   checksum: 10/42cda83d5b514061d4142118fa8590ff8b55218b91a7e6ac131ed71ca743301f7aae7fe6954d96671b6251959b08fe8119eb2f18500b4b5e07ea0c127d2d72c7
+  languageName: node
+  linkType: hard
+
+"expo-sharing@npm:^14.0.8":
+  version: 14.0.8
+  resolution: "expo-sharing@npm:14.0.8"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/452334eb00e6b73700fb9f4be0551febc247930bd3c3a0daa4261a6e92666acaca915b6c4c5e0a4c0dd16d4f1551e0c11d94a881c70c678e23e608dd9a8e396c
   languageName: node
   linkType: hard
 

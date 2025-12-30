@@ -143,7 +143,7 @@ export default function ImportScreen() {
                 text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
             });
 
-            await accountBalanceIncrementalService.updateAllBalances(new Date(0));
+            await accountBalanceIncrementalService.updateAllBalances(true);
 
             router.back();
         } catch (error) {
