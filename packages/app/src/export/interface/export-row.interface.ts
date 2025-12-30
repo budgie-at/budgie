@@ -1,4 +1,5 @@
 export interface ExportRowInterface {
+    title: string;
     externalId: string;
     toAccount: string;
     toAmount: string;
