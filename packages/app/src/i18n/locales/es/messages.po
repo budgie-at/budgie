@@ -711,19 +711,19 @@ msgstr "Gasto creado"
 
 #: src/export/components/export-csv/export-csv.tsx:29
 msgid "Export all transactions to a CSV file"
-msgstr ""
+msgstr "Exportar todas las transacciones a un archivo CSV"
 
 #: src/export/components/export-csv/export-csv.tsx:18
 msgid "Export Complete"
-msgstr ""
+msgstr "Exportación completada"
 
 #: src/export/components/export-csv/export-csv.tsx:28
 msgid "Export CSV"
-msgstr ""
+msgstr "Exportar CSV"
 
 #: src/export/components/export-csv/export-csv.tsx:20
 msgid "Export Failed"
-msgstr ""
+msgstr "Exportación fallida"
 
 #: src/app/(main)/settings/import.tsx:226
 msgid "External ID"
@@ -1575,7 +1575,7 @@ msgstr "Recibiste dinero"
 
 #: src/export/components/export-csv/export-csv.tsx:18
 msgid "Your data has been exported successfully"
-msgstr ""
+msgstr "Sus datos han sido exportados exitosamente"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
