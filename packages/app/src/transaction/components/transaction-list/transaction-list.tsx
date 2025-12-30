@@ -36,7 +36,7 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
         />
     );
 
-const getStickyIndices = (sections: TransactionListItemType[]) =>
+const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
 export const TransactionList = ({ accountId }: Props) => {
