@@ -13,6 +13,7 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
@@ -21,7 +22,6 @@ import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
-import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 
 const descriptionVariants = cva('uppercase', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }

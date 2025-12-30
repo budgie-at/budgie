@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 
 import { isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-
 export type Contact = Contacts.ExistingContact;
 
 type ContactsState = {
@@ -67,14 +66,14 @@ export const useContacts = () => {
         if (isNotEmptyString(state.error)) {
             Toast.show({
                 type: 'error',
-                text1: state.error,
-            })
+                text1: state.error
+            });
         }
-    }, [state.error])
+    }, [state.error]);
 
     return {
         ...state,
         reset,
-        loadContacts,
+        loadContacts
     };
 };
