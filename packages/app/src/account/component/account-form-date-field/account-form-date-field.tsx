@@ -19,7 +19,7 @@ export const AccountFormDateField = <T extends { deadline: Date | null }>({ cont
         const fieldVariant = isDefined(value) ? variant : 'secondary';
 
         return (
-            <FormItem className="w-auto flex-1" label={t`Expected Return Date (Optional)`}>
+            <FormItem className="w-auto" label={t`Expected Return Date (Optional)`}>
                 <AccountFormDatePicker variant={fieldVariant} date={value} onChange={onChange} />
             </FormItem>
         );
