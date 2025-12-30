@@ -51,7 +51,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
                     ? [
                           createTransactionEntryInput({
                               accountId: fromAccountId,
-                              type: TransactionEntryTypeEnum.DEBIT,
+                              type: TransactionEntryTypeEnum.CREDIT,
                               amount,
                               categoryId
                           })
@@ -61,7 +61,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
                     ? [
                           createTransactionEntryInput({
                               accountId: toAccountId,
-                              type: TransactionEntryTypeEnum.CREDIT,
+                              type: TransactionEntryTypeEnum.DEBIT,
                               amount,
                               categoryId
                           })
@@ -72,12 +72,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              type: TransactionEntryTypeEnum.DEBIT
+                              type: TransactionEntryTypeEnum.CREDIT
                           }),
                           createTransactionEntryInput({
                               categoryId,
                               accountId: 0,
-                              type: TransactionEntryTypeEnum.CREDIT
+                              type: TransactionEntryTypeEnum.DEBIT
                           })
                       ]
                     : [])

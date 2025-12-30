@@ -162,7 +162,7 @@ class AccountService {
                 transactionId: transaction.id,
                 categoryId: null,
                 amount: absDelta,
-                type: isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT
+                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
             },
             tx
         );
