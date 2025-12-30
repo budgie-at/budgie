@@ -29,9 +29,10 @@ interface Props {
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
     readonly accountFieldName: 'toAccountId' | 'fromAccountId';
+    readonly onDelete?: EmptyFn;
 }
 
-export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
+export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName, onDelete }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -71,6 +72,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
             onSubmit={onSubmit}
             buttonText={buttonText}
             description={t`Select Category`}
+            onDelete={onDelete}
         >
             <KeyboardAwareScrollView
                 keyboardShouldPersistTaps="handled"

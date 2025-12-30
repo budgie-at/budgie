@@ -142,6 +142,10 @@ export class TransactionRepository {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
+    async deleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
+    }
+
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
             where: eq(TransactionEntityTable.externalSource, externalSource)
