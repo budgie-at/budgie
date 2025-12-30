@@ -2,33 +2,43 @@ import { ComponentProps } from 'react';
 import { Switch } from 'react-native';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
-import { PRIMARY_COLOR, PRIMARY_COLOR_REVERSE } from '../../constant/colors.constant';
+import { PRIMARY_COLOR, PRIMARY_COLOR_REVERSE, SWITCH_TRACK_OFF_DARK, SWITCH_TRACK_OFF_LIGHT } from '../../constant/colors.constant';
 
-const getThumbColor = (isDarkTheme: boolean, value: boolean) => {
-    if (isDarkTheme) {
-        return value ? PRIMARY_COLOR_REVERSE : PRIMARY_COLOR;
-    }
-
-    return value ? PRIMARY_COLOR : PRIMARY_COLOR_REVERSE;
+const LIGHT_THEME = {
+    thumbOn: PRIMARY_COLOR,
+    thumbOff: PRIMARY_COLOR,
+    trackOn: PRIMARY_COLOR_REVERSE,
+    trackOff: SWITCH_TRACK_OFF_LIGHT
 };
 
-const getBackgroundColor = (isDarkTheme: boolean, value: boolean) => {
-    if (isDarkTheme) {
-        return value ? PRIMARY_COLOR : PRIMARY_COLOR_REVERSE;
-    }
+const DARK_THEME = {
+    thumbOn: PRIMARY_COLOR_REVERSE,
+    thumbOff: PRIMARY_COLOR_REVERSE,
+    trackOn: PRIMARY_COLOR,
+    trackOff: SWITCH_TRACK_OFF_DARK
+};
 
-    return value ? PRIMARY_COLOR_REVERSE : PRIMARY_COLOR;
+const getThumbColor = (isDarkTheme: boolean, value: boolean) => {
+    const theme = isDarkTheme ? DARK_THEME : LIGHT_THEME;
+
+    return value ? theme.thumbOn : theme.thumbOff;
+};
+
+const getTrackColor = (isDarkTheme: boolean, value: boolean) => {
+    const theme = isDarkTheme ? DARK_THEME : LIGHT_THEME;
+
+    return value ? theme.trackOn : theme.trackOff;
 };
 
 export const ThemedSwitch = (props: Omit<ComponentProps<typeof Switch>, 'thumbColor' | 'ios_backgroundColor' | 'trackColor'>) => {
     const { isDarkColorSchema } = useThemeContext();
 
     const thumbColor = getThumbColor(isDarkColorSchema, props.value ?? false);
-    const iosBackgroundColor = getBackgroundColor(isDarkColorSchema, props.value ?? false);
+    const iosBackgroundColor = getTrackColor(isDarkColorSchema, props.value ?? false);
 
     const trackColor = {
-        true: getBackgroundColor(isDarkColorSchema, true),
-        false: getBackgroundColor(isDarkColorSchema, false)
+        true: getTrackColor(isDarkColorSchema, true),
+        false: getTrackColor(isDarkColorSchema, false)
     };
 
     return <Switch {...props} trackColor={trackColor} thumbColor={thumbColor} ios_backgroundColor={iosBackgroundColor} />;
