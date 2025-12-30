@@ -711,19 +711,19 @@ msgstr "Витрату створено"
 
 #: src/export/components/export-csv/export-csv.tsx:29
 msgid "Export all transactions to a CSV file"
-msgstr ""
+msgstr "Експортувати всі транзакції до CSV-файлу"
 
 #: src/export/components/export-csv/export-csv.tsx:18
 msgid "Export Complete"
-msgstr ""
+msgstr "Експорт завершено"
 
 #: src/export/components/export-csv/export-csv.tsx:28
 msgid "Export CSV"
-msgstr ""
+msgstr "Експортувати CSV"
 
 #: src/export/components/export-csv/export-csv.tsx:20
 msgid "Export Failed"
-msgstr ""
+msgstr "Помилка експорту"
 
 #: src/app/(main)/settings/import.tsx:226
 msgid "External ID"
@@ -1575,7 +1575,7 @@ msgstr "Ви отримали гроші"
 
 #: src/export/components/export-csv/export-csv.tsx:18
 msgid "Your data has been exported successfully"
-msgstr ""
+msgstr "Ваші дані було успішно експортовано"
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
