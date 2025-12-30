@@ -41,6 +41,10 @@ export class TransactionRepository {
 
     constructor(private db: DB) {}
 
+    async deleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
+    }
+
     getIncomeByCategoryQuery(filters: TransactionFilterInterface) {
         const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,

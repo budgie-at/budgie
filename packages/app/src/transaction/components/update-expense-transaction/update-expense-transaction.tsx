@@ -16,7 +16,7 @@ interface Props {
 export const UpdateExpenseTransaction = ({ transaction }: Props) => {
     const { t } = useLingui();
 
-    const { form, handleSubmit } = useUpdateTransactionForm({
+    const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: convertTransactionToInput(transaction),
         schema: ExpenseTransactionCreateInputSchema,
         id: transaction.id
@@ -27,6 +27,7 @@ export const UpdateExpenseTransaction = ({ transaction }: Props) => {
             accountFieldName="fromAccountId"
             control={form.control}
             onSubmit={handleSubmit}
+            onDelete={handleDelete}
             setValue={form.setValue}
             variant="destructive"
             icon="TrendingDown"

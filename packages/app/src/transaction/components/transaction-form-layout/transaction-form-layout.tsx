@@ -1,15 +1,18 @@
+import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 
 interface Props {
     readonly title: string;
@@ -19,9 +22,12 @@ interface Props {
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly children: ReactNode;
+    readonly onDelete?: EmptyFn;
 }
 
-export const TransactionFormLayout = ({ title, description, icon, variant, buttonText, onSubmit, children }: Props) => {
+export const TransactionFormLayout = ({ title, description, icon, onDelete, variant, buttonText, onSubmit, children }: Props) => {
+    const { t } = useLingui();
+    const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -31,11 +37,22 @@ export const TransactionFormLayout = ({ title, description, icon, variant, butto
                 <KeyboardStickyView>
                     <Footer>
                         <Button onPress={onSubmit} variant={variant} content={buttonText} />
+                        {isDefined(onDelete) ? <Button onPress={handleOpen} variant="destructive" content={t`Delete transaction`} /> : null}
                     </Footer>
                 </KeyboardStickyView>
             }
         >
             {children}
+
+            <ConfirmActionBottomSheet
+                ref={ref}
+                variant="destructive"
+                description={t`This action cannot be undone.`}
+                buttonText={t`Delete transaction`}
+                onSubmit={handleConfirm}
+                icon="Info"
+                title={t`Are you sure you want to delete this transaction?`}
+            />
         </Page>
     );
 };

@@ -22,6 +22,7 @@ const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
 interface Props {
     readonly onSubmit: EmptyFn;
+    readonly onDelete?: EmptyFn;
     readonly control: Control<TransactionCreateInputInterface>;
     readonly icon: IconName;
     readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
@@ -31,7 +32,7 @@ interface Props {
     readonly accountFieldName: 'toAccountId' | 'fromAccountId';
 }
 
-export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
+export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName, onDelete }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -73,6 +74,7 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
             variant={variant}
             icon={icon}
             onSubmit={onSubmit}
+            onDelete={onDelete}
             buttonText={buttonText}
             description={t`Select Category`}
         >
