@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 
-import { SearchableSelectorBottomSheet } from '../../../@generic/components/searchable-selector-bottom-sheet/searchable-selector-bottom-sheet';
+import { SearchableSelectorBottomSheet } from '../../../@generic/component/searchable-selector-bottom-sheet/searchable-selector-bottom-sheet';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { LOCALES, LocaleInfoWithDetailsInterface } from '../../constant/locales.constant';
 

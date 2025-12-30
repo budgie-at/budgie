@@ -3,9 +3,8 @@ import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/components/card/card';
-import { CircleIcon } from '../../../@generic/components/circle-icon/circle-icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
@@ -62,10 +61,13 @@ export const AccountSelectorSquare = ({
         <>
             <Card onPress={handleOpen} className={cn(cardVariants({ status }), className)}>
                 <View className="flex-row gap-x-md items-center mb-lg">
-                    <CircleIcon size="lg" icon={ICONS[icon]} variant={iconVariant} />
+                    <CircleIcon size={34} iconSize={18} icon={icon} variant={iconVariant} />
                     <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
                 </View>
-                <Text className="text-primary mb-xs">{subtitle}</Text>
+
+                <Text className="text-primary mb-xs" numberOfLines={1}>
+                    {subtitle}
+                </Text>
                 <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
             </Card>
 

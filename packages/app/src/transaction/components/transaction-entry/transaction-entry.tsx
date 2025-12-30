@@ -2,13 +2,12 @@ import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { AmountInput } from '../../../@generic/components/amount-input/amount-input';
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { TransactionEntryCategorySelector } from '../../../category/components/transaction-entry-category-selector/transaction-entry-category-selector';
-import { useFormatMoney } from '../../../i18n/hook/use-format-money.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
@@ -20,8 +19,8 @@ interface Props {
 }
 
 export const TransactionEntry = ({ variant, control, index, onRemove, selectedCategoryIds }: Props) => {
-    const { defaultCurrency, decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatMoney(decimalPlaces, defaultCurrency);
+    const { defaultInstrument, decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const handleRemove = () => void onRemove(index);
 
@@ -54,7 +53,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
                 value={value}
                 status={status}
                 onChangeValue={onChange}
-                placeholder={formatMoney(0)}
+                placeholder={formatDigits(0, defaultInstrument.symbol)}
                 inputClassName="text-sm/1 h-full flex-1 text-primary placeholder:text-secondary-foreground rounded-5xl px-lg"
             />
         );
@@ -67,7 +66,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
             <Controller render={renderAmountInput} name={`entries.${index}.amount`} control={control} />
 
             <HapticPressable onPress={handleRemove} className="p-md">
-                <Icon size={16} icon={ICONS.X} className="text-primary" />
+                <Icon size={16} icon="X" className="text-primary" />
             </HapticPressable>
         </View>
     );
