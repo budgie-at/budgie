@@ -1,7 +1,8 @@
 import {
     ExpenseTransactionCreateInputSchema,
     TransactionExpenseWithRelationsEntityInterface,
-    TransactionNegativeAdjustmentWithRelationsEntityInterface
+    TransactionNegativeAdjustmentWithRelationsEntityInterface,
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
@@ -32,6 +33,7 @@ export const UpdateExpenseTransaction = ({ transaction }: Props) => {
             icon="TrendingDown"
             title={t`Edit Expense`}
             buttonText={t`Update Expense`}
+            transactionType={TransactionTypeEnum.EXPENSE}
         />
     );
 };
