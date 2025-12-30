@@ -1,5 +1,6 @@
 import { SettingsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
@@ -39,6 +40,8 @@ export default function SettingsPage() {
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
+
+    const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
         <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
@@ -120,7 +123,7 @@ export default function SettingsPage() {
                         <SettingsCard
                             title={t`BudgetAI`}
                             className="items-baseline"
-                            description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \nVersion 1.0.0`}
+                            description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
                             left={<CircleIcon size="1_5xl" icon={ICONS.Database} variant="ghost" border={false} />}
                         />
                     </SettingsGroup>
