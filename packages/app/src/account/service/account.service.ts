@@ -1,4 +1,5 @@
 import {
+    AccountDebtTypeEnum,
     AccountEntityInterface,
     AccountNatureEnum,
     DebtAccountCreateInputInterface,
@@ -53,7 +54,7 @@ class AccountService {
                 {
                     ...input,
                     order: count + 1,
-                    includeInNetWorth: false,
+                    includeInNetWorth: input.debtType === AccountDebtTypeEnum.LENT,
                     nature: AccountNatureEnum.LIABILITY,
                     targetBalance: convertToMicroUnits(input.targetBalance)
                 },
