@@ -2,7 +2,7 @@ import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 
-import { SearchableSelectorBottomSheet } from '../../../@generic/components/searchable-selector-bottom-sheet/searchable-selector-bottom-sheet';
+import { SearchableSelectorBottomSheet } from '../../../@generic/component/searchable-selector-bottom-sheet/searchable-selector-bottom-sheet';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { LANGUAGES } from '../../constant/languages.constant';
 import { LanguageInterface } from '../../interface/language.interface';

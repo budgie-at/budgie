@@ -2,8 +2,8 @@ import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 
-import { FormItem } from '../../../@generic/components/form-item/form-item';
-import { Input } from '../../../@generic/components/input/input';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { Input } from '../../../@generic/component/input/input';
 
 interface Props {
     readonly control: Control<TransactionCreateInputInterface>;

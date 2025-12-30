@@ -1,26 +1,19 @@
-import { and, count, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
 import { AccountTypeEnum } from '../enum/account-type.enum';
+import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { AccountEntityInterface } from '../entity/account-entity.interface';
 
 export class AccountRepository {
     constructor(private db: DB) {}
-
-    async hasAnyAccount(): Promise<boolean> {
-        const result = await this.db
-            .select({ count: count() })
-            .from(AccountEntityTable)
-            .where(isNull(AccountEntityTable.deletedAt))
-            .limit(1);
-
-        return result[0].count > 0;
-    }
 
     async create(input: AccountCreateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
         const [account] = await this.bulkCreate([input], tx);
@@ -29,7 +22,7 @@ export class AccountRepository {
     }
 
     count() {
-        return this.db.select({ count: count() }).from(AccountEntityTable);
+        return this.db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
@@ -56,12 +49,15 @@ export class AccountRepository {
         return await this.db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    findBySearchQuery(search: string) {
+    findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
+        const { excludeTypes } = filter;
+
         return this.db.query.AccountEntityTable.findMany({
             where: and(
                 isNull(AccountEntityTable.parentId),
                 isNull(AccountEntityTable.deletedAt),
-                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`
+                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
+                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`
             ),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });

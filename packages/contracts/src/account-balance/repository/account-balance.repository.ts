@@ -78,11 +78,14 @@ export class AccountBalanceRepository {
         return this.db
             .select({
                 netWorth: sql<number>`
-                COALESCE(
-                    SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}),
-                    0
-                )
-            `
+                    COALESCE(
+                        SUM(
+                            (${this.getAccountBalanceWithTransactionsSql()}
+                            ) * ${exchangeRateSql}
+                        ),
+                        0
+                    )
+                `
             })
             .from(AccountEntityTable)
             .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
@@ -122,42 +125,42 @@ export class AccountBalanceRepository {
     private getTransactionsSumSql() {
         return sql<number>`
             SUM(
-                CASE
-                    WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                        THEN ${TransactionEntryEntityTable.amount}
-                    WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                        THEN -${TransactionEntryEntityTable.amount}
-                    ELSE 0
-                END
-            )
+                   CASE
+                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                   THEN ${TransactionEntryEntityTable.amount}
+                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                   THEN -${TransactionEntryEntityTable.amount}
+                   ELSE 0
+                   END
+               )
         `;
     }
 
     private getDirectExchangeRateSql(defaultInstrumentId: number) {
         return sql`
-        (
-            SELECT ${ExchangeRateEntityTable.rate} * 1.0
-            FROM ${ExchangeRateEntityTable}
-            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
-                AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
-                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-            LIMIT 1
-        )
-    `;
+            (
+                SELECT ${ExchangeRateEntityTable.rate} * 1.0
+                FROM ${ExchangeRateEntityTable}
+                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
+                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
+                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                LIMIT 1
+            )
+        `;
     }
 
     private getInverseExchangeRateSql(defaultInstrumentId: number) {
         return sql`
-        (
-            SELECT 1.0 / ${ExchangeRateEntityTable.rate}
-            FROM ${ExchangeRateEntityTable}
-            WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
-                AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-            ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-            LIMIT 1
-        )
-    `;
+            (
+                SELECT 1.0 / ${ExchangeRateEntityTable.rate}
+                FROM ${ExchangeRateEntityTable}
+                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
+                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
+                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
+                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
+                LIMIT 1
+            )
+        `;
     }
 }

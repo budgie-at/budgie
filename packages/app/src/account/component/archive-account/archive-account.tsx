@@ -2,8 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { Button } from '../../../@generic/components/button/button';
-import { ConfirmActionBottomSheet } from '../../../@generic/components/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { Button } from '../../../@generic/component/button/button';
+import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { accountService } from '../../service/account.service';

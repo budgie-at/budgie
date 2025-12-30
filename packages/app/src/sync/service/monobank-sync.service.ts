@@ -9,10 +9,9 @@ import {
     MonobankSyncService
 } from '@budgie/bank-sync';
 import {
-    AccountCreateEntityInterface,
-    AccountNatureEnum,
     AccountTypeEnum,
     ExternalSourceEnum,
+    LiabilityAccountCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
@@ -199,7 +198,7 @@ class AppMonobankSyncService {
 
         const existingIds = new Set(existingAccounts.map(acc => acc.externalId));
 
-        const toCreate: AccountCreateEntityInterface[] = [];
+        const toCreate: LiabilityAccountCreateInputInterface[] = [];
         for (const bankAccount of bankAccounts) {
             const instrument = instruments.find(i => i.code === bankAccount.currencyCode);
 
@@ -207,7 +206,6 @@ class AppMonobankSyncService {
                 toCreate.push({
                     title: this.generateAccountTitle(bankAccount),
                     type: AccountTypeEnum.BANK,
-                    nature: AccountNatureEnum.ASSET,
                     icon: UserIconNameEnum.Landmark,
                     instrumentId: instrument.id,
                     currentBalance: 0,
