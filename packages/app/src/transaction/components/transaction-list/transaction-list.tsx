@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EmptyState } from '../../../@generic/components/empty-state/empty-state';
+import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';

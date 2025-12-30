@@ -1,7 +1,8 @@
 import {
-    AccountCreateEntityInterface,
     AccountEntityInterface,
-    AccountUpdateEntityInterface,
+    AccountNatureEnum,
+    DebtAccountCreateInputInterface,
+    LiabilityAccountCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -21,15 +22,22 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class AccountService {
-    async create(input: AccountCreateEntityInterface): Promise<AccountEntityInterface> {
+    async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
-            const hasAnyAccount = await accountRepository.hasAnyAccount();
+            const [{ count }] = await accountRepository.count();
 
-            const account = await accountRepository.create(input, tx);
+            const account = await accountRepository.create(
+                {
+                    ...input,
+                    order: count + 1,
+                    nature: AccountNatureEnum.LIABILITY
+                },
+                tx
+            );
 
             await this.adjustBalanceTo(account.id, input.currentBalance, tx);
 
-            if (!hasAnyAccount) {
+            if (!isPositiveNumber(count)) {
                 await settingsRepository.update({ defaultAccountId: account.id }, tx);
             }
 
@@ -37,13 +45,34 @@ class AccountService {
         });
     }
 
-    async bulkCreate(inputs: AccountCreateEntityInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
+    async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
+        return db.transaction(async tx => {
+            const [{ count }] = await accountRepository.count();
+
+            const account = await accountRepository.create(
+                {
+                    ...input,
+                    order: count + 1,
+                    includeInNetWorth: false,
+                    nature: AccountNatureEnum.LIABILITY,
+                    targetBalance: convertToMicroUnits(input.targetBalance)
+                },
+                tx
+            );
+
+            await this.adjustBalanceTo(account.id, input.currentBalance, tx);
+
+            return account;
+        });
+    }
+
+    async bulkCreate(inputs: LiabilityAccountCreateInputInterface[], batchSize = 100): Promise<Record<string, AccountEntityInterface>> {
         const result = await processInputWithBatches(inputs, batchSize, this.processBatch.bind(this));
 
         return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
     }
 
-    async updateById(id: number, input: AccountUpdateEntityInterface): Promise<AccountEntityInterface> {
+    async updateById(id: number, input: Partial<LiabilityAccountCreateInputInterface>): Promise<AccountEntityInterface> {
         return db.transaction(async tx => {
             const account = await accountRepository.updateById(id, input, tx);
 
@@ -122,9 +151,14 @@ class AccountService {
         );
     }
 
-    private async processBatch(batch: AccountCreateEntityInterface[]): Promise<AccountEntityInterface[]> {
+    private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {
         return await db.transaction(async tx => {
-            const accounts = await accountRepository.bulkCreate(batch, tx);
+            const [{ count }] = await accountRepository.count();
+
+            const accounts = await accountRepository.bulkCreate(
+                batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
+                tx
+            );
 
             await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
 

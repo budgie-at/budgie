@@ -1,21 +1,26 @@
 import {
-    AccountCreateEntityInterface,
-    AccountCreateEntitySchema,
-    AccountNatureEnum,
+    AccountEntityInterface,
     AccountTypeEnum,
+    LiabilityAccountCreateInputInterface,
+    LiabilityAccountCreateInputSchema,
     UserIconNameEnum
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useShowError } from '../../@generic/hook/use-show-error.hook';
+import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
-export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
+export const useAccountForm = (
+    defaultValues: LiabilityAccountCreateInputInterface,
+    onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
+) => {
+    const showError = useShowError();
     const form = useForm({
-        resolver: zodResolver(AccountCreateEntitySchema),
+        resolver: zodResolver(LiabilityAccountCreateInputSchema),
         mode: 'onSubmit',
         defaultValues: {
-            nature: AccountNatureEnum.LIABILITY,
             icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.BANK,
             currentBalance: 0,
@@ -30,10 +35,21 @@ export const useAccountForm = (defaultValues: AccountCreateEntityInterface) => {
         name: 'instrumentId'
     });
 
+    const handleSubmit = async (values: LiabilityAccountCreateInputInterface) => {
+        try {
+            await onSubmit(values);
+
+            goBackOrReplace('/');
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
 
     return {
         ...form,
-        instrument
+        instrument,
+        handleSubmit: form.handleSubmit(handleSubmit)
     };
 };

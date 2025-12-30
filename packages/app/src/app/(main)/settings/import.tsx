@@ -6,11 +6,11 @@ import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/components/button/button';
-import { Page } from '../../../@generic/components/page/page';
-import { PageHeader } from '../../../@generic/components/page-header/page-header';
+import { Button } from '../../../@generic/component/button/button';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import {
     accountBalanceRepository,
     accountRepository,
@@ -154,7 +154,7 @@ export default function ImportScreen() {
     };
     const handleCancel = () => void router.back();
 
-    const hasErrors = Object.keys(errors).length > 0;
+    const hasErrors = isNotEmptyArray(Object.keys(errors));
     const buttonContent = hasErrors ? t`Fix Errors` : t`Start Import`;
 
     return (

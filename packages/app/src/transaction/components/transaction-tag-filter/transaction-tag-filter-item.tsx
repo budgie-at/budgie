@@ -2,9 +2,8 @@ import { TagEntityInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/components/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/components/icon/icon';
-import { ICONS } from '../../../@generic/constant/icons.constant';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
@@ -52,7 +51,7 @@ export const TransactionTagFilterItem = ({ onSelect, tag, isFirst, isLast, isSel
     return (
         <HapticPressable onPress={handleSelect} className={tagVariants({ isSelected, isFirst, isLast })}>
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>#{tag.title}</Text>
-            {isSelected ? <Icon size={16} icon={ICONS.Check} className="text-primary" /> : null}
+            {isSelected ? <Icon size={16} icon="Check" className="text-primary" /> : null}
         </HapticPressable>
     );
 };

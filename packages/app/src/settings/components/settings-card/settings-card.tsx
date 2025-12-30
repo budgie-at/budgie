@@ -1,29 +1,14 @@
-import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { ComponentProps } from 'react';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
-import { Card } from '../../../@generic/components/card/card';
-import { cn } from '../../../@generic/utils/cn.util';
-
-interface Props {
-    readonly title: string;
-    readonly left: ReactNode;
-    readonly onPress?: EmptyFn;
-    readonly right?: ReactNode;
-    readonly className?: string;
-    readonly description: string;
+interface Props extends Omit<ComponentProps<typeof SimpleHorizontalCell>, 'iconParams'> {
+    readonly variant?: ColorPaletteVariant;
 }
 
-export const SettingsCard = ({ className, title, description, onPress, right, left }: Props) => (
-    <Card onPress={onPress} className={cn('flex-row items-center gap-x-xl bg-secondary-background', className)}>
-        {left}
+export const SettingsCard = ({ variant, ...rest }: Props) => {
+    const iconParams = { variant, border: false, size: 36, iconSize: 20 } as const;
 
-        <View className="gap-y-xxs flex-1">
-            <Text className="text-primary text-md">{title}</Text>
-            <Text className="text-secondary-foreground text-sm break-words max-w-11/12">{description}</Text>
-        </View>
-
-        {right}
-    </Card>
-);
+    return <SimpleHorizontalCell iconParams={iconParams} {...rest} />;
+};

@@ -1167,11 +1167,13 @@ __metadata:
     expo: "npm:~54.0.30"
     expo-background-task: "npm:~1.0.10"
     expo-constants: "npm:~18.0.12"
+    expo-contacts: "npm:~15.0.11"
     expo-dev-client: "npm:~6.0.20"
     expo-document-picker: "npm:^14.0.8"
     expo-drizzle-studio-plugin: "npm:^0.2.1"
     expo-font: "npm:~14.0.10"
     expo-haptics: "npm:~15.0.8"
+    expo-image: "npm:~3.0.11"
     expo-linear-gradient: "npm:~15.0.8"
     expo-linking: "npm:~8.0.11"
     expo-local-authentication: "npm:~17.0.8"
@@ -10369,6 +10371,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-contacts@npm:~15.0.11":
+  version: 15.0.11
+  resolution: "expo-contacts@npm:15.0.11"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/f6a92483b0683c7ecc5f77de52be10bbf23f326aed8a5c5afb5b237cc29664b85d68f21ab74ec16bd6e3f3ee50a1f39562048b89123731171bd0f8ec6748271c
+  languageName: node
+  linkType: hard
+
 "expo-dev-client@npm:~6.0.20":
   version: 6.0.20
   resolution: "expo-dev-client@npm:6.0.20"
@@ -10472,6 +10485,21 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/28d9703d0c56bed1afe903a589ef56c10a65d864370227fcfe6b4fe5a12423d82f534184b59f008083830538528637ff3680b22f286ed83e8edf6f1bfdafadc4
+  languageName: node
+  linkType: hard
+
+"expo-image@npm:~3.0.11":
+  version: 3.0.11
+  resolution: "expo-image@npm:3.0.11"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  checksum: 10/61d438f9feae0db952f0374050bdbb007002c2aa163270cf7c4ecb8c6b6f6c367bb4f5bf054347ed674ea0318bff6cb51b12eb36c8c8f8e5da6641ba985ac450
   languageName: node
   linkType: hard
 
