@@ -16,13 +16,11 @@ interface Props {
 }
 
 export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
-    const { contacts, error, loadContacts } = useContacts();
+    const { contacts, error } = useContacts();
     const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
 
     const handleOpen = async () => {
-        await loadContacts();
-
         if (!isNotEmptyString(error)) {
             ref.current?.open();
         }
