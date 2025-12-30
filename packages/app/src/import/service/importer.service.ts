@@ -27,7 +27,6 @@ import { EntryParamsInterface } from '../interface/entry-params.interface';
 import { ImportProgressInterface } from '../interface/import-progress.interface';
 import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import { ImporterRowInterface } from '../interface/importer-row.interface';
-import { ValidationParamsInterface } from '../interface/validation-params.interface';
 import { NormalizedRowType } from '../type/normalized-row.type';
 
 export class ImporterService {
@@ -124,8 +123,6 @@ export class ImporterService {
     private createTransaction(normalizedRow: NormalizedRowType): TransactionCreateInputInterface {
         const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
             this.parseRow(normalizedRow);
-
-        this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument });
 
         const type = this.determineTransactionType(toAmount, fromInstrument);
 
@@ -240,6 +237,7 @@ export class ImporterService {
         } satisfies NormalizedRowType;
     }
 
+    // eslint-disable-next-line max-statements
     private parseRow(normalizedRow: NormalizedRowType): ImporterRowInterface {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
@@ -250,13 +248,6 @@ export class ImporterService {
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
         const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
         const isPlanned = normalizedRow.isPlanned === '1';
-
-        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
-    }
-
-    // eslint-disable-next-line max-statements
-    private validateParsedRow(params: ValidationParamsInterface): void {
-        const { normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument, fromInstrument, fromAmount } = params;
 
         if (!isDefined(toAccount)) {
             throw new Error(`To Account ${normalizedRow.toAccount} not found`);
@@ -276,6 +267,8 @@ export class ImporterService {
         if (isDefined(fromInstrument) && (!isDefined(fromAmount) || isNaN(fromAmount))) {
             throw new Error(`From Amount "${normalizedRow.fromAmount}" is invalid`);
         }
+
+        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
     }
 
     private getToAccountKey(normalizedRow: NormalizedRowType): string {
