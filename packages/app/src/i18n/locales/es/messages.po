@@ -70,11 +70,11 @@ msgstr "{tagsCount} etiquetas disponibles"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:53
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:123
 msgid "About"
 msgstr "Acerca de"
 
@@ -155,13 +155,11 @@ msgstr "IA"
 msgid "AI Suggestion"
 msgstr "Sugerencia de IA"
 
-#: src/app/(main)/settings/index.tsx:122
+#: src/app/(main)/settings/index.tsx:128
 msgid ""
-"AI-powered budgeting app with complete privacy. All data processing happens locally on your device. \n"
-"Version 1.0.0"
+"AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
+"Version {appVersion}"
 msgstr ""
-"Aplicación de presupuesto con IA y privacidad completa. Todo el procesamiento de datos ocurre localmente en tu dispositivo.\n"
-"Versión 1.0.0"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:84
 msgid "All columns have been assigned"
@@ -171,7 +169,7 @@ msgstr "Todas las columnas han sido asignadas"
 msgid "All Time"
 msgstr "Todo el tiempo"
 
-#: src/app/(main)/settings/index.tsx:51
+#: src/app/(main)/settings/index.tsx:54
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
@@ -186,14 +184,14 @@ msgstr "Cantidad"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
 msgid "Amount exceeds debt account balance"
-msgstr "El monto excede el saldo de la cuenta de deuda"
+msgstr ""
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:16
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
 msgid "App Lock"
 msgstr "Bloqueo de aplicación"
 
-#: src/app/(main)/settings/index.tsx:103
+#: src/app/(main)/settings/index.tsx:106
 msgid "Appearance"
 msgstr "Apariencia"
 
@@ -218,11 +216,11 @@ msgid "Archive Account?"
 msgstr "¿Archivar cuenta?"
 
 #: src/app/(main)/settings/archived.tsx:37
-#: src/app/(main)/settings/index.tsx:96
+#: src/app/(main)/settings/index.tsx:99
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:43
+#: src/settings/components/truncate-data/truncate-data.tsx:34
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer."
 
@@ -250,6 +248,10 @@ msgstr "Saldo"
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+msgid "Balances recalculated successfully"
+msgstr "Saldos recalculados con éxito"
+
 #: src/account/constant/account-type.constant.ts:6
 msgid "Bank"
 msgstr "Banco"
@@ -268,9 +270,9 @@ msgstr "Autenticación biométrica"
 
 #: src/account/constant/account-debt-type.constant.ts:7
 msgid "Borrowed"
-msgstr "Prestado"
+msgstr ""
 
-#: src/app/(main)/settings/index.tsx:123
+#: src/app/(main)/settings/index.tsx:126
 msgid "BudgetAI"
 msgstr "PresupuestoIA"
 
@@ -342,7 +344,7 @@ msgstr "Elige tu categoría principal"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:78
 msgid "Choose your main contact"
-msgstr "Elige tu contacto principal"
+msgstr ""
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Choose your main currency"
@@ -364,10 +366,14 @@ msgstr "Limpiar"
 msgid "Clear All"
 msgstr "Limpiar todo"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:33
-#: src/settings/components/truncate-data/truncate-data.tsx:47
+#: src/settings/components/truncate-data/truncate-data.tsx:24
+#: src/settings/components/truncate-data/truncate-data.tsx:38
 msgid "Clear All Data"
 msgstr "Borrar todos los datos"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
+msgid "Clear cached balances and recalculate from transactions"
+msgstr "Borrar saldos en caché y recalcular"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:42
 msgid "Close"
@@ -395,7 +401,7 @@ msgstr "Conectar Monobank"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:16
 msgid "Contact (optional)"
-msgstr "Contacto (opcional)"
+msgstr ""
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:44
 msgid "Continue"
@@ -438,7 +444,7 @@ msgstr "Crear cuentas"
 msgid "Create and copy the personal token"
 msgstr "Crear y copiar el token personal"
 
-#: src/app/(main)/settings/index.tsx:90
+#: src/app/(main)/settings/index.tsx:93
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -510,7 +516,7 @@ msgstr "Las categorías personalizadas que crees aparecerán aquí"
 msgid "Dark Mode"
 msgstr "Modo oscuro"
 
-#: src/app/(main)/settings/index.tsx:114
+#: src/app/(main)/settings/index.tsx:117
 msgid "Data management"
 msgstr "Gestión de datos"
 
@@ -533,7 +539,7 @@ msgstr "Deuda"
 #: src/account/component/create-debt-account/create-debt-account.tsx:50
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
-msgstr "Cuenta de deuda"
+msgstr ""
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "Default Account"
@@ -543,11 +549,11 @@ msgstr "Cuenta predeterminada"
 msgid "Delete"
 msgstr "Eliminar"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Eliminar todas las transacciones y la configuración"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:44
+#: src/settings/components/truncate-data/truncate-data.tsx:35
 msgid "Delete data"
 msgstr "Eliminar datos"
 
@@ -672,6 +678,7 @@ msgstr "Ingresa tu PIN"
 
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:23
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Error"
@@ -686,11 +693,11 @@ msgstr "Transacciones y gastos diarios"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "Expected return date"
-msgstr "Fecha de devolución esperada"
+msgstr ""
 
 #: src/account/component/account-form-date-field/account-form-date-field.tsx:22
 msgid "Expected Return Date (Optional)"
-msgstr "Fecha de devolución esperada (Opcional)"
+msgstr ""
 
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
@@ -715,7 +722,7 @@ msgstr "Face ID / Touch ID"
 
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
-msgstr "Error al cargar contactos."
+msgstr ""
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -757,7 +764,7 @@ msgstr "Monto origen"
 msgid "From Currency"
 msgstr "Moneda origen"
 
-#: src/app/(main)/settings/index.tsx:72
+#: src/app/(main)/settings/index.tsx:75
 msgid "General"
 msgstr "General"
 
@@ -773,11 +780,11 @@ msgstr "Alemán (Alemania)"
 msgid "Get API Token"
 msgstr "Obtener token API"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:64
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Ocultar saldos de cuentas y patrimonio neto al tomar capturas de pantalla"
 
-#: src/app/(main)/settings/index.tsx:106
+#: src/app/(main)/settings/index.tsx:109
 msgid "Hide Cents"
 msgstr "Ocultar centavos"
 
@@ -849,7 +856,7 @@ msgstr "Última sincronización"
 
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
-msgstr "Prestado"
+msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:36
 msgid "Locale"
@@ -859,11 +866,11 @@ msgstr "Configuración regional"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(main)/settings/index.tsx:82
+#: src/app/(main)/settings/index.tsx:85
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:92
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
@@ -877,7 +884,7 @@ msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
-msgstr "Dinero prestado o pedido prestado"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
 msgid "Money you earn"
@@ -949,15 +956,15 @@ msgstr "Aún no hay categorías"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts found"
-msgstr "No se encontraron contactos"
+msgstr ""
 
 #: src/@generic/hook/use-contacts.hook.ts:43
 msgid "No contacts found on this device."
-msgstr "No se encontraron contactos en este dispositivo."
+msgstr ""
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:62
 msgid "No contacts yet"
-msgstr "Aún no hay contactos"
+msgstr ""
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
 msgid "No currencies found"
@@ -1033,7 +1040,7 @@ msgstr "Nota (opcional)"
 msgid "Open Monobank to get your token"
 msgstr "Abra Monobank para obtener su token"
 
-#: src/app/(main)/settings/index.tsx:79
+#: src/app/(main)/settings/index.tsx:82
 msgid "Organization"
 msgstr "Organización"
 
@@ -1047,11 +1054,11 @@ msgstr "Resumen"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Owes you"
-msgstr "Te debe"
+msgstr ""
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:57
 msgid "Paid: {formattedBalance}"
-msgstr "Pagado: {formattedBalance}"
+msgstr ""
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
 msgid "Paste your API token below:"
@@ -1059,11 +1066,11 @@ msgstr "Pegue su token API a continuación:"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:45
 msgid "Payment Progress"
-msgstr "Progreso del pago"
+msgstr ""
 
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
-msgstr "Se denegó el permiso para acceder a los contactos."
+msgstr ""
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1100,13 +1107,22 @@ msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
 msgid "Preview"
 msgstr "Vista previa"
 
-#: src/app/(main)/settings/index.tsx:46
+#: src/app/(main)/settings/index.tsx:49
 msgid "Privacy"
 msgstr "Privacidad"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+msgid "Recalculate"
+msgstr "Recalcular"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
+msgid "Recalculate Balances"
+msgstr "Recalcular saldos"
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Remaining:"
@@ -1129,7 +1145,7 @@ msgstr "Ahorros"
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(main)/settings/index.tsx:63
 msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
 
@@ -1146,7 +1162,7 @@ msgstr "Buscar categorías..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:80
 msgid "Search contacts..."
-msgstr "Buscar contactos..."
+msgstr ""
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
 msgid "Search currencies..."
@@ -1173,13 +1189,13 @@ msgstr "Buscar etiquetas..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Protege tu aplicación con PIN y Face ID"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(main)/settings/index.tsx:58
 msgid "Security"
 msgstr "Seguridad"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:33
 msgid "Select a contact"
-msgstr "Seleccionar un contacto"
+msgstr ""
 
 #: src/app/(main)/settings/import.tsx:53
 #: src/app/(main)/settings/import.tsx:56
@@ -1217,7 +1233,7 @@ msgstr "Seleccionar columna..."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:77
 msgid "Select Contact"
-msgstr "Seleccionar contacto"
+msgstr ""
 
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
 msgid "Select Currency"
@@ -1253,13 +1269,13 @@ msgstr "Seleccionadas: {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:26
 msgid "Set Return Date"
-msgstr "Establecer fecha de devolución"
+msgstr ""
 
-#: src/app/(main)/settings/index.tsx:43
+#: src/app/(main)/settings/index.tsx:46
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/app/(main)/settings/index.tsx:107
+#: src/app/(main)/settings/index.tsx:110
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
@@ -1319,6 +1335,10 @@ msgstr "Acciones"
 msgid "Submit"
 msgstr "Enviar"
 
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+msgid "Success"
+msgstr "Éxito"
+
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
 msgid "Swipe left"
@@ -1370,7 +1390,7 @@ msgstr "Toca para limpiar"
 
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:19
 msgid "Target balance"
-msgstr "Saldo objetivo"
+msgstr ""
 
 #: src/account/component/archive-account/archive-account.tsx:42
 msgid ""
@@ -1393,6 +1413,10 @@ msgstr "Este mes"
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
 msgstr "Esta semana"
+
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
+msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
@@ -1424,7 +1448,7 @@ msgstr "Saldo total"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
-msgstr "Total: {formattedAmountToReturn}"
+msgstr ""
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Touch ID"
@@ -1511,11 +1535,11 @@ msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
-#: src/app/(main)/settings/index.tsx:83
+#: src/app/(main)/settings/index.tsx:86
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(main)/settings/index.tsx:97
+#: src/app/(main)/settings/index.tsx:100
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 
@@ -1525,19 +1549,19 @@ msgstr "Esperando"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:25
 msgid "When should it be returned?"
-msgstr "¿Cuándo debe ser devuelto?"
+msgstr ""
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:38
 msgid "Who owes you?"
-msgstr "¿Quién te debe?"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
-msgstr "Diste dinero"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
-msgstr "Recibiste dinero"
+msgstr ""
 
 #: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
 msgid "Your expense has been recorded successfully."
