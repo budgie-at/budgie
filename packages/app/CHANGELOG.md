@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.90.0](https://github.com/budgie-at/budgie/compare/v1.89.0...v1.90.0) (2025-12-30)
+
+### Bug Fixes
+
+- add padding ([1ba030f](https://github.com/budgie-at/budgie/commit/1ba030f421e0441346eeb631563c229504f9ee5e))
+- add padding ([41e1751](https://github.com/budgie-at/budgie/commit/41e17512d4589aa5f7c0f967b5b7c4a9ab14d85d))
+- sync translations ([6425316](https://github.com/budgie-at/budgie/commit/6425316eff447bde600679701f25a60f078289e4))
+- sync translations ([ffd2ea4](https://github.com/budgie-at/budgie/commit/ffd2ea45a4a9b5b394ab69341646d29f8f4e2499))
+
+### Features
+
+- add debt account ([940279e](https://github.com/budgie-at/budgie/commit/940279e2341395b65539e9b3ace58a2aa9b67490))
+- add missing translations for debt account in fr, de, es, uk ([32b7a5a](https://github.com/budgie-at/budgie/commit/32b7a5a1da2675fea1450e264231e64b2b777376))
+- add translations for debt account feature in de, fr, es, uk ([19a9068](https://github.com/budgie-at/budgie/commit/19a90687299d8c6121c9a77d3cac5114293889d6))
+- **app:** fix settings card, add app version ([a6ae268](https://github.com/budgie-at/budgie/commit/a6ae268b78b7ade20b6d8e64bdad144c7246b620))
+
 # [1.89.0](https://github.com/budgie-at/budgie/compare/v1.88.0...v1.89.0) (2025-12-30)
 
 ### Features
