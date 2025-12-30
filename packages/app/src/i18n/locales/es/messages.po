@@ -250,7 +250,7 @@ msgstr "Saldo"
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "Balances recalculated successfully"
 msgstr "Saldos recalculados con éxito"
 
@@ -373,7 +373,7 @@ msgstr "Limpiar todo"
 msgid "Clear All Data"
 msgstr "Borrar todos los datos"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:34
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:32
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Borrar saldos en caché y recalcular"
 
@@ -680,7 +680,7 @@ msgstr "Ingresa tu PIN"
 
 #: src/app/(main)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:23
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Error"
@@ -722,7 +722,7 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
-#: src/@generic/hook/use-contacts.hook.ts:59
+#: src/@generic/hook/use-contacts.hook.ts:58
 msgid "Failed to load contacts."
 msgstr "Error al cargar los contactos."
 
@@ -734,7 +734,7 @@ msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 msgid "Fetching new..."
 msgstr "Obteniendo nuevos..."
 
-#: src/account/component/create-account-screen/create-account-screen.tsx:42
+#: src/account/component/create-account-screen/create-account-screen.tsx:41
 msgid "Fill in the account details"
 msgstr "Completa los detalles de la cuenta"
 
@@ -960,7 +960,7 @@ msgstr "Aún no hay categorías"
 msgid "No contacts found"
 msgstr "No se encontraron contactos"
 
-#: src/@generic/hook/use-contacts.hook.ts:43
+#: src/@generic/hook/use-contacts.hook.ts:42
 msgid "No contacts found on this device."
 msgstr "No se encontraron contactos en este dispositivo."
 
@@ -1070,7 +1070,7 @@ msgstr "Pegue su token API a continuación:"
 msgid "Payment Progress"
 msgstr "Progreso del pago"
 
-#: src/@generic/hook/use-contacts.hook.ts:50
+#: src/@generic/hook/use-contacts.hook.ts:49
 msgid "Permission to access contacts was denied."
 msgstr "Se denegó el permiso para acceder a los contactos."
 
@@ -1117,12 +1117,12 @@ msgstr "Privacidad"
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:41
 msgid "Recalculate"
 msgstr "Recalcular"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:46
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:31
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:44
 msgid "Recalculate Balances"
 msgstr "Recalcular saldos"
 
@@ -1333,11 +1333,11 @@ msgid "Stocks"
 msgstr "Acciones"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:31
-#: src/account/component/create-account-screen/create-account-screen.tsx:48
+#: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Enviar"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "Success"
 msgstr "Éxito"
 
@@ -1416,7 +1416,7 @@ msgstr "Este mes"
 msgid "This Week"
 msgstr "Esta semana"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:40
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
