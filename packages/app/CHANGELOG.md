@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.89.0](https://github.com/budgie-at/budgie/compare/v1.88.0...v1.89.0) (2025-12-30)
+
+### Features
+
+- **app:** fix settings card, add app version ([4e6c84d](https://github.com/budgie-at/budgie/commit/4e6c84d7158869f7b10ac26f352f986bd9807a37))
+- **app:** fix settings card, add app version ([bea8f09](https://github.com/budgie-at/budgie/commit/bea8f0949a1a8d8544fa301127127e5bc4861b94))
+
 # [1.88.0](https://github.com/budgie-at/budgie/compare/v1.87.1...v1.88.0) (2025-12-30)
 
 ### Bug Fixes
