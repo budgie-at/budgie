@@ -22,37 +22,12 @@ import { categoryRepository, instrumentRepository } from '../../@generic/drizzle
 import { accountService } from '../../account/service/account.service';
 import { categoryService } from '../../category/service/category.service';
 import { transactionService } from '../../transaction/service/transaction.service';
+import { CreateEntriesParamsInterface } from '../interface/create-entries-params.interface';
+import { EntryParamsInterface } from '../interface/entry-params.interface';
 import { ImportProgressInterface } from '../interface/import-progress.interface';
 import { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import { ImporterRowInterface } from '../interface/importer-row.interface';
-
-type NormalizedRow = Record<keyof ImporterColumnMapInterface, string>;
-
-interface EntryParams {
-    account: AccountEntityInterface;
-    amount: number;
-    instrument: InstrumentEntityInterface;
-}
-
-interface CreateEntriesParamsInterface {
-    type: TransactionTypeEnum;
-    category: CategoryEntityInterface;
-    source: EntryParams;
-    dest: EntryParams | null;
-    externalId?: string;
-}
-
-interface ValidationParams {
-    normalizedRow: NormalizedRow;
-    toAccount?: AccountEntityInterface;
-    category?: CategoryEntityInterface;
-    operatedAt: Date;
-    toAmount: number;
-    toInstrument?: InstrumentEntityInterface;
-    fromInstrument?: InstrumentEntityInterface;
-    fromAmount?: number;
-    isPlanned?: boolean;
-}
+import { NormalizedRowType } from '../type/normalized-row.type';
 
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
@@ -145,21 +120,19 @@ export class ImporterService {
         return transactions;
     }
 
-    private createTransaction(normalizedRow: NormalizedRow): TransactionCreateInputInterface {
+    private createTransaction(normalizedRow: NormalizedRowType): TransactionCreateInputInterface {
         const { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount } =
             this.parseRow(normalizedRow);
 
-        this.validateParsedRow({ normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument });
-
         const type = this.determineTransactionType(toAmount, fromInstrument);
 
-        const source: EntryParams = {
+        const source: EntryParamsInterface = {
             account: isDefined(fromAccount) ? fromAccount : toAccount,
             instrument: isDefined(fromInstrument) ? fromInstrument : toInstrument,
             amount: isDefined(fromAmount) ? fromAmount : toAmount
         };
 
-        const dest: EntryParams | null = isDefined(fromAccount)
+        const dest: EntryParamsInterface | null = isDefined(fromAccount)
             ? {
                   account: toAccount,
                   instrument: toInstrument,
@@ -246,7 +219,7 @@ export class ImporterService {
         return [];
     }
 
-    private normalizeRow(row: Record<string, string>): NormalizedRow {
+    private normalizeRow(row: Record<string, string>): NormalizedRowType {
         const getValue = (key: string): string => row[key] ?? '';
 
         return {
@@ -261,10 +234,11 @@ export class ImporterService {
             fromAmount: getValue(this.columnMap.fromAmount).trim(),
             toCurrency: getValue(this.columnMap.toCurrency).toUpperCase().trim(),
             isPlanned: getValue(this.columnMap.isPlanned).trim()
-        } satisfies NormalizedRow;
+        } satisfies NormalizedRowType;
     }
 
-    private parseRow(normalizedRow: NormalizedRow): ImporterRowInterface {
+    // eslint-disable-next-line max-statements
+    private parseRow(normalizedRow: NormalizedRowType): ImporterRowInterface {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
@@ -274,13 +248,6 @@ export class ImporterService {
         const fromInstrument = isDefined(fromAccount) ? this.instrumentsMap[normalizedRow.fromCurrency] : null;
         const fromAmount = isDefined(fromAccount) ? parseFloat(normalizedRow.fromAmount) : null;
         const isPlanned = normalizedRow.isPlanned === '1';
-
-        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
-    }
-
-    // eslint-disable-next-line max-statements
-    private validateParsedRow(params: ValidationParams): void {
-        const { normalizedRow, toAccount, category, operatedAt, toAmount, toInstrument, fromInstrument, fromAmount } = params;
 
         if (!isDefined(toAccount)) {
             throw new Error(`To Account ${normalizedRow.toAccount} not found`);
@@ -300,13 +267,15 @@ export class ImporterService {
         if (isDefined(fromInstrument) && (!isDefined(fromAmount) || isNaN(fromAmount))) {
             throw new Error(`From Amount "${normalizedRow.fromAmount}" is invalid`);
         }
+
+        return { toAccount, fromAccount, category, operatedAt, toAmount, fromInstrument, toInstrument, fromAmount, isPlanned };
     }
 
-    private getToAccountKey(normalizedRow: NormalizedRow): string {
+    private getToAccountKey(normalizedRow: NormalizedRowType): string {
         return `${normalizedRow.toAccount} ${normalizedRow.toCurrency}`;
     }
 
-    private getFromAccountKey(normalizedRow: NormalizedRow): string {
+    private getFromAccountKey(normalizedRow: NormalizedRowType): string {
         return `${normalizedRow.fromAccount} ${normalizedRow.fromCurrency}`;
     }
 
@@ -321,7 +290,7 @@ export class ImporterService {
 
     private async processRows(
         csvText: string,
-        onRow: (normalizeRow: NormalizedRow, originalRow: Record<string, string>) => void
+        onRow: (normalizeRow: NormalizedRowType, originalRow: Record<string, string>) => void
     ): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             Papa.parse<Record<string, string>>(csvText, {

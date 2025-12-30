@@ -122,6 +122,15 @@ export class TransactionRepository {
         });
     }
 
+    getAllWithOffset(limit: number, offset: number) {
+        return this.db.query.TransactionEntityTable.findMany({
+            with: { [TransactionAssociationEnum.ENTRIES]: true },
+            orderBy: (transaction, { desc }) => [desc(transaction.id)],
+            limit,
+            offset
+        });
+    }
+
     getById(id: number) {
         return this.db.query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),

@@ -2,7 +2,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
@@ -33,8 +32,6 @@ export const ImportCsv = () => {
         }
     };
 
-    const rightSlot = isLoading ? <ActivityIndicator size="small" /> : null;
-
     return (
         <SettingsCard
             title={t`Import CSV`}
@@ -42,7 +39,7 @@ export const ImportCsv = () => {
             onPress={handleSelectAndNavigate}
             icon="Database"
             variant="ghost"
-            right={rightSlot}
+            isLoading={isLoading}
         />
     );
 };

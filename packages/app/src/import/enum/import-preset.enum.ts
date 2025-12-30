@@ -1,4 +1,5 @@
 export enum ImportPresetEnum {
     SmartBudget = 'smart-budget',
-    FinEye = 'fin-eye'
+    FinEye = 'fin-eye',
+    Budgie = 'budgie'
 }

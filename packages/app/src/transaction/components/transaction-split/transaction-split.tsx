@@ -11,7 +11,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { sumEntriesAmount } from '../../../transaction-entry/utils/sum-entries-amount.util';
+import { sumEntriesAmount } from '../../utils/sum-entries-amount.util';
 import { TransactionEntry } from '../transaction-entry/transaction-entry';
 
 import { TransactionSplitAllocation } from './transaction-split-allocation';

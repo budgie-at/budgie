@@ -1,24 +1,21 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ImportPresetEnum } from '../../enum/import-preset.enum';
-import { ImportPresetCard } from '../import-preset-card/import-preset-card';
+import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
 interface Props {
     readonly selectedPreset: ImportPresetEnum | undefined;
     readonly onPresetSelect: (preset: ImportPresetEnum) => void;
 }
 
-// eslint-disable-next-line lingui/no-unlocalized-strings
-const SMART_BUDGET_TITLE = 'SmartBudget';
-// eslint-disable-next-line lingui/no-unlocalized-strings
-const FIN_EYE_TITLE = 'FinEye';
-
 export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) => {
     const { t } = useLingui();
 
+    const handleBudgieSelect = () => void onPresetSelect(ImportPresetEnum.Budgie);
     const handleSmartBudgetSelect = () => void onPresetSelect(ImportPresetEnum.SmartBudget);
     const handleFinEyeSelect = () => void onPresetSelect(ImportPresetEnum.FinEye);
 
@@ -32,19 +29,14 @@ export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) 
                         : t`Choose a preset to auto-fill column mappings`}
                 </Text>
             </View>
-            <View className="flex-row gap-x-md">
-                <ImportPresetCard
-                    title={SMART_BUDGET_TITLE}
-                    description={t`Import from SmartBudget2 app with Russian columns`}
+            <View className="flex-row flex-wrap gap-sm">
+                <ImportPresetChip title="Budgie" isSelected={selectedPreset === ImportPresetEnum.Budgie} onSelect={handleBudgieSelect} />
+                <ImportPresetChip
+                    title="SmartBudget"
                     isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
                     onSelect={handleSmartBudgetSelect}
                 />
-                <ImportPresetCard
-                    title={FIN_EYE_TITLE}
-                    description={t`Import from FinEye app with English columns`}
-                    isSelected={selectedPreset === ImportPresetEnum.FinEye}
-                    onSelect={handleFinEyeSelect}
-                />
+                <ImportPresetChip title="FinEye" isSelected={selectedPreset === ImportPresetEnum.FinEye} onSelect={handleFinEyeSelect} />
             </View>
         </View>
     );
