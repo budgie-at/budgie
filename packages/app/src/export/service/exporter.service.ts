@@ -78,7 +78,7 @@ class ExporterService {
             }
 
             for (const transaction of transactions) {
-                rows.push(this.mapTransactionToRow(transaction, accountsMap, categoriesMap, instrumentsMap));
+                rows.push(...this.mapTransactionToRow(transaction, accountsMap, categoriesMap, instrumentsMap));
             }
 
             offset += this.BATCH_SIZE;
@@ -95,29 +95,35 @@ class ExporterService {
         accountsMap: AccountsMap,
         categoriesMap: CategoriesMap,
         instrumentsMap: InstrumentsMap
-    ): ExportRowInterface {
+    ): ExportRowInterface[] {
         const toAccount = isDefined(transaction.toAccountId) ? accountsMap.get(transaction.toAccountId) : null;
         const fromAccount = isDefined(transaction.fromAccountId) ? accountsMap.get(transaction.fromAccountId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? instrumentsMap.get(fromAccount.instrumentId) : null;
 
-        const entry = transaction.entries.at(0);
-        const category = isDefined(entry?.categoryId) ? categoriesMap.get(entry.categoryId) : null;
-        const toEntry = transaction.entries.find(ent => ent.accountId === transaction.toAccountId);
-        const fromEntry = transaction.entries.find(ent => ent.accountId === transaction.fromAccountId);
+        const rows: ExportRowInterface[] = [];
+        for (const entry of transaction.entries) {
+            const category = isDefined(entry.categoryId) ? categoriesMap.get(entry.categoryId) : null;
+            const amount = convertFromMicroUnits(entry.amount);
 
-        return {
-            externalId: transaction.externalId ?? '',
-            toAccount: toAccount?.title ?? '',
-            toAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
-            toCurrency: toInstrument?.code ?? '',
-            fromAccount: fromAccount?.title ?? '',
-            fromAmount: isDefined(fromEntry) ? String(convertFromMicroUnits(fromEntry.amount)) : '',
-            fromCurrency: fromInstrument?.code ?? '',
-            category: category?.title ?? '',
-            operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
-            comment: transaction.comment
-        };
+            const isToEntry = entry.accountId === transaction.toAccountId;
+            const isFromEntry = entry.accountId === transaction.fromAccountId;
+
+            rows.push({
+                externalId: transaction.externalId ?? '',
+                toAccount: toAccount?.title ?? '',
+                toAmount: isToEntry ? String(amount) : '',
+                toCurrency: toInstrument?.code ?? '',
+                fromAccount: fromAccount?.title ?? '',
+                fromAmount: isFromEntry ? String(amount) : '',
+                fromCurrency: fromInstrument?.code ?? '',
+                category: category?.title ?? '',
+                operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
+                comment: transaction.comment
+            });
+        }
+
+        return rows;
     }
 }
 
