@@ -64,7 +64,7 @@ export class AccountBalanceRepository {
         return this.db
             .select({ balance: this.getAccountBalanceWithTransactionsSql() })
             .from(AccountEntityTable)
-            .where(eq(AccountEntityTable.id, accountId))
+            .where(and(eq(AccountEntityTable.id, accountId), isNull(AccountEntityTable.deletedAt)))
             .limit(1);
     }
 
