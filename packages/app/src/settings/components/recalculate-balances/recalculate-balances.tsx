@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { accountBalanceRepository } from '../../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { useConfirmAction } from '../../hook/use-confirm-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
@@ -14,8 +13,7 @@ export const RecalculateBalances = () => {
 
     const handleRecalculate = async () => {
         try {
-            await accountBalanceRepository.truncate();
-            await accountBalanceIncrementalService.updateAllBalances();
+            await accountBalanceIncrementalService.updateAllBalances(true);
             Toast.show({ type: 'success', text1: t`Success`, text2: t`Balances recalculated successfully` });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
