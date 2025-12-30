@@ -21,7 +21,6 @@ export const RecalculateBalances = () => {
             Toast.show({ type: 'success', text1: t`Success`, text2: t`Balances recalculated successfully` });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
-            throw error;
         }
     };
 
