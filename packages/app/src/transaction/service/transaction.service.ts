@@ -11,12 +11,7 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import {
-    db,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';

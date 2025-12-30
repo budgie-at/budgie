@@ -1,12 +1,13 @@
-import { View } from 'react-native';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { AccountDebtTypeEnum } from '@budgie/contracts';
-import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
 import { cva } from 'class-variance-authority';
+import { View } from 'react-native';
+
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
+import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 
 interface Props {
     readonly targetBalance: number;
