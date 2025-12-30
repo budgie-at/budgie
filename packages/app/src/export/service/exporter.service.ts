@@ -12,7 +12,7 @@ import { File, Paths } from 'expo-file-system';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import Papa from 'papaparse';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, categoryRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -83,7 +83,7 @@ class ExporterService {
         do {
             const transactions = await transactionRepository.getAllWithOffset(this.BATCH_SIZE, offset);
 
-            if (transactions.length === 0) {
+            if (!isNotEmptyArray(transactions)) {
                 break;
             }
 
