@@ -56,11 +56,11 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
-#: src/app/(main)/settings/import.tsx:147
+#: src/app/(main)/settings/import.tsx:148
 msgid "{successCount} imported, {errorCount} failed"
 msgstr "{successCount} imported, {errorCount} failed"
 
-#: src/app/(main)/settings/import.tsx:147
+#: src/app/(main)/settings/import.tsx:148
 msgid "{successCount} transactions imported"
 msgstr "{successCount} transactions imported"
 
@@ -181,7 +181,7 @@ msgstr "All your financial data is stored locally on your device. No cloud sync,
 msgid "Allocated"
 msgstr "Allocated"
 
-#: src/app/(main)/settings/import.tsx:209
+#: src/app/(main)/settings/import.tsx:210
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
 msgstr "Amount"
@@ -283,7 +283,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:20
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:268
+#: src/app/(main)/settings/import.tsx:269
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
 msgid "Cancel"
 msgstr "Cancel"
@@ -303,7 +303,7 @@ msgstr "Categories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categories ({selectedCategoriesCount})"
 
-#: src/app/(main)/settings/import.tsx:193
+#: src/app/(main)/settings/import.tsx:194
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
@@ -383,7 +383,7 @@ msgstr "Clear cached balances and recalculate from transactions"
 msgid "Close"
 msgstr "Close"
 
-#: src/app/(main)/settings/import.tsx:253
+#: src/app/(main)/settings/import.tsx:254
 msgid "Comment"
 msgstr "Comment"
 
@@ -526,7 +526,7 @@ msgstr "Data management"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:201
+#: src/app/(main)/settings/import.tsx:202
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Date"
@@ -680,7 +680,7 @@ msgstr "Enter your Monobank API token"
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
 
-#: src/app/(main)/settings/import.tsx:112
+#: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
@@ -727,7 +727,7 @@ msgstr "Export CSV"
 msgid "Export Failed"
 msgstr "Export Failed"
 
-#: src/app/(main)/settings/import.tsx:225
+#: src/app/(main)/settings/import.tsx:226
 msgid "External ID"
 msgstr "External ID"
 
@@ -756,7 +756,7 @@ msgstr "Fetching new..."
 msgid "Fill in the account details"
 msgstr "Fill in the account details"
 
-#: src/app/(main)/settings/import.tsx:162
+#: src/app/(main)/settings/import.tsx:163
 msgid "Fix Errors"
 msgstr "Fix Errors"
 
@@ -772,15 +772,15 @@ msgstr "French (France)"
 msgid "FROM"
 msgstr "FROM"
 
-#: src/app/(main)/settings/import.tsx:232
+#: src/app/(main)/settings/import.tsx:233
 msgid "From Account"
 msgstr "From Account"
 
-#: src/app/(main)/settings/import.tsx:246
+#: src/app/(main)/settings/import.tsx:247
 msgid "From Amount"
 msgstr "From Amount"
 
-#: src/app/(main)/settings/import.tsx:239
+#: src/app/(main)/settings/import.tsx:240
 msgid "From Currency"
 msgstr "From Currency"
 
@@ -816,7 +816,7 @@ msgstr "Historical sync done"
 msgid "Icon"
 msgstr "Icon"
 
-#: src/app/(main)/settings/import.tsx:146
+#: src/app/(main)/settings/import.tsx:147
 msgid "Import Complete"
 msgstr "Import Complete"
 
@@ -824,7 +824,7 @@ msgstr "Import Complete"
 msgid "Import CSV"
 msgstr "Import CSV"
 
-#: src/app/(main)/settings/import.tsx:154
+#: src/app/(main)/settings/import.tsx:155
 msgid "Import Failed"
 msgstr "Import Failed"
 
@@ -846,7 +846,7 @@ msgstr "Income by category"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
-#: src/app/(main)/settings/import.tsx:260
+#: src/app/(main)/settings/import.tsx:261
 msgid "Is Planned"
 msgstr "Is Planned"
 
@@ -886,11 +886,11 @@ msgstr "Manage Categories"
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
-#: src/app/(main)/settings/import.tsx:169
+#: src/app/(main)/settings/import.tsx:170
 msgid "Map CSV Columns"
 msgstr "Map CSV Columns"
 
-#: src/app/(main)/settings/import.tsx:170
+#: src/app/(main)/settings/import.tsx:171
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
@@ -1326,7 +1326,7 @@ msgstr "Spent"
 msgid "Split by Category"
 msgstr "Split by Category"
 
-#: src/app/(main)/settings/import.tsx:162
+#: src/app/(main)/settings/import.tsx:163
 msgid "Start Import"
 msgstr "Start Import"
 
@@ -1438,11 +1438,11 @@ msgstr "This Year"
 msgid "TO"
 msgstr "TO"
 
-#: src/app/(main)/settings/import.tsx:185
+#: src/app/(main)/settings/import.tsx:186
 msgid "To Account"
 msgstr "To Account"
 
-#: src/app/(main)/settings/import.tsx:217
+#: src/app/(main)/settings/import.tsx:218
 msgid "To Currency"
 msgstr "To Currency"
 
