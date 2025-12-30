@@ -119,7 +119,7 @@ class BankSyncStorageService {
         });
 
         if (result.completed) {
-            await accountBalanceIncrementalService.updateAllBalances();
+            await accountBalanceIncrementalService.updateAllBalances(true);
         }
     }
 
