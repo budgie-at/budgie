@@ -120,18 +120,18 @@ class ExporterService {
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? instrumentsMap.get(fromAccount.instrumentId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? instrumentsMap.get(toAccount.instrumentId) : null;
 
-        const fromEntry = transaction.entries.find(ent => ent.accountId === transaction.fromAccountId);
-        const toEntry = transaction.entries.find(ent => ent.accountId === transaction.toAccountId);
+        const fromEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
+        const toEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
 
         return {
             title: transaction.title,
             externalId: transaction.externalId ?? '',
-            toAccount: toAccount?.title ?? '',
-            toAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
-            toCurrency: toInstrument?.code ?? '',
-            fromAccount: fromAccount?.title ?? '',
-            fromAmount: isDefined(fromEntry) ? String(-convertFromMicroUnits(fromEntry.amount)) : '',
-            fromCurrency: fromInstrument?.code ?? '',
+            fromAccount: toAccount?.title ?? '',
+            fromAmount: isDefined(toEntry) ? String(convertFromMicroUnits(toEntry.amount)) : '',
+            fromCurrency: toInstrument?.code ?? '',
+            toAccount: fromAccount?.title ?? '',
+            toAmount: isDefined(fromEntry) ? String(convertFromMicroUnits(fromEntry.amount)) : '',
+            toCurrency: fromInstrument?.code ?? '',
             category: category?.title ?? '',
             operatedAt: format(transaction.operatedAt, 'MM/dd/yyyy HH:mm:ss'),
             comment: transaction.comment
