@@ -15,12 +15,15 @@ interface Props {
 const SMART_BUDGET_TITLE = 'SmartBudget';
 // eslint-disable-next-line lingui/no-unlocalized-strings
 const FIN_EYE_TITLE = 'FinEye';
+// eslint-disable-next-line lingui/no-unlocalized-strings
+const BUDGIE_TITLE = 'Budgie';
 
 export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) => {
     const { t } = useLingui();
 
     const handleSmartBudgetSelect = () => void onPresetSelect(ImportPresetEnum.SmartBudget);
     const handleFinEyeSelect = () => void onPresetSelect(ImportPresetEnum.FinEye);
+    const handleBudgieSelect = () => void onPresetSelect(ImportPresetEnum.Budgie);
 
     return (
         <View className="gap-y-lg mb-xl">
@@ -32,7 +35,13 @@ export const ImportPresetSelector = ({ selectedPreset, onPresetSelect }: Props) 
                         : t`Choose a preset to auto-fill column mappings`}
                 </Text>
             </View>
-            <View className="flex-row gap-x-md">
+            <View className="flex-row gap-x-md flex-wrap gap-y-md">
+                <ImportPresetCard
+                    title={BUDGIE_TITLE}
+                    description={t`Import from Budgie export file`}
+                    isSelected={selectedPreset === ImportPresetEnum.Budgie}
+                    onSelect={handleBudgieSelect}
+                />
                 <ImportPresetCard
                     title={SMART_BUDGET_TITLE}
                     description={t`Import from SmartBudget2 app with Russian columns`}

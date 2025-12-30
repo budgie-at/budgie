@@ -1,0 +1,39 @@
+import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
+import { ActivityIndicator } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import { getErrorMessage } from '@rnw-community/shared';
+
+import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { exporterService } from '../../service/exporter.service';
+
+export const ExportCsv = () => {
+    const { t } = useLingui();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleExport = async () => {
+        setIsLoading(true);
+        try {
+            await exporterService.saveAndShare();
+            Toast.show({ type: 'success', text1: t`Export Complete`, text2: t`Your data has been exported successfully` });
+        } catch (error) {
+            Toast.show({ type: 'error', text1: t`Export Failed`, text2: getErrorMessage(error) });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const rightSlot = isLoading ? <ActivityIndicator size="small" /> : null;
+
+    return (
+        <SettingsCard
+            title={t`Export CSV`}
+            description={t`Export all transactions to a CSV file`}
+            onPress={handleExport}
+            icon="FileText"
+            variant="default"
+            right={rightSlot}
+        />
+    );
+};

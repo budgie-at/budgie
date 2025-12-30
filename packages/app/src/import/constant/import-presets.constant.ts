@@ -30,5 +30,18 @@ export const IMPORT_PRESETS: Record<ImportPresetEnum, ImportColumnMapFormValues>
         toAccount: 'outcomeAccount',
         toAmount: 'outcome',
         toCurrency: 'outcomeCurrency'
+    },
+    [ImportPresetEnum.Budgie]: {
+        externalId: 'externalId',
+        toAccount: 'toAccount',
+        toAmount: 'toAmount',
+        toCurrency: 'toCurrency',
+        fromAccount: 'fromAccount',
+        fromAmount: 'fromAmount',
+        fromCurrency: 'fromCurrency',
+        category: 'category',
+        operatedAt: 'operatedAt',
+        comment: 'comment',
+        isPlanned: ''
     }
 };
