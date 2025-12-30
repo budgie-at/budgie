@@ -231,7 +231,7 @@ class AppMonobankSyncService {
         for (const bankTx of bankTransactions) {
             const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
             const amount = Math.abs(bankTx.amount);
-            const entryType = isIncome ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+            const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
             transactionsToCreate.push({
                 amount,

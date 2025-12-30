@@ -1,4 +1,9 @@
-import { TransactionCreateInputInterface, TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Control, useFieldArray } from 'react-hook-form';
@@ -19,6 +24,7 @@ import { TransactionSplitAllocation } from './transaction-split-allocation';
 interface Props {
     readonly entries: TransactionEntryCreateInputInterface[];
     readonly control: Control<TransactionCreateInputInterface>;
+    readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
     readonly totalAmount: number;
     readonly accountId: number;
@@ -32,7 +38,7 @@ const categoryVariants = cva('text-sm font-medium flex-1', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const TransactionSplit = ({ control, variant, entries, accountId, totalAmount }: Props) => {
+export const TransactionSplit = ({ control, variant, transactionType, entries, accountId, totalAmount }: Props) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'entries'
@@ -51,7 +57,7 @@ export const TransactionSplit = ({ control, variant, entries, accountId, totalAm
             amount: 0,
             accountId,
             categoryId: 0,
-            type: TransactionEntryTypeEnum.DEBIT
+            type: transactionType === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
         });
     };
 

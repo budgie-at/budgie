@@ -49,6 +49,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
             icon="TrendingDown"
             title={t`New Expense`}
             buttonText={t`Add Expense`}
+            transactionType={TransactionTypeEnum.EXPENSE}
         />
     );
 };

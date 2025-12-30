@@ -1,4 +1,4 @@
-import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -28,10 +28,12 @@ interface Props {
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
+    readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: 'toAccountId' | 'fromAccountId';
 }
 
-export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, buttonText, title, variant, accountFieldName }: Props) => {
+export const LiabilityTransactionForm = (props: Props) => {
+    const { onSubmit, transactionType, setValue, control, icon, buttonText, title, variant, accountFieldName } = props;
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -86,7 +88,13 @@ export const LiabilityTransactionForm = ({ onSubmit, setValue, control, icon, bu
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name={accountFieldName} control={control} />
 
-                    <TransactionFormCategory accountId={accountId ?? 0} setValue={setValue} control={control} variant={variant} />
+                    <TransactionFormCategory
+                        transactionType={transactionType}
+                        accountId={accountId ?? 0}
+                        setValue={setValue}
+                        control={control}
+                        variant={variant}
+                    />
 
                     <TransactionFormMetadataFields variant={variant} control={control} />
 
