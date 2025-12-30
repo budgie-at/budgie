@@ -13,7 +13,7 @@ export const SyncToggleCard = ({ syncEnabled, onToggle }: Props) => {
 
     return (
         <SimpleHorizontalCell
-            right={<ThemedSwitch className='my-auto' value={syncEnabled} onValueChange={onToggle} />}
+            right={<ThemedSwitch className="my-auto" value={syncEnabled} onValueChange={onToggle} />}
             title={t`Enable Auto-Sync`}
             description={t`Automatically sync your accounts and transactions`}
             size="lg"
