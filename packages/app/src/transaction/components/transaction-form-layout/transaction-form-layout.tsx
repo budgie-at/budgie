@@ -37,7 +37,9 @@ export const TransactionFormLayout = ({ title, description, icon, onDelete, vari
                 <KeyboardStickyView>
                     <Footer>
                         <Button onPress={onSubmit} variant={variant} content={buttonText} />
-                        {isDefined(onDelete) ? <Button onPress={handleOpen} variant="destructive" content={t`Delete transaction`} /> : null}
+                        {isDefined(onDelete) ? (
+                            <Button leftIcon="Trash2" onPress={handleOpen} variant="destructive" content={t`Delete transaction`} />
+                        ) : null}
                     </Footer>
                 </KeyboardStickyView>
             }

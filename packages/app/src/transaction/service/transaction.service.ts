@@ -32,6 +32,7 @@ class TransactionService {
     async deleteById(id: number) {
         await db.transaction(async tx => {
             await transactionRepository.deleteById(id, tx);
+            await transactionTagsRepository.deleteByTransactionId(id, tx);
             await transactionEntryRepository.deleteByTransactionId(id, tx);
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
