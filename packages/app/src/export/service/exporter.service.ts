@@ -94,9 +94,9 @@ class ExporterService {
 
                     if (transaction.type === TransactionTypeEnum.TRANSFER) {
                         rows.push(this.mapTransferTransaction(transaction, accountsMap, instrumentsMap, category));
+                    } else {
+                        rows.push(...this.mapIncomeExpenseTransaction(transaction, accountsMap, instrumentsMap, category));
                     }
-
-                    rows.push(...this.mapIncomeExpenseTransaction(transaction, accountsMap, instrumentsMap, category));
                 }
             }
 
