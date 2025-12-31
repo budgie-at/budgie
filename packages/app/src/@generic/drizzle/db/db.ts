@@ -3,6 +3,7 @@ import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
     AccountRepository,
+    BankSyncRepository,
     CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
@@ -55,3 +56,4 @@ export const exchangeRateRepository = new ExchangeRateRepository(db);
 export const accountBalanceRepository = new AccountBalanceRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
+export const bankSyncRepository = new BankSyncRepository(db);
