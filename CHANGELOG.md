@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.92.1](https://github.com/budgie-at/budgie/compare/v1.92.0...v1.92.1) (2025-12-31)
+
+### Bug Fixes
+
+- change input height ([#144](https://github.com/budgie-at/budgie/issues/144)) ([21561b3](https://github.com/budgie-at/budgie/commit/21561b3c74b474e8c53a6f2433ab064400ca9685))
+
 # [1.92.0](https://github.com/budgie-at/budgie/compare/v1.91.2...v1.92.0) (2025-12-31)
 
 ### Bug Fixes
