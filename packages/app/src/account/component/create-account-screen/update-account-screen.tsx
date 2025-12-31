@@ -2,16 +2,17 @@ import {
     AccountEntityInterface,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
-    LiabilityAccountCreateInputInterface
+    LiabilityAccountCreateInputInterface,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
-import { Control, FieldValues } from 'react-hook-form';
+import { Control, FieldValues, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
@@ -43,15 +44,20 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const { children, account, onSubmit, control, instrumentSymbol } = props;
     const { t } = useLingui();
 
+    const formValues = useWatch({ control });
+    const currentType = isDefined(formValues.type) ? (formValues.type as AccountTypeEnum) : account.type;
+    const currentIcon = isDefined(formValues.icon) ? (formValues.icon as UserIconNameEnum) : account.icon;
+
     const handleGoBack = () => void goBackOrReplace('/');
-    const description = i18n.t(ACCOUNT_TYPE[account.type]);
-    const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
+
+    const description = i18n.t(ACCOUNT_TYPE[currentType]);
+    const variant = currentType === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[currentType];
 
     return (
         <Page
             header={
                 <PageHeader
-                    icon={account.icon}
+                    icon={currentIcon}
                     iconVariant={variant}
                     onGoBack={handleGoBack}
                     description={description}

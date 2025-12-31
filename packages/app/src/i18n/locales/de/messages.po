@@ -87,9 +87,14 @@ msgstr "Konto"
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:58
+#: src/account/component/create-account-screen/update-account-screen.tsx:64
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
+
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
+msgid "Account Type"
+msgstr ""
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:11
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:102
@@ -226,7 +231,7 @@ msgstr "Archivierte Konten"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:58
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Sind Sie sicher, dass Sie diese Transaktion löschen möchten?"
 
@@ -311,6 +316,10 @@ msgstr "Kategorie"
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
 msgstr "Kategoriename"
+
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
+msgid "Change Account Type"
+msgstr "Kontotyp ändern"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
@@ -506,6 +515,10 @@ msgstr "Erstellen Sie oben Ihr erstes Tag, um Ihre Transaktionen zu organisieren
 msgid "Crypto"
 msgstr "Krypto"
 
+#: src/account/constant/account-type-description.constant.ts:9
+msgid "Cryptocurrency holdings"
+msgstr "Kryptowährungsbestände"
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
 msgstr "Währung"
@@ -564,8 +577,7 @@ msgstr "Alle Transaktionen und Einstellungen löschen"
 msgid "Delete data"
 msgstr "Daten löschen"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:55
 msgid "Delete transaction"
 msgstr "Transaktion löschen"
 
@@ -902,6 +914,10 @@ msgstr "Verliehenes oder geliehenes Geld"
 msgid "Money you earn"
 msgstr "Geld, das Sie verdienen"
 
+#: src/account/constant/account-type-description.constant.ts:8
+msgid "Money you owe or are owed"
+msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
 msgstr "Geld, das Sie ausgeben"
@@ -1084,6 +1100,10 @@ msgstr "Zahlungsfortschritt"
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
 
+#: src/account/constant/account-type-description.constant.ts:7
+msgid "Physical cash on hand"
+msgstr "Physisches Bargeld"
+
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1156,6 +1176,10 @@ msgstr "Ersparnisse"
 #: src/app/(main)/create-account/index.tsx:34
 msgid "Savings Account"
 msgstr "Sparkonto"
+
+#: src/account/constant/account-type-description.constant.ts:11
+msgid "Savings accounts"
+msgstr "Sparkonten"
 
 #: src/app/(main)/settings/index.tsx:64
 msgid "Screenshot Protection"
@@ -1271,6 +1295,10 @@ msgstr "Gebietsschema auswählen"
 msgid "Select Tags"
 msgstr "Tags auswählen"
 
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+msgid "Select the type of account"
+msgstr "Wählen Sie den Kontotyp"
+
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:54
 msgid "Selected"
 msgstr "Ausgewählt"
@@ -1337,6 +1365,10 @@ msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofonta
 msgid "Statistics"
 msgstr "Statistiken"
 
+#: src/account/constant/account-type-description.constant.ts:10
+msgid "Stock investments"
+msgstr "Aktieninvestitionen"
+
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
 msgstr "Aktien"
@@ -1362,6 +1394,10 @@ msgstr "Synchronisationsstatus"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:58
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
+
+#: src/account/constant/account-type-description.constant.ts:12
+msgid "Synced bank accounts"
+msgstr "Synchronisierte Bankkonten"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/account-sync-card/account-sync-card.tsx:80
@@ -1410,7 +1446,7 @@ msgstr ""
 " 💡 Sie können es jederzeit über Einstellungen → Archivierte Konten wiederherstellen"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:54
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -1461,6 +1497,10 @@ msgstr "Gesamt: {formattedAmountToReturn}"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/account/constant/account-type-description.constant.ts:6
+msgid "Traditional bank accounts"
+msgstr "Traditionelle Bankkonten"
 
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
@@ -1514,7 +1554,7 @@ msgstr "Unbekannte Kategorie"
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:65
+#: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Konto aktualisieren"
 

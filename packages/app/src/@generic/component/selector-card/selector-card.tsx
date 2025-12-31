@@ -50,7 +50,7 @@ export const SelectorCard = <T = number,>(props: Props<T>) => {
             className={cn(cardVariants({ isSelected, verticalAlign }), className)}
             onPress={handleSelect}
         >
-            <View className="gap-y-xxs flex-1">
+            <View className="gap-y-xxs flex-1 justify-center">
                 <Text className="text-md font-semibold text-primary">{title}</Text>
                 {subtitle}
             </View>

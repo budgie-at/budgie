@@ -27,7 +27,7 @@ const calculateAmount = (transaction: TransactionWithRelationsEntityInterface) =
 
 export const convertTransactionToInput = (transaction: TransactionWithRelationsEntityInterface): TransactionCreateInputInterface => ({
     ...transaction,
-    amount: calculateAmount(transaction),
+    amount: convertFromMicroUnits(calculateAmount(transaction)),
     tagIds: transaction.transactionTags.map(({ tagId }) => tagId),
     entries: transaction.entries.map(entry => ({
         ...entry,
