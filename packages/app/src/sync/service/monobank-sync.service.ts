@@ -105,7 +105,10 @@ class AppMonobankSyncService {
     }
 
     private async syncAndInitializeAccounts(): Promise<void> {
-        const accounts = await this.fetchAndCreateAccounts();
+        const bankAccounts = await new MonobankSyncService(this.getToken()).syncAccounts();
+
+        const accounts = isNotEmptyArray(bankAccounts) ? await this.createMissingAccounts(bankAccounts) : [];
+
         await this.initializeBankSyncs(accounts);
         await microPause();
     }
@@ -226,12 +229,6 @@ class AppMonobankSyncService {
             const cursor = isBackward ? { backwardSyncFromAt: result.nextTo } : { forwardSyncFromAt: result.nextFrom };
             await bankSyncRepository.update(sync.id, { ...baseUpdate, ...cursor });
         }
-    }
-
-    private async fetchAndCreateAccounts(): Promise<AccountEntityInterface[]> {
-        const bankAccounts = await new MonobankSyncService(this.getToken()).syncAccounts();
-
-        return isNotEmptyArray(bankAccounts) ? await this.createMissingAccounts(bankAccounts) : [];
     }
 
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
