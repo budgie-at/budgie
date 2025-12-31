@@ -196,7 +196,7 @@ export class TransactionRepository {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: null })
-            .where(inArray(TransactionEntityTable.toAccountId, accountIds));
+            .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
