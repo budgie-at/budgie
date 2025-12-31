@@ -9,8 +9,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
-import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
+import { router } from 'expo-router';
 
 export const useAccountForm = (
     defaultValues: LiabilityAccountCreateInputInterface,
@@ -39,7 +39,7 @@ export const useAccountForm = (
         try {
             await onSubmit(values);
 
-            goBackOrReplace('/');
+            router.replace('/');
         } catch (error: unknown) {
             showError(error);
         }
