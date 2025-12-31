@@ -81,7 +81,7 @@ msgid "About"
 msgstr "About"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
 msgid "Account"
 msgstr "Account"
 
@@ -233,6 +233,10 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+msgid "Are you sure you want to delete this transaction?"
+msgstr "Are you sure you want to delete this transaction?"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Are you sure?"
@@ -256,10 +260,6 @@ msgstr "Balance"
 #: src/transaction/components/transaction-list/transaction-list.tsx:53
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Balances recalculated successfully"
-msgstr "Balances recalculated successfully"
 
 #: src/account/constant/account-type.constant.ts:6
 #: src/account/constant/account-type.constant.ts:12
@@ -385,7 +385,7 @@ msgstr "Clear All"
 msgid "Clear All Data"
 msgstr "Clear All Data"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:30
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Clear cached balances and recalculate from transactions"
 
@@ -433,18 +433,22 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:45
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+msgid "Could not delete transaction."
+msgstr "Could not delete transaction."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:39
-msgid "Could not update transaction. Please try again later."
-msgstr "Could not update transaction. Please try again later."
+#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+msgid "Could not update transaction."
+msgstr "Could not update transaction."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
@@ -495,7 +499,7 @@ msgstr "Create Tags"
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:67
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -575,6 +579,11 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+msgid "Delete transaction"
+msgstr "Delete transaction"
+
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
 msgstr "Deselect All"
@@ -612,7 +621,7 @@ msgstr "e.g., Business, Personal, Vacation"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
@@ -696,7 +705,7 @@ msgstr "Enter your PIN"
 
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Error"
@@ -721,23 +730,15 @@ msgstr "Expected Return Date (Optional)"
 msgid "Expense"
 msgstr "Expense"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:37
-msgid "Expense created"
-msgstr "Expense created"
-
-#: src/export/components/export-csv/export-csv.tsx:29
+#: src/export/components/export-csv/export-csv.tsx:28
 msgid "Export all transactions to a CSV file"
 msgstr "Export all transactions to a CSV file"
 
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Export Complete"
-msgstr "Export Complete"
-
-#: src/export/components/export-csv/export-csv.tsx:28
+#: src/export/components/export-csv/export-csv.tsx:27
 msgid "Export CSV"
 msgstr "Export CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:20
+#: src/export/components/export-csv/export-csv.tsx:19
 msgid "Export Failed"
 msgstr "Export Failed"
 
@@ -1149,12 +1150,12 @@ msgstr "Privacy"
 msgid "Re-enter your PIN to confirm"
 msgstr "Re-enter your PIN to confirm"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "Recalculate"
 msgstr "Recalculate"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:28
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:41
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
@@ -1261,7 +1262,7 @@ msgid "Select category"
 msgstr "Select category"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:79
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:81
 msgid "Select Category"
 msgstr "Select Category"
 
@@ -1326,9 +1327,8 @@ msgstr "Show $1,234.56 instead of $1,235"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:44
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
-#: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Something went wrong."
 
@@ -1380,10 +1380,6 @@ msgstr "Stocks"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Submit"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Success"
-msgstr "Success"
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1453,6 +1449,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
@@ -1464,7 +1461,7 @@ msgstr "This Month"
 msgid "This Week"
 msgstr "This Week"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:37
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 
@@ -1564,7 +1561,7 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
 msgid "Update Expense"
 msgstr "Update Expense"
 
@@ -1616,14 +1613,6 @@ msgstr "You gave money"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "You received money"
-
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Your data has been exported successfully"
-msgstr "Your data has been exported successfully"
-
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
-msgid "Your expense has been recorded successfully."
-msgstr "Your expense has been recorded successfully."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
