@@ -39,4 +39,11 @@ export class TransactionEntryRepository {
             .set({ deletedAt: new Date() })
             .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
     }
+
+    async restoreById(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set({ deletedAt: null })
+            .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
+    }
 }

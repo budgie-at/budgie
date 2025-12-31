@@ -187,6 +187,13 @@ export class TransactionRepository {
             .where(or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)));
     }
 
+    async restoreById(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ deletedAt: null })
+            .where(or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)));
+    }
+
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
         return this.db
             .select({
