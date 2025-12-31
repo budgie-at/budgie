@@ -79,7 +79,7 @@ msgid "About"
 msgstr "À propos"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:57
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
 msgid "Account"
 msgstr "Compte"
 
@@ -87,9 +87,14 @@ msgstr "Compte"
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:58
+#: src/account/component/create-account-screen/update-account-screen.tsx:64
 msgid "Account Settings"
 msgstr "Paramètres du compte"
+
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+#: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
+msgid "Account Type"
+msgstr "Type de compte"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:11
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:102
@@ -131,7 +136,7 @@ msgstr "Ajouter une dépense"
 msgid "Add Income"
 msgstr "Ajouter un revenu"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:108
+#: src/transaction/components/transaction-split/transaction-split.tsx:114
 msgid "Add Split"
 msgstr "Ajouter une répartition"
 
@@ -255,6 +260,7 @@ msgid "Balances recalculated successfully"
 msgstr "Soldes recalculés avec succès"
 
 #: src/account/constant/account-type.constant.ts:6
+#: src/account/constant/account-type.constant.ts:12
 msgid "Bank"
 msgstr "Banque"
 
@@ -303,13 +309,17 @@ msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:194
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:40
 msgid "Category"
 msgstr "Catégorie"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
 msgstr "Nom de la catégorie"
+
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
+msgid "Change Account Type"
+msgstr "Modifier le type de compte"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
@@ -483,7 +493,7 @@ msgstr "Créer des étiquettes"
 msgid "Create tags to organize your transactions"
 msgstr "Créez des étiquettes pour organiser vos transactions"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:64
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -500,6 +510,10 @@ msgstr "Créez votre première étiquette ci-dessus pour organiser vos transacti
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Crypto"
+
+#: src/account/constant/account-type-description.constant.ts:9
+msgid "Cryptocurrency holdings"
+msgstr "Avoirs en cryptomonnaies"
 
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
@@ -596,11 +610,11 @@ msgstr "ex. Professionnel, Personnel, Vacances"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ex. Épicerie, Salaire, Loyer"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:33
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:33
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -900,6 +914,10 @@ msgstr "Argent prêté ou emprunté"
 msgid "Money you earn"
 msgstr "Argent que vous gagnez"
 
+#: src/account/constant/account-type-description.constant.ts:8
+msgid "Money you owe or are owed"
+msgstr "Argent que vous devez ou qui vous est dû"
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
 msgstr "Argent que vous dépensez"
@@ -1082,6 +1100,10 @@ msgstr "Progression du paiement"
 msgid "Permission to access contacts was denied."
 msgstr "La permission d'accéder aux contacts a été refusée."
 
+#: src/account/constant/account-type-description.constant.ts:7
+msgid "Physical cash on hand"
+msgstr "Espèces physiques en main"
+
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -1154,6 +1176,10 @@ msgstr "Épargne"
 #: src/app/(main)/create-account/index.tsx:34
 msgid "Savings Account"
 msgstr "Compte d'épargne"
+
+#: src/account/constant/account-type-description.constant.ts:11
+msgid "Savings accounts"
+msgstr "Comptes d'épargne"
 
 #: src/app/(main)/settings/index.tsx:64
 msgid "Screenshot Protection"
@@ -1233,7 +1259,7 @@ msgid "Select category"
 msgstr "Sélectionner une catégorie"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:77
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:79
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
 
@@ -1268,6 +1294,10 @@ msgstr "Sélectionner des paramètres régionaux"
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:40
 msgid "Select Tags"
 msgstr "Sélectionner des étiquettes"
+
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+msgid "Select the type of account"
+msgstr "Sélectionnez le type de compte"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:54
 msgid "Selected"
@@ -1320,7 +1350,7 @@ msgstr "Dépenses par catégorie"
 msgid "Spent"
 msgstr "Dépensé"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:81
+#: src/transaction/components/transaction-split/transaction-split.tsx:87
 msgid "Split by Category"
 msgstr "Répartir par catégorie"
 
@@ -1335,6 +1365,10 @@ msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajo
 #: src/app/(tabs)/analytics.tsx:40
 msgid "Statistics"
 msgstr "Statistiques"
+
+#: src/account/constant/account-type-description.constant.ts:10
+msgid "Stock investments"
+msgstr "Investissements en actions"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1365,6 +1399,10 @@ msgstr "État de synchronisation"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:58
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisez vos comptes et transactions Monobank"
+
+#: src/account/constant/account-type-description.constant.ts:12
+msgid "Synced bank accounts"
+msgstr "Comptes bancaires synchronisés"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/account-sync-card/account-sync-card.tsx:80
@@ -1464,6 +1502,10 @@ msgstr "Total : {formattedAmountToReturn}"
 msgid "Touch ID"
 msgstr "Touch ID"
 
+#: src/account/constant/account-type-description.constant.ts:6
+msgid "Traditional bank accounts"
+msgstr "Comptes bancaires traditionnels"
+
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
 msgstr "Type de transaction"
@@ -1516,15 +1558,15 @@ msgstr "Catégorie inconnue"
 msgid "Up to date"
 msgstr "À jour"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:65
+#: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Update Expense"
 msgstr "Mettre à jour la dépense"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:34
+#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:35
 msgid "Update Income"
 msgstr "Mettre à jour le revenu"
 
