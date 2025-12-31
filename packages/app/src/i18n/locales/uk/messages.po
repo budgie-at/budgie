@@ -231,7 +231,7 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:58
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
 
@@ -577,8 +577,7 @@ msgstr "Видалити всі транзакції та налаштуванн
 msgid "Delete data"
 msgstr "Видалити дані"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:55
 msgid "Delete transaction"
 msgstr "Видалити транзакцію"
 
@@ -1447,7 +1446,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:54
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
