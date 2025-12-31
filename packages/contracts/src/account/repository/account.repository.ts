@@ -35,14 +35,8 @@ export class AccountRepository {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
-    async archiveById(id: number, tx?: TX): Promise<AccountEntityInterface> {
-        const [account] = await (tx ?? this.db)
-            .update(AccountEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(eq(AccountEntityTable.id, id))
-            .returning();
-
-        return account;
+    async archiveById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
     }
 
     async getAllActiveAccounts(): Promise<AccountEntityInterface[]> {

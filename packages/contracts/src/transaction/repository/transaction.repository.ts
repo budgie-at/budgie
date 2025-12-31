@@ -127,7 +127,8 @@ export class TransactionRepository {
             with: { [TransactionAssociationEnum.ENTRIES]: true },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
-            offset
+            offset,
+            where: isNull(TransactionEntityTable.deletedAt)
         });
     }
 
@@ -177,6 +178,13 @@ export class TransactionRepository {
         }
 
         return null;
+    }
+
+    async archiveByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)));
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
