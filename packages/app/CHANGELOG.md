@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.94.0](https://github.com/budgie-at/budgie/compare/v1.93.0...v1.94.0) (2025-12-31)
+
+### Features
+
+- **app:** implement account type changing ([#147](https://github.com/budgie-at/budgie/issues/147)) ([ca31f44](https://github.com/budgie-at/budgie/commit/ca31f44f570e4a839c1e5625525c4252f2ee9761))
+
 # [1.93.0](https://github.com/budgie-at/budgie/compare/v1.92.3...v1.93.0) (2025-12-31)
 
 ### Features
