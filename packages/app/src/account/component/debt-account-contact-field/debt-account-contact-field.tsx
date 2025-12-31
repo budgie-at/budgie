@@ -12,11 +12,11 @@ interface Props<T extends { contactId: string | null }> {
 export const DebtAccountContactField = <T extends { contactId: string | null }>({ control }: Props<T>) => {
     const { t } = useLingui();
 
-    const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
+    const renderField = ({ field }: UseControllerReturn<T, Path<T>>) => (
         <FormItem label={t`Contact (optional)`}>
-            <ContactSelector variant={ACCOUNT_COLOR.DEBT} contactId={value} onSelect={onChange} />
+            <ContactSelector variant={ACCOUNT_COLOR.DEBT} contactId={field.value} onSelect={field.onChange} />
         </FormItem>
     );
 
-    return <Controller render={render} control={control} name={'contactId' as Path<T>} />;
+    return <Controller render={renderField} control={control} name={'contactId' as Path<T>} />;
 };
