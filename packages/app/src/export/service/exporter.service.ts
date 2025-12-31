@@ -42,13 +42,14 @@ class ExporterService {
     ] as const;
 
     async exportToCsv(): Promise<string> {
-        const [accounts, categories, instruments] = await Promise.all([
+        const [accounts, deletedAccounts, categories, instruments] = await Promise.all([
             accountRepository.getAll(),
+            accountRepository.getAllArchived(),
             categoryRepository.findAll(),
             instrumentRepository.getAll()
         ]);
 
-        const accountsMap: AccountsMap = new Map(accounts.map(acc => [acc.id, acc]));
+        const accountsMap: AccountsMap = new Map([...deletedAccounts, ...accounts].map(acc => [acc.id, acc]));
         const categoriesMap: CategoriesMap = new Map(categories.map(cat => [cat.id, cat]));
         const instrumentsMap: InstrumentsMap = new Map(instruments.map(inst => [inst.id, inst]));
 
