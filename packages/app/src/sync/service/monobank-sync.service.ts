@@ -67,6 +67,7 @@ class AppMonobankSyncService {
         this.isRunning = false;
         if (enabled) {
             void this.registerBackgroundTask();
+            void this.sync();
         } else {
             void this.unregisterBackgroundTask();
         }
@@ -123,8 +124,8 @@ class AppMonobankSyncService {
 
     private async syncInternal(): Promise<BackgroundTask.BackgroundTaskResult> {
         try {
-            const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
-            if (!isNotEmptyArray(enabledSyncs)) {
+            const token = this.getToken();
+            if (!isNotEmptyString(token)) {
                 this.isRunning = false;
 
                 return BackgroundTask.BackgroundTaskResult.Success;
@@ -133,6 +134,13 @@ class AppMonobankSyncService {
             const syncedAccounts = await this.syncAccounts();
             await this.initializeBankSyncs(syncedAccounts);
             await microPause();
+
+            const enabledSyncs = await bankSyncRepository.getEnabledByProvider(this.provider);
+            if (!isNotEmptyArray(enabledSyncs)) {
+                this.isRunning = false;
+
+                return BackgroundTask.BackgroundTaskResult.Success;
+            }
 
             const pendingSync = await this.getNextPendingSync();
             if (isDefined(pendingSync)) {
