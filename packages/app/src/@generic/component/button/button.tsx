@@ -3,7 +3,7 @@ import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
 import { Text } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
@@ -15,7 +15,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof HapticPressable> {
-    readonly content: ReactNode;
+    readonly content?: ReactNode;
     readonly leftIcon?: IconName;
     readonly rightIcon?: IconName;
     readonly size?: ButtonSizeType;
@@ -57,7 +57,7 @@ export const Button = (props: Props) => {
         <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
             {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
-            <Text className={textVariants({ variant })}>{content}</Text>
+            {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
 
             {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
         </HapticPressable>
