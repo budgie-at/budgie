@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -31,5 +31,19 @@ export class TransactionEntryRepository {
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntryEntityTable);
+    }
+
+    async archiveByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
+    }
+
+    async restoreByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set({ deletedAt: null })
+            .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
     }
 }
