@@ -16,7 +16,7 @@ import {
 import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { categoryRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
@@ -149,8 +149,8 @@ export class ImporterService {
             title: '',
             externalSource: ExternalSourceEnum.CSV,
             comment: normalizedRow.comment,
-            toAccountId: source.account.id,
-            fromAccountId: dest?.account.id ?? null,
+            toAccountId: dest?.account.id ?? null,
+            fromAccountId: source.account.id,
             tagIds: [],
             entries: this.createEntries({ type, category, source, dest, externalId: normalizedRow.externalId })
         };
@@ -161,7 +161,7 @@ export class ImporterService {
             return TransactionTypeEnum.TRANSFER;
         }
 
-        if (amount > 0) {
+        if (isPositiveNumber(amount)) {
             return TransactionTypeEnum.INCOME;
         }
 
