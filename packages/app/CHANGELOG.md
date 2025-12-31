@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.92.0](https://github.com/budgie-at/budgie/compare/v1.91.2...v1.92.0) (2025-12-31)
+
+### Bug Fixes
+
+- redirect to home screen ([#140](https://github.com/budgie-at/budgie/issues/140)) ([67d5328](https://github.com/budgie-at/budgie/commit/67d5328e44a902e74a2c577ff083a38612b96a7e))
+
+### Features
+
+- add useAutoScaleFont hook for dynamic font size adjustment ([#141](https://github.com/budgie-at/budgie/issues/141)) ([d0bce34](https://github.com/budgie-at/budgie/commit/d0bce342a289460b73eeaf545204ef826b282872))
+
 ## [1.91.2](https://github.com/budgie-at/budgie/compare/v1.91.1...v1.91.2) (2025-12-30)
 
 ### Bug Fixes
