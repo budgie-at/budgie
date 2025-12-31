@@ -9,12 +9,12 @@ import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-ac
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { accountService } from '../../service/account.service';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -33,7 +33,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
 
     const handleRestore = async () => {
         try {
-            await accountRepository.restoreById(account.id);
+            await accountService.restoreById(account.id);
             ref.current?.close();
         } catch {
             Toast.show({
