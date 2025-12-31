@@ -1,23 +1,30 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
-import { useEffect, useState } from 'react';
+import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { BankSyncStateInterface } from '../interface/bank-sync-state.interface';
-import { bankSyncStorageService } from '../service/bank-sync-storage.service';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-const POLL_INTERVAL_MS = 1000;
+import { bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { BankSyncStatsInterface, emptyBankSyncStats } from '../interface/bank-sync-stats.interface';
 
-export const useBankSyncState = (provider: BankProviderEnum) => {
-    const [state, setState] = useState<BankSyncStateInterface>(bankSyncStorageService.getState(provider));
+export const useBankSyncState = (provider: ExternalSourceEnum): BankSyncStatsInterface => {
+    const { data } = useLiveQuery(bankSyncRepository.findByProvider(provider), [provider]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setState(bankSyncStorageService.getState(provider));
-        }, POLL_INTERVAL_MS);
+    if (!isDefined(data)) {
+        return emptyBankSyncStats;
+    }
 
-        return () => {
-            clearInterval(interval);
-        };
-    }, [provider]);
+    const enabledSyncs = data.filter(sync => sync.enabled);
+    const totalTransactions = data.reduce((sum, sync) => sum + sync.transactionCount, 0);
+    const hasSyncing = data.some(sync => sync.status === BankSyncStatusEnum.SYNCING);
+    const hasFailed = data.some(sync => sync.status === BankSyncStatusEnum.FAILED);
 
-    return state;
+    return {
+        // eslint-disable-next-line no-nested-ternary
+        status: hasSyncing ? 'loading' : hasFailed ? 'failed' : 'idle',
+        enabled: isNotEmptyArray(enabledSyncs),
+        totalAccounts: data.length,
+        totalTransactions,
+        syncs: data,
+        isLoading: false
+    };
 };

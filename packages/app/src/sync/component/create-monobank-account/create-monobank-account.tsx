@@ -1,4 +1,4 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -23,7 +23,7 @@ import { SyncToggleCard } from '../sync-toggle-card/sync-toggle-card';
 
 export const CreateMonobankAccount = () => {
     const { t } = useLingui();
-    const syncState = useBankSyncState(BankProviderEnum.MONOBANK);
+    const syncState = useBankSyncState(ExternalSourceEnum.MONOBANK);
 
     const [token, setToken] = useState(monobankSyncService.getToken());
 
@@ -38,7 +38,7 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        monobankSyncService.setEnabled(enabled, trimmedToken);
+        void monobankSyncService.setEnabled(enabled, trimmedToken);
 
         if (enabled) {
             await microPause();
@@ -46,7 +46,6 @@ export const CreateMonobankAccount = () => {
         }
     };
 
-    const cursors = Object.values(syncState.accountCursors);
     const iconParams = { variant: 'warning', size: 15, iconSize: 15 } as const;
 
     return (
@@ -102,8 +101,8 @@ export const CreateMonobankAccount = () => {
                                     <Trans>Accounts</Trans>
                                 </Text>
 
-                                {cursors.map(cursor => (
-                                    <AccountSyncCard key={cursor.accountId} cursor={cursor} onToggle={handleToggleAccount} />
+                                {syncState.syncs.map(bankSync => (
+                                    <AccountSyncCard key={bankSync.accountId} bankSync={bankSync} onToggle={handleToggleAccount} />
                                 ))}
                             </View>
                         </>
