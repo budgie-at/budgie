@@ -36,7 +36,7 @@ export const FormAmountInput = ({ value, onChange, variant, textClassName, instr
     const fontSizeStyle = { fontSize };
 
     return (
-        <View className="flex-row items-center justify-center py-5xl px-lg h-32.5" onLayout={onContainerLayout}>
+        <View className="flex-row items-center justify-center py-5xl px-lg h-36.5" onLayout={onContainerLayout}>
             <Text className={textVariants({ variant })} style={fontSizeStyle}>
                 {instrumentSymbol}{' '}
             </Text>
