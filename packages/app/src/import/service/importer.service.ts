@@ -180,7 +180,7 @@ export class ImporterService {
         if (type === TransactionTypeEnum.INCOME) {
             return [
                 {
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
@@ -190,7 +190,7 @@ export class ImporterService {
         } else if (type === TransactionTypeEnum.EXPENSE) {
             return [
                 {
-                    type: TransactionEntryTypeEnum.DEBIT,
+                    type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
@@ -200,14 +200,14 @@ export class ImporterService {
         } else if (type === TransactionTypeEnum.TRANSFER && isDefined(dest)) {
             return [
                 {
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: TransactionEntryTypeEnum.DEBIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
                     externalId: entryExternalId
                 },
                 {
-                    type: TransactionEntryTypeEnum.DEBIT,
+                    type: TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(dest.amount),
                     accountId: dest.account.id,
                     categoryId: category.id,

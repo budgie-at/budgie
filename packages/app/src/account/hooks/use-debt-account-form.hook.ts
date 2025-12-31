@@ -7,10 +7,10 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { router } from 'expo-router';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
-import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
 export const useDebtAccountForm = (
@@ -45,7 +45,7 @@ export const useDebtAccountForm = (
         try {
             await onSubmit(values);
 
-            goBackOrReplace('/');
+            router.replace('/');
         } catch (error: unknown) {
             showError(error);
         }

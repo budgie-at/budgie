@@ -92,8 +92,8 @@ class TransactionService {
 
             await transactionEntryRepository.bulkCreate(
                 [
-                    { ...fromEntry, amount: fromAmountInMicroUnits, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT },
-                    { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT }
+                    { ...fromEntry, amount: fromAmountInMicroUnits, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT },
+                    { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT }
                 ],
                 tx
             );

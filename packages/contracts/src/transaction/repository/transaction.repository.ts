@@ -49,7 +49,7 @@ export class TransactionRepository {
         const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.INCOME,
-            TransactionEntryTypeEnum.CREDIT
+            TransactionEntryTypeEnum.DEBIT
         );
 
         return this.buildCategoryBreakdownQuery(incomeTransactionIds);
@@ -59,7 +59,7 @@ export class TransactionRepository {
         const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.EXPENSE,
-            TransactionEntryTypeEnum.DEBIT
+            TransactionEntryTypeEnum.CREDIT
         );
 
         return this.buildCategoryBreakdownQuery(expenseTransactionIds);
@@ -71,11 +71,11 @@ export class TransactionRepository {
         return this.db
             .select({
                 income: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                                   THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
             `.as('income'),
                 expense: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
                                   THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
             `.as('expense')
             })
@@ -131,7 +131,8 @@ export class TransactionRepository {
             with: { [TransactionAssociationEnum.ENTRIES]: true },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
-            offset
+            offset,
+            where: isNull(TransactionEntityTable.deletedAt)
         });
     }
 
@@ -181,6 +182,25 @@ export class TransactionRepository {
         }
 
         return null;
+    }
+
+    async archiveByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(
+                and(
+                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                )
+            );
+    }
+
+    async restoreByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ deletedAt: null })
+            .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {

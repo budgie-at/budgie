@@ -127,9 +127,9 @@ export class AccountBalanceRepository {
             SUM(
                    CASE
                    WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                   THEN ${TransactionEntryEntityTable.amount}
-                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
                    THEN -${TransactionEntryEntityTable.amount}
+                   WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                   THEN ${TransactionEntryEntityTable.amount}
                    ELSE 0
                    END
                )

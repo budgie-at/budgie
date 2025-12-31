@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
+import { View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn, emptyFn, isDefined } from '@rnw-community/shared';
@@ -28,6 +29,7 @@ interface Props {
 export const TransactionFormLayout = ({ title, description, icon, onDelete, variant, buttonText, onSubmit, children }: Props) => {
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
+
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -36,10 +38,12 @@ export const TransactionFormLayout = ({ title, description, icon, onDelete, vari
             footer={
                 <KeyboardStickyView>
                     <Footer>
-                        <Button onPress={onSubmit} variant={variant} content={buttonText} />
-                        {isDefined(onDelete) ? (
-                            <Button leftIcon="Trash2" onPress={handleOpen} variant="destructive" content={t`Delete transaction`} />
-                        ) : null}
+                        <View className="flex-row gap-2">
+                            <Button leftIcon="RefreshCw" onPress={onSubmit} variant="positive" content={buttonText} />
+                            {isDefined(onDelete) ? (
+                                <Button leftIcon="Trash2" onPress={handleOpen} variant="destructive" content={t`Delete transaction`} />
+                            ) : null}
+                        </View>
                     </Footer>
                 </KeyboardStickyView>
             }

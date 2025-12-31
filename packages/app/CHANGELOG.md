@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.92.3](https://github.com/budgie-at/budgie/compare/v1.92.2...v1.92.3) (2025-12-31)
+
+### Bug Fixes
+
+- **app:** fix exporting archived accounts and transfer transactions ([#146](https://github.com/budgie-at/budgie/issues/146)) ([5fa5a82](https://github.com/budgie-at/budgie/commit/5fa5a82a0f988dcd45d514e88731729c3e506ac5))
+
+## [1.92.2](https://github.com/budgie-at/budgie/compare/v1.92.1...v1.92.2) (2025-12-31)
+
+### Bug Fixes
+
+- **app:** fix import service ([16a1b1b](https://github.com/budgie-at/budgie/commit/16a1b1bb8a35924765f2a00138e5c5213c662bfb))
+
+## [1.92.1](https://github.com/budgie-at/budgie/compare/v1.92.0...v1.92.1) (2025-12-31)
+
+### Bug Fixes
+
+- change input height ([#144](https://github.com/budgie-at/budgie/issues/144)) ([21561b3](https://github.com/budgie-at/budgie/commit/21561b3c74b474e8c53a6f2433ab064400ca9685))
+
+# [1.92.0](https://github.com/budgie-at/budgie/compare/v1.91.2...v1.92.0) (2025-12-31)
+
+### Bug Fixes
+
+- redirect to home screen ([#140](https://github.com/budgie-at/budgie/issues/140)) ([67d5328](https://github.com/budgie-at/budgie/commit/67d5328e44a902e74a2c577ff083a38612b96a7e))
+
+### Features
+
+- add useAutoScaleFont hook for dynamic font size adjustment ([#141](https://github.com/budgie-at/budgie/issues/141)) ([d0bce34](https://github.com/budgie-at/budgie/commit/d0bce342a289460b73eeaf545204ef826b282872))
+
+## [1.91.2](https://github.com/budgie-at/budgie/compare/v1.91.1...v1.91.2) (2025-12-30)
+
+### Bug Fixes
+
+- account updating fix ([#137](https://github.com/budgie-at/budgie/issues/137)) ([a9874f0](https://github.com/budgie-at/budgie/commit/a9874f0123dd1cd78ba868a9522fd2af8eb73e88))
+- replace switch credit with debit operations ([#138](https://github.com/budgie-at/budgie/issues/138)) ([d7b5655](https://github.com/budgie-at/budgie/commit/d7b56552d9e3bc476a022e4cc693fa049fc82d5d))
+
 ## [1.91.1](https://github.com/budgie-at/budgie/compare/v1.91.0...v1.91.1) (2025-12-30)
 
 ### Bug Fixes

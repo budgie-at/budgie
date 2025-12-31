@@ -2,6 +2,7 @@ import {
     IncomeTransactionCreateInputSchema,
     TransactionIncomeWithRelationsEntityInterface,
     TransactionPositiveAdjustmentWithRelationsEntityInterface,
+    TransactionTypeEnum,
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
@@ -32,6 +33,7 @@ export const UpdateIncomeTransaction = ({ transaction }: Props) => {
             icon="TrendingUp"
             title={t`Edit Income`}
             buttonText={t`Update Income`}
+            transactionType={TransactionTypeEnum.INCOME}
             onDelete={handleDelete}
         />
     );
