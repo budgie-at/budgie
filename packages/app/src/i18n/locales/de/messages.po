@@ -228,7 +228,7 @@ msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktio
 
 #: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
 msgid "Are you sure you want to delete this transaction?"
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie diese Transaktion löschen möchten?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
@@ -429,7 +429,7 @@ msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
-msgstr ""
+msgstr "Transaktion konnte nicht gelöscht werden."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 msgid "Could not restore account."
@@ -567,7 +567,7 @@ msgstr "Daten löschen"
 #: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
 #: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
 msgid "Delete transaction"
-msgstr ""
+msgstr "Transaktion löschen"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
