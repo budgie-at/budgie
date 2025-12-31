@@ -231,7 +231,7 @@ msgstr "Cuentas archivadas"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:58
 msgid "Are you sure you want to delete this transaction?"
 msgstr "¿Está seguro de que desea eliminar esta transacción?"
 
@@ -577,8 +577,7 @@ msgstr "Eliminar todas las transacciones y la configuración"
 msgid "Delete data"
 msgstr "Eliminar datos"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:55
 msgid "Delete transaction"
 msgstr "Eliminar transacción"
 
@@ -1447,7 +1446,7 @@ msgstr ""
 " 💡 Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:54
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 

@@ -233,7 +233,7 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:58
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Are you sure you want to delete this transaction?"
 
@@ -579,8 +579,7 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:55
 msgid "Delete transaction"
 msgstr "Delete transaction"
 
@@ -1449,7 +1448,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:54
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
