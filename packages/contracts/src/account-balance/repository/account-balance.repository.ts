@@ -61,10 +61,45 @@ export class AccountBalanceRepository {
     }
 
     getByAccountId(accountId: number) {
+        const latestBalanceSql = sql<number>`
+            COALESCE((
+                SELECT ${AccountBalanceEntityTable.amount}
+                FROM ${AccountBalanceEntityTable}
+                WHERE ${AccountBalanceEntityTable.accountId} = ${accountId}
+                LIMIT 1
+            ), 0)`;
+
+        const lastBalanceUpdatedAtSql = sql`
+            SELECT MAX(${AccountBalanceEntityTable.updatedAt})
+            FROM ${AccountBalanceEntityTable}
+            WHERE ${AccountBalanceEntityTable.accountId} = ${accountId}`;
+
+        const transactionsDeltaSql = sql<number>`
+            COALESCE((
+                SELECT SUM(
+                    CASE
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                        THEN -${TransactionEntryEntityTable.amount}
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                        THEN ${TransactionEntryEntityTable.amount}
+                        ELSE 0
+                    END
+                )
+                FROM ${TransactionEntryEntityTable}
+                WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
+                  AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                  AND (
+                      (${lastBalanceUpdatedAtSql}) IS NULL
+                      OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql})
+                  )
+            ), 0)`;
+
         return this.db
-            .select({ balance: this.getAccountBalanceWithTransactionsSql() })
-            .from(AccountEntityTable)
-            .where(eq(AccountEntityTable.id, accountId))
+            .select({
+                balance: sql<number>`${latestBalanceSql} + ${transactionsDeltaSql}`
+            })
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.accountId, accountId))
             .limit(1);
     }
 
@@ -75,20 +110,26 @@ export class AccountBalanceRepository {
             1.0
         )`;
 
+        const netWorthSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
+                    )
+                    FROM ${AccountEntityTable}
+                    WHERE ${AccountEntityTable.includeInNetWorth} = 1
+                      AND ${AccountEntityTable.deletedAt} IS NULL
+                ),
+                0
+            )
+        `;
+
         return this.db
             .select({
-                netWorth: sql<number>`
-                    COALESCE(
-                        SUM(
-                            (${this.getAccountBalanceWithTransactionsSql()}
-                            ) * ${exchangeRateSql}
-                        ),
-                        0
-                    )
-                `
+                netWorth: netWorthSubquerySql
             })
-            .from(AccountEntityTable)
-            .where(and(eq(AccountEntityTable.includeInNetWorth, true), isNull(AccountEntityTable.deletedAt)));
+            .from(TransactionEntryEntityTable)
+            .limit(1);
     }
 
     async truncate(): Promise<void> {
