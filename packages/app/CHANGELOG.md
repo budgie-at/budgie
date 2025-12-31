@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.92.2](https://github.com/budgie-at/budgie/compare/v1.92.1...v1.92.2) (2025-12-31)
+
+### Bug Fixes
+
+- **app:** fix import service ([16a1b1b](https://github.com/budgie-at/budgie/commit/16a1b1bb8a35924765f2a00138e5c5213c662bfb))
+
 ## [1.92.1](https://github.com/budgie-at/budgie/compare/v1.92.0...v1.92.1) (2025-12-31)
 
 ### Bug Fixes
