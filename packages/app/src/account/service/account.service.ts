@@ -112,16 +112,24 @@ class AccountService {
         return account;
     }
 
-    async archiveById(id: number): Promise<AccountEntityInterface> {
+    async archiveById(id: number): Promise<void> {
         return db.transaction(async tx => {
-            const account = await accountRepository.archiveById(id, tx);
-            const settings = await settingsRepository.getSettings();
+            await accountRepository.archiveById(id, tx);
+            await transactionEntryRepository.archiveByAccountIds([id], tx);
+            await transactionRepository.archiveByAccountIds([id], tx);
 
+            const settings = await settingsRepository.getSettings();
             if (settings.defaultAccountId === id) {
                 await settingsRepository.update({ defaultAccountId: null }, tx);
             }
+        });
+    }
 
-            return account;
+    async restoreById(id: number): Promise<void> {
+        return db.transaction(async tx => {
+            await accountRepository.restoreById(id, tx);
+            await transactionEntryRepository.restoreByAccountIds([id], tx);
+            await transactionRepository.restoreByAccountIds([id], tx);
         });
     }
 
