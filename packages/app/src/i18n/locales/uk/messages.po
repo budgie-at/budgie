@@ -79,7 +79,7 @@ msgid "About"
 msgstr "Про застосунок"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
 msgid "Account"
 msgstr "Рахунок"
 
@@ -94,7 +94,7 @@ msgstr "Налаштування рахунку"
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 #: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
 msgid "Account Type"
-msgstr "Тип рахунку"
+msgstr ""
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:11
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:102
@@ -231,6 +231,10 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+msgid "Are you sure you want to delete this transaction?"
+msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
@@ -254,10 +258,6 @@ msgstr "Баланс"
 #: src/transaction/components/transaction-list/transaction-list.tsx:53
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Balances recalculated successfully"
-msgstr "Баланси успішно перераховані"
 
 #: src/account/constant/account-type.constant.ts:6
 #: src/account/constant/account-type.constant.ts:12
@@ -319,7 +319,7 @@ msgstr "Назва категорії"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
 msgid "Change Account Type"
-msgstr "Змінити тип рахунку"
+msgstr ""
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
@@ -383,7 +383,7 @@ msgstr "Очистити все"
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:30
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
@@ -431,18 +431,22 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:45
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+msgid "Could not delete transaction."
+msgstr "Не вдалося видалити транзакцію."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:39
-msgid "Could not update transaction. Please try again later."
-msgstr "Не вдалося оновити транзакцію. Будь ласка, спробуйте пізніше."
+#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+msgid "Could not update transaction."
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
@@ -493,7 +497,7 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:67
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -513,7 +517,7 @@ msgstr "Криптовалюта"
 
 #: src/account/constant/account-type-description.constant.ts:9
 msgid "Cryptocurrency holdings"
-msgstr "Криптовалютні активи"
+msgstr ""
 
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
@@ -573,6 +577,11 @@ msgstr "Видалити всі транзакції та налаштуванн
 msgid "Delete data"
 msgstr "Видалити дані"
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+msgid "Delete transaction"
+msgstr "Видалити транзакцію"
+
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
 msgstr "Скасувати вибір усіх"
@@ -610,7 +619,7 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
@@ -694,7 +703,7 @@ msgstr "Введіть свій PIN-код"
 
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Помилка"
@@ -719,23 +728,15 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:37
-msgid "Expense created"
-msgstr "Витрату створено"
-
-#: src/export/components/export-csv/export-csv.tsx:29
+#: src/export/components/export-csv/export-csv.tsx:28
 msgid "Export all transactions to a CSV file"
 msgstr "Експортувати всі транзакції до CSV-файлу"
 
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Export Complete"
-msgstr "Експорт завершено"
-
-#: src/export/components/export-csv/export-csv.tsx:28
+#: src/export/components/export-csv/export-csv.tsx:27
 msgid "Export CSV"
 msgstr "Експортувати CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:20
+#: src/export/components/export-csv/export-csv.tsx:19
 msgid "Export Failed"
 msgstr "Помилка експорту"
 
@@ -916,7 +917,7 @@ msgstr "Гроші, які ви заробляєте"
 
 #: src/account/constant/account-type-description.constant.ts:8
 msgid "Money you owe or are owed"
-msgstr "Гроші, які ви винні або які винні вам"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
@@ -1102,7 +1103,7 @@ msgstr "Відмовлено в доступі до контактів."
 
 #: src/account/constant/account-type-description.constant.ts:7
 msgid "Physical cash on hand"
-msgstr "Фізична готівка"
+msgstr ""
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1147,12 +1148,12 @@ msgstr "Конфіденційність"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "Recalculate"
 msgstr "Перерахувати"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:28
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:41
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
 
@@ -1179,7 +1180,7 @@ msgstr "Ощадний рахунок"
 
 #: src/account/constant/account-type-description.constant.ts:11
 msgid "Savings accounts"
-msgstr "Ощадні рахунки"
+msgstr ""
 
 #: src/app/(main)/settings/index.tsx:64
 msgid "Screenshot Protection"
@@ -1259,7 +1260,7 @@ msgid "Select category"
 msgstr "Виберіть категорію"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:79
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:81
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1297,7 +1298,7 @@ msgstr "Виберіть теги"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 msgid "Select the type of account"
-msgstr "Оберіть тип рахунку"
+msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:54
 msgid "Selected"
@@ -1324,9 +1325,8 @@ msgstr "Показувати $1 234,56 замість $1 235"
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:44
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
-#: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
 
@@ -1368,7 +1368,7 @@ msgstr "Статистика"
 
 #: src/account/constant/account-type-description.constant.ts:10
 msgid "Stock investments"
-msgstr "Інвестиції в акції"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1378,10 +1378,6 @@ msgstr "Акції"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Відправити"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Success"
-msgstr "Успішно"
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1402,7 +1398,7 @@ msgstr "Синхронізуйте свої рахунки та транзакц
 
 #: src/account/constant/account-type-description.constant.ts:12
 msgid "Synced bank accounts"
-msgstr "Синхронізовані банківські рахунки"
+msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/account-sync-card/account-sync-card.tsx:80
@@ -1451,6 +1447,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -1462,7 +1459,7 @@ msgstr "Цього місяця"
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:37
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
@@ -1504,7 +1501,7 @@ msgstr "Touch ID"
 
 #: src/account/constant/account-type-description.constant.ts:6
 msgid "Traditional bank accounts"
-msgstr "Традиційні банківські рахунки"
+msgstr ""
 
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
@@ -1562,7 +1559,7 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
 msgid "Update Expense"
 msgstr "Оновити витрату"
 
@@ -1614,14 +1611,6 @@ msgstr "Ви дали гроші"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "Ви отримали гроші"
-
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Your data has been exported successfully"
-msgstr "Ваші дані було успішно експортовано"
-
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
-msgid "Your expense has been recorded successfully."
-msgstr "Ваша витрата була успішно зафіксована."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."

@@ -15,7 +15,6 @@ export const ExportCsv = () => {
         setIsLoading(true);
         try {
             await exporterService.saveAndShare();
-            Toast.show({ type: 'success', text1: t`Export Complete`, text2: t`Your data has been exported successfully` });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Export Failed`, text2: getErrorMessage(error) });
         } finally {

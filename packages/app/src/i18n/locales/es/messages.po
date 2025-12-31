@@ -79,7 +79,7 @@ msgid "About"
 msgstr "Acerca de"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:47
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
 msgid "Account"
 msgstr "Cuenta"
 
@@ -94,7 +94,7 @@ msgstr "Configuración de la cuenta"
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 #: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
 msgid "Account Type"
-msgstr "Tipo de cuenta"
+msgstr ""
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:11
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:102
@@ -231,6 +231,10 @@ msgstr "Cuentas archivadas"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer."
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:60
+msgid "Are you sure you want to delete this transaction?"
+msgstr "¿Está seguro de que desea eliminar esta transacción?"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
@@ -254,10 +258,6 @@ msgstr "Saldo"
 #: src/transaction/components/transaction-list/transaction-list.tsx:53
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Balances recalculated successfully"
-msgstr "Saldos recalculados con éxito"
 
 #: src/account/constant/account-type.constant.ts:6
 #: src/account/constant/account-type.constant.ts:12
@@ -319,7 +319,7 @@ msgstr "Nombre de la categoría"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
 msgid "Change Account Type"
-msgstr "Cambiar tipo de cuenta"
+msgstr ""
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
@@ -383,7 +383,7 @@ msgstr "Limpiar todo"
 msgid "Clear All Data"
 msgstr "Borrar todos los datos"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:30
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Borrar saldos en caché y recalcular"
 
@@ -431,18 +431,22 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:45
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+msgid "Could not delete transaction."
+msgstr "No se pudo eliminar la transacción."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:41
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:39
-msgid "Could not update transaction. Please try again later."
-msgstr "No se pudo actualizar la transacción. Inténtelo de nuevo más tarde."
+#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+msgid "Could not update transaction."
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
@@ -493,7 +497,7 @@ msgstr "Crear etiquetas"
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:67
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -513,7 +517,7 @@ msgstr "Cripto"
 
 #: src/account/constant/account-type-description.constant.ts:9
 msgid "Cryptocurrency holdings"
-msgstr "Tenencias de criptomonedas"
+msgstr ""
 
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
@@ -573,6 +577,11 @@ msgstr "Eliminar todas las transacciones y la configuración"
 msgid "Delete data"
 msgstr "Eliminar datos"
 
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:44
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:57
+msgid "Delete transaction"
+msgstr "Eliminar transacción"
+
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
 msgstr "Deseleccionar todo"
@@ -610,7 +619,7 @@ msgstr "ej. Negocios, Personal, Vacaciones"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ej. Comestibles, Salario, Alquiler"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:34
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
@@ -694,7 +703,7 @@ msgstr "Ingresa tu PIN"
 
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
 #: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Error"
@@ -719,23 +728,15 @@ msgstr "Fecha de devolución esperada (Opcional)"
 msgid "Expense"
 msgstr "Gasto"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:37
-msgid "Expense created"
-msgstr "Gasto creado"
-
-#: src/export/components/export-csv/export-csv.tsx:29
+#: src/export/components/export-csv/export-csv.tsx:28
 msgid "Export all transactions to a CSV file"
 msgstr "Exportar todas las transacciones a un archivo CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Export Complete"
-msgstr "Exportación completada"
-
-#: src/export/components/export-csv/export-csv.tsx:28
+#: src/export/components/export-csv/export-csv.tsx:27
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:20
+#: src/export/components/export-csv/export-csv.tsx:19
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
@@ -916,7 +917,7 @@ msgstr "Dinero que ganas"
 
 #: src/account/constant/account-type-description.constant.ts:8
 msgid "Money you owe or are owed"
-msgstr "Dinero que debe o que le deben"
+msgstr ""
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
@@ -1102,7 +1103,7 @@ msgstr "Se denegó el permiso para acceder a los contactos."
 
 #: src/account/constant/account-type-description.constant.ts:7
 msgid "Physical cash on hand"
-msgstr "Efectivo físico en mano"
+msgstr ""
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1147,12 +1148,12 @@ msgstr "Privacidad"
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "Recalculate"
 msgstr "Recalcular"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:29
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:28
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:41
 msgid "Recalculate Balances"
 msgstr "Recalcular saldos"
 
@@ -1179,7 +1180,7 @@ msgstr "Cuenta de ahorros"
 
 #: src/account/constant/account-type-description.constant.ts:11
 msgid "Savings accounts"
-msgstr "Cuentas de ahorro"
+msgstr ""
 
 #: src/app/(main)/settings/index.tsx:64
 msgid "Screenshot Protection"
@@ -1259,7 +1260,7 @@ msgid "Select category"
 msgstr "Seleccionar categoría"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:79
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:81
 msgid "Select Category"
 msgstr "Seleccionar categoría"
 
@@ -1297,7 +1298,7 @@ msgstr "Seleccionar etiquetas"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 msgid "Select the type of account"
-msgstr "Seleccione el tipo de cuenta"
+msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:54
 msgid "Selected"
@@ -1324,9 +1325,8 @@ msgstr "Mostrar $1.234,56 en lugar de $1.235"
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:44
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
-#: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Something went wrong."
 msgstr "Algo salió mal."
 
@@ -1368,7 +1368,7 @@ msgstr "Estadísticas"
 
 #: src/account/constant/account-type-description.constant.ts:10
 msgid "Stock investments"
-msgstr "Inversiones en acciones"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1378,10 +1378,6 @@ msgstr "Acciones"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Enviar"
-
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:17
-msgid "Success"
-msgstr "Éxito"
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1402,7 +1398,7 @@ msgstr "Sincronice sus cuentas y transacciones de Monobank"
 
 #: src/account/constant/account-type-description.constant.ts:12
 msgid "Synced bank accounts"
-msgstr "Cuentas bancarias sincronizadas"
+msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/account-sync-card/account-sync-card.tsx:80
@@ -1451,6 +1447,7 @@ msgstr ""
 " 💡 Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:56
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
@@ -1462,7 +1459,7 @@ msgstr "Este mes"
 msgid "This Week"
 msgstr "Esta semana"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:37
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
@@ -1504,7 +1501,7 @@ msgstr "Touch ID"
 
 #: src/account/constant/account-type-description.constant.ts:6
 msgid "Traditional bank accounts"
-msgstr "Cuentas bancarias tradicionales"
+msgstr ""
 
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
@@ -1562,7 +1559,7 @@ msgstr "Actualizado"
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
+#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
 msgid "Update Expense"
 msgstr "Actualizar gasto"
 
@@ -1614,14 +1611,6 @@ msgstr "Diste dinero"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "Recibiste dinero"
-
-#: src/export/components/export-csv/export-csv.tsx:18
-msgid "Your data has been exported successfully"
-msgstr "Sus datos han sido exportados exitosamente"
-
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:38
-msgid "Your expense has been recorded successfully."
-msgstr "Tu gasto ha sido registrado exitosamente."
 
 #: src/ai/hook/use-ai-transaction.hook.ts:20
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."

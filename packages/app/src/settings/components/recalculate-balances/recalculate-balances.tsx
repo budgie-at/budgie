@@ -14,7 +14,6 @@ export const RecalculateBalances = () => {
     const handleRecalculate = async () => {
         try {
             await accountBalanceIncrementalService.updateAllBalances(true);
-            Toast.show({ type: 'success', text1: t`Success`, text2: t`Balances recalculated successfully` });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
         }
