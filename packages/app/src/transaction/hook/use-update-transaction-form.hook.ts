@@ -4,6 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
+import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { transactionService } from '../service/transaction.service';
 
@@ -32,17 +35,31 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
         try {
             await transactionService.updateById(id, data);
             goBackOrReplace('/');
-        } catch {
+        } catch (error: unknown) {
             Toast.show({
                 type: 'error',
-                text1: t`Something went wrong.`,
-                text2: t`Could not update transaction. Please try again later.`
+                text1: t`Could not update transaction.`,
+                text2: getErrorMessage(error)
+            });
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await transactionService.deleteById(id);
+            dismissAllOrReplace('/');
+        } catch (error: unknown) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not delete transaction.`,
+                text2: getErrorMessage(error)
             });
         }
     };
 
     return {
         form,
+        handleDelete,
         handleSubmit: form.handleSubmit(handleSubmit)
     };
 };
