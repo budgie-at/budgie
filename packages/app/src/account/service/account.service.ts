@@ -125,6 +125,14 @@ class AccountService {
         });
     }
 
+    async restoreById(id: number): Promise<void> {
+        return db.transaction(async tx => {
+            await accountRepository.restoreById(id, tx);
+            await transactionEntryRepository.restoreByAccountIds([id], tx);
+            await transactionRepository.restoreByAccountIds([id], tx);
+        });
+    }
+
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: Transaction): Promise<void> {
         const result = await accountBalanceRepository.getByAccountId(accountId);
         const currentBalanceMicro = result.at(0)?.balance ?? 0;

@@ -184,14 +184,19 @@ export class TransactionRepository {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: new Date() })
-            .where(or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)));
+            .where(
+                and(
+                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                )
+            );
     }
 
-    async restoreById(accountIds: number[], tx?: TX): Promise<void> {
+    async restoreByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: null })
-            .where(or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)));
+            .where(inArray(TransactionEntityTable.toAccountId, accountIds));
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
