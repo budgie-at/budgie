@@ -70,6 +70,12 @@ export class BankSyncRepository {
         });
     }
 
+    findByProvider(provider: ExternalSourceEnum) {
+        return this.db.query.BankSyncEntityTable.findMany({
+            where: and(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt))
+        });
+    }
+
     async getEnabledByProvider(provider: ExternalSourceEnum): Promise<BankSyncEntityInterface[]> {
         return await this.db.query.BankSyncEntityTable.findMany({
             where: and(
