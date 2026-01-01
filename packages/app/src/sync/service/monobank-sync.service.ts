@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings,max-lines */
+/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings */
 import { BankAccountInterface, BankSyncBatchResultInterface, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncEntityInterface, BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
@@ -253,13 +253,11 @@ class AppMonobankSyncService {
         } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                backwardSyncedAt: result.nextTo,
-                backwardSyncFromAt: result.nextFrom
+                backwardSyncFromAt: result.nextTo
             });
         } else {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                forwardSyncedAt: result.nextTo,
                 forwardSyncFromAt: result.nextFrom
             });
         }
@@ -274,7 +272,14 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        await this.processNewTransactions(result, sync.accountId);
+        const existing = await transactionService.findByExternalSource(this.provider);
+        const existingIds = new Set(existing.map(tx => tx.externalId));
+        const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
+
+        if (isNotEmptyArray(newTxs)) {
+            await transactionService.bulkCreate(newTxs.map(tx => mapBankTransactionToCreateInput(tx, account.id, this.provider)));
+        }
+        await microPause();
 
         return result;
     }
@@ -286,17 +291,6 @@ class AppMonobankSyncService {
         return isForward
             ? await svc.syncTransactionsForward(extAccId, sync.forwardSyncFromAt ?? new Date())
             : await svc.syncTransactionsBackward(extAccId, sync.backwardSyncFromAt ?? new Date());
-    }
-
-    private async processNewTransactions(result: BankSyncBatchResultInterface, accountId: number): Promise<void> {
-        const existing = await transactionService.findByExternalSource(this.provider);
-        const existingIds = new Set(existing.map(tx => tx.externalId));
-        const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
-
-        if (isNotEmptyArray(newTxs)) {
-            await transactionService.bulkCreate(newTxs.map(tx => mapBankTransactionToCreateInput(tx, accountId, this.provider)));
-        }
-        await microPause();
     }
 }
 
