@@ -2,8 +2,7 @@ import {
     AccountEntityInterface,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
-    LiabilityAccountCreateInputInterface,
-    UserIconNameEnum
+    LiabilityAccountCreateInputInterface
 } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
@@ -47,7 +46,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const formValues = useWatch({ control });
     const currentType = isDefined(formValues.type) ? (formValues.type as AccountTypeEnum) : account.type;
-    const currentIcon = isDefined(formValues.icon) ? (formValues.icon as UserIconNameEnum) : account.icon;
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -58,7 +56,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
         <Page
             header={
                 <PageHeader
-                    icon={currentIcon}
                     iconVariant={variant}
                     onGoBack={handleGoBack}
                     description={description}
