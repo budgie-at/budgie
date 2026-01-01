@@ -132,8 +132,8 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    async truncate(): Promise<void> {
-        await this.db.delete(AccountBalanceEntityTable);
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(AccountBalanceEntityTable);
     }
 
     private getAccountBalanceWithTransactionsSql() {

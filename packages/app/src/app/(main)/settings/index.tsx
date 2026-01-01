@@ -10,7 +10,9 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
+import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
+import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -33,6 +35,7 @@ export default function SettingsPage() {
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
+    const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const navigateToTags = () => void router.push('/settings/tags');
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -102,15 +105,22 @@ export default function SettingsPage() {
                             icon="Archive"
                             variant="dark-warning"
                         />
+                        <SettingsCard
+                            onPress={handleNavigateToInactive}
+                            title={t`Inactive Accounts`}
+                            description={t`View and activate hidden accounts`}
+                            icon="EyeOff"
+                            variant="dark-warning"
+                        />
                     </SettingsGroup>
 
                     <SettingsGroup title={t`Appearance`}>
                         <ThemeSwitch />
                         <SettingsCard
-                            title={t`Hide Cents`}
+                            title={t`Show Cents`}
                             description={t`Show $1,234.56 instead of $1,235`}
                             icon="DollarSign"
-                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={!showCents} />}
+                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
                             variant="positive"
                         />
                     </SettingsGroup>
@@ -118,6 +128,8 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Data management`}>
                         <ImportCsv />
                         <ExportCsv />
+                        <ImportDatabase />
+                        <ExportDatabase />
                         <RecalculateBalances />
                         <TruncateData />
                     </SettingsGroup>

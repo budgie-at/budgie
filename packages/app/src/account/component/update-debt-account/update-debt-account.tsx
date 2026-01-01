@@ -31,7 +31,8 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             deadline: account.deadline,
             contactId: account.contactId,
             instrumentId: account.instrumentId,
-            targetBalance: convertFromMicroUnits(account.targetBalance)
+            targetBalance: convertFromMicroUnits(account.targetBalance),
+            isActive: account.isActive
         },
         values => accountService.updateDebtById(account.id, values)
     );

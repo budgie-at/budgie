@@ -8,10 +8,11 @@ import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
-import { Control, FieldValues } from 'react-hook-form';
+import { Control, FieldValues, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { Button } from '../../../@generic/component/button/button';
@@ -24,6 +25,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
+import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 
@@ -43,15 +45,18 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
     const { children, account, onSubmit, control, instrumentSymbol } = props;
     const { t } = useLingui();
 
+    const formValues = useWatch({ control });
+    const currentType = isDefined(formValues.type) ? (formValues.type as AccountTypeEnum) : account.type;
+
     const handleGoBack = () => void goBackOrReplace('/');
-    const description = i18n.t(ACCOUNT_TYPE[account.type]);
-    const variant = account.type === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[account.type];
+
+    const description = i18n.t(ACCOUNT_TYPE[currentType]);
+    const variant = currentType === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[currentType];
 
     return (
         <Page
             header={
                 <PageHeader
-                    icon={account.icon}
                     iconVariant={variant}
                     onGoBack={handleGoBack}
                     description={description}
@@ -62,8 +67,10 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
             footer={
                 <KeyboardStickyView>
                     <Footer>
-                        <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} />
-                        <ArchiveAccount accountId={account.id} />
+                        <View className="flex-row gap-2">
+                            <ArchiveAccount accountId={account.id} />
+                            <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} className="flex-1" />
+                        </View>
                     </Footer>
                 </KeyboardStickyView>
             }
@@ -79,6 +86,8 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                     <AccountDetailsField control={control} variant={variant} />
 
                     {children}
+
+                    <AccountActiveToggleField control={control} />
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
         </Page>
