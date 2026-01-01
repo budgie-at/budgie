@@ -272,6 +272,36 @@
 
 ## Coding Standards and Best Practices
 
+## Coding Standards and Best Practices
+
+### Internationalization (Lingui) Usage Rules
+
+- **JSX translations**
+  Only the `Trans` component from `@lingui/react/macro` **must** be used directly inside JSX.
+
+- **`t` function usage**
+  The `t` function obtained via `const { t } = useLingui();` **must not** be used directly in JSX.
+  It **may** be used:
+    - As an argument passed to a component (for example: `label={t\`Save\`}`)
+    - Outside of JSX (for example: in hooks, services, utilities, or conditional logic)
+
+- **Rationale**
+  This ensures consistent message extraction, predictable rendering behavior, and avoids subtle runtime or tooling issues caused by inline `t()` usage in JSX.
+
+**Correct examples**:
+```tsx
+<Trans>Settings</Trans>
+
+<Button title={t`Save`} />
+
+const title = t`Accounts`;
+```
+**Incorrect example**:
+```tsx
+<Text>{t`Settings`}</Text>
+```
+
+
 **IMPORTANT**: Never write comments!
 
 ### TypeScript Best Practices

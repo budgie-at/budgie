@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { Fragment, useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
@@ -15,6 +15,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
+import '../budget/task/budget-transition.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
@@ -28,6 +29,7 @@ import { accountBalanceIncrementalService } from '../account/service/account-bal
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { budgetService } from '../budget/service/budget.service';
 import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
@@ -68,6 +70,8 @@ export default function RootLayout() {
                     void accountBalanceIncrementalService.registerBackgroundTask();
 
                     void monobankSyncService.sync();
+
+                    void budgetService.checkAndTransitionAllBudgets();
                     void monobankSyncService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
@@ -82,7 +86,12 @@ export default function RootLayout() {
         void init();
     }, [success]);
 
-    useAppState(isActive => void (isActive && monobankSyncService.sync()));
+    useAppState(isActive => {
+        if (isActive) {
+            void monobankSyncService.sync();
+            void budgetService.checkAndTransitionAllBudgets();
+        }
+    });
 
     if (!success) {
         return null;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return */
 import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -49,11 +48,45 @@ export const BudgetSettingsCard = ({ budget }: Props) => {
     }, [budget.id, budget.title, t]);
 
     const getPeriodLabel = () => {
-        if (budget.period === BudgetPeriodEnum.MONTHLY) {
-            return t`Monthly`;
+        if (budget.period === BudgetPeriodEnum.WEEKLY) {
+            return t`Weekly`;
+        }
+        if (budget.period === BudgetPeriodEnum.BI_WEEKLY) {
+            return t`Bi-Weekly`;
+        }
+        if (budget.period === BudgetPeriodEnum.QUARTERLY) {
+            return t`Quarterly`;
+        }
+        if (budget.period === BudgetPeriodEnum.YEARLY) {
+            return t`Yearly`;
+        }
+        if (budget.period === BudgetPeriodEnum.CUSTOM) {
+            return t`Custom`;
         }
 
-        return t`Weekly`;
+        return t`Monthly`;
+    };
+
+    const getStartDayLabel = () => {
+        if (budget.period === BudgetPeriodEnum.WEEKLY || budget.period === BudgetPeriodEnum.BI_WEEKLY) {
+            const dayNames = [t`Sun`, t`Mon`, t`Tue`, t`Wed`, t`Thu`, t`Fri`, t`Sat`];
+
+            return dayNames[startDay] ?? t`Day ${startDay}`;
+        }
+
+        if (budget.period === BudgetPeriodEnum.YEARLY) {
+            const monthNames = [t`Jan`, t`Feb`, t`Mar`, t`Apr`, t`May`, t`Jun`, t`Jul`, t`Aug`, t`Sep`, t`Oct`, t`Nov`, t`Dec`];
+
+            return monthNames[startDay - 1] ?? t`Month ${startDay}`;
+        }
+
+        if (budget.period === BudgetPeriodEnum.QUARTERLY) {
+            const quarterMonths = [t`1st Month`, t`2nd Month`, t`3rd Month`];
+
+            return quarterMonths[startDay - 1] ?? t`Month ${startDay}`;
+        }
+
+        return t`Day ${startDay}`;
     };
 
     return (
@@ -64,7 +97,7 @@ export const BudgetSettingsCard = ({ budget }: Props) => {
                     <View className="flex-1">
                         <Text className="text-sm font-medium text-primary">{budget.title}</Text>
                         <Text className="text-xs text-secondary-foreground">
-                            {getPeriodLabel()} · {t`Day ${startDay}`}
+                            {getPeriodLabel()} · {getStartDayLabel()}
                         </Text>
                     </View>
                 </View>
