@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.96.0](https://github.com/budgie-at/budgie/compare/v1.95.0...v1.96.0) (2026-01-01)
+
+### Features
+
+- add missing translations for inactive accounts ([#155](https://github.com/budgie-at/budgie/issues/155)) ([a6ae313](https://github.com/budgie-at/budgie/commit/a6ae31341550625f30cb28394857372af956db22))
+- inactive accounts ([4445b62](https://github.com/budgie-at/budgie/commit/4445b628934bcc6738f1e015e2132681001e925b))
+- inactive accounts ([769d8f1](https://github.com/budgie-at/budgie/commit/769d8f1888165395eadf932424e3263762a4e48a))
+- inactive accounts ([4d14e73](https://github.com/budgie-at/budgie/commit/4d14e73bfec20fa8486ad84ecafd04f6269c2ef2))
+- inactive accounts ([8ed2a48](https://github.com/budgie-at/budgie/commit/8ed2a48e44ad96943709d553ba41db805bc6e05f))
+- inactive accounts ([d044377](https://github.com/budgie-at/budgie/commit/d044377da1b0a20839730b40b2a2695fbbdeea5d))
+
 # [1.95.0](https://github.com/budgie-at/budgie/compare/v1.94.0...v1.95.0) (2026-01-01)
 
 ### Bug Fixes
