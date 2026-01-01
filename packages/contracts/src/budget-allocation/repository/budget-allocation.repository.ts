@@ -64,5 +64,9 @@ export class BudgetAllocationRepository {
     async deleteByBudgetId(budgetId: number): Promise<void> {
         await this.db.delete(BudgetAllocationEntityTable).where(eq(BudgetAllocationEntityTable.budgetId, budgetId));
     }
+
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(BudgetAllocationEntityTable);
+    }
 }
 

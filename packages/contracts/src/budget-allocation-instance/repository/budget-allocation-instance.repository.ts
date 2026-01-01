@@ -79,5 +79,9 @@ export class BudgetAllocationInstanceRepository {
             .delete(BudgetAllocationInstanceEntityTable)
             .where(eq(BudgetAllocationInstanceEntityTable.budgetInstanceId, budgetInstanceId));
     }
+
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(BudgetAllocationInstanceEntityTable);
+    }
 }
 
