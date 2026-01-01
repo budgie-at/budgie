@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function, @rnw-community/no-complex-jsx-logic */
+/* eslint-disable max-lines-per-function, @rnw-community/no-complex-jsx-logic, lingui/no-unlocalized-strings, no-plusplus */
 import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMemo } from 'react';
@@ -16,9 +16,11 @@ import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-ins
 import { MS_PER_DAY } from '../../constant/ms-per-day.constant';
 import { useGetBudgetActualSpendingQuery } from '../../query/use-get-budget-actual-spending.query';
 import { useGetBudgetAllocationsQuery } from '../../query/use-get-budget-allocations.query';
+import { useGetBudgetIncomeQuery } from '../../query/use-get-budget-income.query';
 import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../util/calculate-effective-planned-amount.util';
 import { BudgetHistoricalPeriodCard } from '../budget-historical-period-card/budget-historical-period-card';
+import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
     readonly budget: BudgetEntityInterface;
@@ -79,6 +81,11 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
         endDate: periodDates.endDate
     });
 
+    const { totalIncome } = useGetBudgetIncomeQuery({
+        startDate: periodDates.startDate,
+        endDate: periodDates.endDate
+    });
+
     const { spendingByCategory } = useGetSpendingByCategoryQuery({
         categoryIds,
         startDate: periodDates.startDate,
@@ -98,8 +105,8 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
     }, [periodDates]);
 
     const totalPlanned = useMemo(
-        () => allocations.reduce((sum, alloc) => sum + alloc.amount, 0),
-        [allocations]
+        () => calculateTotalPlannedAmount(allocations, totalIncome),
+        [allocations, totalIncome]
     );
 
     const categoryStats = useMemo(
@@ -108,7 +115,7 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
                 const category = categories.find(cat => cat.id === allocation.categoryId);
                 const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
                 const spent = spending?.total ?? 0;
-                const planned = allocation.amount;
+                const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
                 const remaining = planned - spent;
                 const percentage = planned > 0 ? Math.round((spent / planned) * 100) : 0;
 
@@ -122,7 +129,7 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
                     isOverBudget: spent > planned
                 };
             }),
-        [allocations, spendingByCategory, categories]
+        [allocations, spendingByCategory, categories, totalIncome]
     );
 
     const remaining = totalPlanned - totalSpent;

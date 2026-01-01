@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function, lingui/no-unlocalized-strings, react/jsx-max-depth */
+/* eslint-disable max-lines, max-lines-per-function, lingui/no-unlocalized-strings, react/jsx-max-depth */
 import { BudgetAllocationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
@@ -22,8 +22,10 @@ import { MS_PER_DAY } from '../../../../budget/constant/ms-per-day.constant';
 import { useGetBudgetActualSpendingQuery } from '../../../../budget/query/use-get-budget-actual-spending.query';
 import { useGetBudgetAllocationsQuery } from '../../../../budget/query/use-get-budget-allocations.query';
 import { useGetBudgetByIdQuery } from '../../../../budget/query/use-get-budget-by-id.query';
+import { useGetBudgetIncomeQuery } from '../../../../budget/query/use-get-budget-income.query';
 import { useGetSpendingByCategoryQuery } from '../../../../budget/query/use-get-spending-by-category.query';
 import { budgetService } from '../../../../budget/service/budget.service';
+import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../../../budget/util/calculate-effective-planned-amount.util';
 import { useAllCategoriesQuery } from '../../../../category/query/use-all-categories.query';
 import { useFormatDigits } from '../../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../../instrument/query/use-get-instrument-by-id.query';
@@ -72,6 +74,11 @@ export default function BudgetDetails() {
         endDate: periodDates.endDate
     });
 
+    const { totalIncome } = useGetBudgetIncomeQuery({
+        startDate: periodDates.startDate,
+        endDate: periodDates.endDate
+    });
+
     const { spendingByCategory } = useGetSpendingByCategoryQuery({
         categoryIds,
         startDate: periodDates.startDate,
@@ -101,8 +108,8 @@ export default function BudgetDetails() {
     }, [periodDates]);
 
     const totalPlanned = useMemo(
-        () => allocations.reduce((sum, alloc) => sum + alloc.amount, 0),
-        [allocations]
+        () => calculateTotalPlannedAmount(allocations, totalIncome),
+        [allocations, totalIncome]
     );
 
     const categoryStats = useMemo(
@@ -111,7 +118,7 @@ export default function BudgetDetails() {
                 const category = categories.find(cat => cat.id === allocation.categoryId);
                 const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
                 const spent = spending?.total ?? 0;
-                const planned = allocation.amount;
+                const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
                 const catRemaining = planned - spent;
                 const percentage = planned > 0 ? Math.round((spent / planned) * 100) : 0;
                 const isOverBudget = spent > planned;
@@ -127,7 +134,7 @@ export default function BudgetDetails() {
                     isOverBudget
                 };
             }),
-        [allocations, spendingByCategory, categories]
+        [allocations, spendingByCategory, categories, totalIncome]
     );
 
     const categoriesOverBudget = categoryStats.filter(cat => cat.isOverBudget).length;

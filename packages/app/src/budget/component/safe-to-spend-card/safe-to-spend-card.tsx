@@ -3,9 +3,9 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 
 interface Props {
     readonly safeToSpend: number;

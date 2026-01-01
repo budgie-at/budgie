@@ -11,9 +11,9 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { FormPercentageInput } from '../../../@generic/component/form-percentage-input/form-percentage-input';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { cn } from '../../../@generic/utils/cn.util';
 import { CategorySelector } from '../../../category/components/category-selector/category-selector';
 import { AllocationFormValues } from '../../schema/allocation-form.schema';
 
@@ -78,7 +78,8 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
                     name="amount"
                     control={control}
                     render={({ field: { onChange, value }, fieldState: { error } }) => {
-                        const displayValue = convertFromMicroUnits(value);
+                        const safeValue = value ?? 0;
+                        const displayValue = convertFromMicroUnits(safeValue);
                         const handleChange = (val: number) => void onChange(convertToMicroUnits(val));
 
                         return (
@@ -99,7 +100,7 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
                     control={control}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <FormItem label={t`Percentage of Income`} error={error?.message}>
-                            <FormPercentageInput value={value} onChange={onChange} variant="primary" />
+                            <FormPercentageInput value={value ?? 0} onChange={onChange} variant="primary" />
                         </FormItem>
                     )}
                 />
