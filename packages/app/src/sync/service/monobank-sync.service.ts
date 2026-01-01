@@ -240,10 +240,10 @@ class AppMonobankSyncService {
                 ...baseUpdate,
                 mode: BankSyncModeEnum.FORWARD,
                 status: BankSyncStatusEnum.IDLE,
-                ...(isBackward ? { backwardSyncedAt: now } : { forwardSyncedAt: now, forwardSyncFromAt: now })
+                ...(isBackward ? { backwardSyncedAt: result.nextTo } : { forwardSyncedAt: now, forwardSyncFromAt: now })
             });
         } else {
-            const cursor = isBackward ? { backwardSyncFromAt: result.nextTo } : { forwardSyncFromAt: result.nextFrom };
+            const cursor = isBackward ? { backwardSyncedAt: result.nextTo } : { forwardSyncFromAt: result.nextFrom };
             await bankSyncRepository.update(sync.id, { ...baseUpdate, ...cursor });
         }
     }

@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
@@ -66,7 +67,7 @@ export const CreateMonobankAccount = () => {
         try {
             await monobankSyncService.setupAccountSyncBatch(token.trim(), [...selectedAccounts]);
             Toast.show({ type: 'success', text1: t`Sync setup complete`, text2: t`Your accounts are now syncing` });
-            goBackOrReplace('/');
+            router.replace('/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Failed to setup sync`, text2: String(error) });
         } finally {
