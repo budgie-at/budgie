@@ -64,6 +64,13 @@ export class AccountRepository {
         });
     }
 
+    getAllInactive() {
+        return this.db.query.AccountEntityTable.findMany({
+            where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt), eq(AccountEntityTable.isActive, false)),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
     getAllArchived() {
         return this.db.query.AccountEntityTable.findMany({
             where: and(isNull(AccountEntityTable.parentId), isNotNull(AccountEntityTable.deletedAt))
