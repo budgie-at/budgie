@@ -4,8 +4,8 @@ import { z } from 'zod';
 export const AllocationFormSchema = z.object({
     categoryId: z.number().positive().nullable(),
     allocationType: z.nativeEnum(BudgetAllocationTypeEnum),
-    amount: z.number().nonnegative().optional().transform(val => val ?? 0),
-    percentage: z.number().min(0).max(100).optional().transform(val => val ?? 0),
+    amount: z.number().nonnegative(),
+    percentage: z.number().min(0).max(100),
     rolloverRule: z.nativeEnum(BudgetRolloverRuleEnum),
     rolloverCap: z.number().positive().nullable(),
     isSinkingFund: z.boolean(),

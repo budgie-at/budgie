@@ -1,8 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -37,17 +38,25 @@ export default function HomePage() {
                     <Icon className="text-primary" icon={UserIconNameEnum.Settings} size={16} />
                 </HapticPressable>
 
-                <NetWorth />
+                <View className="gap-6">
+                    <NetWorth />
 
-                <AccountsHeading />
+                    <View className="gap-2">
+                        <Text className="text-xs uppercase text-secondary-foreground">
+                            <Trans>Budget</Trans>
+                        </Text>
+                        {isDefined(budget) ? <BudgetHomeWidget budget={budget} /> : <BudgetEmptyState />}
+                    </View>
 
-                {isNotEmptyArray(accountEntries) ? (
-                    accountEntries.map(([key, value]) => <AccountList type={key} accounts={value ?? []} key={key} />)
-                ) : (
-                    <AccountsEmptyState />
-                )}
-
-                {isDefined(budget) ? <BudgetHomeWidget budget={budget} /> : <BudgetEmptyState />}
+                    <View className="gap-2">
+                        <AccountsHeading />
+                        {isNotEmptyArray(accountEntries) ? (
+                            accountEntries.map(([key, value]) => <AccountList type={key} accounts={value ?? []} key={key} />)
+                        ) : (
+                            <AccountsEmptyState />
+                        )}
+                    </View>
+                </View>
             </ScrollView>
         </Page>
     );

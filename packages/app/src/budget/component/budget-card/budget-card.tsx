@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic */
 import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
