@@ -1,20 +1,27 @@
 {
-    "version": "7",
-    "dialect": "sqlite",
-    "entries": [
-        {
-            "idx": 0,
-            "version": "6",
-            "when": 1766785704262,
-            "tag": "0000_normal_dragon_man",
-            "breakpoints": true
-        },
-        {
-            "idx": 1,
-            "version": "6",
-            "when": 1767193657976,
-            "tag": "0001_late_red_wolf",
-            "breakpoints": true
-        }
-    ]
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1766785704262,
+      "tag": "0000_normal_dragon_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1767193657976,
+      "tag": "0001_late_red_wolf",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1767283590405,
+      "tag": "0002_dark_prima",
+      "breakpoints": true
+    }
+  ]
 }

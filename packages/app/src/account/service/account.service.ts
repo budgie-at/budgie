@@ -133,6 +133,10 @@ class AccountService {
         });
     }
 
+    async activateById(id: number): Promise<void> {
+        await accountRepository.updateById(id, { isActive: true });
+    }
+
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: Transaction): Promise<void> {
         const result = await accountBalanceRepository.getByAccountId(accountId);
         const currentBalanceMicro = result.at(0)?.balance ?? 0;

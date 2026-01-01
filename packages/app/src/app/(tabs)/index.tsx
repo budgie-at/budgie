@@ -16,7 +16,7 @@ import { AccountsHeading } from '../../account/component/accounts-heading/accoun
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
 
 export default function HomePage() {
-    const { accountsGrouped } = useSearchAccountsGroupedQuery();
+    const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
