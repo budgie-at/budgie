@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, max-lines-per-function */
+/* eslint-disable lingui/no-unlocalized-strings, lingui/no-expression-in-message, max-lines-per-function, max-statements, no-plusplus, @rnw-community/no-complex-jsx-logic, @typescript-eslint/no-unnecessary-type-assertion */
 import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -10,16 +10,18 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { cn } from '../../../@generic/utils/cn.util';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useAllCategoriesQuery } from '../../../category/query/use-all-categories.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { MS_PER_DAY } from '../../constant/ms-per-day.constant';
 import { useGetBudgetActualSpendingQuery } from '../../query/use-get-budget-actual-spending.query';
 import { useGetBudgetAllocationsQuery } from '../../query/use-get-budget-allocations.query';
+import { useGetBudgetIncomeQuery } from '../../query/use-get-budget-income.query';
 import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
 import { budgetService } from '../../service/budget.service';
+import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../util/calculate-effective-planned-amount.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
@@ -51,7 +53,7 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
 
     const periodDates = useMemo(() => {
         const now = new Date();
-        const startDay = budget.startDay;
+        const { startDay } = budget;
         const year = now.getFullYear();
         const month = now.getMonth();
 
@@ -67,6 +69,11 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
 
     const { totalSpent } = useGetBudgetActualSpendingQuery({
         categoryIds,
+        startDate: periodDates.startDate,
+        endDate: periodDates.endDate
+    });
+
+    const { totalIncome } = useGetBudgetIncomeQuery({
         startDate: periodDates.startDate,
         endDate: periodDates.endDate
     });
@@ -89,8 +96,8 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
     }, [periodDates]);
 
     const totalPlanned = useMemo(
-        () => allocations.reduce((sum, alloc) => sum + alloc.amount, 0),
-        [allocations]
+        () => calculateTotalPlannedAmount(allocations, totalIncome),
+        [allocations, totalIncome]
     );
 
     const { categoriesOverBudget, topCategories } = useMemo(() => {
@@ -101,7 +108,8 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
             const category = categories.find(cat => cat.id === allocation.categoryId);
             const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
             const spent = spending?.total ?? 0;
-            const isOver = spent > allocation.amount;
+            const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
+            const isOver = spent > planned;
 
             if (isOver) {
                 overBudgetCount++;
@@ -111,7 +119,7 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
                 name: category?.title ?? '-',
                 icon: (category?.icon ?? UserIconNameEnum.Wallet) as UserIconNameEnum,
                 spent,
-                planned: allocation.amount,
+                planned,
                 isOverBudget: isOver
             });
         }
@@ -119,7 +127,7 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
         const sorted = categoryStats.sort((first, second) => second.spent - first.spent).slice(0, 3);
 
         return { categoriesOverBudget: overBudgetCount, topCategories: sorted };
-    }, [allocations, spendingByCategory, categories]);
+    }, [allocations, spendingByCategory, categories, totalIncome]);
 
     const totalActual = totalSpent;
     const remaining = totalPlanned - totalActual;

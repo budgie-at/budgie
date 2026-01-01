@@ -4,8 +4,8 @@ import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { cn } from '../../../@generic/utils/cn.util';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { CategorySpending } from '../../query/use-get-spending-by-category.query';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 

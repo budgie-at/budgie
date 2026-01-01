@@ -58,7 +58,7 @@ export const BudgetCategoriesList = ({ allocationInstances, allocations, currenc
         allocations.map(allocation => {
             const categoryTitle = allocation.categoryId ? t`Category ${allocation.categoryId}` : t`Uncategorized`;
             const categoryIcon = UserIconNameEnum.Wallet;
-            const handlePress = isDefined(onEditPress) ? () => onEditPress(allocation) : undefined;
+            const handlePress = isDefined(onEditPress) ? () => void onEditPress(allocation) : undefined;
 
             return (
                 <BudgetAllocationCard
