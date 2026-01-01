@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { ScrollView } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../@generic/component/icon/icon';
@@ -17,11 +17,11 @@ import { AccountsHeading } from '../../account/component/accounts-heading/accoun
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
 import { BudgetEmptyState } from '../../budget/component/budget-empty-state/budget-empty-state';
 import { BudgetHomeWidget } from '../../budget/component/budget-home-widget/budget-home-widget';
-import { useGetActiveBudgetsQuery } from '../../budget/query/use-get-active-budgets.query';
+import { useGetActiveBudgetQuery } from '../../budget/query/use-get-active-budgets.query';
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
-    const { budgets } = useGetActiveBudgetsQuery();
+    const { budget } = useGetActiveBudgetQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -29,7 +29,6 @@ export default function HomePage() {
     const navigateToSettings = () => void router.push('/settings');
 
     const accountEntries = typedObjectEntries(accountsGrouped);
-    const activeBudget = isNotEmptyArray(budgets) ? budgets[0] : null;
 
     return (
         <Page>
@@ -48,7 +47,7 @@ export default function HomePage() {
                     <AccountsEmptyState />
                 )}
 
-                {activeBudget ? <BudgetHomeWidget budget={activeBudget} /> : <BudgetEmptyState />}
+                {isDefined(budget) ? <BudgetHomeWidget budget={budget} /> : <BudgetEmptyState />}
             </ScrollView>
         </Page>
     );

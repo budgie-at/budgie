@@ -4,16 +4,16 @@ import { isDefined } from '@rnw-community/shared';
 
 import { budgetRepository } from '../../@generic/drizzle/db/db';
 
-export const useGetActiveBudgetsQuery = () => {
+export const useGetActiveBudgetQuery = () => {
     const { data, updatedAt, error } = useLiveQuery(budgetRepository.findActive(), []);
 
     if (!isDefined(updatedAt)) {
-        return { isLoading: true, budgets: [], error };
+        return { isLoading: true, budget: null, error };
     }
 
     return {
         isLoading: false,
-        budgets: data,
+        budget: data ?? null,
         error
     };
 };
