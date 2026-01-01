@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -15,10 +15,13 @@ export default function AddAllocationPage() {
     const { budget, isLoading } = useGetBudgetByIdQuery(budgetId);
     const { instrument } = useGetInstrumentByIdQuery(budget?.instrumentId ?? 0);
 
-    if (isLoading || !isDefined(budget)) {
+    if (isLoading) {
         return <EmptyScreen />;
+    }
+
+    if (!isDefined(budget)) {
+        return <Redirect href={`/budget/${budgetId}`} />;
     }
 
     return <CreateAllocation budgetId={budgetId} currencySymbol={instrument?.symbol ?? ''} />;
 }
-
