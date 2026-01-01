@@ -50,7 +50,6 @@ export const BankSyncTokenSection = ({ accountId, token }: Props) => {
             await monobankSyncService.updateAccountToken(accountId, newToken.trim());
             setIsEditing(false);
             setNewToken('');
-            Toast.show({ type: 'success', text1: t`Token updated` });
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Failed to update token`, text2: String(error) });
         } finally {
