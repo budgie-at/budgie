@@ -234,9 +234,12 @@ msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
 #: src/account/constant/account-type.constant.ts:6
-#: src/account/constant/account-type.constant.ts:12
 msgid "Bank"
 msgstr "Banque"
+
+#: src/account/constant/account-type.constant.ts:12
+msgid "Bank sync"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:45
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
