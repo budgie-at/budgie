@@ -1,5 +1,7 @@
+/* eslint-disable @rnw-community/no-complex-jsx-logic */
+import { BudgetPeriodEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Controller } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,6 +19,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useBudgetForm } from '../../hook/use-budget-form.hook';
 import { BudgetPeriodSelector } from '../budget-period-selector/budget-period-selector';
+import { BudgetStartDaySelector } from '../budget-start-day-selector/budget-start-day-selector';
 
 export const CreateBudget = () => {
     const { t } = useLingui();
@@ -25,6 +28,22 @@ export const CreateBudget = () => {
     const { control, handleSubmit, instrument } = useBudgetForm({
         instrumentId: defaultInstrument.id
     });
+
+    const period = useWatch({ control, name: 'period', defaultValue: BudgetPeriodEnum.MONTHLY });
+
+    const getStartDayLabel = () => {
+        if (period === BudgetPeriodEnum.WEEKLY || period === BudgetPeriodEnum.BI_WEEKLY) {
+            return t`Start Day of Week`;
+        }
+        if (period === BudgetPeriodEnum.YEARLY) {
+            return t`Start Month`;
+        }
+        if (period === BudgetPeriodEnum.QUARTERLY) {
+            return t`Start Month of Quarter`;
+        }
+
+        return t`Start Day of Month`;
+    };
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -78,13 +97,8 @@ export const CreateBudget = () => {
                         name="startDay"
                         control={control}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
-                            <FormItem label={t`Start Day of Month`} error={error?.message}>
-                                <Input
-                                    placeholder="1"
-                                    value={String(value)}
-                                    onChangeText={text => onChange(Number(text) || 1)}
-                                    keyboardType="number-pad"
-                                />
+                            <FormItem label={getStartDayLabel()} error={error?.message}>
+                                <BudgetStartDaySelector period={period} value={value} onSelect={onChange} />
                             </FormItem>
                         )}
                     />

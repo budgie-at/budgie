@@ -7,6 +7,8 @@ import {
     BudgetStatusEnum,
     BudgetUpdateEntityInterface
 } from '@budgie/contracts';
+import * as BackgroundTask from 'expo-background-task';
+import * as TaskManager from 'expo-task-manager';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,6 +19,9 @@ import {
     budgetRepository,
     db
 } from '../../@generic/drizzle/db/db';
+import { BUDGET_TRANSITION_TASK } from '../constant/budget-transition-task.constant';
+
+const ONE_HOUR_IN_SECONDS = 3600;
 
 class BudgetService {
     async createBudget(input: BudgetCreateEntityInterface) {
@@ -71,24 +76,21 @@ class BudgetService {
                 tx
             );
 
-            for (const allocation of allocations) {
-                await budgetAllocationRepository.create(
-                    {
-                        budgetId: newBudget.id,
-                        categoryId: allocation.categoryId,
-                        allocationType: allocation.allocationType,
-                        amount: allocation.amount,
-                        percentage: allocation.percentage,
-                        rolloverRule: allocation.rolloverRule,
-                        rolloverCap: allocation.rolloverCap,
-                        isSinkingFund: allocation.isSinkingFund,
-                        sinkingFundTarget: allocation.sinkingFundTarget,
-                        sinkingFundTargetDate: allocation.sinkingFundTargetDate,
-                        isExcluded: allocation.isExcluded
-                    },
-                    tx
-                );
-            }
+            const newAllocations = allocations.map(allocation => ({
+                budgetId: newBudget.id,
+                categoryId: allocation.categoryId,
+                allocationType: allocation.allocationType,
+                amount: allocation.amount,
+                percentage: allocation.percentage,
+                rolloverRule: allocation.rolloverRule,
+                rolloverCap: allocation.rolloverCap,
+                isSinkingFund: allocation.isSinkingFund,
+                sinkingFundTarget: allocation.sinkingFundTarget,
+                sinkingFundTargetDate: allocation.sinkingFundTargetDate,
+                isExcluded: allocation.isExcluded
+            }));
+
+            await budgetAllocationRepository.bulkCreate(newAllocations, tx);
 
             return newBudget;
         });
@@ -255,6 +257,108 @@ class BudgetService {
         }
 
         return 0;
+    }
+
+    async transitionToNextPeriod(budgetId: number): Promise<void> {
+        const budget = await budgetRepository.findById(budgetId);
+        if (!isDefined(budget)) {
+            throw new Error('budget-not-found');
+        }
+
+        const currentInstance = await budgetInstanceRepository.findCurrentByBudgetId(budgetId);
+        if (!isDefined(currentInstance)) {
+            return;
+        }
+
+        const now = new Date();
+        if (now <= currentInstance.endDate) {
+            return;
+        }
+
+        const allocations = await budgetAllocationRepository.findByBudgetId(budgetId);
+        const allocationInstances = await budgetAllocationInstanceRepository.findByBudgetInstanceId(currentInstance.id);
+
+        await budgetInstanceRepository.close(currentInstance.id);
+
+        const { startDate: newStartDate, endDate: newEndDate } = this.calculatePeriodDatesForType(
+            budget.period,
+            budget.startDay,
+            now
+        );
+
+        await db.transaction(async tx => {
+            const newInstance = await budgetInstanceRepository.create(
+                {
+                    budgetId,
+                    startDate: newStartDate,
+                    endDate: newEndDate,
+                    status: BudgetInstanceStatusEnum.OPEN
+                },
+                tx
+            );
+
+            const newAllocationInstances = allocations.map(allocation => {
+                const prevInstance = allocationInstances.find(ai => ai.budgetAllocationId === allocation.id);
+                const prevPlanned = prevInstance?.planned ?? allocation.amount;
+                const prevActual = prevInstance?.actual ?? 0;
+
+                const rolloverAmount = this.calculateRollover(
+                    prevPlanned,
+                    prevActual,
+                    allocation.rolloverRule,
+                    allocation.rolloverCap ?? undefined
+                );
+
+                return {
+                    budgetInstanceId: newInstance.id,
+                    budgetAllocationId: allocation.id,
+                    categoryId: allocation.categoryId,
+                    planned: allocation.amount,
+                    rolloverIn: rolloverAmount
+                };
+            });
+
+            await budgetAllocationInstanceRepository.bulkCreate(newAllocationInstances, tx);
+        });
+    }
+
+    async checkAndTransitionAllBudgets(): Promise<void> {
+        const activeBudgets = await budgetRepository.findActive();
+
+        for (const budget of activeBudgets) {
+            try {
+                await this.transitionToNextPeriod(budget.id);
+            } catch {
+                // eslint-disable-next-line no-console
+                console.error(`Failed to transition budget ${budget.id}`);
+            }
+        }
+    }
+
+    async registerBackgroundTask(): Promise<void> {
+        if (await TaskManager.isTaskRegisteredAsync(BUDGET_TRANSITION_TASK)) {
+            return;
+        }
+
+        await BackgroundTask.registerTaskAsync(BUDGET_TRANSITION_TASK, {
+            minimumInterval: ONE_HOUR_IN_SECONDS
+        });
+    }
+
+    async ensureCurrentInstance(budgetId: number): Promise<void> {
+        const budget = await budgetRepository.findById(budgetId);
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        const currentInstance = await budgetInstanceRepository.findCurrentByBudgetId(budgetId);
+        if (isDefined(currentInstance)) {
+            return;
+        }
+
+        const { startDate, endDate } = this.calculatePeriodDatesForType(budget.period, budget.startDay, new Date());
+
+        await this.createBudgetInstance(budgetId, startDate, endDate);
     }
 }
 
