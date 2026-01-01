@@ -24,3 +24,11 @@ export { TransactionTagsEntityTable } from './transaction-tags/table/transaction
 export { TransactionTagsEntityRelations } from './transaction-tags/relations/transaction-tags-entity.relations';
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
 export { TransactionEntryEntityRelations } from './transaction-entry/relations/transaction-entry-entity.relations';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetAllocationEntityTable } from './budget-allocation/table/budget-allocation-entity.table';
+export { BudgetAllocationEntityRelations } from './budget-allocation/relations/budget-allocation-entity.relations';
+export { BudgetInstanceEntityTable } from './budget-instance/table/budget-instance-entity.table';
+export { BudgetInstanceEntityRelations } from './budget-instance/relations/budget-instance-entity.relations';
+export { BudgetAllocationInstanceEntityTable } from './budget-allocation-instance/table/budget-allocation-instance-entity.table';
+export { BudgetAllocationInstanceEntityRelations } from './budget-allocation-instance/relations/budget-allocation-instance-entity.relations';

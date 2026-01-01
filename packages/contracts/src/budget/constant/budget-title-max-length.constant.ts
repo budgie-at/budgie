@@ -1,0 +1,2 @@
+export const BUDGET_TITLE_MAX_LENGTH = 100;
+
