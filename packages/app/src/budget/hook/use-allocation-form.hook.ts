@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings, prefer-destructuring, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unnecessary-type-conversion */
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';

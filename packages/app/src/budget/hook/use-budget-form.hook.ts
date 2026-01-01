@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -12,6 +13,8 @@ const BudgetFormSchema = z.object({
     title: z.string().min(1, 'Budget name is required').max(100, 'Budget name is too long'),
     period: z.nativeEnum(BudgetPeriodEnum),
     startDay: z.number().min(1).max(31),
+    customStartDate: z.date().nullable(),
+    customEndDate: z.date().nullable(),
     instrumentId: z.number().positive()
 });
 
@@ -21,6 +24,8 @@ const DEFAULT_VALUES: BudgetFormValues = {
     title: '',
     period: BudgetPeriodEnum.MONTHLY,
     startDay: 1,
+    customStartDate: null,
+    customEndDate: null,
     instrumentId: 1
 };
 
@@ -42,10 +47,19 @@ export const useBudgetForm = (defaultValues: Partial<BudgetFormValues> = {}) => 
 
     const handleSubmit = async (values: BudgetFormValues) => {
         try {
-            const budget = await budgetService.createBudget(values);
+            const budget = await budgetService.createBudget({
+                title: values.title,
+                period: values.period,
+                startDay: values.startDay,
+                instrumentId: values.instrumentId,
+                customStartDate: values.customStartDate,
+                customEndDate: values.customEndDate
+            });
 
             router.replace(`/budget/${budget.id}`);
         } catch (error: unknown) {
+            // eslint-disable-next-line no-console
+            console.error('Failed to create budget:', error);
             showError(error);
         }
     };

@@ -157,11 +157,19 @@ class BudgetService {
         return { startDate, endDate };
     }
 
-    calculatePeriodDatesForType(
-        period: BudgetPeriodEnum,
-        startDay: number,
-        referenceDate: Date = new Date()
-    ): { startDate: Date; endDate: Date } {
+    calculatePeriodDatesForType(options: {
+        period: BudgetPeriodEnum;
+        startDay: number;
+        referenceDate?: Date;
+        customStartDate?: Date | null;
+        customEndDate?: Date | null;
+    }): { startDate: Date; endDate: Date } {
+        const { period, startDay, referenceDate = new Date(), customStartDate, customEndDate } = options;
+
+        if (period === BudgetPeriodEnum.CUSTOM && isDefined(customStartDate) && isDefined(customEndDate)) {
+            return { startDate: customStartDate, endDate: customEndDate };
+        }
+
         if (period === BudgetPeriodEnum.WEEKLY) {
             return this.calculateWeeklyPeriodDates(startDay, referenceDate);
         }
@@ -235,11 +243,13 @@ class BudgetService {
 
         await budgetInstanceRepository.close(currentInstance.id);
 
-        const { startDate: newStartDate, endDate: newEndDate } = this.calculatePeriodDatesForType(
-            budget.period,
-            budget.startDay,
-            now
-        );
+        const { startDate: newStartDate, endDate: newEndDate } = this.calculatePeriodDatesForType({
+            period: budget.period,
+            startDay: budget.startDay,
+            referenceDate: now,
+            customStartDate: budget.customStartDate,
+            customEndDate: budget.customEndDate
+        });
 
         await db.transaction(async tx => {
             const newInstance = await budgetInstanceRepository.create(
@@ -313,7 +323,13 @@ class BudgetService {
             return;
         }
 
-        const { startDate, endDate } = this.calculatePeriodDatesForType(budget.period, budget.startDay, new Date());
+        const { startDate, endDate } = this.calculatePeriodDatesForType({
+            period: budget.period,
+            startDay: budget.startDay,
+            referenceDate: new Date(),
+            customStartDate: budget.customStartDate,
+            customEndDate: budget.customEndDate
+        });
 
         await this.createBudgetInstance(budgetId, startDate, endDate);
     }
@@ -357,7 +373,7 @@ class BudgetService {
         const periods: Array<{ startDate: Date; endDate: Date; label: string }> = [];
         let lastEndDate = currentPeriodEndDate;
 
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < count; i += 1) {
             const dates =
                 period === BudgetPeriodEnum.WEEKLY
                     ? this.calculateNextWeeklyPeriodDates(lastEndDate)

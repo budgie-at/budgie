@@ -19,6 +19,8 @@ export const BudgetEntityTable = sqliteTable(
             .notNull()
             .default(BudgetStatusEnum.DRAFT),
         startDay: int('start_day', { mode: 'number' }).notNull().default(1),
+        customStartDate: int('custom_start_date', { mode: 'timestamp' }),
+        customEndDate: int('custom_end_date', { mode: 'timestamp' }),
         instrumentId: int('instrument_id', { mode: 'number' })
             .notNull()
             .references(() => InstrumentEntityTable.id, { onDelete: 'cascade' }),
