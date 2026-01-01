@@ -77,7 +77,7 @@ export default defineConfig(
             'multiline-ternary': 'off',
             'max-lines-per-function': ['error', { max: 85, skipBlankLines: true, skipComments: true }],
             'max-statements': ['error', { max: 12 }, { ignoreTopLevelFunctions: true }],
-            'id-length': ['warn', { exceptions: ['x', 'y', 'z', 'i', 'j', 'e', '_', 'w', 'h', 't'] }],
+            'id-length': ['error', { exceptions: ['x', 'y', 'z', 'i', 'j', 'e', '_', 'w', 'h', 't'] }],
             'max-params': 'off',
             'operator-linebreak': 'off',
             'newline-before-return': 'error',

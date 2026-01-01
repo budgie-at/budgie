@@ -4,6 +4,7 @@ import { useWatch } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
+import { AccountBankSyncCard } from '../../../sync/component/account-bank-sync-card/account-bank-sync-card';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
@@ -39,6 +40,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     const currentType = useWatch({ control, name: 'type' });
     const canChangeType = CHANGEABLE_ACCOUNT_TYPES.includes(account.type);
+    const isBankSyncAccount = account.type === AccountTypeEnum.BANK_SYNC;
 
     const updatedAccount = { ...account, type: currentType };
 
@@ -49,6 +51,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     return (
         <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={updatedAccount} control={control}>
             {canChangeType ? <AccountTypeSelectorField control={control} /> : null}
+            {isBankSyncAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
         </UpdateAccountScreen>
     );
 };

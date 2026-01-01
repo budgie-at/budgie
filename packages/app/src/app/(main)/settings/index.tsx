@@ -107,10 +107,10 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Appearance`}>
                         <ThemeSwitch />
                         <SettingsCard
-                            title={t`Hide Cents`}
+                            title={t`Show Cents`}
                             description={t`Show $1,234.56 instead of $1,235`}
                             icon="DollarSign"
-                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={!showCents} />}
+                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
                             variant="positive"
                         />
                     </SettingsGroup>

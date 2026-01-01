@@ -2,14 +2,14 @@ import {
     AccountEntityInterface,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
-    LiabilityAccountCreateInputInterface,
-    UserIconNameEnum
+    LiabilityAccountCreateInputInterface
 } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { Control, FieldValues, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
@@ -46,7 +46,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const formValues = useWatch({ control });
     const currentType = isDefined(formValues.type) ? (formValues.type as AccountTypeEnum) : account.type;
-    const currentIcon = isDefined(formValues.icon) ? (formValues.icon as UserIconNameEnum) : account.icon;
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -57,7 +56,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
         <Page
             header={
                 <PageHeader
-                    icon={currentIcon}
                     iconVariant={variant}
                     onGoBack={handleGoBack}
                     description={description}
@@ -68,8 +66,10 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
             footer={
                 <KeyboardStickyView>
                     <Footer>
-                        <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} />
-                        <ArchiveAccount accountId={account.id} />
+                        <View className="flex-row gap-2">
+                            <ArchiveAccount accountId={account.id} />
+                            <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} className="flex-1" />
+                        </View>
                     </Footer>
                 </KeyboardStickyView>
             }
