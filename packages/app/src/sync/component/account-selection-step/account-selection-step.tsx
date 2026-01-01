@@ -3,8 +3,7 @@ import { Text } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { BankAccountPreviewInterface } from '../../service/monobank-sync.service';
-
-import { BankAccountPreviewCard } from './bank-account-preview-card';
+import { BankAccountPreviewCard } from '../bank-account-preview-card/bank-account-preview-card';
 
 interface Props {
     readonly accountPreviews: BankAccountPreviewInterface[];
