@@ -9,5 +9,5 @@ export const ACCOUNT_TYPE: Record<AccountTypeEnum, MessageDescriptor> = {
     [AccountTypeEnum.CRYPTO]: msg`Crypto`,
     [AccountTypeEnum.STOCKS]: msg`Stocks`,
     [AccountTypeEnum.SAVINGS]: msg`Savings`,
-    [AccountTypeEnum.BANK_SYNC]: msg`Bank`
+    [AccountTypeEnum.BANK_SYNC]: msg`Bank sync`
 };

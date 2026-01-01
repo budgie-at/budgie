@@ -32,11 +32,6 @@ export const useCreateExpenseTransactionMutation = () => {
 
         try {
             await transactionService.createInternal(transactionData);
-            Toast.show({
-                type: 'success',
-                text1: t`Expense created`,
-                text2: t`Your expense has been recorded successfully.`
-            });
             router.back();
         } catch {
             Toast.show({
