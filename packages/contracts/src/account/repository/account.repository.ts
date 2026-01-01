@@ -44,31 +44,15 @@ export class AccountRepository {
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
-        const { excludeTypes, excludeAccountId } = filter;
-
         return this.db.query.AccountEntityTable.findMany({
-            where: and(
-                isNull(AccountEntityTable.parentId),
-                isNull(AccountEntityTable.deletedAt),
-                sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
-                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
-                isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
-            ),
+            where: this.buildSearchWhereClause(search, filter),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
     }
 
     findBySearchQuerySortedByBalance(search: string, filter: AccountFilterInterface = {}) {
-        const { excludeTypes, excludeAccountId } = filter;
-
         return this.db.query.AccountEntityTable.findMany({
-            where: and(
-                isNull(AccountEntityTable.parentId),
-                isNull(AccountEntityTable.deletedAt),
-                sql`LOWER(${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
-                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
-                isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
-            ),
+            where: this.buildSearchWhereClause(search, filter),
             with: { [AccountAssociationEnum.INSTRUMENT]: true },
             orderBy: [
                 desc(AccountEntityTable.isActive),
@@ -134,5 +118,17 @@ export class AccountRepository {
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable);
+    }
+
+    private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {
+        const { excludeTypes, excludeAccountId } = filter;
+
+        return and(
+            isNull(AccountEntityTable.parentId),
+            isNull(AccountEntityTable.deletedAt),
+            sql`LOWER(${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
+            isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
+            isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
+        );
     }
 }
