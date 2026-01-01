@@ -123,11 +123,11 @@ msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 msgid "Add a note..."
 msgstr "Ajouter une note..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:52
 msgid "Add Expense"
 msgstr "Ajouter une dépense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:34
 msgid "Add Income"
 msgstr "Ajouter un revenu"
 
@@ -135,7 +135,7 @@ msgstr "Ajouter un revenu"
 msgid "Add Split"
 msgstr "Ajouter une répartition"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:35
 msgid "Add Transfer"
 msgstr "Ajouter un transfert"
 
@@ -338,7 +338,7 @@ msgstr "Compte courant"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Choose a type to get started"
 msgstr "Choisissez un type pour commencer"
 
@@ -350,7 +350,7 @@ msgstr "Choisir une icône"
 msgid "Choose the type of account you want to add"
 msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 msgid "Choose your main account"
 msgstr "Choisissez votre compte principal"
 
@@ -945,7 +945,7 @@ msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 msgid "Money lent or borrowed"
 msgstr "Argent prêté ou emprunté"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:50
 msgid "Money you earn"
 msgstr "Argent que vous gagnez"
 
@@ -953,7 +953,7 @@ msgstr "Argent que vous gagnez"
 msgid "Money you owe or are owed"
 msgstr "Argent que vous devez ou qu'on vous doit"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:43
 msgid "Money you spend"
 msgstr "Argent que vous dépensez"
 
@@ -961,7 +961,7 @@ msgstr "Argent que vous dépensez"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:57
 msgid "Move between accounts"
 msgstr "Transférer entre comptes"
 
@@ -973,28 +973,28 @@ msgstr "Transférer de l'argent"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:33
 msgid "New Income"
 msgstr "Nouveau revenu"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "New Transaction"
 msgstr "Nouvelle transaction"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
 msgid "New Transfer"
 msgstr "Nouveau transfert"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:13
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts yet"
@@ -1232,7 +1232,7 @@ msgstr "Comptes d'épargne"
 msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:75
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
@@ -1293,7 +1293,7 @@ msgstr "Sélectionnez une colonne valide"
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:72
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 msgid "Select Account"
 msgstr "Sélectionner un compte"
 
