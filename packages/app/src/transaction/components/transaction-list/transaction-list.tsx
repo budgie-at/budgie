@@ -21,7 +21,7 @@ interface Props {
 
 const LIST_CONTENT_CONTAINER_STYLE = { gap: 16 };
 const keyExtractor = (item: TransactionListItemType) => item.id;
-const getItemType = (item: TransactionListItemType) => item.type;
+const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
 // HINT: You cannot extract this into component or you will get a warning about hook usage
 const renderItem = ({ item }: { item: TransactionListItemType }) =>
     item.type === 'header' ? (
@@ -36,8 +36,8 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
         />
     );
 
-const getStickyIndices = (sections: TransactionListItemType[]) =>
-    sections.reduce<number[]>((headers, item, idx) => (item.type === 'header' ? [...headers, idx] : headers), []);
+const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
+    sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({

@@ -136,17 +136,7 @@ export default function ImportScreen() {
             await transactionRepository.truncate();
             await accountBalanceRepository.truncate();
 
-            const finalProgress = await importer.process(csvText, rowCount);
-
-            const hasErrors = finalProgress.errors > 0;
-            const successCount = finalProgress.successful;
-            const errorCount = finalProgress.errors;
-
-            Toast.show({
-                type: hasErrors ? 'info' : 'success',
-                text1: t`Import Complete`,
-                text2: hasErrors ? t`${successCount} imported, ${errorCount} failed` : t`${successCount} transactions imported`
-            });
+            await importer.process(csvText, rowCount);
 
             await accountBalanceIncrementalService.updateAllBalances(true);
 
