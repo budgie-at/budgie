@@ -1,8 +1,8 @@
-/* eslint-disable max-lines, max-lines-per-function, lingui/no-unlocalized-strings, react/jsx-max-depth */
-import { BudgetAllocationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+/* eslint-disable max-lines-per-function, lingui/no-unlocalized-strings, react/jsx-max-depth */
+import { BudgetAllocationEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -18,14 +18,11 @@ import { cn } from '../../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { BudgetProgressBar } from '../../../../budget/component/budget-progress-bar/budget-progress-bar';
-import { MS_PER_DAY } from '../../../../budget/constant/ms-per-day.constant';
-import { useGetBudgetActualSpendingQuery } from '../../../../budget/query/use-get-budget-actual-spending.query';
+import { useBudgetStats } from '../../../../budget/hook/use-budget-stats.hook';
+import { useCategoryStats } from '../../../../budget/hook/use-category-stats.hook';
 import { useGetBudgetAllocationsQuery } from '../../../../budget/query/use-get-budget-allocations.query';
 import { useGetBudgetByIdQuery } from '../../../../budget/query/use-get-budget-by-id.query';
-import { useGetBudgetIncomeQuery } from '../../../../budget/query/use-get-budget-income.query';
-import { useGetSpendingByCategoryQuery } from '../../../../budget/query/use-get-spending-by-category.query';
 import { budgetService } from '../../../../budget/service/budget.service';
-import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../../../budget/util/calculate-effective-planned-amount.util';
 import { useAllCategoriesQuery } from '../../../../category/query/use-all-categories.query';
 import { useFormatDigits } from '../../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../../instrument/query/use-get-instrument-by-id.query';
@@ -43,47 +40,8 @@ export default function BudgetDetails() {
     const formatDigits = useFormatDigits(0);
     const currencySymbol = instrument?.symbol ?? '';
 
-    const categoryIds = useMemo(
-        () => allocations.map(al => al.categoryId).filter((cid): cid is number => isDefined(cid)),
-        [allocations]
-    );
-
-    const periodDates = useMemo(() => {
-        if (!isDefined(budget)) {
-            return { startDate: new Date(), endDate: new Date() };
-        }
-
-        const now = new Date();
-        const { startDay } = budget;
-        const year = now.getFullYear();
-        const month = now.getMonth();
-
-        let startDate = new Date(year, month, startDay);
-        if (startDate > now) {
-            startDate = new Date(year, month - 1, startDay);
-        }
-
-        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, startDay);
-
-        return { startDate, endDate };
-    }, [budget]);
-
-    const { totalSpent } = useGetBudgetActualSpendingQuery({
-        categoryIds,
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
-
-    const { totalIncome } = useGetBudgetIncomeQuery({
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
-
-    const { spendingByCategory } = useGetSpendingByCategoryQuery({
-        categoryIds,
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
+    const { totalSpent, totalIncome, totalPlanned, spendingByCategory, periodInfo } = useBudgetStats(budget, allocations);
+    const { categoryStats, categoriesOverBudget } = useCategoryStats(allocations, categories, spendingByCategory, totalIncome);
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleAddAllocation = useCallback(() => {
@@ -96,48 +54,6 @@ export default function BudgetDetails() {
         [id]
     );
 
-    const periodInfo = useMemo(() => {
-        const now = Date.now();
-        const startTime = periodDates.startDate.getTime();
-        const endTime = periodDates.endDate.getTime();
-        const daysElapsed = Math.floor((now - startTime) / MS_PER_DAY);
-        const totalDays = Math.floor((endTime - startTime) / MS_PER_DAY);
-        const daysRemaining = Math.max(0, totalDays - daysElapsed);
-
-        return { daysElapsed, totalDays, daysRemaining };
-    }, [periodDates]);
-
-    const totalPlanned = useMemo(
-        () => calculateTotalPlannedAmount(allocations, totalIncome),
-        [allocations, totalIncome]
-    );
-
-    const categoryStats = useMemo(
-        () =>
-            allocations.map(allocation => {
-                const category = categories.find(cat => cat.id === allocation.categoryId);
-                const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
-                const spent = spending?.total ?? 0;
-                const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
-                const catRemaining = planned - spent;
-                const percentage = planned > 0 ? Math.round((spent / planned) * 100) : 0;
-                const isOverBudget = spent > planned;
-
-                return {
-                    allocation,
-                    name: category?.title ?? '-',
-                    icon: category?.icon ?? UserIconNameEnum.Wallet,
-                    spent,
-                    planned,
-                    remaining: catRemaining,
-                    percentage,
-                    isOverBudget
-                };
-            }),
-        [allocations, spendingByCategory, categories, totalIncome]
-    );
-
-    const categoriesOverBudget = categoryStats.filter(cat => cat.isOverBudget).length;
 
     if (isLoading) {
         return <EmptyScreen />;
@@ -150,12 +66,7 @@ export default function BudgetDetails() {
     const totalActual = totalSpent;
     const remaining = totalPlanned - totalActual;
     const isPositive = remaining >= 0;
-    const safeToSpend = budgetService.calculateSafeToSpend(
-        totalPlanned,
-        totalActual,
-        periodInfo.daysElapsed,
-        periodInfo.totalDays
-    );
+    const safeToSpend = budgetService.calculateSafeToSpend(totalPlanned, totalActual, periodInfo.daysElapsed, periodInfo.totalDays);
     const dailyBudget = periodInfo.daysRemaining > 0 ? safeToSpend / periodInfo.daysRemaining : 0;
 
     const dailyBudgetFormatted = formatDigits(convertFromMicroUnits(dailyBudget), currencySymbol);
@@ -193,40 +104,28 @@ export default function BudgetDetails() {
                                 <Text className={safeToSpendClassName}>
                                     {formatDigits(convertFromMicroUnits(safeToSpend), currencySymbol)}
                                 </Text>
-                                <Text className="text-xs text-secondary-foreground">
-                                    {t`${dailyBudgetFormatted}/day`}
-                                </Text>
+                                <Text className="text-xs text-secondary-foreground">{t`${dailyBudgetFormatted}/day`}</Text>
                             </View>
                             <View className="items-end">
                                 <Text className="text-xs text-secondary-foreground">
                                     <Trans>Remaining</Trans>
                                 </Text>
-                                <Text className={remainingClassName}>
-                                    {formatDigits(convertFromMicroUnits(remaining), currencySymbol)}
-                                </Text>
-                                <Text className="text-xs text-secondary-foreground">
-                                    {t`of ${totalPlannedFormatted}`}
-                                </Text>
+                                <Text className={remainingClassName}>{formatDigits(convertFromMicroUnits(remaining), currencySymbol)}</Text>
+                                <Text className="text-xs text-secondary-foreground">{t`of ${totalPlannedFormatted}`}</Text>
                             </View>
                         </View>
 
                         <BudgetProgressBar planned={totalPlanned} actual={totalActual} className="h-2" />
 
                         <View className="flex-row justify-between">
-                            <Text className="text-xs text-secondary-foreground">
-                                {t`Spent: ${totalSpentFormatted}`}
-                            </Text>
-                            <Text className="text-xs text-secondary-foreground">
-                                {t`${daysRemaining} of ${totalDays} days left`}
-                            </Text>
+                            <Text className="text-xs text-secondary-foreground">{t`Spent: ${totalSpentFormatted}`}</Text>
+                            <Text className="text-xs text-secondary-foreground">{t`${daysRemaining} of ${totalDays} days left`}</Text>
                         </View>
 
                         {categoriesOverBudget > 0 && (
                             <View className="flex-row items-center gap-1 pt-1">
                                 <Icon icon="AlertTriangle" size={12} className="text-warning-foreground" />
-                                <Text className="text-xs text-warning-foreground">
-                                    {t`${categoriesOverBudget} categories over budget`}
-                                </Text>
+                                <Text className="text-xs text-warning-foreground">{t`${categoriesOverBudget} categories over budget`}</Text>
                             </View>
                         )}
                     </Card>
@@ -245,9 +144,18 @@ export default function BudgetDetails() {
                         {isNotEmptyArray(categoryStats) ? (
                             categoryStats.map(cat => {
                                 const handlePress = () => void handleEditAllocation(cat.allocation);
-                                const spentClassName = cn('text-sm font-medium', cat.isOverBudget ? 'text-warning-foreground' : 'text-primary');
-                                const remainingTextClassName = cn('text-xs', cat.isOverBudget ? 'text-warning-foreground' : 'text-positive-foreground');
-                                const percentageClassName = cn('text-xs', cat.isOverBudget ? 'text-warning-foreground' : 'text-secondary-foreground');
+                                const spentClassName = cn(
+                                    'text-sm font-medium',
+                                    cat.isOverBudget ? 'text-warning-foreground' : 'text-primary'
+                                );
+                                const remainingTextClassName = cn(
+                                    'text-xs',
+                                    cat.isOverBudget ? 'text-warning-foreground' : 'text-positive-foreground'
+                                );
+                                const percentageClassName = cn(
+                                    'text-xs',
+                                    cat.isOverBudget ? 'text-warning-foreground' : 'text-secondary-foreground'
+                                );
                                 const catSpentFormatted = formatDigits(convertFromMicroUnits(cat.spent), currencySymbol);
                                 const catPlannedFormatted = formatDigits(convertFromMicroUnits(cat.planned), currencySymbol);
                                 const catRemainingFormatted = formatDigits(convertFromMicroUnits(Math.abs(cat.remaining)), currencySymbol);
@@ -264,9 +172,7 @@ export default function BudgetDetails() {
                                                 </View>
                                                 <Text className={spentClassName}>
                                                     {catSpentFormatted}
-                                                    <Text className="text-xs text-secondary-foreground">
-                                                        {` / ${catPlannedFormatted}`}
-                                                    </Text>
+                                                    <Text className="text-xs text-secondary-foreground">{` / ${catPlannedFormatted}`}</Text>
                                                 </Text>
                                             </View>
 
@@ -274,7 +180,9 @@ export default function BudgetDetails() {
 
                                             <View className="flex-row justify-between">
                                                 <Text className={remainingTextClassName}>
-                                                    {cat.isOverBudget ? t`Over by ${catRemainingFormatted}` : t`${catRemainingFormatted} left`}
+                                                    {cat.isOverBudget
+                                                        ? t`Over by ${catRemainingFormatted}`
+                                                        : t`${catRemainingFormatted} left`}
                                                 </Text>
                                                 <Text className={percentageClassName}>{`${cat.percentage}%`}</Text>
                                             </View>

@@ -1,10 +1,12 @@
-/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic, max-lines-per-function, no-negated-condition, @typescript-eslint/no-unnecessary-condition, no-undefined */
+/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic, max-lines-per-function, no-negated-condition, @typescript-eslint/no-unnecessary-condition */
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Control, Controller, UseFormSetValue } from 'react-hook-form';
 import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
@@ -30,7 +32,8 @@ interface Props {
     readonly defaultAllocationType?: BudgetAllocationTypeEnum;
 }
 
-export const AllocationFormFields = ({ control, setValue, currencySymbol, defaultAllocationType = BudgetAllocationTypeEnum.FIXED }: Props) => {
+export const AllocationFormFields = (props: Props) => {
+    const { control, setValue, currencySymbol, defaultAllocationType = BudgetAllocationTypeEnum.FIXED } = props;
     const { t, i18n } = useLingui();
 
     const [isFixed, setIsFixed] = useState(defaultAllocationType === BudgetAllocationTypeEnum.FIXED);
@@ -48,18 +51,12 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
         'flex-1 items-center py-3 rounded-xl border',
         isFixed ? 'bg-primary border-primary' : 'bg-secondary-background border-secondary-corner'
     );
-    const fixedTextClassName = cn(
-        'text-sm font-medium',
-        isFixed ? 'text-primary-reverse' : 'text-secondary-foreground'
-    );
+    const fixedTextClassName = cn('text-sm font-medium', isFixed ? 'text-primary-reverse' : 'text-secondary-foreground');
     const percentageClassName = cn(
         'flex-1 items-center py-3 rounded-xl border',
         !isFixed ? 'bg-primary border-primary' : 'bg-secondary-background border-secondary-corner'
     );
-    const percentageTextClassName = cn(
-        'text-sm font-medium',
-        !isFixed ? 'text-primary-reverse' : 'text-secondary-foreground'
-    );
+    const percentageTextClassName = cn('text-sm font-medium', !isFixed ? 'text-primary-reverse' : 'text-secondary-foreground');
 
     return (
         <FormLayoutGroup>
@@ -78,8 +75,7 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
                     name="amount"
                     control={control}
                     render={({ field: { onChange, value }, fieldState: { error } }) => {
-                        const safeValue = value ?? 0;
-                        const displayValue = convertFromMicroUnits(safeValue);
+                        const displayValue = convertFromMicroUnits(value ?? 0);
                         const handleChange = (val: number) => void onChange(convertToMicroUnits(val));
 
                         return (
@@ -133,7 +129,10 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
                                             'flex-1 items-center py-2 rounded-lg border',
                                             isSelected ? 'bg-primary border-primary' : 'bg-secondary-background border-secondary-corner'
                                         );
-                                        const optionTextClassName = cn('text-xs', isSelected ? 'text-primary-reverse' : 'text-secondary-foreground');
+                                        const optionTextClassName = cn(
+                                            'text-xs',
+                                            isSelected ? 'text-primary-reverse' : 'text-secondary-foreground'
+                                        );
 
                                         return (
                                             <HapticPressable key={option.value} onPress={handlePress} className={optionClassName}>
@@ -142,7 +141,7 @@ export const AllocationFormFields = ({ control, setValue, currencySymbol, defaul
                                         );
                                     })}
                                 </View>
-                                {selectedOption !== undefined && (
+                                {isDefined(selectedOption) && (
                                     <Text className="text-xs text-secondary-foreground">{i18n.t(selectedOption.hint)}</Text>
                                 )}
                             </View>

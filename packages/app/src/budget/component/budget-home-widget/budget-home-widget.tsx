@@ -1,11 +1,9 @@
-/* eslint-disable lingui/no-unlocalized-strings, lingui/no-expression-in-message, max-lines-per-function, max-statements, no-plusplus, @rnw-community/no-complex-jsx-logic, @typescript-eslint/no-unnecessary-type-assertion */
-import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+/* eslint-disable lingui/no-unlocalized-strings, lingui/no-expression-in-message, max-lines-per-function, @rnw-community/no-complex-jsx-logic */
+import { BudgetEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -15,25 +13,14 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useAllCategoriesQuery } from '../../../category/query/use-all-categories.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { MS_PER_DAY } from '../../constant/ms-per-day.constant';
-import { useGetBudgetActualSpendingQuery } from '../../query/use-get-budget-actual-spending.query';
+import { useBudgetStats } from '../../hook/use-budget-stats.hook';
+import { useCategoryStats } from '../../hook/use-category-stats.hook';
 import { useGetBudgetAllocationsQuery } from '../../query/use-get-budget-allocations.query';
-import { useGetBudgetIncomeQuery } from '../../query/use-get-budget-income.query';
-import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
 import { budgetService } from '../../service/budget.service';
-import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../util/calculate-effective-planned-amount.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
     readonly budget: BudgetEntityInterface;
-}
-
-interface TopCategory {
-    readonly name: string;
-    readonly icon: UserIconNameEnum;
-    readonly spent: number;
-    readonly planned: number;
-    readonly isOverBudget: boolean;
 }
 
 export const BudgetHomeWidget = ({ budget }: Props) => {
@@ -46,91 +33,15 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
 
     const currencySymbol = instrument?.symbol ?? '';
 
-    const categoryIds = useMemo(
-        () => allocations.map(al => al.categoryId).filter((id): id is number => isDefined(id)),
-        [allocations]
+    const { totalSpent, totalIncome, totalPlanned, remaining, spendingByCategory, periodInfo } = useBudgetStats(budget, allocations);
+    const { categoryStats, categoriesOverBudget } = useCategoryStats(allocations, categories, spendingByCategory, totalIncome);
+
+    const topCategories = useMemo(
+        () => [...categoryStats].sort((first, second) => second.spent - first.spent).slice(0, 3),
+        [categoryStats]
     );
-
-    const periodDates = useMemo(() => {
-        const now = new Date();
-        const { startDay } = budget;
-        const year = now.getFullYear();
-        const month = now.getMonth();
-
-        let startDate = new Date(year, month, startDay);
-        if (startDate > now) {
-            startDate = new Date(year, month - 1, startDay);
-        }
-
-        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, startDay);
-
-        return { startDate, endDate };
-    }, [budget.startDay]);
-
-    const { totalSpent } = useGetBudgetActualSpendingQuery({
-        categoryIds,
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
-
-    const { totalIncome } = useGetBudgetIncomeQuery({
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
-
-    const { spendingByCategory } = useGetSpendingByCategoryQuery({
-        categoryIds,
-        startDate: periodDates.startDate,
-        endDate: periodDates.endDate
-    });
-
-    const periodInfo = useMemo(() => {
-        const now = Date.now();
-        const startTime = periodDates.startDate.getTime();
-        const endTime = periodDates.endDate.getTime();
-        const daysElapsed = Math.floor((now - startTime) / MS_PER_DAY);
-        const totalDays = Math.floor((endTime - startTime) / MS_PER_DAY);
-        const daysRemaining = Math.max(0, totalDays - daysElapsed);
-
-        return { daysElapsed, totalDays, daysRemaining };
-    }, [periodDates]);
-
-    const totalPlanned = useMemo(
-        () => calculateTotalPlannedAmount(allocations, totalIncome),
-        [allocations, totalIncome]
-    );
-
-    const { categoriesOverBudget, topCategories } = useMemo(() => {
-        let overBudgetCount = 0;
-        const categoryStats: TopCategory[] = [];
-
-        for (const allocation of allocations) {
-            const category = categories.find(cat => cat.id === allocation.categoryId);
-            const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
-            const spent = spending?.total ?? 0;
-            const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
-            const isOver = spent > planned;
-
-            if (isOver) {
-                overBudgetCount++;
-            }
-
-            categoryStats.push({
-                name: category?.title ?? '-',
-                icon: (category?.icon ?? UserIconNameEnum.Wallet) as UserIconNameEnum,
-                spent,
-                planned,
-                isOverBudget: isOver
-            });
-        }
-
-        const sorted = categoryStats.sort((first, second) => second.spent - first.spent).slice(0, 3);
-
-        return { categoriesOverBudget: overBudgetCount, topCategories: sorted };
-    }, [allocations, spendingByCategory, categories, totalIncome]);
 
     const totalActual = totalSpent;
-    const remaining = totalPlanned - totalActual;
     const isPositive = remaining >= 0;
 
     const safeToSpend = budgetService.calculateSafeToSpend(
