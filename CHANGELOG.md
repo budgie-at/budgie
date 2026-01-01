@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.98.0](https://github.com/budgie-at/budgie/compare/v1.97.1...v1.98.0) (2026-01-01)
+
+### Features
+
+- **app:** add missing translations for import/export database feature ([#158](https://github.com/budgie-at/budgie/issues/158)) ([536c4c2](https://github.com/budgie-at/budgie/commit/536c4c21d00e09b4f49ec2067195912d8c772785))
+- **app:** import/export db file ([4f06a61](https://github.com/budgie-at/budgie/commit/4f06a61787152366bb3bebe1d65e0666302a4c04))
+- **app:** import/export db file ([61d74af](https://github.com/budgie-at/budgie/commit/61d74afe666b5f272ce22fc8d8384246f4060769))
+- **app:** import/export db file ([07c5c39](https://github.com/budgie-at/budgie/commit/07c5c39a899569a88379463b7f074570ab149f9e))
+- **app:** import/export db file ([48aa268](https://github.com/budgie-at/budgie/commit/48aa2687ee3f7ae26ff77f4f4bbf7a178ea4bef1))
+- **app:** import/export db file ([22cb71c](https://github.com/budgie-at/budgie/commit/22cb71ccf2d942487fdf288d4c2778374594212b))
+
 ## [1.97.1](https://github.com/budgie-at/budgie/compare/v1.97.0...v1.97.1) (2026-01-01)
 
 ### Bug Fixes
