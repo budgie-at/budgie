@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum, BankSyncStatusEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -16,6 +16,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { useAccountBankSync } from '../../../sync/hook/use-account-bank-sync.hook';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { getDeadlinePriority } from '../../util/get-deadline-priority.util';
@@ -47,6 +48,16 @@ const progressVariants = cva('absolute bottom-0 left-0 h-1', {
     }
 });
 
+const syncStatusVariants = cva('absolute bottom-3 right-3 size-2 rounded-full', {
+    variants: {
+        status: {
+            [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
+            [BankSyncStatusEnum.IDLE]: 'bg-green-500',
+            [BankSyncStatusEnum.FAILED]: 'bg-destructive'
+        }
+    }
+});
+
 export const AccountCard = (props: Props) => {
     const { id, title, type, icon, debtType, targetBalance, deadline, className, instrumentSymbol, createdAt } = props;
 
@@ -57,11 +68,13 @@ export const AccountCard = (props: Props) => {
     const { formatCompactFullDate } = useFormatDate();
 
     const { balance } = useAccountBalanceQuery(id);
+    const { bankSync } = useAccountBankSync(id);
 
     const navigateToAccount = () => void router.push(`/account/${id}/details`);
     const navigateToEditAccount = () => void router.push(`/account/${id}/update`);
 
     const isDebtAccount = type === AccountTypeEnum.DEBT;
+    const isBankSyncAccount = type === AccountTypeEnum.BANK_SYNC;
 
     const circleVariant = isDebtAccount ? ACCOUNT_DEBT_TYPE_COLOR[debtType] : 'ghost';
 
@@ -108,6 +121,8 @@ export const AccountCard = (props: Props) => {
             </View>
 
             {isDebtAccount ? <View className={progressVariants({ debtType })} style={progressStyle} /> : null}
+
+            {isBankSyncAccount && isDefined(bankSync) ? <View className={syncStatusVariants({ status: bankSync.status })} /> : null}
         </Card>
     );
 };
