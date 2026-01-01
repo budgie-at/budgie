@@ -1,3 +1,4 @@
+// jscpd:ignore-start
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,6 +9,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+// jscpd:ignore-end
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
