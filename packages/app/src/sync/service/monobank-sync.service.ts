@@ -45,14 +45,14 @@ class AppMonobankSyncService {
         const existingSyncs = await bankSyncRepository.getByProvider(this.provider);
         const syncedAccountIds = new Set(existingSyncs.map(sync => sync.accountId));
 
-        return bankAccounts.map(ba => {
-            const existingAccount = existingMap.get(ba.id);
+        return bankAccounts.map(bankAccount => {
+            const existingAccount = existingMap.get(bankAccount.id);
 
             return {
-                externalId: ba.id,
-                title: generateBankAccountTitle(ba),
-                currencyCode: ba.currencyCode,
-                iban: ba.iban ?? null,
+                externalId: bankAccount.id,
+                title: generateBankAccountTitle(bankAccount),
+                currencyCode: bankAccount.currencyCode,
+                iban: bankAccount.iban ?? null,
                 existingAccountId: existingAccount?.id ?? null,
                 hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id)
             };
