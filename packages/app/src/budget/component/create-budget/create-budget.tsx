@@ -1,13 +1,15 @@
-/* eslint-disable @rnw-community/no-complex-jsx-logic */
+/* eslint-disable @rnw-community/no-complex-jsx-logic, max-lines-per-function */
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
+import { DateInput } from '../../../@generic/component/date-input/date-input';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
@@ -30,6 +32,7 @@ export const CreateBudget = () => {
     });
 
     const period = useWatch({ control, name: 'period', defaultValue: BudgetPeriodEnum.MONTHLY });
+    const isCustomPeriod = period === BudgetPeriodEnum.CUSTOM;
 
     const getStartDayLabel = () => {
         if (period === BudgetPeriodEnum.WEEKLY || period === BudgetPeriodEnum.BI_WEEKLY) {
@@ -93,15 +96,43 @@ export const CreateBudget = () => {
                         )}
                     />
 
-                    <Controller
-                        name="startDay"
-                        control={control}
-                        render={({ field: { onChange, value }, fieldState: { error } }) => (
-                            <FormItem label={getStartDayLabel()} error={error?.message}>
-                                <BudgetStartDaySelector period={period} value={value} onSelect={onChange} />
-                            </FormItem>
-                        )}
-                    />
+                    {isCustomPeriod ? (
+                        <View className="flex-row gap-3">
+                            <View className="flex-1">
+                                <Controller
+                                    name="customStartDate"
+                                    control={control}
+                                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                        <FormItem label={t`Start Date`} error={error?.message}>
+                                            <DateInput value={value} onChange={onChange} placeholder={t`Start`} />
+                                        </FormItem>
+                                    )}
+                                />
+                            </View>
+
+                            <View className="flex-1">
+                                <Controller
+                                    name="customEndDate"
+                                    control={control}
+                                    render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                        <FormItem label={t`End Date`} error={error?.message}>
+                                            <DateInput value={value} onChange={onChange} placeholder={t`End`} />
+                                        </FormItem>
+                                    )}
+                                />
+                            </View>
+                        </View>
+                    ) : (
+                        <Controller
+                            name="startDay"
+                            control={control}
+                            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                <FormItem label={getStartDayLabel()} error={error?.message}>
+                                    <BudgetStartDaySelector period={period} value={value} onSelect={onChange} />
+                                </FormItem>
+                            )}
+                        />
+                    )}
 
                     <CreateAccountCurrencyField control={control} />
                 </FormLayoutGroup>

@@ -1,3 +1,4 @@
+/* eslint-disable @rnw-community/no-complex-jsx-logic */
 import { View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';

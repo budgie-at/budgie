@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-unlocalized-strings */
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -17,7 +18,8 @@ const PERIOD_OPTIONS = [
     { value: BudgetPeriodEnum.BI_WEEKLY, label: msg`Bi-weekly` },
     { value: BudgetPeriodEnum.MONTHLY, label: msg`Monthly` },
     { value: BudgetPeriodEnum.QUARTERLY, label: msg`Quarterly` },
-    { value: BudgetPeriodEnum.YEARLY, label: msg`Yearly` }
+    { value: BudgetPeriodEnum.YEARLY, label: msg`Yearly` },
+    { value: BudgetPeriodEnum.CUSTOM, label: msg`Custom` }
 ];
 
 export const BudgetPeriodSelector = ({ value, onSelect }: Props) => {

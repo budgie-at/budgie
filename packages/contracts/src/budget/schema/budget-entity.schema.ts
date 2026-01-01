@@ -14,6 +14,8 @@ export const BudgetEntitySchema = createSelectSchema(BudgetEntityTable, {
     period: zodEnum(BudgetPeriodEnum).describe('The budget period type.'),
     status: zodEnum(BudgetStatusEnum).describe('The budget status.'),
     startDay: schema => schema.min(1).max(31).describe('The start day of the budget period.'),
+    customStartDate: schema => schema.nullable().describe('Custom start date for CUSTOM period budgets.'),
+    customEndDate: schema => schema.nullable().describe('Custom end date for CUSTOM period budgets.'),
     instrumentId: schema => schema.positive().describe('The id of the budget currency instrument.'),
     isTemplate: schema => schema.describe('Indicates if the budget is a template.'),
     excludeTransfers: schema => schema.describe('Indicates if transfers are excluded from budget calculations.'),
