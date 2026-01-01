@@ -458,7 +458,7 @@ msgstr "Impossible de mettre à jour la transaction."
 
 #: src/export/components/export-database/export-database.tsx:14
 msgid "Create a backup of all your data"
-msgstr ""
+msgstr "Créer une sauvegarde de toutes vos données"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
@@ -745,7 +745,7 @@ msgstr "Exporter CSV"
 
 #: src/export/components/export-database/export-database.tsx:13
 msgid "Export Database"
-msgstr ""
+msgstr "Exporter la base de données"
 
 #: src/export/hook/use-export-action.hook.ts:16
 msgid "Export Failed"
@@ -860,7 +860,7 @@ msgstr "Importer CSV"
 #: src/import/components/import-database/import-database.tsx:68
 #: src/import/components/import-database/import-database.tsx:71
 msgid "Import Database"
-msgstr ""
+msgstr "Importer la base de données"
 
 #: src/app/(main)/settings/import.tsx:145
 msgid "Import Failed"
@@ -872,7 +872,7 @@ msgstr "Importer des transactions depuis un fichier CSV"
 
 #: src/import/components/import-database/import-database.tsx:67
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
-msgstr ""
+msgstr "L'importation d'une base de données remplacera toutes les données actuelles. L'application redémarrera après l'importation. Cette action ne peut pas être annulée."
 
 #: src/app/(main)/settings/inactive.tsx:20
 #: src/app/(main)/settings/index.tsx:110
@@ -1209,7 +1209,7 @@ msgstr "Restaurer le compte ?"
 
 #: src/import/components/import-database/import-database.tsx:56
 msgid "Restore from a backup file"
-msgstr ""
+msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
