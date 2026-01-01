@@ -22,7 +22,7 @@ export const CreateDebtAccount = () => {
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
-    const { control, handleSubmit, instrument } = useDebtAccountForm(
+    const { control, handleSubmit, instrument, setValue, watch } = useDebtAccountForm(
         {
             iban: '',
             title: '',
@@ -38,6 +38,12 @@ export const CreateDebtAccount = () => {
         async values => await accountService.createDebt(values)
     );
 
+    const instrumentId = watch('instrumentId');
+
+    const handleInstrumentChange = (newInstrumentId: number) => {
+        setValue('instrumentId', newInstrumentId);
+    };
+
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
     }
@@ -47,8 +53,10 @@ export const CreateDebtAccount = () => {
             control={control}
             variant={ACCOUNT_COLOR.DEBT}
             instrumentSymbol={instrument.symbol}
+            instrumentId={instrumentId}
             title={t`Debt Account`}
             onSubmit={handleSubmit}
+            onInstrumentChange={handleInstrumentChange}
         >
             <FormLayoutGroup>
                 <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />

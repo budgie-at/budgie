@@ -3,7 +3,6 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -22,7 +21,7 @@ const DEFAULT_ICON = UserIconNameEnum.Home;
 export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();
 
-    const { control, handleSubmit, instrument } = useAccountForm(
+    const { control, handleSubmit, instrument, setValue, watch } = useAccountForm(
         {
             type,
             title: '',
@@ -33,6 +32,12 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         async values => accountService.create(values)
     );
 
+    const instrumentId = watch('instrumentId');
+
+    const handleInstrumentChange = (newInstrumentId: number) => {
+        setValue('instrumentId', newInstrumentId);
+    };
+
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
     }
@@ -40,10 +45,17 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const variant = ACCOUNT_COLOR[type];
 
     return (
-        <CreateAccountScreen title={title} control={control} variant={variant} instrumentSymbol={instrument.symbol} onSubmit={handleSubmit}>
+        <CreateAccountScreen
+            title={title}
+            control={control}
+            variant={variant}
+            instrumentSymbol={instrument.symbol}
+            instrumentId={instrumentId}
+            onSubmit={handleSubmit}
+            onInstrumentChange={handleInstrumentChange}
+        >
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
-                <CreateAccountCurrencyField control={control} />
             </FormLayoutGroup>
         </CreateAccountScreen>
     );
