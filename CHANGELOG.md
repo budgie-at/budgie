@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.100.2](https://github.com/budgie-at/budgie/compare/v1.100.1...v1.100.2) (2026-01-01)
+
+### Bug Fixes
+
+- **app:** update category form to support editing ([#161](https://github.com/budgie-at/budgie/issues/161)) ([3b92926](https://github.com/budgie-at/budgie/commit/3b92926cb8314ace96e6a8e9bff75bfae0ef439a))
+
 ## [1.100.1](https://github.com/budgie-at/budgie/compare/v1.100.0...v1.100.1) (2026-01-01)
 
 ### Bug Fixes
