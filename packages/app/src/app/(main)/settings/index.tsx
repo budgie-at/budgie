@@ -33,6 +33,7 @@ export default function SettingsPage() {
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
+    const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const navigateToTags = () => void router.push('/settings/tags');
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -100,6 +101,13 @@ export default function SettingsPage() {
                             title={t`Archived Accounts`}
                             description={t`View and restore archived accounts`}
                             icon="Archive"
+                            variant="dark-warning"
+                        />
+                        <SettingsCard
+                            onPress={handleNavigateToInactive}
+                            title={t`Inactive Accounts`}
+                            description={t`View and activate hidden accounts`}
+                            icon="EyeOff"
                             variant="dark-warning"
                         />
                     </SettingsGroup>
