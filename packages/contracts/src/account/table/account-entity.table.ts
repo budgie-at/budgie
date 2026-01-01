@@ -40,6 +40,7 @@ export const AccountEntityTable = sqliteTable(
         targetBalance: int('target_balance', { mode: 'number' }).default(0).notNull(),
         externalSource: text('external_source', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) }).$type<ExternalSourceEnum>(),
         iban: text('iban'),
-        includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull()
+        includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),
+        isActive: int('is_active', { mode: 'boolean' }).default(true).notNull()
     })
 );
