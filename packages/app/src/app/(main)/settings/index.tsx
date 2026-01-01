@@ -10,7 +10,9 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
+import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
+import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -126,6 +128,8 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Data management`}>
                         <ImportCsv />
                         <ExportCsv />
+                        <ImportDatabase />
+                        <ExportDatabase />
                         <RecalculateBalances />
                         <TruncateData />
                     </SettingsGroup>
