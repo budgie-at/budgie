@@ -1,9 +1,8 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
 import { useLingui } from '@lingui/react/macro';
 
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
 import { appService } from '../../../@generic/service/app.service';
-import { bankSyncStorageService } from '../../../sync/service/bank-sync-storage.service';
 import { useConfirmAction } from '../../hook/use-confirm-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
 
@@ -12,7 +11,7 @@ export const TruncateData = () => {
 
     const handleTruncate = async () => {
         await appService.truncateData();
-        bankSyncStorageService.truncate(BankProviderEnum.MONOBANK);
+        await bankSyncRepository.truncate();
     };
 
     const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleTruncate);

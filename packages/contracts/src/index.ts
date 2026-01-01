@@ -48,6 +48,23 @@ export type { AccountBalanceUpdateEntityInterface } from './account-balance/enti
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
+export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
+export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
+export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';
+
+export { BankSyncEntityTable } from './bank-sync/table/bank-sync-entity.table';
+export { BankSyncEntityRelations } from './bank-sync/relations/bank-sync-entity.relations';
+
+export { BankSyncEntitySchema } from './bank-sync/schema/bank-sync-entity.schema';
+export { BankSyncCreateEntitySchema } from './bank-sync/schema/bank-sync-create-entity.schema';
+export { BankSyncUpdateEntitySchema } from './bank-sync/schema/bank-sync-update-entity.schema';
+
+export type { BankSyncEntityInterface } from './bank-sync/entity/bank-sync-entity.interface';
+export type { BankSyncCreateEntityInterface } from './bank-sync/entity/bank-sync-create-entity.interface';
+export type { BankSyncUpdateEntityInterface } from './bank-sync/entity/bank-sync-update-entity.interface';
+
+export { BankSyncRepository } from './bank-sync/repository/bank-sync.repository';
+
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
