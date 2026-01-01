@@ -13,13 +13,6 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class BudgetInstanceRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    findByBudgetId(budgetId: number) {
-        return this.db.query.BudgetInstanceEntityTable.findMany({
-            where: eq(BudgetInstanceEntityTable.budgetId, budgetId),
-            orderBy: (table, { desc }) => [desc(table.startDate)]
-        });
-    }
-
     findCurrentByBudgetId(budgetId: number) {
         const now = new Date();
 
@@ -29,40 +22,6 @@ export class BudgetInstanceRepository {
                 lte(BudgetInstanceEntityTable.startDate, now),
                 gte(BudgetInstanceEntityTable.endDate, now)
             )
-        });
-    }
-
-    findOpenByBudgetId(budgetId: number) {
-        return this.db.query.BudgetInstanceEntityTable.findMany({
-            where: and(
-                eq(BudgetInstanceEntityTable.budgetId, budgetId),
-                eq(BudgetInstanceEntityTable.status, BudgetInstanceStatusEnum.OPEN)
-            )
-        });
-    }
-
-    findById(id: number) {
-        return this.db.query.BudgetInstanceEntityTable.findFirst({
-            where: eq(BudgetInstanceEntityTable.id, id)
-        });
-    }
-
-    findByIdWithRelations(id: number) {
-        return this.db.query.BudgetInstanceEntityTable.findFirst({
-            where: eq(BudgetInstanceEntityTable.id, id),
-            with: {
-                budget: {
-                    with: {
-                        instrument: true
-                    }
-                },
-                allocationInstances: {
-                    with: {
-                        category: true,
-                        budgetAllocation: true
-                    }
-                }
-            }
         });
     }
 
@@ -86,9 +45,6 @@ export class BudgetInstanceRepository {
         return this.updateById(id, { status: BudgetInstanceStatusEnum.CLOSED });
     }
 
-    async deleteById(id: number): Promise<void> {
-        await this.db.delete(BudgetInstanceEntityTable).where(eq(BudgetInstanceEntityTable.id, id));
-    }
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetInstanceEntityTable);

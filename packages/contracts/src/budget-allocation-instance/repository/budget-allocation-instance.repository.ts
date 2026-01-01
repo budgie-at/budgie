@@ -34,12 +34,6 @@ export class BudgetAllocationInstanceRepository {
         });
     }
 
-    async create(input: BudgetAllocationInstanceCreateEntityInterface, tx?: TX): Promise<BudgetAllocationInstanceEntityInterface> {
-        const [instance] = await (tx ?? this.db).insert(BudgetAllocationInstanceEntityTable).values(input).returning();
-
-        return instance;
-    }
-
     async bulkCreate(
         inputs: BudgetAllocationInstanceCreateEntityInterface[],
         tx?: TX
@@ -70,15 +64,6 @@ export class BudgetAllocationInstanceRepository {
         return this.updateById(id, { adjustment: current.adjustment + adjustmentDelta });
     }
 
-    async deleteById(id: number): Promise<void> {
-        await this.db.delete(BudgetAllocationInstanceEntityTable).where(eq(BudgetAllocationInstanceEntityTable.id, id));
-    }
-
-    async deleteByBudgetInstanceId(budgetInstanceId: number): Promise<void> {
-        await this.db
-            .delete(BudgetAllocationInstanceEntityTable)
-            .where(eq(BudgetAllocationInstanceEntityTable.budgetInstanceId, budgetInstanceId));
-    }
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetAllocationInstanceEntityTable);

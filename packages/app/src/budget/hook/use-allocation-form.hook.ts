@@ -3,9 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
+import { budgetAllocationRepository } from '../../@generic/drizzle/db/db';
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { AllocationFormSchema, AllocationFormValues } from '../schema/allocation-form.schema';
-import { budgetService } from '../service/budget.service';
 
 const DEFAULT_VALUES: AllocationFormValues = {
     categoryId: null,
@@ -30,23 +30,16 @@ export const useAllocationForm = (budgetId: number, defaultValues: Partial<Alloc
 
     const handleSubmit = async (values: AllocationFormValues) => {
         try {
-            console.log('Submitting allocation:', { budgetId, values });
-            const result = await budgetService.addAllocation(budgetId, values);
-            console.log('Allocation created:', result);
+            await budgetAllocationRepository.create({ ...values, budgetId });
 
             router.back();
         } catch (error: unknown) {
-            console.error('Allocation error:', error);
             showError(error);
         }
     };
 
-    const onError = (errors: Record<string, unknown>) => {
-        console.log('Form validation errors:', errors);
-    };
-
     return {
         ...form,
-        handleSubmit: form.handleSubmit(handleSubmit, onError)
+        handleSubmit: form.handleSubmit(handleSubmit)
     };
 };
