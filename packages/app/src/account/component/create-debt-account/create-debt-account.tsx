@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
+import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -52,6 +53,8 @@ export const CreateDebtAccount = () => {
         >
             <FormLayoutGroup>
                 <AccountDetailsField variant={ACCOUNT_COLOR.DEBT} control={control} />
+
+                <CreateAccountCurrencyField control={control} />
 
                 <AccountTargetBalanceField control={control} />
 
