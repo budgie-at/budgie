@@ -1,4 +1,5 @@
 import { i18n } from '@lingui/core';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
@@ -84,29 +85,30 @@ const getVariant = (llm: LlmType, isGenerating: boolean, isRecording: boolean): 
     return 'default';
 };
 
-const getLabel = (llm: LlmType, variant: RecordButtonVariant): string => {
+const getLabel = (llm: LlmType, variant: RecordButtonVariant, t: ReturnType<typeof useLingui>['t']): string => {
     if (variant === 'loading') {
         const progress = Math.round(llm.downloadProgress * 100);
 
-        return i18n._(`Loading AI... ${progress}%`);
+        return t`Loading AI... ${progress}%`;
     }
 
     if (variant === 'processing') {
-        return i18n._(`Processing...`);
+        return t`Processing...`;
     }
 
     if (variant === 'recording') {
-        return i18n._(`Recording...`);
+        return t`Recording...`;
     }
 
-    return i18n._(`Tap to speak`);
+    return t`Tap to speak`;
 };
 
 export const RecordButton = (props: Props) => {
     const { size = 'lg', isRecording, isGenerating, llm, className, labelClassName, ...rest } = props;
 
+    const { t } = useLingui();
     const variant = getVariant(llm, isGenerating, isRecording);
-    const label = getLabel(llm, variant);
+    const label = getLabel(llm, variant, t);
     const isDisabled = ['processing', 'loading'].includes(variant);
 
     return (
