@@ -25,4 +25,13 @@ export {
     MccGroupEntityRelations,
     MccCategoryEntityTable,
     MccCategoryEntityRelations
+    SettingsEntityRelations,
+    BudgetEntityTable,
+    BudgetEntityRelations,
+    BudgetAllocationEntityTable,
+    BudgetAllocationEntityRelations,
+    BudgetInstanceEntityTable,
+    BudgetInstanceEntityRelations,
+    BudgetAllocationInstanceEntityTable,
+    BudgetAllocationInstanceEntityRelations
 } from '@budgie/contracts';

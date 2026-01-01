@@ -15,9 +15,13 @@ import { AccountList } from '../../account/component/account-list/account-list';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
+import { BudgetEmptyState } from '../../budget/component/budget-empty-state/budget-empty-state';
+import { BudgetHomeWidget } from '../../budget/component/budget-home-widget/budget-home-widget';
+import { useGetActiveBudgetsQuery } from '../../budget/query/use-get-active-budgets.query';
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
+    const { budgets } = useGetActiveBudgetsQuery();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -25,6 +29,7 @@ export default function HomePage() {
     const navigateToSettings = () => void router.push('/settings');
 
     const accountEntries = typedObjectEntries(accountsGrouped);
+    const activeBudget = isNotEmptyArray(budgets) ? budgets[0] : null;
 
     return (
         <Page>
@@ -42,6 +47,8 @@ export default function HomePage() {
                 ) : (
                     <AccountsEmptyState />
                 )}
+
+                {activeBudget ? <BudgetHomeWidget budget={activeBudget} /> : <BudgetEmptyState />}
             </ScrollView>
         </Page>
     );
