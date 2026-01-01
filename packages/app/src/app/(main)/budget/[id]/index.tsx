@@ -1,8 +1,6 @@
-/* eslint-disable max-lines-per-function, lingui/no-unlocalized-strings, react/jsx-max-depth */
 import { BudgetAllocationEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
-import { useCallback } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -44,16 +42,11 @@ export default function BudgetDetails() {
     const { categoryStats, categoriesOverBudget } = useCategoryStats(allocations, categories, spendingByCategory, totalIncome);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    const handleAddAllocation = useCallback(() => {
-        router.push(`/budget/${id}/add-allocation`);
-    }, [id]);
-    const handleEditAllocation = useCallback(
-        (allocation: BudgetAllocationEntityInterface) => {
-            router.push(`/budget/${id}/allocation/${allocation.id}`);
-        },
-        [id]
-    );
 
+    const handleAddAllocation = () => void router.push(`/budget/${id}/add-allocation`);
+
+    const handleEditAllocation = (allocation: BudgetAllocationEntityInterface) =>
+        void router.push(`/budget/${id}/allocation/${allocation.id}`);
 
     if (isLoading) {
         return <EmptyScreen />;

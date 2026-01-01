@@ -35,10 +35,7 @@ export class BudgetRepository {
     }
 
     async deactivateAllExcept(budgetId: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db)
-            .update(BudgetEntityTable)
-            .set({ status: BudgetStatusEnum.DRAFT, updatedAt: new Date() })
-            .where(ne(BudgetEntityTable.id, budgetId));
+        await (tx ?? this.db).update(BudgetEntityTable).set({ status: BudgetStatusEnum.DRAFT }).where(ne(BudgetEntityTable.id, budgetId));
     }
 
     async activate(id: number, tx?: TX): Promise<BudgetEntityInterface> {
@@ -46,7 +43,7 @@ export class BudgetRepository {
 
         const [budget] = await (tx ?? this.db)
             .update(BudgetEntityTable)
-            .set({ status: BudgetStatusEnum.ACTIVE, updatedAt: new Date() })
+            .set({ status: BudgetStatusEnum.ACTIVE })
             .where(eq(BudgetEntityTable.id, id))
             .returning();
 
@@ -57,4 +54,3 @@ export class BudgetRepository {
         await (tx ?? this.db).delete(BudgetEntityTable);
     }
 }
-
