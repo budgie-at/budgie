@@ -9,9 +9,8 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
+import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token-section';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
-
-import { BankSyncTokenSection } from './bank-sync-token-section';
 
 interface Props {
     readonly accountId: number;
@@ -90,7 +89,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                                 <Text className="text-primary text-xs text-muted-foreground">
                                     <Trans>Last error</Trans>
                                 </Text>
-                                <Text className="text-destructive text-xs" numberOfLines={2}>
+                                <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
                                     {bankSync.lastError}
                                 </Text>
                             </View>
