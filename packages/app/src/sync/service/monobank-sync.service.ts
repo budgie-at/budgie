@@ -231,20 +231,37 @@ class AppMonobankSyncService {
 
     private async updateSyncProgress(sync: BankSyncEntityInterface, result: BankSyncBatchResultInterface): Promise<void> {
         const now = new Date();
-        const isBackward = sync.mode === BankSyncModeEnum.BACKWARD;
-        const txCount = sync.transactionCount + result.transactions.length;
-        const baseUpdate = { transactionCount: txCount, errorCount: 0, lastError: null };
+        const baseUpdate = { transactionCount: sync.transactionCount + result.transactions.length, errorCount: 0, lastError: null };
 
         if (result.completed) {
+            if (sync.mode === BankSyncModeEnum.FORWARD) {
+                await bankSyncRepository.update(sync.id, {
+                    ...baseUpdate,
+                    status: BankSyncStatusEnum.IDLE,
+                    forwardSyncedAt: now,
+                    forwardSyncFromAt: now
+                });
+            } else {
+                await bankSyncRepository.update(sync.id, {
+                    ...baseUpdate,
+                    mode: BankSyncModeEnum.FORWARD,
+                    status: BankSyncStatusEnum.IDLE,
+                    backwardSyncedAt: result.nextTo,
+                    backwardSyncFromAt: result.nextFrom
+                });
+            }
+        } else if (sync.mode === BankSyncModeEnum.BACKWARD) {
             await bankSyncRepository.update(sync.id, {
                 ...baseUpdate,
-                mode: BankSyncModeEnum.FORWARD,
-                status: BankSyncStatusEnum.IDLE,
-                ...(isBackward ? { backwardSyncedAt: result.nextTo } : { forwardSyncedAt: now, forwardSyncFromAt: now })
+                backwardSyncedAt: result.nextTo,
+                backwardSyncFromAt: result.nextFrom
             });
         } else {
-            const cursor = isBackward ? { backwardSyncedAt: result.nextTo } : { forwardSyncFromAt: result.nextFrom };
-            await bankSyncRepository.update(sync.id, { ...baseUpdate, ...cursor });
+            await bankSyncRepository.update(sync.id, {
+                ...baseUpdate,
+                forwardSyncedAt: result.nextTo,
+                forwardSyncFromAt: result.nextFrom
+            });
         }
     }
 
