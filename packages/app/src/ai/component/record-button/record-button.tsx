@@ -1,4 +1,3 @@
-import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
