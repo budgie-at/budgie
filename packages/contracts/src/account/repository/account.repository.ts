@@ -1,6 +1,6 @@
-import { and, count, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, ne, notInArray, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
@@ -44,16 +44,36 @@ export class AccountRepository {
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
-        const { excludeTypes } = filter;
+        const { excludeTypes, excludeAccountId } = filter;
 
         return this.db.query.AccountEntityTable.findMany({
             where: and(
                 isNull(AccountEntityTable.parentId),
                 isNull(AccountEntityTable.deletedAt),
                 sql`LOWER (${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
-                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`
+                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
+                isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
             ),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
+    findBySearchQuerySortedByBalance(search: string, filter: AccountFilterInterface = {}) {
+        const { excludeTypes, excludeAccountId } = filter;
+
+        return this.db.query.AccountEntityTable.findMany({
+            where: and(
+                isNull(AccountEntityTable.parentId),
+                isNull(AccountEntityTable.deletedAt),
+                sql`LOWER(${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
+                isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
+                isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
+            ),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true },
+            orderBy: [
+                desc(AccountEntityTable.isActive),
+                desc(sql`COALESCE((SELECT amount FROM account_balances WHERE account_id = ${AccountEntityTable.id}), 0)`)
+            ]
         });
     }
 
