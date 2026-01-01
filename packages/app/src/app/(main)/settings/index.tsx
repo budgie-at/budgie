@@ -30,6 +30,7 @@ export default function SettingsPage() {
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
+    console.log({ showCents });
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
@@ -37,6 +38,7 @@ export default function SettingsPage() {
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
+        console.log({ key, checked });
         await updateSettingsMutation({ [key]: checked });
     };
 
@@ -107,10 +109,10 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Appearance`}>
                         <ThemeSwitch />
                         <SettingsCard
-                            title={t`Hide Cents`}
+                            title={t`Show Cents`}
                             description={t`Show $1,234.56 instead of $1,235`}
                             icon="DollarSign"
-                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={!showCents} />}
+                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
                             variant="positive"
                         />
                     </SettingsGroup>
