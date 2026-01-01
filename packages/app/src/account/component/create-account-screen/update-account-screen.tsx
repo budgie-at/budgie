@@ -7,7 +7,7 @@ import {
 import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Control, FieldValues, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView, KeyboardStickyView } from 'react-native-keyboard-controller';

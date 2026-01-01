@@ -319,7 +319,7 @@ msgstr "Kategoriename"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
 msgid "Change Account Type"
-msgstr ""
+msgstr "Kontotyp ändern"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:79
 msgid "Change PIN"
@@ -517,7 +517,7 @@ msgstr "Krypto"
 
 #: src/account/constant/account-type-description.constant.ts:9
 msgid "Cryptocurrency holdings"
-msgstr ""
+msgstr "Kryptowährungsbestände"
 
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
@@ -916,7 +916,7 @@ msgstr "Geld, das Sie verdienen"
 
 #: src/account/constant/account-type-description.constant.ts:8
 msgid "Money you owe or are owed"
-msgstr ""
+msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Money you spend"
@@ -1102,7 +1102,7 @@ msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
 
 #: src/account/constant/account-type-description.constant.ts:7
 msgid "Physical cash on hand"
-msgstr ""
+msgstr "Physisches Bargeld"
 
 #: src/app/(main)/pin.tsx:53
 #: src/auth/hook/use-pin-setup.hook.tsx:115
@@ -1179,7 +1179,7 @@ msgstr "Sparkonto"
 
 #: src/account/constant/account-type-description.constant.ts:11
 msgid "Savings accounts"
-msgstr ""
+msgstr "Sparkonten"
 
 #: src/app/(main)/settings/index.tsx:64
 msgid "Screenshot Protection"
@@ -1297,7 +1297,7 @@ msgstr "Tags auswählen"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 msgid "Select the type of account"
-msgstr ""
+msgstr "Wählen Sie den Kontotyp"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:54
 msgid "Selected"
@@ -1367,7 +1367,7 @@ msgstr "Statistiken"
 
 #: src/account/constant/account-type-description.constant.ts:10
 msgid "Stock investments"
-msgstr ""
+msgstr "Aktieninvestitionen"
 
 #: src/account/constant/account-type.constant.ts:10
 msgid "Stocks"
@@ -1397,7 +1397,7 @@ msgstr "Synchronisieren Sie Ihre Monobank-Konten und Transaktionen"
 
 #: src/account/constant/account-type-description.constant.ts:12
 msgid "Synced bank accounts"
-msgstr ""
+msgstr "Synchronisierte Bankkonten"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx:73
 #: src/sync/component/account-sync-card/account-sync-card.tsx:80
@@ -1500,7 +1500,7 @@ msgstr "Touch ID"
 
 #: src/account/constant/account-type-description.constant.ts:6
 msgid "Traditional bank accounts"
-msgstr ""
+msgstr "Traditionelle Bankkonten"
 
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:63
 msgid "Transaction Type"
