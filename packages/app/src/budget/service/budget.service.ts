@@ -1,11 +1,9 @@
 import {
-    BudgetAllocationCreateEntityInterface,
     BudgetCreateEntityInterface,
     BudgetInstanceStatusEnum,
     BudgetPeriodEnum,
     BudgetRolloverRuleEnum,
-    BudgetStatusEnum,
-    BudgetUpdateEntityInterface
+    BudgetStatusEnum
 } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
@@ -26,34 +24,6 @@ const ONE_HOUR_IN_SECONDS = 3600;
 class BudgetService {
     async createBudget(input: BudgetCreateEntityInterface) {
         return budgetRepository.create({ ...input, status: BudgetStatusEnum.ACTIVE });
-    }
-
-    async updateBudget(id: number, input: BudgetUpdateEntityInterface) {
-        return budgetRepository.updateById(id, input);
-    }
-
-    async deleteBudget(id: number) {
-        return budgetRepository.deleteById(id);
-    }
-
-    async getBudgetById(id: number) {
-        return budgetRepository.findById(id);
-    }
-
-    async getActiveBudgets() {
-        return budgetRepository.findActive();
-    }
-
-    async getTemplates() {
-        return budgetRepository.findTemplates();
-    }
-
-    async activateBudget(id: number) {
-        return budgetRepository.activate(id);
-    }
-
-    async archiveBudget(id: number) {
-        return budgetRepository.archive(id);
     }
 
     async cloneBudget(sourceBudgetId: number, newTitle: string) {
@@ -96,22 +66,6 @@ class BudgetService {
         });
     }
 
-    async addAllocation(budgetId: number, input: Omit<BudgetAllocationCreateEntityInterface, 'budgetId'>) {
-        return budgetAllocationRepository.create({ ...input, budgetId });
-    }
-
-    async updateAllocation(id: number, input: Partial<BudgetAllocationCreateEntityInterface>) {
-        return budgetAllocationRepository.updateById(id, input);
-    }
-
-    async deleteAllocation(id: number) {
-        return budgetAllocationRepository.deleteById(id);
-    }
-
-    async getAllocations(budgetId: number) {
-        return budgetAllocationRepository.findByBudgetIdWithCategory(budgetId);
-    }
-
     async createBudgetInstance(budgetId: number, startDate: Date, endDate: Date) {
         const budget = await budgetRepository.findById(budgetId);
         if (!isDefined(budget)) {
@@ -144,18 +98,6 @@ class BudgetService {
         });
     }
 
-    async getCurrentInstance(budgetId: number) {
-        return budgetInstanceRepository.findCurrentByBudgetId(budgetId);
-    }
-
-    async getInstanceWithDetails(instanceId: number) {
-        return budgetInstanceRepository.findByIdWithRelations(instanceId);
-    }
-
-    async closeInstance(instanceId: number) {
-        return budgetInstanceRepository.close(instanceId);
-    }
-
     async moveEnvelopeFunds(fromAllocationInstanceId: number, toAllocationInstanceId: number, amount: number) {
         if (amount <= 0) {
             throw new Error('amount-must-be-positive');
@@ -163,10 +105,6 @@ class BudgetService {
 
         await budgetAllocationInstanceRepository.adjustAmount(fromAllocationInstanceId, -amount);
         await budgetAllocationInstanceRepository.adjustAmount(toAllocationInstanceId, amount);
-    }
-
-    async updateAllocationInstanceActual(allocationInstanceId: number, actualAmount: number) {
-        return budgetAllocationInstanceRepository.updateById(allocationInstanceId, { actual: actualAmount });
     }
 
     calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()): { startDate: Date; endDate: Date } {
