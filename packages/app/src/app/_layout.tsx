@@ -62,10 +62,8 @@ export default function RootLayout() {
                 await accountBalanceIncrementalService.updateAllBalances(false);
                 await accountBalanceIncrementalService.registerBackgroundTask();
 
-                if (await monobankSyncService.isEnabled()) {
-                    await monobankSyncService.sync();
-                    await monobankSyncService.registerBackgroundTask();
-                }
+                await monobankSyncService.sync();
+                await monobankSyncService.registerBackgroundTask();
 
                 // HINT: We need to time for db to return data
                 setTimeout(() => void SplashScreen.hideAsync(), 200);

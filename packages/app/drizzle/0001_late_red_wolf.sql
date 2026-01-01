@@ -15,7 +15,9 @@ CREATE TABLE `bank_syncs` (
 	`transaction_count` integer DEFAULT 0 NOT NULL,
 	`error_count` integer DEFAULT 0 NOT NULL,
 	`last_error` text,
+    `token` text NOT NULL DEFAULT '',
 	FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `bank_syncs_account_id_unique` ON `bank_syncs` (`account_id`);
+

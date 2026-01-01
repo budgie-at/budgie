@@ -64,6 +64,12 @@ export class BankSyncRepository {
         });
     }
 
+    findByAccountId(accountId: number) {
+        return this.db.query.BankSyncEntityTable.findFirst({
+            where: and(eq(BankSyncEntityTable.accountId, accountId), isNull(BankSyncEntityTable.deletedAt))
+        });
+    }
+
     async getByProvider(provider: ExternalSourceEnum): Promise<BankSyncEntityInterface[]> {
         return await this.db.query.BankSyncEntityTable.findMany({
             where: and(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt))

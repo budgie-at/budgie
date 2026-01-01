@@ -1,7 +1,6 @@
 import { BankSyncEntityInterface } from '@budgie/contracts';
 
 export interface BankSyncStatsInterface {
-    readonly enabled: boolean;
     readonly totalAccounts: number;
     readonly totalTransactions: number;
     readonly syncs: BankSyncEntityInterface[];
@@ -10,7 +9,6 @@ export interface BankSyncStatsInterface {
 }
 
 export const emptyBankSyncStats: BankSyncStatsInterface = {
-    enabled: false,
     status: 'idle',
     totalAccounts: 0,
     totalTransactions: 0,
