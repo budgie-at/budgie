@@ -31,6 +31,10 @@ export class AccountBalanceRepository {
         return await this.db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
+    getAllBalances() {
+        return this.db.select().from(AccountBalanceEntityTable);
+    }
+
     async getNewTransactionEntriesDeltas(accountIds: number[]): Promise<Map<number, number>> {
         const results = await this.db
             .select({
