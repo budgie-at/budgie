@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,7 +17,7 @@ export const FloatingAddButton = ({ accountId }: Props) => {
 
     const handleOpen = () => void ref.current?.open();
 
-    const style: ViewStyle = useMemo(() => ({ bottom: bottom + 24, right: 24 }), [bottom]);
+    const style: ViewStyle = { bottom: bottom + 24, right: 24 };
 
     return (
         <>
