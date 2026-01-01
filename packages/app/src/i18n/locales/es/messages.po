@@ -21,7 +21,7 @@ msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en lo
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:26
 msgid "{accountTitle} will be restored to your main view."
-msgstr ""
+msgstr "{accountTitle} se restaurará en tu vista principal."
 
 #: src/app/(main)/settings/archived.tsx:21
 msgid "{archivedAccountsCount} account"
@@ -37,7 +37,7 @@ msgstr "{iconsCount} iconos disponibles"
 
 #: src/app/(main)/settings/inactive.tsx:21
 msgid "{inactiveAccountsCount} account"
-msgstr ""
+msgstr "{inactiveAccountsCount} cuenta"
 
 #: src/app/(tabs)/analytics.tsx:35
 msgid "{percentage}% of expenses"
@@ -96,15 +96,15 @@ msgstr "Las cuentas que archives aparecerán aquí. No se incluirán en tus tota
 
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx:15
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
-msgstr ""
+msgstr "Las cuentas que marques como inactivas aparecerán aquí. No se mostrarán en la página principal."
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:24
 msgid "Activate"
-msgstr ""
+msgstr "Activar"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:25
 msgid "Activate Account?"
-msgstr ""
+msgstr "¿Activar cuenta?"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:20
 #: src/settings/components/security-settings/pin-enabled-card.tsx:53
@@ -425,7 +425,7 @@ msgstr "Continuar"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
-msgstr ""
+msgstr "No se pudo activar la cuenta."
 
 #: src/account/component/archive-account/archive-account.tsx:28
 msgid "Could not archive account. Please try again later"
@@ -858,7 +858,7 @@ msgstr "Importar transacciones desde un archivo CSV"
 #: src/app/(main)/settings/inactive.tsx:20
 #: src/app/(main)/settings/index.tsx:108
 msgid "Inactive Accounts"
-msgstr ""
+msgstr "Cuentas inactivas"
 
 #: src/app/(tabs)/analytics.tsx:59
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1028,7 +1028,7 @@ msgstr "No se encontraron iconos"
 
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx:12
 msgid "No inactive accounts"
-msgstr ""
+msgstr "No hay cuentas inactivas"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:30
 msgid "No languages found"
