@@ -1,7 +1,7 @@
 import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { BankSyncStatsInterface, emptyBankSyncStats } from '../interface/bank-sync-stats.interface';
@@ -13,7 +13,6 @@ export const useBankSyncState = (provider: ExternalSourceEnum): BankSyncStatsInt
         return emptyBankSyncStats;
     }
 
-    const enabledSyncs = data.filter(sync => sync.enabled);
     const totalTransactions = data.reduce((sum, sync) => sum + sync.transactionCount, 0);
     const hasSyncing = data.some(sync => sync.status === BankSyncStatusEnum.SYNCING);
     const hasFailed = data.some(sync => sync.status === BankSyncStatusEnum.FAILED);
@@ -21,7 +20,6 @@ export const useBankSyncState = (provider: ExternalSourceEnum): BankSyncStatsInt
     return {
         // eslint-disable-next-line no-nested-ternary
         status: hasSyncing ? 'loading' : hasFailed ? 'failed' : 'idle',
-        enabled: isNotEmptyArray(enabledSyncs),
         totalAccounts: data.length,
         totalTransactions,
         syncs: data,

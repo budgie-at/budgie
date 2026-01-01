@@ -17,6 +17,7 @@ export const BankSyncEntityTable = sqliteTable(
         provider: text('provider', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) })
             .$type<ExternalSourceEnum>()
             .notNull(),
+        token: text('token').notNull(),
         enabled: int('enabled', { mode: 'boolean' }).default(true).notNull(),
         mode: text('mode', { enum: convertEnumToDrizzleEnum(BankSyncModeEnum) })
             .$type<BankSyncModeEnum>()
