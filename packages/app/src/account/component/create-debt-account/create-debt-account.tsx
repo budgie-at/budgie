@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+// jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,6 +10,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+// jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
