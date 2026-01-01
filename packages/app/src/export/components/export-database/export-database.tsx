@@ -2,18 +2,18 @@ import { useLingui } from '@lingui/react/macro';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useExportAction } from '../../hook/use-export-action.hook';
-import { exporterService } from '../../service/exporter.service';
+import { databaseExportService } from '../../service/database-export.service';
 
-export const ExportCsv = () => {
+export const ExportDatabase = () => {
     const { t } = useLingui();
-    const { isLoading, handleExport } = useExportAction(() => exporterService.saveAndShare());
+    const { isLoading, handleExport } = useExportAction(() => databaseExportService.exportAndShare());
 
     return (
         <SettingsCard
-            title={t`Export CSV`}
-            description={t`Export all transactions to a CSV file`}
+            title={t`Export Database`}
+            description={t`Create a backup of all your data`}
             onPress={handleExport}
-            icon="FileText"
+            icon="Database"
             variant="default"
             isLoading={isLoading}
         />
