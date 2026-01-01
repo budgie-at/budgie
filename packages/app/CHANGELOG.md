@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.99.0](https://github.com/budgie-at/budgie/compare/v1.98.0...v1.99.0) (2026-01-01)
+
+### Features
+
+- **app:** add floating add button for creating transactions in account details ([81d12ad](https://github.com/budgie-at/budgie/commit/81d12adcf5769737f8f471a5a1aafc0075b99a9b))
+
 # [1.98.0](https://github.com/budgie-at/budgie/compare/v1.97.1...v1.98.0) (2026-01-01)
 
 ### Features
