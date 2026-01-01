@@ -1,3 +1,4 @@
+/* eslint-disable max-lines, max-statements, no-undefined, lingui/no-unlocalized-strings */
 import {
     BudgetCreateEntityInterface,
     BudgetInstanceStatusEnum,
@@ -23,7 +24,23 @@ const ONE_HOUR_IN_SECONDS = 3600;
 
 class BudgetService {
     async createBudget(input: BudgetCreateEntityInterface) {
-        return budgetRepository.create({ ...input, status: BudgetStatusEnum.ACTIVE });
+        return db.transaction(async tx => {
+            const budget = await budgetRepository.create({ ...input, status: BudgetStatusEnum.ACTIVE }, tx);
+            await budgetRepository.deactivateAllExcept(budget.id, tx);
+
+            return budget;
+        });
+    }
+
+    async activateBudget(budgetId: number) {
+        return budgetRepository.activate(budgetId);
+    }
+
+    async ensureSingleActiveBudget(): Promise<void> {
+        const activeBudget = await budgetRepository.findActive();
+        if (isDefined(activeBudget)) {
+            await budgetRepository.deactivateAllExcept(activeBudget.id);
+        }
     }
 
     async cloneBudget(sourceBudgetId: number, newTitle: string) {
@@ -260,16 +277,18 @@ class BudgetService {
         });
     }
 
-    async checkAndTransitionAllBudgets(): Promise<void> {
-        const activeBudgets = await budgetRepository.findActive();
+    async checkAndTransitionActiveBudget(): Promise<void> {
+        const activeBudget = await budgetRepository.findActive();
 
-        for (const budget of activeBudgets) {
-            try {
-                await this.transitionToNextPeriod(budget.id);
-            } catch {
-                // eslint-disable-next-line no-console
-                console.error(`Failed to transition budget ${budget.id}`);
-            }
+        if (!isDefined(activeBudget)) {
+            return;
+        }
+
+        try {
+            await this.transitionToNextPeriod(activeBudget.id);
+        } catch {
+            // eslint-disable-next-line no-console
+            console.error(`Failed to transition budget ${activeBudget.id}`);
         }
     }
 
@@ -297,6 +316,68 @@ class BudgetService {
         const { startDate, endDate } = this.calculatePeriodDatesForType(budget.period, budget.startDay, new Date());
 
         await this.createBudgetInstance(budgetId, startDate, endDate);
+    }
+
+    calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date): { startDate: Date; endDate: Date } {
+        const startDate = new Date(currentPeriodEndDate);
+        startDate.setDate(startDate.getDate() + 1);
+        startDate.setHours(0, 0, 0, 0);
+
+        const year = startDate.getFullYear();
+        const month = startDate.getMonth();
+        const effectiveStartDay = Math.min(startDay, new Date(year, month + 1, 0).getDate());
+        startDate.setDate(effectiveStartDay);
+
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setDate(endDate.getDate() - 1);
+        endDate.setHours(23, 59, 59, 999);
+
+        return { startDate, endDate };
+    }
+
+    calculateNextWeeklyPeriodDates(currentPeriodEndDate: Date): { startDate: Date; endDate: Date } {
+        const startDate = new Date(currentPeriodEndDate);
+        startDate.setDate(startDate.getDate() + 1);
+        startDate.setHours(0, 0, 0, 0);
+
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        endDate.setHours(23, 59, 59, 999);
+
+        return { startDate, endDate };
+    }
+
+    calculateFuturePeriods(
+        period: BudgetPeriodEnum,
+        startDay: number,
+        currentPeriodEndDate: Date,
+        count: number
+    ): Array<{ startDate: Date; endDate: Date; label: string }> {
+        const periods: Array<{ startDate: Date; endDate: Date; label: string }> = [];
+        let lastEndDate = currentPeriodEndDate;
+
+        for (let i = 0; i < count; i++) {
+            const dates =
+                period === BudgetPeriodEnum.WEEKLY
+                    ? this.calculateNextWeeklyPeriodDates(lastEndDate)
+                    : this.calculateNextMonthlyPeriodDates(startDay, lastEndDate);
+
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const label =
+                period === BudgetPeriodEnum.WEEKLY
+                    ? `Week of ${monthNames[dates.startDate.getMonth()]} ${dates.startDate.getDate()}`
+                    : `${monthNames[dates.startDate.getMonth()]} ${dates.startDate.getFullYear()}`;
+
+            periods.push({ ...dates, label });
+            lastEndDate = dates.endDate;
+        }
+
+        return periods;
+    }
+
+    async createFutureBudgetInstance(budgetId: number, startDate: Date, endDate: Date) {
+        return this.createBudgetInstance(budgetId, startDate, endDate);
     }
 }
 

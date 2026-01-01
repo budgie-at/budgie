@@ -71,7 +71,8 @@ export default function RootLayout() {
 
                     void monobankSyncService.sync();
 
-                    void budgetService.checkAndTransitionAllBudgets();
+                    void budgetService.ensureSingleActiveBudget();
+            void budgetService.checkAndTransitionActiveBudget();
                     void monobankSyncService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
@@ -89,7 +90,7 @@ export default function RootLayout() {
     useAppState(isActive => {
         if (isActive) {
             void monobankSyncService.sync();
-            void budgetService.checkAndTransitionAllBudgets();
+            void budgetService.checkAndTransitionActiveBudget();
         }
     });
 
@@ -126,6 +127,7 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
                                                     <Stack.Screen name="(main)/settings/index" />
+                                                    <Stack.Screen name="(main)/settings/budgets" />
                                                     <Stack.Screen name="(main)/settings/pin" />
                                                     <Stack.Screen name="(main)/settings/categories" />
                                                     <Stack.Screen name="(main)/settings/tags" />

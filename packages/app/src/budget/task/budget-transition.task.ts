@@ -6,7 +6,7 @@ import { budgetService } from '../service/budget.service';
 
 TaskManager.defineTask(BUDGET_TRANSITION_TASK, async () => {
     try {
-        await budgetService.checkAndTransitionAllBudgets();
+        await budgetService.checkAndTransitionActiveBudget();
     } catch {
         return BackgroundTask.BackgroundTaskResult.Failed;
     }

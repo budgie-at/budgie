@@ -20,6 +20,7 @@ import { useGetBudgetIncomeQuery } from '../../query/use-get-budget-income.query
 import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
 import { calculateEffectivePlannedAmount, calculateTotalPlannedAmount } from '../../util/calculate-effective-planned-amount.util';
 import { BudgetHistoricalPeriodCard } from '../budget-historical-period-card/budget-historical-period-card';
+import { BudgetPlanNextPeriod } from '../budget-plan-next-period/budget-plan-next-period';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
@@ -255,6 +256,8 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
                     <Text className="text-sm font-medium text-primary">{`${spentPercent}%`}</Text>
                 </View>
             </Card>
+
+            <BudgetPlanNextPeriod budget={budget} currentPeriodEndDate={periodDates.endDate} />
 
             <Text className="text-xs uppercase text-secondary-foreground mt-2"><Trans>Previous Periods</Trans></Text>
             {historicalPeriods.map(period => (

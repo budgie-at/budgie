@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, ne } from 'drizzle-orm';
 
 import { TX } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
@@ -17,7 +17,7 @@ export class BudgetRepository {
     }
 
     findActive() {
-        return this.db.query.BudgetEntityTable.findMany({
+        return this.db.query.BudgetEntityTable.findFirst({
             where: eq(BudgetEntityTable.status, BudgetStatusEnum.ACTIVE)
         });
     }
@@ -34,6 +34,24 @@ export class BudgetRepository {
         return budget;
     }
 
+    async deactivateAllExcept(budgetId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(BudgetEntityTable)
+            .set({ status: BudgetStatusEnum.DRAFT, updatedAt: new Date() })
+            .where(ne(BudgetEntityTable.id, budgetId));
+    }
+
+    async activate(id: number, tx?: TX): Promise<BudgetEntityInterface> {
+        await this.deactivateAllExcept(id, tx);
+
+        const [budget] = await (tx ?? this.db)
+            .update(BudgetEntityTable)
+            .set({ status: BudgetStatusEnum.ACTIVE, updatedAt: new Date() })
+            .where(eq(BudgetEntityTable.id, id))
+            .returning();
+
+        return budget;
+    }
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetEntityTable);
