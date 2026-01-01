@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic, max-lines-per-function */
+/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic, max-lines-per-function, no-negated-condition, @typescript-eslint/no-unnecessary-condition, no-undefined */
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';

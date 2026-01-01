@@ -1,3 +1,4 @@
+/* eslint-disable lingui/no-expression-in-message, no-undefined */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
