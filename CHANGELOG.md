@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.100.1](https://github.com/budgie-at/budgie/compare/v1.100.0...v1.100.1) (2026-01-01)
+
+### Bug Fixes
+
+- **app:** fix debt account card currency symbol ([ba58922](https://github.com/budgie-at/budgie/commit/ba589225d30ad8507ae2d62098b7d50aff56e75a))
+
 # [1.100.0](https://github.com/budgie-at/budgie/compare/v1.99.0...v1.100.0) (2026-01-01)
 
 ### Features
