@@ -25,6 +25,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
+import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 
@@ -85,6 +86,8 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                     <AccountDetailsField control={control} variant={variant} />
 
                     {children}
+
+                    <AccountActiveToggleField control={control} />
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
         </Page>
