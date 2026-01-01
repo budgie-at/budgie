@@ -3,7 +3,7 @@ import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterfa
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-const generateAccountTitle = (bankAccount: BankAccountInterface): string => {
+export const generateBankAccountTitle = (bankAccount: BankAccountInterface): string => {
     const cardType = bankAccount.type.charAt(0).toUpperCase() + bankAccount.type.slice(1).toLowerCase();
 
     if (isNotEmptyArray(bankAccount.maskedPan)) {
@@ -22,7 +22,7 @@ export const mapBankAccountToCreateInput = (
     instrumentId: number,
     provider: ExternalSourceEnum
 ): LiabilityAccountCreateInputInterface => ({
-    title: generateAccountTitle(bankAccount),
+    title: generateBankAccountTitle(bankAccount),
     type: AccountTypeEnum.BANK_SYNC,
     icon: UserIconNameEnum.Landmark,
     instrumentId,
