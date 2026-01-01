@@ -1,26 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { useExportAction } from '../../hook/use-export-action.hook';
 import { exporterService } from '../../service/exporter.service';
 
 export const ExportCsv = () => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleExport = async () => {
-        setIsLoading(true);
-        try {
-            await exporterService.saveAndShare();
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Export Failed`, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const { isLoading, handleExport } = useExportAction(() => exporterService.saveAndShare());
 
     return (
         <SettingsCard

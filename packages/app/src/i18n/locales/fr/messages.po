@@ -456,7 +456,7 @@ msgstr "Impossible de restaurer le compte."
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
-#: src/export/components/export-database/export-database.tsx:28
+#: src/export/components/export-database/export-database.tsx:14
 msgid "Create a backup of all your data"
 msgstr ""
 
@@ -735,20 +735,19 @@ msgstr "Date de retour prévue (optionnel)"
 msgid "Expense"
 msgstr "Dépense"
 
-#: src/export/components/export-csv/export-csv.tsx:28
+#: src/export/components/export-csv/export-csv.tsx:14
 msgid "Export all transactions to a CSV file"
 msgstr "Exporter toutes les transactions vers un fichier CSV"
 
-#: src/export/components/export-csv/export-csv.tsx:27
+#: src/export/components/export-csv/export-csv.tsx:13
 msgid "Export CSV"
 msgstr "Exporter CSV"
 
-#: src/export/components/export-database/export-database.tsx:27
+#: src/export/components/export-database/export-database.tsx:13
 msgid "Export Database"
 msgstr ""
 
-#: src/export/components/export-csv/export-csv.tsx:19
-#: src/export/components/export-database/export-database.tsx:19
+#: src/export/hook/use-export-action.hook.ts:16
 msgid "Export Failed"
 msgstr "Échec de l'export"
 
