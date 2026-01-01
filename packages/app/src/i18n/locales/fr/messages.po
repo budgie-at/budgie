@@ -568,7 +568,7 @@ msgstr "Plage de dates"
 msgid "Debt"
 msgstr "Dette"
 
-#: src/account/component/create-debt-account/create-debt-account.tsx:51
+#: src/account/component/create-debt-account/create-debt-account.tsx:53
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
 msgstr "Compte de dette"
