@@ -456,7 +456,7 @@ msgstr "Konto konnte nicht wiederhergestellt werden."
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
 
-#: src/export/components/export-database/export-database.tsx:28
+#: src/export/components/export-database/export-database.tsx:14
 msgid "Create a backup of all your data"
 msgstr ""
 
@@ -735,20 +735,19 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 msgid "Expense"
 msgstr "Ausgabe"
 
-#: src/export/components/export-csv/export-csv.tsx:28
+#: src/export/components/export-csv/export-csv.tsx:14
 msgid "Export all transactions to a CSV file"
 msgstr "Alle Transaktionen in eine CSV-Datei exportieren"
 
-#: src/export/components/export-csv/export-csv.tsx:27
+#: src/export/components/export-csv/export-csv.tsx:13
 msgid "Export CSV"
 msgstr "CSV exportieren"
 
-#: src/export/components/export-database/export-database.tsx:27
+#: src/export/components/export-database/export-database.tsx:13
 msgid "Export Database"
 msgstr ""
 
-#: src/export/components/export-csv/export-csv.tsx:19
-#: src/export/components/export-database/export-database.tsx:19
+#: src/export/hook/use-export-action.hook.ts:16
 msgid "Export Failed"
 msgstr "Export fehlgeschlagen"
 
