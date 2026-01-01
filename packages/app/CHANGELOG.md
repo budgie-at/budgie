@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.97.0](https://github.com/budgie-at/budgie/compare/v1.96.0...v1.97.0) (2026-01-01)
+
+### Features
+
+- add currency field to debt account creation form ([e4bde81](https://github.com/budgie-at/budgie/commit/e4bde814c4396222f7c1dadfd380784b5b16baa8))
+
 # [1.96.0](https://github.com/budgie-at/budgie/compare/v1.95.0...v1.96.0) (2026-01-01)
 
 ### Features
