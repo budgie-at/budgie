@@ -568,7 +568,7 @@ msgstr "Rango de fechas"
 msgid "Debt"
 msgstr "Deuda"
 
-#: src/account/component/create-debt-account/create-debt-account.tsx:51
+#: src/account/component/create-debt-account/create-debt-account.tsx:53
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
 msgstr "Cuenta de deuda"
