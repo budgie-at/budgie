@@ -6,7 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { useSearchAccountsQuery } from '../../query/use-search-accounts.query';
+import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 
 interface Props {
@@ -28,7 +28,7 @@ const flatListProps = {
 export const AccountSelectorBottomSheet = (props: Props) => {
     const { ref, selectedAccount, excludeAccountId, excludeAccountTypes, onSelect, emptyStateDescription } = props;
     const [search, setSearch] = useState('');
-    const { accounts } = useSearchAccountsQuery(search, { excludeTypes: excludeAccountTypes });
+    const { accounts } = useSearchAccountsSortedQuery(search, { excludeTypes: excludeAccountTypes, excludeAccountId });
     const { t } = useLingui();
 
     const handleSelect = (accountId: number) => {
@@ -58,12 +58,7 @@ export const AccountSelectorBottomSheet = (props: Props) => {
     };
 
     const emptyIcon = isNotEmptyString(search) ? 'Search' : 'Wallet';
-
     const emptyTitle = isNotEmptyString(search) ? t`No accounts found` : t`No accounts yet`;
-
-    const emptyDescription = getEmptyStateDescription();
-
-    const accountsWithoutExcluded = accounts.filter(account => account.id !== excludeAccountId);
 
     return (
         <SearchableListBottomSheet
@@ -76,9 +71,9 @@ export const AccountSelectorBottomSheet = (props: Props) => {
             search={search}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            emptyDescription={emptyDescription}
+            emptyDescription={getEmptyStateDescription()}
             emptyTitle={emptyTitle}
-            data={accountsWithoutExcluded}
+            data={accounts}
             flatListProps={flatListProps}
         />
     );
