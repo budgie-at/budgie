@@ -25,7 +25,7 @@ export class BankSyncRepository {
             .values([input])
             .onConflictDoUpdate({
                 target: BankSyncEntityTable.accountId,
-                set: { ...input, updatedAt: new Date() }
+                set: { ...input }
             })
             .returning();
 
@@ -35,7 +35,7 @@ export class BankSyncRepository {
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
-            .set({ ...input, updatedAt: new Date() })
+            .set({ ...input })
             .where(eq(BankSyncEntityTable.id, id))
             .returning();
 
@@ -45,7 +45,7 @@ export class BankSyncRepository {
     async updateByAccountId(accountId: number, input: BankSyncUpdateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
-            .set({ ...input, updatedAt: new Date() })
+            .set({ ...input })
             .where(eq(BankSyncEntityTable.accountId, accountId))
             .returning();
 
@@ -118,14 +118,11 @@ export class BankSyncRepository {
     }
 
     async setStatus(id: number, status: BankSyncStatusEnum, tx?: TX): Promise<void> {
-        await (tx ?? this.db).update(BankSyncEntityTable).set({ status, updatedAt: new Date() }).where(eq(BankSyncEntityTable.id, id));
+        await (tx ?? this.db).update(BankSyncEntityTable).set({ status }).where(eq(BankSyncEntityTable.id, id));
     }
 
     async setEnabled(accountId: number, enabled: boolean, tx?: TX): Promise<void> {
-        await (tx ?? this.db)
-            .update(BankSyncEntityTable)
-            .set({ enabled, updatedAt: new Date() })
-            .where(eq(BankSyncEntityTable.accountId, accountId));
+        await (tx ?? this.db).update(BankSyncEntityTable).set({ enabled }).where(eq(BankSyncEntityTable.accountId, accountId));
     }
 
     async incrementTransactionCount(id: number, count: number, tx?: TX): Promise<void> {
@@ -133,10 +130,7 @@ export class BankSyncRepository {
         if (bankSync) {
             await (tx ?? this.db)
                 .update(BankSyncEntityTable)
-                .set({
-                    transactionCount: bankSync.transactionCount + count,
-                    updatedAt: new Date()
-                })
+                .set({ transactionCount: bankSync.transactionCount + count })
                 .where(eq(BankSyncEntityTable.id, id));
         }
     }
@@ -148,8 +142,7 @@ export class BankSyncRepository {
                 .update(BankSyncEntityTable)
                 .set({
                     lastError: error,
-                    errorCount: bankSync.errorCount + 1,
-                    updatedAt: new Date()
+                    errorCount: bankSync.errorCount + 1
                 })
                 .where(eq(BankSyncEntityTable.id, id));
         }
@@ -160,8 +153,7 @@ export class BankSyncRepository {
             .update(BankSyncEntityTable)
             .set({
                 lastError: null,
-                errorCount: 0,
-                updatedAt: new Date()
+                errorCount: 0
             })
             .where(eq(BankSyncEntityTable.id, id));
     }

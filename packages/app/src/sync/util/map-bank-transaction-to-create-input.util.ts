@@ -1,7 +1,11 @@
 import { BankTransactionInterface, BankTransactionTypeEnum } from '@budgie/bank-sync';
-import { ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-export const mapBankTransactionToCreateInput = (bankTx: BankTransactionInterface, accountId: number, provider: ExternalSourceEnum) => {
+export const mapBankTransactionToCreateInput = (
+    bankTx: BankTransactionInterface,
+    accountId: number,
+    provider: ExternalSourceEnum
+): TransactionCreateInputInterface => {
     const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTx.amount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
