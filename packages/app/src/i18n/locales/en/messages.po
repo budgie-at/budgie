@@ -113,7 +113,7 @@ msgstr "Activate Account?"
 msgid "Active"
 msgstr "Active"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
@@ -315,7 +315,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:67
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -433,7 +433,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
 msgid "Could not create category"
 msgstr "Could not create category"
 
@@ -453,6 +453,10 @@ msgstr "Could not delete transaction."
 #: src/account/component/archived-account-card/archived-account-card.tsx:29
 msgid "Could not restore account."
 msgstr "Could not restore account."
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+msgid "Could not update category"
+msgstr "Could not update category"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -482,7 +486,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -624,9 +628,13 @@ msgstr "e.g. Savings Account"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:60
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+msgid "Edit Category"
+msgstr "Edit Category"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
@@ -1158,7 +1166,7 @@ msgstr "PINs do not match"
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
 msgstr "Please try again later"
@@ -1631,6 +1639,10 @@ msgstr "Update Income"
 #: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:31
 msgid "Update Transfer"
 msgstr "Update Transfer"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+msgid "Update your category details"
+msgstr "Update your category details"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:32
 #: src/auth/util/get-pin-setup-meta.util.ts:24
