@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
+import { FloatingAddButton } from '../../../../@generic/component/floating-add-button/floating-add-button';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -83,6 +84,8 @@ export default function Account() {
             </View>
 
             <TransactionList accountId={id} />
+
+            <FloatingAddButton accountId={id} />
         </Page>
     );
 }
