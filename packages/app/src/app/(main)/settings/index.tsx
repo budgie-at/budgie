@@ -30,7 +30,6 @@ export default function SettingsPage() {
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
-    console.log({ showCents });
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
@@ -38,7 +37,6 @@ export default function SettingsPage() {
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
-        console.log({ key, checked });
         await updateSettingsMutation({ [key]: checked });
     };
 
