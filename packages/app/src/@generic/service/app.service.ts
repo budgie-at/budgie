@@ -1,5 +1,9 @@
 import {
     accountRepository,
+    budgetAllocationInstanceRepository,
+    budgetAllocationRepository,
+    budgetInstanceRepository,
+    budgetRepository,
     categoryRepository,
     db,
     settingsRepository,
@@ -11,6 +15,10 @@ import {
 class AppService {
     async truncateData() {
         await db.transaction(async tx => {
+            await budgetAllocationInstanceRepository.truncate(tx);
+            await budgetInstanceRepository.truncate(tx);
+            await budgetAllocationRepository.truncate(tx);
+            await budgetRepository.truncate(tx);
             await tagRepository.truncate(tx);
             await categoryRepository.truncate(false, tx);
             await transactionEntryRepository.truncate(tx);

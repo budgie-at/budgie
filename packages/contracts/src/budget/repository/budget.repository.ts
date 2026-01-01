@@ -76,5 +76,9 @@ export class BudgetRepository {
     async archive(id: number): Promise<BudgetEntityInterface> {
         return this.updateById(id, { status: BudgetStatusEnum.ARCHIVED });
     }
+
+    async truncate(tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(BudgetEntityTable);
+    }
 }
 
