@@ -1,4 +1,5 @@
 import {
+    accountBalanceRepository,
     accountRepository,
     budgetAllocationInstanceRepository,
     budgetAllocationRepository,
@@ -23,6 +24,7 @@ class AppService {
             await categoryRepository.truncate(false, tx);
             await transactionEntryRepository.truncate(tx);
             await transactionRepository.truncate(tx);
+            await accountBalanceRepository.truncate(tx);
             await settingsRepository.update({ defaultAccountId: null }, tx);
             await accountRepository.truncate(tx);
         });

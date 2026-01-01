@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
@@ -13,6 +14,7 @@ export const TruncateData = () => {
     const handleTruncate = async () => {
         await appService.truncateData();
         await bankSyncRepository.truncate();
+        router.replace('/');
     };
 
     const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleTruncate);
