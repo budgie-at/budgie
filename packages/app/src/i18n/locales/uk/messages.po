@@ -55,11 +55,11 @@ msgstr "{tagsCount} тегів доступно"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(main)/settings/index.tsx:57
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:133
+#: src/app/(main)/settings/index.tsx:137
 msgid "About"
 msgstr "Про застосунок"
 
@@ -155,7 +155,7 @@ msgstr "ШІ"
 msgid "AI Suggestion"
 msgstr "Пропозиція ШІ"
 
-#: src/app/(main)/settings/index.tsx:138
+#: src/app/(main)/settings/index.tsx:142
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -171,7 +171,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:58
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -201,7 +201,7 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:115
+#: src/app/(main)/settings/index.tsx:117
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -222,7 +222,7 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(main)/settings/index.tsx:103
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -279,7 +279,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/settings/index.tsx:136
+#: src/app/(main)/settings/index.tsx:140
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -456,6 +456,10 @@ msgstr "Не вдалося відновити рахунок."
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
+#: src/export/components/export-database/export-database.tsx:28
+msgid "Create a backup of all your data"
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
@@ -468,7 +472,7 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(main)/settings/index.tsx:95
+#: src/app/(main)/settings/index.tsx:97
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -544,7 +548,7 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(main)/settings/index.tsx:126
+#: src/app/(main)/settings/index.tsx:128
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -564,7 +568,7 @@ msgstr "Діапазон дат"
 msgid "Debt"
 msgstr "Борг"
 
-#: src/account/component/create-debt-account/create-debt-account.tsx:50
+#: src/account/component/create-debt-account/create-debt-account.tsx:51
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
 msgstr "Борговий рахунок"
@@ -706,6 +710,7 @@ msgstr "Введіть свій PIN-код"
 
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
+#: src/import/components/import-database/import-database.tsx:46
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
 msgid "Error"
 msgstr "Помилка"
@@ -738,7 +743,12 @@ msgstr "Експортувати всі транзакції до CSV-файлу
 msgid "Export CSV"
 msgstr "Експортувати CSV"
 
+#: src/export/components/export-database/export-database.tsx:27
+msgid "Export Database"
+msgstr ""
+
 #: src/export/components/export-csv/export-csv.tsx:19
+#: src/export/components/export-database/export-database.tsx:19
 msgid "Export Failed"
 msgstr "Помилка експорту"
 
@@ -815,7 +825,7 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(main)/settings/index.tsx:77
+#: src/app/(main)/settings/index.tsx:79
 msgid "General"
 msgstr "Загальне"
 
@@ -831,7 +841,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:68
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -847,6 +857,12 @@ msgstr "Іконка"
 msgid "Import CSV"
 msgstr "Імпортувати CSV"
 
+#: src/import/components/import-database/import-database.tsx:55
+#: src/import/components/import-database/import-database.tsx:68
+#: src/import/components/import-database/import-database.tsx:71
+msgid "Import Database"
+msgstr ""
+
 #: src/app/(main)/settings/import.tsx:145
 msgid "Import Failed"
 msgstr "Імпорт не вдався"
@@ -855,8 +871,12 @@ msgstr "Імпорт не вдався"
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
+#: src/import/components/import-database/import-database.tsx:67
+msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
+msgstr ""
+
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -906,11 +926,11 @@ msgstr "Регіональні налаштування"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:89
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(main)/settings/index.tsx:96
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -1088,7 +1108,7 @@ msgstr "Нотатка (необов'язково)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/app/(main)/settings/index.tsx:84
+#: src/app/(main)/settings/index.tsx:86
 msgid "Organization"
 msgstr "Організація"
 
@@ -1159,7 +1179,7 @@ msgstr "Шаблон застосовано. За потреби налашту�
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:51
+#: src/app/(main)/settings/index.tsx:53
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -1188,6 +1208,10 @@ msgstr "Відновити"
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
+#: src/import/components/import-database/import-database.tsx:56
+msgid "Restore from a backup file"
+msgstr ""
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
 msgstr "Зберегти"
@@ -1205,7 +1229,7 @@ msgstr "Ощадний рахунок"
 msgid "Savings accounts"
 msgstr "Ощадні рахунки"
 
-#: src/app/(main)/settings/index.tsx:65
+#: src/app/(main)/settings/index.tsx:67
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -1249,7 +1273,7 @@ msgstr "Пошук тегів..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(main)/settings/index.tsx:62
 msgid "Security"
 msgstr "Безпека"
 
@@ -1339,15 +1363,15 @@ msgstr "Вибрано {selectedTagsCount}"
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(main)/settings/index.tsx:48
+#: src/app/(main)/settings/index.tsx:50
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:121
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(main)/settings/index.tsx:120
 msgid "Show Cents"
 msgstr ""
 
@@ -1620,15 +1644,15 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
-#: src/app/(main)/settings/index.tsx:109
+#: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
 msgstr ""
 
-#: src/app/(main)/settings/index.tsx:88
+#: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:102
+#: src/app/(main)/settings/index.tsx:104
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
