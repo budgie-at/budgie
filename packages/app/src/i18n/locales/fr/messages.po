@@ -11,21 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:95
-msgid "Processing..."
-msgstr "Traitement..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:99
-msgid "Recording..."
-msgstr "Enregistrement..."
-
-#. js-lingui-explicit-id
-#: src/ai/component/record-button/record-button.tsx:102
-msgid "Tap to speak"
-msgstr "Appuyez pour parler"
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} comptes"
@@ -54,14 +39,6 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/app/(main)/settings/import.tsx:148
-msgid "{successCount} imported, {errorCount} failed"
-msgstr "{successCount} importées, {errorCount} échouées"
-
-#: src/app/(main)/settings/import.tsx:148
-msgid "{successCount} transactions imported"
-msgstr "{successCount} transactions importées"
-
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:33
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} étiquettes disponibles"
@@ -78,7 +55,6 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:47
 #: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
 msgid "Account"
 msgstr "Compte"
@@ -87,18 +63,16 @@ msgstr "Compte"
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:62
 msgid "Account Settings"
 msgstr "Paramètres du compte"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
 #: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
 msgid "Account Type"
-msgstr ""
+msgstr "Type de compte"
 
 #: src/account/component/accounts-heading/accounts-heading.tsx:11
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:102
-#: src/sync/component/sync-status-card/sync-status-card.tsx:45
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:27
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:58
 msgid "Accounts"
@@ -184,7 +158,11 @@ msgstr "Toutes vos données financières sont stockées localement sur votre app
 msgid "Allocated"
 msgstr "Alloué"
 
-#: src/app/(main)/settings/import.tsx:210
+#: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:32
+msgid "Already syncing"
+msgstr "Déjà en cours de synchronisation"
+
+#: src/app/(main)/settings/import.tsx:200
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
 msgstr "Montant"
@@ -192,6 +170,10 @@ msgstr "Montant"
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:62
+msgid "API Token"
+msgstr "Jeton API"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:16
 #: src/settings/components/security-settings/pin-enabled-card.tsx:47
@@ -214,10 +196,6 @@ msgstr "Appliquer le filtre ({selected})"
 msgid "Archive"
 msgstr "Archiver"
 
-#: src/account/component/archive-account/archive-account.tsx:37
-msgid "Archive Account"
-msgstr "Archiver le compte"
-
 #: src/account/component/archive-account/archive-account.tsx:46
 msgid "Archive Account?"
 msgstr "Archiver le compte ?"
@@ -227,7 +205,7 @@ msgstr "Archiver le compte ?"
 msgid "Archived Accounts"
 msgstr "Comptes archivés"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:33
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action ne peut pas être annulée."
 
@@ -243,10 +221,6 @@ msgstr "Êtes-vous sûr ?"
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Synchroniser automatiquement les comptes et transactions de Monobank"
 
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:18
-msgid "Automatically sync your accounts and transactions"
-msgstr "Synchroniser automatiquement vos comptes et transactions"
-
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:69
 msgid "Available Columns"
 msgstr "Colonnes disponibles"
@@ -260,11 +234,15 @@ msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
 #: src/account/constant/account-type.constant.ts:6
-#: src/account/constant/account-type.constant.ts:12
 msgid "Bank"
 msgstr "Banque"
 
+#: src/account/constant/account-type.constant.ts:12
+msgid "Bank sync"
+msgstr "Synchronisation bancaire"
+
 #: src/app/(main)/create-account/index.tsx:45
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:66
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
@@ -287,7 +265,8 @@ msgstr "BudgetAI"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:20
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:269
+#: src/app/(main)/settings/import.tsx:259
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
 msgid "Cancel"
 msgstr "Annuler"
@@ -307,7 +286,7 @@ msgstr "Catégories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Catégories ({selectedCategoriesCount})"
 
-#: src/app/(main)/settings/import.tsx:194
+#: src/app/(main)/settings/import.tsx:184
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:40
 msgid "Category"
@@ -316,6 +295,10 @@ msgstr "Catégorie"
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
 msgid "Category Name"
 msgstr "Nom de la catégorie"
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:82
+msgid "Change"
+msgstr "Modifier"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
 msgid "Change Account Type"
@@ -378,8 +361,8 @@ msgstr "Effacer"
 msgid "Clear All"
 msgstr "Tout effacer"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:24
-#: src/settings/components/truncate-data/truncate-data.tsx:38
+#: src/settings/components/truncate-data/truncate-data.tsx:23
+#: src/settings/components/truncate-data/truncate-data.tsx:37
 msgid "Clear All Data"
 msgstr "Effacer toutes les données"
 
@@ -391,7 +374,7 @@ msgstr "Effacer les soldes mis en cache et recalculer à partir des transactions
 msgid "Close"
 msgstr "Fermer"
 
-#: src/app/(main)/settings/import.tsx:254
+#: src/app/(main)/settings/import.tsx:244
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -407,7 +390,7 @@ msgstr "Confirmer"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:57
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:82
 msgid "Connect Monobank"
 msgstr "Connecter Monobank"
 
@@ -446,7 +429,7 @@ msgstr "Impossible de restaurer le compte."
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
-msgstr ""
+msgstr "Impossible de mettre à jour la transaction."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
@@ -542,7 +525,7 @@ msgstr "Gestion des données"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:202
+#: src/app/(main)/settings/import.tsx:192
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Date"
@@ -569,11 +552,11 @@ msgstr "Compte par défaut"
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:25
+#: src/settings/components/truncate-data/truncate-data.tsx:24
 msgid "Delete all transactions and settings"
 msgstr "Supprimer toutes les transactions et les paramètres"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:34
 msgid "Delete data"
 msgstr "Supprimer les données"
 
@@ -597,10 +580,6 @@ msgstr "Terminé"
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:36
 msgid "Done ({selectedTagsCount})"
 msgstr "Terminé ({selectedTagsCount})"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:98
-msgid "Duration"
-msgstr "Durée"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -637,10 +616,6 @@ msgstr "Fonds d'urgence et objectifs d'épargne"
 #: src/settings/components/security-settings/pin-disabled-card.tsx:22
 msgid "Enable"
 msgstr "Activer"
-
-#: src/sync/component/sync-toggle-card/sync-toggle-card.tsx:17
-msgid "Enable Auto-Sync"
-msgstr "Activer la synchronisation automatique"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:28
 #: src/auth/util/get-pin-setup-meta.util.ts:23
@@ -684,6 +659,10 @@ msgstr "Entrez le code PIN actuel pour désactiver la protection"
 msgid "Enter new PIN"
 msgstr "Entrez le nouveau code PIN"
 
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:69
+msgid "Enter new token"
+msgstr "Entrer un nouveau jeton"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
@@ -692,7 +671,7 @@ msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres"
 msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
 msgstr "Entrez votre code PIN à {PIN_LENGTH} chiffres pour déverrouiller"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:86
+#: src/sync/component/token-input-step/token-input-step.tsx:41
 msgid "Enter your Monobank API token"
 msgstr "Entrez votre jeton API Monobank"
 
@@ -703,13 +682,12 @@ msgstr "Entrez votre code PIN"
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
-#: src/sync/component/sync-status-card/sync-status-card.tsx:36
 msgid "Error"
 msgstr "Erreur"
 
-#: src/sync/component/sync-status-card/sync-status-card.tsx:29
-msgid "Errors count"
-msgstr "Nombre d'erreurs"
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:86
+msgid "Errors"
+msgstr "Erreurs"
 
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
@@ -739,7 +717,7 @@ msgstr "Exporter CSV"
 msgid "Export Failed"
 msgstr "Échec de l'export"
 
-#: src/app/(main)/settings/import.tsx:226
+#: src/app/(main)/settings/import.tsx:216
 msgid "External ID"
 msgstr "ID externe"
 
@@ -752,6 +730,10 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:46
+msgid "Failed to fetch accounts"
+msgstr "Échec de la récupération des comptes"
+
 #: src/@generic/hook/use-contacts.hook.ts:58
 msgid "Failed to load contacts."
 msgstr "Échec du chargement des contacts."
@@ -760,7 +742,19 @@ msgstr "Échec du chargement des contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:29
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:71
+msgid "Failed to setup sync"
+msgstr "Échec de la configuration de la synchronisation"
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:54
+msgid "Failed to update token"
+msgstr "Échec de la mise à jour du jeton"
+
+#: src/sync/component/token-input-step/token-input-step.tsx:48
+msgid "Fetch Accounts"
+msgstr "Récupérer les comptes"
+
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:48
 msgid "Fetching new..."
 msgstr "Récupération des nouvelles..."
 
@@ -768,7 +762,7 @@ msgstr "Récupération des nouvelles..."
 msgid "Fill in the account details"
 msgstr "Remplissez les détails du compte"
 
-#: src/app/(main)/settings/import.tsx:163
+#: src/app/(main)/settings/import.tsx:153
 msgid "Fix Errors"
 msgstr "Corriger les erreurs"
 
@@ -784,15 +778,15 @@ msgstr "Français (France)"
 msgid "FROM"
 msgstr "DE"
 
-#: src/app/(main)/settings/import.tsx:233
+#: src/app/(main)/settings/import.tsx:223
 msgid "From Account"
 msgstr "Du compte"
 
-#: src/app/(main)/settings/import.tsx:247
+#: src/app/(main)/settings/import.tsx:237
 msgid "From Amount"
 msgstr "Montant source"
 
-#: src/app/(main)/settings/import.tsx:240
+#: src/app/(main)/settings/import.tsx:230
 msgid "From Currency"
 msgstr "Devise source"
 
@@ -820,23 +814,19 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "Hide Cents"
 msgstr "Masquer les centimes"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:27
-msgid "Historical sync done"
-msgstr "Synchronisation historique terminée"
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:81
+msgid "History synced"
+msgstr "Historique synchronisé"
 
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:19
 msgid "Icon"
 msgstr "Icône"
 
-#: src/app/(main)/settings/import.tsx:147
-msgid "Import Complete"
-msgstr "Importation terminée"
-
 #: src/import/components/import-csv/import-csv.tsx:37
 msgid "Import CSV"
 msgstr "Importer CSV"
 
-#: src/app/(main)/settings/import.tsx:155
+#: src/app/(main)/settings/import.tsx:145
 msgid "Import Failed"
 msgstr "Importation échouée"
 
@@ -858,7 +848,7 @@ msgstr "Revenus par catégorie"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/app/(main)/settings/import.tsx:261
+#: src/app/(main)/settings/import.tsx:251
 msgid "Is Planned"
 msgstr "Est planifié"
 
@@ -870,12 +860,12 @@ msgstr "Italien (Italie)"
 msgid "Language"
 msgstr "Langue"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:89
-msgid "Last sync"
-msgstr "Dernière synchronisation"
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:90
+msgid "Last error"
+msgstr "Dernière erreur"
 
-#: src/sync/component/sync-status-card/sync-status-card.tsx:58
-msgid "Last Sync"
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:77
+msgid "Last sync"
 msgstr "Dernière synchronisation"
 
 #: src/account/constant/account-debt-type.constant.ts:6
@@ -898,11 +888,11 @@ msgstr "Gérer les catégories"
 msgid "Manage Tags"
 msgstr "Gérer les étiquettes"
 
-#: src/app/(main)/settings/import.tsx:170
+#: src/app/(main)/settings/import.tsx:160
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
 
-#: src/app/(main)/settings/import.tsx:171
+#: src/app/(main)/settings/import.tsx:161
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
@@ -1088,7 +1078,7 @@ msgstr "Vous doit"
 msgid "Paid: {formattedBalance}"
 msgstr "Payé : {formattedBalance}"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:80
+#: src/sync/component/token-input-step/token-input-step.tsx:35
 msgid "Paste your API token below:"
 msgstr "Collez votre jeton API ci-dessous :"
 
@@ -1113,7 +1103,7 @@ msgstr "Le code PIN doit comporter {PIN_LENGTH} chiffres"
 msgid "PINs do not match"
 msgstr "Les codes PIN ne correspondent pas"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:36
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:34
 msgid "Please enter your Monobank API token"
 msgstr "Veuillez entrer votre jeton API Monobank"
 
@@ -1167,6 +1157,10 @@ msgstr "Restaurer"
 #: src/account/component/archived-account-card/archived-account-card.tsx:78
 msgid "Restore Account?"
 msgstr "Restaurer le compte ?"
+
+#: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
+msgid "Save"
+msgstr "Enregistrer"
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1249,6 +1243,10 @@ msgstr "Sélectionner un compte"
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:72
 msgid "Select Account"
 msgstr "Sélectionner un compte"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:23
+msgid "Select accounts to sync:"
+msgstr "Sélectionner les comptes à synchroniser :"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
@@ -1353,9 +1351,13 @@ msgstr "Dépensé"
 msgid "Split by Category"
 msgstr "Répartir par catégorie"
 
-#: src/app/(main)/settings/import.tsx:163
+#: src/app/(main)/settings/import.tsx:153
 msgid "Start Import"
 msgstr "Démarrer l'importation"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx:35
+msgid "Start Sync"
+msgstr "Démarrer la synchronisation"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
@@ -1387,11 +1389,11 @@ msgstr "Faites glisser vers la gauche"
 msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
-#: src/sync/component/sync-status-card/sync-status-card.tsx:21
-msgid "Sync Status"
-msgstr "État de synchronisation"
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:45
+msgid "Sync Failed"
+msgstr "Échec de la synchronisation"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:58
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:83
 msgid "Sync your Monobank accounts and transactions"
 msgstr "Synchronisez vos comptes et transactions Monobank"
 
@@ -1399,12 +1401,7 @@ msgstr "Synchronisez vos comptes et transactions Monobank"
 msgid "Synced bank accounts"
 msgstr "Comptes bancaires synchronisés"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:73
-#: src/sync/component/account-sync-card/account-sync-card.tsx:80
-msgid "Synced until"
-msgstr "Synchronisé jusqu'à"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx:29
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:48
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
 
@@ -1470,11 +1467,11 @@ msgstr "Cette année"
 msgid "TO"
 msgstr "VERS"
 
-#: src/app/(main)/settings/import.tsx:186
+#: src/app/(main)/settings/import.tsx:176
 msgid "To Account"
 msgstr "Vers le compte"
 
-#: src/app/(main)/settings/import.tsx:218
+#: src/app/(main)/settings/import.tsx:208
 msgid "To Currency"
 msgstr "Devise cible"
 
@@ -1482,7 +1479,7 @@ msgstr "Devise cible"
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:36
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx:34
 msgid "Token required"
 msgstr "Jeton requis"
 
@@ -1507,10 +1504,12 @@ msgid "Transaction Type"
 msgstr "Type de transaction"
 
 #: src/app/(tabs)/transactions.tsx:11
-#: src/sync/component/account-sync-card/account-sync-card.tsx:65
-#: src/sync/component/sync-status-card/sync-status-card.tsx:51
 msgid "Transactions"
 msgstr "Transactions"
+
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:74
+msgid "Transactions synced"
+msgstr "Transactions synchronisées"
 
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
@@ -1550,7 +1549,7 @@ msgstr "Inconnu"
 msgid "Unknown Category"
 msgstr "Catégorie inconnue"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:25
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:51
 msgid "Up to date"
 msgstr "À jour"
 
@@ -1591,7 +1590,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx:32
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:54
 msgid "Waiting"
 msgstr "En attente"
 
@@ -1619,6 +1618,6 @@ msgstr "Votre objectif est de retourner UNE SEULE catégorie correspondant le mi
 msgid "Your message:"
 msgstr "Votre message:"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx:75
-msgid "Your token is stored securely on device. Sync continues in the background."
-msgstr "Votre jeton est stocké en toute sécurité sur l'appareil. La synchronisation continue en arrière-plan."
+#: src/sync/component/token-input-step/token-input-step.tsx:30
+msgid "Your token is stored securely in the database. Sync continues in the background."
+msgstr "Votre jeton est stocké en toute sécurité dans la base de données. La synchronisation continue en arrière-plan."
