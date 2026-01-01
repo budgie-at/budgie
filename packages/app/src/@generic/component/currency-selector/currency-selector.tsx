@@ -43,7 +43,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
         <>
             <HorizontalCell
                 left={
-                    <View className="rounded-5xl bg-secondary-background p-lg w-12 h-12 items-center justify-center">
+                    <View className="rounded-5xl bg-secondary-background w-12 h-12 items-center justify-center">
                         <Text className="text-primary text-4xl">{symbol}</Text>
                     </View>
                 }
