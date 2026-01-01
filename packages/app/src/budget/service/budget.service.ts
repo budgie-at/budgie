@@ -51,6 +51,49 @@ class BudgetService {
         return budgetRepository.archive(id);
     }
 
+    async cloneBudget(sourceBudgetId: number, newTitle: string) {
+        const sourceBudget = await budgetRepository.findById(sourceBudgetId);
+        if (!isDefined(sourceBudget)) {
+            throw new Error('budget-not-found');
+        }
+
+        const allocations = await budgetAllocationRepository.findByBudgetId(sourceBudgetId);
+
+        return db.transaction(async tx => {
+            const newBudget = await budgetRepository.create(
+                {
+                    title: newTitle,
+                    period: sourceBudget.period,
+                    startDay: sourceBudget.startDay,
+                    instrumentId: sourceBudget.instrumentId,
+                    status: BudgetStatusEnum.DRAFT
+                },
+                tx
+            );
+
+            for (const allocation of allocations) {
+                await budgetAllocationRepository.create(
+                    {
+                        budgetId: newBudget.id,
+                        categoryId: allocation.categoryId,
+                        allocationType: allocation.allocationType,
+                        amount: allocation.amount,
+                        percentage: allocation.percentage,
+                        rolloverRule: allocation.rolloverRule,
+                        rolloverCap: allocation.rolloverCap,
+                        isSinkingFund: allocation.isSinkingFund,
+                        sinkingFundTarget: allocation.sinkingFundTarget,
+                        sinkingFundTargetDate: allocation.sinkingFundTargetDate,
+                        isExcluded: allocation.isExcluded
+                    },
+                    tx
+                );
+            }
+
+            return newBudget;
+        });
+    }
+
     async addAllocation(budgetId: number, input: Omit<BudgetAllocationCreateEntityInterface, 'budgetId'>) {
         return budgetAllocationRepository.create({ ...input, budgetId });
     }

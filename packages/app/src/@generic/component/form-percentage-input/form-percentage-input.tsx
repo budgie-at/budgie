@@ -36,7 +36,6 @@ export const FormPercentageInput = ({ value, onChange, variant }: Props) => {
                 onChangeText={handleChangeText}
                 keyboardType="number-pad"
                 className="text-7xl h-auto text-primary border-0 min-w-16"
-                // className="text-7xl text-primary text-right border-0 h-auto min-w-16"
                 placeholder="0"
             />
             <Text className={cn('text-7xl', textVariants({ variant }))}>%</Text>

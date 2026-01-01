@@ -34,6 +34,8 @@ export default function SettingsPage() {
 
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
+    const handleNavigateToBudgets = () => void router.push('/settings/budgets');
+    const handleNavigateToBudgetAnalytics = () => void router.push('/settings/budget-analytics');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const navigateToTags = () => void router.push('/settings/tags');
 
@@ -109,6 +111,23 @@ export default function SettingsPage() {
                             description={t`View and activate hidden accounts`}
                             icon={UserIconNameEnum.EyeOff}
                             variant="dark-warning"
+                        />
+                    </SettingsGroup>
+
+                    <SettingsGroup title={t`Budgeting`}>
+                        <SettingsCard
+                            onPress={handleNavigateToBudgets}
+                            title={t`Manage Budgets`}
+                            description={t`Create and manage your spending budgets`}
+                            icon="Wallet"
+                            variant="positive"
+                        />
+                        <SettingsCard
+                            onPress={handleNavigateToBudgetAnalytics}
+                            title={t`Budget Analytics`}
+                            description={t`View spending insights and projections`}
+                            icon="ChartNoAxesColumn"
+                            variant="default"
                         />
                     </SettingsGroup>
 
