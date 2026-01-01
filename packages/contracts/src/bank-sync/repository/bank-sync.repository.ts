@@ -98,7 +98,6 @@ export class BankSyncRepository {
                 eq(BankSyncEntityTable.provider, provider),
                 eq(BankSyncEntityTable.enabled, true),
                 eq(BankSyncEntityTable.mode, BankSyncModeEnum.BACKWARD),
-                isNull(BankSyncEntityTable.backwardSyncedAt),
                 isNull(BankSyncEntityTable.deletedAt)
             )
         });
