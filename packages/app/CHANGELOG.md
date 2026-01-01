@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.95.0](https://github.com/budgie-at/budgie/compare/v1.94.0...v1.95.0) (2026-01-01)
+
+### Bug Fixes
+
+- **app:** account update screen bottom ui change ([197e5e6](https://github.com/budgie-at/budgie/commit/197e5e695d5467bfac91d273188e7a9983ff06a4))
+- **app:** fix delete button layout ([ecca72c](https://github.com/budgie-at/budgie/commit/ecca72ca135b4c1ebdfb447b4b167e16c6bca021))
+- **app:** fix delete button layout ([77f0705](https://github.com/budgie-at/budgie/commit/77f070510470945ccfce50300f793e40bd6077bc))
+- **app:** fix show cents settings ([64164e9](https://github.com/budgie-at/budgie/commit/64164e96204a2ab05d391922c364ac5fa5643aaa))
+- **app:** fix show cents settings ([3f8d112](https://github.com/budgie-at/budgie/commit/3f8d112b5f866feabdb35a349718fba425fb3b51))
+- **app:** fix show cents settings ([a4d7090](https://github.com/budgie-at/budgie/commit/a4d70909c9401eae6a7c839e8774d506ce0732a4))
+- **app:** fix transaction input amount microunits conversion ([e886a4c](https://github.com/budgie-at/budgie/commit/e886a4ca4d06a013263445f8a3fffdce18985a50))
+- **app:** remove account icon from header ([d107cbd](https://github.com/budgie-at/budgie/commit/d107cbda98d9bb95b639bb405331d5341bd50bb0))
+- **app:** remove success toasts ([239800a](https://github.com/budgie-at/budgie/commit/239800a2a3259cf3a305170564c507df90a809e2))
+- **app:** return to main after monobank config ([f67ab49](https://github.com/budgie-at/budgie/commit/f67ab49c608a7cb462ebda54a78ae233146028ec))
+- **app:** return to main after monobank config ([ade93aa](https://github.com/budgie-at/budgie/commit/ade93aaa88a65e6ce9de4f5d9bcfa83af2b25780))
+- **app:** revert lm ([f424075](https://github.com/budgie-at/budgie/commit/f424075059686c8eaa2bb7ad955af2773ace28b2))
+- **app:** revert lm ([e8e4eb0](https://github.com/budgie-at/budgie/commit/e8e4eb0ddd1378083499ec0fe8f9b471e9d5c8c1))
+- **app:** revert lm ([a24907c](https://github.com/budgie-at/budgie/commit/a24907c3c871659e52345e2acddfb85ee7e9851a))
+- **app:** revert lm ([c5dd312](https://github.com/budgie-at/budgie/commit/c5dd3120b3c0f4f9733feb9d87f1d688c90b46e1))
+
+### Features
+
+- **app:** add missing translations for account type selector ([#149](https://github.com/budgie-at/budgie/issues/149)) ([671c189](https://github.com/budgie-at/budgie/commit/671c18943601c1600b02e405e4d893e1da84d1d7))
+- **app:** implement account type changing ([e0eab5b](https://github.com/budgie-at/budgie/commit/e0eab5b9aa93b62caa2116736ba519611fdeb0aa))
+- **app:** use 3B llm ([ac15921](https://github.com/budgie-at/budgie/commit/ac159211de504c69d6efb1fcbf7c146e9cbca349))
+- **app:** use 3B llm ([af002b6](https://github.com/budgie-at/budgie/commit/af002b62a00847905e8439c3c3d2c3b8a1f3c147))
+- **app:** use 3B llm ([48a4edc](https://github.com/budgie-at/budgie/commit/48a4edc38d88d6bb9af88e052a43cf03a5d29b54))
+- **app:** use 3B llm ([c23dfb9](https://github.com/budgie-at/budgie/commit/c23dfb94af8a234e218000859fe5e234884075da))
+
 # [1.94.0](https://github.com/budgie-at/budgie/compare/v1.93.0...v1.94.0) (2025-12-31)
 
 ### Features
