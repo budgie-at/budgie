@@ -9,7 +9,7 @@ export const useSearchAccountsGroupedQuery = (search = '', withActive = true) =>
     const { data, ...rest } = useLiveQuery(accountRepository.findBySearchQuery(search), [search]);
     const { data: countData } = useLiveQuery(accountRepository.count(), []);
 
-    const filteredData = data?.filter(account => (withActive ? account.isActive : true));
+    const filteredData = data.filter(account => (withActive ? account.isActive : true));
 
     return {
         accounts: filteredData,
