@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings */
+/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings,max-lines */
 import { BankAccountInterface, BankSyncBatchResultInterface, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncEntityInterface, BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
@@ -272,6 +272,8 @@ class AppMonobankSyncService {
         }
 
         const result = await this.fetchTransactionBatch(sync, account.externalId);
+        await microPause();
+
         await this.processNewTransactions(result, sync.accountId);
 
         return result;
@@ -287,7 +289,6 @@ class AppMonobankSyncService {
     }
 
     private async processNewTransactions(result: BankSyncBatchResultInterface, accountId: number): Promise<void> {
-        await microPause();
         const existing = await transactionService.findByExternalSource(this.provider);
         const existingIds = new Set(existing.map(tx => tx.externalId));
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
