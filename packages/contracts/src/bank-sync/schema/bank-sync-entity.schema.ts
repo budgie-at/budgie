@@ -1,5 +1,5 @@
 import { createSelectSchema } from 'drizzle-zod';
-import { number, enum as zodEnum } from 'zod';
+import { number, string, enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -11,6 +11,7 @@ export const BankSyncEntitySchema = createSelectSchema(BankSyncEntityTable, {
     ...BaseEntityFields,
     accountId: number().positive().describe('The id of the associated account.'),
     provider: zodEnum(ExternalSourceEnum).describe('The bank provider for synchronization.'),
+    token: string().min(1).describe('API token for this bank account sync.'),
     enabled: schema => schema.default(true).describe('Whether sync is enabled for this account.'),
     mode: zodEnum(BankSyncModeEnum).describe('Current sync mode (forward or backward).'),
     status: zodEnum(BankSyncStatusEnum).describe('Current sync status.'),
