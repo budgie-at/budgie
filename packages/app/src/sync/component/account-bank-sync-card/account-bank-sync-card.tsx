@@ -1,5 +1,6 @@
 import { BankSyncModeEnum, BankSyncStatusEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -16,16 +17,15 @@ interface Props {
     readonly accountId: number;
 }
 
-const getStatusColor = (status: BankSyncStatusEnum): string => {
-    if (status === BankSyncStatusEnum.FAILED) {
-        return 'text-destructive';
+const statusTextVariants = cva('text-xs font-medium', {
+    variants: {
+        status: {
+            [BankSyncStatusEnum.FAILED]: 'text-destructive',
+            [BankSyncStatusEnum.SYNCING]: 'text-amber-600',
+            [BankSyncStatusEnum.IDLE]: 'text-green-600'
+        }
     }
-    if (status === BankSyncStatusEnum.SYNCING) {
-        return 'text-amber-600';
-    }
-
-    return 'text-green-600';
-};
+});
 
 export const AccountBankSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
@@ -38,7 +38,6 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
 
     const isForwardMode = bankSync.mode === BankSyncModeEnum.FORWARD;
     const isSyncing = bankSync.status === BankSyncStatusEnum.SYNCING;
-    const statusColor = getStatusColor(bankSync.status);
 
     const getStatusLabel = (): string => {
         if (bankSync.status === BankSyncStatusEnum.FAILED) {
@@ -65,7 +64,7 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     <Text className="text-primary font-semibold text-base">
                         <Trans>Bank Sync</Trans>
                     </Text>
-                    <Text className={`text-xs font-medium ${statusColor}`}>{getStatusLabel()}</Text>
+                    <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
                 </View>
                 <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
             </View>
