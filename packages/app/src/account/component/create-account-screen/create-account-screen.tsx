@@ -20,13 +20,26 @@ interface Props<T extends LiabilityAccountCreateInputInterface | DebtAccountCrea
     readonly descriptionClassName?: string;
     readonly control: Control<T>;
     readonly instrumentSymbol: string;
+    readonly instrumentId?: number;
     readonly variant: ColorPaletteVariant;
     readonly onSubmit: EmptyFn;
+    readonly onInstrumentChange?: (instrumentId: number) => void;
     readonly children: ReactNode;
 }
 
 export const CreateAccountScreen = <T extends LiabilityAccountCreateInputInterface | DebtAccountCreateInputInterface>(props: Props<T>) => {
-    const { title, description, control, descriptionClassName, instrumentSymbol, variant, children, onSubmit } = props;
+    const {
+        title,
+        description,
+        control,
+        descriptionClassName,
+        instrumentSymbol,
+        instrumentId,
+        variant,
+        children,
+        onSubmit,
+        onInstrumentChange
+    } = props;
     const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -54,7 +67,13 @@ export const CreateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
-                <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} />
+                <AccountBalanceField
+                    variant={variant}
+                    instrumentSymbol={instrumentSymbol}
+                    instrumentId={instrumentId}
+                    control={control}
+                    onInstrumentChange={onInstrumentChange}
+                />
 
                 {children}
             </KeyboardAwareScrollView>
