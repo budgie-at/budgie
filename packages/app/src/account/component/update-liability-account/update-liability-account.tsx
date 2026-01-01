@@ -33,7 +33,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             title: account.title,
             currentBalance: balance,
             instrumentId: account.instrumentId,
-            includeInNetWorth: account.includeInNetWorth
+            includeInNetWorth: account.includeInNetWorth,
+            isActive: account.isActive
         },
         async values => await accountService.updateById(account.id, values)
     );

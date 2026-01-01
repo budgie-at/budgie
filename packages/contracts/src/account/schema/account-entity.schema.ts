@@ -27,5 +27,6 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     parentId: schema => schema.positive().nullable().default(null).describe('The id of the parent account.'),
     deadline: schema => schema.nullable().default(null).describe('The deadline of the account.'),
     targetBalance: schema => schema.positive().describe('The target balance of the account.'),
-    contactId: schema => schema.nullable().default(null).describe('The id of the contact associated with the account.')
+    contactId: schema => schema.nullable().default(null).describe('The id of the contact associated with the account.'),
+    isActive: schema => schema.default(true).describe('Determines whether the account is active and visible on the main page.')
 });
