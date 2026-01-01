@@ -12,15 +12,16 @@ import { LiabilityTransactionForm } from '../liability-transaction-form/liabilit
 interface Props {
     readonly categoryId?: number;
     readonly amount?: number;
+    readonly accountId?: number | null;
 }
-export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
+export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Props) => {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateInputSchema,
-        fromAccountId: defaultAccount?.id ?? 0,
+        fromAccountId: accountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,
         amount,
