@@ -1,20 +1,10 @@
 import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
-import { FlatList } from 'react-native';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
-import { Page } from '../../../@generic/component/page/page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { AccountsListPage } from '../../../account/component/accounts-list-page/accounts-list-page';
 import { InactiveAccountCard } from '../../../account/component/inactive-account-card/inactive-account-card';
 import { InactiveAccountsEmptyState } from '../../../account/component/inactive-accounts-empty-state/inactive-accounts-empty-state';
 import { useGetInactiveAccountsQuery } from '../../../account/query/use-get-inactive-accounts.query';
-
-const safeEdges: Edges = ['bottom'];
-const listFooter = <SafeAreaView edges={safeEdges} />;
 
 export default function Inactive() {
     const { accounts } = useGetInactiveAccountsQuery();
@@ -22,33 +12,16 @@ export default function Inactive() {
 
     const inactiveAccountsCount = accounts?.length ?? 0;
 
-    const renderAccount = ({ item }: ListRenderItemInfo<AccountWithInstrumentEntityInterface>) => <InactiveAccountCard account={item} />;
-
-    const handleGoBack = () => void goBackOrReplace('/settings');
+    const renderCard = (account: AccountWithInstrumentEntityInterface) => <InactiveAccountCard account={account} />;
 
     return (
-        <Page
-            header={
-                <PageHeader
-                    onGoBack={handleGoBack}
-                    iconVariant="dark-warning"
-                    description={t`${inactiveAccountsCount} account`}
-                    icon="EyeOff"
-                    title={t`Inactive Accounts`}
-                />
-            }
-        >
-            {isNotEmptyArray(accounts) ? (
-                <FlatList
-                    contentContainerClassName="gap-y-xl pt-5xl"
-                    className="flex-1"
-                    data={accounts}
-                    renderItem={renderAccount}
-                    ListFooterComponent={listFooter}
-                />
-            ) : (
-                <InactiveAccountsEmptyState />
-            )}
-        </Page>
+        <AccountsListPage
+            accounts={accounts}
+            title={t`Inactive Accounts`}
+            description={t`${inactiveAccountsCount} account`}
+            icon="EyeOff"
+            emptyState={<InactiveAccountsEmptyState />}
+            renderCard={renderCard}
+        />
     );
 }
