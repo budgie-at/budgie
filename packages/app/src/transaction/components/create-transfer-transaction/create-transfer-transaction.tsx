@@ -6,7 +6,11 @@ import { useCreateTransactionForm } from '../../hook/use-create-transaction-form
 import { transactionService } from '../../service/transaction.service';
 import { TransferTransactionForm } from '../transfer-transaction-form/transfer-transaction-form';
 
-export const CreateTransferTransaction = () => {
+interface Props {
+    readonly accountId?: number | null;
+}
+
+export const CreateTransferTransaction = ({ accountId }: Props) => {
     const { t } = useLingui();
 
     const { form, handleSubmit } = useCreateTransactionForm({
@@ -14,7 +18,7 @@ export const CreateTransferTransaction = () => {
         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
-        fromAccountId: 0,
+        fromAccountId: accountId ?? 0,
         toAccountId: 0
     });
 
