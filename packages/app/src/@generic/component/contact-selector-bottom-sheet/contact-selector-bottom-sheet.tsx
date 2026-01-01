@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Contact } from '../../hook/use-contacts.hook';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
@@ -67,7 +67,7 @@ export const ContactSelectorBottomSheet = ({ ref, contacts, selectedContact, onS
         const someNumber = phoneNumbers?.some(({ number }) => number?.toLowerCase().includes(search.toLowerCase()));
         const someEmail = emails?.some(({ email }) => email?.toLowerCase().includes(search.toLowerCase()));
 
-        return someNumber || someEmail || name.toLowerCase().includes(search.toLowerCase());
+        return someNumber || someEmail || (isDefined(name) && name.toLowerCase().includes(search.toLowerCase()));
     });
 
     return (

@@ -34,7 +34,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
     return (
         <>
-            <Button onPress={handleOpen} size="sm" variant="dark-warning" content={t`Archive Account`} leftIcon="Archive" />
+            <Button onPress={handleOpen} size="sm" variant="dark-warning" leftIcon="Archive" />
 
             <ConfirmActionBottomSheet
                 ref={ref}
