@@ -57,11 +57,11 @@ msgstr "{tagsCount} tags available"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(main)/settings/index.tsx:57
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(main)/settings/index.tsx:133
+#: src/app/(main)/settings/index.tsx:137
 msgid "About"
 msgstr "About"
 
@@ -157,7 +157,7 @@ msgstr "AI"
 msgid "AI Suggestion"
 msgstr "AI Suggestion"
 
-#: src/app/(main)/settings/index.tsx:138
+#: src/app/(main)/settings/index.tsx:142
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -173,7 +173,7 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:58
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -203,7 +203,7 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(main)/settings/index.tsx:115
+#: src/app/(main)/settings/index.tsx:117
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -224,7 +224,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(main)/settings/index.tsx:103
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -281,7 +281,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/settings/index.tsx:136
+#: src/app/(main)/settings/index.tsx:140
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -458,6 +458,10 @@ msgstr "Could not restore account."
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
+#: src/export/components/export-database/export-database.tsx:28
+msgid "Create a backup of all your data"
+msgstr "Create a backup of all your data"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Create a PIN"
@@ -470,7 +474,7 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(main)/settings/index.tsx:95
+#: src/app/(main)/settings/index.tsx:97
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -546,7 +550,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(main)/settings/index.tsx:126
+#: src/app/(main)/settings/index.tsx:128
 msgid "Data management"
 msgstr "Data management"
 
@@ -566,7 +570,7 @@ msgstr "Date Range"
 msgid "Debt"
 msgstr "Debt"
 
-#: src/account/component/create-debt-account/create-debt-account.tsx:50
+#: src/account/component/create-debt-account/create-debt-account.tsx:51
 #: src/app/(main)/create-account/index.tsx:40
 msgid "Debt Account"
 msgstr "Debt Account"
@@ -708,6 +712,7 @@ msgstr "Enter your PIN"
 
 #: src/app/(main)/settings/import.tsx:113
 #: src/import/components/import-csv/import-csv.tsx:29
+#: src/import/components/import-database/import-database.tsx:46
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
 msgid "Error"
 msgstr "Error"
@@ -740,7 +745,12 @@ msgstr "Export all transactions to a CSV file"
 msgid "Export CSV"
 msgstr "Export CSV"
 
+#: src/export/components/export-database/export-database.tsx:27
+msgid "Export Database"
+msgstr "Export Database"
+
 #: src/export/components/export-csv/export-csv.tsx:19
+#: src/export/components/export-database/export-database.tsx:19
 msgid "Export Failed"
 msgstr "Export Failed"
 
@@ -817,7 +827,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(main)/settings/index.tsx:77
+#: src/app/(main)/settings/index.tsx:79
 msgid "General"
 msgstr "General"
 
@@ -833,7 +843,7 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:68
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -849,6 +859,12 @@ msgstr "Icon"
 msgid "Import CSV"
 msgstr "Import CSV"
 
+#: src/import/components/import-database/import-database.tsx:55
+#: src/import/components/import-database/import-database.tsx:68
+#: src/import/components/import-database/import-database.tsx:71
+msgid "Import Database"
+msgstr "Import Database"
+
 #: src/app/(main)/settings/import.tsx:145
 msgid "Import Failed"
 msgstr "Import Failed"
@@ -857,8 +873,12 @@ msgstr "Import Failed"
 msgid "Import transactions from a CSV file"
 msgstr "Import transactions from a CSV file"
 
+#: src/import/components/import-database/import-database.tsx:67
+msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
+msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
+
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -908,11 +928,11 @@ msgstr "Locale"
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:89
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(main)/settings/index.tsx:96
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1090,7 +1110,7 @@ msgstr "Note (optional)"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/app/(main)/settings/index.tsx:84
+#: src/app/(main)/settings/index.tsx:86
 msgid "Organization"
 msgstr "Organization"
 
@@ -1161,7 +1181,7 @@ msgstr "Preset applied. Adjust columns below if needed."
 msgid "Preview"
 msgstr "Preview"
 
-#: src/app/(main)/settings/index.tsx:51
+#: src/app/(main)/settings/index.tsx:53
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1190,6 +1210,10 @@ msgstr "Restore"
 msgid "Restore Account?"
 msgstr "Restore Account?"
 
+#: src/import/components/import-database/import-database.tsx:56
+msgid "Restore from a backup file"
+msgstr "Restore from a backup file"
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
 msgstr "Save"
@@ -1207,7 +1231,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(main)/settings/index.tsx:65
+#: src/app/(main)/settings/index.tsx:67
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1251,7 +1275,7 @@ msgstr "Search tags..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(main)/settings/index.tsx:62
 msgid "Security"
 msgstr "Security"
 
@@ -1341,15 +1365,15 @@ msgstr "Selected {selectedTagsCount}"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(main)/settings/index.tsx:48
+#: src/app/(main)/settings/index.tsx:50
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:121
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(main)/settings/index.tsx:120
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -1622,15 +1646,15 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/app/(main)/settings/index.tsx:109
+#: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(main)/settings/index.tsx:88
+#: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(main)/settings/index.tsx:102
+#: src/app/(main)/settings/index.tsx:104
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
