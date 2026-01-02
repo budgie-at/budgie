@@ -1,4 +1,4 @@
-import { and, eq, inArray, isNull, lt, or } from 'drizzle-orm';
+import { and, eq, isNull, lt, or } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -19,34 +19,11 @@ export class BankSyncRepository {
         return bankSync;
     }
 
-    async upsert(input: BankSyncCreateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
-        const [bankSync] = await (tx ?? this.db)
-            .insert(BankSyncEntityTable)
-            .values([input])
-            .onConflictDoUpdate({
-                target: BankSyncEntityTable.accountId,
-                set: { ...input }
-            })
-            .returning();
-
-        return bankSync;
-    }
-
     async update(id: number, input: BankSyncUpdateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
         const [bankSync] = await (tx ?? this.db)
             .update(BankSyncEntityTable)
             .set({ ...input })
             .where(eq(BankSyncEntityTable.id, id))
-            .returning();
-
-        return bankSync;
-    }
-
-    async updateByAccountId(accountId: number, input: BankSyncUpdateEntityInterface, tx?: TX): Promise<BankSyncEntityInterface> {
-        const [bankSync] = await (tx ?? this.db)
-            .update(BankSyncEntityTable)
-            .set({ ...input })
-            .where(eq(BankSyncEntityTable.accountId, accountId))
             .returning();
 
         return bankSync;
@@ -72,12 +49,6 @@ export class BankSyncRepository {
 
     async getByProvider(provider: ExternalSourceEnum): Promise<BankSyncEntityInterface[]> {
         return await this.db.query.BankSyncEntityTable.findMany({
-            where: and(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt))
-        });
-    }
-
-    findByProvider(provider: ExternalSourceEnum) {
-        return this.db.query.BankSyncEntityTable.findMany({
             where: and(eq(BankSyncEntityTable.provider, provider), isNull(BankSyncEntityTable.deletedAt))
         });
     }
@@ -112,7 +83,7 @@ export class BankSyncRepository {
                 eq(BankSyncEntityTable.enabled, true),
                 eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
                 isNull(BankSyncEntityTable.deletedAt),
-                or(isNull(BankSyncEntityTable.forwardSyncFromAt), lt(BankSyncEntityTable.forwardSyncFromAt, staleTime))
+                or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
             )
         });
     }
@@ -123,16 +94,6 @@ export class BankSyncRepository {
 
     async setEnabled(accountId: number, enabled: boolean, tx?: TX): Promise<void> {
         await (tx ?? this.db).update(BankSyncEntityTable).set({ enabled }).where(eq(BankSyncEntityTable.accountId, accountId));
-    }
-
-    async incrementTransactionCount(id: number, count: number, tx?: TX): Promise<void> {
-        const bankSync = await this.getById(id);
-        if (bankSync) {
-            await (tx ?? this.db)
-                .update(BankSyncEntityTable)
-                .set({ transactionCount: bankSync.transactionCount + count })
-                .where(eq(BankSyncEntityTable.id, id));
-        }
     }
 
     async recordError(id: number, error: string, tx?: TX): Promise<void> {
@@ -146,30 +107,6 @@ export class BankSyncRepository {
                 })
                 .where(eq(BankSyncEntityTable.id, id));
         }
-    }
-
-    async clearError(id: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db)
-            .update(BankSyncEntityTable)
-            .set({
-                lastError: null,
-                errorCount: 0
-            })
-            .where(eq(BankSyncEntityTable.id, id));
-    }
-
-    async deleteByAccountId(accountId: number, tx?: TX): Promise<void> {
-        await (tx ?? this.db)
-            .update(BankSyncEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(eq(BankSyncEntityTable.accountId, accountId));
-    }
-
-    async deleteByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
-        await (tx ?? this.db)
-            .update(BankSyncEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(inArray(BankSyncEntityTable.accountId, accountIds));
     }
 
     async truncate(tx?: TX): Promise<void> {
