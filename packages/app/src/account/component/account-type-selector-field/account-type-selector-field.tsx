@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Control, Controller, Path, UseControllerReturn } from 'react-hook-form';
