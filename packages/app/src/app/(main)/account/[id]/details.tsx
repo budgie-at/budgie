@@ -1,7 +1,8 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';
+import { RefObject } from 'react';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -13,6 +14,7 @@ import { HapticPressable } from '../../../../@generic/component/haptic-pressable
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
+import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
@@ -22,6 +24,7 @@ import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.consta
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { CreateTransactionBottomSheet } from '../../../../transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet';
 import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
 
 const descriptionVariants = cva('uppercase', {
@@ -45,6 +48,10 @@ export default function Account() {
     if (!isDefined(account)) {
         return <Redirect href="/" />;
     }
+
+    const renderBottomSheet = (_: AccountEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => (
+        <CreateTransactionBottomSheet ref={ref} accountId={account.id} />
+    );
 
     const { title, icon, type, instrument } = account;
 
@@ -85,7 +92,7 @@ export default function Account() {
 
             <TransactionList accountId={id} />
 
-            <FloatingAddButton accountId={id} />
+            <FloatingAddButton renderBottomSheet={renderBottomSheet} />
         </Page>
     );
 }
