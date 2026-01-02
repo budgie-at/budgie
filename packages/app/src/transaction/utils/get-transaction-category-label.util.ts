@@ -4,7 +4,7 @@ import {
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { getTransactionEntryLabel } from './get-transaction-entry-label.util';
 
 export const getTransactionCategoryLabel = (
     transaction: TransactionWithRelationsEntityInterface,
@@ -21,13 +21,5 @@ export const getTransactionCategoryLabel = (
 
     const entry = transaction.entries.at(0);
 
-    if (isDefined(entry?.category?.title)) {
-        return entry.category.title;
-    }
-
-    if (isDefined(entry?.mccCategory?.shortDescription)) {
-        return entry.mccCategory.shortDescription;
-    }
-
-    return transaction.type;
+    return getTransactionEntryLabel(entry, transaction.type);
 };
