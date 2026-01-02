@@ -1,4 +1,4 @@
-import { ComponentProps, useRef } from 'react';
+import { ReactNode, RefObject, useRef } from 'react';
 import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
@@ -6,11 +6,12 @@ import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
-import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
-export const SearchablePageCreate = <T extends IdInterface>({
-    renderBottomSheet
-}: Pick<ComponentProps<typeof SearchablePageList<T>>, 'renderBottomSheet'>) => {
+export interface FloatingAddButtonProps<T extends IdInterface> {
+    renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
+}
+
+export const FloatingAddButton = <T extends IdInterface>({ renderBottomSheet }: FloatingAddButtonProps<T>) => {
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => void ref.current?.open();
