@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
@@ -40,7 +41,11 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
 
     return (
         <>
-            <HorizontalCell onPress={handleOpen} left={<Icon size={16} icon="Tag" className={iconVariants({ variant })} />} size="lg">
+            <HorizontalCell
+                onPress={handleOpen}
+                left={<Icon size={16} icon={UserIconNameEnum.Tag} className={iconVariants({ variant })} />}
+                size="lg"
+            >
                 {isNotEmptyArray(selectedTags) ? (
                     <View className="mr-auto flex-row items-baseline">
                         <Text className="text-sm text-primary font-semibold">{selectedTags[0].title}</Text>

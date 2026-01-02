@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -38,7 +38,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                         onPress={handleClear}
                         className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
                     >
-                        <Icon icon="X" className="text-destructive-foreground" size={14} />
+                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={14} />
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>Clear All</Trans>
                         </Text>

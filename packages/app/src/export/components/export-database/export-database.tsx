@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
@@ -13,7 +14,7 @@ export const ExportDatabase = () => {
             title={t`Export Database`}
             description={t`Create a backup of all your data`}
             onPress={handleExport}
-            icon="Database"
+            icon={UserIconNameEnum.Database}
             variant="default"
             isLoading={isLoading}
         />

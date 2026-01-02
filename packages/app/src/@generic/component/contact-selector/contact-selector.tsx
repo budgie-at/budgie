@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import React, { useRef } from 'react';
 
@@ -38,7 +39,13 @@ export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
 
     return (
         <>
-            <SimpleHorizontalCell title={title} description={description} icon="User" onPress={handleOpen} iconParams={iconParams} />
+            <SimpleHorizontalCell
+                title={title}
+                description={description}
+                icon={UserIconNameEnum.User}
+                onPress={handleOpen}
+                iconParams={iconParams}
+            />
 
             <ContactSelectorBottomSheet selectedContact={contact} contacts={contacts} onSelect={handleSelect} ref={ref} />
         </>

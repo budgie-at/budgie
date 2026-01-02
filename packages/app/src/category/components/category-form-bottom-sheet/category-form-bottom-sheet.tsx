@@ -1,4 +1,4 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
@@ -56,7 +56,7 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon="Folder"
+            icon={UserIconNameEnum.Folder}
             title={formTitle}
             description={formDescription}
             ref={ref}

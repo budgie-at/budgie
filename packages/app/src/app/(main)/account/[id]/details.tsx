@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';
@@ -68,7 +68,13 @@ export default function Account() {
                     right={
                         <Link href={`/account/${id}/update`} asChild>
                             <HapticPressable className="ml-auto">
-                                <CircleIcon icon="EllipsisVertical" variant="ghost" size={40} iconSize={24} border={false} />
+                                <CircleIcon
+                                    icon={UserIconNameEnum.EllipsisVertical}
+                                    variant="ghost"
+                                    size={40}
+                                    iconSize={24}
+                                    border={false}
+                                />
                             </HapticPressable>
                         </Link>
                     }
