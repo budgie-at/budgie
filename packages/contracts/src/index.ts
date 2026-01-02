@@ -112,6 +112,38 @@ export { CategoryUpdateEntitySchema } from './category/schema/category-update-en
 
 export { CategoryRepository } from './category/repository/category.repository';
 
+export { MCC_GROUP_TYPE_MAX_LENGTH } from './mcc-group/constant/mcc-group-type-max-length.constant';
+export { MCC_GROUP_DESCRIPTION_MAX_LENGTH } from './mcc-group/constant/mcc-group-description-max-length.constant';
+
+export { MccGroupAssociationEnum } from './mcc-group/enum/mcc-group-association.enum';
+
+export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
+export { MccGroupEntityRelations } from './mcc-group/relations/mcc-group-entity.relations';
+
+export type { MccGroupEntityInterface } from './mcc-group/entity/mcc-group-entity.interface';
+export type { MccGroupCreateEntityInterface } from './mcc-group/entity/mcc-group-create-entity.interface';
+
+export { MccGroupEntitySchema } from './mcc-group/schema/mcc-group-entity.schema';
+export { MccGroupCreateEntitySchema } from './mcc-group/schema/mcc-group-create-entity.schema';
+
+export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
+
+export { MCC_CODE_LENGTH } from './mcc-category/constant/mcc-code-length.constant';
+export { MCC_DESCRIPTION_MAX_LENGTH } from './mcc-category/constant/mcc-description-max-length.constant';
+
+export { MccCategoryAssociationEnum } from './mcc-category/enum/mcc-category-association.enum';
+
+export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';
+export { MccCategoryEntityRelations } from './mcc-category/relations/mcc-category-entity.relations';
+
+export type { MccCategoryEntityInterface } from './mcc-category/entity/mcc-category-entity.interface';
+export type { MccCategoryCreateEntityInterface } from './mcc-category/entity/mcc-category-create-entity.interface';
+
+export { MccCategoryEntitySchema } from './mcc-category/schema/mcc-category-entity.schema';
+export { MccCategoryCreateEntitySchema } from './mcc-category/schema/mcc-category-create-entity.schema';
+
+export { MccCategoryRepository } from './mcc-category/repository/mcc-category.repository';
+
 export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
