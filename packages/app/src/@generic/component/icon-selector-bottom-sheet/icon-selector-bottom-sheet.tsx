@@ -28,14 +28,15 @@ const flatListProps = {
 };
 
 export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }: Props) => {
-    const [search, setSearch] = useState('');
     const { t } = useLingui();
+    const [search, setSearch] = useState('');
 
     const searchLower = search.toLowerCase();
     const filteredIcons = USER_ICONS_LIST.filter(
         ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
     );
-    const data = padFlatListData(filteredIcons);
+    const showedIcons = filteredIcons.slice(0, 100);
+    const data = padFlatListData(showedIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
         void ref.current?.dismiss();
