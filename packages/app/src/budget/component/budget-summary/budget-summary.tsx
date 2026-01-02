@@ -1,10 +1,11 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-import { isPositiveNumber } from '@rnw-community/shared';
 
 interface Props {
     readonly totalPlanned: number;

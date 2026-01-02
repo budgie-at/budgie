@@ -5,8 +5,9 @@ import { cva } from 'class-variance-authority';
 import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { isDefined } from '@rnw-community/shared';
+
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 const ROLLOVER_OPTIONS = [
     { value: BudgetRolloverRuleEnum.NONE, label: msg`None`, hint: msg`Unused budget is lost at period end` },

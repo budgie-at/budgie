@@ -1,5 +1,7 @@
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { i18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { router } from 'expo-router';
 import { FieldErrors, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -43,7 +45,7 @@ export const useAllocationForm = (budgetId: number, defaultValues: Partial<Alloc
         const firstError = Object.values(errors).at(0);
 
         if (firstError?.message) {
-            Toast.show({ type: 'error', text1: 'Validation Error', text2: firstError.message });
+            Toast.show({ type: 'error', text1: i18n.t(msg`Validation Error`), text2: firstError.message });
         }
     };
 

@@ -7,12 +7,12 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useBudgetAnalytics } from '../../hook/use-budget-analytics.hook';
 import { BudgetHealthCard } from '../budget-health-card/budget-health-card';
 import { BudgetHistoricalPeriods } from '../budget-historical-periods/budget-historical-periods';
+import { BudgetOverviewCard } from '../budget-overview-card/budget-overview-card';
 import { BudgetPlanNextPeriod } from '../budget-plan-next-period/budget-plan-next-period';
+import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { BudgetStatsCards } from '../budget-stats-cards/budget-stats-cards';
 import { BudgetSummaryCard } from '../budget-summary-card/budget-summary-card';
 import { TopCategoriesCard } from '../top-categories-card/top-categories-card';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-import { BudgetOverviewCard } from '../budget-overview-card/budget-overview-card';
 
 interface Props {
     readonly budget: BudgetEntityInterface;

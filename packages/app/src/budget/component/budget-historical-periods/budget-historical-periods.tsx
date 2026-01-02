@@ -2,6 +2,8 @@ import { BudgetAllocationEntityInterface } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BudgetHistoricalPeriodCard } from '../budget-historical-period-card/budget-historical-period-card';
 
 interface HistoricalPeriod {
@@ -12,13 +14,16 @@ interface HistoricalPeriod {
 
 interface Props {
     readonly totalPlanned: number;
-    readonly categoryIds: number[];
+    readonly categoryIds: readonly number[];
     readonly currencySymbol: string;
-    readonly periods: HistoricalPeriod[];
-    readonly allocations: BudgetAllocationEntityInterface[];
+    readonly periods: readonly HistoricalPeriod[];
+    readonly allocations: readonly BudgetAllocationEntityInterface[];
 }
 
 export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, currencySymbol, allocations }: Props) => {
+    const allocationData = allocations
+        .filter(alloc => isDefined(alloc.categoryId))
+        .map(alloc => ({ categoryId: alloc.categoryId as number, amount: alloc.amount }));
 
     return (
         <View className="gap-3">
@@ -35,7 +40,7 @@ export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, cu
                     categoryIds={categoryIds}
                     totalPlanned={totalPlanned}
                     currencySymbol={currencySymbol}
-                    allocations={allocations}
+                    allocations={allocationData}
                 />
             ))}
         </View>

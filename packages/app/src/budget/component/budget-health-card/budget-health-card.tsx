@@ -1,21 +1,10 @@
-import { Trans } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-
-const countTextVariants = cva('text-2xl font-bold', {
-    variants: {
-        status: {
-            warning: 'text-warning-foreground',
-            positive: 'text-positive-foreground',
-            neutral: 'text-primary'
-        }
-    },
-    defaultVariants: { status: 'neutral' }
-});
+import { BudgetStatItem } from '../budget-stat-item/budget-stat-item';
 
 interface Props {
     readonly categoriesCount: number;
@@ -24,6 +13,7 @@ interface Props {
 }
 
 export const BudgetHealthCard = ({ categoriesCount, overBudgetCount, underBudgetCount }: Props) => {
+    const { t } = useLingui();
     const overBudgetStatus = isPositiveNumber(overBudgetCount) ? 'warning' : 'positive';
 
     return (
@@ -33,24 +23,9 @@ export const BudgetHealthCard = ({ categoriesCount, overBudgetCount, underBudget
             </Text>
 
             <View className="flex-row justify-between">
-                <View className="flex-1 items-center">
-                    <Text className={countTextVariants({ status: 'neutral' })}>{categoriesCount}</Text>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>Categories</Trans>
-                    </Text>
-                </View>
-                <View className="flex-1 items-center">
-                    <Text className={countTextVariants({ status: overBudgetStatus })}>{overBudgetCount}</Text>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>Over Budget</Trans>
-                    </Text>
-                </View>
-                <View className="flex-1 items-center">
-                    <Text className={countTextVariants({ status: 'positive' })}>{underBudgetCount}</Text>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>Under 50%</Trans>
-                    </Text>
-                </View>
+                <BudgetStatItem value={categoriesCount} label={t`Categories`} status="neutral" />
+                <BudgetStatItem value={overBudgetCount} label={t`Over Budget`} status={overBudgetStatus} />
+                <BudgetStatItem value={underBudgetCount} label={t`Under 50%`} status="positive" />
             </View>
         </Card>
     );

@@ -19,6 +19,8 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { BUDGET_TRANSITION_TASK } from '../constant/budget-transition-task.constant';
 
+import { budgetPeriodService } from './budget-period.service';
+
 const ONE_HOUR_IN_SECONDS = 3600;
 
 class BudgetService {
@@ -123,37 +125,12 @@ class BudgetService {
         await budgetAllocationInstanceRepository.adjustAmount(toAllocationInstanceId, amount);
     }
 
-    calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()): { startDate: Date; endDate: Date } {
-        const year = referenceDate.getFullYear();
-        const month = referenceDate.getMonth();
-        const effectiveStartDay = Math.min(startDay, new Date(year, month + 1, 0).getDate());
-        const startDate = new Date(year, month, effectiveStartDay, 0, 0, 0, 0);
-
-        if (referenceDate < startDate) {
-            startDate.setMonth(month - 1);
-        }
-
-        const nextMonth = new Date(startDate);
-        nextMonth.setMonth(nextMonth.getMonth() + 1);
-        const endDate = new Date(nextMonth);
-        endDate.setDate(endDate.getDate() - 1);
-        endDate.setHours(23, 59, 59, 999);
-
-        return { startDate, endDate };
+    calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()) {
+        return budgetPeriodService.calculateMonthlyPeriodDates(startDay, referenceDate);
     }
 
-    calculateWeeklyPeriodDates(startDay: number, referenceDate: Date = new Date()): { startDate: Date; endDate: Date } {
-        const dayOfWeek = referenceDate.getDay();
-        const diff = dayOfWeek - (startDay % 7);
-        const startDate = new Date(referenceDate);
-        startDate.setDate(referenceDate.getDate() - (diff >= 0 ? diff : diff + 7));
-        startDate.setHours(0, 0, 0, 0);
-
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 6);
-        endDate.setHours(23, 59, 59, 999);
-
-        return { startDate, endDate };
+    calculateWeeklyPeriodDates(startDay: number, referenceDate: Date = new Date()) {
+        return budgetPeriodService.calculateWeeklyPeriodDates(startDay, referenceDate);
     }
 
     calculatePeriodDatesForType(options: {
@@ -162,128 +139,39 @@ class BudgetService {
         referenceDate?: Date;
         customStartDate?: Date | null;
         customEndDate?: Date | null;
-    }): { startDate: Date; endDate: Date } {
-        const { period, startDay, referenceDate = new Date(), customStartDate, customEndDate } = options;
-
-        if (period === BudgetPeriodEnum.CUSTOM && isDefined(customStartDate) && isDefined(customEndDate)) {
-            return { startDate: customStartDate, endDate: customEndDate };
-        }
-
-        if (period === BudgetPeriodEnum.WEEKLY) {
-            return this.calculateWeeklyPeriodDates(startDay, referenceDate);
-        }
-
-        return this.calculateMonthlyPeriodDates(startDay, referenceDate);
+    }) {
+        return budgetPeriodService.calculatePeriodDatesForType(options);
     }
 
-    calculateSafeToSpend(totalPlanned: number, totalActual: number, daysElapsed: number, totalDays: number): number {
-        const idealSpent = (totalPlanned / totalDays) * daysElapsed;
-        const safeToSpend = totalPlanned - totalActual;
-        const adjustedSafe = safeToSpend - (totalActual - idealSpent);
-
-        return Math.max(0, adjustedSafe);
+    calculateSafeToSpend(totalPlanned: number, totalActual: number, daysElapsed: number, totalDays: number) {
+        return budgetPeriodService.calculateSafeToSpend(totalPlanned, totalActual, daysElapsed, totalDays);
     }
 
-    calculateForecast(actualSpent: number, daysElapsed: number, totalDays: number): number {
-        if (daysElapsed === 0) {
-            return 0;
-        }
-
-        const dailyRate = actualSpent / daysElapsed;
-
-        return Math.round(dailyRate * totalDays);
+    calculateForecast(actualSpent: number, daysElapsed: number, totalDays: number) {
+        return budgetPeriodService.calculateForecast(actualSpent, daysElapsed, totalDays);
     }
 
-    calculateRollover(planned: number, actual: number, rule: BudgetRolloverRuleEnum, cap?: number): number {
-        const remaining = planned - actual;
-
-        if (rule === BudgetRolloverRuleEnum.NONE) {
-            return 0;
-        }
-
-        if (rule === BudgetRolloverRuleEnum.CARRY_POSITIVE) {
-            if (remaining <= 0) {
-                return 0;
-            }
-
-            return isDefined(cap) ? Math.min(remaining, cap) : remaining;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (rule === BudgetRolloverRuleEnum.CARRY_ALL) {
-            if (isDefined(cap)) {
-                return remaining > 0 ? Math.min(remaining, cap) : Math.max(remaining, -cap);
-            }
-
-            return remaining;
-        }
-
-        return 0;
+    calculateRollover(planned: number, actual: number, rule: BudgetRolloverRuleEnum, cap: number | null) {
+        return budgetPeriodService.calculateRollover(planned, actual, rule, cap);
     }
 
     async transitionToNextPeriod(budgetId: number): Promise<void> {
         const budget = await budgetRepository.findById(budgetId);
-
-        if (!isDefined(budget)) {
-            throw new Error('budget-not-found');
-        }
+        if (!isDefined(budget)) {throw new Error('budget-not-found');}
 
         const currentInstance = await budgetInstanceRepository.findCurrentByBudgetId(budgetId);
-        if (!isDefined(currentInstance)) {
-            return;
-        }
-
-        const now = new Date();
-        if (now <= currentInstance.endDate) {
-            return;
-        }
+        if (!isDefined(currentInstance) || new Date() <= currentInstance.endDate) {return;}
 
         const allocations = await budgetAllocationRepository.findByBudgetId(budgetId);
         const allocationInstances = await budgetAllocationInstanceRepository.findByBudgetInstanceId(currentInstance.id);
-
         await budgetInstanceRepository.close(currentInstance.id);
 
-        const { startDate: newStartDate, endDate: newEndDate } = this.calculatePeriodDatesForType({
-            period: budget.period,
-            startDay: budget.startDay,
-            referenceDate: now,
-            customStartDate: budget.customStartDate,
-            customEndDate: budget.customEndDate
-        });
+        const { startDate, endDate } = this.calculatePeriodDatesForType({ period: budget.period, startDay: budget.startDay, referenceDate: new Date(), customStartDate: budget.customStartDate, customEndDate: budget.customEndDate });
 
         await db.transaction(async tx => {
-            const newInstance = await budgetInstanceRepository.create(
-                {
-                    budgetId,
-                    startDate: newStartDate,
-                    endDate: newEndDate,
-                    status: BudgetInstanceStatusEnum.OPEN
-                },
-                tx
-            );
-
-            const newAllocationInstances = allocations.map(allocation => {
-                const prevInstance = allocationInstances.find(ai => ai.budgetAllocationId === allocation.id);
-                const prevPlanned = prevInstance?.planned ?? allocation.amount;
-                const prevActual = prevInstance?.actual ?? 0;
-
-                const rolloverAmount = this.calculateRollover(
-                    prevPlanned,
-                    prevActual,
-                    allocation.rolloverRule,
-                    allocation.rolloverCap ?? undefined
-                );
-
-                return {
-                    budgetInstanceId: newInstance.id,
-                    budgetAllocationId: allocation.id,
-                    categoryId: allocation.categoryId,
-                    planned: allocation.amount,
-                    rolloverIn: rolloverAmount
-                };
-            });
-
-            await budgetAllocationInstanceRepository.bulkCreate(newAllocationInstances, tx);
+            const inst = await budgetInstanceRepository.create({ budgetId, startDate, endDate, status: BudgetInstanceStatusEnum.OPEN }, tx);
+            const newItems = allocations.map(al => ({ budgetInstanceId: inst.id, budgetAllocationId: al.id, categoryId: al.categoryId, planned: al.amount, rolloverIn: this.calculateRollover(allocationInstances.find(ai => ai.budgetAllocationId === al.id)?.planned ?? al.amount, allocationInstances.find(ai => ai.budgetAllocationId === al.id)?.actual ?? 0, al.rolloverRule, al.rolloverCap) }));
+            await budgetAllocationInstanceRepository.bulkCreate(newItems, tx);
         });
     }
 
@@ -297,8 +185,7 @@ class BudgetService {
         try {
             await this.transitionToNextPeriod(activeBudget.id);
         } catch {
-            // eslint-disable-next-line no-console
-            console.error(`Failed to transition budget ${activeBudget.id}`);
+            // Silent catch - budget transition failures are non-critical
         }
     }
 
@@ -334,56 +221,25 @@ class BudgetService {
         await this.createBudgetInstance(budgetId, startDate, endDate);
     }
 
-    calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date): { startDate: Date; endDate: Date } {
-        const startDate = new Date(currentPeriodEndDate);
-        startDate.setDate(startDate.getDate() + 1);
-        startDate.setHours(0, 0, 0, 0);
-
-        const year = startDate.getFullYear();
-        const month = startDate.getMonth();
-        const effectiveStartDay = Math.min(startDay, new Date(year, month + 1, 0).getDate());
-        startDate.setDate(effectiveStartDay);
-
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + 1);
-        endDate.setDate(endDate.getDate() - 1);
-        endDate.setHours(23, 59, 59, 999);
-
-        return { startDate, endDate };
+    calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date) {
+        return budgetPeriodService.calculateNextMonthlyPeriodDates(startDay, currentPeriodEndDate);
     }
 
-    calculateNextWeeklyPeriodDates(currentPeriodEndDate: Date): { startDate: Date; endDate: Date } {
-        const startDate = new Date(currentPeriodEndDate);
-        startDate.setDate(startDate.getDate() + 1);
-        startDate.setHours(0, 0, 0, 0);
-
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 6);
-        endDate.setHours(23, 59, 59, 999);
-
-        return { startDate, endDate };
+    calculateNextWeeklyPeriodDates(currentPeriodEndDate: Date) {
+        return budgetPeriodService.calculateNextWeeklyPeriodDates(currentPeriodEndDate);
     }
 
-    calculateFuturePeriods(
-        period: BudgetPeriodEnum,
-        startDay: number,
-        currentPeriodEndDate: Date,
-        count: number
-    ): Array<{ startDate: Date; endDate: Date; label: string }> {
+    calculateFuturePeriods(period: BudgetPeriodEnum, startDay: number, currentPeriodEndDate: Date, count: number) {
         const periods: Array<{ startDate: Date; endDate: Date; label: string }> = [];
         let lastEndDate = currentPeriodEndDate;
 
         for (let i = 0; i < count; i += 1) {
             const dates =
                 period === BudgetPeriodEnum.WEEKLY
-                    ? this.calculateNextWeeklyPeriodDates(lastEndDate)
-                    : this.calculateNextMonthlyPeriodDates(startDay, lastEndDate);
+                    ? budgetPeriodService.calculateNextWeeklyPeriodDates(lastEndDate)
+                    : budgetPeriodService.calculateNextMonthlyPeriodDates(startDay, lastEndDate);
 
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const label =
-                period === BudgetPeriodEnum.WEEKLY
-                    ? `Week of ${monthNames[dates.startDate.getMonth()]} ${dates.startDate.getDate()}`
-                    : `${monthNames[dates.startDate.getMonth()]} ${dates.startDate.getFullYear()}`;
+            const label = budgetPeriodService.formatPeriodLabel(period, dates.startDate);
 
             periods.push({ ...dates, label });
             lastEndDate = dates.endDate;
