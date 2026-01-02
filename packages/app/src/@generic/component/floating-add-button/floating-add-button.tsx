@@ -1,32 +1,36 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useRef } from 'react';
-import { ViewStyle } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ReactNode, RefObject, useRef } from 'react';
+import { View } from 'react-native';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { CreateTransactionBottomSheet } from '../../../transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
-import { CircleIcon } from '../circle-icon/circle-icon';
+import { IdInterface } from '../../interface/id.interface';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
 
-interface Props {
-    readonly accountId: number;
+export interface FloatingAddButtonProps<T extends IdInterface> {
+    renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
 
-export const FloatingAddButton = ({ accountId }: Props) => {
+export const FloatingAddButton = <T extends IdInterface>({ renderBottomSheet }: FloatingAddButtonProps<T>) => {
     const ref = useRef<BottomSheetInterface | null>(null);
-    const { bottom } = useSafeAreaInsets();
 
     const handleOpen = () => void ref.current?.open();
 
-    const style: ViewStyle = { bottom: bottom + 24, right: 24 };
-
     return (
         <>
-            <HapticPressable onPress={handleOpen} className="absolute shadow-lg rounded-full" style={style}>
-                <CircleIcon icon={UserIconNameEnum.Plus} variant="primary" size={56} iconSize={28} radius={28} border={false} />
-            </HapticPressable>
+            <View className="absolute bottom-1/10 right-10">
+                <Animated.View entering={ZoomIn.duration(300).delay(350)}>
+                    <HapticPressable
+                        onPress={handleOpen}
+                        className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
+                    >
+                        <Icon icon={UserIconNameEnum.Plus} className="text-primary-reverse" size={32} />
+                    </HapticPressable>
+                </Animated.View>
+            </View>
 
-            <CreateTransactionBottomSheet ref={ref} accountId={accountId} />
+            {renderBottomSheet(null, ref)}
         </>
     );
 };
