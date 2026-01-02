@@ -59,19 +59,6 @@ class AppMonobankSyncService {
         });
     }
 
-    async setupAccountSync(token: string, externalId: string): Promise<void> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
-        const bankAccount = bankAccounts.find(acc => acc.id === externalId);
-        if (!isDefined(bankAccount)) {
-            throw new Error('Bank account not found');
-        }
-
-        const account = await this.getOrCreateAccount(bankAccount);
-        await this.createOrUpdateBankSync(account.id, token);
-        void this.registerBackgroundTask();
-        void this.sync();
-    }
-
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
         const bankAccounts = await new MonobankSyncService(token).syncAccounts();
 

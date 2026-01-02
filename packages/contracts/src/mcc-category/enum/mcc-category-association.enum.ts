@@ -1,3 +1,4 @@
 export enum MccCategoryAssociationEnum {
-    MCC_GROUP = 'mccGroup'
+    MCC_GROUP = 'mccGroup',
+    TRANSACTION_ENTRIES = 'transactionEntries'
 }

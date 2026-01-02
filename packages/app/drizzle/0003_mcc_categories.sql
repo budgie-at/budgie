@@ -23,6 +23,8 @@ CREATE TABLE `mcc_categories` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `mcc_categories_mcc_unique` ON `mcc_categories` (`mcc`);
 --> statement-breakpoint
+ALTER TABLE `transaction_entries` ADD `mcc_category_id` integer REFERENCES `mcc_categories`(`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
+--> statement-breakpoint
 INSERT INTO `mcc_groups` (`id`, `type`, `description`) VALUES
 (1, 'AS', 'Agricultural Services'),
 (2, 'CS', 'Contract services'),

@@ -10,6 +10,7 @@ export const TransactionEntryEntitySchema = createSelectSchema(TransactionEntryE
     transactionId: schema => schema.positive().describe('Id of the transaction the entry belongs to'),
     accountId: schema => schema.positive().describe('Id of the account the entry belongs to'),
     categoryId: schema => schema.positive().nullable().describe('Id of the category the entry belongs to'),
+    mccCategoryId: schema => schema.positive().nullable().describe('Id of the MCC category the entry belongs to'),
     type: zodEnum(TransactionEntryTypeEnum).describe('Type of the entry'),
     amount: number().positive().describe('Amount of the entry'),
     externalId: schema => schema.nullable().default(null).describe('External id of the entry')

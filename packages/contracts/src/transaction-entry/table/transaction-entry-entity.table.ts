@@ -4,6 +4,7 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 
@@ -17,6 +18,7 @@ export const TransactionEntryEntityTable = sqliteTable(
             .notNull()
             .references(() => AccountEntityTable.id, { onDelete: 'cascade' }),
         categoryId: int('category_id', { mode: 'number' }).references(() => CategoryEntityTable.id, { onDelete: 'cascade' }),
+        mccCategoryId: int('mcc_category_id', { mode: 'number' }).references(() => MccCategoryEntityTable.id, { onDelete: 'set null' }),
         transactionId: int('transaction_id', { mode: 'number' })
             .notNull()
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),
