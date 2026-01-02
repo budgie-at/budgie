@@ -9,7 +9,6 @@ import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-ac
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -18,7 +17,7 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
-    readonly actionIcon: IconName;
+    readonly actionIcon: UserIconNameEnum;
     readonly actionButtonText: string;
     readonly confirmTitle: string;
     readonly confirmDescription: string;
@@ -68,7 +67,7 @@ export const AccountActionCard = (props: Props) => {
                         </HapticPressable>
                     </View>
                 }
-                icon={icon as UserIconNameEnum}
+                icon={icon}
                 title={title}
                 description={i18n.t(ACCOUNT_TYPE[type])}
                 iconParams={iconParams}

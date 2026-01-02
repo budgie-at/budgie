@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -57,7 +58,7 @@ export const ContactSelectorBottomSheet = ({ ref, contacts, selectedContact, onS
         return emptyStateDescription ?? t`Create one to get started.`;
     };
 
-    const emptyIcon = isNotEmptyString(search) ? 'Search' : 'User';
+    const emptyIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.User;
 
     const emptyTitle = isNotEmptyString(search) ? t`No contacts found` : t`No contacts yet`;
 
