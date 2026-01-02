@@ -1,4 +1,4 @@
-import { TagEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -51,7 +51,7 @@ export const TransactionTagFilterItem = ({ onSelect, tag, isFirst, isLast, isSel
     return (
         <HapticPressable onPress={handleSelect} className={tagVariants({ isSelected, isFirst, isLast })}>
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>#{tag.title}</Text>
-            {isSelected ? <Icon size={16} icon="Check" className="text-primary" /> : null}
+            {isSelected ? <Icon size={16} icon={UserIconNameEnum.Check} className="text-primary" /> : null}
         </HapticPressable>
     );
 };

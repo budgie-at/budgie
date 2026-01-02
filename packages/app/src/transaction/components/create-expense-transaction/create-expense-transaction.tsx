@@ -1,4 +1,4 @@
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 
@@ -12,15 +12,16 @@ import { LiabilityTransactionForm } from '../liability-transaction-form/liabilit
 interface Props {
     readonly categoryId?: number;
     readonly amount?: number;
+    readonly accountId?: number | null;
 }
-export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
+export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Props) => {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateInputSchema,
-        fromAccountId: defaultAccount?.id ?? 0,
+        fromAccountId: accountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,
         amount,
@@ -46,7 +47,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount }: Props) => {
             onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="destructive"
-            icon="TrendingDown"
+            icon={UserIconNameEnum.TrendingDown}
             title={t`New Expense`}
             buttonText={t`Add Expense`}
             transactionType={TransactionTypeEnum.EXPENSE}
