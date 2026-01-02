@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
-import { BankAccountPreviewInterface } from '../../service/monobank-sync.service';
+import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { BankAccountPreviewCard } from '../bank-account-preview-card/bank-account-preview-card';
 
 interface Props {

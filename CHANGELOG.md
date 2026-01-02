@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.102.0](https://github.com/budgie-at/budgie/compare/v1.101.0...v1.102.0) (2026-01-02)
+
+### Bug Fixes
+
+- deadcode ([43a4d36](https://github.com/budgie-at/budgie/commit/43a4d361f24641fbc7204be1562852e415b625d3))
+- review ([d2ed52c](https://github.com/budgie-at/budgie/commit/d2ed52c104b51ffe387223e3f72eefbcaf13b541))
+- review fixes ([aabf28b](https://github.com/budgie-at/budgie/commit/aabf28b9811bab2465ffa21a8691e231df77b026))
+
+### Features
+
+- add MCC categories support ([26490be](https://github.com/budgie-at/budgie/commit/26490be290c3a9062f52150f1eeba0da272cbe20))
+- add MCC categories support ([009124f](https://github.com/budgie-at/budgie/commit/009124faac09d74c0b85d709286345b5e628516f))
+- add MCC categories support ([fc9186b](https://github.com/budgie-at/budgie/commit/fc9186b0a7fa31b8972e36615310424be9d7514f))
+- add MCC categories support ([8cf3b34](https://github.com/budgie-at/budgie/commit/8cf3b340dae175eb8af0953a7172207d9df38111))
+- add MCC categories support ([29b6b57](https://github.com/budgie-at/budgie/commit/29b6b57a746a7321cab5f6f4680f835259d950ee))
+- add MCC categories support ([86b7fe2](https://github.com/budgie-at/budgie/commit/86b7fe26d44adafaa3194370f101fa4bb7569c5d))
+- add MCC categories support ([510b05d](https://github.com/budgie-at/budgie/commit/510b05dcc7729773003f8efed563d2368e468265))
+- add MCC categories support ([e103708](https://github.com/budgie-at/budgie/commit/e103708ca2a89077b8e0ad213087d4a92b655dc3))
+- add MCC categories support ([be63198](https://github.com/budgie-at/budgie/commit/be63198ec2ed33d4bd32b3c50a3ba4f69845161f))
+
 # [1.101.0](https://github.com/budgie-at/budgie/compare/v1.100.3...v1.101.0) (2026-01-02)
 
 ### Features

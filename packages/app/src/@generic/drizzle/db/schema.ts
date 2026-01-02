@@ -20,5 +20,9 @@ export {
     InstrumentEntityTable,
     InstrumentEntityRelations,
     SettingsEntityTable,
-    SettingsEntityRelations
+    SettingsEntityRelations,
+    MccGroupEntityTable,
+    MccGroupEntityRelations,
+    MccCategoryEntityTable,
+    MccCategoryEntityRelations
 } from '@budgie/contracts';
