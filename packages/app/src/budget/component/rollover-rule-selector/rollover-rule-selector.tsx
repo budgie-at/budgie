@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { isDefined } from '@rnw-community/shared';
 
 const ROLLOVER_OPTIONS = [
     { value: BudgetRolloverRuleEnum.NONE, label: msg`None`, hint: msg`Unused budget is lost at period end` },
@@ -70,8 +71,8 @@ export const RolloverRuleSelector = ({ value, onChange }: Props) => {
                     );
                 })}
             </View>
-            {selectedOption && <Text className="text-xs text-secondary-foreground">{i18n.t(selectedOption.hint)}</Text>}
+
+            {isDefined(selectedOption) ? <Text className="text-xs text-secondary-foreground">{i18n.t(selectedOption.hint)}</Text> : null}
         </View>
     );
 };
-

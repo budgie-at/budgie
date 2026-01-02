@@ -2,6 +2,8 @@ import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { Card } from '../../../@generic/component/card/card';
 
 const countTextVariants = cva('text-2xl font-bold', {
@@ -22,13 +24,14 @@ interface Props {
 }
 
 export const BudgetHealthCard = ({ categoriesCount, overBudgetCount, underBudgetCount }: Props) => {
-    const overBudgetStatus = overBudgetCount > 0 ? 'warning' : 'positive';
+    const overBudgetStatus = isPositiveNumber(overBudgetCount) ? 'warning' : 'positive';
 
     return (
         <Card className="gap-3">
             <Text className="text-xs uppercase text-secondary-foreground">
                 <Trans>Budget Health</Trans>
             </Text>
+
             <View className="flex-row justify-between">
                 <View className="flex-1 items-center">
                     <Text className={countTextVariants({ status: 'neutral' })}>{categoriesCount}</Text>
@@ -52,4 +55,3 @@ export const BudgetHealthCard = ({ categoriesCount, overBudgetCount, underBudget
         </Card>
     );
 };
-

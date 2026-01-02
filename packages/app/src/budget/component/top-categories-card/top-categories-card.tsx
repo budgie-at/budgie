@@ -22,6 +22,7 @@ export const TopCategoriesCard = ({ categories }: Props) => (
         <Text className="text-xs uppercase text-secondary-foreground">
             <Trans>Top Categories</Trans>
         </Text>
+
         {categories.map(cat => (
             <TopCategoryItem
                 key={cat.name}
@@ -34,4 +35,3 @@ export const TopCategoriesCard = ({ categories }: Props) => (
         ))}
     </Card>
 );
-

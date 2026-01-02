@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
