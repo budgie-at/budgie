@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 import { Text, View } from 'react-native';
