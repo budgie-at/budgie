@@ -3,14 +3,13 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
 
 interface Props extends Omit<ComponentProps<typeof HorizontalCell>, 'children'> {
     readonly title?: string;
-    readonly icon?: IconName;
+    readonly icon?: UserIconNameEnum;
     readonly description?: string;
     readonly iconParams?: Omit<ComponentProps<typeof CircleIcon>, 'icon'>;
     readonly disabled?: boolean;

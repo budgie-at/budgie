@@ -7,7 +7,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { IconName } from '../../constant/icons.constant';
 import { ButtonSizeType } from '../../type/button-size.type';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
@@ -16,8 +15,8 @@ import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof HapticPressable> {
     readonly content?: ReactNode;
-    readonly leftIcon?: IconName;
-    readonly rightIcon?: IconName;
+    readonly leftIcon?: UserIconNameEnum;
+    readonly rightIcon?: UserIconNameEnum;
     readonly size?: ButtonSizeType;
     readonly variant?: ColorPaletteVariant;
 }

@@ -1,5 +1,5 @@
 // jscpd:ignore-start
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -19,7 +19,7 @@ interface Props {
     readonly title: string;
 }
 
-const DEFAULT_ICON = UserIconNameEnum.Home;
+const DEFAULT_ICON = 'Home';
 
 export const CreateLiabilityAccount = ({ type, title }: Props) => {
     const { defaultInstrument } = useSettingsContext();

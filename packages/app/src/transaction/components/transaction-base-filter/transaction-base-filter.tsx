@@ -19,7 +19,7 @@ interface TransactionMultiSelectFilterProps {
     readonly onClear: EmptyFn;
 
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly selected?: number;
     readonly hasSelected: boolean;
 

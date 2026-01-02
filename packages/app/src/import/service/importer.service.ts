@@ -10,8 +10,7 @@ import {
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    UserIconNameEnum
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { isValid, parse } from 'date-fns';
 import Papa, { ParseStepResult } from 'papaparse';
@@ -82,7 +81,7 @@ export class ImporterService {
             }
 
             if (isNotEmptyString(normalizedRow.category)) {
-                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: UserIconNameEnum.Home });
+                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: 'Home' });
             }
         });
 
@@ -96,7 +95,7 @@ export class ImporterService {
             currentBalance: 0,
             includeInNetWorth: true,
             type: AccountTypeEnum.BANK,
-            icon: UserIconNameEnum.Home,
+            icon: 'Home',
             instrumentId: this.instrumentsMap[currency].id
         };
     }

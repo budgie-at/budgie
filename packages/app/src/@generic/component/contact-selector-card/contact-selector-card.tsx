@@ -42,7 +42,7 @@ export const ContactSelectorCard = (props: Props) => {
             <View className="gap-y-xs">
                 {emails.map(email => (
                     <View key={email} className="flex-row items-center gap-x-sm">
-                        <Icon icon="LucideMail" className="text-secondary-foreground" size={12} />
+                        <Icon icon="Mail" className="text-secondary-foreground" size={12} />
                         <Text className="text-secondary-foreground">{email}</Text>
                     </View>
                 ))}
