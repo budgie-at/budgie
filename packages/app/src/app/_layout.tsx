@@ -56,17 +56,19 @@ export default function RootLayout() {
     useEffect(() => {
         const init = async () => {
             if (success) {
-                await exchangeRatesSyncService.sync();
-                await exchangeRatesSyncService.registerBackgroundTask();
+                try {
+                    await exchangeRatesSyncService.sync();
+                    await exchangeRatesSyncService.registerBackgroundTask();
 
-                await accountBalanceIncrementalService.updateAllBalances(false);
-                await accountBalanceIncrementalService.registerBackgroundTask();
+                    await accountBalanceIncrementalService.updateAllBalances(false);
+                    await accountBalanceIncrementalService.registerBackgroundTask();
 
-                await monobankSyncService.sync();
-                await monobankSyncService.registerBackgroundTask();
-
-                // HINT: We need to time for db to return data
-                setTimeout(() => void SplashScreen.hideAsync(), 200);
+                    await monobankSyncService.sync();
+                    await monobankSyncService.registerBackgroundTask();
+                } finally {
+                    // HINT: We need to time for db to return data
+                    setTimeout(() => void SplashScreen.hideAsync(), 200);
+                }
             }
         };
 
