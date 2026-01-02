@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+ 
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';

@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings, prefer-destructuring, @typescript-eslint/no-unnecessary-condition, @typescript-eslint/no-unnecessary-type-conversion */
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -41,9 +40,10 @@ export const useAllocationForm = (budgetId: number, defaultValues: Partial<Alloc
     };
 
     const handleError = (errors: FieldErrors<AllocationFormValues>) => {
-        const firstError = Object.values(errors)[0];
+        const firstError = Object.values(errors).at(0);
+
         if (firstError?.message) {
-            Toast.show({ type: 'error', text1: 'Validation Error', text2: String(firstError.message) });
+            Toast.show({ type: 'error', text1: 'Validation Error', text2: firstError.message });
         }
     };
 

@@ -61,7 +61,7 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
         const { startDay } = budget;
         const periods: Array<{ label: string; startDate: Date; endDate: Date }> = [];
 
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= 3; i += 1) {
             const currentStart = periodDates.startDate;
             const startDate = new Date(currentStart.getFullYear(), currentStart.getMonth() - i, startDay);
             const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, startDay);

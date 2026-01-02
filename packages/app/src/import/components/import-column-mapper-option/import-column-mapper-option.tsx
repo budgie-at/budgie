@@ -16,7 +16,7 @@ const unselectedClass = 'border-secondary-corner bg-secondary-background/50'; //
 
 export const ImportColumnMapperOption = ({ header, isSelected, onSelect }: Props) => {
     const pressableClassName = cn(baseClass, isSelected ? selectedClass : unselectedClass);
-    const textClassName = cn('text-primary text-sm', isSelected && 'font-semibold'); // eslint-disable-line lingui/no-unlocalized-strings
+    const textClassName = cn('text-primary text-sm', isSelected && 'font-semibold');  
 
     return (
         <Pressable onPress={onSelect} className={pressableClassName}>

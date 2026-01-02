@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings */
+ 
 import { BudgetAllocationEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines, max-statements, no-undefined, lingui/no-unlocalized-strings */
 import {
     BudgetCreateEntityInterface,
     BudgetInstanceStatusEnum,
@@ -224,6 +223,7 @@ class BudgetService {
 
     async transitionToNextPeriod(budgetId: number): Promise<void> {
         const budget = await budgetRepository.findById(budgetId);
+
         if (!isDefined(budget)) {
             throw new Error('budget-not-found');
         }

@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, max-lines-per-function, no-nested-ternary */
+/* eslint-disable max-lines-per-function, no-nested-ternary */
 import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useCallback, useMemo, useState } from 'react';

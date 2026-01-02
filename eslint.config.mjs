@@ -318,7 +318,7 @@ export default defineConfig(
                         { regex: { pattern: 'icon', flags: 'i' } },
                         { regex: { pattern: 'sizes', flags: 'i' } }
                     ],
-                    ignoreFunctions: ['format', 'cva']
+                    ignoreFunctions: ['format', 'cva', 'cn', 'msg', 'getMonth']
                 }
             ],
             'lingui/t-call-in-function': 2,
