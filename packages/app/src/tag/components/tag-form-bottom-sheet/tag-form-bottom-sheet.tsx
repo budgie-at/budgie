@@ -1,4 +1,4 @@
-import { CATEGORY_TITLE_MAX_LENGTH, TagCreateEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, TagCreateEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
@@ -50,7 +50,7 @@ export const TagFormBottomSheet = ({ ref, tag }: Props) => {
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon="Tag"
+            icon={UserIconNameEnum.Tag}
             title={t`Create Tag`}
             description={t`Add a new tag to organize your transactions`}
             ref={ref}

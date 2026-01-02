@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
 import { ReactElement, ReactNode } from 'react';
 import { FlatList } from 'react-native';
@@ -8,7 +8,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 
 type AccountType = AccountEntityInterface | AccountWithInstrumentEntityInterface;
@@ -17,7 +16,7 @@ interface Props<T extends AccountType> {
     readonly accounts: T[] | null;
     readonly title: string;
     readonly description: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly emptyState: ReactNode;
     readonly renderCard: (account: T) => ReactElement;
 }

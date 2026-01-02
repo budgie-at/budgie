@@ -1,13 +1,13 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import { TextInput } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { IdInterface } from '../../interface/id.interface';
+import { FloatingAddButton } from '../floating-add-button/floating-add-button';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
-import { SearchablePageCreate } from '../searchable-page-create/searchable-page-create';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
 
@@ -19,7 +19,7 @@ interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof Search
     searchPlaceholder: string;
     emptyStateTitle: string;
     emptyStateDescription: string;
-    emptyStateIcon: IconName;
+    emptyStateIcon: UserIconNameEnum;
     onSearchChange: (search: string) => void;
 }
 
@@ -59,6 +59,6 @@ export const SearchablePage = <T extends IdInterface>({
             <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
         )}
 
-        <SearchablePageCreate renderBottomSheet={renderBottomSheet} />
+        <FloatingAddButton renderBottomSheet={renderBottomSheet} />
     </Page>
 );

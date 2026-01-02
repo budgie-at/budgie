@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -5,14 +6,13 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly isSelected: boolean;
     readonly onPress: EmptyFn;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly label: string;
 }
 

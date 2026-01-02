@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
@@ -14,7 +15,7 @@ export const PinDisabledCard = () => {
         <SettingsCard
             onPress={handleCreatePin}
             title={t`App Lock`}
-            icon="Lock"
+            icon={UserIconNameEnum.Lock}
             variant="ghost"
             description={t`Secure your app with PIN & Face ID`}
             right={

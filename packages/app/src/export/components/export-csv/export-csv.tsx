@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
@@ -13,7 +14,7 @@ export const ExportCsv = () => {
             title={t`Export CSV`}
             description={t`Export all transactions to a CSV file`}
             onPress={handleExport}
-            icon="FileText"
+            icon={UserIconNameEnum.FileText}
             variant="default"
             isLoading={isLoading}
         />

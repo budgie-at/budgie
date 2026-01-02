@@ -113,7 +113,7 @@ msgstr "Activate Account?"
 msgid "Active"
 msgstr "Active"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
@@ -125,11 +125,11 @@ msgstr "Add a new tag to organize your transactions"
 msgid "Add a note..."
 msgstr "Add a note..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:52
 msgid "Add Expense"
 msgstr "Add Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:34
 msgid "Add Income"
 msgstr "Add Income"
 
@@ -137,7 +137,7 @@ msgstr "Add Income"
 msgid "Add Split"
 msgstr "Add Split"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:35
 msgid "Add Transfer"
 msgstr "Add Transfer"
 
@@ -315,7 +315,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:67
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -340,7 +340,7 @@ msgstr "Checking Account"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Choose a type to get started"
 msgstr "Choose a type to get started"
 
@@ -352,7 +352,7 @@ msgstr "Choose Icon"
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 msgid "Choose your main account"
 msgstr "Choose your main account"
 
@@ -433,7 +433,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
 msgid "Could not create category"
 msgstr "Could not create category"
 
@@ -453,6 +453,10 @@ msgstr "Could not delete transaction."
 #: src/account/component/archived-account-card/archived-account-card.tsx:29
 msgid "Could not restore account."
 msgstr "Could not restore account."
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+msgid "Could not update category"
+msgstr "Could not update category"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -482,7 +486,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -624,9 +628,13 @@ msgstr "e.g. Savings Account"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:60
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+msgid "Edit Category"
+msgstr "Edit Category"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
@@ -947,7 +955,7 @@ msgstr "Match each field to a column from your CSV file"
 msgid "Money lent or borrowed"
 msgstr "Money lent or borrowed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:50
 msgid "Money you earn"
 msgstr "Money you earn"
 
@@ -955,7 +963,7 @@ msgstr "Money you earn"
 msgid "Money you owe or are owed"
 msgstr "Money you owe or are owed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:43
 msgid "Money you spend"
 msgstr "Money you spend"
 
@@ -963,7 +971,7 @@ msgstr "Money you spend"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:57
 msgid "Move between accounts"
 msgstr "Move between accounts"
 
@@ -975,28 +983,28 @@ msgstr "Move Money"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:33
 msgid "New Income"
 msgstr "New Income"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "New Transaction"
 msgstr "New Transaction"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
 msgid "New Transfer"
 msgstr "New Transfer"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
 msgid "No accounts found"
 msgstr "No accounts found"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:13
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts yet"
@@ -1158,7 +1166,7 @@ msgstr "PINs do not match"
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
 msgstr "Please try again later"
@@ -1234,7 +1242,7 @@ msgstr "Savings accounts"
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:75
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
 msgid "Search accounts..."
 msgstr "Search accounts..."
@@ -1295,7 +1303,7 @@ msgstr "Select a valid column"
 msgid "Select account"
 msgstr "Select account"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:72
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 msgid "Select Account"
 msgstr "Select Account"
 
@@ -1631,6 +1639,10 @@ msgstr "Update Income"
 #: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:31
 msgid "Update Transfer"
 msgstr "Update Transfer"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+msgid "Update your category details"
+msgstr "Update your category details"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:32
 #: src/auth/util/get-pin-setup-meta.util.ts:24

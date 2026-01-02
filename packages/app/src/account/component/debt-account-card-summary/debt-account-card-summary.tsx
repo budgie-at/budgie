@@ -21,9 +21,9 @@ const textVariant = cva('flex-1 text-xxs font-semibold text-right border-b borde
 });
 
 export const DebtAccountCardSummary = ({ targetBalance, instrumentSymbol, currentBalance, debtType }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
-    const amountLeft = formatMoney(Math.max(targetBalance - currentBalance, 0), defaultInstrument.symbol);
+    const amountLeft = formatMoney(Math.max(targetBalance - currentBalance, 0), instrumentSymbol);
 
     return (
         <View className="flex-row items-center justify-between">

@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.101.0](https://github.com/budgie-at/budgie/compare/v1.100.3...v1.101.0) (2026-01-02)
+
+### Features
+
+- **app:** add 54 new category icons for common expenses ([b42a8da](https://github.com/budgie-at/budgie/commit/b42a8da41301b5c2de1e23a5e038c541ea02c7c9))
+
+## [1.100.3](https://github.com/budgie-at/budgie/compare/v1.100.2...v1.100.3) (2026-01-02)
+
+**Note:** Version bump only for package @budgie-at/app
+
+## [1.100.2](https://github.com/budgie-at/budgie/compare/v1.100.1...v1.100.2) (2026-01-01)
+
+### Bug Fixes
+
+- **app:** update category form to support editing ([#161](https://github.com/budgie-at/budgie/issues/161)) ([3b92926](https://github.com/budgie-at/budgie/commit/3b92926cb8314ace96e6a8e9bff75bfae0ef439a))
+
+## [1.100.1](https://github.com/budgie-at/budgie/compare/v1.100.0...v1.100.1) (2026-01-01)
+
+### Bug Fixes
+
+- **app:** fix debt account card currency symbol ([ba58922](https://github.com/budgie-at/budgie/commit/ba589225d30ad8507ae2d62098b7d50aff56e75a))
+
+# [1.100.0](https://github.com/budgie-at/budgie/compare/v1.99.0...v1.100.0) (2026-01-01)
+
+### Features
+
+- **app:** sort accounts by active status and balance ([0ae29e8](https://github.com/budgie-at/budgie/commit/0ae29e8e9296416d19b3d1d83a5efe17e498e5fa))
+
+# [1.99.0](https://github.com/budgie-at/budgie/compare/v1.98.0...v1.99.0) (2026-01-01)
+
+### Features
+
+- **app:** add floating add button for creating transactions in account details ([81d12ad](https://github.com/budgie-at/budgie/commit/81d12adcf5769737f8f471a5a1aafc0075b99a9b))
+
+# [1.98.0](https://github.com/budgie-at/budgie/compare/v1.97.1...v1.98.0) (2026-01-01)
+
+### Features
+
+- **app:** add missing translations for import/export database feature ([#158](https://github.com/budgie-at/budgie/issues/158)) ([536c4c2](https://github.com/budgie-at/budgie/commit/536c4c21d00e09b4f49ec2067195912d8c772785))
+- **app:** import/export db file ([4f06a61](https://github.com/budgie-at/budgie/commit/4f06a61787152366bb3bebe1d65e0666302a4c04))
+- **app:** import/export db file ([61d74af](https://github.com/budgie-at/budgie/commit/61d74afe666b5f272ce22fc8d8384246f4060769))
+- **app:** import/export db file ([07c5c39](https://github.com/budgie-at/budgie/commit/07c5c39a899569a88379463b7f074570ab149f9e))
+- **app:** import/export db file ([48aa268](https://github.com/budgie-at/budgie/commit/48aa2687ee3f7ae26ff77f4f4bbf7a178ea4bef1))
+- **app:** import/export db file ([22cb71c](https://github.com/budgie-at/budgie/commit/22cb71ccf2d942487fdf288d4c2778374594212b))
+
 ## [1.97.1](https://github.com/budgie-at/budgie/compare/v1.97.0...v1.97.1) (2026-01-01)
 
 ### Bug Fixes

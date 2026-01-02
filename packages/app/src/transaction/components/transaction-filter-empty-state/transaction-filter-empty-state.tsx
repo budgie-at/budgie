@@ -1,13 +1,13 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly title: string;
     readonly onCreate: EmptyFn;
     readonly buttonText: string;
@@ -21,6 +21,6 @@ export const TransactionFilterEmptyState = ({ icon, title, description, onCreate
         <Text className="text-primary text-md font-semibold mb-lg">{title}</Text>
         <Text className="text-secondary-foreground text-sm text-center mb-7xl">{description}</Text>
 
-        <Button onPress={onCreate} leftIcon="Plus" content={buttonText} />
+        <Button onPress={onCreate} leftIcon={UserIconNameEnum.Plus} content={buttonText} />
     </View>
 );

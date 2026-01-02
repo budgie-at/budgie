@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -9,7 +10,6 @@ import { FlatListDataItem, padFlatListData } from '../../utils/map-to-flatlist-d
 import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { IconSelectorCard } from '../icon-selector-card/icon-selector-card';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
 import type { RefObject } from 'react';
 
 interface Props {
@@ -28,11 +28,15 @@ const flatListProps = {
 };
 
 export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }: Props) => {
-    const [search, setSearch] = useState('');
     const { t } = useLingui();
+    const [search, setSearch] = useState('');
 
-    const filteredIcons = USER_ICONS_LIST.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
-    const data = padFlatListData(filteredIcons);
+    const searchLower = search.toLowerCase();
+    const filteredIcons = USER_ICONS_LIST.filter(
+        ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
+    );
+    const showedIcons = filteredIcons.slice(0, 100);
+    const data = padFlatListData(showedIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
         void ref.current?.dismiss();
