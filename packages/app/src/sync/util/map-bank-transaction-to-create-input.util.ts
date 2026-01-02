@@ -4,6 +4,7 @@ import { ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTy
 export const mapBankTransactionToCreateInput = (
     bankTx: BankTransactionInterface,
     accountId: number,
+    mccCategoryId: number | null,
     provider: ExternalSourceEnum
 ): TransactionCreateInputInterface => {
     const isIncome = bankTx.type === BankTransactionTypeEnum.INCOME;
@@ -22,6 +23,6 @@ export const mapBankTransactionToCreateInput = (
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],
-        entries: [{ accountId, type: entryType, amount, categoryId: null, mccCategoryId: bankTx.mcc, externalId: bankTx.id }]
+        entries: [{ accountId, type: entryType, amount, categoryId: null, mccCategoryId, externalId: bankTx.id }]
     };
 };

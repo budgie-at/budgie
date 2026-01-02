@@ -37,14 +37,14 @@ const dbInit = () => {
     return global.__expoSqliteDb__;
 };
 
+export let expoDb = dbInit();
+
 /** @deprecated TODO: DELETE ME WHEN DB IS STABLE */
 export const __REMOVE_ME_RESET_DB = async () => {
-    await global.__expoSqliteDb__?.closeAsync();
+    await expoDb.closeAsync();
     await SQLite.deleteDatabaseAsync(DB_NAME);
-    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+    expoDb = dbInit();
 };
-
-export const expoDb = dbInit();
 
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
