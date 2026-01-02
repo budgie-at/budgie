@@ -9,7 +9,7 @@ import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly onClear: EmptyFn;
     readonly showClear: boolean;
 }

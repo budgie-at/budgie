@@ -1,9 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly icon: UserIconNameEnum;
