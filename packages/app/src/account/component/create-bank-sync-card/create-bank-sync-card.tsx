@@ -1,14 +1,13 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Href, router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
-import type { IconName } from '../../../@generic/constant/icons.constant';
-
 interface Props {
     readonly title: string;
-    readonly icon?: IconName;
+    readonly icon?: UserIconNameEnum;
     readonly description: string;
     readonly bankProvider: BankProviderEnum;
     readonly route: Href;
