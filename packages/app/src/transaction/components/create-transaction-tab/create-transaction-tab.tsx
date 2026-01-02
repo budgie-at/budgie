@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef } from 'react';
 
 import { TabButton } from '../../../@generic/component/tab-button/tab-button';

@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { JSX, RefObject } from 'react';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 

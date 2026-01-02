@@ -1,4 +1,4 @@
-import { DatePeriodEnum, DateRangeInterface } from '@budgie/contracts';
+import { DatePeriodEnum, DateRangeInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';

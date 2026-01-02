@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';

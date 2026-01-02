@@ -1,4 +1,4 @@
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 

@@ -1,4 +1,5 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Image } from 'react-native';
 
