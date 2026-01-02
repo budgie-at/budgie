@@ -24,8 +24,8 @@ interface Props {
     readonly label: string;
     readonly startDate: Date;
     readonly endDate: Date;
-    readonly categoryIds: number[];
     readonly totalPlanned: number;
+    readonly categoryIds: number[];
     readonly currencySymbol: string;
     readonly allocations: AllocationInfo[];
 }
@@ -114,10 +114,10 @@ export const BudgetHistoricalPeriodCard = ({
 
             <View className="flex-row justify-between">
                 <Text className="text-xs text-secondary-foreground">
-                    {t`Spent: ${spentFormatted}`}
+                    <Trans>Spent: {spentFormatted}</Trans>
                 </Text>
                 <Text className={cn('text-xs', statusClassName)}>
-                    {isOverBudget ? t`Over: ${remainingFormatted}` : t`Saved: ${remainingFormatted}`}
+                    {isOverBudget ? <Trans>Over: {remainingFormatted}</Trans> : <Trans>Saved: {remainingFormatted}</Trans>}
                 </Text>
             </View>
 
@@ -126,26 +126,41 @@ export const BudgetHistoricalPeriodCard = ({
                     <View className="flex-row justify-between">
                         <View className="flex-1 items-center">
                             <Text className="text-lg font-bold text-primary">{categoryStats.length}</Text>
-                            <Text className="text-xs text-secondary-foreground"><Trans>Categories</Trans></Text>
+                            <Text className="text-xs text-secondary-foreground">
+                                <Trans>Categories</Trans>
+                            </Text>
                         </View>
                         <View className="flex-1 items-center">
-                            <Text className={cn('text-lg font-bold', overBudgetCount > 0 ? 'text-warning-foreground' : 'text-positive-foreground')}>
+                            <Text
+                                className={cn(
+                                    'text-lg font-bold',
+                                    overBudgetCount > 0 ? 'text-warning-foreground' : 'text-positive-foreground'
+                                )}
+                            >
                                 {overBudgetCount}
                             </Text>
-                            <Text className="text-xs text-secondary-foreground"><Trans>Over</Trans></Text>
+                            <Text className="text-xs text-secondary-foreground">
+                                <Trans>Over</Trans>
+                            </Text>
                         </View>
                         <View className="flex-1 items-center">
                             <Text className="text-lg font-bold text-positive-foreground">{underBudgetCount}</Text>
-                            <Text className="text-xs text-secondary-foreground"><Trans>Under 50%</Trans></Text>
+                            <Text className="text-xs text-secondary-foreground">
+                                <Trans>Under 50%</Trans>
+                            </Text>
                         </View>
                     </View>
 
                     <View className="flex-row justify-between py-1">
-                        <Text className="text-xs text-secondary-foreground"><Trans>Budget</Trans></Text>
+                        <Text className="text-xs text-secondary-foreground">
+                            <Trans>Budget</Trans>
+                        </Text>
                         <Text className="text-xs font-medium text-primary">{plannedFormatted}</Text>
                     </View>
 
-                    <Text className="text-xs uppercase text-secondary-foreground"><Trans>Category Breakdown</Trans></Text>
+                    <Text className="text-xs uppercase text-secondary-foreground">
+                        <Trans>Category Breakdown</Trans>
+                    </Text>
                     {categoryStats.slice(0, 5).map(cat => {
                         const catSpent = formatDigits(convertFromMicroUnits(cat.spent), currencySymbol);
                         const catClassName = cat.isOverBudget ? 'text-warning-foreground' : 'text-primary';
@@ -153,7 +168,9 @@ export const BudgetHistoricalPeriodCard = ({
                         return (
                             <View key={cat.name} className="flex-row items-center gap-2">
                                 <Icon icon={cat.icon} size={12} className="text-secondary-foreground" />
-                                <Text className="flex-1 text-xs text-primary" numberOfLines={1}>{cat.name}</Text>
+                                <Text className="flex-1 text-xs text-primary" numberOfLines={1}>
+                                    {cat.name}
+                                </Text>
                                 <Text className={cn('text-xs font-medium', catClassName)}>{catSpent}</Text>
                                 <Text className="text-xs text-secondary-foreground w-8 text-right">{`${cat.percentage}%`}</Text>
                             </View>
