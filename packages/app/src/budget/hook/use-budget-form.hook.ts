@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import { BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -58,8 +57,6 @@ export const useBudgetForm = (defaultValues: Partial<BudgetFormValues> = {}) => 
 
             router.replace(`/budget/${budget.id}`);
         } catch (error: unknown) {
-            // eslint-disable-next-line no-console
-            console.error('Failed to create budget:', error);
             showError(error);
         }
     };

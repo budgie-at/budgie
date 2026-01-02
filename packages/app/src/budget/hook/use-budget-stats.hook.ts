@@ -1,4 +1,3 @@
-/* eslint-disable id-length, react-hooks/purity */
 import { BudgetAllocationEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
 import { useMemo } from 'react';
 
