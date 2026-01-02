@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';

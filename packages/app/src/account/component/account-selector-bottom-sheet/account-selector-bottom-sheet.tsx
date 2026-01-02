@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -57,7 +57,7 @@ export const AccountSelectorBottomSheet = (props: Props) => {
         return emptyStateDescription ?? t`Create one to get started.`;
     };
 
-    const emptyIcon = isNotEmptyString(search) ? 'Search' : 'Wallet';
+    const emptyIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Wallet;
     const emptyTitle = isNotEmptyString(search) ? t`No accounts found` : t`No accounts yet`;
 
     return (

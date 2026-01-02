@@ -50,7 +50,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
 
     const handleSelectSingle = (id: number) => void onSelect(id);
 
-    const arrowIcon = isOpen ? 'ChevronDown' : 'ChevronRight';
+    const arrowIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
