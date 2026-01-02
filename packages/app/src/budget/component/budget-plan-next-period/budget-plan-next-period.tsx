@@ -1,7 +1,7 @@
-/* eslint-disable max-lines-per-function, no-nested-ternary */
 import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useCallback, useMemo, useState } from 'react';
+import { cva } from 'class-variance-authority';
+import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -10,7 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { budgetService } from '../../service/budget.service';
 
 interface Props {
@@ -25,18 +25,23 @@ interface FuturePeriod {
     readonly isCreated: boolean;
 }
 
+const buttonClassName = cva('flex-row items-center justify-between py-3 px-4 rounded-xl border', {
+    variants: {
+        isCreated: {
+            true: 'bg-positive-background border-positive-corner',
+            false: 'bg-secondary-background border-secondary-corner'
+        }
+    }
+});
+
 export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) => {
     const { t } = useLingui();
     const [creatingPeriod, setCreatingPeriod] = useState<string | null>(null);
     const [createdPeriods, setCreatedPeriods] = useState<Set<string>>(new Set());
+    const { formatMonthAndDay } = useFormatDate();
 
-    const futurePeriods: FuturePeriod[] = useMemo(() => {
-        const periods = budgetService.calculateFuturePeriods(
-            budget.period,
-            budget.startDay,
-            currentPeriodEndDate,
-            3
-        );
+    const futurePeriods = useMemo<FuturePeriod[]>(() => {
+        const periods = budgetService.calculateFuturePeriods(budget.period, budget.startDay, currentPeriodEndDate, 3);
 
         return periods.map(period => ({
             ...period,
@@ -44,40 +49,30 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
         }));
     }, [budget.period, budget.startDay, currentPeriodEndDate, createdPeriods]);
 
-    const handleCreatePeriod = useCallback(
-        async (period: FuturePeriod) => {
-            if (period.isCreated) {
-                return;
-            }
+    const handleCreatePeriod = async (period: FuturePeriod) => {
+        if (period.isCreated) {
+            return;
+        }
 
-            setCreatingPeriod(period.label);
-            const periodLabel = period.label;
+        setCreatingPeriod(period.label);
 
-            try {
-                await budgetService.createFutureBudgetInstance(budget.id, period.startDate, period.endDate);
-                setCreatedPeriods(prev => new Set([...prev, period.label]));
-                Toast.show({
-                    type: 'success',
-                    text1: t`Period Created`,
-                    text2: t`Budget for ${periodLabel} has been planned`
-                });
-            } catch {
-                Toast.show({
-                    type: 'error',
-                    text1: t`Error`,
-                    text2: t`Failed to create budget period`
-                });
-            } finally {
-                setCreatingPeriod(null);
-            }
-        },
-        [budget.id, t]
-    );
+        try {
+            await budgetService.createFutureBudgetInstance(budget.id, period.startDate, period.endDate);
+            setCreatedPeriods(prev => new Set([...prev, period.label]));
+        } catch {
+            Toast.show({
+                type: 'error',
+                text1: t`Error`,
+                text2: t`Failed to create budget period`
+            });
+        } finally {
+            setCreatingPeriod(null);
+        }
+    };
 
     const formatDateRange = (startDate: Date, endDate: Date) => {
-        const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
-        const start = startDate.toLocaleDateString('en-US', options);
-        const end = endDate.toLocaleDateString('en-US', options);
+        const start = formatMonthAndDay(startDate);
+        const end = formatMonthAndDay(endDate);
 
         return `${start} - ${end}`;
     };
@@ -109,21 +104,16 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
             <View className="gap-2">
                 {futurePeriods.map(period => {
                     const isCreating = creatingPeriod === period.label;
-                    const buttonClassName = cn(
-                        'flex-row items-center justify-between py-3 px-4 rounded-xl border',
-                        period.isCreated
-                            ? 'bg-positive-background border-positive-corner'
-                            : 'bg-secondary-background border-secondary-corner'
-                    );
+
                     const isDisabled = period.isCreated || isDefined(creatingPeriod);
                     const handlePress = () => void handleCreatePeriod(period);
 
                     return (
                         <HapticPressable
                             key={period.label}
-                            className={buttonClassName}
                             onPress={handlePress}
                             disabled={isDisabled}
+                            className={buttonClassName({ isCreated: period.isCreated })}
                         >
                             <View>
                                 <Text className="text-sm font-medium text-primary">{period.label}</Text>
@@ -158,4 +148,3 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
         </Card>
     );
 };
-

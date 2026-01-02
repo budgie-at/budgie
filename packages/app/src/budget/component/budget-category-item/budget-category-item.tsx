@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -36,8 +36,8 @@ interface Props {
     readonly currencySymbol: string;
 }
 
-export const BudgetCategoryItem = ({ budgetId, allocationId, name, icon, spent, planned, remaining, percentage, isOverBudget, currencySymbol }: Props) => {
-    const { t } = useLingui();
+export const BudgetCategoryItem = (props: Props) => {
+    const { budgetId, allocationId, name, icon, spent, planned, remaining, percentage, isOverBudget, currencySymbol } = props;
     const formatDigits = useFormatDigits(0);
 
     const status = isOverBudget ? 'overBudget' : 'normal';
@@ -53,17 +53,22 @@ export const BudgetCategoryItem = ({ budgetId, allocationId, name, icon, spent, 
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-2 flex-1">
                         <Icon icon={icon} size={16} className="text-secondary-foreground" />
-                        <Text className="text-sm font-medium text-primary flex-1" numberOfLines={1}>{name}</Text>
+                        <Text className="text-sm font-medium text-primary flex-1" numberOfLines={1}>
+                            {name}
+                        </Text>
                     </View>
+
                     <Text className={spentTextVariants({ status })}>
                         {catSpentFormatted}
                         <Text className="text-xs text-secondary-foreground">{` / ${catPlannedFormatted}`}</Text>
                     </Text>
                 </View>
+
                 <BudgetProgressBar planned={planned} actual={spent} className="h-1.5" />
+
                 <View className="flex-row justify-between">
                     <Text className={remainingTextVariants({ status })}>
-                        {isOverBudget ? t`Over by ${catRemainingFormatted}` : t`${catRemainingFormatted} left`}
+                        {isOverBudget ? <Trans>Over by {catRemainingFormatted}</Trans> : <Trans>{catRemainingFormatted} left</Trans>}
                     </Text>
                     <Text className={percentageTextVariants({ status })}>{percentage}%</Text>
                 </View>
@@ -71,4 +76,3 @@ export const BudgetCategoryItem = ({ budgetId, allocationId, name, icon, spent, 
         </HapticPressable>
     );
 };
-

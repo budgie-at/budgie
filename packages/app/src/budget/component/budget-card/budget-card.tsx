@@ -1,5 +1,6 @@
-/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic */
 import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -10,6 +11,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useGetCurrentBudgetInstanceQuery } from '../../query/use-get-current-budget-instance.query';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
@@ -18,13 +20,23 @@ interface Props {
     readonly className?: string;
 }
 
+const remainingClassName = cva('text-sm font-medium', {
+    variants: {
+        isPositiveOrNul: {
+            true: 'text-positive-foreground',
+            false: 'text-warning-foreground'
+        }
+    }
+});
+
 export const BudgetCard = ({ budget, className }: Props) => {
     const { id, title, status, instrumentId } = budget;
 
+    const { decimalPlaces } = useSettingsContext();
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
     const { instance } = useGetCurrentBudgetInstanceQuery(id);
 
-    const formatDigits = useFormatDigits(0);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const navigateToBudget = () => void router.push(`/budget/${id}`);
 
@@ -34,13 +46,16 @@ export const BudgetCard = ({ budget, className }: Props) => {
 
     const getStatusIcon = () => {
         if (status === BudgetStatusEnum.DRAFT) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings
             return 'FileText';
         }
 
         if (status === BudgetStatusEnum.ARCHIVED) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings
             return 'Archive';
         }
 
+        // eslint-disable-next-line lingui/no-unlocalized-strings
         return 'CheckCircle';
     };
 
@@ -61,15 +76,19 @@ export const BudgetCard = ({ budget, className }: Props) => {
 
             <View className="flex-row justify-between">
                 <View>
-                    <Text className="text-xs text-secondary-foreground">Spent</Text>
+                    <Text className="text-xs text-secondary-foreground">
+                        <Trans>Spent</Trans>
+                    </Text>
                     <Text className="text-sm font-medium text-primary">
                         {formatDigits(convertFromMicroUnits(totalActual), instrument?.symbol ?? '')}
                     </Text>
                 </View>
 
                 <View className="items-end">
-                    <Text className="text-xs text-secondary-foreground">Remaining</Text>
-                    <Text className={cn('text-sm font-medium', remaining >= 0 ? 'text-positive-foreground' : 'text-warning-foreground')}>
+                    <Text className="text-xs text-secondary-foreground">
+                        <Trans>Remaining</Trans>
+                    </Text>
+                    <Text className={remainingClassName({ isPositiveOrNul: remaining >= 0 })}>
                         {formatDigits(convertFromMicroUnits(remaining), instrument?.symbol ?? '')}
                     </Text>
                 </View>
@@ -77,4 +96,3 @@ export const BudgetCard = ({ budget, className }: Props) => {
         </Card>
     );
 };
-

@@ -7,6 +7,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
     readonly categoryTitle: string;
@@ -15,11 +16,12 @@ interface Props {
     readonly actual: number;
     readonly currencySymbol: string;
     readonly formatAmount: (value: number, symbol: string) => string;
-    readonly onPress?: () => void;
+    readonly onPress?: EmptyFn;
 }
 
 export const BudgetAllocationCard = (props: Props) => {
     const { categoryTitle, categoryIcon, planned, actual, currencySymbol, formatAmount, onPress } = props;
+
     const remaining = planned - actual;
     const isOverBudget = actual > planned;
 

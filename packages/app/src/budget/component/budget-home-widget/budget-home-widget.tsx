@@ -1,14 +1,11 @@
-/* eslint-disable lingui/no-expression-in-message, max-lines-per-function, @rnw-community/no-complex-jsx-logic */
 import { BudgetEntityInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useAllCategoriesQuery } from '../../../category/query/use-all-categories.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -18,13 +15,50 @@ import { useCategoryStats } from '../../hook/use-category-stats.hook';
 import { useGetBudgetAllocationsQuery } from '../../query/use-get-budget-allocations.query';
 import { budgetService } from '../../service/budget.service';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { cva } from 'class-variance-authority';
 
 interface Props {
     readonly budget: BudgetEntityInterface;
 }
 
+const safeToSpendClassName = cva('text-2xl font-bold', {
+    variants: {
+        isPositive: {
+            true: 'text-positive-foreground',
+            false: 'text-warning-foreground'
+        }
+    }
+});
+
+const remainingClassName = cva('text-sm font-semibold', {
+    variants: {
+        isPositive: {
+            true: 'text-positive-foreground',
+            false: 'text-warning-foreground'
+        }
+    }
+});
+
+const percentageVariants = cva('text-xs w-10 text-right', {
+    variants: {
+        isOverBudget: {
+            true: 'text-warning-foreground',
+            false: 'text-secondary-foreground'
+        }
+    }
+});
+
+const spentVariants = cva('text-xs', {
+    variants: {
+        isOverBudget: {
+            true: 'text-warning-foreground',
+            false: 'text-primary'
+        }
+    }
+});
+
 export const BudgetHomeWidget = ({ budget }: Props) => {
-    const { t } = useLingui();
     const formatDigits = useFormatDigits(0);
 
     const { allocations } = useGetBudgetAllocationsQuery(budget.id);
@@ -36,28 +70,18 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
     const { totalSpent, totalIncome, totalPlanned, remaining, spendingByCategory, periodInfo } = useBudgetStats(budget, allocations);
     const { categoryStats, categoriesOverBudget } = useCategoryStats(allocations, categories, spendingByCategory, totalIncome);
 
-    const topCategories = useMemo(
-        () => [...categoryStats].sort((first, second) => second.spent - first.spent).slice(0, 3),
-        [categoryStats]
-    );
+    const topCategories = [...categoryStats].sort((first, second) => second.spent - first.spent).slice(0, 3);
 
-    const totalActual = totalSpent;
-    const isPositive = remaining >= 0;
+    const safeToSpend = budgetService.calculateSafeToSpend(totalPlanned, totalSpent, periodInfo.daysElapsed, periodInfo.totalDays);
 
-    const safeToSpend = budgetService.calculateSafeToSpend(
-        totalPlanned,
-        totalActual,
-        periodInfo.daysElapsed,
-        periodInfo.totalDays
-    );
-
-    const dailyBudget = periodInfo.daysRemaining > 0 ? safeToSpend / periodInfo.daysRemaining : 0;
+    const dailyBudget = isPositiveNumber(periodInfo.daysRemaining) ? safeToSpend / periodInfo.daysRemaining : 0;
     const { daysRemaining } = periodInfo;
 
     const handlePress = () => void router.push(`/budget/${budget.id}`);
 
-    const safeToSpendClassName = cn('text-2xl font-bold', isPositive ? 'text-positive-foreground' : 'text-warning-foreground');
-    const remainingClassName = cn('text-sm font-semibold', isPositive ? 'text-positive-foreground' : 'text-warning-foreground');
+    const safeToSpendPerDay = formatDigits(convertFromMicroUnits(dailyBudget), currencySymbol);
+    const totalFormatted = formatDigits(convertFromMicroUnits(totalPlanned), currencySymbol);
+    const spentFormatted = formatDigits(convertFromMicroUnits(totalSpent), currencySymbol);
 
     return (
         <HapticPressable onPress={handlePress}>
@@ -68,7 +92,9 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
                         <Text className="text-sm font-semibold text-primary">{budget.title}</Text>
                     </View>
                     <View className="flex-row items-center gap-1">
-                        <Text className="text-xs text-secondary-foreground">{t`${daysRemaining}d left`}</Text>
+                        <Text className="text-xs text-secondary-foreground">
+                            <Trans>{daysRemaining}d left</Trans>
+                        </Text>
                         <Icon icon="ChevronRight" size={16} className="text-secondary-foreground" />
                     </View>
                 </View>
@@ -78,37 +104,38 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Safe to Spend</Trans>
                         </Text>
-                        <Text className={safeToSpendClassName}>
+                        <Text className={safeToSpendClassName({ isPositive: safeToSpend >= 0 })}>
                             {formatDigits(convertFromMicroUnits(safeToSpend), currencySymbol)}
                         </Text>
                         <Text className="text-xs text-secondary-foreground">
-                            {t`${formatDigits(convertFromMicroUnits(dailyBudget), currencySymbol)}/day`}
+                            <Trans>{safeToSpendPerDay}/day</Trans>
                         </Text>
                     </View>
                     <View className="items-end">
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Remaining</Trans>
                         </Text>
-                        <Text className={remainingClassName}>
+                        <Text className={remainingClassName({ isPositive: safeToSpend >= 0 })}>
                             {formatDigits(convertFromMicroUnits(remaining), currencySymbol)}
                         </Text>
                         <Text className="text-xs text-secondary-foreground">
-                            {t`of ${formatDigits(convertFromMicroUnits(totalPlanned), currencySymbol)}`}
+                            <Trans>of {totalFormatted}</Trans>
                         </Text>
                     </View>
                 </View>
 
-                <BudgetProgressBar planned={totalPlanned} actual={totalActual} className="h-2" />
+                <BudgetProgressBar planned={totalPlanned} actual={totalSpent} className="h-2" />
 
                 <View className="flex-row justify-between items-center">
                     <Text className="text-xs text-secondary-foreground">
-                        {t`Spent: ${formatDigits(convertFromMicroUnits(totalActual), currencySymbol)}`}
+                        <Trans>Spent: {spentFormatted}</Trans>
                     </Text>
-                    {categoriesOverBudget > 0 ? (
+
+                    {isPositiveNumber(categoriesOverBudget) ? (
                         <View className="flex-row items-center gap-1">
                             <Icon icon="AlertTriangle" size={12} className="text-warning-foreground" />
                             <Text className="text-xs text-warning-foreground">
-                                {t`${categoriesOverBudget} over budget`}
+                                <Trans>{categoriesOverBudget} over budget</Trans>
                             </Text>
                         </View>
                     ) : (
@@ -118,31 +145,29 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
                     )}
                 </View>
 
-                {topCategories.length > 0 && (
+                {isNotEmptyArray(topCategories) && (
                     <View className="gap-2 pt-1 border-t border-secondary-corner">
                         <Text className="text-xs text-secondary-foreground pt-2">
                             <Trans>Top Spending</Trans>
                         </Text>
-                        {topCategories.map(cat => {
-                            const percentage = cat.planned > 0 ? Math.round((cat.spent / cat.planned) * 100) : 0;
-                            const percentageText = `${percentage}%`;
-                            const spentTextClassName = cn('text-xs', cat.isOverBudget ? 'text-warning-foreground' : 'text-primary');
+                        {topCategories.map(category => {
+                            const percentage = isPositiveNumber(category.planned)
+                                ? Math.round((category.spent / category.planned) * 100)
+                                : 0;
 
                             return (
-                                <View key={cat.name} className="flex-row items-center justify-between">
+                                <View key={category.name} className="flex-row items-center justify-between">
                                     <View className="flex-row items-center gap-2 flex-1">
-                                        <Icon icon={cat.icon} size={14} className="text-secondary-foreground" />
+                                        <Icon icon={category.icon} size={14} className="text-secondary-foreground" />
                                         <Text className="text-xs text-primary flex-1" numberOfLines={1}>
-                                            {cat.name}
+                                            {category.name}
                                         </Text>
                                     </View>
                                     <View className="flex-row items-center gap-2">
-                                        <Text className={spentTextClassName}>
-                                            {formatDigits(convertFromMicroUnits(cat.spent), currencySymbol)}
+                                        <Text className={spentVariants({ isOverBudget: category.isOverBudget })}>
+                                            {formatDigits(convertFromMicroUnits(category.spent), currencySymbol)}
                                         </Text>
-                                        <Text className={cn('text-xs w-10 text-right', cat.isOverBudget ? 'text-warning-foreground' : 'text-secondary-foreground')}>
-                                            {percentageText}
-                                        </Text>
+                                        <Text className={percentageVariants({ isOverBudget: category.isOverBudget })}>{percentage}%</Text>
                                     </View>
                                 </View>
                             );

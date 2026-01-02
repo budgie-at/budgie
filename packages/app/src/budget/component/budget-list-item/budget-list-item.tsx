@@ -1,8 +1,8 @@
 import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -10,12 +10,11 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly budget: BudgetEntityInterface;
-    readonly onPress: () => void;
-    readonly onActivate: () => void;
+    readonly onPress: EmptyFn;
+    readonly onActivate: EmptyFn;
 }
 
 export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
-    const { t } = useLingui();
     const isActive = budget.status === BudgetStatusEnum.ACTIVE;
 
     return (
@@ -25,7 +24,9 @@ export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
                     <Icon icon="Wallet" size={20} className="text-primary" />
                     <View className="flex-1">
                         <Text className="text-sm font-medium text-primary">{budget.title}</Text>
-                        <Text className="text-xs text-secondary-foreground">{isActive ? t`Active` : t`Inactive`}</Text>
+                        <Text className="text-xs text-secondary-foreground">
+                            {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
+                        </Text>
                     </View>
                 </HapticPressable>
 
@@ -52,4 +53,3 @@ export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
         </Card>
     );
 };
-

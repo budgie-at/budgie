@@ -1,15 +1,13 @@
 import { Trans } from '@lingui/react/macro';
-import { router } from 'expo-router';
+import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
 
-export const BudgetEmptyState = () => {
-    const navigateToCreateBudget = () => void router.push('/budget/create');
-
-    return (
-        <Card onPress={navigateToCreateBudget} className="items-center justify-center gap-3 py-8">
+export const BudgetEmptyState = () => (
+    <Link href="/budget/create" asChild>
+        <Card className="items-center justify-center gap-3 py-8">
             <Icon icon="PiggyBank" size={32} className="text-secondary-foreground" />
             <View className="items-center">
                 <Text className="text-sm font-medium text-primary">
@@ -20,5 +18,5 @@ export const BudgetEmptyState = () => {
                 </Text>
             </View>
         </Card>
-    );
-};
+    </Link>
+);

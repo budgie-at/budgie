@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -19,22 +19,20 @@ export default function BudgetAnalyticsPage() {
 
     return (
         <Page header={<PageHeader onGoBack={handleGoBack} title={t`Budget Analytics`} />}>
-            <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-                <View className="py-4 gap-4">
-                    {isNotEmptyArray(budgets) ? (
-                        <BudgetAnalyticsContent budget={budgets[0]} />
-                    ) : (
-                        <Card className="items-center py-8">
-                            <CircleIcon icon="Wallet" size={48} iconSize={24} variant="ghost" border={false} />
-                            <Text className="text-sm text-secondary-foreground mt-2">
-                                <Trans>No budgets to analyze</Trans>
-                            </Text>
-                            <Text className="text-xs text-secondary-foreground mt-1 text-center px-4">
-                                <Trans>Create a budget to start tracking your spending patterns</Trans>
-                            </Text>
-                        </Card>
-                    )}
-                </View>
+            <ScrollView showsVerticalScrollIndicator={false} className="flex-1" contentContainerClassName="py-4 gap-4">
+                {isNotEmptyArray(budgets) ? (
+                    <BudgetAnalyticsContent budget={budgets[0]} />
+                ) : (
+                    <Card className="items-center py-8">
+                        <CircleIcon icon="Wallet" size={48} iconSize={24} variant="ghost" border={false} />
+                        <Text className="text-sm text-secondary-foreground mt-2">
+                            <Trans>No budgets to analyze</Trans>
+                        </Text>
+                        <Text className="text-xs text-secondary-foreground mt-1 text-center px-4">
+                            <Trans>Create a budget to start tracking your spending patterns</Trans>
+                        </Text>
+                    </Card>
+                )}
             </ScrollView>
         </Page>
     );

@@ -8,6 +8,7 @@ import { BudgetAllocationInstanceEntityTable } from '../table/budget-allocation-
 
 import type { BudgetAllocationInstanceEntityInterface } from '../entity/budget-allocation-instance-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+import { isDefined } from '@rnw-community/shared';
 
 export class BudgetAllocationInstanceRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
@@ -34,21 +35,14 @@ export class BudgetAllocationInstanceRepository {
         });
     }
 
-    async bulkCreate(
-        inputs: BudgetAllocationInstanceCreateEntityInterface[],
-        tx?: TX
-    ): Promise<BudgetAllocationInstanceEntityInterface[]> {
-        if (inputs.length === 0) {
-            return [];
-        }
-
+    async bulkCreate(inputs: BudgetAllocationInstanceCreateEntityInterface[], tx?: TX): Promise<BudgetAllocationInstanceEntityInterface[]> {
         return await (tx ?? this.db).insert(BudgetAllocationInstanceEntityTable).values(inputs).returning();
     }
 
     async updateById(id: number, input: BudgetAllocationInstanceUpdateEntityInterface): Promise<BudgetAllocationInstanceEntityInterface> {
         const [instance] = await this.db
             .update(BudgetAllocationInstanceEntityTable)
-            .set({ ...input, updatedAt: new Date() })
+            .set(input)
             .where(eq(BudgetAllocationInstanceEntityTable.id, id))
             .returning();
 
@@ -57,16 +51,15 @@ export class BudgetAllocationInstanceRepository {
 
     async adjustAmount(id: number, adjustmentDelta: number): Promise<BudgetAllocationInstanceEntityInterface> {
         const current = await this.findById(id);
-        if (!current) {
+
+        if (!isDefined(current)) {
             throw new Error(`BudgetAllocationInstance with id ${id} not found`);
         }
 
         return this.updateById(id, { adjustment: current.adjustment + adjustmentDelta });
     }
 
-
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetAllocationInstanceEntityTable);
     }
 }
-

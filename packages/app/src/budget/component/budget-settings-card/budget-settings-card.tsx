@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';

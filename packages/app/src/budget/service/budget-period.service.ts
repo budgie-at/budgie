@@ -99,7 +99,9 @@ export class BudgetPeriodService {
     }
 
     calculateForecast(actual: number, daysElapsed: number, totalDays: number): number {
-        if (daysElapsed <= 0) {return 0;}
+        if (daysElapsed <= 0) {
+            return 0;
+        }
         const dailyRate = actual / daysElapsed;
 
         return Math.round(dailyRate * totalDays);
@@ -108,10 +110,14 @@ export class BudgetPeriodService {
     calculateRollover(planned: number, actual: number, rule: BudgetRolloverRuleEnum, cap: number | null): number {
         const remaining = planned - actual;
 
-        if (rule === BudgetRolloverRuleEnum.NONE) {return 0;}
+        if (rule === BudgetRolloverRuleEnum.NONE) {
+            return 0;
+        }
 
         if (rule === BudgetRolloverRuleEnum.CARRY_POSITIVE) {
-            if (remaining <= 0) {return 0;}
+            if (remaining <= 0) {
+                return 0;
+            }
 
             return isDefined(cap) ? Math.min(remaining, cap) : remaining;
         }
@@ -139,4 +145,3 @@ export class BudgetPeriodService {
 }
 
 export const budgetPeriodService = new BudgetPeriodService();
-

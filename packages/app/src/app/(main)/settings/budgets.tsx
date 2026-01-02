@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -42,20 +42,22 @@ export default function BudgetsSettingsPage() {
             }
         >
             <View className="gap-3 py-4">
-                {isEmptyArray(budgets) ? (
+                {isNotEmptyArray(budgets) ? (
+                    budgets.map((budget: BudgetEntityInterface) => <BudgetListItemWrapper key={budget.id} budget={budget} />)
+                ) : (
                     <Card className="items-center py-8">
                         <Icon icon="Wallet" size={32} className="text-secondary-foreground mb-2" />
+
                         <Text className="text-sm text-secondary-foreground text-center">
                             <Trans>No budgets yet</Trans>
                         </Text>
+
                         <HapticPressable onPress={handleCreateBudget} className="mt-4">
                             <Text className="text-sm font-medium text-primary">
                                 <Trans>Create your first budget</Trans>
                             </Text>
                         </HapticPressable>
                     </Card>
-                ) : (
-                    budgets.map((budget: BudgetEntityInterface) => <BudgetListItemWrapper key={budget.id} budget={budget} />)
                 )}
             </View>
         </Page>
