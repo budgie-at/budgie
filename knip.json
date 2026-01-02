@@ -14,8 +14,7 @@
         "**/*.web.tsx",
         "**/selectors.ts",
         "packages/app/src/game/store/game.state.ts",
-        "packages/contracts/src/**/*.enum.ts",
-        "tests/web-tests/**",
+        "packages/contracts/src/**/*.enum.ts"
     ],
     "ignoreDependencies": [
         "husky",

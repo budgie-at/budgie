@@ -11,6 +11,8 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
@@ -56,17 +58,22 @@ export default function RootLayout() {
     useEffect(() => {
         const init = async () => {
             if (success) {
-                await exchangeRatesSyncService.sync();
-                await exchangeRatesSyncService.registerBackgroundTask();
+                try {
+                    await exchangeRatesSyncService.sync();
+                    await exchangeRatesSyncService.registerBackgroundTask();
 
-                await accountBalanceIncrementalService.updateAllBalances(false);
-                await accountBalanceIncrementalService.registerBackgroundTask();
+                    await accountBalanceIncrementalService.updateAllBalances(false);
+                    await accountBalanceIncrementalService.registerBackgroundTask();
 
-                await monobankSyncService.sync();
-                await monobankSyncService.registerBackgroundTask();
-
-                // HINT: We need to time for db to return data
-                setTimeout(() => void SplashScreen.hideAsync(), 200);
+                    await monobankSyncService.sync();
+                    await monobankSyncService.registerBackgroundTask();
+                } catch (e: unknown) {
+                    // eslint-disable-next-line no-console
+                    console.log(getErrorMessage(e));
+                } finally {
+                    // HINT: We need to time for db to return data
+                    setTimeout(() => void SplashScreen.hideAsync(), 200);
+                }
             }
         };
 

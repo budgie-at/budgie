@@ -4,6 +4,8 @@ import {
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 
+import { getTransactionEntryLabel } from './get-transaction-entry-label.util';
+
 export const getTransactionCategoryLabel = (
     transaction: TransactionWithRelationsEntityInterface,
     balanceAdjustmentLabel: string,
@@ -19,5 +21,5 @@ export const getTransactionCategoryLabel = (
 
     const entry = transaction.entries.at(0);
 
-    return entry?.category?.title ?? transaction.type;
+    return getTransactionEntryLabel(entry, transaction.type);
 };

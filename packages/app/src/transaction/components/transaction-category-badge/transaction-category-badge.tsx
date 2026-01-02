@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -19,6 +20,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     const { t } = useLingui();
 
     const hasMultipleEntries = transaction.entries.length > 1;
+    const unknownLabel = t`Unknown`;
 
     if (hasMultipleEntries) {
         return (
@@ -26,7 +28,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
                 {transaction.entries.map(entry => (
                     <View className="rounded-sm py-xxs px-sm bg-secondary-background" key={entry.id}>
                         <Text className={textClassName}>
-                            {entry.category?.title ?? t`Unknown`}{' '}
+                            {getTransactionEntryLabel(entry, unknownLabel)}{' '}
                             <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
                         </Text>
                     </View>

@@ -55,9 +55,10 @@ export const TransactionSplit = ({ control, variant, transactionType, entries, a
 
     const handleInsert = () => {
         append({
-            amount: 0,
             accountId,
-            categoryId: 0,
+            amount: 0,
+            categoryId: null,
+            mccCategoryId: null,
             type: transactionType === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
         });
     };

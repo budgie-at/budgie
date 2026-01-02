@@ -31,7 +31,8 @@ export class TransactionRepository {
                         [AccountAssociationEnum.INSTRUMENT]: true
                     }
                 },
-                [TransactionEntryAssociationEnum.CATEGORY]: true
+                [TransactionEntryAssociationEnum.CATEGORY]: true,
+                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
             }
         },
         [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
