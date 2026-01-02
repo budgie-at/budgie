@@ -4,8 +4,6 @@ import { router } from 'expo-router';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 
-import type { IconName } from '../../../@generic/constant/icons.constant';
-
 interface Props {
     readonly title: string;
     readonly icon: UserIconNameEnum;
