@@ -22,6 +22,6 @@ export const mapBankTransactionToCreateInput = (
         fromAccountId: isIncome ? null : accountId,
         toAccountId: isIncome ? accountId : null,
         tagIds: [],
-        entries: [{ accountId, type: entryType, amount, categoryId: null, externalId: bankTx.id }]
+        entries: [{ accountId, type: entryType, amount, categoryId: null, mccCategoryId: bankTx.mcc, externalId: bankTx.id }]
     };
 };
