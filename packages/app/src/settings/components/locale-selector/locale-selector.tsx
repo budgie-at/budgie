@@ -32,7 +32,7 @@ export const LocaleSelector = () => {
     return (
         <>
             <SettingsCard
-                icon="MapPinIcon"
+                icon="MapPin"
                 title={t`Locale`}
                 variant="warning"
                 onPress={handleOpen}

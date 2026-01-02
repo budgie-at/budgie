@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
 import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
+import { IconName } from '../../../@generic/constant/icons.constant';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';

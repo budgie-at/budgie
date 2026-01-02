@@ -3,7 +3,6 @@ import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
@@ -13,7 +12,7 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly title: string;
     readonly description: string;
     readonly onSubmit: EmptyFn;
