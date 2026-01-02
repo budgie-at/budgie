@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
@@ -36,7 +36,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
                     {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
                 </Text>
                 <View className="flex-row items-center gap-x-xs">
-                    <Icon icon="ArrowRightIcon" className="text-secondary-foreground" size={12} />
+                    <Icon icon={UserIconNameEnum.ArrowRight} className="text-secondary-foreground" size={12} />
                     <Text className="text-secondary-foreground text-xxs">
                         {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
                     </Text>
