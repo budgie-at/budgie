@@ -106,9 +106,14 @@ class AppMonobankSyncService {
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
-        const existing = await accountRepository.findByExternalIds([bankAccount.id]);
-        if (isNotEmptyArray(existing)) {
-            return existing[0];
+        const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
+        if (isNotEmptyArray(existingByExternalId)) {
+            return existingByExternalId[0];
+        }
+
+        const existingByIban = await accountRepository.findByIbans([bankAccount.iban ?? '']);
+        if (isNotEmptyArray(existingByIban)) {
+            return existingByIban[0];
         }
 
         const instruments = await instrumentRepository.getAll();
@@ -133,9 +138,9 @@ class AppMonobankSyncService {
         const now = new Date();
         const earliestTxTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
         await bankSyncRepository.create({
+            token,
             accountId,
             provider: this.provider,
-            token,
             enabled: true,
             mode: BankSyncModeEnum.BACKWARD,
             status: BankSyncStatusEnum.SYNCING,
@@ -255,8 +260,7 @@ class AppMonobankSyncService {
         const result = await this.fetchTransactionBatch(sync, account.externalId);
         await microPause();
 
-        const existing = await transactionService.findByExternalSource(this.provider);
-        const existingIds = new Set(existing.map(tx => tx.externalId));
+        const existingIds = await transactionService.findByExternalSource(this.provider);
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
 
         if (isNotEmptyArray(newTxs)) {
