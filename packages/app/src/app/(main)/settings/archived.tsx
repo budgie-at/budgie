@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { AccountsListPage } from '../../../account/component/accounts-list-page/accounts-list-page';

@@ -1,4 +1,5 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Href, router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';

@@ -27,7 +27,7 @@ export const RecalculateBalances = () => {
                 onPress={handleOpen}
                 title={t`Recalculate Balances`}
                 description={t`Clear cached balances and recalculate from transactions`}
-                icon="RefreshCw"
+                icon={UserIconNameEnum.RefreshCw}
             />
 
             <ConfirmActionBottomSheet
@@ -37,7 +37,7 @@ export const RecalculateBalances = () => {
                 description={t`This will clear all cached account balances and recalculate them from your transactions. This may take a moment.`}
                 buttonText={t`Recalculate`}
                 onSubmit={handleConfirm}
-                icon="RefreshCw"
+                icon={UserIconNameEnum.RefreshCw}
                 title={t`Recalculate Balances`}
             />
         </>

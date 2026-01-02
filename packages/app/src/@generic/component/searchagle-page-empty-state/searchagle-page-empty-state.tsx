@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../icon/icon';

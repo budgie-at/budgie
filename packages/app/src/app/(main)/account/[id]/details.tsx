@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';

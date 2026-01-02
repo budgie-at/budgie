@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import Toast from 'react-native-toast-message';
@@ -34,7 +35,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
     return (
         <>
-            <Button onPress={handleOpen} size="sm" variant="dark-warning" lefticon={UserIconNameEnum.Archive} />
+            <Button onPress={handleOpen} size="sm" variant="dark-warning" leftIcon={UserIconNameEnum.Archive} />
 
             <ConfirmActionBottomSheet
                 ref={ref}

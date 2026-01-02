@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useRef } from 'react';

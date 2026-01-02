@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
