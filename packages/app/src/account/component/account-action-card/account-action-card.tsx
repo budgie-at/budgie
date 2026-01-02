@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { View } from 'react-native';
@@ -18,7 +18,7 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
-    readonly actionIcon: IconName;
+    readonly actionIcon: UserIconNameEnum;
     readonly actionButtonText: string;
     readonly confirmTitle: string;
     readonly confirmDescription: string;
@@ -68,7 +68,7 @@ export const AccountActionCard = (props: Props) => {
                         </HapticPressable>
                     </View>
                 }
-                icon={icon as UserIconNameEnum}
+                icon={icon}
                 title={title}
                 description={i18n.t(ACCOUNT_TYPE[type])}
                 iconParams={iconParams}

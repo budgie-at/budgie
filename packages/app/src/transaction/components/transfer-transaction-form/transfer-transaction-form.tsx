@@ -20,7 +20,7 @@ import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/t
 import { TransferTransactionFormAccounts } from './transfer-transaction-form-accounts';
 
 interface Props {
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly onSubmit: EmptyFn;
     readonly control: Control<TransactionCreateInputInterface>;
     readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;

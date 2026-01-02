@@ -3,7 +3,6 @@ import { TextInput } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { IdInterface } from '../../interface/id.interface';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
@@ -19,7 +18,7 @@ interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof Search
     searchPlaceholder: string;
     emptyStateTitle: string;
     emptyStateDescription: string;
-    emptyStateIcon: IconName;
+    emptyStateIcon: UserIconNameEnum;
     onSearchChange: (search: string) => void;
 }
 

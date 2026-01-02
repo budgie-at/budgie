@@ -21,7 +21,7 @@ interface TransactionMultiSelectFilterProps<T extends { id: number }> {
     readonly search: string;
     readonly onSearchChange: (search: string) => void;
 
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly items: T[];
     readonly total: number;
 

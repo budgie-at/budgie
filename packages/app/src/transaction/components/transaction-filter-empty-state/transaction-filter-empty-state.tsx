@@ -7,7 +7,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly title: string;
     readonly onCreate: EmptyFn;
     readonly buttonText: string;

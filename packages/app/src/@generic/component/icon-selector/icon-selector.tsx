@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode, useRef } from 'react';
 import { Keyboard } from 'react-native';
 
