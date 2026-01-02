@@ -62,6 +62,7 @@ export class MccCategoryRepository {
 
     async bulkUpsert(inputs: MccCategoryCreateEntityInterface[], tx?: TX): Promise<void> {
         for (const input of inputs) {
+            // eslint-disable-next-line no-await-in-loop
             await this.upsert(input, tx);
         }
     }
