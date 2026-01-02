@@ -73,7 +73,7 @@ export const TransactionList = ({ accountId }: Props) => {
 
     const listEmptyState = (
         <EmptyState
-            circleIcon="Receipt"
+            circleicon={UserIconNameEnum.Receipt}
             title={emptyTitle}
             titleClassName="text-md text-primary font-semibold"
             description={emptyDescription}

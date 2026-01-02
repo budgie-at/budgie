@@ -20,7 +20,7 @@ export const ImportColumnMapperOption = ({ header, isSelected, onSelect }: Props
     return (
         <Pressable onPress={onSelect} className={pressableClassName}>
             <Text className={textClassName}>{header}</Text>
-            {isSelected && <Icon icon="Check" size={16} className="text-positive-foreground" />}
+            {isSelected && <Icon icon={UserIconNameEnum.Check} size={16} className="text-positive-foreground" />}
         </Pressable>
     );
 };

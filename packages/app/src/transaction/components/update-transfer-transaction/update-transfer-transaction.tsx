@@ -26,7 +26,7 @@ export const UpdateTransferTransaction = ({ transaction }: Props) => {
             clearErrors={form.clearErrors}
             title={t`Edit Transfer`}
             variant="default"
-            icon="ArrowRightLeft"
+            icon={UserIconNameEnum.ArrowRightLeft}
             onSubmit={handleSubmit}
             buttonText={t`Update Transfer`}
         />

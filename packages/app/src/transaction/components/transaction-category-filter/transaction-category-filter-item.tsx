@@ -39,7 +39,7 @@ export const TransactionCategoryFilterItem = ({ onSelect, category, isSelected }
         <HapticPressable onPress={handleSelect} className={categoryVariants({ isSelected })}>
             <CircleIcon icon={category.icon} variant="ghost" size={26} iconSize={12} />
             <Text className={cn(textVariants({ isSelected }), 'mr-auto')}>{category.title}</Text>
-            {isSelected ? <Icon size={16} icon="Check" className="text-primary" /> : null}
+            {isSelected ? <Icon size={16} icon={UserIconNameEnum.Check} className="text-primary" /> : null}
         </HapticPressable>
     );
 };

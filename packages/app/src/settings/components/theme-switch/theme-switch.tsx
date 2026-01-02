@@ -14,7 +14,7 @@ export const ThemeSwitch = () => {
             title={t`Dark Mode`}
             description={t`Switch between light and dark themes`}
             right={<ThemedSwitch className="my-auto" onChange={toggleColorSchema} value={isDarkColorSchema} />}
-            icon="Moon"
+            icon={UserIconNameEnum.Moon}
         />
     );
 };

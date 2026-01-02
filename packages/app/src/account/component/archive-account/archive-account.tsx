@@ -34,7 +34,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
     return (
         <>
-            <Button onPress={handleOpen} size="sm" variant="dark-warning" leftIcon="Archive" />
+            <Button onPress={handleOpen} size="sm" variant="dark-warning" lefticon={UserIconNameEnum.Archive} />
 
             <ConfirmActionBottomSheet
                 ref={ref}
@@ -42,7 +42,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
                 description={t`This account will be hidden from your main view and won't be included in totals. \n\n 💡 You can restore it anytime from Settings → Archived Accounts`}
                 buttonText={t`Archive`}
                 onSubmit={handleArchive}
-                icon="Archive"
+                icon={UserIconNameEnum.Archive}
                 title={t`Archive Account?`}
             />
         </>

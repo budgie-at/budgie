@@ -42,7 +42,12 @@ export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <TransactionFilterChip isActive={isPositiveNumber(selectedCategoriesCount)} icon="Tag" label={label} onPress={handleOpen} />
+            <TransactionFilterChip
+                isActive={isPositiveNumber(selectedCategoriesCount)}
+                icon={UserIconNameEnum.Tag}
+                label={label}
+                onPress={handleOpen}
+            />
 
             <TransactionBaseSearchableFilter
                 ref={ref}
@@ -50,7 +55,7 @@ export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
                 onChange={onChange}
                 search={search}
                 onSearchChange={setSearch}
-                icon="Tag"
+                icon={UserIconNameEnum.Tag}
                 total={total}
                 title={t`Categories`}
                 items={categories ?? []}
@@ -59,7 +64,7 @@ export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
                 searchPlaceholder={t`Search categories...`}
                 emptyState={
                     <TransactionFilterEmptyState
-                        icon="Tag"
+                        icon={UserIconNameEnum.Tag}
                         title={t`No Categories Yet`}
                         buttonText={t`Create Categories`}
                         onCreate={handleNavigateToCreate}

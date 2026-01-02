@@ -110,7 +110,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
             <Controller render={renderFromAccount} control={control} name="fromAccountId" />
 
             <HapticPressable onPress={handleSwitchAccounts}>
-                <CircleIcon size={28} iconSize={12} variant="ghost" icon="ArrowRight" />
+                <CircleIcon size={28} iconSize={12} variant="ghost" icon={UserIconNameEnum.ArrowRight} />
             </HapticPressable>
 
             <Controller render={renderToAccount} name="toAccountId" control={control} />

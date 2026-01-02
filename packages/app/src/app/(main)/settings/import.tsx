@@ -266,7 +266,7 @@ export default function ImportScreen() {
                                 content={buttonContent}
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
-                                leftIcon="Database"
+                                lefticon={UserIconNameEnum.Database}
                             />
                         )}
                     </View>
