@@ -4,7 +4,7 @@ import journal from './meta/_journal.json';
 import m0000 from './0000_normal_dragon_man.sql';
 import m0001 from './0001_late_red_wolf.sql';
 import m0002 from './0002_dark_prima.sql';
-import m0003 from './0003_steady_naoko.sql';
+import m0003 from './0003_unusual_maestro.sql';
 
   export default {
     journal,
