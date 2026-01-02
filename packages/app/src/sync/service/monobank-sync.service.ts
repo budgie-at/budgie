@@ -8,7 +8,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 
 import { accountRepository, bankSyncRepository, instrumentRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
+import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
@@ -20,7 +20,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 
 import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
-const FORWARD_SYNC_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_IN_SECONDS * 1000;
+const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
 class AppMonobankSyncService {
     private readonly provider = ExternalSourceEnum.MONOBANK;
