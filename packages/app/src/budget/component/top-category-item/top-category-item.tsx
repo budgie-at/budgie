@@ -28,12 +28,13 @@ export const TopCategoryItem = ({ name, icon, spentFormatted, percentage, isOver
     return (
         <View className="flex-row items-center gap-2">
             <Icon icon={icon} size={14} className="text-secondary-foreground" />
+
             <Text className="flex-1 text-sm text-primary" numberOfLines={1}>
                 {name}
             </Text>
+
             <Text className={spentTextVariants({ status: spentStatus })}>{spentFormatted}</Text>
             <Text className="text-xs text-secondary-foreground w-10 text-right">{percentage}%</Text>
         </View>
     );
 };
-

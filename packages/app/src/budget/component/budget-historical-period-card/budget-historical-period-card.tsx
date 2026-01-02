@@ -1,6 +1,5 @@
-/* eslint-disable @rnw-community/no-complex-jsx-logic, max-lines-per-function */
-import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { BudgetAllocationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -15,11 +14,6 @@ import { useGetBudgetActualSpendingQuery } from '../../query/use-get-budget-actu
 import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
-interface AllocationInfo {
-    readonly categoryId: number;
-    readonly amount: number;
-}
-
 interface Props {
     readonly label: string;
     readonly startDate: Date;
@@ -27,19 +21,11 @@ interface Props {
     readonly totalPlanned: number;
     readonly categoryIds: number[];
     readonly currencySymbol: string;
-    readonly allocations: AllocationInfo[];
+    readonly allocations: BudgetAllocationEntityInterface[];
 }
 
-export const BudgetHistoricalPeriodCard = ({
-    label,
-    startDate,
-    endDate,
-    categoryIds,
-    totalPlanned,
-    currencySymbol,
-    allocations
-}: Props) => {
-    const { t } = useLingui();
+export const BudgetHistoricalPeriodCard = (props: Props) => {
+    const { label, startDate, endDate, categoryIds, totalPlanned, currencySymbol, allocations } = props;
     const formatDigits = useFormatDigits(0);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -89,11 +75,12 @@ export const BudgetHistoricalPeriodCard = ({
 
     const overBudgetCount = categoryStats.filter(cat => cat.isOverBudget).length;
     const underBudgetCount = categoryStats.filter(cat => cat.percentage < 50 && cat.planned > 0).length;
+
     const remainingCategoriesCount = categoryStats.length - 5;
 
-    const handleToggle = () => {
-        setIsExpanded(prev => !prev);
-    };
+    const handleToggle = () => void setIsExpanded(prev => !prev);
+
+    const expandedIcon = isExpanded ? 'ChevronDown' : 'ChevronRight';
 
     return (
         <Card className="gap-2">
@@ -101,7 +88,7 @@ export const BudgetHistoricalPeriodCard = ({
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-2">
                         <Text className="text-sm font-medium text-primary">{label}</Text>
-                        <Icon icon={isExpanded ? 'ChevronDown' : 'ChevronRight'} size={14} className="text-secondary-foreground" />
+                        <Icon icon={expandedIcon} size={14} className="text-secondary-foreground" />
                     </View>
                     <View className="flex-row items-center gap-1">
                         <Icon icon={statusIcon} size={12} className={statusClassName} />

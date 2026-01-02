@@ -11,21 +11,21 @@ interface HistoricalPeriod {
 }
 
 interface Props {
-    readonly periods: readonly HistoricalPeriod[];
-    readonly categoryIds: readonly number[];
     readonly totalPlanned: number;
+    readonly categoryIds: number[];
     readonly currencySymbol: string;
-    readonly allocations: readonly BudgetAllocationEntityInterface[];
+    readonly periods: HistoricalPeriod[];
+    readonly allocations: BudgetAllocationEntityInterface[];
 }
 
 export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, currencySymbol, allocations }: Props) => {
-    const allocationData = allocations.map(alloc => ({ categoryId: alloc.categoryId ?? 0, amount: alloc.amount }));
 
     return (
         <View className="gap-3">
             <Text className="text-xs uppercase text-secondary-foreground mt-2">
                 <Trans>Previous Periods</Trans>
             </Text>
+
             {periods.map(period => (
                 <BudgetHistoricalPeriodCard
                     key={period.label}
@@ -35,10 +35,9 @@ export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, cu
                     categoryIds={categoryIds}
                     totalPlanned={totalPlanned}
                     currencySymbol={currencySymbol}
-                    allocations={allocationData}
+                    allocations={allocations}
                 />
             ))}
         </View>
     );
 };
-

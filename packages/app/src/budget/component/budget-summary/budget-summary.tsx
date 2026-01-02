@@ -1,10 +1,10 @@
- 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 interface Props {
     readonly totalPlanned: number;
@@ -18,7 +18,7 @@ interface Props {
 export const BudgetSummary = ({ totalPlanned, totalActual, daysElapsed, totalDays, currencySymbol, formatAmount }: Props) => {
     const { t } = useLingui();
     const remaining = totalPlanned - totalActual;
-    const isPositive = remaining >= 0;
+    const isPositive = isPositiveNumber(remaining);
     const remainingClassName = cn('text-2xl font-bold', isPositive ? 'text-positive-foreground' : 'text-warning-foreground');
     const spentAmount = formatAmount(convertFromMicroUnits(totalActual), currencySymbol);
 
@@ -29,12 +29,16 @@ export const BudgetSummary = ({ totalPlanned, totalActual, daysElapsed, totalDay
                     <Text className="text-xs text-secondary-foreground">
                         <Trans>Total Budget</Trans>
                     </Text>
-                    <Text className="text-2xl font-bold text-primary">{formatAmount(convertFromMicroUnits(totalPlanned), currencySymbol)}</Text>
+
+                    <Text className="text-2xl font-bold text-primary">
+                        {formatAmount(convertFromMicroUnits(totalPlanned), currencySymbol)}
+                    </Text>
                 </View>
                 <View className="items-end">
                     <Text className="text-xs text-secondary-foreground">
                         <Trans>Remaining</Trans>
                     </Text>
+
                     <Text className={remainingClassName}>{formatAmount(convertFromMicroUnits(remaining), currencySymbol)}</Text>
                 </View>
             </View>

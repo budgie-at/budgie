@@ -1,7 +1,7 @@
 import { BudgetAllocationEntityInterface, BudgetEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useMemo } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
@@ -113,19 +113,21 @@ export const useBudgetAnalytics = (budget: BudgetEntityInterface) => {
 
     const totalPlanned = calculateTotalPlannedAmount(allocations, totalIncome);
 
-    const categoryStats: CategoryStatData[] = useMemo(
+    const categoryStats = useMemo<CategoryStatData[]>(
         () =>
             allocations.map((allocation: BudgetAllocationEntityInterface) => {
                 const category = categories.find((cat: CategoryEntityInterface) => cat.id === allocation.categoryId);
-                const spending = spendingByCategory.find((sp: { categoryId: number; total: number }) => sp.categoryId === allocation.categoryId);
+                const spending = spendingByCategory.find(
+                    (sp: { categoryId: number; total: number }) => sp.categoryId === allocation.categoryId
+                );
                 const spent = spending?.total ?? 0;
                 const planned = calculateEffectivePlannedAmount(allocation, totalIncome);
                 const remaining = planned - spent;
-                const percentage = planned > 0 ? Math.round((spent / planned) * 100) : 0;
+                const percentage = isPositiveNumber(planned) ? Math.round((spent / planned) * 100) : 0;
 
                 return {
                     name: category?.title ?? '-',
-                    icon: (category?.icon ?? UserIconNameEnum.Wallet) as UserIconNameEnum,
+                    icon: category?.icon ?? UserIconNameEnum.Wallet,
                     spent,
                     planned,
                     remaining,
@@ -167,4 +169,3 @@ export const useBudgetAnalytics = (budget: BudgetEntityInterface) => {
         underBudgetCount
     };
 };
-

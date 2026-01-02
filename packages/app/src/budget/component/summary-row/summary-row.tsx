@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 interface Props {
-    readonly label: React.ReactNode;
+    readonly label: string;
     readonly value: string;
 }
 
