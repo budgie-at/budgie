@@ -37,7 +37,7 @@ export const useBudgetStats = (
     allocations: BudgetAllocationEntityInterface[]
 ): BudgetStatsResult => {
     const categoryIds = useMemo(
-        () => allocations.map(a => a.categoryId).filter((id): id is number => isDefined(id)),
+        () => allocations.map(alloc => alloc.categoryId).filter((id): id is number => isDefined(id)),
         [allocations]
     );
 
@@ -64,16 +64,14 @@ export const useBudgetStats = (
 
     const remaining = totalPlanned - totalSpent;
 
-    const periodInfo = useMemo(() => {
-        const now = Date.now();
-        const startTime = periodDates.startDate.getTime();
-        const endTime = periodDates.endDate.getTime();
-        const daysElapsed = Math.max(0, Math.floor((now - startTime) / MS_PER_DAY));
-        const totalDays = Math.max(1, Math.floor((endTime - startTime) / MS_PER_DAY));
-        const daysRemaining = Math.max(0, totalDays - daysElapsed);
+    const startTime = periodDates.startDate.getTime();
+    const endTime = periodDates.endDate.getTime();
+    const nowTime = new Date().getTime();
+    const daysElapsed = Math.max(0, Math.floor((nowTime - startTime) / MS_PER_DAY));
+    const totalDays = Math.max(1, Math.floor((endTime - startTime) / MS_PER_DAY));
+    const daysRemaining = Math.max(0, totalDays - daysElapsed);
 
-        return { daysElapsed, totalDays, daysRemaining };
-    }, [periodDates]);
+    const periodInfo = { daysElapsed, totalDays, daysRemaining };
 
     return {
         periodDates,

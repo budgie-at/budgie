@@ -1,32 +1,11 @@
-import { BudgetPeriodEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
 import { useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
+import { BudgetFormSchema, BudgetFormValues, DEFAULT_BUDGET_FORM_VALUES } from '../schema/budget-form.schema';
 import { budgetService } from '../service/budget.service';
-
-const BudgetFormSchema = z.object({
-    title: z.string().min(1, 'Budget name is required').max(100, 'Budget name is too long'),
-    period: z.nativeEnum(BudgetPeriodEnum),
-    startDay: z.number().min(1).max(31),
-    customStartDate: z.date().nullable(),
-    customEndDate: z.date().nullable(),
-    instrumentId: z.number().positive()
-});
-
-type BudgetFormValues = z.infer<typeof BudgetFormSchema>;
-
-const DEFAULT_VALUES: BudgetFormValues = {
-    title: '',
-    period: BudgetPeriodEnum.MONTHLY,
-    startDay: 1,
-    customStartDate: null,
-    customEndDate: null,
-    instrumentId: 1
-};
 
 export const useBudgetForm = (defaultValues: Partial<BudgetFormValues> = {}) => {
     const showError = useShowError();
@@ -34,7 +13,7 @@ export const useBudgetForm = (defaultValues: Partial<BudgetFormValues> = {}) => 
     const form = useForm<BudgetFormValues>({
         resolver: zodResolver(BudgetFormSchema),
         mode: 'onSubmit',
-        defaultValues: { ...DEFAULT_VALUES, ...defaultValues }
+        defaultValues: { ...DEFAULT_BUDGET_FORM_VALUES, ...defaultValues }
     });
 
     const instrumentId = useWatch({

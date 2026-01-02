@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings, lingui/no-expression-in-message, max-lines-per-function, @rnw-community/no-complex-jsx-logic */
+/* eslint-disable lingui/no-expression-in-message, max-lines-per-function, @rnw-community/no-complex-jsx-logic */
 import { BudgetEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';

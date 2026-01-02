@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
 import { Text } from 'react-native';
 
@@ -8,7 +9,6 @@ import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { DatePickerBottomSheet } from '../date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
-import { cva } from 'class-variance-authority';
 
 interface Props {
     readonly value: Date | null;
