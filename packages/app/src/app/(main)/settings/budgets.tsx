@@ -1,11 +1,10 @@
-/* eslint-disable max-lines-per-function */
 import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
@@ -26,11 +25,6 @@ export default function BudgetsSettingsPage() {
     const handleActivate = async (budget: BudgetEntityInterface) => {
         try {
             await budgetService.activateBudget(budget.id);
-            Toast.show({
-                type: 'success',
-                text1: t`Budget Activated`,
-                text2: budget.title
-            });
         } catch {
             Toast.show({
                 type: 'error',
@@ -40,13 +34,8 @@ export default function BudgetsSettingsPage() {
         }
     };
 
-    const handleNavigateToBudget = (budget: BudgetEntityInterface) => {
-        router.push(`/budget/${budget.id}`);
-    };
-
-    const handleCreateBudget = () => {
-        router.push('/budget/create');
-    };
+    const handleNavigateToBudget = (budget: BudgetEntityInterface) => void router.push(`/budget/${budget.id}`);
+    const handleCreateBudget = () => void router.push('/budget/create');
 
     if (isLoading) {
         return <EmptyScreen />;
@@ -68,7 +57,7 @@ export default function BudgetsSettingsPage() {
             }
         >
             <View className="gap-3 py-4">
-                {budgets.length === 0 ? (
+                {isEmptyArray(budgets) ? (
                     <Card className="items-center py-8">
                         <Icon icon="Wallet" size={32} className="text-secondary-foreground mb-2" />
                         <Text className="text-sm text-secondary-foreground text-center">
@@ -93,9 +82,7 @@ export default function BudgetsSettingsPage() {
                                         <Icon icon="Wallet" size={20} className="text-primary" />
                                         <View className="flex-1">
                                             <Text className="text-sm font-medium text-primary">{budget.title}</Text>
-                                            <Text className="text-xs text-secondary-foreground">
-                                                {isActive ? t`Active` : t`Inactive`}
-                                            </Text>
+                                            <Text className="text-xs text-secondary-foreground">{isActive ? t`Active` : t`Inactive`}</Text>
                                         </View>
                                     </HapticPressable>
 
@@ -106,10 +93,7 @@ export default function BudgetsSettingsPage() {
                                             </Text>
                                         </View>
                                     ) : (
-                                        <HapticPressable
-                                            onPress={handleActivatePress}
-                                            className="bg-primary px-3 py-1.5 rounded-lg"
-                                        >
+                                        <HapticPressable onPress={handleActivatePress} className="bg-primary px-3 py-1.5 rounded-lg">
                                             <Text className="text-xs font-medium text-primary-reverse">
                                                 <Trans>Activate</Trans>
                                             </Text>
@@ -130,4 +114,3 @@ export default function BudgetsSettingsPage() {
         </Page>
     );
 }
-

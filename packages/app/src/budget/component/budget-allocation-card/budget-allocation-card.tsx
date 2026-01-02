@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -19,15 +18,8 @@ interface Props {
     readonly onPress?: () => void;
 }
 
-export const BudgetAllocationCard = ({
-    categoryTitle,
-    categoryIcon,
-    planned,
-    actual,
-    currencySymbol,
-    formatAmount,
-    onPress
-}: Props) => {
+export const BudgetAllocationCard = (props: Props) => {
+    const { categoryTitle, categoryIcon, planned, actual, currencySymbol, formatAmount, onPress } = props;
     const remaining = planned - actual;
     const isOverBudget = actual > planned;
 
@@ -45,19 +37,16 @@ export const BudgetAllocationCard = ({
                 </View>
 
                 <Text className={amountTextClassName}>
-                    {formatAmount(convertFromMicroUnits(actual), currencySymbol)} / {formatAmount(convertFromMicroUnits(planned), currencySymbol)}
+                    {formatAmount(convertFromMicroUnits(actual), currencySymbol)} /{' '}
+                    {formatAmount(convertFromMicroUnits(planned), currencySymbol)}
                 </Text>
             </View>
 
             <BudgetProgressBar planned={planned} actual={actual} />
 
             <View className="flex-row justify-between">
-                <Text className="text-xs text-secondary-foreground">
-                    {isOverBudget ? <Trans>Over by</Trans> : <Trans>Left</Trans>}
-                </Text>
-                <Text className={remainingTextClassName}>
-                    {formatAmount(convertFromMicroUnits(Math.abs(remaining)), currencySymbol)}
-                </Text>
+                <Text className="text-xs text-secondary-foreground">{isOverBudget ? <Trans>Over by</Trans> : <Trans>Left</Trans>}</Text>
+                <Text className={remainingTextClassName}>{formatAmount(convertFromMicroUnits(Math.abs(remaining)), currencySymbol)}</Text>
             </View>
         </Card>
     );

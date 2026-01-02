@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings, @rnw-community/no-complex-jsx-logic, max-lines-per-function, no-negated-condition, @typescript-eslint/no-unnecessary-condition */
 import { BudgetAllocationTypeEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -34,9 +33,8 @@ interface Props {
 
 export const AllocationFormFields = (props: Props) => {
     const { control, setValue, currencySymbol, defaultAllocationType = BudgetAllocationTypeEnum.FIXED } = props;
-    const { t, i18n } = useLingui();
-
     const [isFixed, setIsFixed] = useState(defaultAllocationType === BudgetAllocationTypeEnum.FIXED);
+    const { t, i18n } = useLingui();
 
     const handleSetFixed = () => {
         setIsFixed(true);
@@ -141,6 +139,7 @@ export const AllocationFormFields = (props: Props) => {
                                         );
                                     })}
                                 </View>
+
                                 {isDefined(selectedOption) && (
                                     <Text className="text-xs text-secondary-foreground">{i18n.t(selectedOption.hint)}</Text>
                                 )}

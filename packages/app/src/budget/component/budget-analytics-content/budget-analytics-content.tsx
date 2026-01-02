@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function, @rnw-community/no-complex-jsx-logic, lingui/no-unlocalized-strings, no-plusplus */
 import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMemo } from 'react';
@@ -105,10 +104,7 @@ export const BudgetAnalyticsContent = ({ budget }: Props) => {
         return { daysElapsed, totalDays, daysRemaining, progressPercent };
     }, [periodDates]);
 
-    const totalPlanned = useMemo(
-        () => calculateTotalPlannedAmount(allocations, totalIncome),
-        [allocations, totalIncome]
-    );
+    const totalPlanned = calculateTotalPlannedAmount(allocations, totalIncome);
 
     const categoryStats = useMemo(
         () =>
