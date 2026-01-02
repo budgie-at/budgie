@@ -8,7 +8,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 
 type AccountType = AccountEntityInterface | AccountWithInstrumentEntityInterface;
