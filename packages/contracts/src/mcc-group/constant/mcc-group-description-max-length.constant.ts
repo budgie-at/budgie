@@ -1,0 +1,1 @@
+export const MCC_GROUP_DESCRIPTION_MAX_LENGTH = 255;

@@ -7,7 +7,6 @@ import { DateRangeInterface } from '../../@generic/interface/date-range.interfac
 import { DB, TX } from '../../@generic/type/db.type';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -31,7 +30,8 @@ export class TransactionRepository {
                         [AccountAssociationEnum.INSTRUMENT]: true
                     }
                 },
-                [TransactionEntryAssociationEnum.CATEGORY]: true
+                [TransactionEntryAssociationEnum.CATEGORY]: true,
+                [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
             }
         },
         [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
@@ -294,26 +294,7 @@ export class TransactionRepository {
     }
 
     private buildAccountCondition(accountIds: number[] | null) {
-        const baseConditions = [
-            or(
-                inArray(
-                    TransactionEntityTable.id,
-                    this.db
-                        .select({ transactionId: TransactionEntityTable.id })
-                        .from(TransactionEntityTable)
-                        .innerJoin(AccountEntityTable, eq(TransactionEntityTable.fromAccountId, AccountEntityTable.id))
-                        .where(isNull(AccountEntityTable.deletedAt))
-                ),
-                inArray(
-                    TransactionEntityTable.id,
-                    this.db
-                        .select({ transactionId: TransactionEntityTable.id })
-                        .from(TransactionEntityTable)
-                        .innerJoin(AccountEntityTable, eq(TransactionEntityTable.toAccountId, AccountEntityTable.id))
-                        .where(isNull(AccountEntityTable.deletedAt))
-                )
-            )
-        ];
+        const baseConditions = [];
 
         if (isNotEmptyArray(accountIds)) {
             baseConditions.push(
