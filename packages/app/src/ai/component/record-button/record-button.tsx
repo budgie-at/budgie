@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
@@ -114,9 +115,9 @@ export const RecordButton = (props: Props) => {
         <View className="items-center">
             <HapticPressable disabled={isDisabled} className={cn(buttonVariants({ variant, size }), className)} {...rest}>
                 {variant === 'loading' && <ActivityIndicator size={activityIndicatorSize[size]} color="white" />}
-                {variant === 'processing' && <Icon icon="Sparkles" size={iconSize[size]} className="text-primary" />}
-                {variant === 'recording' && <Icon icon="Square" size={iconSize[size]} className="text-primary" />}
-                {variant === 'default' && <Icon icon="Mic" size={iconSize[size]} className="text-primary" />}
+                {variant === 'processing' && <Icon icon={UserIconNameEnum.Sparkles} size={iconSize[size]} className="text-primary" />}
+                {variant === 'recording' && <Icon icon={UserIconNameEnum.Square} size={iconSize[size]} className="text-primary" />}
+                {variant === 'default' && <Icon icon={UserIconNameEnum.Mic} size={iconSize[size]} className="text-primary" />}
             </HapticPressable>
 
             <Text className={cn('mt-3', labelVariants({ variant }), labelClassName)}>{label}</Text>
