@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, instrumentRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
 import { accountService } from '../../account/service/account.service';
@@ -14,6 +14,7 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
+import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { generateBankAccountTitle, mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
@@ -21,18 +22,10 @@ import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } fro
 
 const FORWARD_SYNC_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_IN_SECONDS * 1000;
 
-export interface BankAccountPreviewInterface {
-    readonly externalId: string;
-    readonly title: string;
-    readonly currencyCode: string;
-    readonly iban: string | null;
-    readonly existingAccountId: number | null;
-    readonly hasBankSync: boolean;
-}
-
 class AppMonobankSyncService {
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
+    private mccCategoryIdMap = new Map<string, number>();
 
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
         const bankAccounts = await new MonobankSyncService(token).syncAccounts();
@@ -103,6 +96,9 @@ class AppMonobankSyncService {
         }
         this.isRunning = true;
         try {
+            const mccCategories = await mccCategoryRepository.findAll();
+            this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
+
             return await this.executeSyncLoop();
         } finally {
             this.isRunning = false;
@@ -264,7 +260,15 @@ class AppMonobankSyncService {
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
 
         if (isNotEmptyArray(newTxs)) {
-            await transactionService.bulkCreate(newTxs.map(tx => mapBankTransactionToCreateInput(tx, account.id, this.provider)));
+            await transactionService.bulkCreate(
+                newTxs.map(tx =>
+                    mapBankTransactionToCreateInput(
+                        { ...tx, mcc: this.mccCategoryIdMap.get(String(tx.mcc)) ?? 0 },
+                        account.id,
+                        this.provider
+                    )
+                )
+            );
         }
         await microPause();
 
