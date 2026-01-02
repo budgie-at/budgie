@@ -1,8 +1,8 @@
 import { BudgetAllocationTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { useCallback, useState } from 'react';
-import { Control, Controller, UseFormSetValue } from 'react-hook-form';
+import { useState } from 'react';
+import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
@@ -48,19 +48,54 @@ export const AllocationFormFields = (props: Props) => {
     const [isFixed, setIsFixed] = useState(defaultAllocationType === BudgetAllocationTypeEnum.FIXED);
     const { t } = useLingui();
 
-    const handleSetFixed = useCallback(() => {
+    const handleSetFixed = () => {
         setIsFixed(true);
         setValue('allocationType', BudgetAllocationTypeEnum.FIXED);
-    }, [setValue]);
+    };
 
-    const handleSetPercentage = useCallback(() => {
+    const handleSetPercentage = () => {
         setIsFixed(false);
         setValue('allocationType', BudgetAllocationTypeEnum.PERCENTAGE);
-    }, [setValue]);
+    };
 
     const isPercentage = !isFixed;
 
-    const handleAmountChange = useCallback((onChange: (val: number) => void) => (val: number) => void onChange(convertToMicroUnits(val)), []);
+    const handleAmountChange = (onChange: (val: number) => void) => (val: number) => void onChange(convertToMicroUnits(val));
+
+    const renderAmount = ({ field: { onChange, value }, fieldState: { error } }: UseControllerReturn<AllocationFormValues, 'amount'>) => (
+        <FormItem label={t`Amount`} error={error?.message}>
+            <FormAmountInput
+                value={convertFromMicroUnits(value)}
+                onChange={handleAmountChange(onChange)}
+                variant="primary"
+                instrumentSymbol={currencySymbol}
+            />
+        </FormItem>
+    );
+
+    const renderPercentage = ({
+        field: { onChange, value },
+        fieldState: { error }
+    }: UseControllerReturn<AllocationFormValues, 'percentage'>) => (
+        <FormItem label={t`Percentage of Income`} error={error?.message}>
+            <FormPercentageInput value={value} onChange={onChange} variant="primary" />
+        </FormItem>
+    );
+
+    const renderCategory = ({
+        field: { onChange, value },
+        fieldState: { error }
+    }: UseControllerReturn<AllocationFormValues, 'categoryId'>) => (
+        <FormItem label={t`Category`} error={error?.message}>
+            <CategorySelector categoryId={value} onSelect={onChange} variant="primary" />
+        </FormItem>
+    );
+
+    const renderRolloverRule = ({ field: { onChange, value } }: UseControllerReturn<AllocationFormValues, 'rolloverRule'>) => (
+        <FormItem label={t`Rollover Rule`}>
+            <RolloverRuleSelector value={value} onChange={onChange} />
+        </FormItem>
+    );
 
     return (
         <FormLayoutGroup>
@@ -75,51 +110,14 @@ export const AllocationFormFields = (props: Props) => {
             </View>
 
             {isFixed ? (
-                <Controller
-                    name="amount"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                        <FormItem label={t`Amount`} error={error?.message}>
-                            <FormAmountInput
-                                value={convertFromMicroUnits(value)}
-                                onChange={handleAmountChange(onChange)}
-                                variant="primary"
-                                instrumentSymbol={currencySymbol}
-                            />
-                        </FormItem>
-                    )}
-                />
+                <Controller name="amount" control={control} render={renderAmount} />
             ) : (
-                <Controller
-                    name="percentage"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => (
-                        <FormItem label={t`Percentage of Income`} error={error?.message}>
-                            <FormPercentageInput value={value} onChange={onChange} variant="primary" />
-                        </FormItem>
-                    )}
-                />
+                <Controller name="percentage" control={control} render={renderPercentage} />
             )}
 
-            <Controller
-                name="categoryId"
-                control={control}
-                render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <FormItem label={t`Category`} error={error?.message}>
-                        <CategorySelector categoryId={value} onSelect={onChange} variant="primary" />
-                    </FormItem>
-                )}
-            />
+            <Controller name="categoryId" control={control} render={renderCategory} />
 
-            <Controller
-                name="rolloverRule"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                    <FormItem label={t`Rollover Rule`}>
-                        <RolloverRuleSelector value={value} onChange={onChange} />
-                    </FormItem>
-                )}
-            />
+            <Controller name="rolloverRule" control={control} render={renderRolloverRule} />
         </FormLayoutGroup>
     );
 };
