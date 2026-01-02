@@ -1,13 +1,11 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 
-import type { IconName } from '../../../@generic/constant/icons.constant';
-
 interface Props {
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly description: string;
     readonly type: TransactionTypeEnum;
     readonly onNavigate: (type: TransactionTypeEnum) => void;

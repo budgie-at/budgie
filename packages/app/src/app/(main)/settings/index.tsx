@@ -1,4 +1,4 @@
-import { SettingsEntityInterface } from '@budgie/contracts';
+import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
@@ -52,7 +52,7 @@ export default function SettingsPage() {
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SimpleHorizontalCell
-                            icon="Shield"
+                            icon={UserIconNameEnum.Shield}
                             iconParams={privacyIconParams}
                             title={t`100% Offline & Private`}
                             description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
@@ -62,7 +62,7 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`Security`}>
                         <PinCard />
                         <SettingsCard
-                            icon="ShieldCheck"
+                            icon={UserIconNameEnum.ShieldCheck}
                             variant="pink"
                             title={t`Screenshot Protection`}
                             description={t`Hide account balances and net worth when taking screenshots`}
@@ -88,28 +88,28 @@ export default function SettingsPage() {
                             onPress={handleNavigateToCategories}
                             title={t`Manage Categories`}
                             description={t`View and delete custom categories`}
-                            icon="Folder"
+                            icon={UserIconNameEnum.Folder}
                             variant="default"
                         />
                         <SettingsCard
                             onPress={navigateToTags}
                             title={t`Manage Tags`}
                             description={t`Create and organize transaction tags`}
-                            icon="Tag"
+                            icon={UserIconNameEnum.Tag}
                             variant="pink"
                         />
                         <SettingsCard
                             onPress={handleNavigateToArchived}
                             title={t`Archived Accounts`}
                             description={t`View and restore archived accounts`}
-                            icon="Archive"
+                            icon={UserIconNameEnum.Archive}
                             variant="dark-warning"
                         />
                         <SettingsCard
                             onPress={handleNavigateToInactive}
                             title={t`Inactive Accounts`}
                             description={t`View and activate hidden accounts`}
-                            icon="EyeOff"
+                            icon={UserIconNameEnum.EyeOff}
                             variant="dark-warning"
                         />
                     </SettingsGroup>
@@ -119,7 +119,7 @@ export default function SettingsPage() {
                         <SettingsCard
                             title={t`Show Cents`}
                             description={t`Show $1,234.56 instead of $1,235`}
-                            icon="DollarSign"
+                            icon={UserIconNameEnum.DollarSign}
                             right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
                             variant="positive"
                         />
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                             title={t`BudgetAI`}
                             className="items-baseline"
                             description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
-                            icon="Database"
+                            icon={UserIconNameEnum.Database}
                             variant="ghost"
                         />
                     </SettingsGroup>

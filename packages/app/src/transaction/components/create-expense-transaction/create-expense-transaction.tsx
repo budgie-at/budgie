@@ -1,4 +1,4 @@
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 
@@ -47,7 +47,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
             onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="destructive"
-            icon="TrendingDown"
+            icon={UserIconNameEnum.TrendingDown}
             title={t`New Expense`}
             buttonText={t`Add Expense`}
             transactionType={TransactionTypeEnum.EXPENSE}

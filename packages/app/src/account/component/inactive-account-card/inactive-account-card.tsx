@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { accountService } from '../../service/account.service';
@@ -20,7 +20,7 @@ export const InactiveAccountCard = ({ account }: Props) => {
     return (
         <AccountActionCard
             account={account}
-            actionIcon="Eye"
+            actionIcon={UserIconNameEnum.Eye}
             actionButtonText={t`Activate`}
             confirmTitle={t`Activate Account?`}
             confirmDescription={t`${accountTitle} will be restored to your main view.`}

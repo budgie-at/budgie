@@ -1,4 +1,5 @@
 import { BankProviderEnum } from '@budgie/bank-sync';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Image } from 'react-native';
 
@@ -39,7 +40,7 @@ export const BankLogo = ({ bankProvider, variant = 'default' }: Props) => {
         <CircleIcon
             border={false}
             className="rounded-5xl w-13 h-13"
-            icon="PiggyBank"
+            icon={UserIconNameEnum.PiggyBank}
             iconClassName={iconVariant({ variant })}
             variant="ghost"
         />

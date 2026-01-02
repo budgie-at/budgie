@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import React, { useRef } from 'react';
 
@@ -28,7 +29,13 @@ export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
 
     return (
         <>
-            <SimpleHorizontalCell iconParams={iconParams} onPress={handleOpen} title={title} description={description} icon="Calendar" />
+            <SimpleHorizontalCell
+                iconParams={iconParams}
+                onPress={handleOpen}
+                title={title}
+                description={description}
+                icon={UserIconNameEnum.Calendar}
+            />
 
             <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />
         </>
