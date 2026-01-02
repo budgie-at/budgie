@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -47,7 +47,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
                         <Text className="text-primary text-4xl">{symbol}</Text>
                     </View>
                 }
-                right={<Icon icon="Sparkles" className="text-secondary-foreground/50" size={16} />}
+                right={<Icon icon={UserIconNameEnum.Sparkles} className="text-secondary-foreground/50" size={16} />}
                 onPress={handleOpen}
                 size="lg"
             >
