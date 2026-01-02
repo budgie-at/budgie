@@ -59,14 +59,14 @@ export default function RootLayout() {
         const init = async () => {
             if (success) {
                 try {
-                    await exchangeRatesSyncService.sync();
-                    await exchangeRatesSyncService.registerBackgroundTask();
+                    void exchangeRatesSyncService.sync();
+                    void exchangeRatesSyncService.registerBackgroundTask();
 
-                    await accountBalanceIncrementalService.updateAllBalances(false);
-                    await accountBalanceIncrementalService.registerBackgroundTask();
+                    void accountBalanceIncrementalService.updateAllBalances(false);
+                    void accountBalanceIncrementalService.registerBackgroundTask();
 
-                    await monobankSyncService.sync();
-                    await monobankSyncService.registerBackgroundTask();
+                    void monobankSyncService.sync();
+                    void monobankSyncService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
                     console.log(getErrorMessage(e));
