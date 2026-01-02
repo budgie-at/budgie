@@ -3,6 +3,7 @@ import {
     TransactionIncomeWithRelationsEntityInterface,
     TransactionPositiveAdjustmentWithRelationsEntityInterface,
     TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
@@ -30,7 +31,7 @@ export const UpdateIncomeTransaction = ({ transaction }: Props) => {
             onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="positive"
-            icon="TrendingUp"
+            icon={UserIconNameEnum.TrendingUp}
             title={t`Edit Income`}
             buttonText={t`Update Income`}
             transactionType={TransactionTypeEnum.INCOME}
