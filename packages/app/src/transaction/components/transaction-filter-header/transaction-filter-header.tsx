@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -5,11 +6,10 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly onClear: EmptyFn;
     readonly showClear: boolean;
 }

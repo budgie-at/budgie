@@ -1,8 +1,8 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Pressable, View } from 'react-native';
 
-import { IconName } from '../../constant/icons.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
 
@@ -10,7 +10,7 @@ import type { TabTriggerSlotProps } from 'expo-router/ui';
 import type { GestureResponderEvent } from 'react-native';
 
 interface TabButtonProps extends TabTriggerSlotProps {
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
 }
 
 const tabVariants = cva('rounded-5xl p-xl', {

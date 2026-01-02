@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -45,7 +46,7 @@ export const TransactionSplitAllocation = ({ entriesAmount, totalAmount }: Props
 
     return (
         <View className={summaryVariants({ valid: isAllAllocated })}>
-            {isAllAllocated ? <Icon icon="Check" size={14} className="text-positive-foreground" /> : null}
+            {isAllAllocated ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-positive-foreground" /> : null}
 
             <Text className={cn(summaryTextVariants({ valid: isAllAllocated }), 'flex-1')}>
                 {isAllAllocated ? <Trans>Allocated</Trans> : null}
