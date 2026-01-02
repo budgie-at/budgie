@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import React from 'react';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 

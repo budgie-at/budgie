@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';

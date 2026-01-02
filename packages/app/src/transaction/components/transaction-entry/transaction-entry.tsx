@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 

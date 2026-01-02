@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useUpdateTransactionForm } from '../../hook/use-update-transaction-form.hook';
