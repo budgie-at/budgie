@@ -1,9 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import { TextInput } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { IdInterface } from '../../interface/id.interface';
 import { FloatingAddButton } from '../floating-add-button/floating-add-button';
 import { Page } from '../page/page';
@@ -19,7 +19,7 @@ interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof Search
     searchPlaceholder: string;
     emptyStateTitle: string;
     emptyStateDescription: string;
-    emptyStateIcon: IconName;
+    emptyStateIcon: UserIconNameEnum;
     onSearchChange: (search: string) => void;
 }
 

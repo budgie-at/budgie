@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import React from 'react';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
@@ -17,7 +18,7 @@ export const DeletableRowAction = ({ drag, onPress }: Props) => {
     return (
         <Reanimated.View style={styleAnimation}>
             <HapticPressable onPress={onPress} className="justify-center items-center w-17.5 h-full">
-                <Icon className="text-primary" icon="Trash" />
+                <Icon className="text-primary" icon={UserIconNameEnum.Trash} />
             </HapticPressable>
         </Reanimated.View>
     );
