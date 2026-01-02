@@ -5,8 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { expoDb } from '../../@generic/drizzle/db/db';
-
-const PIN_KEY = 'user_pin';
+import { PIN_KEY } from '../constant/pin-key.constant';
 
 class AuthService {
     async getBiometricTypes() {
