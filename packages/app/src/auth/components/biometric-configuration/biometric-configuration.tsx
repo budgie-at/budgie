@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -20,7 +21,7 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
     return (
         <View className="gap-y-8 flex-1 justify-center">
             <View className="rounded-full bg-secondary-background p-8 mx-auto">
-                <Icon icon="Fingerprint" className="text-primary" size={80} />
+                <Icon icon={UserIconNameEnum.Fingerprint} className="text-primary" size={80} />
             </View>
 
             <View className="gap-y-xl">
@@ -34,7 +35,7 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
             </View>
 
             <SettingsCard
-                icon="Fingerprint"
+                icon={UserIconNameEnum.Fingerprint}
                 variant="ghost"
                 title={t`Biometric Authentication`}
                 description={t`Face ID / Touch ID`}

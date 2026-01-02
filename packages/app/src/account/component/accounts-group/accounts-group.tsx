@@ -1,4 +1,4 @@
-import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
@@ -50,7 +50,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
 
     const handleSelectSingle = (id: number) => void onSelect(id);
 
-    const arrowIcon = isOpen ? 'ChevronDown' : 'ChevronRight';
+    const arrowIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
 
     return (
         <View className={cardVariants({ isAllSelected, isPartiallySelected })}>
@@ -69,8 +69,8 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
                         </Text>
                     </View>
 
-                    {isAllSelected ? <Icon icon="Check" size={16} className="text-primary" /> : null}
-                    {isPartiallySelected ? <Icon icon="Circle" size={16} className="text-primary" /> : null}
+                    {isAllSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
+                    {isPartiallySelected ? <Icon icon={UserIconNameEnum.Circle} size={16} className="text-primary" /> : null}
                 </HapticPressable>
             </View>
 

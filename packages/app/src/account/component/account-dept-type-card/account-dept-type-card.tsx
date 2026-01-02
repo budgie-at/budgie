@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 
@@ -27,7 +27,7 @@ export const AccountDeptTypeCard = ({ type, onSelect, isSelected }: Props) => {
 
     const iconParams = { variant: 'ghost', border: false, size: 40, iconSize: 20 } as const;
 
-    const right = isSelected ? <CircleIcon variant="ghost" iconSize={12} size={20} icon="Check" /> : null;
+    const right = isSelected ? <CircleIcon variant="ghost" iconSize={12} size={20} icon={UserIconNameEnum.Check} /> : null;
 
     return (
         <SimpleHorizontalCell

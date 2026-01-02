@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
@@ -37,7 +38,7 @@ export const ImportCsv = () => {
             title={t`Import CSV`}
             description={t`Import transactions from a CSV file`}
             onPress={handleSelectAndNavigate}
-            icon="Database"
+            icon={UserIconNameEnum.Database}
             variant="ghost"
             isLoading={isLoading}
         />

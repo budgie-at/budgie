@@ -1,9 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -11,7 +11,7 @@ import { Icon } from '../icon/icon';
 interface Props {
     readonly size: 'sm' | 'md' | 'lg';
     readonly title: string;
-    readonly icon?: IconName;
+    readonly icon?: UserIconNameEnum;
     readonly className?: string;
     readonly description: string;
     readonly titleClassName?: string;

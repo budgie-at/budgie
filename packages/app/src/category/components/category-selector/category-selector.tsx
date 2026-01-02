@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 
@@ -19,7 +20,7 @@ export const CategorySelector = ({ variant, categoryId, onSelect, status }: Prop
     const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { t } = useLingui();
 
-    const icon = selectedCategory?.icon ?? 'Home';
+    const icon = selectedCategory?.icon ?? UserIconNameEnum.Home;
 
     const renderBottomSheet = (ref: RefObject<BottomSheetInterface | null>) => (
         <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={ref} />

@@ -1,6 +1,6 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import React, { ReactNode, RefObject, useRef } from 'react';
 
-import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormFieldStatus } from '../../type/form-field-status.type';
@@ -9,7 +9,7 @@ import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizonta
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly iconVariant?: ColorPaletteVariant;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly title: string;
     readonly status?: FormFieldStatus;
     readonly description?: string;

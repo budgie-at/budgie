@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -33,7 +33,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const variant = TRANSACTION_COLOR[type];
-    const icon = isDefined(category) ? category.icon : 'Receipt';
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
     const microAmount = convertToMicroUnits(amount);
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
@@ -52,7 +52,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                             {isDefined(category) ? category.title : t`Unknown Category`}
                         </Text>
                     </View>
-                    <Icon icon="ChevronRight" size={20} className="text-secondary-foreground" />
+                    <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
                 <View className="bg-secondary-background rounded-2xl p-4xl">
@@ -70,7 +70,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                         className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center"
                     >
                         <View className="flex-row items-center gap-x-sm">
-                            <Icon icon="X" size={18} className="text-secondary-foreground" />
+                            <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
                             <Text className="text-secondary-foreground font-medium">
                                 <Trans>Cancel</Trans>
                             </Text>
@@ -82,7 +82,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                         className="flex-1 py-4xl rounded-2xl bg-positive-background items-center justify-center"
                     >
                         <View className="flex-row items-center gap-x-sm">
-                            <Icon icon="Check" size={18} className="text-positive-foreground" />
+                            <Icon icon={UserIconNameEnum.Check} size={18} className="text-positive-foreground" />
                             <Text className="text-positive-foreground font-medium">
                                 <Trans>Confirm</Trans>
                             </Text>
