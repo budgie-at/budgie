@@ -9,10 +9,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
+import { FloatingAddButton } from '../../../../@generic/component/floating-add-button/floating-add-button';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { SearchablePageCreate } from '../../../../@generic/component/searchable-page-create/searchable-page-create';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -92,7 +92,7 @@ export default function Account() {
 
             <TransactionList accountId={id} />
 
-            <SearchablePageCreate renderBottomSheet={renderBottomSheet} />
+            <FloatingAddButton renderBottomSheet={renderBottomSheet} />
         </Page>
     );
 }
