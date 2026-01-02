@@ -24,7 +24,7 @@ export const TagCard = ({ onOpen, tag }: Props) => {
             onPress={handleOpen}
             iconParams={iconParams}
             title={tag.title}
-            icon="Dot"
+            icon={UserIconNameEnum.Dot}
         />
     );
 };

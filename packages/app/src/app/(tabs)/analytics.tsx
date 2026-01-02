@@ -55,9 +55,14 @@ export default function StatisticsPage() {
                     </Text>
 
                     <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard amount={expense} label={t`Spent`} icon="TrendingDown" variant="destructive" />
-                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon="TrendingUp" variant="positive" />
-                        <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon="Wallet" variant="warning" />
+                        <TransactionAnalyticsCard
+                            amount={expense}
+                            label={t`Spent`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            variant="destructive"
+                        />
+                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
+                        <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
                     </View>
                 </View>
 

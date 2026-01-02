@@ -11,7 +11,7 @@ export const CreateTransactionTab = () => {
 
     return (
         <>
-            <TabButton icon="Plus" onPress={handleOpen} />
+            <TabButton icon={UserIconNameEnum.Plus} onPress={handleOpen} />
 
             <CreateTransactionBottomSheet ref={ref} />
         </>

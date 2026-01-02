@@ -38,7 +38,13 @@ export const ContactSelector = ({ contactId, onSelect, variant }: Props) => {
 
     return (
         <>
-            <SimpleHorizontalCell title={title} description={description} icon="User" onPress={handleOpen} iconParams={iconParams} />
+            <SimpleHorizontalCell
+                title={title}
+                description={description}
+                icon={UserIconNameEnum.User}
+                onPress={handleOpen}
+                iconParams={iconParams}
+            />
 
             <ContactSelectorBottomSheet selectedContact={contact} contacts={contacts} onSelect={handleSelect} ref={ref} />
         </>

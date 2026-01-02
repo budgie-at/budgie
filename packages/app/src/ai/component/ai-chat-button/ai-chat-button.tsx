@@ -14,7 +14,7 @@ export const AiChatButton = () => {
             {llm.isReady ? (
                 <Link href="/ai" asChild>
                     <HapticPressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-10 w-19 h-19 items-center justify-center">
-                        <Icon className="text-primary-reverse" icon="Mic" size={16} />
+                        <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={16} />
                     </HapticPressable>
                 </Link>
             ) : (
