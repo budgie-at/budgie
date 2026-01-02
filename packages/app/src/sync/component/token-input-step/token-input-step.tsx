@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -23,7 +24,7 @@ export const TokenInputStep = ({ token, isLoading, onTokenChange, onFetchAccount
             <GetTokenCard />
 
             <SimpleHorizontalCell
-                icon="Info"
+                icon={UserIconNameEnum.Info}
                 iconParams={ICON_PARAMS}
                 size="lg"
                 variant="warning"

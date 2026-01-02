@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -5,11 +6,10 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly label: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly onPress: EmptyFn;
     readonly isActive: boolean;
 }

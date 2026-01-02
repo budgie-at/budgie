@@ -1,26 +1,28 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionEntryTypeEnum, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 
-import { IconName } from '../../@generic/constant/icons.constant';
-
-export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): IconName => {
+export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconNameEnum => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
         const [entry] = transaction.entries;
 
-        return entry.type === TransactionEntryTypeEnum.DEBIT ? 'BadgeMinus' : 'BadgePlus';
+        return entry.type === TransactionEntryTypeEnum.DEBIT ? UserIconNameEnum.BadgeMinus : UserIconNameEnum.BadgePlus;
     }
 
     if (transaction.type === TransactionTypeEnum.TRANSFER) {
-        return 'ArrowRightLeft';
+        return UserIconNameEnum.ArrowRightLeft;
     }
 
     if (transaction.type === TransactionTypeEnum.DEBT) {
-        return 'HandCoins';
+        return UserIconNameEnum.HandCoins;
     }
 
     if (transaction.entries.length > 1) {
-        return 'SplitIcon';
+        return UserIconNameEnum.Split;
     }
 
-    return transaction.entries.at(0)?.category?.icon ?? 'Home';
+    return transaction.entries.at(0)?.category?.icon ?? UserIconNameEnum.Home;
 };
