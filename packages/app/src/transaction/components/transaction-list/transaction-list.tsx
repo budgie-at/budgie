@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
@@ -73,7 +73,7 @@ export const TransactionList = ({ accountId }: Props) => {
 
     const listEmptyState = (
         <EmptyState
-            circleIcon="Receipt"
+            circleIcon={UserIconNameEnum.Receipt}
             title={emptyTitle}
             titleClassName="text-md text-primary font-semibold"
             description={emptyDescription}

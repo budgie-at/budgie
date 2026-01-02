@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 
@@ -32,7 +33,7 @@ export const LocaleSelector = () => {
     return (
         <>
             <SettingsCard
-                icon="MapPinIcon"
+                icon={UserIconNameEnum.MapPin}
                 title={t`Locale`}
                 variant="warning"
                 onPress={handleOpen}
