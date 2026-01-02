@@ -1,3 +1,14 @@
+CREATE TABLE `mcc_groups` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`deleted_at` integer,
+	`type` text NOT NULL,
+	`description` text NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `mcc_groups_type_unique` ON `mcc_groups` (`type`);
+--> statement-breakpoint
 CREATE TABLE `mcc_categories` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
@@ -11,17 +22,6 @@ CREATE TABLE `mcc_categories` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `mcc_categories_mcc_unique` ON `mcc_categories` (`mcc`);
---> statement-breakpoint
-CREATE TABLE `mcc_groups` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
-	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
-	`deleted_at` integer,
-	`type` text NOT NULL,
-	`description` text NOT NULL
-);
---> statement-breakpoint
-CREATE UNIQUE INDEX `mcc_groups_type_unique` ON `mcc_groups` (`type`);
 --> statement-breakpoint
 ALTER TABLE `transaction_entries` ADD `mcc_category_id` integer REFERENCES mcc_categories(id);
 --> statement-breakpoint
@@ -47,7 +47,8 @@ INSERT INTO `mcc_groups` (`id`, `type`, `description`) VALUES
     (19, 'ES', 'Entertainment services'),
     (20, 'PFS', 'Professional services'),
     (21, 'MO', 'Membership оrganizations'),
-    (22, 'GS', 'Government Services');--> statement-breakpoint
+    (22, 'GS', 'Government Services');
+--> statement-breakpoint
 INSERT INTO `mcc_categories` (`mcc`, `mcc_group_id`, `short_description`, `full_description`) VALUES
     ('0742', 1, 'Veterinary Services', 'Veterinary Services'),
     ('0743', 1, 'Wine producers', 'Wine producers'),
