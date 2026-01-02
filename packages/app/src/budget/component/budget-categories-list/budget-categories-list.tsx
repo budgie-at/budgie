@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-expression-in-message, no-undefined */
+import type { BudgetAllocationEntityInterface } from '@budgie/contracts';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -9,8 +9,6 @@ import { Button } from '../../../@generic/component/button/button';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BudgetAllocationCard } from '../budget-allocation-card/budget-allocation-card';
-
-import type { BudgetAllocationEntityInterface } from '@budgie/contracts';
 
 interface AllocationInstanceData {
     readonly id: number;
@@ -30,7 +28,14 @@ interface Props {
     readonly onEditPress?: (allocation: BudgetAllocationEntityInterface) => void;
 }
 
-export const BudgetCategoriesList = ({ allocationInstances, allocations, currencySymbol, formatAmount, onAddPress, onEditPress }: Props) => {
+export const BudgetCategoriesList = ({
+    allocationInstances,
+    allocations,
+    currencySymbol,
+    formatAmount,
+    onAddPress,
+    onEditPress
+}: Props) => {
     const { t } = useLingui();
     const hasAllocationInstances = isNotEmptyArray(allocationInstances);
     const hasAllocations = isNotEmptyArray(allocations);
@@ -104,7 +109,9 @@ export const BudgetCategoriesList = ({ allocationInstances, allocations, currenc
                 {isDefined(onAddPress) && (
                     <HapticPressable className="flex-row items-center gap-1" onPress={onAddPress}>
                         <Icon icon="Plus" size={14} className="text-primary" />
-                        <Text className="text-xs text-primary">{t`Add`}</Text>
+                        <Text className="text-xs text-primary">
+                            <Trans>Add</Trans>
+                        </Text>
                     </HapticPressable>
                 )}
             </View>

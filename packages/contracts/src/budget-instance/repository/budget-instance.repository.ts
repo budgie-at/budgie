@@ -34,7 +34,7 @@ export class BudgetInstanceRepository {
     async updateById(id: number, input: BudgetInstanceUpdateEntityInterface): Promise<BudgetInstanceEntityInterface> {
         const [instance] = await this.db
             .update(BudgetInstanceEntityTable)
-            .set({ ...input, updatedAt: new Date() })
+            .set(input)
             .where(eq(BudgetInstanceEntityTable.id, id))
             .returning();
 
@@ -45,9 +45,7 @@ export class BudgetInstanceRepository {
         return this.updateById(id, { status: BudgetInstanceStatusEnum.CLOSED });
     }
 
-
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetInstanceEntityTable);
     }
 }
-

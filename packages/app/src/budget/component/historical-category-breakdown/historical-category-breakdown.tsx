@@ -3,6 +3,8 @@ import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { isPositiveNumber } from '@rnw-community/shared';
+import { Trans } from '@lingui/react/macro';
 
 const spentTextVariants = cva('text-xs font-medium', {
     variants: {
@@ -22,7 +24,7 @@ interface CategoryStat {
 }
 
 interface Props {
-    readonly categories: readonly CategoryStat[];
+    readonly categories: CategoryStat[];
     readonly remainingCount: number;
 }
 
@@ -34,13 +36,15 @@ export const HistoricalCategoryBreakdown = ({ categories, remainingCount }: Prop
                 <Text className="flex-1 text-xs text-primary" numberOfLines={1}>
                     {cat.name}
                 </Text>
-                <Text className={spentTextVariants({ status: cat.isOverBudget ? 'overBudget' : 'normal' })}>
-                    {cat.spentFormatted}
-                </Text>
+                <Text className={spentTextVariants({ status: cat.isOverBudget ? 'overBudget' : 'normal' })}>{cat.spentFormatted}</Text>
                 <Text className="text-xs text-secondary-foreground w-8 text-right">{cat.percentage}%</Text>
             </View>
         ))}
-        {remainingCount > 0 && <Text className="text-xs text-secondary-foreground text-center">+{remainingCount} more</Text>}
+
+        {isPositiveNumber(remainingCount) && (
+            <Text className="text-xs text-secondary-foreground text-center">
+                <Trans>+{remainingCount} more</Trans>
+            </Text>
+        )}
     </>
 );
-

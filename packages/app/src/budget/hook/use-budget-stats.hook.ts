@@ -1,5 +1,4 @@
 import { BudgetAllocationEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
-import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -36,10 +35,7 @@ export const useBudgetStats = (
     budget: BudgetEntityInterface | null | undefined,
     allocations: BudgetAllocationEntityInterface[]
 ): BudgetStatsResult => {
-    const categoryIds = useMemo(
-        () => allocations.map(alloc => alloc.categoryId).filter((id): id is number => isDefined(id)),
-        [allocations]
-    );
+    const categoryIds = allocations.map(alloc => alloc.categoryId).filter((id): id is number => isDefined(id));
 
     const periodDates = useBudgetPeriodDates(budget);
 
@@ -84,5 +80,3 @@ export const useBudgetStats = (
         categoryIds
     };
 };
-
-

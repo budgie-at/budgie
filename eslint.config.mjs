@@ -312,16 +312,13 @@ export default defineConfig(
                         'Tab',
                         'Enter',
                         'use client',
-                        '^Week of $',
-                        '^Failed to transition budget'
                     ],
                     ignoreNames: [
                         { regex: { pattern: 'className', flags: 'i' } },
                         { regex: { pattern: 'icon', flags: 'i' } },
                         { regex: { pattern: 'sizes', flags: 'i' } },
-                        { regex: { pattern: 'WEEK_PREFIX', flags: 'i' } }
                     ],
-                    ignoreFunctions: ['format', 'cva', 'cn', 'msg', 'getMonth', 'toLocaleDateString']
+                    ignoreFunctions: ['format', 'cva', 'cn', 'msg']
                 }
             ],
             'lingui/t-call-in-function': 2,

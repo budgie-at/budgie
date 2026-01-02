@@ -50,6 +50,7 @@ export default function HomePage() {
 
                     <View className="gap-2">
                         <AccountsHeading />
+
                         {isNotEmptyArray(accountEntries) ? (
                             accountEntries.map(([key, value]) => <AccountList type={key} accounts={value ?? []} key={key} />)
                         ) : (

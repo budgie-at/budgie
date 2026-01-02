@@ -1,5 +1,5 @@
 import { BudgetAllocationTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
@@ -101,11 +101,15 @@ export const AllocationFormFields = (props: Props) => {
         <FormLayoutGroup>
             <View className="flex-row gap-2 mb-4">
                 <HapticPressable onPress={handleSetFixed} className={buttonVariants({ active: isFixed })}>
-                    <Text className={buttonTextVariants({ active: isFixed })}>{t`Fixed Amount`}</Text>
+                    <Text className={buttonTextVariants({ active: isFixed })}>
+                        <Trans>Fixed Amount</Trans>
+                    </Text>
                 </HapticPressable>
 
                 <HapticPressable onPress={handleSetPercentage} className={buttonVariants({ active: isPercentage })}>
-                    <Text className={buttonTextVariants({ active: isPercentage })}>{t`% of Income`}</Text>
+                    <Text className={buttonTextVariants({ active: isPercentage })}>
+                        <Trans>% of Income</Trans>
+                    </Text>
                 </HapticPressable>
             </View>
 

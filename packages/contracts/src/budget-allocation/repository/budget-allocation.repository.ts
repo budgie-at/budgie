@@ -40,17 +40,13 @@ export class BudgetAllocationRepository {
     }
 
     async bulkCreate(inputs: BudgetAllocationCreateEntityInterface[], tx?: TX): Promise<BudgetAllocationEntityInterface[]> {
-        if (inputs.length === 0) {
-            return [];
-        }
-
         return await (tx ?? this.db).insert(BudgetAllocationEntityTable).values(inputs).returning();
     }
 
     async updateById(id: number, input: BudgetAllocationUpdateEntityInterface): Promise<BudgetAllocationEntityInterface> {
         const [allocation] = await this.db
             .update(BudgetAllocationEntityTable)
-            .set({ ...input, updatedAt: new Date() })
+            .set(input)
             .where(eq(BudgetAllocationEntityTable.id, id))
             .returning();
 
@@ -61,9 +57,7 @@ export class BudgetAllocationRepository {
         await this.db.delete(BudgetAllocationEntityTable).where(eq(BudgetAllocationEntityTable.id, id));
     }
 
-
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetAllocationEntityTable);
     }
 }
-

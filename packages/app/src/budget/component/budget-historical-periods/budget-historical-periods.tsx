@@ -14,16 +14,16 @@ interface HistoricalPeriod {
 
 interface Props {
     readonly totalPlanned: number;
-    readonly categoryIds: readonly number[];
+    readonly categoryIds: number[];
     readonly currencySymbol: string;
-    readonly periods: readonly HistoricalPeriod[];
-    readonly allocations: readonly BudgetAllocationEntityInterface[];
+    readonly periods: HistoricalPeriod[];
+    readonly allocations: BudgetAllocationEntityInterface[];
 }
 
 export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, currencySymbol, allocations }: Props) => {
     const allocationData = allocations
         .filter(alloc => isDefined(alloc.categoryId))
-        .map(alloc => ({ categoryId: alloc.categoryId as number, amount: alloc.amount }));
+        .map(alloc => ({ categoryId: alloc.categoryId, amount: alloc.amount }));
 
     return (
         <View className="gap-3">

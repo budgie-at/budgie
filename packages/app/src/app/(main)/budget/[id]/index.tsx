@@ -2,7 +2,7 @@ import { Trans } from '@lingui/react/macro';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../../@generic/component/card/card';
 import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
@@ -49,14 +49,22 @@ export default function BudgetDetails() {
 
     const remaining = totalPlanned - totalSpent;
     const safeToSpend = budgetService.calculateSafeToSpend(totalPlanned, totalSpent, periodInfo.daysElapsed, periodInfo.totalDays);
-    const dailyBudget = periodInfo.daysRemaining > 0 ? safeToSpend / periodInfo.daysRemaining : 0;
+    const dailyBudget = isPositiveNumber(periodInfo.daysRemaining) ? safeToSpend / periodInfo.daysRemaining : 0;
 
     return (
         <Page
             header={
-                <PageHeader icon="Wallet" onGoBack={handleGoBack} title={budget.title} iconVariant="ghost" right={
-                    <HapticPressable hitSlop={10} onPress={handleAddAllocation}><Icon icon="Plus" size={20} className="text-primary" /></HapticPressable>
-                } />
+                <PageHeader
+                    icon="Wallet"
+                    onGoBack={handleGoBack}
+                    title={budget.title}
+                    iconVariant="ghost"
+                    right={
+                        <HapticPressable hitSlop={10} onPress={handleAddAllocation}>
+                            <Icon icon="Plus" size={20} className="text-primary" />
+                        </HapticPressable>
+                    }
+                />
             }
         >
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -74,6 +82,7 @@ export default function BudgetDetails() {
                     />
                     <View className="gap-3">
                         <BudgetCategoriesHeader onAdd={handleAddAllocation} />
+
                         {isNotEmptyArray(categoryStats) ? (
                             categoryStats.map(cat => (
                                 <BudgetCategoryItem
@@ -93,7 +102,9 @@ export default function BudgetDetails() {
                         ) : (
                             <Card className="items-center py-6" size="md">
                                 <Icon icon="Layers" size={32} className="text-secondary-foreground mb-2" />
-                                <Text className="text-sm text-secondary-foreground"><Trans>No categories added yet</Trans></Text>
+                                <Text className="text-sm text-secondary-foreground">
+                                    <Trans>No categories added yet</Trans>
+                                </Text>
                             </Card>
                         )}
                     </View>
