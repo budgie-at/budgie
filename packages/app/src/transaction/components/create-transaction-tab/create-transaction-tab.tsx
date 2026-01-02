@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef } from 'react';
 
 import { TabButton } from '../../../@generic/component/tab-button/tab-button';
@@ -11,7 +12,7 @@ export const CreateTransactionTab = () => {
 
     return (
         <>
-            <TabButton icon="Plus" onPress={handleOpen} />
+            <TabButton icon={UserIconNameEnum.Plus} onPress={handleOpen} />
 
             <CreateTransactionBottomSheet ref={ref} />
         </>
