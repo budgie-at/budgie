@@ -1,4 +1,4 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -22,7 +22,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     return (
         <AccountActionCard
             account={account}
-            actionicon={UserIconNameEnum.RotateCcw}
+            actionIcon={UserIconNameEnum.RotateCcw}
             actionButtonText={t`Restore`}
             confirmTitle={t`Restore Account?`}
             confirmDescription={t`${accountTitle} will be restored to your main view and included in totals.`}

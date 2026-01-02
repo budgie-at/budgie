@@ -38,7 +38,7 @@ export const AccountTypeSelectorField = <T extends { type: AccountTypeEnum }>({ 
                             <Text className="text-primary text-base font-medium">{i18n.t(ACCOUNT_TYPE[value])}</Text>
                         </View>
 
-                        <Icon icon="ChevronRight" size={20} className="text-secondary-foreground" />
+                        <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                     </Pressable>
                 </FormItem>
 

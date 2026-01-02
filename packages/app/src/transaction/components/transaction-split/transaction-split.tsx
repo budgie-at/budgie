@@ -2,7 +2,8 @@ import {
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -110,7 +111,7 @@ export const TransactionSplit = ({ control, variant, transactionType, entries, a
                             className="py-sm bg-transparent"
                             size="sm"
                             variant="ghost"
-                            lefticon={UserIconNameEnum.Plus}
+                            leftIcon={UserIconNameEnum.Plus}
                             content={t`Add Split`}
                             onPress={handleInsert}
                         />
