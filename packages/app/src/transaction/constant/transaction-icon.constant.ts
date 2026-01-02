@@ -1,12 +1,9 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
-import { IconName } from '../../@generic/constant/icons.constant';
-
-export const TRANSACTION_ICON: Record<TransactionTypeEnum, IconName> = {
-    [TransactionTypeEnum.TRANSFER]: 'ArrowRightLeft',
-    [TransactionTypeEnum.INCOME]: 'TrendingUp',
-    [TransactionTypeEnum.DEBT]: 'CreditCard',
-    [TransactionTypeEnum.EXPENSE]: 'TrendingDown',
-    [TransactionTypeEnum.ADJUSTMENT]: 'BadgePlus'
+export const TRANSACTION_ICON: Record<TransactionTypeEnum, UserIconNameEnum> = {
+    [TransactionTypeEnum.TRANSFER]: UserIconNameEnum.ArrowRightLeft,
+    [TransactionTypeEnum.INCOME]: UserIconNameEnum.TrendingUp,
+    [TransactionTypeEnum.DEBT]: UserIconNameEnum.CreditCard,
+    [TransactionTypeEnum.EXPENSE]: UserIconNameEnum.TrendingDown,
+    [TransactionTypeEnum.ADJUSTMENT]: UserIconNameEnum.BadgePlus
 };

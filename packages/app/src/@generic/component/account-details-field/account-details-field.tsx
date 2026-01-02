@@ -25,7 +25,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
             variant={variant}
             onSelect={onChange}
             icon={value}
-            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={value} />}
+            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconNameEnum} />}
         />
     );
 

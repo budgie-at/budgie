@@ -10,8 +10,6 @@ import { typedObjectFromEntries } from '../../utils/typed-object-from-entries.ut
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
-import type { IconName } from '../../constant/icons.constant';
-
 interface Props {
     readonly onSelect: (name: UserIconNameEnum) => void;
     readonly variant: ColorPaletteVariant;
