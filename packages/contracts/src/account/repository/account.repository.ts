@@ -6,7 +6,6 @@ import { DB, TX } from '../../@generic/type/db.type';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
-import { AccountTypeEnum } from '../enum/account-type.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
@@ -81,18 +80,6 @@ export class AccountRepository {
         });
     }
 
-    findByType(type: AccountTypeEnum) {
-        return this.db.query.AccountEntityTable.findMany({
-            where: and(eq(AccountEntityTable.type, type), isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
-    async findByParentId(id: number) {
-        return await this.db.query.AccountEntityTable.findMany({
-            where: and(eq(AccountEntityTable.parentId, id), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
     findById(id: number) {
         return this.db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
@@ -100,15 +87,15 @@ export class AccountRepository {
         });
     }
 
-    async findByExternalId(externalId: string): Promise<AccountEntityInterface | undefined> {
-        return await this.db.query.AccountEntityTable.findFirst({
-            where: and(eq(AccountEntityTable.externalId, externalId), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
+    async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
+        return await this.db.query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
         });
     }
 

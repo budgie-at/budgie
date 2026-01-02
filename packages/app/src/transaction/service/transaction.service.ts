@@ -11,12 +11,7 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import {
-    db,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
+import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -25,8 +20,8 @@ import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 class TransactionService {
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
-        return transactionRepository.findByExternalSource(externalSource);
+    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
+        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
     }
 
     async deleteById(id: number) {
@@ -36,14 +31,6 @@ class TransactionService {
             await transactionEntryRepository.deleteByTransactionId(id, tx);
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
-    }
-
-    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
-        return transactionRepository.findByAccountId(accountId);
-    }
-
-    async getLatestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'latest');
     }
 
     async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {

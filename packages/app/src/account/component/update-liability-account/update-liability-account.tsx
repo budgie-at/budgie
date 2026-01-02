@@ -28,6 +28,8 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
 
     const { control, handleSubmit, instrument } = useAccountForm(
         {
+            externalId: account.externalId,
+            iban: account.iban,
             type: account.type,
             icon: account.icon,
             title: account.title,

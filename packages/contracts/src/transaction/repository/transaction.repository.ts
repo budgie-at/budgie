@@ -147,10 +147,19 @@ export class TransactionRepository {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<TransactionEntityInterface[]> {
-        return await this.db.query.TransactionEntityTable.findMany({
-            where: eq(TransactionEntityTable.externalSource, externalSource)
-        });
+    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
+        const results = await this.db
+            .select({ externalId: TransactionEntityTable.externalId })
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
+
+        return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }
 
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
