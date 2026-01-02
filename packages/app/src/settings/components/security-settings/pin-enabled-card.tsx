@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';
@@ -40,7 +41,7 @@ export const PinEnabledCard = () => {
             />
 
             <View className="gap-x-xl flex-row items-center">
-                <CircleIcon icon="Lock" variant="positive" size={40} iconSize={20} border={false} />
+                <CircleIcon icon={UserIconNameEnum.Lock} variant="positive" size={40} iconSize={20} border={false} />
 
                 <View className="gap-x-xs">
                     <Text className="text-primary text-md">
@@ -59,7 +60,7 @@ export const PinEnabledCard = () => {
             <View className="gap-y-xl border-t pt-xl border-t-secondary-corner">
                 {isSomeAvailable ? (
                     <View className="flex-row items-center gap-x-md">
-                        <Icon icon="Fingerprint" size={16} className="text-secondary-foreground" />
+                        <Icon icon={UserIconNameEnum.Fingerprint} size={16} className="text-secondary-foreground" />
 
                         <Text className="mr-auto text-primary text-sm">
                             {isTouchIdAvailable && isFaceIdAvailable ? <Trans>Face ID / Touch ID</Trans> : null}
@@ -73,13 +74,13 @@ export const PinEnabledCard = () => {
 
                 <Link href={`/settings/pin?mode=${PinSetupModeEnum.CHANGE}`} asChild>
                     <HapticPressable className="flex-row items-center gap-x-md ">
-                        <Icon icon="KeyRound" size={16} className="text-secondary-foreground" />
+                        <Icon icon={UserIconNameEnum.KeyRound} size={16} className="text-secondary-foreground" />
 
                         <Text className="mr-auto text-primary text-sm">
                             <Trans>Change PIN</Trans>
                         </Text>
 
-                        <Icon icon="ChevronRight" className="text-secondary-foreground" size={16} />
+                        <Icon icon={UserIconNameEnum.ChevronRight} className="text-secondary-foreground" size={16} />
                     </HapticPressable>
                 </Link>
 

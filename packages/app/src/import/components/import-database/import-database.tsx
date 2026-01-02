@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
@@ -55,7 +56,7 @@ export const ImportDatabase = () => {
                 title={t`Import Database`}
                 description={t`Restore from a backup file`}
                 onPress={handleSelectAndConfirm}
-                icon="Database"
+                icon={UserIconNameEnum.Database}
                 variant="ghost"
                 isLoading={isLoading}
             />
@@ -67,7 +68,7 @@ export const ImportDatabase = () => {
                 description={t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`}
                 buttonText={t`Import Database`}
                 onSubmit={handleConfirm}
-                icon="OctagonAlert"
+                icon={UserIconNameEnum.OctagonAlert}
                 title={t`Import Database`}
             />
         </>

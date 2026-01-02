@@ -1,4 +1,4 @@
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -29,7 +29,7 @@ export const CreateIncomeTransaction = ({ accountId }: Props) => {
             onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="positive"
-            icon="TrendingUp"
+            icon={UserIconNameEnum.TrendingUp}
             title={t`New Income`}
             buttonText={t`Add Income`}
             transactionType={TransactionTypeEnum.INCOME}
