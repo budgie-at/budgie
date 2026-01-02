@@ -5,7 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { BankAccountPreviewInterface } from '../../service/monobank-sync.service';
+import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 
 interface Props {
     readonly preview: BankAccountPreviewInterface;

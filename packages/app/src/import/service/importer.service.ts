@@ -184,6 +184,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 }
             ];
@@ -194,6 +195,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 }
             ];
@@ -204,6 +206,7 @@ export class ImporterService {
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId: category.id,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 },
                 {
@@ -211,6 +214,7 @@ export class ImporterService {
                     amount: Math.abs(dest.amount),
                     accountId: dest.account.id,
                     categoryId: category.id,
+                    mccCategoryId: null,
                     externalId: entryExternalId
                 }
             ];

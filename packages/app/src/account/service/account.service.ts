@@ -173,6 +173,7 @@ class AccountService {
                 accountId,
                 transactionId: transaction.id,
                 categoryId: null,
+                mccCategoryId: null,
                 amount: absDelta,
                 type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT
             },
