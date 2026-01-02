@@ -1380,11 +1380,11 @@ msgstr "Показувати $1 234,56 замість $1 235"
 
 #: src/app/(main)/settings/index.tsx:120
 msgid "Show Cents"
-msgstr ""
+msgstr "Показати копійки"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:21
 msgid "Show this account on the main page"
-msgstr ""
+msgstr "Показати цей рахунок на головній сторінці"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:28
@@ -1657,7 +1657,7 @@ msgstr "Використовуйте Touch ID для швидкого та бе�
 
 #: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
-msgstr ""
+msgstr "Переглянути та активувати приховані рахунки"
 
 #: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
