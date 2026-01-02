@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import DateTimePicker, { CalendarComponents, useDefaultClassNames } from 'react-native-ui-datepicker';
 
@@ -5,8 +6,8 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { Icon } from '../icon/icon';
 
 const components: CalendarComponents = {
-    IconNext: <Icon icon="ChevronRight" className="text-primary" size={24} />,
-    IconPrev: <Icon icon="ChevronLeft" className="text-primary" size={24} />
+    IconNext: <Icon icon={UserIconNameEnum.ChevronRight} className="text-primary" size={24} />,
+    IconPrev: <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />
 };
 
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {

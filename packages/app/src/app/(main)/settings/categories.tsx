@@ -1,4 +1,4 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -32,7 +32,7 @@ export default function Categories() {
         <CategoryFormBottomSheet ref={ref} category={category} />
     );
 
-    const icon = isNotEmptyString(search) ? 'Search' : 'Folder';
+    const icon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Folder;
     const title = isNotEmptyString(search) ? t`No Results` : t`No Custom Categories`;
     const description = isNotEmptyString(search) ? t`No categories match your search` : t`Custom categories you create will appear here`;
 

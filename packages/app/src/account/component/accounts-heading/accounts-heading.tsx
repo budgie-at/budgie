@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -13,7 +14,7 @@ export const AccountsHeading = () => (
 
         <Link href="/(main)/create-account" asChild>
             <HapticPressable>
-                <CircleIcon icon="Plus" variant="ghost" size={26} iconSize={14} />
+                <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
             </HapticPressable>
         </Link>
     </View>

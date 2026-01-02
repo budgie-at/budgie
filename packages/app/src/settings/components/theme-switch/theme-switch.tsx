@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -14,7 +15,7 @@ export const ThemeSwitch = () => {
             title={t`Dark Mode`}
             description={t`Switch between light and dark themes`}
             right={<ThemedSwitch className="my-auto" onChange={toggleColorSchema} value={isDarkColorSchema} />}
-            icon="Moon"
+            icon={UserIconNameEnum.Moon}
         />
     );
 };

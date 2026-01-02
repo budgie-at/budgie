@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
@@ -7,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
@@ -23,7 +23,7 @@ interface Props {
     readonly isLoading?: boolean;
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly title: string;
 }
 

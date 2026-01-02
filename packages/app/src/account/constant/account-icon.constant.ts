@@ -1,14 +1,11 @@
-/* eslint-disable lingui/no-unlocalized-strings */
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
-import { IconName } from '../../@generic/constant/icons.constant';
-
-export const ACCOUNT_ICON: Record<AccountTypeEnum, IconName> = {
-    [AccountTypeEnum.BANK]: 'CreditCard',
-    [AccountTypeEnum.CASH]: 'Wallet',
-    [AccountTypeEnum.DEBT]: 'HandCoins',
-    [AccountTypeEnum.CRYPTO]: 'Coins',
-    [AccountTypeEnum.STOCKS]: 'CreditCard',
-    [AccountTypeEnum.SAVINGS]: 'Coins',
-    [AccountTypeEnum.BANK_SYNC]: 'CreditCard'
+export const ACCOUNT_ICON: Record<AccountTypeEnum, UserIconNameEnum> = {
+    [AccountTypeEnum.BANK]: UserIconNameEnum.CreditCard,
+    [AccountTypeEnum.CASH]: UserIconNameEnum.Wallet,
+    [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins,
+    [AccountTypeEnum.CRYPTO]: UserIconNameEnum.Coins,
+    [AccountTypeEnum.STOCKS]: UserIconNameEnum.CreditCard,
+    [AccountTypeEnum.SAVINGS]: UserIconNameEnum.Coins,
+    [AccountTypeEnum.BANK_SYNC]: UserIconNameEnum.CreditCard
 };

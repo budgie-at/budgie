@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode, RefObject, useRef } from 'react';
 import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
@@ -24,7 +25,7 @@ export const FloatingAddButton = <T extends IdInterface>({ renderBottomSheet }: 
                         onPress={handleOpen}
                         className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
                     >
-                        <Icon icon="Plus" className="text-primary-reverse" size={32} />
+                        <Icon icon={UserIconNameEnum.Plus} className="text-primary-reverse" size={32} />
                     </HapticPressable>
                 </Animated.View>
             </View>

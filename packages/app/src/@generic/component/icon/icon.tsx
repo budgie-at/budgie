@@ -1,11 +1,12 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { styled } from 'nativewind';
 
-import { ICONS, IconName } from '../../constant/icons.constant';
+import { ICONS } from '../../constant/icons.constant';
 
 import type { LucideProps } from 'lucide-react-native';
 
 interface IconProps extends LucideProps {
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
 }
 
 export const Icon = ({ icon, ...rest }: IconProps) => {

@@ -1,11 +1,11 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { IconName } from '../../constant/icons.constant';
 import { Icon } from '../icon/icon';
 
 interface Props {
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly description: string;
 }
 

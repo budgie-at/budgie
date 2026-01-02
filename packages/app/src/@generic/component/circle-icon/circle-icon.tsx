@@ -1,9 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { View, ViewStyle } from 'react-native';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
 import { Icon } from '../icon/icon';
@@ -12,7 +12,7 @@ import type { ClassValue } from 'clsx';
 
 interface Props {
     readonly size?: number;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly radius?: number;
     readonly border?: boolean;
     readonly iconSize?: number;

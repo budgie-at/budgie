@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
@@ -30,7 +30,7 @@ export const CreateTransferTransaction = ({ accountId }: Props) => {
             clearErrors={form.clearErrors}
             title={t`New Transfer`}
             variant="default"
-            icon="ArrowRightLeft"
+            icon={UserIconNameEnum.ArrowRightLeft}
             onSubmit={handleSubmit}
             buttonText={t`Add Transfer`}
         />
