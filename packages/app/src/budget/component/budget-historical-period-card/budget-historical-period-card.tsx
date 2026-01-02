@@ -1,4 +1,4 @@
-import { BudgetAllocationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -13,74 +13,60 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetBudgetActualSpendingQuery } from '../../query/use-get-budget-actual-spending.query';
 import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-category.query';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { HistoricalCategoryBreakdown } from '../historical-category-breakdown/historical-category-breakdown';
+import { HistoricalPeriodStats } from '../historical-period-stats/historical-period-stats';
+
+interface AllocationInfo {
+    readonly categoryId: number;
+    readonly amount: number;
+}
 
 interface Props {
     readonly label: string;
     readonly startDate: Date;
     readonly endDate: Date;
     readonly totalPlanned: number;
-    readonly categoryIds: number[];
+    readonly categoryIds: readonly number[];
     readonly currencySymbol: string;
-    readonly allocations: BudgetAllocationEntityInterface[];
+    readonly allocations: readonly AllocationInfo[];
 }
+
+const MAX_CATEGORIES = 5;
+const UNDER_BUDGET_THRESHOLD = 50;
 
 export const BudgetHistoricalPeriodCard = (props: Props) => {
     const { label, startDate, endDate, categoryIds, totalPlanned, currencySymbol, allocations } = props;
     const formatDigits = useFormatDigits(0);
     const [isExpanded, setIsExpanded] = useState(false);
-
     const { categories } = useAllCategoriesQuery();
-
-    const { totalSpent } = useGetBudgetActualSpendingQuery({
-        categoryIds,
-        startDate,
-        endDate
-    });
-
-    const { spendingByCategory } = useGetSpendingByCategoryQuery({
-        categoryIds,
-        startDate,
-        endDate
-    });
+    const { totalSpent } = useGetBudgetActualSpendingQuery({ categoryIds: [...categoryIds], startDate, endDate });
+    const { spendingByCategory } = useGetSpendingByCategoryQuery({ categoryIds: [...categoryIds], startDate, endDate });
 
     const remaining = totalPlanned - totalSpent;
     const percentage = totalPlanned > 0 ? Math.round((totalSpent / totalPlanned) * 100) : 0;
     const isOverBudget = totalSpent > totalPlanned;
-
-    const spentFormatted = formatDigits(convertFromMicroUnits(totalSpent), currencySymbol);
-    const remainingFormatted = formatDigits(convertFromMicroUnits(Math.abs(remaining)), currencySymbol);
-    const plannedFormatted = formatDigits(convertFromMicroUnits(totalPlanned), currencySymbol);
-
     const statusIcon = isOverBudget ? 'AlertTriangle' : 'CheckCircle';
     const statusClassName = isOverBudget ? 'text-warning-foreground' : 'text-positive-foreground';
 
-    const categoryStats = allocations.map(allocation => {
-        const category = categories.find(cat => cat.id === allocation.categoryId);
-        const spending = spendingByCategory.find(sp => sp.categoryId === allocation.categoryId);
+    const categoryStats = allocations.map(alloc => {
+        const category = categories.find(cat => cat.id === alloc.categoryId);
+        const spending = spendingByCategory.find(sp => sp.categoryId === alloc.categoryId);
         const spent = spending?.total ?? 0;
-        const planned = allocation.amount;
-        const catRemaining = planned - spent;
-        const catPercentage = planned > 0 ? Math.round((spent / planned) * 100) : 0;
+        const catPercentage = alloc.amount > 0 ? Math.round((spent / alloc.amount) * 100) : 0;
+        const icon = category?.icon ?? UserIconNameEnum.Wallet;
 
-        return {
-            name: category?.title ?? '-',
-            icon: category?.icon ?? UserIconNameEnum.Wallet,
-            spent,
-            planned,
-            remaining: catRemaining,
-            percentage: catPercentage,
-            isOverBudget: spent > planned
-        };
+        return { name: category?.title ?? '-', icon, spent, percentage: catPercentage, isOverBudget: spent > alloc.amount };
     });
 
     const overBudgetCount = categoryStats.filter(cat => cat.isOverBudget).length;
-    const underBudgetCount = categoryStats.filter(cat => cat.percentage < 50 && cat.planned > 0).length;
-
-    const remainingCategoriesCount = categoryStats.length - 5;
-
+    const underBudgetCount = categoryStats.filter(cat => cat.percentage < UNDER_BUDGET_THRESHOLD).length;
+    const displayCategories = categoryStats.slice(0, MAX_CATEGORIES).map(cat => ({ ...cat, spentFormatted: formatDigits(convertFromMicroUnits(cat.spent), currencySymbol) }));
     const handleToggle = () => void setIsExpanded(prev => !prev);
-
-    const expandedIcon = isExpanded ? 'ChevronDown' : 'ChevronRight';
+    const expandIcon = isExpanded ? 'ChevronDown' : 'ChevronRight';
+    const spentFormatted = formatDigits(convertFromMicroUnits(totalSpent), currencySymbol);
+    const remainingFormatted = formatDigits(convertFromMicroUnits(Math.abs(remaining)), currencySymbol);
+    const savedFormatted = formatDigits(convertFromMicroUnits(remaining), currencySymbol);
+    const plannedFormatted = formatDigits(convertFromMicroUnits(totalPlanned), currencySymbol);
 
     return (
         <Card className="gap-2">
@@ -88,86 +74,28 @@ export const BudgetHistoricalPeriodCard = (props: Props) => {
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-2">
                         <Text className="text-sm font-medium text-primary">{label}</Text>
-                        <Icon icon={expandedIcon} size={14} className="text-secondary-foreground" />
+                        <Icon icon={expandIcon} size={14} className="text-secondary-foreground" />
                     </View>
                     <View className="flex-row items-center gap-1">
                         <Icon icon={statusIcon} size={12} className={statusClassName} />
-                        <Text className={cn('text-xs', statusClassName)}>{`${percentage}%`}</Text>
+                        <Text className={cn('text-xs', statusClassName)}>{percentage}%</Text>
                     </View>
                 </View>
             </HapticPressable>
-
             <BudgetProgressBar planned={totalPlanned} actual={totalSpent} className="h-1.5" />
-
             <View className="flex-row justify-between">
-                <Text className="text-xs text-secondary-foreground">
-                    <Trans>Spent: {spentFormatted}</Trans>
-                </Text>
-                <Text className={cn('text-xs', statusClassName)}>
-                    {isOverBudget ? <Trans>Over: {remainingFormatted}</Trans> : <Trans>Saved: {remainingFormatted}</Trans>}
-                </Text>
+                <Text className="text-xs text-secondary-foreground"><Trans>Spent: {spentFormatted}</Trans></Text>
+                <Text className={cn('text-xs', statusClassName)}>{isOverBudget ? <Trans>Over: {remainingFormatted}</Trans> : <Trans>Saved: {savedFormatted}</Trans>}</Text>
             </View>
-
             {isExpanded && (
                 <View className="mt-2 pt-2 border-t border-secondary-corner gap-3">
-                    <View className="flex-row justify-between">
-                        <View className="flex-1 items-center">
-                            <Text className="text-lg font-bold text-primary">{categoryStats.length}</Text>
-                            <Text className="text-xs text-secondary-foreground">
-                                <Trans>Categories</Trans>
-                            </Text>
-                        </View>
-                        <View className="flex-1 items-center">
-                            <Text
-                                className={cn(
-                                    'text-lg font-bold',
-                                    overBudgetCount > 0 ? 'text-warning-foreground' : 'text-positive-foreground'
-                                )}
-                            >
-                                {overBudgetCount}
-                            </Text>
-                            <Text className="text-xs text-secondary-foreground">
-                                <Trans>Over</Trans>
-                            </Text>
-                        </View>
-                        <View className="flex-1 items-center">
-                            <Text className="text-lg font-bold text-positive-foreground">{underBudgetCount}</Text>
-                            <Text className="text-xs text-secondary-foreground">
-                                <Trans>Under 50%</Trans>
-                            </Text>
-                        </View>
-                    </View>
-
+                    <HistoricalPeriodStats categoriesCount={categoryStats.length} overBudgetCount={overBudgetCount} underBudgetCount={underBudgetCount} />
                     <View className="flex-row justify-between py-1">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Budget</Trans>
-                        </Text>
+                        <Text className="text-xs text-secondary-foreground"><Trans>Budget</Trans></Text>
                         <Text className="text-xs font-medium text-primary">{plannedFormatted}</Text>
                     </View>
-
-                    <Text className="text-xs uppercase text-secondary-foreground">
-                        <Trans>Category Breakdown</Trans>
-                    </Text>
-                    {categoryStats.slice(0, 5).map(cat => {
-                        const catSpent = formatDigits(convertFromMicroUnits(cat.spent), currencySymbol);
-                        const catClassName = cat.isOverBudget ? 'text-warning-foreground' : 'text-primary';
-
-                        return (
-                            <View key={cat.name} className="flex-row items-center gap-2">
-                                <Icon icon={cat.icon} size={12} className="text-secondary-foreground" />
-                                <Text className="flex-1 text-xs text-primary" numberOfLines={1}>
-                                    {cat.name}
-                                </Text>
-                                <Text className={cn('text-xs font-medium', catClassName)}>{catSpent}</Text>
-                                <Text className="text-xs text-secondary-foreground w-8 text-right">{`${cat.percentage}%`}</Text>
-                            </View>
-                        );
-                    })}
-                    {categoryStats.length > 5 && (
-                        <Text className="text-xs text-secondary-foreground text-center">
-                            <Trans>+{remainingCategoriesCount} more categories</Trans>
-                        </Text>
-                    )}
+                    <Text className="text-xs uppercase text-secondary-foreground"><Trans>Category Breakdown</Trans></Text>
+                    <HistoricalCategoryBreakdown categories={displayCategories} remainingCount={Math.max(0, categoryStats.length - MAX_CATEGORIES)} />
                 </View>
             )}
         </Card>
