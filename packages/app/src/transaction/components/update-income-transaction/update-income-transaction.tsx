@@ -2,7 +2,8 @@ import {
     IncomeTransactionCreateInputSchema,
     TransactionIncomeWithRelationsEntityInterface,
     TransactionPositiveAdjustmentWithRelationsEntityInterface,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 

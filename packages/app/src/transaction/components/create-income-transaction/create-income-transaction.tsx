@@ -1,4 +1,4 @@
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';

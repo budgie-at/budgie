@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Image } from 'expo-image';
 import { styled } from 'nativewind';
 import React from 'react';
@@ -48,7 +49,7 @@ export const ContactSelectorCard = (props: Props) => {
                 ))}
                 {phoneNumbers.map(phoneNumber => (
                     <View key={phoneNumber} className="flex-row items-center gap-x-sm">
-                        <Icon icon="Phone" className="text-secondary-foreground" size={12} />
+                        <Icon icon={UserIconNameEnum.Phone} className="text-secondary-foreground" size={12} />
                         <Text className="text-secondary-foreground">{phoneNumber}</Text>
                     </View>
                 ))}

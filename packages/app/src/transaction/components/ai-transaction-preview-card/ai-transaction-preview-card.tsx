@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -9,7 +9,6 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
@@ -34,7 +33,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const variant = TRANSACTION_COLOR[type];
-    const icon = isDefined(category) ? category.icon : 'Receipt';
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
     const microAmount = convertToMicroUnits(amount);
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();

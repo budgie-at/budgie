@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';

@@ -1,4 +1,4 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 

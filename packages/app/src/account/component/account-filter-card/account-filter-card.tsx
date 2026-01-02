@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 

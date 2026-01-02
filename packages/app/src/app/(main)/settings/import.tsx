@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -266,7 +267,7 @@ export default function ImportScreen() {
                                 content={buttonContent}
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
-                                lefticon={UserIconNameEnum.Database}
+                                leftIcon={UserIconNameEnum.Database}
                             />
                         )}
                     </View>

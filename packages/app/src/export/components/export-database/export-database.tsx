@@ -13,7 +13,7 @@ export const ExportDatabase = () => {
             title={t`Export Database`}
             description={t`Create a backup of all your data`}
             onPress={handleExport}
-            icon="Database"
+            icon={UserIconNameEnum.Database}
             variant="default"
             isLoading={isLoading}
         />

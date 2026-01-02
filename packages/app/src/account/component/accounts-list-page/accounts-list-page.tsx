@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
 import { ReactElement, ReactNode } from 'react';
 import { FlatList } from 'react-native';

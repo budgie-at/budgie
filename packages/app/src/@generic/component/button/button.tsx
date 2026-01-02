@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';

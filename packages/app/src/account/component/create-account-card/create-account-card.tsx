@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';

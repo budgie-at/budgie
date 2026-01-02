@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, RefObject } from 'react';
 import { View } from 'react-native';
@@ -8,7 +9,6 @@ import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-she
 import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
 import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';
 import { TransactionFilterHeader } from '../transaction-filter-header/transaction-filter-header';

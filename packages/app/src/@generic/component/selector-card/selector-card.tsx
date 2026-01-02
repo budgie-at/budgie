@@ -39,7 +39,7 @@ export const SelectorCard = <T = number,>(props: Props<T>) => {
 
     const right = isSelected ? (
         <View className="bg-primary rounded-full p-xs">
-            <Icon className="text-primary-reverse" icon="Check" size={16} />
+            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={16} />
         </View>
     ) : null;
 

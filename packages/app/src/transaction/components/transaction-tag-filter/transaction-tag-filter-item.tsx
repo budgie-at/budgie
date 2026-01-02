@@ -1,4 +1,4 @@
-import { TagEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 

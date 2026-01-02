@@ -1,4 +1,4 @@
-import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 

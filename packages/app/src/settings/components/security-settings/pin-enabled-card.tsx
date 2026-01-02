@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link } from 'expo-router';

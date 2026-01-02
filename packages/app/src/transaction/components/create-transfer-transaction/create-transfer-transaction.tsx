@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';

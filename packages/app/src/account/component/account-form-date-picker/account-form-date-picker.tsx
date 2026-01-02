@@ -28,7 +28,13 @@ export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
 
     return (
         <>
-            <SimpleHorizontalCell iconParams={iconParams} onPress={handleOpen} title={title} description={description} icon="Calendar" />
+            <SimpleHorizontalCell
+                iconParams={iconParams}
+                onPress={handleOpen}
+                title={title}
+                description={description}
+                icon={UserIconNameEnum.Calendar}
+            />
 
             <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />
         </>

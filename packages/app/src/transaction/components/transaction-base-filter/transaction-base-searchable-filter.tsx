@@ -1,10 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode, RefObject, useImperativeHandle, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { emptyFn, isEmptyArray, isEmptyString, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { BottomSheetSnapPoints } from '../../../@generic/type/bottom-sheet-snap-points.type';
 import { TransactionFilterRenderItemsArgsInterface } from '../../interface/transaction-filter-render-items-args.interface';

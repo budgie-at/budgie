@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import React from 'react';
 

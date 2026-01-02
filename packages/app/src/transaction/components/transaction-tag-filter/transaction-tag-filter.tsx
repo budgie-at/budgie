@@ -1,4 +1,4 @@
-import { TagEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 

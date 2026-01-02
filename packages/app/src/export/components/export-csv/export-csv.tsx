@@ -13,7 +13,7 @@ export const ExportCsv = () => {
             title={t`Export CSV`}
             description={t`Export all transactions to a CSV file`}
             onPress={handleExport}
-            icon="FileText"
+            icon={UserIconNameEnum.FileText}
             variant="default"
             isLoading={isLoading}
         />

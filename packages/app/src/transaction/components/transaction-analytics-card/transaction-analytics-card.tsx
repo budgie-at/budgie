@@ -1,9 +1,9 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Text } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';

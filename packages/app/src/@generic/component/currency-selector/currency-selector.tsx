@@ -1,4 +1,4 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';

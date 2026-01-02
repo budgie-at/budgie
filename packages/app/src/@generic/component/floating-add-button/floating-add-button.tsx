@@ -22,7 +22,7 @@ export const FloatingAddButton = ({ accountId }: Props) => {
     return (
         <>
             <HapticPressable onPress={handleOpen} className="absolute shadow-lg rounded-full" style={style}>
-                <CircleIcon icon="Plus" variant="primary" size={56} iconSize={28} radius={28} border={false} />
+                <CircleIcon icon={UserIconNameEnum.Plus} variant="primary" size={56} iconSize={28} radius={28} border={false} />
             </HapticPressable>
 
             <CreateTransactionBottomSheet ref={ref} accountId={accountId} />

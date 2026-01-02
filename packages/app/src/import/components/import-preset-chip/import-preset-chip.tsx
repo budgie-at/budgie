@@ -31,6 +31,6 @@ const titleVariants = cva('font-medium text-sm', {
 export const ImportPresetChip = ({ title, isSelected, onSelect }: Props) => (
     <HapticPressable className={chipVariants({ isSelected })} onPress={onSelect}>
         <Text className={titleVariants({ isSelected })}>{title}</Text>
-        {isSelected && <Icon icon="Check" size={12} className="text-primary" />}
+        {isSelected && <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary" />}
     </HapticPressable>
 );

@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import { Text, View } from 'react-native';
@@ -81,7 +82,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                         </View>
                     ) : (
                         <EmptyState
-                            circleicon={UserIconNameEnum.Tag}
+                            circleIcon={UserIconNameEnum.Tag}
                             title={t`No tags yet`}
                             titleClassName="text-primary font-semibold"
                             descriptionClassName="max-w-[250px] text-center mx-auto"

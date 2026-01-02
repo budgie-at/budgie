@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';

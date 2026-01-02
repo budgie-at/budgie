@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { View } from 'react-native';

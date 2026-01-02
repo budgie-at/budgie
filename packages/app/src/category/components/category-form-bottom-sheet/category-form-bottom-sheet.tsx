@@ -1,4 +1,4 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
@@ -7,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
 import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';

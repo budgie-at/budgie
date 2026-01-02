@@ -1,4 +1,4 @@
-import { SettingsEntityInterface } from '@budgie/contracts';
+import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';

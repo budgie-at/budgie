@@ -38,7 +38,7 @@ export const DatePickerBottomSheet = ({ date, onChange, ref }: Props) => {
         <BottomSheet enableDynamicSizing ref={ref}>
             <BottomSheetView>
                 <View className="flex-row items-center gap-x-xl px-5xl border-b border-b-secondary-corner pb-3xl">
-                    <CircleIcon size={36} iconSize={20} border={false} variant="ghost" icon="Calendar" />
+                    <CircleIcon size={36} iconSize={20} border={false} variant="ghost" icon={UserIconNameEnum.Calendar} />
 
                     <Text className="text-primary font-semibold">
                         <Trans>Select Date</Trans>

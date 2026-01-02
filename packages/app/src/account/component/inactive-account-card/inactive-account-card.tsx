@@ -20,7 +20,7 @@ export const InactiveAccountCard = ({ account }: Props) => {
     return (
         <AccountActionCard
             account={account}
-            actionIcon="Eye"
+            actionicon={UserIconNameEnum.Eye}
             actionButtonText={t`Activate`}
             confirmTitle={t`Activate Account?`}
             confirmDescription={t`${accountTitle} will be restored to your main view.`}
