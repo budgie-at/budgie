@@ -454,7 +454,7 @@ msgstr "No se pudo restaurar la cuenta."
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
 msgid "Could not update category"
-msgstr ""
+msgstr "No se pudo actualizar la categoría"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -632,7 +632,7 @@ msgstr "ej. Comestibles, Salario, Alquiler"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Edit Category"
-msgstr ""
+msgstr "Editar categoría"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
 msgid "Edit Expense"
@@ -1380,11 +1380,11 @@ msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
 #: src/app/(main)/settings/index.tsx:120
 msgid "Show Cents"
-msgstr ""
+msgstr "Mostrar centavos"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:21
 msgid "Show this account on the main page"
-msgstr ""
+msgstr "Mostrar esta cuenta en la página principal"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:28
@@ -1640,7 +1640,7 @@ msgstr "Actualizar transferencia"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Update your category details"
-msgstr ""
+msgstr "Actualice los detalles de su categoría"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
@@ -1657,7 +1657,7 @@ msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
 #: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
-msgstr ""
+msgstr "Ver y activar cuentas ocultas"
 
 #: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
