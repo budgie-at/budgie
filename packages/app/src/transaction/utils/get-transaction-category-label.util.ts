@@ -4,6 +4,8 @@ import {
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 
+import { isDefined } from '@rnw-community/shared';
+
 export const getTransactionCategoryLabel = (
     transaction: TransactionWithRelationsEntityInterface,
     balanceAdjustmentLabel: string,
@@ -19,5 +21,13 @@ export const getTransactionCategoryLabel = (
 
     const entry = transaction.entries.at(0);
 
-    return entry?.category?.title ?? transaction.type;
+    if (isDefined(entry?.category?.title)) {
+        return entry.category.title;
+    }
+
+    if (isDefined(entry?.mccCategory?.shortDescription)) {
+        return entry.mccCategory.shortDescription;
+    }
+
+    return transaction.type;
 };

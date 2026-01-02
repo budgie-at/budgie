@@ -33,6 +33,8 @@ import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 enableScreens();
 enableFreeze();
 
@@ -65,6 +67,9 @@ export default function RootLayout() {
 
                     await monobankSyncService.sync();
                     await monobankSyncService.registerBackgroundTask();
+                } catch (e: unknown) {
+                    // eslint-disable-next-line no-console
+                    console.log(getErrorMessage(e));
                 } finally {
                     // HINT: We need to time for db to return data
                     setTimeout(() => void SplashScreen.hideAsync(), 200);

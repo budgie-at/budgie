@@ -18,7 +18,8 @@ import {
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
 import { isNotEmptyString } from '@rnw-community/shared';
-import { authService } from '../../../auth/service/auth.service';
+import * as SecureStore from 'expo-secure-store';
+import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 
 declare global {
     var __expoSqliteDb__: SQLite.SQLiteDatabase | undefined;
@@ -28,11 +29,10 @@ declare global {
 const dbInit = () => {
     global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
 
-    authService.getPin().then(pin => {
-        if (isNotEmptyString(pin)) {
-            expoDb.execSync(`PRAGMA key = '${pin}';`);
-        }
-    });
+    const pin = SecureStore.getItem(PIN_KEY);
+    if (isNotEmptyString(pin)) {
+        expoDb.execSync(`PRAGMA key = '${pin}';`);
+    }
 
     return global.__expoSqliteDb__;
 };
