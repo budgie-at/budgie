@@ -6,33 +6,26 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, instrumentRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { FIFTEEN_MINUTES_IN_SECONDS } from '../../account/constant/fifteen-minutes-in-seconds.constant';
+import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
 import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
+import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { generateBankAccountTitle, mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
-const FORWARD_SYNC_STALE_THRESHOLD_MS = FIFTEEN_MINUTES_IN_SECONDS * 1000;
-
-export interface BankAccountPreviewInterface {
-    readonly externalId: string;
-    readonly title: string;
-    readonly currencyCode: string;
-    readonly iban: string | null;
-    readonly existingAccountId: number | null;
-    readonly hasBankSync: boolean;
-}
+const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
 class AppMonobankSyncService {
     private readonly provider = ExternalSourceEnum.MONOBANK;
     private isRunning = false;
+    private mccCategoryIdMap = new Map<string, number>();
 
     async fetchAccountsPreview(token: string): Promise<BankAccountPreviewInterface[]> {
         const bankAccounts = await new MonobankSyncService(token).syncAccounts();
@@ -57,19 +50,6 @@ class AppMonobankSyncService {
                 hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id)
             };
         });
-    }
-
-    async setupAccountSync(token: string, externalId: string): Promise<void> {
-        const bankAccounts = await new MonobankSyncService(token).syncAccounts();
-        const bankAccount = bankAccounts.find(acc => acc.id === externalId);
-        if (!isDefined(bankAccount)) {
-            throw new Error('Bank account not found');
-        }
-
-        const account = await this.getOrCreateAccount(bankAccount);
-        await this.createOrUpdateBankSync(account.id, token);
-        void this.registerBackgroundTask();
-        void this.sync();
     }
 
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
@@ -116,6 +96,9 @@ class AppMonobankSyncService {
         }
         this.isRunning = true;
         try {
+            const mccCategories = await mccCategoryRepository.findAll();
+            this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
+
             return await this.executeSyncLoop();
         } finally {
             this.isRunning = false;
@@ -277,7 +260,11 @@ class AppMonobankSyncService {
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
 
         if (isNotEmptyArray(newTxs)) {
-            await transactionService.bulkCreate(newTxs.map(tx => mapBankTransactionToCreateInput(tx, account.id, this.provider)));
+            await transactionService.bulkCreate(
+                newTxs.map(tx =>
+                    mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
+                )
+            );
         }
         await microPause();
 
