@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import React from 'react';
 
@@ -14,17 +15,17 @@ export default function TabsLayout() {
             <TabList asChild>
                 <BottomTabs>
                     <TabTrigger asChild href="/" name="home">
-                        <TabButton icon="Home" />
+                        <TabButton icon={UserIconNameEnum.Home} />
                     </TabTrigger>
 
                     <TabTrigger asChild href="/transactions" name="transactions">
-                        <TabButton icon="Receipt" />
+                        <TabButton icon={UserIconNameEnum.Receipt} />
                     </TabTrigger>
 
                     <AiChatButton />
 
                     <TabTrigger asChild href="/analytics" name="analytics">
-                        <TabButton icon="ChartNoAxesColumn" />
+                        <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                     </TabTrigger>
 
                     <CreateTransactionTab />
