@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import React, { ReactNode, RefObject, useRef } from 'react';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';

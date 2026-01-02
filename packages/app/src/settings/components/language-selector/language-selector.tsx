@@ -1,4 +1,4 @@
-import { LanguageEnum } from '@budgie/contracts';
+import { LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 

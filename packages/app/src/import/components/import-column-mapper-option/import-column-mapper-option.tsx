@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Pressable, Text } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';

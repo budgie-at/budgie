@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import React, { ComponentProps } from 'react';
 
 import { cn } from '../../utils/cn.util';

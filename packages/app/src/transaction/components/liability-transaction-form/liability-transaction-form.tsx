@@ -1,4 +1,4 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -7,7 +7,6 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';

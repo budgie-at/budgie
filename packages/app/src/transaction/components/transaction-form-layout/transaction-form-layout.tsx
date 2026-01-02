@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
@@ -10,7 +11,6 @@ import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-ac
 import { Footer } from '../../../@generic/component/footer/footer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { IconName } from '../../../@generic/constant/icons.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
@@ -40,10 +40,10 @@ export const TransactionFormLayout = ({ title, description, icon, onDelete, vari
                     <Footer>
                         <View className="flex-row gap-2">
                             {isDefined(onDelete) ? (
-                                <Button lefticon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
+                                <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
                             ) : null}
                             <Button
-                                lefticon={UserIconNameEnum.RefreshCw}
+                                leftIcon={UserIconNameEnum.RefreshCw}
                                 onPress={onSubmit}
                                 variant="positive"
                                 className="flex-1"

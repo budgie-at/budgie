@@ -3,7 +3,8 @@ import {
     AccountEntityInterface,
     AccountTypeEnum,
     DebtAccountCreateInputInterface,
-    DebtAccountCreateInputSchema
+    DebtAccountCreateInputSchema,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router } from 'expo-router';
@@ -22,7 +23,7 @@ export const useDebtAccountForm = (
         mode: 'onSubmit',
         defaultValues: {
             debtType: AccountDebtTypeEnum.LENT,
-            icon: 'Home',
+            icon: UserIconNameEnum.Home,
             type: AccountTypeEnum.DEBT,
             targetBalance: 0,
             instrumentId: 0,
