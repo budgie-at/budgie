@@ -11,6 +11,8 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
+import { getErrorMessage } from '@rnw-community/shared';
+
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
@@ -32,8 +34,6 @@ import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 enableScreens();
 enableFreeze();
