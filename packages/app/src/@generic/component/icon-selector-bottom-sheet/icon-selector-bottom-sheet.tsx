@@ -31,7 +31,10 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const [search, setSearch] = useState('');
     const { t } = useLingui();
 
-    const filteredIcons = USER_ICONS_LIST.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
+    const searchLower = search.toLowerCase();
+    const filteredIcons = USER_ICONS_LIST.filter(
+        ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
+    );
     const data = padFlatListData(filteredIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
