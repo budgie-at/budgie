@@ -24,8 +24,7 @@ export {
     MccGroupEntityTable,
     MccGroupEntityRelations,
     MccCategoryEntityTable,
-    MccCategoryEntityRelations
-    SettingsEntityRelations,
+    MccCategoryEntityRelations,
     BudgetEntityTable,
     BudgetEntityRelations,
     BudgetAllocationEntityTable,

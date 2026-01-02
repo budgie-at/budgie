@@ -9,6 +9,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { isPositiveNumber } from '@rnw-community/shared';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 const safeToSpendVariants = cva('text-3xl font-bold', {
     variants: { status: { positive: 'text-positive-foreground', negative: 'text-warning-foreground' } }
@@ -92,7 +93,7 @@ export const BudgetDetailsSummaryCard = (props: Props) => {
 
             {isPositiveNumber(categoriesOverBudget) && (
                 <View className="flex-row items-center gap-1 pt-1">
-                    <Icon icon="AlertTriangle" size={12} className="text-warning-foreground" />
+                    <Icon icon={UserIconNameEnum.AlertTriangle} size={12} className="text-warning-foreground" />
                     <Text className="text-xs text-warning-foreground">
                         <Trans>{categoriesOverBudget} categories over budget</Trans>
                     </Text>

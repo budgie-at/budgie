@@ -10,6 +10,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetAnalyticsContent } from '../../../budget/component/budget-analytics-content/budget-analytics-content';
 import { useGetBudgetsQuery } from '../../../budget/query/use-get-budgets.query';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 export default function BudgetAnalyticsPage() {
     const { t } = useLingui();
@@ -24,7 +25,7 @@ export default function BudgetAnalyticsPage() {
                     <BudgetAnalyticsContent budget={budgets[0]} />
                 ) : (
                     <Card className="items-center py-8">
-                        <CircleIcon icon="Wallet" size={48} iconSize={24} variant="ghost" border={false} />
+                        <CircleIcon icon={UserIconNameEnum.Wallet} size={48} iconSize={24} variant="ghost" border={false} />
                         <Text className="text-sm text-secondary-foreground mt-2">
                             <Trans>No budgets to analyze</Trans>
                         </Text>

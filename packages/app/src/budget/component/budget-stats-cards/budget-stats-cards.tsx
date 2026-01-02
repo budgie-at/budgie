@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -14,7 +15,7 @@ interface Props {
 export const BudgetStatsCards = ({ daysRemaining, totalDays, dailyFormatted, projectedFormatted }: Props) => (
     <View className="flex-row gap-3">
         <Card className="flex-1 gap-1">
-            <Icon icon="Calendar" size={16} className="text-secondary-foreground" />
+            <Icon icon={UserIconNameEnum.Calendar} size={16} className="text-secondary-foreground" />
             <Text className="text-xs text-secondary-foreground">
                 <Trans>Days Left</Trans>
             </Text>
@@ -25,7 +26,7 @@ export const BudgetStatsCards = ({ daysRemaining, totalDays, dailyFormatted, pro
         </Card>
 
         <Card className="flex-1 gap-1">
-            <Icon icon="TrendingUp" size={16} className="text-secondary-foreground" />
+            <Icon icon={UserIconNameEnum.TrendingUp} size={16} className="text-secondary-foreground" />
             <Text className="text-xs text-secondary-foreground">
                 <Trans>Daily Avg</Trans>
             </Text>
@@ -33,7 +34,7 @@ export const BudgetStatsCards = ({ daysRemaining, totalDays, dailyFormatted, pro
         </Card>
 
         <Card className="flex-1 gap-1">
-            <Icon icon="LineChart" size={16} className="text-secondary-foreground" />
+            <Icon icon={UserIconNameEnum.LineChart} size={16} className="text-secondary-foreground" />
             <Text className="text-xs text-secondary-foreground">
                 <Trans>Projected</Trans>
             </Text>
@@ -41,4 +42,3 @@ export const BudgetStatsCards = ({ daysRemaining, totalDays, dailyFormatted, pro
         </Card>
     </View>
 );
-

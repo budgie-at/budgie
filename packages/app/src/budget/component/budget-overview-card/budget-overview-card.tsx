@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 const statusTextVariants = cva('text-xs', {
     variants: {
@@ -34,18 +35,19 @@ interface Props {
     readonly progressBar: React.ReactNode;
 }
 
-export const BudgetOverviewCard = ({
-    title,
-    isOnTrack,
-    statusLabel,
-    spentLabel,
-    spentFormatted,
-    remainingLabel,
-    remainingFormatted,
-    isPositiveRemaining,
-    progressBar
-}: Props) => {
-    const statusIcon = isOnTrack ? 'CheckCircle' : 'AlertTriangle';
+export const BudgetOverviewCard = (props: Props) => {
+    const {
+        title,
+        isOnTrack,
+        statusLabel,
+        spentLabel,
+        spentFormatted,
+        remainingLabel,
+        remainingFormatted,
+        isPositiveRemaining,
+        progressBar
+    } = props;
+    const statusIcon = isOnTrack ? UserIconNameEnum.CheckCircle : UserIconNameEnum.AlertTriangle;
     const statusVariant = isOnTrack ? 'onTrack' : 'overPace';
     const remainingVariant = isPositiveRemaining ? 'positive' : 'negative';
 
@@ -66,6 +68,7 @@ export const BudgetOverviewCard = ({
                     <Text className="text-xs text-secondary-foreground">{spentLabel}</Text>
                     <Text className="text-lg font-semibold text-primary">{spentFormatted}</Text>
                 </View>
+
                 <View className="items-end">
                     <Text className="text-xs text-secondary-foreground">{remainingLabel}</Text>
                     <Text className={remainingTextVariants({ status: remainingVariant })}>{remainingFormatted}</Text>
@@ -74,4 +77,3 @@ export const BudgetOverviewCard = ({
         </Card>
     );
 };
-

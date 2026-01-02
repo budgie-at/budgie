@@ -1,4 +1,4 @@
-import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
+import { BudgetEntityInterface, BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useMemo, useState } from 'react';
@@ -89,7 +89,7 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
         <Card className="gap-3">
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-2">
-                    <Icon icon="Calendar" size={16} className="text-primary" />
+                    <Icon icon={UserIconNameEnum.Calendar} size={16} className="text-primary" />
                     <Text className="text-sm font-medium text-primary">
                         <Trans>Plan Future Periods</Trans>
                     </Text>
@@ -124,7 +124,7 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
 
                             {period.isCreated ? (
                                 <View className="flex-row items-center gap-1">
-                                    <Icon icon="CheckCircle" size={16} className="text-positive-foreground" />
+                                    <Icon icon={UserIconNameEnum.CheckCircle} size={16} className="text-positive-foreground" />
                                     <Text className="text-xs text-positive-foreground">
                                         <Trans>Planned</Trans>
                                     </Text>
@@ -135,7 +135,7 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
                                 </Text>
                             ) : (
                                 <View className="flex-row items-center gap-1">
-                                    <Icon icon="Plus" size={16} className="text-primary" />
+                                    <Icon icon={UserIconNameEnum.Plus} size={16} className="text-primary" />
                                     <Text className="text-xs text-primary">
                                         <Trans>Plan</Trans>
                                     </Text>

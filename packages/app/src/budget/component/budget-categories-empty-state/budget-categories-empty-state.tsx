@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 interface Props {
     readonly budgetId: number;
@@ -14,7 +15,7 @@ export const BudgetCategoriesEmptyState = ({ budgetId }: Props) => {
 
     return (
         <View className="items-center py-8">
-            <Icon icon="Layers" size={32} className="text-secondary-foreground mb-2" />
+            <Icon icon={UserIconNameEnum.Layers} size={32} className="text-secondary-foreground mb-2" />
             <Text className="text-sm text-secondary-foreground">
                 <Trans>No categories added yet</Trans>
             </Text>
@@ -24,4 +25,3 @@ export const BudgetCategoriesEmptyState = ({ budgetId }: Props) => {
         </View>
     );
 };
-

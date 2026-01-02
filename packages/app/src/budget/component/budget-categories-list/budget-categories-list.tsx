@@ -1,9 +1,8 @@
-import type { BudgetAllocationEntityInterface } from '@budgie/contracts';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { BudgetAllocationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -28,14 +27,8 @@ interface Props {
     readonly onEditPress?: (allocation: BudgetAllocationEntityInterface) => void;
 }
 
-export const BudgetCategoriesList = ({
-    allocationInstances,
-    allocations,
-    currencySymbol,
-    formatAmount,
-    onAddPress,
-    onEditPress
-}: Props) => {
+export const BudgetCategoriesList = (props: Props) => {
+    const { allocationInstances, allocations, currencySymbol, formatAmount, onAddPress, onEditPress } = props;
     const { t } = useLingui();
     const hasAllocationInstances = isNotEmptyArray(allocationInstances);
     const hasAllocations = isNotEmptyArray(allocations);
@@ -62,15 +55,16 @@ export const BudgetCategoriesList = ({
 
     const renderAllocations = () =>
         allocations.map(allocation => {
-            const categoryTitle = allocation.categoryId ? t`Category ${allocation.categoryId}` : t`Uncategorized`;
-            const categoryIcon = UserIconNameEnum.Wallet;
+            const categoryId = allocation.categoryId;
+            const categoryTitle = isPositiveNumber(categoryId) ? t`Category ${categoryId}` : t`Uncategorized`;
+            // eslint-disable-next-line no-undefined
             const handlePress = isDefined(onEditPress) ? () => void onEditPress(allocation) : undefined;
 
             return (
                 <BudgetAllocationCard
                     key={allocation.id}
                     categoryTitle={categoryTitle}
-                    categoryIcon={categoryIcon}
+                    categoryIcon={UserIconNameEnum.Wallet}
                     planned={allocation.amount}
                     actual={0}
                     currencySymbol={currencySymbol}
@@ -91,7 +85,7 @@ export const BudgetCategoriesList = ({
 
         return (
             <View className="items-center py-8">
-                <Icon icon="Layers" size={32} className="text-secondary-foreground mb-2" />
+                <Icon icon={UserIconNameEnum.Layers} size={32} className="text-secondary-foreground mb-2" />
                 <Text className="text-sm text-secondary-foreground">
                     <Trans>No categories added yet</Trans>
                 </Text>
@@ -106,9 +100,10 @@ export const BudgetCategoriesList = ({
                 <Text className="text-xs uppercase text-secondary-foreground">
                     <Trans>Categories</Trans>
                 </Text>
+
                 {isDefined(onAddPress) && (
                     <HapticPressable className="flex-row items-center gap-1" onPress={onAddPress}>
-                        <Icon icon="Plus" size={14} className="text-primary" />
+                        <Icon icon={UserIconNameEnum.Plus} size={14} className="text-primary" />
                         <Text className="text-xs text-primary">
                             <Trans>Add</Trans>
                         </Text>
