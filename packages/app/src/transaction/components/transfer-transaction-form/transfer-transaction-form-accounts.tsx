@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
@@ -110,7 +110,7 @@ export const TransferTransactionFormAccounts = ({ control, setValue, variant }: 
             <Controller render={renderFromAccount} control={control} name="fromAccountId" />
 
             <HapticPressable onPress={handleSwitchAccounts}>
-                <CircleIcon size={28} iconSize={12} variant="ghost" icon="ArrowRightIcon" />
+                <CircleIcon size={28} iconSize={12} variant="ghost" icon={UserIconNameEnum.ArrowRight} />
             </HapticPressable>
 
             <Controller render={renderToAccount} name="toAccountId" control={control} />

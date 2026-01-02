@@ -1,4 +1,4 @@
-import { TagEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
 
@@ -32,7 +32,7 @@ export default function Tags() {
         <TagFormBottomSheet ref={ref} tag={tag} />
     );
 
-    const emptyStateIcon = isNotEmptyString(search) ? 'Search' : 'Tag';
+    const emptyStateIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Tag;
     const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Tags Yet`;
     const emptyStateDescription = isNotEmptyString(search) ? t`No tags match your search` : t`Create tags to organize your transactions`;
 
