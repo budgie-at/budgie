@@ -1,34 +1,17 @@
-import { ComponentProps, useRef } from 'react';
-import { View } from 'react-native';
-import Animated, { ZoomIn } from 'react-native-reanimated';
+import { ComponentProps, RefObject, useCallback } from 'react';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
-import { HapticPressable } from '../haptic-pressable/haptic-pressable';
-import { Icon } from '../icon/icon';
+import { FloatingActionButton } from '../floating-action-button/floating-action-button';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
 export const SearchablePageCreate = <T extends IdInterface>({
     renderBottomSheet
 }: Pick<ComponentProps<typeof SearchablePageList<T>>, 'renderBottomSheet'>) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
-
-    const handleOpen = () => void ref.current?.open();
-
-    return (
-        <>
-            <View className="absolute bottom-1/10 right-10">
-                <Animated.View entering={ZoomIn.duration(300).delay(350)}>
-                    <HapticPressable
-                        onPress={handleOpen}
-                        className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
-                    >
-                        <Icon icon="Plus" className="text-primary-reverse" size={32} />
-                    </HapticPressable>
-                </Animated.View>
-            </View>
-
-            {renderBottomSheet(null, ref)}
-        </>
+    const renderBottomSheetCallback = useCallback(
+        (ref: RefObject<BottomSheetInterface | null>) => renderBottomSheet(null, ref),
+        [renderBottomSheet]
     );
+
+    return <FloatingActionButton renderBottomSheet={renderBottomSheetCallback} />;
 };
