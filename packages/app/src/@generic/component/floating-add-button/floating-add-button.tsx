@@ -22,7 +22,7 @@ export const FloatingAddButton = <T extends IdInterface>({ renderBottomSheet }: 
                 <Animated.View entering={ZoomIn.duration(300).delay(350)}>
                     <HapticPressable
                         onPress={handleOpen}
-                        className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95] "
+                        className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
                     >
                         <Icon icon="Plus" className="text-primary-reverse" size={32} />
                     </HapticPressable>
