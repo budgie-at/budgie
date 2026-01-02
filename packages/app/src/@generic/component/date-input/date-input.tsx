@@ -9,6 +9,7 @@ import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { DatePickerBottomSheet } from '../date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 interface Props {
     readonly value: Date | null;
@@ -42,7 +43,7 @@ export const DateInput = ({ value, onChange, placeholder }: Props) => {
                 className="flex-row items-center justify-between bg-secondary-background border border-secondary-corner rounded-xl px-4 py-3"
             >
                 <Text className={textVariants({ isSelected: isDefined(value) })}>{displayValue}</Text>
-                <Icon icon="Calendar" size={20} className="text-secondary-foreground" />
+                <Icon icon={UserIconNameEnum.Calendar} size={20} className="text-secondary-foreground" />
             </HapticPressable>
 
             <DatePickerBottomSheet ref={ref} date={value ?? new Date()} variant="default" onChange={onChange} />

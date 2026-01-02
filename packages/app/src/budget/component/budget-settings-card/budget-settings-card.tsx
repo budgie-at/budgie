@@ -1,5 +1,5 @@
-import { BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { BudgetEntityInterface, BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useCallback } from 'react';
 import { Alert, Text, View } from 'react-native';
@@ -18,9 +18,9 @@ export const BudgetSettingsCard = ({ budget }: Props) => {
     const { t } = useLingui();
     const { startDay } = budget;
 
-    const handleNavigate = useCallback(() => {
+    const handleNavigate = () => {
         router.push(`/budget/${budget.id}`);
-    }, [budget.id]);
+    };
 
     const handleClone = useCallback(() => {
         const defaultTitle = `${budget.title} (Copy)`;
@@ -93,7 +93,7 @@ export const BudgetSettingsCard = ({ budget }: Props) => {
         <Card className="gap-3">
             <HapticPressable onPress={handleNavigate}>
                 <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon size={36} iconSize={20} icon="Wallet" variant="ghost" border={false} />
+                    <CircleIcon size={36} iconSize={20} icon={UserIconNameEnum.Wallet} variant="ghost" border={false} />
                     <View className="flex-1">
                         <Text className="text-sm font-medium text-primary">{budget.title}</Text>
                         <Text className="text-xs text-secondary-foreground">
@@ -107,18 +107,21 @@ export const BudgetSettingsCard = ({ budget }: Props) => {
                     className="flex-1 flex-row items-center justify-center gap-1 py-2 rounded-lg bg-secondary-background"
                     onPress={handleNavigate}
                 >
-                    <Icon icon="Settings" size={14} className="text-primary" />
-                    <Text className="text-xs text-primary">{t`Edit`}</Text>
+                    <Icon icon={UserIconNameEnum.Settings} size={14} className="text-primary" />
+                    <Text className="text-xs text-primary">
+                        <Trans>Edit</Trans>
+                    </Text>
                 </HapticPressable>
                 <HapticPressable
                     className="flex-1 flex-row items-center justify-center gap-1 py-2 rounded-lg bg-secondary-background"
                     onPress={handleClone}
                 >
-                    <Icon icon="Layers" size={14} className="text-primary" />
-                    <Text className="text-xs text-primary">{t`Clone`}</Text>
+                    <Icon icon={UserIconNameEnum.Layers} size={14} className="text-primary" />
+                    <Text className="text-xs text-primary">
+                        <Trans>Clone</Trans>
+                    </Text>
                 </HapticPressable>
             </View>
         </Card>
     );
 };
-

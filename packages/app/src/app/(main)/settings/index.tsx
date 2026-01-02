@@ -119,14 +119,14 @@ export default function SettingsPage() {
                             onPress={handleNavigateToBudgets}
                             title={t`Manage Budgets`}
                             description={t`Create and manage your spending budgets`}
-                            icon="Wallet"
+                            icon={UserIconNameEnum.Wallet}
                             variant="positive"
                         />
                         <SettingsCard
                             onPress={handleNavigateToBudgetAnalytics}
                             title={t`Budget Analytics`}
                             description={t`View spending insights and projections`}
-                            icon="ChartNoAxesColumn"
+                            icon={UserIconNameEnum.ChartNoAxesColumn}
                             variant="default"
                         />
                     </SettingsGroup>

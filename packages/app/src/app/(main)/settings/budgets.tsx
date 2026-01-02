@@ -1,4 +1,4 @@
-import { BudgetEntityInterface } from '@budgie/contracts';
+import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -35,7 +35,7 @@ export default function BudgetsSettingsPage() {
                     onGoBack={handleGoBack}
                     right={
                         <HapticPressable hitSlop={10} onPress={handleCreateBudget}>
-                            <Icon icon="Plus" size={20} className="text-primary" />
+                            <Icon icon={UserIconNameEnum.Plus} size={20} className="text-primary" />
                         </HapticPressable>
                     }
                 />
@@ -46,7 +46,7 @@ export default function BudgetsSettingsPage() {
                     budgets.map((budget: BudgetEntityInterface) => <BudgetListItemWrapper key={budget.id} budget={budget} />)
                 ) : (
                     <Card className="items-center py-8">
-                        <Icon icon="Wallet" size={32} className="text-secondary-foreground mb-2" />
+                        <Icon icon={UserIconNameEnum.Wallet} size={32} className="text-secondary-foreground mb-2" />
 
                         <Text className="text-sm text-secondary-foreground text-center">
                             <Trans>No budgets yet</Trans>

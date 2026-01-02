@@ -4,11 +4,12 @@ import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 export const BudgetEmptyState = () => (
     <Link href="/budget/create" asChild>
         <Card className="items-center justify-center gap-3 py-8">
-            <Icon icon="PiggyBank" size={32} className="text-secondary-foreground" />
+            <Icon icon={UserIconNameEnum.PiggyBank} size={32} className="text-secondary-foreground" />
             <View className="items-center">
                 <Text className="text-sm font-medium text-primary">
                     <Trans>No budgets yet</Trans>

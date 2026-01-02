@@ -1,4 +1,4 @@
-import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
+import { BudgetEntityInterface, BudgetStatusEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
@@ -46,24 +46,22 @@ export const BudgetCard = ({ budget, className }: Props) => {
 
     const getStatusIcon = () => {
         if (status === BudgetStatusEnum.DRAFT) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            return 'FileText';
+            return UserIconNameEnum.FileText;
         }
 
         if (status === BudgetStatusEnum.ARCHIVED) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings
-            return 'Archive';
+            return UserIconNameEnum.Archive;
         }
 
-        // eslint-disable-next-line lingui/no-unlocalized-strings
-        return 'CheckCircle';
+        return UserIconNameEnum.CheckCircle;
     };
 
     return (
         <Card onPress={navigateToBudget} className={cn('gap-3 active:scale-xs', className)}>
             <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center gap-x-lg">
-                    <CircleIcon size={36} iconSize={20} icon="Wallet" variant="ghost" border={false} />
+                    <CircleIcon size={36} iconSize={20} icon={UserIconNameEnum.Wallet} variant="ghost" border={false} />
+
                     <Text className="text-sm font-medium text-primary" numberOfLines={1}>
                         {title}
                     </Text>

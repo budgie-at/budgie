@@ -1,4 +1,3 @@
- 
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,6 +6,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 interface Props {
     readonly safeToSpend: number;
@@ -28,7 +28,7 @@ export const SafeToSpendCard = ({ safeToSpend, daysRemaining, currencySymbol, fo
     return (
         <Card className="gap-3" variant={variant}>
             <View className="flex-row items-center gap-2">
-                <Icon icon="Wallet" size={20} className={iconClassName} />
+                <Icon icon={UserIconNameEnum.Wallet} size={20} className={iconClassName} />
                 <Text className={titleClassName}>
                     <Trans>Safe to Spend</Trans>
                 </Text>

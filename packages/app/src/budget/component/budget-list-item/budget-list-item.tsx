@@ -1,4 +1,4 @@
-import { BudgetEntityInterface, BudgetStatusEnum } from '@budgie/contracts';
+import { BudgetEntityInterface, BudgetStatusEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -21,7 +21,8 @@ export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
         <Card className="gap-2">
             <View className="flex-row items-center justify-between">
                 <HapticPressable onPress={onPress} className="flex-row items-center gap-3 flex-1">
-                    <Icon icon="Wallet" size={20} className="text-primary" />
+                    <Icon icon={UserIconNameEnum.Wallet} size={20} className="text-primary" />
+
                     <View className="flex-1">
                         <Text className="text-sm font-medium text-primary">{budget.title}</Text>
                         <Text className="text-xs text-secondary-foreground">

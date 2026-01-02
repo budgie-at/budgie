@@ -22,7 +22,7 @@ interface Props {
 
 export const BudgetHistoricalPeriods = ({ periods, categoryIds, totalPlanned, currencySymbol, allocations }: Props) => {
     const allocationData = allocations
-        .filter(alloc => isDefined(alloc.categoryId))
+        .filter((alloc) => isDefined(alloc.categoryId))
         .map(alloc => ({ categoryId: alloc.categoryId, amount: alloc.amount }));
 
     return (

@@ -1,4 +1,4 @@
-import { BudgetEntityInterface } from '@budgie/contracts';
+import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -88,14 +88,14 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
             <Card className="gap-3" size="md">
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center gap-2">
-                        <Icon icon="Wallet" size={18} className="text-primary" />
+                        <Icon icon={UserIconNameEnum.Wallet} size={18} className="text-primary" />
                         <Text className="text-sm font-semibold text-primary">{budget.title}</Text>
                     </View>
                     <View className="flex-row items-center gap-1">
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>{daysRemaining}d left</Trans>
                         </Text>
-                        <Icon icon="ChevronRight" size={16} className="text-secondary-foreground" />
+                        <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
                     </View>
                 </View>
 
@@ -133,7 +133,7 @@ export const BudgetHomeWidget = ({ budget }: Props) => {
 
                     {isPositiveNumber(categoriesOverBudget) ? (
                         <View className="flex-row items-center gap-1">
-                            <Icon icon="AlertTriangle" size={12} className="text-warning-foreground" />
+                            <Icon icon={UserIconNameEnum.AlertTriangle} size={12} className="text-warning-foreground" />
                             <Text className="text-xs text-warning-foreground">
                                 <Trans>{categoriesOverBudget} over budget</Trans>
                             </Text>

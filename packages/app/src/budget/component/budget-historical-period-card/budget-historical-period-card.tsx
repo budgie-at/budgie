@@ -50,9 +50,9 @@ export const BudgetHistoricalPeriodCard = (props: Props) => {
     const { spendingByCategory } = useGetSpendingByCategoryQuery({ categoryIds: [...categoryIds], startDate, endDate });
 
     const remaining = totalPlanned - totalSpent;
-    const percentage = totalPlanned > 0 ? Math.round((totalSpent / totalPlanned) * 100) : 0;
+    const percentage = isPositiveNumber(totalPlanned) ? Math.round((totalSpent / totalPlanned) * 100) : 0;
     const isOverBudget = totalSpent > totalPlanned;
-    const statusIcon = isOverBudget ? 'AlertTriangle' : 'CheckCircle';
+    const statusIcon = isOverBudget ? UserIconNameEnum.AlertTriangle : UserIconNameEnum.CheckCircle;
 
     const categoryStats = allocations.map(allocation => {
         const category = categories.find(cat => cat.id === allocation.categoryId);
@@ -72,7 +72,7 @@ export const BudgetHistoricalPeriodCard = (props: Props) => {
         .map(category => ({ ...category, spentFormatted: formatDigits(convertFromMicroUnits(category.spent), currencySymbol) }));
     const handleToggle = () => void setIsExpanded(prev => !prev);
 
-    const expandIcon = isExpanded ? 'ChevronDown' : 'ChevronRight';
+    const expandIcon = isExpanded ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
     const spentFormatted = formatDigits(convertFromMicroUnits(totalSpent), currencySymbol);
     const remainingFormatted = formatDigits(convertFromMicroUnits(Math.abs(remaining)), currencySymbol);
     const savedFormatted = formatDigits(convertFromMicroUnits(remaining), currencySymbol);

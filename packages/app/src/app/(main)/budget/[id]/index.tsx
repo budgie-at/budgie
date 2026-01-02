@@ -22,6 +22,7 @@ import { useGetBudgetByIdQuery } from '../../../../budget/query/use-get-budget-b
 import { budgetService } from '../../../../budget/service/budget.service';
 import { useAllCategoriesQuery } from '../../../../category/query/use-all-categories.query';
 import { useGetInstrumentByIdQuery } from '../../../../instrument/query/use-get-instrument-by-id.query';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 export default function BudgetDetails() {
     const params = useLocalSearchParams<IdParamInterface>();
@@ -55,13 +56,13 @@ export default function BudgetDetails() {
         <Page
             header={
                 <PageHeader
-                    icon="Wallet"
+                    icon={UserIconNameEnum.Wallet}
                     onGoBack={handleGoBack}
                     title={budget.title}
                     iconVariant="ghost"
                     right={
                         <HapticPressable hitSlop={10} onPress={handleAddAllocation}>
-                            <Icon icon="Plus" size={20} className="text-primary" />
+                            <Icon icon={UserIconNameEnum.Plus} size={20} className="text-primary" />
                         </HapticPressable>
                     }
                 />
@@ -101,7 +102,7 @@ export default function BudgetDetails() {
                             ))
                         ) : (
                             <Card className="items-center py-6" size="md">
-                                <Icon icon="Layers" size={32} className="text-secondary-foreground mb-2" />
+                                <Icon icon={UserIconNameEnum.Layers} size={32} className="text-secondary-foreground mb-2" />
                                 <Text className="text-sm text-secondary-foreground">
                                     <Trans>No categories added yet</Trans>
                                 </Text>
