@@ -3,7 +3,6 @@ import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
@@ -30,7 +29,7 @@ interface SearchableListBottomSheetProps<T> {
     readonly renderItem: ({ item }: { item: T }) => JSX.Element;
 
     readonly emptyTitle: string;
-    readonly emptyIcon?: IconName;
+    readonly emptyIcon?: UserIconNameEnum;
     readonly emptyDescription: string;
 
     readonly flatListProps?: {

@@ -1,5 +1,5 @@
 import { BankAccountInterface } from '@budgie/bank-sync';
-import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -24,7 +24,7 @@ export const mapBankAccountToCreateInput = (
 ): LiabilityAccountCreateInputInterface => ({
     title: generateBankAccountTitle(bankAccount),
     type: AccountTypeEnum.BANK_SYNC,
-    icon: UserIconNameEnum.Landmark,
+    icon: 'Landmark',
     instrumentId,
     currentBalance: 0,
     externalId: bankAccount.id,

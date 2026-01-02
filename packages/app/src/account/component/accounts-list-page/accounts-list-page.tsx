@@ -17,7 +17,7 @@ interface Props<T extends AccountType> {
     readonly accounts: T[] | null;
     readonly title: string;
     readonly description: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly emptyState: ReactNode;
     readonly renderCard: (account: T) => ReactElement;
 }

@@ -44,7 +44,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <TransactionFilterChip isActive={isPositiveNumber(selectedTagsCount)} icon="HashIcon" label={label} onPress={handleOpen} />
+            <TransactionFilterChip isActive={isPositiveNumber(selectedTagsCount)} icon="Hash" label={label} onPress={handleOpen} />
 
             <TransactionBaseSearchableFilter
                 ref={ref}
@@ -53,7 +53,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
                 onChange={onChange}
                 search={search}
                 onSearchChange={setSearch}
-                icon="HashIcon"
+                icon="Hash"
                 items={tags ?? []}
                 title={t`Tags`}
                 renderItems={renderItems}
@@ -61,7 +61,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
                 searchPlaceholder={t`Search tags...`}
                 emptyState={
                     <TransactionFilterEmptyState
-                        icon="HashIcon"
+                        icon="Hash"
                         onCreate={handleNavigateToCreate}
                         title={t`No Tags Yet`}
                         buttonText={t`Create Tags`}

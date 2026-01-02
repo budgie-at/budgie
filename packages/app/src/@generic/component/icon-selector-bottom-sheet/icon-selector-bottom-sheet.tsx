@@ -9,7 +9,6 @@ import { FlatListDataItem, padFlatListData } from '../../utils/map-to-flatlist-d
 import { SearchableListBottomSheet } from '../bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { IconSelectorCard } from '../icon-selector-card/icon-selector-card';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
 import type { RefObject } from 'react';
 
 interface Props {

@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 // jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
 
@@ -19,7 +19,7 @@ import { CreateAccountScreen } from '../create-account-screen/create-account-scr
 import { DebtAccountContactField } from '../debt-account-contact-field/debt-account-contact-field';
 import { DebtAccountTypeField } from '../debt-account-type-field/debt-account-type-field';
 
-const DEFAULT_ICON = UserIconNameEnum.HandCoins;
+const DEFAULT_ICON = 'HandCoins';
 
 export const CreateDebtAccount = () => {
     const { defaultInstrument } = useSettingsContext();
