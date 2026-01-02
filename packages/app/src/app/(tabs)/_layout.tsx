@@ -14,17 +14,17 @@ export default function TabsLayout() {
             <TabList asChild>
                 <BottomTabs>
                     <TabTrigger asChild href="/" name="home">
-                        <TabButton icon="Home" />
+                        <TabButton icon={UserIconNameEnum.Home} />
                     </TabTrigger>
 
                     <TabTrigger asChild href="/transactions" name="transactions">
-                        <TabButton icon="Receipt" />
+                        <TabButton icon={UserIconNameEnum.Receipt} />
                     </TabTrigger>
 
                     <AiChatButton />
 
                     <TabTrigger asChild href="/analytics" name="analytics">
-                        <TabButton icon="ChartNoAxesColumn" />
+                        <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                     </TabTrigger>
 
                     <CreateTransactionTab />

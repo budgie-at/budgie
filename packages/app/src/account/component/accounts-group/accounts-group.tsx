@@ -69,8 +69,8 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
                         </Text>
                     </View>
 
-                    {isAllSelected ? <Icon icon="Check" size={16} className="text-primary" /> : null}
-                    {isPartiallySelected ? <Icon icon="Circle" size={16} className="text-primary" /> : null}
+                    {isAllSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
+                    {isPartiallySelected ? <Icon icon={UserIconNameEnum.Circle} size={16} className="text-primary" /> : null}
                 </HapticPressable>
             </View>
 

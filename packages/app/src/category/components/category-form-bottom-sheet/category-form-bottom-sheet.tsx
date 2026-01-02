@@ -57,7 +57,7 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon="Folder"
+            icon={UserIconNameEnum.Folder}
             title={formTitle}
             description={formDescription}
             ref={ref}

@@ -36,7 +36,7 @@ export const TransactionAmount = ({ transaction }: Props) => {
                     {formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol)}
                 </Text>
                 <View className="flex-row items-center gap-x-xs">
-                    <Icon icon="ArrowRight" className="text-secondary-foreground" size={12} />
+                    <Icon icon={UserIconNameEnum.ArrowRight} className="text-secondary-foreground" size={12} />
                     <Text className="text-secondary-foreground text-xxs">
                         {formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol)}
                     </Text>

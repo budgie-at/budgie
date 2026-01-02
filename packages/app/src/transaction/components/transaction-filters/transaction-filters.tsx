@@ -38,7 +38,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                         onPress={handleClear}
                         className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
                     >
-                        <Icon icon="X" className="text-destructive-foreground" size={14} />
+                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={14} />
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>Clear All</Trans>
                         </Text>
