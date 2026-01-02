@@ -1,8 +1,8 @@
-import { CategoryCreateEntityInterface, CategoryCreateEntitySchema, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryCreateEntitySchema, CategoryEntityInterface } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 
-const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: UserIconNameEnum.Home, title: '' };
+const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: 'Home', title: '' };
 
 export const useCategoryForm = (defaultValues: CategoryEntityInterface | null) => {
     const form = useForm({

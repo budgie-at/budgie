@@ -5,6 +5,7 @@ import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { IconSelector } from '../../../@generic/component/icon-selector/icon-selector';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { IconName } from '../../../@generic/constant/icons.constant';
 
 interface Props {
     readonly control: Control<CategoryCreateEntityInterface>;

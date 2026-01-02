@@ -24,7 +24,7 @@ interface Props {
     readonly onSubmit: EmptyFn;
     readonly onDelete?: EmptyFn;
     readonly control: Control<TransactionCreateInputInterface>;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly title: string;
     readonly buttonText: string;

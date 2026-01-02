@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { Text, View } from 'react-native';
@@ -19,7 +18,7 @@ interface Props {
     readonly name: UserIconNameEnum;
     readonly isSelected: boolean;
     readonly className?: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
 }
 
 const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md', {

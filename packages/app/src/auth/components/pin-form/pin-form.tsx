@@ -65,7 +65,7 @@ export const PinForm = (props: Props) => {
                         onPress={onScanPress}
                         className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
                     >
-                        {canScan ? <Icon icon="LucideScanFace" className="text-primary" size={16} /> : null}
+                        {canScan ? <Icon icon="ScanFace" className="text-primary" size={16} /> : null}
                     </HapticPressable>
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />

@@ -11,7 +11,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 interface Props {
     readonly label: string;
     readonly amount: number;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly variant: ColorPaletteVariant;
 }
 

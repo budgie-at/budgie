@@ -3,17 +3,16 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { cn } from '../../utils/cn.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
 
 interface Props {
     readonly title: string;
-    readonly icon?: IconName;
+    readonly icon?: UserIconNameEnum;
     readonly className?: string;
     readonly description: string;
-    readonly circleIcon?: IconName;
+    readonly circleIcon?: UserIconNameEnum;
     readonly iconClassName?: string;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;

@@ -81,7 +81,7 @@ export const TransactionSplit = ({ control, variant, transactionType, entries, a
     return (
         <View>
             <View className="flex-row gap-x-md py-lg px-xl items-center rounded-5xl border border-secondary-corner mb-3xl">
-                <Icon size={16} className={iconVariants({ variant })} icon="SplitIcon" />
+                <Icon size={16} className={iconVariants({ variant })} icon="Split" />
 
                 <Text className={categoryVariants({ variant })}>
                     <Trans>Split by Category</Trans>

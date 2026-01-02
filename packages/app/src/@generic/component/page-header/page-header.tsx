@@ -5,7 +5,6 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { IconName } from '../../constant/icons.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
@@ -14,7 +13,7 @@ import { GoBackButton } from '../go-back-button/go-back-button';
 
 interface Props {
     readonly title: string;
-    readonly icon?: IconName;
+    readonly icon?: UserIconNameEnum;
     readonly right?: ReactNode;
     readonly bottom?: ReactNode;
     readonly onGoBack?: EmptyFn;

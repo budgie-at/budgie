@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
+import { IconName } from '../../../@generic/constant/icons.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';

@@ -12,7 +12,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly isSelected: boolean;
     readonly onPress: EmptyFn;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly label: string;
 }
 

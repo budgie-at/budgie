@@ -17,7 +17,7 @@ import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook
 
 interface Props {
     readonly title: string;
-    readonly icon: IconName;
+    readonly icon: UserIconNameEnum;
     readonly description: string;
     readonly variant: ColorPaletteVariant;
     readonly buttonText: string;
