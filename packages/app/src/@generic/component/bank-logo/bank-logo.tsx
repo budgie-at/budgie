@@ -39,7 +39,7 @@ export const BankLogo = ({ bankProvider, variant = 'default' }: Props) => {
         <CircleIcon
             border={false}
             className="rounded-5xl w-13 h-13"
-            icon="PiggyBank"
+            icon={UserIconNameEnum.PiggyBank}
             iconClassName={iconVariant({ variant })}
             variant="ghost"
         />

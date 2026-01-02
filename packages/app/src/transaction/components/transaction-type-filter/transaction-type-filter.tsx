@@ -57,13 +57,18 @@ export const TransactionTypeFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <TransactionFilterChip isActive={isPositiveNumber(selectedTypesCount)} icon="Layers" label={label} onPress={handleOpen} />
+            <TransactionFilterChip
+                isActive={isPositiveNumber(selectedTypesCount)}
+                icon={UserIconNameEnum.Layers}
+                label={label}
+                onPress={handleOpen}
+            />
 
             <TransactionBaseFilter
                 title={t`Transaction Type`}
                 onApply={handleApply}
                 onClear={handleClear}
-                icon="Layers"
+                icon={UserIconNameEnum.Layers}
                 selected={localSelectedCount}
                 ref={ref}
                 hasSelected={isPositiveNumber(localSelectedCount)}

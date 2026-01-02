@@ -75,12 +75,12 @@ export const DateFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <TransactionFilterChip isActive={hasDateFilterSelected} icon="Calendar" label={label} onPress={handleOpen} />
+            <TransactionFilterChip isActive={hasDateFilterSelected} icon={UserIconNameEnum.Calendar} label={label} onPress={handleOpen} />
 
             <TransactionBaseFilter
                 title={t`Date Range`}
                 onClear={handleClear}
-                icon="Calendar"
+                icon={UserIconNameEnum.Calendar}
                 hasSelected={isDefined(localValue)}
                 onApply={handleApply}
                 enableDynamicSizing
