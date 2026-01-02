@@ -1,4 +1,4 @@
-import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum, BankSyncStatusEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface, AccountTypeEnum, BankSyncStatusEnum, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -92,14 +92,14 @@ export const AccountCard = (props: Props) => {
 
                     {isDebtAccount && isDefined(deadline) ? (
                         <View className="flex-row items-center gap-x-xs">
-                            <Icon icon="Calendar" className="text-secondary-foreground" size={12} />
+                            <Icon icon={UserIconNameEnum.Calendar} className="text-secondary-foreground" size={12} />
                             <Text className="text-secondary-foreground text-xxs font-medium">{formatCompactFullDate(deadline)}</Text>
                         </View>
                     ) : null}
                 </View>
 
                 <HapticPressable className="rounded-full active:bg-secondary-background" onPress={navigateToEditAccount}>
-                    <Icon className="text-primary" icon="EllipsisVertical" size={14} />
+                    <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
                 </HapticPressable>
             </View>
 

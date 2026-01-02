@@ -31,7 +31,7 @@ export const ContactSelectorCard = (props: Props) => {
     const icon = isNotEmptyString(image) ? (
         <StyledImage className="w-8 h-8 rounded-full" source={image} placeholder={placeholder} contentFit="cover" transition={1000} />
     ) : (
-        <CircleIcon icon="User" variant="secondary" size={32} iconSize={16} />
+        <CircleIcon icon={UserIconNameEnum.User} variant="secondary" size={32} iconSize={16} />
     );
 
     const hasEmails = isNotEmptyArray(emails);
@@ -42,7 +42,7 @@ export const ContactSelectorCard = (props: Props) => {
             <View className="gap-y-xs">
                 {emails.map(email => (
                     <View key={email} className="flex-row items-center gap-x-sm">
-                        <Icon icon="Mail" className="text-secondary-foreground" size={12} />
+                        <Icon icon={UserIconNameEnum.Mail} className="text-secondary-foreground" size={12} />
                         <Text className="text-secondary-foreground">{email}</Text>
                     </View>
                 ))}
