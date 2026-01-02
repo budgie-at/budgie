@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
