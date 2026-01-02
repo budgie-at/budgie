@@ -111,7 +111,7 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
 
@@ -123,11 +123,11 @@ msgstr "Додайте новий тег для організації ваши�
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:52
 msgid "Add Expense"
 msgstr "Додати витрату"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:30
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:34
 msgid "Add Income"
 msgstr "Додати дохід"
 
@@ -135,7 +135,7 @@ msgstr "Додати дохід"
 msgid "Add Split"
 msgstr "Додати поділ"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:35
 msgid "Add Transfer"
 msgstr "Додати переказ"
 
@@ -313,7 +313,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:62
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:67
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -338,7 +338,7 @@ msgstr "Поточний рахунок"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "Choose a type to get started"
 msgstr "Оберіть тип, щоб почати"
 
@@ -350,7 +350,7 @@ msgstr "Обрати іконку"
 msgid "Choose the type of account you want to add"
 msgstr "Оберіть тип рахунку, який ви хочете додати"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:73
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 msgid "Choose your main account"
 msgstr "Оберіть ваш основний рахунок"
 
@@ -431,7 +431,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:37
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
@@ -451,6 +451,10 @@ msgstr "Не вдалося видалити транзакцію."
 #: src/account/component/archived-account-card/archived-account-card.tsx:29
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+msgid "Could not update category"
+msgstr "Не вдалося оновити категорію"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -480,7 +484,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -622,9 +626,13 @@ msgstr "напр. Ощадний рахунок"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:60
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+msgid "Edit Category"
+msgstr "Редагувати категорію"
 
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:35
 msgid "Edit Expense"
@@ -945,7 +953,7 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:46
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:50
 msgid "Money you earn"
 msgstr "Гроші, які ви заробляєте"
 
@@ -953,7 +961,7 @@ msgstr "Гроші, які ви заробляєте"
 msgid "Money you owe or are owed"
 msgstr "Гроші, які ви винні або вам винні"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:43
 msgid "Money you spend"
 msgstr "Гроші, які ви витрачаєте"
 
@@ -961,7 +969,7 @@ msgstr "Гроші, які ви витрачаєте"
 msgid "Monobank"
 msgstr "Монобанк"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:57
 msgid "Move between accounts"
 msgstr "Переказ між рахунками"
 
@@ -973,28 +981,28 @@ msgstr "Переказати гроші"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:50
+#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:29
+#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:33
 msgid "New Income"
 msgstr "Новий дохід"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:35
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
 msgid "New Transaction"
 msgstr "Нова транзакція"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:27
+#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
 msgid "New Transfer"
 msgstr "Новий переказ"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:66
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:62
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:13
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts yet"
@@ -1156,7 +1164,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:38
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
@@ -1232,7 +1240,7 @@ msgstr "Ощадні рахунки"
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:75
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
@@ -1293,7 +1301,7 @@ msgstr "Виберіть дійсний стовпець"
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:72
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 msgid "Select Account"
 msgstr "Виберіть рахунок"
 
@@ -1629,6 +1637,10 @@ msgstr "Оновити дохід"
 #: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:31
 msgid "Update Transfer"
 msgstr "Оновити переказ"
+
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+msgid "Update your category details"
+msgstr "Оновіть дані вашої категорії"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:32
 #: src/auth/util/get-pin-setup-meta.util.ts:24

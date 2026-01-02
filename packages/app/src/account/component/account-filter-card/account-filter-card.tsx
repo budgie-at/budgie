@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -43,7 +43,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
 
             <ProtectedText className="text-primary">{formatDigits(balance, account.instrument.symbol)}</ProtectedText>
 
-            {isSelected ? <Icon icon="Check" size={16} className="text-primary" /> : null}
+            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
         </HapticPressable>
     );
 };
