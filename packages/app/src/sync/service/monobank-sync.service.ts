@@ -258,7 +258,6 @@ class AppMonobankSyncService {
         const existing = await transactionService.findByExternalSource(this.provider);
         const existingIds = new Set(existing.map(tx => tx.externalId));
         const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
-        console.log(this.mccCategoryIdMap);
 
         if (isNotEmptyArray(newTxs)) {
             await transactionService.bulkCreate(
