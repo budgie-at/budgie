@@ -29,7 +29,7 @@ export default function HomePage() {
         <Page>
             <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
                 <HapticPressable className="ml-auto p-md" onPress={navigateToSettings} hitSlop={10}>
-                    <Icon className="text-primary" icon="Settings" size={16} />
+                    <Icon className="text-primary" icon={UserIconNameEnum.Settings} size={16} />
                 </HapticPressable>
 
                 <NetWorth />

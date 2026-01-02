@@ -50,7 +50,7 @@ export const TagFormBottomSheet = ({ ref, tag }: Props) => {
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon="Tag"
+            icon={UserIconNameEnum.Tag}
             title={t`Create Tag`}
             description={t`Add a new tag to organize your transactions`}
             ref={ref}

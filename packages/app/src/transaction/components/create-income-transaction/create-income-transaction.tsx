@@ -29,7 +29,7 @@ export const CreateIncomeTransaction = ({ accountId }: Props) => {
             onSubmit={handleSubmit}
             setValue={form.setValue}
             variant="positive"
-            icon="TrendingUp"
+            icon={UserIconNameEnum.TrendingUp}
             title={t`New Income`}
             buttonText={t`Add Income`}
             transactionType={TransactionTypeEnum.INCOME}

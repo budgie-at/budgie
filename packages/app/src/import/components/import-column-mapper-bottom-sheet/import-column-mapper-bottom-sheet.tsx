@@ -59,7 +59,7 @@ export const ImportColumnMapperBottomSheet = ({ ref, headers, selectedHeaders, c
                         <Text className="text-primary text-sm font-semibold">{currentValue}</Text>
                         <View className="flex-row items-center gap-x-sm">
                             <Text className="text-destructive-foreground text-xs">{t`Tap to clear`}</Text>
-                            <Icon icon="X" size={16} className="text-destructive-foreground" />
+                            <Icon icon={UserIconNameEnum.X} size={16} className="text-destructive-foreground" />
                         </View>
                     </Pressable>
                 </View>

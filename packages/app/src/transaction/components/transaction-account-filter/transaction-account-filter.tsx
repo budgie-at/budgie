@@ -50,13 +50,18 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
 
     return (
         <>
-            <TransactionFilterChip isActive={isPositiveNumber(selectedAccountsCount)} icon="Wallet" label={label} onPress={handleOpen} />
+            <TransactionFilterChip
+                isActive={isPositiveNumber(selectedAccountsCount)}
+                icon={UserIconNameEnum.Wallet}
+                label={label}
+                onPress={handleOpen}
+            />
 
             <TransactionBaseSearchableFilter
                 total={total}
                 ref={ref}
                 title={t`Accounts`}
-                icon="Wallet"
+                icon={UserIconNameEnum.Wallet}
                 search={search}
                 items={accounts}
                 onSearchChange={setSearch}
@@ -66,7 +71,7 @@ export const TransactionAccountFilter = ({ value, onChange }: Props) => {
                 emptySearchText={t`No accounts found`}
                 emptyState={
                     <TransactionFilterEmptyState
-                        icon="Wallet"
+                        icon={UserIconNameEnum.Wallet}
                         buttonText={t`Create accounts`}
                         title={t`No accounts yet`}
                         onCreate={handleNavigateToCreate}

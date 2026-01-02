@@ -33,7 +33,7 @@ export const LanguageSelector = () => {
     return (
         <>
             <SettingsCard
-                icon="Globe"
+                icon={UserIconNameEnum.Globe}
                 variant="default"
                 title={t`Language`}
                 onPress={handleOpen}

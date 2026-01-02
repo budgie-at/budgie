@@ -25,7 +25,7 @@ export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => (
                 onPress={onSubmit}
                 className="bg-primary flex-1 rounded-5xl p-2xl flex-row gap-x-md items-center justify-center"
             >
-                <Icon icon="Check" className="text-primary-reverse" size={16} />
+                <Icon icon={UserIconNameEnum.Check} className="text-primary-reverse" size={16} />
 
                 <Text className="text-primary-reverse text-center">
                     <Trans>Submit</Trans>

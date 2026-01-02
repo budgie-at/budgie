@@ -13,7 +13,7 @@ export const AccountsHeading = () => (
 
         <Link href="/(main)/create-account" asChild>
             <HapticPressable>
-                <CircleIcon icon="Plus" variant="ghost" size={26} iconSize={14} />
+                <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
             </HapticPressable>
         </Link>
     </View>

@@ -81,7 +81,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                         </View>
                     ) : (
                         <EmptyState
-                            circleIcon="Tag"
+                            circleicon={UserIconNameEnum.Tag}
                             title={t`No tags yet`}
                             titleClassName="text-primary font-semibold"
                             descriptionClassName="max-w-[250px] text-center mx-auto"

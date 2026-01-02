@@ -25,7 +25,7 @@ export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) =>
             <SimpleHorizontalCell
                 size="lg"
                 right={null}
-                icon="Calendar"
+                icon={UserIconNameEnum.Calendar}
                 onPress={handleOpen}
                 iconParams={iconParams}
                 title={formatDayAndMonthAndYear(date)}

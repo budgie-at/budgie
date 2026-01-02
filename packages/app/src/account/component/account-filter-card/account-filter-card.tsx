@@ -43,7 +43,7 @@ export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Pro
 
             <ProtectedText className="text-primary">{formatDigits(balance, account.instrument.symbol)}</ProtectedText>
 
-            {isSelected ? <Icon icon="Check" size={16} className="text-primary" /> : null}
+            {isSelected ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-primary" /> : null}
         </HapticPressable>
     );
 };

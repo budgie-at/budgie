@@ -28,7 +28,7 @@ export const PinForm = (props: Props) => {
     return (
         <View className="flex-1 justify-center">
             <View className="border border-secondary-corner bg-secondary-background rounded-7xl p-5xl mx-auto mb-7xl">
-                <Icon icon="Lock" className="text-primary" size={40} />
+                <Icon icon={UserIconNameEnum.Lock} className="text-primary" size={40} />
             </View>
 
             <Text className="text-3xl font-semibold text-primary text-center mb-md">{title}</Text>
@@ -65,7 +65,7 @@ export const PinForm = (props: Props) => {
                         onPress={onScanPress}
                         className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
                     >
-                        {canScan ? <Icon icon="ScanFace" className="text-primary" size={16} /> : null}
+                        {canScan ? <Icon icon={UserIconNameEnum.ScanFace} className="text-primary" size={16} /> : null}
                     </HapticPressable>
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />
@@ -75,7 +75,7 @@ export const PinForm = (props: Props) => {
                         onPress={onDeletePress}
                         className="flex-1 aspect-square border border-secondary-corner bg-secondary-background rounded-3xl justify-center items-center max-w-23"
                     >
-                        <Icon icon="Delete" className="text-primary" size={16} />
+                        <Icon icon={UserIconNameEnum.Delete} className="text-primary" size={16} />
                     </HapticPressable>
                 </View>
             </View>

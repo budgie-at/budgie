@@ -47,7 +47,7 @@ export const CurrencySelector = ({ instrumentId, onChange }: Props) => {
                         <Text className="text-primary text-4xl">{symbol}</Text>
                     </View>
                 }
-                right={<Icon icon="Sparkles" className="text-secondary-foreground/50" size={16} />}
+                right={<Icon icon={UserIconNameEnum.Sparkles} className="text-secondary-foreground/50" size={16} />}
                 onPress={handleOpen}
                 size="lg"
             >

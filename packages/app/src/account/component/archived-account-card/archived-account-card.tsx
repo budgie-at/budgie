@@ -22,7 +22,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     return (
         <AccountActionCard
             account={account}
-            actionIcon="RotateCcw"
+            actionicon={UserIconNameEnum.RotateCcw}
             actionButtonText={t`Restore`}
             confirmTitle={t`Restore Account?`}
             confirmDescription={t`${accountTitle} will be restored to your main view and included in totals.`}

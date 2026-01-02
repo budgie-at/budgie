@@ -30,7 +30,7 @@ export const CreateTransferTransaction = ({ accountId }: Props) => {
             clearErrors={form.clearErrors}
             title={t`New Transfer`}
             variant="default"
-            icon="ArrowRightLeft"
+            icon={UserIconNameEnum.ArrowRightLeft}
             onSubmit={handleSubmit}
             buttonText={t`Add Transfer`}
         />

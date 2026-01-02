@@ -71,7 +71,7 @@ export const TagsSelectorCard = ({ className, isSelected, title, variant, onSele
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
             <Text className={textVariants({ isSelected, variant })}>{title}</Text>
 
-            {variant === 'removable' ? <Icon icon="X" className="text-primary-reverse" size={14} /> : null}
+            {variant === 'removable' ? <Icon icon={UserIconNameEnum.X} className="text-primary-reverse" size={14} /> : null}
         </HapticPressable>
     );
 };

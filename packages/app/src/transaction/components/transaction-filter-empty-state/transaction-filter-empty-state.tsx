@@ -21,6 +21,6 @@ export const TransactionFilterEmptyState = ({ icon, title, description, onCreate
         <Text className="text-primary text-md font-semibold mb-lg">{title}</Text>
         <Text className="text-secondary-foreground text-sm text-center mb-7xl">{description}</Text>
 
-        <Button onPress={onCreate} leftIcon="Plus" content={buttonText} />
+        <Button onPress={onCreate} lefticon={UserIconNameEnum.Plus} content={buttonText} />
     </View>
 );

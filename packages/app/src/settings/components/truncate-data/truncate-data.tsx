@@ -22,7 +22,7 @@ export const TruncateData = () => {
                 onPress={handleOpen}
                 title={t`Clear All Data`}
                 description={t`Delete all transactions and settings`}
-                icon="Trash2"
+                icon={UserIconNameEnum.Trash2}
                 variant="destructive"
             />
 
@@ -33,7 +33,7 @@ export const TruncateData = () => {
                 description={t`Are you sure you want to delete all your data? This action cannot be undone.`}
                 buttonText={t`Delete data`}
                 onSubmit={handleConfirm}
-                icon="OctagonAlert"
+                icon={UserIconNameEnum.OctagonAlert}
                 title={t`Clear All Data`}
             />
         </>

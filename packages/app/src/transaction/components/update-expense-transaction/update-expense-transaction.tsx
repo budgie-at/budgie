@@ -31,7 +31,7 @@ export const UpdateExpenseTransaction = ({ transaction }: Props) => {
             onDelete={handleDelete}
             setValue={form.setValue}
             variant="destructive"
-            icon="TrendingDown"
+            icon={UserIconNameEnum.TrendingDown}
             title={t`Edit Expense`}
             buttonText={t`Update Expense`}
             transactionType={TransactionTypeEnum.EXPENSE}

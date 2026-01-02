@@ -37,7 +37,7 @@ export const ImportCsv = () => {
             title={t`Import CSV`}
             description={t`Import transactions from a CSV file`}
             onPress={handleSelectAndNavigate}
-            icon="Database"
+            icon={UserIconNameEnum.Database}
             variant="ghost"
             isLoading={isLoading}
         />
