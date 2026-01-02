@@ -1,4 +1,4 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
+import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -66,7 +66,7 @@ export const TransactionEntry = ({ variant, control, index, onRemove, selectedCa
             <Controller render={renderAmountInput} name={`entries.${index}.amount`} control={control} />
 
             <HapticPressable onPress={handleRemove} className="p-md">
-                <Icon size={16} icon="X" className="text-primary" />
+                <Icon size={16} icon={UserIconNameEnum.X} className="text-primary" />
             </HapticPressable>
         </View>
     );
