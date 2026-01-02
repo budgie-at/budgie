@@ -1,4 +1,4 @@
-import { and, eq, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, isNull, lt, or } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -84,7 +84,8 @@ export class BankSyncRepository {
                 eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
                 isNull(BankSyncEntityTable.deletedAt),
                 or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
-            )
+            ),
+            orderBy: [asc(BankSyncEntityTable.forwardSyncedAt)]
         });
     }
 
