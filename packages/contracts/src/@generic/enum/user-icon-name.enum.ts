@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 export enum UserIconNameEnum {
     AArrowDown = 'AArrowDown',
     AArrowUp = 'AArrowUp',
