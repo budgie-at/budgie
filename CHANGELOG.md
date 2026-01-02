@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.100.3](https://github.com/budgie-at/budgie/compare/v1.100.2...v1.100.3) (2026-01-02)
+
+**Note:** Version bump only for package @budgie-at/root
+
 ## [1.100.2](https://github.com/budgie-at/budgie/compare/v1.100.1...v1.100.2) (2026-01-01)
 
 ### Bug Fixes
