@@ -8,9 +8,9 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
-import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
 import { FloatingAddButton } from '../../../../@generic/component/floating-add-button/floating-add-button';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
+import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
@@ -42,7 +42,7 @@ export default function Account() {
     const handleGoBack = () => void goBackOrReplace('/');
 
     if (isLoading) {
-        return <EmptyScreen />;
+        return <LoadingScreen />;
     }
 
     if (!isDefined(account)) {
