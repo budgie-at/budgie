@@ -33,6 +33,7 @@ export const CreateIncomeTransaction = ({ accountId }: Props) => {
             title={t`New Income`}
             buttonText={t`Add Income`}
             transactionType={TransactionTypeEnum.INCOME}
+            autoFocus={true}
         />
     );
 };
