@@ -38,8 +38,8 @@ export const ImportCsv = () => {
             title={t`Import CSV`}
             description={t`Import transactions from a CSV file`}
             onPress={handleSelectAndNavigate}
-            icon={UserIconNameEnum.Database}
-            variant="ghost"
+            icon={UserIconNameEnum.Upload}
+            variant="warning"
             isLoading={isLoading}
         />
     );
