@@ -1,31 +1,22 @@
-import {
-    AccountTypeEnum,
-    ExpenseTransactionCreateInputSchema,
-    TransactionCreateInputInterface,
-    TransactionTypeEnum,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { Controller, UseControllerReturn, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
 import { transactionService } from '../../service/transaction.service';
+import { TransactionFormAccountSelector } from '../transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
 import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
-
-const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
 interface Props {
     readonly categoryId?: number;
@@ -52,33 +43,6 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
-    const handleAccountChange = (newAccountId: number) => {
-        form.setValue('fromAccountId', newAccountId);
-        entries.forEach((_, index) => {
-            form.setValue(`entries.${index}.accountId`, newAccountId);
-        });
-    };
-
-    const renderAccountSelector = ({
-        field: { value },
-        fieldState: { error, invalid }
-    }: UseControllerReturn<TransactionCreateInputInterface, 'fromAccountId'>) => {
-        const status = invalid ? 'error' : 'default';
-
-        return (
-            <FormItem label={t`Account`} error={error?.message}>
-                <AccountSelector
-                    status={status}
-                    variant="destructive"
-                    accountId={value}
-                    onSelect={handleAccountChange}
-                    excludeAccountTypes={EXCLUDED_ACCOUNT_TYPES}
-                    emptyStateDescription={t`Create your first account to start tracking transactions`}
-                />
-            </FormItem>
-        );
-    };
-
     useEffect(() => {
         if (isPositiveNumber(amount)) {
             form.setValue('amount', amount);
@@ -104,7 +68,13 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
                 <TransactionFormAmount setValue={form.setValue} instrumentSymbol={instrumentSymbol} control={form.control} variant="destructive" />
 
                 <FormLayoutGroup>
-                    <Controller render={renderAccountSelector} name="fromAccountId" control={form.control} />
+                    <TransactionFormAccountSelector
+                        control={form.control}
+                        setValue={form.setValue}
+                        entries={entries}
+                        variant="destructive"
+                        fieldName="fromAccountId"
+                    />
 
                     <TransactionFormCategory
                         transactionType={TransactionTypeEnum.EXPENSE}
