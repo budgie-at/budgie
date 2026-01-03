@@ -13,9 +13,10 @@ interface Props {
     readonly onPress: EmptyFn;
     readonly onActivate: EmptyFn;
     readonly onDelete: EmptyFn;
+    readonly onClone: EmptyFn;
 }
 
-export const BudgetListItem = ({ budget, onPress, onActivate, onDelete }: Props) => {
+export const BudgetListItem = ({ budget, onPress, onActivate, onDelete, onClone }: Props) => {
     const isActive = budget.status === BudgetStatusEnum.ACTIVE;
 
     return (
@@ -53,11 +54,19 @@ export const BudgetListItem = ({ budget, onPress, onActivate, onDelete }: Props)
                 </Text>
             )}
 
-            <HapticPressable onPress={onDelete}>
-                <Text className="text-sm text-destructive-foreground">
-                    <Trans>Delete</Trans>
-                </Text>
-            </HapticPressable>
+            <View className="flex-row gap-3">
+                <HapticPressable onPress={onClone}>
+                    <Text className="text-sm text-primary">
+                        <Trans>Clone</Trans>
+                    </Text>
+                </HapticPressable>
+
+                <HapticPressable onPress={onDelete}>
+                    <Text className="text-sm text-destructive-foreground">
+                        <Trans>Delete</Trans>
+                    </Text>
+                </HapticPressable>
+            </View>
         </Card>
     );
 };
