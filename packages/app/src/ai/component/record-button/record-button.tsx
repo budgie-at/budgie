@@ -7,7 +7,6 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
-import { LlmType } from '../../type/llm.type';
 
 import type { ClassValue } from 'clsx';
 
@@ -16,7 +15,8 @@ type RecordButtonVariant = 'default' | 'recording' | 'loading' | 'processing';
 
 interface Props extends Omit<ComponentProps<typeof HapticPressable>, 'children'> {
     readonly size?: RecordButtonSize;
-    readonly llm: LlmType;
+    readonly isReady: boolean;
+    readonly downloadProgress: number;
     readonly isGenerating: boolean;
     readonly isRecording: boolean;
     readonly labelClassName?: string;
@@ -69,8 +69,8 @@ const activityIndicatorSize: Record<RecordButtonSize, 'small' | 'large'> = {
     xl: 'small'
 };
 
-const getVariant = (llm: LlmType, isGenerating: boolean, isRecording: boolean): RecordButtonVariant => {
-    if (!llm.isReady) {
+const getVariant = (isReady: boolean, isGenerating: boolean, isRecording: boolean): RecordButtonVariant => {
+    if (!isReady) {
         return 'loading';
     }
 
@@ -85,9 +85,15 @@ const getVariant = (llm: LlmType, isGenerating: boolean, isRecording: boolean): 
     return 'default';
 };
 
-const getLabel = (llm: LlmType, variant: RecordButtonVariant, t: ReturnType<typeof useLingui>['t']): string => {
+interface GetLabelParams {
+    variant: RecordButtonVariant;
+    downloadProgress: number;
+    t: ReturnType<typeof useLingui>['t'];
+}
+
+const getLabel = ({ variant, downloadProgress, t }: GetLabelParams): string => {
     if (variant === 'loading') {
-        const progress = Math.round(llm.downloadProgress * 100);
+        const progress = Math.round(downloadProgress * 100);
 
         return t`Loading AI... ${progress}%`;
     }
@@ -97,18 +103,18 @@ const getLabel = (llm: LlmType, variant: RecordButtonVariant, t: ReturnType<type
     }
 
     if (variant === 'recording') {
-        return t`Recording...`;
+        return t`Listening...`;
     }
 
     return t`Tap to speak`;
 };
 
 export const RecordButton = (props: Props) => {
-    const { size = 'lg', isRecording, isGenerating, llm, className, labelClassName, ...rest } = props;
+    const { size = 'lg', isRecording, isGenerating, isReady, downloadProgress, className, labelClassName, ...rest } = props;
 
     const { t } = useLingui();
-    const variant = getVariant(llm, isGenerating, isRecording);
-    const label = getLabel(llm, variant, t);
+    const variant = getVariant(isReady, isGenerating, isRecording);
+    const label = getLabel({ variant, downloadProgress, t });
     const isDisabled = ['processing', 'loading'].includes(variant);
 
     return (

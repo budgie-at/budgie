@@ -1,28 +1,34 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useMemo, useState } from 'react';
+import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Page } from '../../@generic/component/page/page';
 import { BottomSheetsProvider } from '../../@generic/providers/bottom-sheets.provider';
+import { AudioLevelIndicator } from '../../ai/component/audio-level-indicator/audio-level-indicator';
+import { LiveTranscription } from '../../ai/component/live-transcription/live-transcription';
 import { RecordButton } from '../../ai/component/record-button/record-button';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
-import { useTranscribe } from '../../ai/hook/use-transcribe.hook';
+import { useStreamingTranscribe } from '../../ai/hook/use-streaming-transcribe.hook';
 import { AiTransactionPreviewCard } from '../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
+const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
+
 export default function AiScreen() {
     const { t } = useLingui();
-    const { llm } = useLlmContext();
+    const { llm, isSttReady, sttDownloadProgress } = useLlmContext();
+    const createExpense = useCreateExpenseTransactionMutation();
 
-    const [prompt, setPrompt] = useState('');
+    const [finalPrompt, setFinalPrompt] = useState('');
     const [error, setError] = useState('');
 
-    const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, prompt);
-    const [handleStartRecording, handleStopRecording, status] = useTranscribe(async transcribed => {
-        setPrompt(transcribed);
+    const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
+
+    const handleTranscriptionComplete = async (transcribed: string) => {
+        setFinalPrompt(transcribed);
 
         if (isNotEmptyString(transcribed)) {
             try {
@@ -36,57 +42,49 @@ export default function AiScreen() {
         } else {
             setError(t`No speech detected`);
         }
-    });
+    };
 
-    const createExpense = useCreateExpenseTransactionMutation();
+    const { startRecording, stopRecording, status, transcription, audioLevel } =
+        useStreamingTranscribe(handleTranscriptionComplete);
 
     const handleConfirm = async () => {
-        if (isPositiveNumber(transactionInfo?.amount)) {
-            await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
-            resetTransaction();
-        }
+        if (!isPositiveNumber(transactionInfo?.amount)) {return;}
+        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
+        resetTransaction();
     };
 
     const handleCancel = () => {
         setError('');
-        setPrompt('');
+        setFinalPrompt('');
         resetTransaction();
     };
 
     const handleRecord = () => {
         if (status === 'idle') {
             handleCancel();
-
-            handleStartRecording();
+            startRecording();
         } else {
-            void handleStopRecording();
+            stopRecording();
         }
     };
 
-    const scrollViewContentStyle = useMemo(() => ({ paddingBottom: 120 }), []);
     const isRecording = status === 'recording';
     const isGenerating = llm.isGenerating || status === 'processing';
+    const isReady = llm.isReady && isSttReady;
+    const downloadProgress = Math.min(llm.downloadProgress, sttDownloadProgress);
+    const showTransactionCard = isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount);
 
     return (
         <BottomSheetsProvider>
             <Page>
-                <ScrollView className="flex-1 px-4" contentContainerStyle={scrollViewContentStyle}>
-                    {isNotEmptyString(prompt) && (
-                        <View className="mt-4 p-4 bg-secondary rounded-2xl">
-                            <Text className="text-secondary text-sm font-medium mb-2">
-                                <Trans>Your message:</Trans>
-                            </Text>
-                            <Text className="text-primary text-base">{prompt}</Text>
-                        </View>
-                    )}
-
+                <ScrollView className="flex-1 px-4" contentContainerStyle={SCROLL_VIEW_CONTENT_STYLE}>
+                    <LiveTranscription committed={transcription.committed} partial={transcription.partial} status={status} />
                     {isNotEmptyString(error) && (
                         <View className="mt-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
                             <Text className="text-red-600 dark:text-red-400 text-base">{error}</Text>
                         </View>
                     )}
-
-                    {isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount) && (
+                    {showTransactionCard && (
                         <AiTransactionPreviewCard
                             amount={transactionInfo.amount}
                             category={transactionInfo.category}
@@ -97,9 +95,15 @@ export default function AiScreen() {
                         />
                     )}
                 </ScrollView>
-
                 <View className="absolute bottom-8 left-0 right-0 items-center">
-                    <RecordButton llm={llm} isGenerating={isGenerating} isRecording={isRecording} onPress={handleRecord} />
+                    <AudioLevelIndicator level={audioLevel} isActive={isRecording} />
+                    <RecordButton
+                        isReady={isReady}
+                        downloadProgress={downloadProgress}
+                        isGenerating={isGenerating}
+                        isRecording={isRecording}
+                        onPress={handleRecord}
+                    />
                 </View>
             </Page>
         </BottomSheetsProvider>
