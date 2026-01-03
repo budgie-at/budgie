@@ -10,7 +10,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -34,7 +33,6 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
 
     const variant = TRANSACTION_COLOR[type];
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
-    const microAmount = convertToMicroUnits(amount);
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
 
@@ -60,7 +58,7 @@ export const AiTransactionPreviewCard = ({ amount, category, type, onConfirm, on
                         <Trans>Amount</Trans>
                     </Text>
                     <Text className="text-destructive-foreground text-2xl font-bold">
-                        {formatDigits(microAmount, defaultInstrument.symbol)}
+                        {formatDigits(amount, defaultInstrument.symbol)}
                     </Text>
                 </View>
 

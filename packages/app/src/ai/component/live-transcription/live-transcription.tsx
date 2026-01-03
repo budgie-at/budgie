@@ -11,37 +11,50 @@ interface Props {
     readonly committed: string;
     readonly partial: string;
     readonly status: TranscribeStatus;
+    readonly isVoiceDetected: boolean;
 }
 
 const INITIAL_SCALE = 0.95;
 const ANIMATION_DURATION_IN = 200;
 const ANIMATION_DURATION_OUT = 150;
 
-export const LiveTranscription = ({ committed, partial, status }: Props) => {
+export const LiveTranscription = ({ committed, partial, status, isVoiceDetected }: Props) => {
     const opacity = useSharedValue(0);
     const scale = useSharedValue(INITIAL_SCALE);
 
     const hasText = isNotEmptyString(committed) || isNotEmptyString(partial);
     const isRecording = status === 'recording';
+    const isProcessing = status === 'processing';
 
     useEffect(() => {
-        if (hasText) {
+        if (hasText || isRecording || isProcessing) {
             opacity.value = withTiming(1, { duration: ANIMATION_DURATION_IN });
             scale.value = withSpring(1, { damping: 15 });
         } else {
             opacity.value = withTiming(0, { duration: ANIMATION_DURATION_OUT });
             scale.value = withTiming(INITIAL_SCALE, { duration: ANIMATION_DURATION_OUT });
         }
-    }, [hasText, opacity, scale]);
+    }, [hasText, isProcessing, isRecording, opacity, scale]);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
         transform: [{ scale: scale.value }]
     }));
 
-    if (!hasText && !isRecording) {
+    if (!hasText && !isRecording && !isProcessing) {
         return null;
     }
+
+    const getStatusMessage = () => {
+        if (isProcessing) {
+            return <Trans>Transcribing...</Trans>;
+        }
+        if (isVoiceDetected) {
+            return <Trans>Speaking...</Trans>;
+        }
+
+        return <Trans>Listening...</Trans>;
+    };
 
     return (
         <Animated.View className="mt-4 p-4 bg-secondary rounded-2xl" style={animatedContainerStyle}>
@@ -53,10 +66,8 @@ export const LiveTranscription = ({ committed, partial, status }: Props) => {
                 {isNotEmptyString(partial) && (
                     <Text className="text-secondary-foreground text-base italic">{partial}</Text>
                 )}
-                {isRecording && !hasText && (
-                    <Text className="text-secondary-foreground text-base italic">
-                        <Trans>Listening...</Trans>
-                    </Text>
+                {!hasText && (
+                    <Text className="text-secondary-foreground text-base italic">{getStatusMessage()}</Text>
                 )}
             </View>
         </Animated.View>

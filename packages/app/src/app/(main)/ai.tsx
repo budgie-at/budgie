@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -17,6 +17,7 @@ import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-
 
 const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
 
+// eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
     const { t } = useLingui();
     const { llm, isSttReady, sttDownloadProgress } = useLlmContext();
@@ -24,6 +25,7 @@ export default function AiScreen() {
 
     const [finalPrompt, setFinalPrompt] = useState('');
     const [error, setError] = useState('');
+    const hasAutoStartedRef = useRef(false);
 
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
 
@@ -44,8 +46,17 @@ export default function AiScreen() {
         }
     };
 
-    const { startRecording, stopRecording, status, transcription, audioLevel } =
+    const { startRecording, stopRecording, status, transcription, audioLevel, isVoiceDetected } =
         useStreamingTranscribe(handleTranscriptionComplete);
+
+    const isReady = llm.isReady && isSttReady;
+
+    useEffect(() => {
+        if (isReady && !hasAutoStartedRef.current) {
+            hasAutoStartedRef.current = true;
+            startRecording();
+        }
+    }, [isReady, startRecording]);
 
     const handleConfirm = async () => {
         if (!isPositiveNumber(transactionInfo?.amount)) {return;}
@@ -70,7 +81,6 @@ export default function AiScreen() {
 
     const isRecording = status === 'recording';
     const isGenerating = llm.isGenerating || status === 'processing';
-    const isReady = llm.isReady && isSttReady;
     const downloadProgress = Math.min(llm.downloadProgress, sttDownloadProgress);
     const showTransactionCard = isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount);
 
@@ -78,7 +88,12 @@ export default function AiScreen() {
         <BottomSheetsProvider>
             <Page>
                 <ScrollView className="flex-1 px-4" contentContainerStyle={SCROLL_VIEW_CONTENT_STYLE}>
-                    <LiveTranscription committed={transcription.committed} partial={transcription.partial} status={status} />
+                    <LiveTranscription
+                        committed={transcription.committed}
+                        partial={transcription.partial}
+                        status={status}
+                        isVoiceDetected={isVoiceDetected}
+                    />
                     {isNotEmptyString(error) && (
                         <View className="mt-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
                             <Text className="text-red-600 dark:text-red-400 text-base">{error}</Text>

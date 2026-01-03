@@ -5,6 +5,7 @@ import { SpeechToTextLanguage, SpeechToTextModule } from 'react-native-executorc
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
 import { calculateRMS } from '../util/calculate-rms.util';
+import { filterTranscriptionTokens } from '../util/filter-transcription-tokens.util';
 
 import { useAudioManager } from './use-audio-manager.hook';
 
@@ -21,12 +22,14 @@ interface UseStreamingTranscribeReturn {
     status: TranscribeStatus;
     transcription: TranscriptionState;
     audioLevel: number;
+    isVoiceDetected: boolean;
 }
 
 const SAMPLE_RATE = 16000;
 const BUFFER_LENGTH = 1600;
 const SILENCE_TIMEOUT_MS = 2000;
 const SILENCE_THRESHOLD = 0.01;
+const VOICE_DETECTION_THRESHOLD = 0.02;
 const AUDIO_LEVEL_MULTIPLIER = 10;
 const INITIAL_TRANSCRIPTION: TranscriptionState = { committed: '', partial: '' };
 
@@ -38,23 +41,29 @@ interface StreamTranscriptionParams {
     setTranscription: React.Dispatch<React.SetStateAction<TranscriptionState>>;
 }
 
+const processStreamChunk = (
+    chunk: { committed: string; nonCommitted: string },
+    committedTextRef: React.MutableRefObject<string>,
+    setTranscription: React.Dispatch<React.SetStateAction<TranscriptionState>>
+) => {
+    const filteredCommitted = filterTranscriptionTokens(chunk.committed);
+    const filteredPartial = filterTranscriptionTokens(chunk.nonCommitted);
+
+    if (filteredCommitted) {
+        committedTextRef.current += filteredCommitted;
+        setTranscription(prev => ({ committed: prev.committed + filteredCommitted, partial: filteredPartial }));
+    } else {
+        setTranscription(prev => ({ ...prev, partial: filteredPartial }));
+    }
+};
+
 const runStreamTranscription = async (params: StreamTranscriptionParams): Promise<void> => {
     const { speechToTextModule, languageCode, isStreamingRef, committedTextRef, setTranscription } = params;
 
     try {
-        const streamOptions = { language: languageCode as SpeechToTextLanguage };
-
-        for await (const { committed, nonCommitted } of speechToTextModule.stream(streamOptions)) {
-            if (!isStreamingRef.current) {
-                break;
-            }
-
-            if (committed) {
-                committedTextRef.current += committed;
-                setTranscription(prev => ({ committed: prev.committed + committed, partial: nonCommitted }));
-            } else {
-                setTranscription(prev => ({ ...prev, partial: nonCommitted }));
-            }
+        for await (const chunk of speechToTextModule.stream({ language: languageCode as SpeechToTextLanguage })) {
+            if (!isStreamingRef.current) {break;}
+            processStreamChunk(chunk, committedTextRef, setTranscription);
         }
     } catch {
         setTranscription(INITIAL_TRANSCRIPTION);
@@ -69,6 +78,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
     const [status, setStatus] = useState<TranscribeStatus>('idle');
     const [transcription, setTranscription] = useState<TranscriptionState>(INITIAL_TRANSCRIPTION);
     const [audioLevel, setAudioLevel] = useState(0);
+    const [isVoiceDetected, setIsVoiceDetected] = useState(false);
 
     const recorderRef = useRef<AudioRecorder | null>(null);
     const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -95,8 +105,9 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
         setStatus('processing');
         setAudioLevel(0);
+        setIsVoiceDetected(false);
 
-        const finalText = committedTextRef.current + transcription.partial;
+        const finalText = filterTranscriptionTokens(committedTextRef.current + transcription.partial);
         setTranscription(prev => ({ committed: prev.committed + prev.partial, partial: '' }));
 
         void onComplete(finalText.trim()).finally(() => void setStatus('idle'));
@@ -107,6 +118,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         setTranscription(INITIAL_TRANSCRIPTION);
         committedTextRef.current = '';
         setAudioLevel(0);
+        setIsVoiceDetected(false);
 
         if (!recorderRef.current) {
             recorderRef.current = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
@@ -117,6 +129,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             const rms = calculateRMS(samples);
 
             setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
+            setIsVoiceDetected(rms > VOICE_DETECTION_THRESHOLD);
             speechToTextModule.streamInsert(samples);
 
             if (rms > SILENCE_THRESHOLD) {
@@ -149,5 +162,5 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         [resetSilenceTimeout, speechToTextModule]
     );
 
-    return { startRecording, stopRecording, status, transcription, audioLevel };
+    return { startRecording, stopRecording, status, transcription, audioLevel, isVoiceDetected };
 };
