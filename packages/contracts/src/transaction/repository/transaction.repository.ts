@@ -117,6 +117,18 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }
 
+    async findIncomeExpenseByExternalSource(externalSource: ExternalSourceEnum) {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: and(
+                eq(TransactionEntityTable.externalSource, externalSource),
+                or(eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME), eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE)),
+                isNull(TransactionEntityTable.deletedAt)
+            ),
+            with: this.transactionRelations,
+            orderBy: (transaction, { asc }) => [asc(transaction.operatedAt)]
+        });
+    }
+
     async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
         return await this.db.query.TransactionEntityTable.findMany({
             where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
