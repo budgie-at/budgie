@@ -1,15 +1,8 @@
 import { useEffect } from 'react';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { Circle, Svg } from 'react-native-svg';
 
-import {
-    ACCENT_COLOR,
-    RING_CENTER,
-    RING_CIRCUMFERENCE,
-    RING_RADIUS,
-    RING_SIZE,
-    STROKE_WIDTH
-} from './animated-record-button.constant';
+import { ACCENT_COLOR, RING_CIRCUMFERENCE } from './animated-record-button.constant';
+import { BaseRing } from './base-ring';
 import { ringContainerStyle } from './ring-container.style';
 
 const ROTATION_DURATION = 1500;
@@ -21,7 +14,7 @@ export const SpinnerRing = () => {
     const rotation = useSharedValue(0);
 
     useEffect(() => {
-        rotation.value = withRepeat(withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }), -1, false);
+        rotation.set(withRepeat(withTiming(360, { duration: ROTATION_DURATION, easing: Easing.linear }), -1, false));
     }, [rotation]);
 
     const animatedStyle = useAnimatedStyle(() => ({
@@ -34,19 +27,7 @@ export const SpinnerRing = () => {
 
     return (
         <Animated.View style={combinedStyle}>
-            <Svg width={RING_SIZE} height={RING_SIZE}>
-                <Circle
-                    cx={RING_CENTER}
-                    cy={RING_CENTER}
-                    r={RING_RADIUS}
-                    stroke={ACCENT_COLOR}
-                    strokeWidth={STROKE_WIDTH}
-                    strokeDasharray={`${dashLength} ${gapLength}`}
-                    strokeLinecap="round"
-                    fill="none"
-                    opacity={RING_OPACITY}
-                />
-            </Svg>
+            <BaseRing stroke={ACCENT_COLOR} strokeDasharray={`${dashLength} ${gapLength}`} opacity={RING_OPACITY} />
         </Animated.View>
     );
 };

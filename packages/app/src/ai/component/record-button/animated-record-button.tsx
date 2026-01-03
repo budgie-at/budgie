@@ -70,9 +70,9 @@ export const AnimatedRecordButton = ({ state, audioLevel = 0, downloadProgress =
 
     useEffect(() => {
         if (state === 'recording' && audioLevel > AUDIO_THRESHOLD) {
-            buttonScale.value = withSpring(1 + audioLevel * SCALE_MULTIPLIER, { damping: 15 });
+            buttonScale.set(withSpring(1 + audioLevel * SCALE_MULTIPLIER, { damping: 15 }));
         } else {
-            buttonScale.value = withSpring(1, { damping: 15 });
+            buttonScale.set(withSpring(1, { damping: 15 }));
         }
     }, [audioLevel, buttonScale, state]);
 

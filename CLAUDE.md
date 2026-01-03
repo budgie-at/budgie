@@ -200,6 +200,21 @@ export const accountRepository = new AccountRepository(db);
 - **Global Styles:** `packages/app/src/global.css`
 - **Components:** Tailwind utility classes with `class-variance-authority` for variants
 
+### Color Palette
+Colors are defined as CSS variables in `global.css` and mirrored in `@generic/constant/colors.constant.ts` for programmatic use.
+
+**Semantic Colors:**
+- `--color-default-foreground`: Blue (`rgba(43, 127, 255, 1)`) - Primary accent/action color
+- `--color-destructive-foreground`: Red (`rgba(239, 68, 68, 1)`) - Destructive actions, recording states
+- `--color-positive-foreground`: Green (`rgba(16, 185, 129, 1)`) - Success, income
+- `--color-warning-foreground`: Yellow (`rgba(240, 177, 0, 1)`) - Warnings
+- `--color-secondary-foreground`: Gray (`rgba(115, 115, 115, 1)`) - Secondary text, loading states
+
+**Usage:**
+- In JSX/TSX: Use Tailwind classes like `text-default`, `bg-destructive`, etc.
+- In JavaScript (for animations, SVG): Import from `@generic/constant/colors.constant.ts`
+- Theme-aware components use `useThemeContext()` to check `isDarkColorSchema`
+
 ### Internationalization (i18n)
 - **Library:** Lingui with compiled catalogs
 - **Supported Languages:** English, French, Spanish, Ukrainian, German

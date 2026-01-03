@@ -22,11 +22,11 @@ export const PulseRing = ({ index, audioLevel }: Props) => {
     useEffect(() => {
         if (audioLevel > AUDIO_THRESHOLD) {
             const targetScale = 1 + audioLevel * SCALE_MULTIPLIER + index * INDEX_SCALE_OFFSET;
-            scale.value = withSpring(targetScale, { damping: 10, stiffness: 100 });
-            opacity.value = withTiming(BASE_OPACITY - index * INDEX_SCALE_OFFSET, { duration: ANIMATION_DURATION });
+            scale.set(withSpring(targetScale, { damping: 10, stiffness: 100 }));
+            opacity.set(withTiming(BASE_OPACITY - index * INDEX_SCALE_OFFSET, { duration: ANIMATION_DURATION }));
         } else {
-            scale.value = withTiming(1, { duration: RESET_DURATION });
-            opacity.value = withTiming(0, { duration: RESET_DURATION });
+            scale.set(withTiming(1, { duration: RESET_DURATION }));
+            opacity.set(withTiming(0, { duration: RESET_DURATION }));
         }
     }, [audioLevel, index, opacity, scale]);
 
