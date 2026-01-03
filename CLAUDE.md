@@ -407,3 +407,4 @@ Runs on push to main:
 - Known acceptable warnings: empty interfaces, magic numbers in tests
 - Focus only on errors or warnings introduced by your changes
 - Never skip hooks (`--no-verify`) unless explicitly instructed
+- **Never modify `.jscpd.json`** - This config is carefully tuned; fix code duplication issues in the source code instead of adding ignore patterns
