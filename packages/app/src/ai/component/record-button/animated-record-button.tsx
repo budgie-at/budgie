@@ -6,7 +6,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 
-import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, PULSE_RING_COUNT, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
+import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
 import { LoadingRing } from './loading-ring';
 import { PulseRing } from './pulse-ring';
 import { SpinnerRing } from './spinner-ring';
@@ -43,6 +43,8 @@ const styles = StyleSheet.create({
 });
 
 const getButtonColor = (state: ButtonState): string => {
+    'worklet';
+
     switch (state) {
         case 'recording':
             return RECORDING_COLOR;
@@ -84,14 +86,16 @@ export const AnimatedRecordButton = ({ state, audioLevel = 0, downloadProgress =
     const buttonStyle = [styles.button, buttonAnimatedStyle];
     const isDisabled = disabled ?? (state === 'loading' || state === 'transcribing' || state === 'thinking');
 
-    const pulseRings = Array.from({ length: PULSE_RING_COUNT }, (_, i) => (
-        <PulseRing key={i} index={i} audioLevel={audioLevel} />
-    ));
-
     return (
         <View style={styles.container}>
             {state === 'loading' && <LoadingRing progress={downloadProgress} />}
-            {state === 'recording' && pulseRings}
+            {state === 'recording' && (
+                <>
+                    <PulseRing index={0} audioLevel={audioLevel} />
+                    <PulseRing index={1} audioLevel={audioLevel} />
+                    <PulseRing index={2} audioLevel={audioLevel} />
+                </>
+            )}
             {state === 'transcribing' && <SpinnerRing />}
             {state === 'thinking' && <ThinkingRing />}
 

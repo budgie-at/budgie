@@ -8,8 +8,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useLlmContext } from '../../context/llm.context';
 
 export const AiChatButton = () => {
-    const { llm, isSttReady } = useLlmContext();
-    const isReady = llm.isReady && isSttReady;
+    const { llm, stt } = useLlmContext();
+    const isReady = llm.isReady && stt.isReady;
 
     return (
         <View>

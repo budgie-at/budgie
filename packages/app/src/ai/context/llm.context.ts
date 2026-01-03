@@ -1,20 +1,25 @@
 import { createContext, use } from 'react';
-import { SpeechToTextModule } from 'react-native-executorch';
 
+import { SttInterface } from '../interface/stt.interface';
 import { LlmType } from '../type/llm.type';
 
 interface LlmContextInterface {
     llm: LlmType;
-    speechToTextModule: SpeechToTextModule;
-    sttDownloadProgress: number;
-    isSttReady: boolean;
+    stt: SttInterface;
 }
 
+const NOOP_LLM: LlmType = {
+    isReady: false,
+    isGenerating: false,
+    response: '',
+    downloadProgress: 0,
+    // eslint-disable-next-line lingui/no-unlocalized-strings
+    generate: async () => Promise.reject(new Error('LlmProvider not initialized'))
+};
+
 export const LlmContext = createContext<LlmContextInterface>({
-    llm: {} as LlmContextInterface['llm'],
-    speechToTextModule: {} as LlmContextInterface['speechToTextModule'],
-    sttDownloadProgress: 0,
-    isSttReady: false
+    llm: NOOP_LLM,
+    stt: {} as SttInterface
 });
 
 export const useLlmContext = () => use(LlmContext);

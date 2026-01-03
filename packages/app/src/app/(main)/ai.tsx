@@ -2,62 +2,67 @@ import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Page } from '../../@generic/component/page/page';
 import { BottomSheetsProvider } from '../../@generic/providers/bottom-sheets.provider';
 import { AnimatedRecordButton } from '../../ai/component/record-button/animated-record-button';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
+import { useLlmGeneration } from '../../ai/hook/use-llm-generation.hook';
 import { useStreamingTranscribe } from '../../ai/hook/use-streaming-transcribe.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { AiTransactionPreviewCard } from '../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
 const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
-const GENERATING_ERROR_PATTERN = /ModelGenerating/u;
 
-// eslint-disable-next-line max-lines-per-function
+type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
+
+const getButtonState = (
+    isReady: boolean,
+    status: 'idle' | 'recording' | 'processing',
+    isGenerating: boolean
+): ButtonState => {
+    if (!isReady) {
+        return 'loading';
+    }
+    if (status === 'recording') {
+        return 'recording';
+    }
+    if (status === 'processing') {
+        return 'transcribing';
+    }
+    if (isGenerating) {
+        return 'thinking';
+    }
+
+    return 'idle';
+};
+
+// eslint-disable-next-line max-lines-per-function,max-statements
 export default function AiScreen() {
     const { t } = useLingui();
-    const { llm, isSttReady, sttDownloadProgress } = useLlmContext();
+    const { llm, stt } = useLlmContext();
     const { defaultAccount } = useSettingsContext();
     const createExpense = useCreateExpenseTransactionMutation();
 
     const [finalPrompt, setFinalPrompt] = useState('');
-    const [error, setError] = useState('');
     const [accountId, setAccountId] = useState<number | null>(null);
     const hasAutoStartedRef = useRef(false);
 
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
-
-    const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
+    const { generateFromTranscription, error, clearError } = useLlmGeneration(llm, systemPrompt);
 
     const handleTranscriptionComplete = async (transcribed: string) => {
         setFinalPrompt(transcribed);
-        setError('');
-
-        if (isNotEmptyString(transcribed)) {
-            try {
-                await llm.generate([
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: transcribed }
-                ]);
-            } catch (e: unknown) {
-                const message = getErrorMessage(e);
-                if (!GENERATING_ERROR_PATTERN.test(message)) {
-                    setError(message);
-                }
-            }
-        } else {
-            setError(t`No speech detected`);
-        }
+        await generateFromTranscription(transcribed);
     };
 
     const { startRecording, stopRecording, status, transcription, audioLevel } =
         useStreamingTranscribe(handleTranscriptionComplete);
 
-    const isReady = llm.isReady && isSttReady;
+    const isReady = llm.isReady && stt.isReady;
 
     useEffect(() => {
         if (isReady && !hasAutoStartedRef.current) {
@@ -67,14 +72,17 @@ export default function AiScreen() {
     }, [isReady, startRecording]);
 
     const handleConfirm = async () => {
-        if (!isPositiveNumber(transactionInfo?.amount)) {return;}
+        if (!isPositiveNumber(transactionInfo?.amount)) {
+            return;
+        }
+        const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
         await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0, selectedAccountId, transactionInfo.comment);
         resetTransaction();
         setAccountId(null);
     };
 
     const handleCancel = () => {
-        setError('');
+        clearError();
         setFinalPrompt('');
         resetTransaction();
         setAccountId(null);
@@ -89,19 +97,11 @@ export default function AiScreen() {
         }
     };
 
-    const downloadProgress = Math.min(llm.downloadProgress, sttDownloadProgress);
+    const downloadProgress = Math.min(llm.downloadProgress, stt.downloadProgress);
     const showTransactionCard = isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount);
-
-    const getButtonState = () => {
-        if (!isReady) {return 'loading' as const;}
-        if (status === 'recording') {return 'recording' as const;}
-        if (status === 'processing') {return 'transcribing' as const;}
-        if (llm.isGenerating) {return 'thinking' as const;}
-
-        return 'idle' as const;
-    };
-
     const hasTranscription = isNotEmptyString(transcription.committed) || isNotEmptyString(transcription.partial);
+    const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
+    const buttonState = getButtonState(isReady, status, llm.isGenerating);
 
     return (
         <BottomSheetsProvider>
@@ -138,7 +138,7 @@ export default function AiScreen() {
                 </ScrollView>
                 <View className="absolute bottom-8 left-0 right-0 items-center">
                     <AnimatedRecordButton
-                        state={getButtonState()}
+                        state={buttonState}
                         audioLevel={audioLevel}
                         downloadProgress={downloadProgress}
                         onPress={handleRecord}
