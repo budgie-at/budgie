@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.106.1](https://github.com/budgie-at/budgie/compare/v1.106.0...v1.106.1) (2026-01-03)
+
+### Bug Fixes
+
+- **app:** show loading state on initial load in transaction list ([1603647](https://github.com/budgie-at/budgie/commit/16036472761ec20a3ec11c24eb60b90497b9abe1))
+
 # [1.106.0](https://github.com/budgie-at/budgie/compare/v1.105.0...v1.106.0) (2026-01-03)
 
 ### Bug Fixes
