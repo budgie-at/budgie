@@ -115,6 +115,11 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/pin" />
                                                     <Stack.Screen name="(main)/create-account" />
 
+                                                    <Stack.Screen name="(main)/budget/[id]/allocation/[allocationId]" />
+                                                    <Stack.Screen name="(main)/budget/[id]/add-allocation" />
+                                                    <Stack.Screen name="(main)/budget/[id]/index" />
+                                                    <Stack.Screen name="(main)/budget/create" />
+
                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                     <Stack.Screen name="(main)/account/[id]/details" />
 
