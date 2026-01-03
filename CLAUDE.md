@@ -278,6 +278,32 @@ const getLabel = (t: SomeType): string => t`Label`;
 - **Global Styles:** `packages/app/src/global.css`
 - **Components:** Tailwind utility classes with `class-variance-authority` for variants
 
+### Toast Messages
+- **Only show toasts for errors** - Never show success toasts for positive/expected outcomes
+- Users expect actions to succeed; only notify them when something goes wrong
+- Error toasts should include helpful context about what failed
+```typescript
+// Good - Only show toast on error
+const handleSubmit = async () => {
+    try {
+        await service.doAction();
+        bottomSheetRef.current?.close();
+    } catch {
+        Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to complete action` });
+    }
+};
+
+// Bad - Unnecessary success toast
+const handleSubmit = async () => {
+    try {
+        await service.doAction();
+        Toast.show({ type: 'success', text1: t`Success`, text2: t`Action completed` }); // Don't do this
+    } catch {
+        Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to complete action` });
+    }
+};
+```
+
 ### Internationalization (i18n)
 - **Library:** Lingui with compiled catalogs
 - **Supported Languages:** English, French, Spanish, Ukrainian, German
