@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.107.0](https://github.com/budgie-at/budgie/compare/v1.106.1...v1.107.0) (2026-01-03)
+
+### Bug Fixes
+
+- **app:** form links ([2b30aa5](https://github.com/budgie-at/budgie/commit/2b30aa53558c314079b643470fd8431e177eba13))
+- **app:** form links ([2ed9828](https://github.com/budgie-at/budgie/commit/2ed9828078d0f7bfcca2e41a676e53ff5ae60696))
+- **app:** form links ([43be47c](https://github.com/budgie-at/budgie/commit/43be47c13b2188263ca2783346e4d9bf8f0efc61))
+- **app:** remove jscpd app directory ignore and add granular ignore comments ([2637f2a](https://github.com/budgie-at/budgie/commit/2637f2a97be2003ba4aabd9f28d3f60221767fd0))
+
+### Features
+
+- **app:** add autoFocus to create transaction forms ([93c8ecf](https://github.com/budgie-at/budgie/commit/93c8ecfd2149154457fa5c287975f00abfeb885e))
+- **app:** add LoadingScreen component for transaction update pages ([1c22535](https://github.com/budgie-at/budgie/commit/1c22535877ec6639f45b7766f56c91be06242a46))
+
 ## [1.106.1](https://github.com/budgie-at/budgie/compare/v1.106.0...v1.106.1) (2026-01-03)
 
 ### Bug Fixes
