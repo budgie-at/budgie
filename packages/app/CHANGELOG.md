@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.102.6](https://github.com/budgie-at/budgie/compare/v1.102.5...v1.102.6) (2026-01-03)
+
+### Bug Fixes
+
+- change export/import icons and variants ([8598e16](https://github.com/budgie-at/budgie/commit/8598e168ea24e40f82680e54ceb6e91c397d5526))
+
 ## [1.102.5](https://github.com/budgie-at/budgie/compare/v1.102.4...v1.102.5) (2026-01-02)
 
 ### Bug Fixes
