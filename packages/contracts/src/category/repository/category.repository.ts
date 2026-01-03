@@ -1,4 +1,4 @@
-import { and, count, eq, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, sql } from 'drizzle-orm';
 
 import { TX } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
@@ -19,11 +19,17 @@ export class CategoryRepository {
     findBySearchQuery(search: string, includeDefault: boolean) {
         const searchQuery = sql`LOWER (${CategoryEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`;
 
-        return this.db.query.CategoryEntityTable.findMany({
-            where: includeDefault
-                ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
-                : and(searchQuery, eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false))
-        });
+        const whereConditions = includeDefault
+            ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
+            : and(searchQuery, eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
+
+        return this.db
+            .select(getTableColumns(CategoryEntityTable))
+            .from(CategoryEntityTable)
+            .leftJoin(schema.TransactionEntryEntityTable, eq(CategoryEntityTable.id, schema.TransactionEntryEntityTable.categoryId))
+            .where(whereConditions)
+            .groupBy(CategoryEntityTable.id)
+            .orderBy(sql`COUNT(${schema.TransactionEntryEntityTable.id}) DESC`);
     }
 
     count(includeDefault: boolean) {
