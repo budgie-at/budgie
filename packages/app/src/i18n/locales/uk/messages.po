@@ -39,11 +39,11 @@ msgstr "{iconsCount} іконок доступно"
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} рахунок"
 
-#: src/app/(tabs)/analytics.tsx:35
+#: src/app/(tabs)/analytics.tsx:34
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
 
-#: src/app/(tabs)/analytics.tsx:34
+#: src/app/(tabs)/analytics.tsx:33
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
@@ -63,7 +63,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
+#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Рахунок"
 
@@ -119,23 +119,23 @@ msgstr "Додайте нову категорію для організації
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:52
+#: src/app/(main)/create-transaction/expense.tsx:76
 msgid "Add Expense"
 msgstr "Додати витрату"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:34
+#: src/app/(main)/create-transaction/income.tsx:59
 msgid "Add Income"
 msgstr "Додати дохід"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:116
+#: src/transaction/components/transaction-split/transaction-split.tsx:115
 msgid "Add Split"
 msgstr "Додати поділ"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:35
+#: src/app/(main)/create-transaction/transfer.tsx:82
 msgid "Add Transfer"
 msgstr "Додати переказ"
 
@@ -188,7 +188,8 @@ msgstr "Вже синхронізується"
 msgid "Amount"
 msgstr "Сума"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:50
+#: src/app/(main)/create-transaction/transfer.tsx:55
+#: src/app/(main)/transactions/[id]/transfer.tsx:64
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -230,7 +231,7 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:66
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:51
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
 
@@ -246,7 +247,7 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/app/(tabs)/analytics.tsx:64
 msgid "Balance"
 msgstr "Баланс"
 
@@ -309,7 +310,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:185
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:40
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Категорія"
 
@@ -517,9 +518,9 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
+#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:102
 msgid "Create your first account to start tracking transactions"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати транзакції"
 
@@ -597,7 +598,7 @@ msgstr "Видалити всі транзакції та налаштуванн
 msgid "Delete data"
 msgstr "Видалити дані"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:63
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:48
 msgid "Delete transaction"
 msgstr "Видалити транзакцію"
 
@@ -638,15 +639,15 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
+#: src/app/(main)/transactions/[id]/expense.tsx:63
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:35
+#: src/app/(main)/transactions/[id]/income.tsx:63
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:27
+#: src/app/(main)/transactions/[id]/transfer.tsx:84
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -820,7 +821,7 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
 msgstr "З"
 
@@ -895,12 +896,12 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:64
+#: src/app/(tabs)/analytics.tsx:63
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:73
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
@@ -981,7 +982,8 @@ msgstr "Монобанк"
 msgid "Move between accounts"
 msgstr "Переказ між рахунками"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:69
+#: src/app/(main)/create-transaction/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:85
 msgid "Move Money"
 msgstr "Переказати гроші"
 
@@ -989,11 +991,11 @@ msgstr "Переказати гроші"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
+#: src/app/(main)/create-transaction/expense.tsx:69
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:33
+#: src/app/(main)/create-transaction/income.tsx:52
 msgid "New Income"
 msgstr "Новий дохід"
 
@@ -1001,7 +1003,7 @@ msgstr "Новий дохід"
 msgid "New Transaction"
 msgstr "Нова транзакція"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
+#: src/app/(main)/create-transaction/transfer.tsx:75
 msgid "New Transfer"
 msgstr "Новий переказ"
 
@@ -1115,7 +1117,7 @@ msgstr "Немає"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:13
 msgid "Note (optional)"
 msgstr "Нотатка (необов'язково)"
 
@@ -1131,7 +1133,7 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/app/(tabs)/analytics.tsx:53
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1325,8 +1327,11 @@ msgstr "Вибрати все"
 msgid "Select category"
 msgstr "Виберіть категорію"
 
+#: src/app/(main)/create-transaction/expense.tsx:70
+#: src/app/(main)/create-transaction/income.tsx:53
+#: src/app/(main)/transactions/[id]/expense.tsx:64
+#: src/app/(main)/transactions/[id]/income.tsx:64
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:80
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1416,11 +1421,11 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/app/(tabs)/analytics.tsx:82
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/app/(tabs)/analytics.tsx:59
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1440,7 +1445,7 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/app/(tabs)/analytics.tsx:39
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1520,7 +1525,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:62
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:47
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -1540,7 +1545,7 @@ msgstr "Це очистить всі кешовані баланси рахун�
 msgid "This Year"
 msgstr "Цього року"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:99
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
 msgstr "НА"
 
@@ -1634,15 +1639,15 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:37
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Update Expense"
 msgstr "Оновити витрату"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:36
+#: src/app/(main)/transactions/[id]/income.tsx:70
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:31
+#: src/app/(main)/transactions/[id]/transfer.tsx:91
 msgid "Update Transfer"
 msgstr "Оновити переказ"
 

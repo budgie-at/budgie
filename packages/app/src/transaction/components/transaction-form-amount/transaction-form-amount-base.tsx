@@ -1,5 +1,5 @@
 import { TransactionCreateInputInterface } from '@budgie/contracts';
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -12,10 +12,10 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly autoFocus?: boolean;
     readonly onAmountChange: (amount: number) => void;
-    readonly control: Control<TransactionCreateInputInterface>;
 }
 
-export const TransactionFormAmountBase = ({ variant, control, instrumentSymbol, onAmountChange, autoFocus }: Props) => {
+export const TransactionFormAmountBase = ({ variant, instrumentSymbol, onAmountChange, autoFocus }: Props) => {
+    const { control } = useFormContext<TransactionCreateInputInterface>();
     const renderAmountInput = ({
         field: { value },
         fieldState: { error }

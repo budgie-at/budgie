@@ -1,5 +1,5 @@
 import { TransactionCreateInputInterface } from '@budgie/contracts';
-import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
@@ -9,12 +9,11 @@ interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly autoFocus?: boolean;
-    readonly control: Control<TransactionCreateInputInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
 }
 
-export const TransactionFormAmount = ({ variant, setValue, control, instrumentSymbol, autoFocus }: Props) => {
-    const entries = useWatch({ control, name: 'entries' });
+export const TransactionFormAmount = ({ variant, instrumentSymbol, autoFocus }: Props) => {
+    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const entries = useWatch<TransactionCreateInputInterface, 'entries'>({ control, name: 'entries' });
 
     const handleAmountChange = (amount: number) => {
         setValue('amount', amount);
@@ -27,7 +26,6 @@ export const TransactionFormAmount = ({ variant, setValue, control, instrumentSy
     return (
         <TransactionFormAmountBase
             variant={variant}
-            control={control}
             instrumentSymbol={instrumentSymbol}
             onAmountChange={handleAmountChange}
             autoFocus={autoFocus}
