@@ -4,14 +4,13 @@ import { RefObject, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
-
-import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 
 interface Props {
     readonly variant: ColorPaletteVariant;

@@ -3,8 +3,10 @@ import { Text, View } from 'react-native';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
-import { cn } from '../../utils/cn.util';
 import { Input } from '../input/input';
+
+const FONT_SIZE = 72;
+const fontSizeStyle = { fontSize: FONT_SIZE };
 
 interface Props {
     readonly value: number;
@@ -30,15 +32,18 @@ export const FormPercentageInput = ({ value, onChange, variant }: Props) => {
     };
 
     return (
-        <View className="flex-row items-center justify-center py-5xl px-lg h-32.5">
+        <View className="flex-row items-center justify-center pl-4 pr-4 py-5xl px-lg h-36.5">
             <Input
                 value={displayValue}
                 onChangeText={handleChangeText}
                 keyboardType="number-pad"
-                className="text-7xl h-auto text-primary border-0 min-w-16"
+                className="h-auto text-primary border-0 min-w-16"
                 placeholder="0"
+                style={fontSizeStyle}
             />
-            <Text className={cn('text-7xl', textVariants({ variant }))}>%</Text>
+            <Text className={textVariants({ variant })} style={fontSizeStyle}>
+                {' '}%
+            </Text>
         </View>
     );
 };

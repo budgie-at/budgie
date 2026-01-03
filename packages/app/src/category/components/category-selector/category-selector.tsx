@@ -35,12 +35,7 @@ export const CategorySelector = ({ variant, categoryId, onSelect, status }: Prop
                 onPress={handleOpen}
             />
 
-            <CategorySelectorBottomSheet
-                variant={variant}
-                selectedCategory={selectedCategory ?? null}
-                onSelect={onSelect}
-                ref={ref}
-            />
+            <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory ?? null} onSelect={onSelect} ref={ref} />
         </>
     );
 };
