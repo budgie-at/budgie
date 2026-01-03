@@ -14,7 +14,8 @@ export const LiabilityAccountCreateInputSchema = convertToCreateEntitySchema(Acc
         deadline: true,
         debtType: true,
         nature: true,
-        order: true
+        order: true,
+        titleSearch: true
     })
     .partial({
         includeInNetWorth: true,
