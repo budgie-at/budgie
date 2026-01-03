@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject } from 'react';
+import { useRef } from 'react';
 
 import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -17,22 +17,30 @@ interface Props {
 }
 
 export const CategorySelector = ({ variant, categoryId, onSelect, status }: Props) => {
-    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
     const { t } = useLingui();
+    const ref = useRef<BottomSheetInterface | null>(null);
+    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
 
     const icon = selectedCategory?.icon ?? UserIconNameEnum.Home;
 
-    const renderBottomSheet = (ref: RefObject<BottomSheetInterface | null>) => (
-        <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={ref} />
-    );
+    const handleOpen = () => void ref.current?.open();
 
     return (
-        <EntitySelector
-            variant={variant}
-            icon={icon}
-            status={status}
-            title={selectedCategory?.title ?? t`Select category`}
-            renderBottomSheet={renderBottomSheet}
-        />
+        <>
+            <EntitySelector
+                variant={variant}
+                icon={icon}
+                status={status}
+                title={selectedCategory?.title ?? t`Select category`}
+                onPress={handleOpen}
+            />
+
+            <CategorySelectorBottomSheet
+                variant={variant}
+                selectedCategory={selectedCategory ?? null}
+                onSelect={onSelect}
+                ref={ref}
+            />
+        </>
     );
 };

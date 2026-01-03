@@ -1,7 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import React, { ReactNode, RefObject, useRef } from 'react';
 
-import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { FormFieldStatus } from '../../type/form-field-status.type';
 import { SimpleHorizontalCell } from '../simple-horizontal-cell/simple-horizontal-cell';
@@ -13,30 +11,23 @@ interface Props {
     readonly title: string;
     readonly status?: FormFieldStatus;
     readonly description?: string;
-    readonly renderBottomSheet: (ref: RefObject<BottomSheetInterface | null>) => ReactNode;
+    readonly onPress: () => void;
 }
 
 export const EntitySelector = (props: Props) => {
-    const { variant, iconVariant, icon, title, description, renderBottomSheet, status = 'default' } = props;
-    const ref = useRef<BottomSheetInterface | null>(null);
-
-    const handleOpen = () => ref.current?.open();
+    const { variant, iconVariant, icon, title, description, onPress, status = 'default' } = props;
 
     const cardVariant = status === 'error' ? 'destructive' : 'primary';
     const iconParams = { variant: iconVariant ?? variant, size: 38, iconSize: 18 };
 
     return (
-        <>
-            <SimpleHorizontalCell
-                variant={cardVariant}
-                title={title}
-                description={description}
-                icon={icon}
-                onPress={handleOpen}
-                iconParams={iconParams}
-            />
-
-            {renderBottomSheet(ref)}
-        </>
+        <SimpleHorizontalCell
+            variant={cardVariant}
+            title={title}
+            description={description}
+            icon={icon}
+            onPress={onPress}
+            iconParams={iconParams}
+        />
     );
 };

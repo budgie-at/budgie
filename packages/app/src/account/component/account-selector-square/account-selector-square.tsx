@@ -1,7 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -9,7 +12,11 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useAccountSelector } from '../../hooks/use-account-selector.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { useGetAccountByIdQuery } from '../../query/use-get-account-by-id.query';
+import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
 
 interface Props {
     readonly emptyStateDescription?: string;
@@ -43,13 +50,15 @@ export const AccountSelectorSquare = ({
 }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
 
-    const { selectedAccount, formattedBalance, icon, hasAccount, renderBottomSheet } = useAccountSelector({
-        accountId,
-        excludeAccountId,
-        emptyStateDescription,
-        onSelect
-    });
+    const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
+    const { balance } = useAccountBalanceQuery(accountId ?? 0);
+    const formatDigits = useFormatDigits(decimalPlaces);
+
+    const formattedBalance = formatDigits(balance, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol);
+    const hasAccount = isDefined(selectedAccount);
+    const icon = selectedAccount?.icon ?? UserIconNameEnum.Wallet;
 
     const handleOpen = () => ref.current?.open();
 
@@ -71,7 +80,13 @@ export const AccountSelectorSquare = ({
                 <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
             </Card>
 
-            {renderBottomSheet(ref)}
+            <AccountSelectorBottomSheet
+                emptyStateDescription={emptyStateDescription}
+                selectedAccount={selectedAccount ?? null}
+                excludeAccountId={excludeAccountId}
+                onSelect={onSelect}
+                ref={ref}
+            />
         </>
     );
 };
