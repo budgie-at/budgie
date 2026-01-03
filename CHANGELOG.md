@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.105.0](https://github.com/budgie-at/budgie/compare/v1.104.0...v1.105.0) (2026-01-03)
+
+### Bug Fixes
+
+- **app:** only auto-focus amount input for creating transactions, not updating ([c5e6b63](https://github.com/budgie-at/budgie/commit/c5e6b63b6ee699bfe2b1aca2fc24faf168b6a648))
+
+### Features
+
+- **app:** auto-focus amount input when creating transactions ([84f4935](https://github.com/budgie-at/budgie/commit/84f493565899bc9ac8e4262b252ae1218a4a9ef0))
+
 # [1.104.0](https://github.com/budgie-at/budgie/compare/v1.103.0...v1.104.0) (2026-01-03)
 
 ### Features
