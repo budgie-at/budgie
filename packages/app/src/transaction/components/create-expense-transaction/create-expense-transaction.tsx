@@ -16,13 +16,14 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
 import { transactionService } from '../../service/transaction.service';
-import { TransactionFormAmount } from '../transaction-form/transaction-form.amount';
-import { TransactionFormCategory } from '../transaction-form/transaction-form.category';
-import { TransactionFormComment } from '../transaction-form/transaction-form.comment';
-import { TransactionFormMetadata } from '../transaction-form/transaction-form.metadata';
-import { TransactionFormRoot } from '../transaction-form/transaction-form.root';
+import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
+import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
+import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
+import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
+import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
 
 const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
@@ -34,7 +35,7 @@ interface Props {
 
 export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Props) => {
     const { t } = useLingui();
-    const { defaultAccount } = useSettingsContext();
+    const { defaultAccount, defaultInstrument } = useSettingsContext();
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
@@ -46,7 +47,10 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
         categoryId
     });
 
+    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
     const entries = useWatch({ control: form.control, name: 'entries' });
+    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
+    const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleAccountChange = (newAccountId: number) => {
         form.setValue('fromAccountId', newAccountId);
@@ -88,28 +92,33 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
     }, [categoryId, form]);
 
     return (
-        <TransactionFormRoot
-            form={form}
-            variant="destructive"
+        <TransactionFormLayout
             title={t`New Expense`}
             description={t`Select Category`}
             icon={UserIconNameEnum.TrendingDown}
+            variant="destructive"
             buttonText={t`Add Expense`}
             onSubmit={handleSubmit}
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                <TransactionFormAmount />
+                <TransactionFormAmount setValue={form.setValue} instrumentSymbol={instrumentSymbol} control={form.control} variant="destructive" />
 
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name="fromAccountId" control={form.control} />
 
-                    <TransactionFormCategory transactionType={TransactionTypeEnum.EXPENSE} />
+                    <TransactionFormCategory
+                        transactionType={TransactionTypeEnum.EXPENSE}
+                        accountId={fromAccountId ?? 0}
+                        setValue={form.setValue}
+                        control={form.control}
+                        variant="destructive"
+                    />
 
-                    <TransactionFormMetadata />
+                    <TransactionFormMetadataFields control={form.control} variant="destructive" />
 
-                    <TransactionFormComment />
+                    <TransactionFormComment control={form.control} />
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
-        </TransactionFormRoot>
+        </TransactionFormLayout>
     );
 };
