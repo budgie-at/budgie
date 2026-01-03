@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AudioRecorder } from 'react-native-audio-api';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
@@ -50,17 +50,18 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
     const recorderRef = useRef<AudioRecorder | null>(null);
     const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isRecordingRef = useRef(false);
+    const streamPromiseRef = useRef<Promise<string> | null>(null);
 
     useAudioManager();
 
-    const clearSilenceTimeout = useCallback(() => {
+    const clearSilenceTimeout = () => {
         if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current);
             silenceTimeoutRef.current = null;
         }
-    }, []);
+    };
 
-    const cleanupRecorder = useCallback(() => {
+    const cleanupRecorder = async () => {
         clearSilenceTimeout();
 
         if (recorderRef.current) {
@@ -72,101 +73,106 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             recorderRef.current = null;
         }
 
-        if (isRecordingRef.current) {
+        if (isRecordingRef.current && streamPromiseRef.current) {
             try {
                 stt.streamStop();
+                await streamPromiseRef.current;
             } catch {
                 // Ignore stream stop errors
             }
+            streamPromiseRef.current = null;
         }
 
         isRecordingRef.current = false;
-    }, [clearSilenceTimeout, stt]);
+    };
 
-    const runStreamTranscription = useCallback(async () => {
-        try {
-            console.log('[STT] Starting stream with language:', locale.languageCode);
-            const result = await stt.stream({ language: locale.languageCode as SpeechToTextLanguage });
-            console.log('[STT] Stream completed with result:', result);
-        } catch (error) {
-            console.log('[STT] Stream error:', error);
-        }
-    }, [locale.languageCode, stt]);
+    const runStreamTranscription = () => {
+        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+        console.log('[STT] Starting stream with language:', locale.languageCode);
 
-    const finishRecording = useCallback(
-        (sessionId: number) => {
-            if (!session.isCurrentSession(sessionId)) {
-                return;
-            }
+        streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage })
+            .then((result: string) => {
+                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+                console.log('[STT] Stream completed with result:', result);
 
-            cleanupRecorder();
-            setStatus('processing');
-            setAudioLevel(0);
-            setIsVoiceDetected(false);
+                return result;
+            })
+            .catch((error: unknown) => {
+                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+                console.log('[STT] Stream error:', error);
 
-            console.log('[STT] Raw transcription - committed:', stt.committedTranscription, 'partial:', stt.nonCommittedTranscription);
-
-            const finalCommitted = filterTranscriptionTokens(stt.committedTranscription);
-            const finalPartial = filterTranscriptionTokens(stt.nonCommittedTranscription);
-            const finalText = filterTranscriptionTokens(
-                finalCommitted + (needsSpace(finalCommitted, finalPartial) ? ' ' : '') + finalPartial
-            );
-
-            console.log('[STT] Final text after filtering:', finalText);
-
-            void onComplete(finalText.trim()).finally(() => {
-                if (session.isCurrentSession(sessionId)) {
-                    setStatus('idle');
-                }
+                return '';
             });
-        },
-        [cleanupRecorder, onComplete, session, stt.committedTranscription, stt.nonCommittedTranscription]
-    );
+    };
 
-    const resetSilenceTimeout = useCallback(
-        (sessionId: number) => {
-            clearSilenceTimeout();
-            silenceTimeoutRef.current = setTimeout(() => void finishRecording(sessionId), SILENCE_TIMEOUT_MS);
-        },
-        [clearSilenceTimeout, finishRecording]
-    );
+    const finishRecording = async (sessionId: number) => {
+        if (!session.isCurrentSession(sessionId)) {
+            return;
+        }
 
-    const stopRecording = useCallback(() => void finishRecording(session.getCurrentSessionId()), [finishRecording, session]);
+        await cleanupRecorder();
+        setStatus('processing');
+        setAudioLevel(0);
+        setIsVoiceDetected(false);
 
-    const resetRecordingState = useCallback(() => {
+        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+        console.log('[STT] Raw transcription - committed:', stt.committedTranscription, 'partial:', stt.nonCommittedTranscription);
+
+        const finalCommitted = filterTranscriptionTokens(stt.committedTranscription);
+        const finalPartial = filterTranscriptionTokens(stt.nonCommittedTranscription);
+        const finalText = filterTranscriptionTokens(
+            finalCommitted + (needsSpace(finalCommitted, finalPartial) ? ' ' : '') + finalPartial
+        );
+
+        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+        console.log('[STT] Final text after filtering:', finalText);
+
+        void onComplete(finalText.trim()).finally(() => {
+            if (session.isCurrentSession(sessionId)) {
+                setStatus('idle');
+            }
+        });
+    };
+
+    const resetSilenceTimeout = (sessionId: number) => {
+        clearSilenceTimeout();
+        silenceTimeoutRef.current = setTimeout(() => void finishRecording(sessionId), SILENCE_TIMEOUT_MS);
+    };
+
+    const stopRecording = () => void finishRecording(session.getCurrentSessionId());
+
+    const resetRecordingState = () => {
         setStatus('recording');
         setAudioLevel(0);
         setIsVoiceDetected(false);
         isRecordingRef.current = true;
-    }, []);
+    };
 
-    const handleAudioBuffer = useCallback(
-        (samples: Float32Array, sessionId: number) => {
-            const rms = calculateRMS(samples);
+    const handleAudioBuffer = (samples: Float32Array, sessionId: number) => {
+        const rms = calculateRMS(samples);
 
-            setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
-            setIsVoiceDetected(rms > VOICE_DETECTION_THRESHOLD);
+        setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
+        setIsVoiceDetected(rms > VOICE_DETECTION_THRESHOLD);
 
-            try {
-                stt.streamInsert(samples);
-            } catch (error) {
-                console.log('[STT] streamInsert error:', error);
-            }
+        try {
+            stt.streamInsert(samples);
+        } catch (error) {
+            // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+            console.log('[STT] streamInsert error:', error);
+        }
 
-            if (rms > SILENCE_THRESHOLD) {
-                resetSilenceTimeout(sessionId);
-            }
-        },
-        [resetSilenceTimeout, stt]
-    );
+        if (rms > SILENCE_THRESHOLD) {
+            resetSilenceTimeout(sessionId);
+        }
+    };
 
-    const startRecording = useCallback(() => {
-        cleanupRecorder();
+    const startRecording = () => {
+        void cleanupRecorder();
         const sessionId = session.startNewSession();
 
         resetRecordingState();
 
-        void runStreamTranscription();
+        runStreamTranscription();
 
         const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
         recorderRef.current = recorder;
@@ -178,9 +184,13 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         });
         recorder.start();
         resetSilenceTimeout(sessionId);
-    }, [cleanupRecorder, handleAudioBuffer, resetRecordingState, resetSilenceTimeout, runStreamTranscription, session]);
+    };
 
-    useEffect(() => cleanupRecorder, [cleanupRecorder]);
+    useEffect(
+        () => () => void cleanupRecorder(),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    );
 
     const transcription: TranscriptionState = {
         committed: filterTranscriptionTokens(stt.committedTranscription),
