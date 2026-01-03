@@ -1,10 +1,10 @@
 import { isDefined } from '@rnw-community/shared';
 
-import * as schema from '../../schema';
 import { SettingsEntityTable } from '../../schema';
 import { SettingsAssociationEnum } from '../enum/settings-association.enum';
 
 import type { TX } from '../../@generic/type/db.type';
+import type * as schema from '../../schema';
 import type { SettingsCreateEntityInterface } from '../entity/settings-create-entity.interface';
 import type { SettingsEntityInterface } from '../entity/settings-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';

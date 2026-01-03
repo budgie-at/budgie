@@ -1,8 +1,8 @@
 import { TX } from '../../@generic/type/db.type';
-import * as schema from '../../schema';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
 import { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
 
+import type * as schema from '../../schema';
 import type { MccCategoryEntityInterface } from '../entity/mcc-category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
