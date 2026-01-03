@@ -219,8 +219,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
     );
 
     const transcription: TranscriptionState = {
-        committed: '',
-        partial: ''
+        committed: filterTranscriptionTokens(stt.committedTranscription),
+        partial: filterTranscriptionTokens(stt.nonCommittedTranscription)
     };
 
     return { startRecording, stopRecording, status, transcription, audioLevel, isVoiceDetected };
