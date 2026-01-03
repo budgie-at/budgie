@@ -7,7 +7,6 @@ import {
 export const BUTTON_SIZE = 80;
 export const RING_SIZE = 120;
 export const STROKE_WIDTH = 3;
-export const PULSE_RING_COUNT = 3;
 
 export const ACCENT_COLOR = DEFAULT_FOREGROUND_COLOR;
 export const RECORDING_COLOR = DESTRUCTIVE_FOREGROUND_COLOR;

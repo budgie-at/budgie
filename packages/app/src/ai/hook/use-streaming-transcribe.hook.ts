@@ -34,10 +34,7 @@ interface UseStreamingTranscribeReturn {
     isVoiceDetected: boolean;
 }
 
-const needsSpace = (existing: string, incoming: string): boolean =>
-    existing.length > 0 && incoming.length > 0 && !existing.endsWith(' ') && !incoming.startsWith(' ');
-
-// eslint-disable-next-line max-lines-per-function,max-statements
+// eslint-disable-next-line max-lines-per-function
 export const useStreamingTranscribe = (onComplete: (transcribed: string) => Promise<void>): UseStreamingTranscribeReturn => {
     const locale = useLocaleInfo();
     const { stt } = useLlmContext();
@@ -76,35 +73,26 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         if (isRecordingRef.current && streamPromiseRef.current) {
             try {
                 stt.streamStop();
+                 
                 await streamPromiseRef.current;
             } catch {
                 // Ignore stream stop errors
             }
+            // eslint-disable-next-line require-atomic-updates
             streamPromiseRef.current = null;
         }
 
+        // eslint-disable-next-line require-atomic-updates
         isRecordingRef.current = false;
     };
 
     const runStreamTranscription = () => {
-        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-        console.log('[STT] Starting stream with language:', locale.languageCode);
-
         streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage })
-            .then((result: string) => {
-                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-                console.log('[STT] Stream completed with result:', result);
-
-                return result;
-            })
-            .catch((error: unknown) => {
-                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-                console.log('[STT] Stream error:', error);
-
-                return '';
-            });
+            .then((result: string) => result)
+            .catch(() => '');
     };
 
+    // eslint-disable-next-line max-statements
     const finishRecording = async (sessionId: number) => {
         if (!session.isCurrentSession(sessionId)) {
             return;
@@ -127,26 +115,18 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             try {
                 stt.streamStop();
                 const streamResult = await streamPromiseRef.current;
-
-                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-                console.log('[STT] Stream result:', streamResult);
-
                 const finalText = filterTranscriptionTokens(streamResult);
-
-                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-                console.log('[STT] Final text after filtering:', finalText);
 
                 void onComplete(finalText.trim()).finally(() => {
                     if (session.isCurrentSession(sessionId)) {
                         setStatus('idle');
                     }
                 });
-            } catch (error) {
-                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-                console.log('[STT] Error getting stream result:', error);
+            } catch {
                 setStatus('idle');
             }
 
+            // eslint-disable-next-line require-atomic-updates
             streamPromiseRef.current = null;
         }
 
@@ -176,9 +156,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
         try {
             stt.streamInsert(samples);
-        } catch (error) {
-            // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-            console.log('[STT] streamInsert error:', error);
+        } catch {
+            // Ignore stream insert errors
         }
 
         if (rms > SILENCE_THRESHOLD) {

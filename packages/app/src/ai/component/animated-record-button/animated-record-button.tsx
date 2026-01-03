@@ -5,12 +5,12 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-
-import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
 import { LoadingRing } from '../loading-ring/loading-ring';
 import { PulseRing } from '../pulse-ring/pulse-ring';
 import { SpinnerRing } from '../spinner-ring/spinner-ring';
 import { ThinkingRing } from '../thinking-ring/thinking-ring';
+
+import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
 
 type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
 
@@ -71,9 +71,10 @@ export const AnimatedRecordButton = ({ state, audioLevel = 0, downloadProgress =
     }));
 
     const isDisabled = disabled ?? (state === 'loading' || state === 'transcribing' || state === 'thinking');
+    const containerStyle = { height: RING_SIZE, width: RING_SIZE };
 
     return (
-        <View className="items-center justify-center" style={{ height: RING_SIZE, width: RING_SIZE }}>
+        <View className="items-center justify-center" style={containerStyle}>
             {state === 'loading' && <LoadingRing progress={downloadProgress} />}
             {state === 'recording' && (
                 <>
