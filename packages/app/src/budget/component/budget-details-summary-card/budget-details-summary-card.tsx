@@ -1,24 +1,15 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { BudgetAmountDisplay } from '../budget-amount-display/budget-amount-display';
+import { BudgetOverBudgetWarning } from '../budget-over-budget-warning/budget-over-budget-warning';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-
-const safeToSpendVariants = cva('text-3xl font-bold', {
-    variants: { status: { positive: 'text-positive-foreground', negative: 'text-warning-foreground' } }
-});
-
-const remainingVariants = cva('text-lg font-semibold', {
-    variants: { status: { positive: 'text-positive-foreground', negative: 'text-warning-foreground' } }
-});
 
 interface Props {
     readonly safeToSpend: number;
@@ -44,11 +35,11 @@ export const BudgetDetailsSummaryCard = (props: Props) => {
         categoriesOverBudget,
         currencySymbol
     } = props;
+    const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const isPositive = remaining >= 0;
-    const status = isPositive ? 'positive' : 'negative';
+    const status = remaining >= 0 ? 'positive' : 'negative';
 
     const safeToSpendFormatted = formatDigits(convertFromMicroUnits(safeToSpend), currencySymbol);
     const dailyBudgetFormatted = formatDigits(convertFromMicroUnits(dailyBudget), currencySymbol);
@@ -59,24 +50,20 @@ export const BudgetDetailsSummaryCard = (props: Props) => {
     return (
         <Card className="gap-3" size="md">
             <View className="flex-row justify-between items-start">
-                <View>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>Safe to Spend</Trans>
-                    </Text>
-                    <Text className={safeToSpendVariants({ status })}>{safeToSpendFormatted}</Text>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>{dailyBudgetFormatted}/day</Trans>
-                    </Text>
-                </View>
-                <View className="items-end">
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>Remaining</Trans>
-                    </Text>
-                    <Text className={remainingVariants({ status })}>{remainingFormatted}</Text>
-                    <Text className="text-xs text-secondary-foreground">
-                        <Trans>of {totalPlannedFormatted}</Trans>
-                    </Text>
-                </View>
+                <BudgetAmountDisplay
+                    label={t`Safe to Spend`}
+                    amount={safeToSpendFormatted}
+                    status={status}
+                    subtitle={t`${dailyBudgetFormatted}/day`}
+                />
+                <BudgetAmountDisplay
+                    label={t`Remaining`}
+                    amount={remainingFormatted}
+                    status={status}
+                    size="sm"
+                    align="end"
+                    subtitle={t`of ${totalPlannedFormatted}`}
+                />
             </View>
 
             <BudgetProgressBar planned={totalPlanned} actual={totalSpent} className="h-2" />
@@ -92,14 +79,7 @@ export const BudgetDetailsSummaryCard = (props: Props) => {
                 </Text>
             </View>
 
-            {isPositiveNumber(categoriesOverBudget) && (
-                <View className="flex-row items-center gap-1 pt-1">
-                    <Icon icon={UserIconNameEnum.AlertTriangle} size={12} className="text-warning-foreground" />
-                    <Text className="text-xs text-warning-foreground">
-                        <Trans>{categoriesOverBudget} categories over budget</Trans>
-                    </Text>
-                </View>
-            )}
+            {isPositiveNumber(categoriesOverBudget) && <BudgetOverBudgetWarning count={categoriesOverBudget} />}
         </Card>
     );
 };

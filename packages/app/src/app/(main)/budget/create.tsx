@@ -23,13 +23,13 @@ import { getStartDayLabel } from '../../../budget/util/get-start-day-label.util'
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 export default function CreateBudgetPage() {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const { control, handleSubmit, instrument } = useBudgetForm({ instrumentId: defaultInstrument.id });
     const period = useWatch({ control, name: 'period', defaultValue: BudgetPeriodEnum.MONTHLY });
     const isCustomPeriod = period === BudgetPeriodEnum.CUSTOM;
     const handleGoBack = () => void goBackOrReplace('/');
-    const startDayLabel = getStartDayLabel(period, t);
+    const startDayLabel = i18n.t(getStartDayLabel(period));
 
     if (!isDefined(instrument)) {
         return <EmptyScreen />;
