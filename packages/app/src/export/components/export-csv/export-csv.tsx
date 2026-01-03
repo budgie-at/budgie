@@ -14,7 +14,7 @@ export const ExportCsv = () => {
             title={t`Export CSV`}
             description={t`Export all transactions to a CSV file`}
             onPress={handleExport}
-            icon={UserIconNameEnum.FileText}
+            icon={UserIconNameEnum.Download}
             variant="default"
             isLoading={isLoading}
         />
