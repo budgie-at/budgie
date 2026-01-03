@@ -16,13 +16,11 @@ interface Props {
     readonly currencySymbol: string;
 }
 
-export const EditAllocation = ({ allocation, currencySymbol }: Props) => {
+export const UpdateAllocation = ({ allocation, currencySymbol }: Props) => {
     const { t } = useLingui();
     const { control, setValue, handleSubmit, handleDelete } = useEditAllocationForm(allocation);
 
     const handleGoBack = () => void goBackOrReplace(`/budget/${allocation.budgetId}`);
-    const onDelete = () => void handleDelete();
-    const onSubmit = () => void handleSubmit();
 
     return (
         <Page
@@ -31,8 +29,8 @@ export const EditAllocation = ({ allocation, currencySymbol }: Props) => {
                 <KeyboardStickyView>
                     <Footer>
                         <View className="flex-row gap-3">
-                            <Button variant="warning" onPress={onDelete} content={t`Delete`} className="flex-1" />
-                            <Button variant="primary" onPress={onSubmit} content={t`Save`} className="flex-1" />
+                            <Button variant="warning" onPress={handleDelete} content={t`Delete`} className="flex-1" />
+                            <Button variant="primary" onPress={handleSubmit} content={t`Save`} className="flex-1" />
                         </View>
                     </Footer>
                 </KeyboardStickyView>

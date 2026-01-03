@@ -3,7 +3,7 @@ import { Redirect, useLocalSearchParams } from 'expo-router';
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../../../@generic/component/empty-screen/empty-screen';
-import { EditAllocation } from '../../../../../budget/component/edit-allocation/edit-allocation';
+import { UpdateAllocation } from '../../../../../budget/component/update-allocation/update-allocation';
 import { useGetAllocationByIdQuery } from '../../../../../budget/query/use-get-allocation-by-id.query';
 import { useGetBudgetByIdQuery } from '../../../../../budget/query/use-get-budget-by-id.query';
 import { useGetInstrumentByIdQuery } from '../../../../../instrument/query/use-get-instrument-by-id.query';
@@ -25,6 +25,6 @@ export default function EditAllocationPage() {
         return <Redirect href={`/budget/${budgetId}`} />;
     }
 
-    return <EditAllocation allocation={allocation} currencySymbol={instrument?.symbol ?? ''} />;
+    return <UpdateAllocation allocation={allocation} currencySymbol={instrument?.symbol ?? ''} />;
 }
 

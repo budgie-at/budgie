@@ -13,7 +13,7 @@ interface Props {
     readonly endDate?: Date;
 }
 
-export interface CategorySpending {
+interface CategorySpending {
     readonly categoryId: number;
     readonly total: number;
 }

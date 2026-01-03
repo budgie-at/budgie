@@ -1,25 +1,22 @@
 import { BudgetAllocationTypeEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useState } from 'react';
-import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
+import { Control, UseFormSetValue } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
-import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormPercentageInput } from '../../../@generic/component/form-percentage-input/form-percentage-input';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
-import { CategorySelector } from '../../../category/components/category-selector/category-selector';
 import { AllocationFormValues } from '../../schema/allocation-form.schema';
-import { RolloverRuleSelector } from '../rollover-rule-selector/rollover-rule-selector';
+import { AllocationAmountField } from '../allocation-amount-field/allocation-amount-field';
+import { AllocationCategoryField } from '../allocation-category-field/allocation-category-field';
+import { AllocationPercentageField } from '../allocation-percentage-field/allocation-percentage-field';
+import { AllocationRolloverRuleField } from '../allocation-rollover-rule-field/allocation-rollover-rule-field';
 
 interface Props {
+    readonly currencySymbol: string;
     readonly control: Control<AllocationFormValues>;
     readonly setValue: UseFormSetValue<AllocationFormValues>;
-    readonly currencySymbol: string;
     readonly defaultAllocationType?: BudgetAllocationTypeEnum;
 }
 
@@ -46,7 +43,6 @@ const buttonTextVariants = cva('text-sm font-medium', {
 export const AllocationFormFields = (props: Props) => {
     const { control, setValue, currencySymbol, defaultAllocationType = BudgetAllocationTypeEnum.FIXED } = props;
     const [isFixed, setIsFixed] = useState(defaultAllocationType === BudgetAllocationTypeEnum.FIXED);
-    const { t } = useLingui();
 
     const handleSetFixed = () => {
         setIsFixed(true);
@@ -58,45 +54,6 @@ export const AllocationFormFields = (props: Props) => {
         setValue('allocationType', BudgetAllocationTypeEnum.PERCENTAGE);
     };
 
-    const isPercentage = !isFixed;
-
-    const handleAmountChange = (onChange: (val: number) => void) => (val: number) => void onChange(convertToMicroUnits(val));
-
-    const renderAmount = ({ field: { onChange, value }, fieldState: { error } }: UseControllerReturn<AllocationFormValues, 'amount'>) => (
-        <FormItem label={t`Amount`} error={error?.message}>
-            <FormAmountInput
-                value={convertFromMicroUnits(value)}
-                onChange={handleAmountChange(onChange)}
-                variant="primary"
-                instrumentSymbol={currencySymbol}
-            />
-        </FormItem>
-    );
-
-    const renderPercentage = ({
-        field: { onChange, value },
-        fieldState: { error }
-    }: UseControllerReturn<AllocationFormValues, 'percentage'>) => (
-        <FormItem label={t`Percentage of Income`} error={error?.message}>
-            <FormPercentageInput value={value} onChange={onChange} variant="primary" />
-        </FormItem>
-    );
-
-    const renderCategory = ({
-        field: { onChange, value },
-        fieldState: { error }
-    }: UseControllerReturn<AllocationFormValues, 'categoryId'>) => (
-        <FormItem label={t`Category`} error={error?.message}>
-            <CategorySelector categoryId={value} onSelect={onChange} variant="primary" />
-        </FormItem>
-    );
-
-    const renderRolloverRule = ({ field: { onChange, value } }: UseControllerReturn<AllocationFormValues, 'rolloverRule'>) => (
-        <FormItem label={t`Rollover Rule`}>
-            <RolloverRuleSelector value={value} onChange={onChange} />
-        </FormItem>
-    );
-
     return (
         <FormLayoutGroup>
             <View className="flex-row gap-2 mb-4">
@@ -106,22 +63,22 @@ export const AllocationFormFields = (props: Props) => {
                     </Text>
                 </HapticPressable>
 
-                <HapticPressable onPress={handleSetPercentage} className={buttonVariants({ active: isPercentage })}>
-                    <Text className={buttonTextVariants({ active: isPercentage })}>
+                <HapticPressable onPress={handleSetPercentage} className={buttonVariants({ active: !isFixed })}>
+                    <Text className={buttonTextVariants({ active: !isFixed })}>
                         <Trans>% of Income</Trans>
                     </Text>
                 </HapticPressable>
             </View>
 
             {isFixed ? (
-                <Controller name="amount" control={control} render={renderAmount} />
+                <AllocationAmountField currencySymbol={currencySymbol} control={control} />
             ) : (
-                <Controller name="percentage" control={control} render={renderPercentage} />
+                <AllocationPercentageField control={control} />
             )}
 
-            <Controller name="categoryId" control={control} render={renderCategory} />
+            <AllocationCategoryField control={control} />
 
-            <Controller name="rolloverRule" control={control} render={renderRolloverRule} />
+            <AllocationRolloverRuleField control={control} />
         </FormLayoutGroup>
     );
 };

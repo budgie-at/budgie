@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { UserIconNameEnum } from '@budgie/contracts';
+import { ReactNode } from 'react';
 
 const statusTextVariants = cva('text-xs', {
     variants: {
@@ -27,12 +28,12 @@ interface Props {
     readonly title: string;
     readonly isOnTrack: boolean;
     readonly statusLabel: string;
-    readonly spentLabel: React.ReactNode;
+    readonly spentLabel: ReactNode;
     readonly spentFormatted: string;
     readonly remainingLabel: string;
     readonly remainingFormatted: string;
     readonly isPositiveRemaining: boolean;
-    readonly progressBar: React.ReactNode;
+    readonly progressBar: ReactNode;
 }
 
 export const BudgetOverviewCard = (props: Props) => {

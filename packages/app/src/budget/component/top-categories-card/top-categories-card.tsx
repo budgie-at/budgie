@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import { Card } from '../../../@generic/component/card/card';
 import { TopCategoryItem } from '../top-category-item/top-category-item';
 
-export interface TopCategoryData {
+interface TopCategoryData {
     readonly name: string;
     readonly icon: UserIconNameEnum;
     readonly spentFormatted: string;
@@ -14,7 +14,7 @@ export interface TopCategoryData {
 }
 
 interface Props {
-    readonly categories: readonly TopCategoryData[];
+    readonly categories: TopCategoryData[];
 }
 
 export const TopCategoriesCard = ({ categories }: Props) => (
