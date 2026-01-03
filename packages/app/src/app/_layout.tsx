@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-max-depth */
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
@@ -15,6 +16,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
+import '../sync/task/transfer-consolidation.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
@@ -34,6 +36,7 @@ import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { transferConsolidationService } from '../sync/service/transfer-consolidation.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -66,6 +69,9 @@ export default function RootLayout() {
 
                     void monobankSyncService.sync();
                     void monobankSyncService.registerBackgroundTask();
+
+                    void transferConsolidationService.consolidate(ExternalSourceEnum.MONOBANK);
+                    void transferConsolidationService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
                     console.log(getErrorMessage(e));
