@@ -272,17 +272,34 @@ export const accountRepository = new AccountRepository(db);
 - Related files (types, utils, hooks) live in the same folder
 - Folder name and main file name must match exactly (kebab-case)
 - **Never group multiple components under a parent folder** - each component gets its own top-level folder
-- **Avoid wrapper components that only pass props** - Don't create components that just extract values from context and pass them as props to existing components. Inline them instead.
+- **Avoid wrapper components that only pass props or group components** - Don't create components that just:
+  - Extract values from context and pass them as props to existing components
+  - Simply group other components without adding logic
+
+  Inline them instead in the consuming component.
+
   ```tsx
-  // Bad - Unnecessary wrapper
-  export const TransactionFormComment = () => {
-      const { control } = useTransactionFormContext();
-      return <TransactionFormCommentBase control={control} />;
+  // Bad - Unnecessary context wrapper
+  export const FormComment = () => {
+      const { control } = useFormContext();
+      return <FormCommentBase control={control} />;
   };
 
-  // Good - Use the base component directly with context in parent
-  const { control } = useTransactionFormContext();
-  return <TransactionFormComment control={control} />;
+  // Bad - Unnecessary grouping wrapper
+  export const FormMetadataFields = ({ control, variant }) => (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+
+  // Good - Inline directly in parent component
+  return (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
   ```
 
 Examples:
