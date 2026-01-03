@@ -12,8 +12,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { EmptyScreen } from '../../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
+import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -100,7 +100,7 @@ export default function UpdateIncomeTransactionPage() {
     const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
 
     if (isLoading) {
-        return <EmptyScreen />;
+        return <LoadingScreen />;
     }
 
     if (!isDefined(transaction)) {

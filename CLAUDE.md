@@ -621,6 +621,7 @@ Runs on push to main:
    - `yarn lint` - Fix ESLint errors
    - `yarn deadcode` - Detect and remove unused files/exports
    - `yarn cpd` - Detect code duplication (review and refactor if needed)
+   - `yarn workspace @budgie-at/app i18n:sync` - Extract and compile translations (add missing translations if any)
 6. **Full validation:** Run `yarn ts && yarn lint && yarn test` before pushing
 
 ## Important Notes
