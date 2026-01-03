@@ -215,6 +215,18 @@ export const accountRepository = new AccountRepository(db);
 2. **Never write comments** - Code should be self-documenting
 3. **Maximize TypeScript usage** - Leverage the type system fully
 4. **No type circumvention** - Never use `as any` or `@ts-ignore`
+5. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+   ```typescript
+   // Good
+   setShouldAutoFocus(sheetIndex >= 0);
+
+   // Bad
+   if (sheetIndex >= 0) {
+       setShouldAutoFocus(true);
+   } else {
+       setShouldAutoFocus(false);
+   }
+   ```
 
 ### Naming Conventions
 - **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
