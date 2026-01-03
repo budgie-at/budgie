@@ -1,3 +1,4 @@
+import { TransactionCreateInputInterface } from '@budgie/contracts';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -10,8 +11,8 @@ interface Props {
 }
 
 export const TransactionFormAmount = ({ variant, instrumentSymbol }: Props) => {
-    const { control, setValue } = useFormContext();
-    const entries = useWatch({ control, name: 'entries' });
+    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const entries = useWatch<TransactionCreateInputInterface, 'entries'>({ control, name: 'entries' });
 
     const handleAmountChange = (amount: number) => {
         setValue('amount', amount);

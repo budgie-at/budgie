@@ -1,5 +1,13 @@
-import { TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { Link } from 'expo-router';
+import {
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    isExpenseTransaction,
+    isIncomeTransaction,
+    isNegativeAdjustmentTransaction,
+    isPositiveAdjustmentTransaction,
+    isTransferTransaction
+} from '@budgie/contracts';
+import { type Href, Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -26,8 +34,26 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
     const title = isNotEmptyString(transaction.title) ? transaction.title : transaction.comment;
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
 
+    const getHref = (): Href => {
+        const { id } = transaction;
+
+        if (isTransferTransaction(transaction)) {
+            return `/transactions/${id}/transfer`;
+        }
+
+        if (isIncomeTransaction(transaction) || isPositiveAdjustmentTransaction(transaction)) {
+            return `/transactions/${id}/income`;
+        }
+
+        if (isExpenseTransaction(transaction) || isNegativeAdjustmentTransaction(transaction)) {
+            return `/transactions/${id}/expense`;
+        }
+
+        return '/';
+    };
+
     return (
-        <Link href={`/transactions/${transaction.id}`} asChild>
+        <Link href={getHref()} asChild>
             <Card className="p-xl gap-y-8">
                 <View className="flex-row gap-x-xl">
                     <CircleIcon size={32} iconSize={16} icon={categoryIcon} variant={TRANSACTION_COLOR[type]} />

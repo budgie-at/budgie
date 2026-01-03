@@ -16,7 +16,8 @@
         "**/node_modules/**",
         "**/ios/**",
         "**/landing/**",
-        "**/android/**"
+        "**/android/**",
+        "**/app/**"
     ],
     "absolute": false,
     "gitignore": true,
