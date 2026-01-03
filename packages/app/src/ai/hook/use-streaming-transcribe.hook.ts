@@ -41,6 +41,9 @@ interface StreamTranscriptionParams {
     setTranscription: React.Dispatch<React.SetStateAction<TranscriptionState>>;
 }
 
+const needsSpace = (existing: string, incoming: string): boolean =>
+    existing.length > 0 && incoming.length > 0 && !existing.endsWith(' ') && !incoming.startsWith(' ');
+
 const processStreamChunk = (
     chunk: { committed: string; nonCommitted: string },
     committedTextRef: React.MutableRefObject<string>,
@@ -50,8 +53,12 @@ const processStreamChunk = (
     const filteredPartial = filterTranscriptionTokens(chunk.nonCommitted);
 
     if (filteredCommitted) {
-        committedTextRef.current += filteredCommitted;
-        setTranscription(prev => ({ committed: prev.committed + filteredCommitted, partial: filteredPartial }));
+        const separator = needsSpace(committedTextRef.current, filteredCommitted) ? ' ' : '';
+        committedTextRef.current += separator + filteredCommitted;
+        setTranscription(prev => ({
+            committed: prev.committed + separator + filteredCommitted,
+            partial: filteredPartial
+        }));
     } else {
         setTranscription(prev => ({ ...prev, partial: filteredPartial }));
     }

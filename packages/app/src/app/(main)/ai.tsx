@@ -15,6 +15,7 @@ import { AiTransactionPreviewCard } from '../../transaction/components/ai-transa
 import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
 const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
+const GENERATING_ERROR_PATTERN = /ModelGenerating/u;
 
 // eslint-disable-next-line max-lines-per-function
 export default function AiScreen() {
@@ -34,6 +35,7 @@ export default function AiScreen() {
 
     const handleTranscriptionComplete = async (transcribed: string) => {
         setFinalPrompt(transcribed);
+        setError('');
 
         if (isNotEmptyString(transcribed)) {
             try {
@@ -42,7 +44,10 @@ export default function AiScreen() {
                     { role: 'user', content: transcribed }
                 ]);
             } catch (e: unknown) {
-                setError(getErrorMessage(e));
+                const message = getErrorMessage(e);
+                if (!GENERATING_ERROR_PATTERN.test(message)) {
+                    setError(message);
+                }
             }
         } else {
             setError(t`No speech detected`);
