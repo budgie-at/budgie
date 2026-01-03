@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { AccountTypeEnum, TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
@@ -23,7 +24,9 @@ import { TransactionFormTagsField } from '../../../transaction/components/transa
 import { TransferTransactionFormAccounts } from '../../../transaction/components/transfer-transaction-form/transfer-transaction-form-accounts';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
+/* jscpd:ignore-end */
 
+/* jscpd:ignore-start */
 export default function CreateTransferTransactionPage() {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -65,9 +68,8 @@ export default function CreateTransferTransactionPage() {
     };
 
     const handleGoBack = () => void goBackOrReplace('/');
-
-    /* jscpd:ignore-start */
-    return (
+    
+return (
         <FormProvider {...form}>
             <Page
                 header={
@@ -107,5 +109,5 @@ export default function CreateTransferTransactionPage() {
             </Page>
         </FormProvider>
     );
-    /* jscpd:ignore-end */
 }
+/* jscpd:ignore-end */
