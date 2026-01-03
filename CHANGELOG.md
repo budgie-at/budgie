@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.103.0](https://github.com/budgie-at/budgie/compare/v1.102.7...v1.103.0) (2026-01-03)
+
+### Features
+
+- add include-in-net-worth switch to account form ([ea7192c](https://github.com/budgie-at/budgie/commit/ea7192c126628d5ada1250112981b88cde916c84))
+- add missing translations for include-in-net-worth feature ([49792ee](https://github.com/budgie-at/budgie/commit/49792eea16d6e5e6d7ca8e54869ae96cbb0b9805))
+
 ## [1.102.7](https://github.com/budgie-at/budgie/compare/v1.102.6...v1.102.7) (2026-01-03)
 
 ### Bug Fixes
