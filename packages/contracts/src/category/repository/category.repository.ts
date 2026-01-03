@@ -1,4 +1,6 @@
-import { and, count, eq, getTableColumns, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, like, sql } from 'drizzle-orm';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { TX } from '../../@generic/type/db.type';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -18,7 +20,7 @@ export class CategoryRepository {
     }
 
     findBySearchQuery(search: string, includeDefault: boolean) {
-        const searchQuery = sql`LOWER (${CategoryEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`;
+        const searchQuery = like(CategoryEntityTable.titleSearch, `%${search.toLowerCase()}%`);
 
         const whereConditions = includeDefault
             ? and(searchQuery, eq(CategoryEntityTable.isSystemCategory, false))
@@ -48,11 +50,18 @@ export class CategoryRepository {
     }
 
     async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: TX): Promise<CategoryEntityInterface[]> {
-        return await (tx ?? this.db).insert(CategoryEntityTable).values(inputs).returning();
+        return await (tx ?? this.db)
+            .insert(CategoryEntityTable)
+            .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
+            .returning();
     }
 
     async updateById(id: number, input: CategoryUpdateEntityInterface): Promise<CategoryEntityInterface> {
-        const [category] = await this.db.update(CategoryEntityTable).set(input).where(eq(CategoryEntityTable.id, id)).returning();
+        const [category] = await this.db
+            .update(CategoryEntityTable)
+            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+            .where(eq(CategoryEntityTable.id, id))
+            .returning();
 
         return category;
     }
