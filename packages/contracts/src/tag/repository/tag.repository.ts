@@ -1,4 +1,6 @@
-import { count, eq, inArray, sql } from 'drizzle-orm';
+import { count, eq, inArray, like } from 'drizzle-orm';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { TX } from '../../@generic/type/db.type';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
@@ -20,7 +22,7 @@ export class TagRepository {
 
     findBySearchQuery(search: string) {
         return this.db.query.TagEntityTable.findMany({
-            where: sql`LOWER (${TagEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`
+            where: like(TagEntityTable.titleSearch, `%${search.toLowerCase()}%`)
         });
     }
 
@@ -29,13 +31,20 @@ export class TagRepository {
     }
 
     async create(input: TagCreateEntityInterface): Promise<TagEntityInterface> {
-        const [tag] = await this.db.insert(TagEntityTable).values([input]).returning();
+        const [tag] = await this.db
+            .insert(TagEntityTable)
+            .values([{ ...input, titleSearch: input.title.toLowerCase() }])
+            .returning();
 
         return tag;
     }
 
     async updateById(id: number, input: TagUpdateEntityInterface): Promise<TagEntityInterface> {
-        const [tag] = await this.db.update(TagEntityTable).set(input).where(eq(TagEntityTable.id, id)).returning();
+        const [tag] = await this.db
+            .update(TagEntityTable)
+            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+            .where(eq(TagEntityTable.id, id))
+            .returning();
 
         return tag;
     }
