@@ -2,7 +2,7 @@ import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnu
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -19,7 +19,6 @@ interface Props {
     readonly accountId: number | null;
 }
 
-const LIST_CONTENT_CONTAINER_STYLE = { gap: 16 };
 const keyExtractor = (item: TransactionListItemType) => item.id;
 const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
 // HINT: You cannot extract this into component or you will get a warning about hook usage
@@ -39,6 +38,7 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
+// eslint-disable-next-line max-statements
 export const TransactionList = ({ accountId }: Props) => {
     const [filters, setFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
@@ -46,7 +46,7 @@ export const TransactionList = ({ accountId }: Props) => {
     });
 
     const hasFiltersSelected = checkIfFiltersSelected(accountId, filters);
-    const { sections, loadMore } = useGetTransactionsQuery(filters);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
     const { t } = useLingui();
     const { formatMonthAndDayWithTime } = useFormatDate();
 
@@ -71,7 +71,9 @@ export const TransactionList = ({ accountId }: Props) => {
         ? t`Try adjusting your filters to see more results`
         : t`Start tracking your spending by using the mic button or adding transactions manually`;
 
-    const listEmptyState = (
+    const listEmptyState = isLoading ? (
+        <ActivityIndicator size="large" />
+    ) : (
         <EmptyState
             circleIcon={UserIconNameEnum.Receipt}
             title={emptyTitle}
@@ -80,6 +82,9 @@ export const TransactionList = ({ accountId }: Props) => {
             descriptionClassName="text-center max-w-[250px]"
         />
     );
+
+    const isEmpty = flatData.length === 0;
+    const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
 
     return (
         <View className="gap-y-3xl flex-1">
@@ -95,7 +100,7 @@ export const TransactionList = ({ accountId }: Props) => {
                 onEndReached={loadMore}
                 onEndReachedThreshold={0.3}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={LIST_CONTENT_CONTAINER_STYLE}
+                contentContainerStyle={contentContainerStyle}
                 ListEmptyComponent={listEmptyState}
                 getItemType={getItemType}
             />
