@@ -7,7 +7,7 @@ import {
 } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Control, useFieldArray } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -24,7 +24,6 @@ import { TransactionSplitAllocation } from './transaction-split-allocation';
 
 interface Props {
     readonly entries: TransactionEntryCreateInputInterface[];
-    readonly control: Control<TransactionCreateInputInterface>;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
     readonly totalAmount: number;
@@ -39,7 +38,8 @@ const categoryVariants = cva('text-sm font-medium flex-1', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const TransactionSplit = ({ control, variant, transactionType, entries, accountId, totalAmount }: Props) => {
+export const TransactionSplit = ({ variant, transactionType, entries, accountId, totalAmount }: Props) => {
+    const { control } = useFormContext<TransactionCreateInputInterface>();
     const { fields, append, remove } = useFieldArray({
         control,
         name: 'entries'
@@ -100,7 +100,6 @@ export const TransactionSplit = ({ control, variant, transactionType, entries, a
                                 selectedCategoryIds={selectedCategoryIds}
                                 key={field.id}
                                 variant={variant}
-                                control={control}
                                 index={index}
                                 onRemove={remove}
                             />
