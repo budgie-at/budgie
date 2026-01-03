@@ -185,15 +185,93 @@ export const accountRepository = new AccountRepository(db);
 - Registration logic is part of the service class
 - Import task definitions in app entry point to ensure `TaskManager.defineTask` runs
 
-### Navigation
+### Navigation & Routing
 - **Framework:** Expo Router (file-based routing)
 - **Structure:** Routes defined in `packages/app/src/app/`
 - **Tabs:** Main navigation uses tab layout in `app/(tabs)/`
+
+**Routing Architecture:**
+- **One component per file** - Each route file should export a single default component
+- **Direct routes over dynamic routes** - Prefer explicit route files (`expense.tsx`, `income.tsx`, `transfer.tsx`) over dynamic routes with switch statements (`[type].tsx`)
+- **Nested routes for variants** - When a resource has multiple forms/views, use nested folders:
+  ```
+  transactions/
+  ├── [id].tsx              # Router that redirects based on transaction type
+  └── [id]/
+      ├── expense.tsx       # Update expense transaction form
+      ├── income.tsx        # Update income transaction form
+      └── transfer.tsx      # Update transfer transaction form
+  ```
+- **Inline all logic** - Route components should contain all their logic directly, not delegate to wrapper components
+- **Router pattern** - Parent `[id].tsx` determines transaction type and redirects to specific route:
+  ```tsx
+  // transactions/[id].tsx - Lightweight router
+  export default function TransactionDetailsScreen() {
+      const { transaction } = useGetTransactionByIdQuery(id);
+
+      if (isExpenseTransaction(transaction)) {
+          return <Redirect href={`/transactions/${id}/expense`} />;
+      }
+      // ... other type checks
+  }
+  ```
+
+**Example Structure:**
+```
+app/(main)/
+├── create-transaction/
+│   ├── expense.tsx       # Create expense (direct route)
+│   ├── income.tsx        # Create income (direct route)
+│   └── transfer.tsx      # Create transfer (direct route)
+└── transactions/
+    ├── [id].tsx          # Router: redirects to /[id]/expense|income|transfer
+    └── [id]/
+        ├── expense.tsx   # Update expense form
+        ├── income.tsx    # Update income form
+        └── transfer.tsx  # Update transfer form
+```
 
 ### State Management
 - React Context + hooks (no Redux/MobX)
 - TanStack Query for server state (mentioned in README)
 - Zustand/Jotai for client state (mentioned in README)
+
+### Forms
+- **Library:** React Hook Form + Zod validation
+- **Best Practice:** Use `FormProvider` and `useFormContext` to avoid prop drilling
+  ```tsx
+  // Good - Use FormProvider at form root
+  import { FormProvider } from 'react-hook-form';
+
+  const MyForm = () => {
+      const form = useForm();
+      return (
+          <FormProvider {...form}>
+              <FormField name="email" />
+              <FormField name="password" />
+          </FormProvider>
+      );
+  };
+
+  // Good - Use useFormContext in child components
+  import { useFormContext } from 'react-hook-form';
+
+  const FormField = ({ name }) => {
+      const { control, formState } = useFormContext();
+      return <Controller name={name} control={control} />;
+  };
+
+  // Bad - Prop drilling control/setValue through components
+  const MyForm = () => {
+      const { control, setValue } = useForm();
+      return (
+          <>
+              <FormField control={control} setValue={setValue} />
+              <AnotherField control={control} setValue={setValue} />
+          </>
+      );
+  };
+  ```
 
 ### Styling
 - **Framework:** NativeWind (Tailwind CSS for React Native)
@@ -226,11 +304,12 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
 
 ### Critical Rules
 
-1. **Never use `any` type** - Everything must be properly typed
-2. **Never write comments** - Code should be self-documenting
-3. **Maximize TypeScript usage** - Leverage the type system fully
-4. **No type circumvention** - Never use `as any` or `@ts-ignore`
-5. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+1. **Never use `any` type** - Everything must be properly typed. No exceptions.
+2. **Never use type assertions** - Never use `as` type casting (e.g., `foo as SomeType`). If types don't match, fix the actual types.
+3. **No type circumvention** - Never use `@ts-ignore`, `@ts-expect-error`, `as any`, or any form of type assertion
+4. **Never write comments** - Code should be self-documenting with clear method and variable names
+5. **Maximize TypeScript usage** - Leverage the type system fully, let TypeScript infer types when possible
+6. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
    ```typescript
    // Good
    setShouldAutoFocus(sheetIndex >= 0);
@@ -243,6 +322,27 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
    }
    ```
 
+6. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+   ```tsx
+   // Good - Explicit and clear
+   return (
+       <>
+           <TabButton label="Expense" variant="expense" />
+           <TabButton label="Income" variant="income" />
+           <TabButton label="Transfer" variant="neutral" />
+       </>
+   );
+
+   // Bad - Unnecessary abstraction for fixed data
+   const tabs = [
+       { label: 'Expense', variant: 'expense' },
+       { label: 'Income', variant: 'income' },
+       { label: 'Transfer', variant: 'neutral' },
+   ];
+   return <>{tabs.map(tab => <TabButton key={tab.label} {...tab} />)}</>;
+   ```
+   Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
+
 ### Naming Conventions
 - **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
 - **Enums:** Must end with `Enum` (e.g., `AccountTypeEnum`)
@@ -251,9 +351,98 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
 - **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
 
 ### Module Organization
+
+**General Structure:**
 - Follow modular architecture with clear separation: `api/`, `repository/`, `service/`, `constant/`, `interface/`, `enum/`
 - Single Responsibility Principle - one file, one entity, one purpose
-- **No barrel exports** - import directly from specific files (no `index.ts` re-exports)
+- **No barrel exports in app package** - Import directly from specific files (no `index.ts` re-exports within app)
+  - ✅ Allowed: Root-level barrel exports in library packages (contracts, shared libraries)
+  - ❌ Forbidden: Any `index.ts` files within `packages/app/src/` directory structure
+  - Always use direct imports: `from './component-name/component-name'` not `from './component-name'`
+- **Flat structure** - Avoid deep nesting; entity/[file-type]/[file].ts not entity/[file-type]/[nested]/[file].ts
+
+**Component Organization:**
+- **One component per file** - Each `.tsx` file (route or component) should export exactly one default component
+- Each component must be in its own folder: `component-name/component-name.tsx`
+- Related files (types, utils, hooks) live in the same folder
+- Folder name and main file name must match exactly (kebab-case)
+- **Never group multiple components under a parent folder** - each component gets its own top-level folder
+- **Avoid wrapper components that only pass props or group components** - Don't create components that just:
+  - Extract values from context and pass them as props to existing components
+  - Simply group other components without adding logic
+
+  Inline them instead in the consuming component.
+
+  ```tsx
+  // Bad - Unnecessary context wrapper
+  export const FormComment = () => {
+      const { control } = useFormContext();
+      return <FormCommentBase control={control} />;
+  };
+
+  // Bad - Unnecessary grouping wrapper
+  export const FormMetadataFields = ({ control, variant }) => (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+
+  // Good - Inline directly in parent component
+  return (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+  ```
+
+Examples:
+```
+✓ Good
+packages/app/src/@generic/component/
+├── bottom-sheet/
+│   └── bottom-sheet.tsx
+├── amount-input/
+│   └── amount-input.tsx
+├── transaction-card/
+│   ├── transaction-card.tsx
+│   └── transaction-card.util.ts
+├── transaction-form-root/
+│   └── transaction-form-root.tsx
+└── transaction-form-amount/
+    └── transaction-form-amount.tsx
+
+✗ Bad
+packages/app/src/@generic/component/
+├── bottom-sheet.tsx                    # Missing folder
+├── forms/
+│   └── amount-input/                   # Too nested
+│       └── amount-input.tsx
+├── transaction/
+│   └── card/                           # Should be transaction-card/
+│       └── card.tsx
+└── transaction-form/                   # Never group multiple components
+    ├── root.tsx                        # Each should have own folder
+    ├── amount.tsx
+    └── category.tsx
+```
+
+**Entity Structure (Contracts Package):**
+Each entity follows flat organization:
+```
+entity-name/
+├── constant/[file].constant.ts         # NOT constant/validators/[file].ts
+├── entity/[file].entity.ts             # NOT entity/types/[file].ts
+├── enum/[file].enum.ts
+├── input/[file].input.ts
+├── interface/[file].interface.ts
+├── repository/[name].repository.ts
+├── relations/[name].relations.ts
+├── schema/[name].schema.ts
+└── table/[name].table.ts
+```
+Never nest beyond this level - all files within a type folder should be direct children.
 
 ### Type Guards (Use @rnw-community/shared)
 Always use these type guards instead of manual checks:
@@ -261,6 +450,36 @@ Always use these type guards instead of manual checks:
 - `isNotEmptyArray()` - for array validation
 - `isNotEmptyString()` - for string validation
 - `isPositiveNumber()` - for numeric validation
+
+### Code Duplication (jscpd)
+
+**Route Files in `src/app/`:**
+- Use `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to wrap **JSX only**
+- Place ignore comments around the JSX return statement to prevent false positives on similar form structures
+- Never ignore business logic or hooks - only the presentational JSX
+
+**Example:**
+```tsx
+export default function CreateExpenseTransactionPage() {
+    const { form, handleSubmit } = useCreateTransactionForm({ ... }); // Not ignored
+    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' }); // Not ignored
+
+    const handleGoBack = () => void goBackOrReplace('/'); // Not ignored
+
+    /* jscpd:ignore-start */
+    return (
+        <FormProvider {...form}>
+            <Page header={...} footer={...}>
+                <TransactionFormAmount ... />
+                <TransactionFormCategory ... />
+            </Page>
+        </FormProvider>
+    );
+    /* jscpd:ignore-end */
+}
+```
+
+**Why:** Route files often share similar JSX structure (forms, layouts) but have different business logic. Ignoring only JSX prevents jscpd from flagging legitimate structural similarities while still detecting duplicated logic.
 
 ### Drizzle ORM Best Practices
 - **Prefer:** `db.query.[EntityName].findMany/findFirst`
@@ -412,7 +631,13 @@ Runs on push to main:
 2. **After pulling:** Run `yarn install` if dependencies changed
 3. **Before committing:** Hooks automatically run TypeScript check, ESLint, and commit message validation
 4. **After contracts changes:** Run `yarn build` to ensure app package picks up changes
-5. **Full validation:** Run `yarn ts && yarn lint && yarn test` before pushing
+5. **After completing work:** ALWAYS run these checks in order:
+   - `yarn ts` - TypeScript type checking (run first to catch type errors)
+   - `yarn lint` - Fix ESLint errors
+   - `yarn deadcode` - Detect and remove unused files/exports
+   - `yarn cpd` - Detect code duplication (review and refactor if needed)
+   - `yarn workspace @budgie-at/app i18n:sync` - Extract and compile translations (add missing translations if any)
+6. **Full validation:** Run `yarn ts && yarn lint && yarn test` before pushing
 
 ## Important Notes
 
@@ -422,3 +647,4 @@ Runs on push to main:
 - Known acceptable warnings: empty interfaces, magic numbers in tests
 - Focus only on errors or warnings introduced by your changes
 - Never skip hooks (`--no-verify`) unless explicitly instructed
+- **Never modify `.jscpd.json`** - This config is carefully tuned; fix code duplication issues in the source code instead of adding ignore patterns

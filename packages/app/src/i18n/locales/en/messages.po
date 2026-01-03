@@ -65,8 +65,8 @@ msgstr "100% Offline & Private"
 msgid "About"
 msgstr "About"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:74
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
+#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
 
@@ -122,23 +122,23 @@ msgstr "Add a new category to organize your transactions"
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:17
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
 msgid "Add a note..."
 msgstr "Add a note..."
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:52
+#: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
 msgstr "Add Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:34
+#: src/app/(main)/create-transaction/income.tsx:61
 msgid "Add Income"
 msgstr "Add Income"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:116
+#: src/transaction/components/transaction-split/transaction-split.tsx:115
 msgid "Add Split"
 msgstr "Add Split"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:35
+#: src/app/(main)/create-transaction/transfer.tsx:84
 msgid "Add Transfer"
 msgstr "Add Transfer"
 
@@ -183,11 +183,12 @@ msgid "Already syncing"
 msgstr "Already syncing"
 
 #: src/app/(main)/settings/import.tsx:201
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
 msgid "Amount"
 msgstr "Amount"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
+#: src/app/(main)/create-transaction/transfer.tsx:58
+#: src/app/(main)/transactions/[id]/transfer.tsx:67
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -229,7 +230,7 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:66
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:51
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Are you sure you want to delete this transaction?"
 
@@ -287,7 +288,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:260
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:100
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:104
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -306,10 +307,28 @@ msgstr "Categories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categories ({selectedCategoriesCount})"
 
+#: src/ai/hook/use-ai-transaction.hook.ts:53
+msgid ""
+"Categorize this expense. Reply with ONLY a number (1-{categoryCount}).\n"
+"\n"
+"Categories:\n"
+"{categoriesWithIds}\n"
+"\n"
+"IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
+"Reply with the category number only."
+msgstr ""
+"Categorize this expense. Reply with ONLY a number (1-{categoryCount}).\n"
+"\n"
+"Categories:\n"
+"{categoriesWithIds}\n"
+"\n"
+"IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
+"Reply with the category number only."
+
 #: src/app/(main)/settings/import.tsx:185
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:40
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:74
+#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Category"
 
@@ -338,7 +357,7 @@ msgstr "Checking Account"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
 msgid "Choose a type to get started"
 msgstr "Choose a type to get started"
 
@@ -403,7 +422,7 @@ msgstr "Comment"
 msgid "Common Tags"
 msgstr "Common Tags"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:112
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:111
 msgid "Confirm"
 msgstr "Confirm"
 
@@ -439,7 +458,7 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:41
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
@@ -517,9 +536,9 @@ msgstr "Create Tags"
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:67
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
+#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:102
 msgid "Create your first account to start tracking transactions"
 msgstr "Create your first account to start tracking transactions"
 
@@ -597,7 +616,7 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:63
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:48
 msgid "Delete transaction"
 msgstr "Delete transaction"
 
@@ -638,15 +657,15 @@ msgstr "e.g., Groceries, Salary, Rent"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:36
+#: src/app/(main)/transactions/[id]/expense.tsx:65
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:35
+#: src/app/(main)/transactions/[id]/income.tsx:65
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:27
+#: src/app/(main)/transactions/[id]/transfer.tsx:86
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -820,7 +839,7 @@ msgstr "French"
 msgid "French (France)"
 msgstr "French (France)"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
 msgstr "FROM"
 
@@ -961,7 +980,7 @@ msgstr "Match each field to a column from your CSV file"
 msgid "Money lent or borrowed"
 msgstr "Money lent or borrowed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:50
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:47
 msgid "Money you earn"
 msgstr "Money you earn"
 
@@ -969,7 +988,7 @@ msgstr "Money you earn"
 msgid "Money you owe or are owed"
 msgstr "Money you owe or are owed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:43
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:40
 msgid "Money you spend"
 msgstr "Money you spend"
 
@@ -977,11 +996,12 @@ msgstr "Money you spend"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:57
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:54
 msgid "Move between accounts"
 msgstr "Move between accounts"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:70
+#: src/app/(main)/create-transaction/transfer.tsx:78
+#: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Move Money"
 msgstr "Move Money"
 
@@ -989,19 +1009,19 @@ msgstr "Move Money"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/transaction/components/create-expense-transaction/create-expense-transaction.tsx:51
+#: src/app/(main)/create-transaction/expense.tsx:71
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/transaction/components/create-income-transaction/create-income-transaction.tsx:33
+#: src/app/(main)/create-transaction/income.tsx:54
 msgid "New Income"
 msgstr "New Income"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
 msgid "New Transaction"
 msgstr "New Transaction"
 
-#: src/transaction/components/create-transfer-transaction/create-transfer-transaction.tsx:31
+#: src/app/(main)/create-transaction/transfer.tsx:77
 msgid "New Transfer"
 msgstr "New Transfer"
 
@@ -1082,7 +1102,7 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/app/(main)/ai.tsx:48
+#: src/app/(main)/ai.tsx:53
 msgid "No speech detected"
 msgstr "No speech detected"
 
@@ -1115,7 +1135,7 @@ msgstr "None"
 msgid "None selected"
 msgstr "None selected"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:16
+#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:13
 msgid "Note (optional)"
 msgstr "Note (optional)"
 
@@ -1310,7 +1330,7 @@ msgid "Select account"
 msgstr "Select account"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:77
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:87
 msgid "Select Account"
 msgstr "Select Account"
 
@@ -1326,8 +1346,11 @@ msgstr "Select All"
 msgid "Select category"
 msgstr "Select category"
 
+#: src/app/(main)/create-transaction/expense.tsx:72
+#: src/app/(main)/create-transaction/income.tsx:55
+#: src/app/(main)/transactions/[id]/expense.tsx:66
+#: src/app/(main)/transactions/[id]/income.tsx:66
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:81
 msgid "Select Category"
 msgstr "Select Category"
 
@@ -1400,7 +1423,7 @@ msgstr "Show this account on the main page"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
 msgid "Something went wrong."
 msgstr "Something went wrong."
@@ -1521,7 +1544,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-layout/transaction-form-layout.tsx:62
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:47
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
@@ -1541,7 +1564,7 @@ msgstr "This will clear all cached account balances and recalculate them from yo
 msgid "This Year"
 msgstr "This Year"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:99
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
 msgstr "TO"
 
@@ -1623,7 +1646,7 @@ msgstr "Ukrainian"
 msgid "Unknown"
 msgstr "Unknown"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:63
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:76
 msgid "Unknown Category"
 msgstr "Unknown Category"
 
@@ -1635,15 +1658,15 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx:37
+#: src/app/(main)/transactions/[id]/expense.tsx:75
 msgid "Update Expense"
 msgstr "Update Expense"
 
-#: src/transaction/components/update-income-transaction/update-income-transaction.tsx:36
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Update Income"
 msgstr "Update Income"
 
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx:31
+#: src/app/(main)/transactions/[id]/transfer.tsx:93
 msgid "Update Transfer"
 msgstr "Update Transfer"
 
@@ -1696,11 +1719,7 @@ msgstr "You gave money"
 msgid "You received money"
 msgstr "You received money"
 
-#: src/ai/hook/use-ai-transaction.hook.ts:20
-msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-
-#: src/app/(main)/ai.tsx:107
+#: src/app/(main)/ai.tsx:112
 msgid "Your message:"
 msgstr "Your message:"
 
