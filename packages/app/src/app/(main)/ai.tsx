@@ -68,7 +68,7 @@ export default function AiScreen() {
 
     const handleConfirm = async () => {
         if (!isPositiveNumber(transactionInfo?.amount)) {return;}
-        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0, selectedAccountId);
+        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0, selectedAccountId, transactionInfo.comment);
         resetTransaction();
         setAccountId(null);
     };
