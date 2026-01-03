@@ -1,10 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { UserIconNameEnum } from '@budgie/contracts';
 
 export const BudgetEmptyState = () => (
     <Link href="/budget/create" asChild>

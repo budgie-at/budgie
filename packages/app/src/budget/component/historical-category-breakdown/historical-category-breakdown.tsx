@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { isPositiveNumber } from '@rnw-community/shared';
-import { Trans } from '@lingui/react/macro';
+
+import { Icon } from '../../../@generic/component/icon/icon';
 
 const spentTextVariants = cva('text-xs font-medium', {
     variants: {

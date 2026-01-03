@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
@@ -22,7 +23,6 @@ import { useGetBudgetByIdQuery } from '../../../../budget/query/use-get-budget-b
 import { budgetService } from '../../../../budget/service/budget.service';
 import { useAllCategoriesQuery } from '../../../../category/query/use-all-categories.query';
 import { useGetInstrumentByIdQuery } from '../../../../instrument/query/use-get-instrument-by-id.query';
-import { UserIconNameEnum } from '@budgie/contracts';
 
 export default function BudgetDetails() {
     const params = useLocalSearchParams<IdParamInterface>();

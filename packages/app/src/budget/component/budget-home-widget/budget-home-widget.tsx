@@ -1,7 +1,10 @@
 import { BudgetEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
+
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -15,8 +18,6 @@ import { useCategoryStats } from '../../hook/use-category-stats.hook';
 import { useGetBudgetAllocationsQuery } from '../../query/use-get-budget-allocations.query';
 import { budgetService } from '../../service/budget.service';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
-import { cva } from 'class-variance-authority';
 
 interface Props {
     readonly budget: BudgetEntityInterface;

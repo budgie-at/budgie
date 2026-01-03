@@ -1,7 +1,8 @@
 import { BudgetEntityInterface } from '@budgie/contracts';
 
-import { budgetService } from '../service/budget.service';
 import { isDefined } from '@rnw-community/shared';
+
+import { budgetService } from '../service/budget.service';
 
 interface PeriodDatesResult {
     startDate: Date;

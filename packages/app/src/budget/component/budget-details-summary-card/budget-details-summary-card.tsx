@@ -1,15 +1,16 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-import { isPositiveNumber } from '@rnw-community/shared';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 const safeToSpendVariants = cva('text-3xl font-bold', {
     variants: { status: { positive: 'text-positive-foreground', negative: 'text-warning-foreground' } }

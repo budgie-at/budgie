@@ -1,10 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { UserIconNameEnum } from '@budgie/contracts';
-import { ReactNode } from 'react';
 
 const statusTextVariants = cva('text-xs', {
     variants: {

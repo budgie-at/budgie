@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
@@ -10,7 +11,6 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetAnalyticsContent } from '../../../budget/component/budget-analytics-content/budget-analytics-content';
 import { useGetBudgetsQuery } from '../../../budget/query/use-get-budgets.query';
-import { UserIconNameEnum } from '@budgie/contracts';
 
 export default function BudgetAnalyticsPage() {
     const { t } = useLingui();

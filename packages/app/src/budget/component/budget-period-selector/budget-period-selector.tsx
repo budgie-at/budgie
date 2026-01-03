@@ -1,11 +1,11 @@
 import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { cva } from 'class-variance-authority';
 
 interface Props {
     readonly value: BudgetPeriodEnum;

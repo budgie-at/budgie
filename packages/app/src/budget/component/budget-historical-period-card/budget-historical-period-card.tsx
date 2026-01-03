@@ -1,7 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -14,8 +17,6 @@ import { useGetSpendingByCategoryQuery } from '../../query/use-get-spending-by-c
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { HistoricalCategoryBreakdown } from '../historical-category-breakdown/historical-category-breakdown';
 import { HistoricalPeriodStats } from '../historical-period-stats/historical-period-stats';
-import { isPositiveNumber } from '@rnw-community/shared';
-import { cva } from 'class-variance-authority';
 
 interface AllocationInfo {
     readonly categoryId: number;

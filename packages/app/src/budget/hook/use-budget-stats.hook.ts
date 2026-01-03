@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useGetBudgetActualSpendingQuery } from '../query/use-get-budget-actual-spending.query';
 import { useGetBudgetIncomeQuery } from '../query/use-get-budget-income.query';
 import { useGetSpendingByCategoryQuery } from '../query/use-get-spending-by-category.query';
-import { calculateTotalPlannedAmount } from '../util/calculate-effective-planned-amount.util';
+import { calculateTotalPlannedAmount } from '../util/calculate-budget-stats.util';
 
 import { useBudgetPeriodDates } from './use-budget-period-dates.hook';
 

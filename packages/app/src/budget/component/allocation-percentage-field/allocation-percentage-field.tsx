@@ -1,8 +1,9 @@
+import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, UseControllerReturn } from 'react-hook-form';
-import { AllocationFormValues } from '../../schema/allocation-form.schema';
+
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormPercentageInput } from '../../../@generic/component/form-percentage-input/form-percentage-input';
-import { useLingui } from '@lingui/react/macro';
+import { AllocationFormValues } from '../../schema/allocation-form.schema';
 
 interface Props {
     readonly control: Control<AllocationFormValues>;

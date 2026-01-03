@@ -1,8 +1,9 @@
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
 import { useLingui } from '@lingui/react/macro';
+import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { RolloverRuleSelector } from '../rollover-rule-selector/rollover-rule-selector';
 import { AllocationFormValues } from '../../schema/allocation-form.schema';
+import { RolloverRuleSelector } from '../rollover-rule-selector/rollover-rule-selector';
 
 interface Props {
     readonly control: Control<AllocationFormValues>;

@@ -4,19 +4,14 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { HistoricalPeriodInterface } from '../../util/budget-analytics-calculations.util';
 import { BudgetHistoricalPeriodCard } from '../budget-historical-period-card/budget-historical-period-card';
-
-interface HistoricalPeriod {
-    readonly label: string;
-    readonly startDate: Date;
-    readonly endDate: Date;
-}
 
 interface Props {
     readonly totalPlanned: number;
     readonly categoryIds: number[];
     readonly currencySymbol: string;
-    readonly periods: HistoricalPeriod[];
+    readonly periods: HistoricalPeriodInterface[];
     readonly allocations: BudgetAllocationEntityInterface[];
 }
 
