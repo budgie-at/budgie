@@ -14,8 +14,6 @@ import { CreateTransactionCard } from '../create-transaction-card/create-transac
 
 import type { RefObject } from 'react';
 
-type CreateTransactionRoute = '/create-transaction/expense' | '/create-transaction/income' | '/create-transaction/transfer';
-
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly accountId?: number;
