@@ -12,6 +12,7 @@ import { RecordButton } from '../../ai/component/record-button/record-button';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
 import { useStreamingTranscribe } from '../../ai/hook/use-streaming-transcribe.hook';
+import { useSettingsContext } from '../../settings/context/settings.context';
 import { AiTransactionPreviewCard } from '../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
@@ -21,13 +22,17 @@ const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
 export default function AiScreen() {
     const { t } = useLingui();
     const { llm, isSttReady, sttDownloadProgress } = useLlmContext();
+    const { defaultAccount } = useSettingsContext();
     const createExpense = useCreateExpenseTransactionMutation();
 
     const [finalPrompt, setFinalPrompt] = useState('');
     const [error, setError] = useState('');
+    const [accountId, setAccountId] = useState<number | null>(null);
     const hasAutoStartedRef = useRef(false);
 
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
+
+    const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
 
     const handleTranscriptionComplete = async (transcribed: string) => {
         setFinalPrompt(transcribed);
@@ -60,14 +65,16 @@ export default function AiScreen() {
 
     const handleConfirm = async () => {
         if (!isPositiveNumber(transactionInfo?.amount)) {return;}
-        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0);
+        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0, selectedAccountId);
         resetTransaction();
+        setAccountId(null);
     };
 
     const handleCancel = () => {
         setError('');
         setFinalPrompt('');
         resetTransaction();
+        setAccountId(null);
     };
 
     const handleRecord = () => {
@@ -104,9 +111,11 @@ export default function AiScreen() {
                             amount={transactionInfo.amount}
                             category={transactionInfo.category}
                             type={transactionInfo.type}
+                            accountId={selectedAccountId}
                             onConfirm={handleConfirm}
                             onCancel={handleCancel}
                             onCategoryChange={setTransactionCategory}
+                            onAccountChange={setAccountId}
                         />
                     )}
                 </ScrollView>
