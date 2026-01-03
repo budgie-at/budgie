@@ -931,10 +931,6 @@ msgstr "Última sincronización"
 msgid "Lent"
 msgstr "Prestado"
 
-#: src/ai/component/live-transcription/live-transcription.tsx:56
-msgid "Listening..."
-msgstr "Escuchando..."
-
 #: src/settings/components/locale-selector/locale-selector.tsx:37
 msgid "Locale"
 msgstr "Configuración regional"
@@ -1084,7 +1080,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/(main)/ai.tsx:50
+#: src/app/(main)/ai.tsx:48
 msgid "No speech detected"
 msgstr "No se detectó voz"
 
@@ -1419,10 +1415,6 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/ai/component/live-transcription/live-transcription.tsx:53
-msgid "Speaking..."
-msgstr "Hablando..."
-
 #: src/app/(tabs)/analytics.tsx:82
 msgid "Spending by Category"
 msgstr "Gastos por categoría"
@@ -1595,10 +1587,6 @@ msgstr "Transacciones"
 msgid "Transactions synced"
 msgstr "Transacciones sincronizadas"
 
-#: src/ai/component/live-transcription/live-transcription.tsx:50
-msgid "Transcribing..."
-msgstr "Transcribiendo..."
-
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transferencia"
@@ -1710,7 +1698,7 @@ msgstr "Recibiste dinero"
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
 msgstr "Tu objetivo es devolver UNA categoría que mejor coincida, SOLO EL NOMBRE DE esta lista <CategoryList>{categoriesList}</CategoryList> basado en el mensaje del usuario, sin respuesta, sin texto adicional, solo la categoría de la lista."
 
-#: src/ai/component/live-transcription/live-transcription.tsx:62
+#: src/app/(main)/ai.tsx:107
 msgid "Your message:"
 msgstr "Tu mensaje:"
 
