@@ -1,9 +1,9 @@
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
 import { FuturePeriodStatus } from '../future-period-status/future-period-status';
 
 interface FuturePeriod {
@@ -20,7 +20,7 @@ interface Props {
     readonly onCreatePeriod: (period: FuturePeriod) => void;
 }
 
-const buttonClassName = cva('flex-row items-center justify-between py-3 px-4 rounded-xl border', {
+const cellClassName = cva('', {
     variants: {
         isCreated: {
             true: 'bg-positive-background border-positive-corner',
@@ -37,13 +37,14 @@ export const FuturePeriodItem = ({ period, creatingPeriod, createdPeriods, forma
     const handlePress = () => void onCreatePeriod(period);
 
     return (
-        <HapticPressable onPress={handlePress} disabled={isDisabled} className={buttonClassName({ isCreated })}>
-            <View>
-                <Text className="text-sm font-medium text-primary">{period.label}</Text>
-                <Text className="text-xs text-secondary-foreground">{dateRange}</Text>
-            </View>
-
-            <FuturePeriodStatus isCreated={isCreated} isCreating={isCreating} />
-        </HapticPressable>
+        <HorizontalCell
+            size="sm"
+            right={<FuturePeriodStatus isCreated={isCreated} isCreating={isCreating} />}
+            className={cellClassName({ isCreated })}
+            {...(!isDisabled && { onPress: handlePress })}
+        >
+            <Text className="text-sm font-medium text-primary">{period.label}</Text>
+            <Text className="text-xs text-secondary-foreground">{dateRange}</Text>
+        </HorizontalCell>
     );
 };
