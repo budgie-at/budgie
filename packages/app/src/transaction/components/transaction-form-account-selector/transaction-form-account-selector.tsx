@@ -1,6 +1,6 @@
-import { AccountTypeEnum, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, UseControllerReturn, UseFormSetValue } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -9,15 +9,14 @@ import { AccountSelector } from '../../../account/component/account-selector/acc
 const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
 interface Props {
-    readonly control: Control<TransactionCreateInputInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
-    readonly entries: TransactionEntryCreateInputInterface[];
     readonly variant: ColorPaletteVariant;
     readonly fieldName: 'fromAccountId' | 'toAccountId';
 }
 
-export const TransactionFormAccountSelector = ({ control, setValue, entries, variant, fieldName }: Props) => {
+export const TransactionFormAccountSelector = ({ variant, fieldName }: Props) => {
     const { t } = useLingui();
+    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const entries = useWatch({ control, name: 'entries' });
 
     const handleAccountChange = (newAccountId: number) => {
         setValue(fieldName, newAccountId);
