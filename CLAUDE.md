@@ -212,7 +212,7 @@ export const accountRepository = new AccountRepository(db);
 ### Critical Rules
 
 1. **Never use `any` type** - Everything must be properly typed
-2. **Never write comments** - Code should be self-documenting
+2. **Never write comments** - Code should be self-documenting with clear method and variable names
 3. **Maximize TypeScript usage** - Leverage the type system fully
 4. **No type circumvention** - Never use `as any` or `@ts-ignore`
 5. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
@@ -228,6 +228,27 @@ export const accountRepository = new AccountRepository(db);
    }
    ```
 
+6. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+   ```tsx
+   // Good - Explicit and clear
+   return (
+       <>
+           <TabButton label="Expense" variant="expense" />
+           <TabButton label="Income" variant="income" />
+           <TabButton label="Transfer" variant="neutral" />
+       </>
+   );
+
+   // Bad - Unnecessary abstraction for fixed data
+   const tabs = [
+       { label: 'Expense', variant: 'expense' },
+       { label: 'Income', variant: 'income' },
+       { label: 'Transfer', variant: 'neutral' },
+   ];
+   return <>{tabs.map(tab => <TabButton key={tab.label} {...tab} />)}</>;
+   ```
+   Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
+
 ### Naming Conventions
 - **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
 - **Enums:** Must end with `Enum` (e.g., `AccountTypeEnum`)
@@ -236,9 +257,56 @@ export const accountRepository = new AccountRepository(db);
 - **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
 
 ### Module Organization
+
+**General Structure:**
 - Follow modular architecture with clear separation: `api/`, `repository/`, `service/`, `constant/`, `interface/`, `enum/`
 - Single Responsibility Principle - one file, one entity, one purpose
 - **No barrel exports** - import directly from specific files (no `index.ts` re-exports)
+- **Flat structure** - Avoid deep nesting; entity/[file-type]/[file].ts not entity/[file-type]/[nested]/[file].ts
+
+**Component Organization:**
+- Each component must be in its own folder: `component-name/component-name.tsx`
+- Related files (types, utils, hooks) live in the same folder
+- Folder name and main file name must match exactly (kebab-case)
+
+Examples:
+```
+✓ Good
+packages/app/src/@generic/component/
+├── bottom-sheet/
+│   └── bottom-sheet.tsx
+├── amount-input/
+│   └── amount-input.tsx
+└── transaction-card/
+    ├── transaction-card.tsx
+    └── transaction-card.util.ts
+
+✗ Bad
+packages/app/src/@generic/component/
+├── bottom-sheet.tsx                    # Missing folder
+├── forms/
+│   └── amount-input/                   # Too nested
+│       └── amount-input.tsx
+└── transaction/
+    └── card/                            # Should be transaction-card/
+        └── card.tsx
+```
+
+**Entity Structure (Contracts Package):**
+Each entity follows flat organization:
+```
+entity-name/
+├── constant/[file].constant.ts         # NOT constant/validators/[file].ts
+├── entity/[file].entity.ts             # NOT entity/types/[file].ts
+├── enum/[file].enum.ts
+├── input/[file].input.ts
+├── interface/[file].interface.ts
+├── repository/[name].repository.ts
+├── relations/[name].relations.ts
+├── schema/[name].schema.ts
+└── table/[name].table.ts
+```
+Never nest beyond this level - all files within a type folder should be direct children.
 
 ### Type Guards (Use @rnw-community/shared)
 Always use these type guards instead of manual checks:
