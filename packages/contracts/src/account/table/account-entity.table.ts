@@ -19,6 +19,7 @@ export const AccountEntityTable = sqliteTable(
         parentId: int('parent_id', { mode: 'number' }),
         order: int({ mode: 'number' }).default(0).notNull(),
         title: text().default('').notNull(),
+        titleSearch: text('title_search').default('').notNull(),
         type: text('type', { enum: convertEnumToDrizzleEnum(AccountTypeEnum) })
             .$type<AccountTypeEnum>()
             .default(AccountTypeEnum.CASH)
