@@ -462,6 +462,10 @@ msgstr "Could not update category"
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
+msgid "Count this account in your net worth calculation"
+msgstr "Count this account in your net worth calculation"
+
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
 msgstr "Create a backup of all your data"
@@ -888,6 +892,10 @@ msgstr "Importing a database will replace all current data. The app will restart
 #: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
+
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:22
+msgid "Include in Net Worth"
+msgstr "Include in Net Worth"
 
 #: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/constant/transaction-type.constant.ts:7

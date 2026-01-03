@@ -13,6 +13,7 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
+import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH;
@@ -30,6 +31,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             title: '',
             currentBalance: 0,
             icon: DEFAULT_ICON,
+            includeInNetWorth: true,
             instrumentId: defaultInstrument.id
         },
         async values => accountService.create(values)
@@ -46,6 +48,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
                 <CreateAccountCurrencyField control={control} />
+                <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
         </CreateAccountScreen>
     );
