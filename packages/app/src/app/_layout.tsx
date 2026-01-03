@@ -24,6 +24,7 @@ import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
+import { titleSearchDataMigrationService } from '../@generic/service/title-search-data-migration.service';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
@@ -59,6 +60,8 @@ export default function RootLayout() {
         const init = async () => {
             if (success) {
                 try {
+                    void titleSearchDataMigrationService.migrate();
+
                     void exchangeRatesSyncService.sync();
                     void exchangeRatesSyncService.registerBackgroundTask();
 

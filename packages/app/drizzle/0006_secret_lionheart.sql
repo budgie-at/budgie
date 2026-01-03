@@ -1,0 +1,1 @@
+ALTER TABLE `settings` ADD `is_title_search_migrated` integer DEFAULT false NOT NULL;
