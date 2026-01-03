@@ -4,8 +4,6 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
 import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
@@ -15,6 +13,8 @@ import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { CreateTransactionCard } from '../create-transaction-card/create-transaction-card';
 
 import type { RefObject } from 'react';
+
+type CreateTransactionRoute = '/create-transaction/expense' | '/create-transaction/income' | '/create-transaction/transfer';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -27,8 +27,7 @@ export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
 
     const handleNavigate = (type: TransactionTypeEnum) => {
         ref.current?.close();
-        const params = isDefined(accountId) ? `?accountId=${accountId}` : '';
-        void router.push(`/create-transaction/${type}${params}`);
+        router.push({ pathname: `/create-transaction/${type.toLowerCase() as 'income'}`, params: { accountId } });
     };
 
     const style = { paddingBottom: bottom };
