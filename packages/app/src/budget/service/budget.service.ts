@@ -157,21 +157,53 @@ class BudgetService {
 
     async transitionToNextPeriod(budgetId: number): Promise<void> {
         const budget = await budgetRepository.findById(budgetId);
-        if (!isDefined(budget)) {throw new Error('budget-not-found');}
+        if (!isDefined(budget)) {
+            throw new Error('budget-not-found');
+        }
 
         const currentInstance = await budgetInstanceRepository.findCurrentByBudgetId(budgetId);
-        if (!isDefined(currentInstance) || new Date() <= currentInstance.endDate) {return;}
+        if (!isDefined(currentInstance) || new Date() <= currentInstance.endDate) {
+            return;
+        }
 
         const allocations = await budgetAllocationRepository.findByBudgetId(budgetId);
         const allocationInstances = await budgetAllocationInstanceRepository.findByBudgetInstanceId(currentInstance.id);
         await budgetInstanceRepository.close(currentInstance.id);
 
-        const { startDate, endDate } = this.calculatePeriodDatesForType({ period: budget.period, startDay: budget.startDay, referenceDate: new Date(), customStartDate: budget.customStartDate, customEndDate: budget.customEndDate });
+        const { startDate, endDate } = this.calculatePeriodDatesForType({
+            period: budget.period,
+            startDay: budget.startDay,
+            referenceDate: new Date(),
+            customStartDate: budget.customStartDate,
+            customEndDate: budget.customEndDate
+        });
 
-        await db.transaction(async tx => {
-            const inst = await budgetInstanceRepository.create({ budgetId, startDate, endDate, status: BudgetInstanceStatusEnum.OPEN }, tx);
-            const newItems = allocations.map(al => ({ budgetInstanceId: inst.id, budgetAllocationId: al.id, categoryId: al.categoryId, planned: al.amount, rolloverIn: this.calculateRollover(allocationInstances.find(ai => ai.budgetAllocationId === al.id)?.planned ?? al.amount, allocationInstances.find(ai => ai.budgetAllocationId === al.id)?.actual ?? 0, al.rolloverRule, al.rolloverCap) }));
-            await budgetAllocationInstanceRepository.bulkCreate(newItems, tx);
+        await db.transaction(async transaction => {
+            const instance = await budgetInstanceRepository.create(
+                { budgetId, startDate, endDate, status: BudgetInstanceStatusEnum.OPEN },
+                transaction
+            );
+
+            const newAllocationInstances = allocations.map(allocation => {
+                const previousInstance = allocationInstances.find(
+                    allocationInstance => allocationInstance.budgetAllocationId === allocation.id
+                );
+
+                return {
+                    budgetInstanceId: instance.id,
+                    budgetAllocationId: allocation.id,
+                    categoryId: allocation.categoryId,
+                    planned: allocation.amount,
+                    rolloverIn: this.calculateRollover(
+                        previousInstance?.planned ?? allocation.amount,
+                        previousInstance?.actual ?? 0,
+                        allocation.rolloverRule,
+                        allocation.rolloverCap
+                    )
+                };
+            });
+
+            await budgetAllocationInstanceRepository.bulkCreate(newAllocationInstances, transaction);
         });
     }
 
@@ -229,21 +261,30 @@ class BudgetService {
         return budgetPeriodService.calculateNextWeeklyPeriodDates(currentPeriodEndDate);
     }
 
+    formatPeriodLabel(period: BudgetPeriodEnum, startDate: Date) {
+        return budgetPeriodService.formatPeriodLabel(period, startDate);
+    }
+
     calculateFuturePeriods(period: BudgetPeriodEnum, startDay: number, currentPeriodEndDate: Date, count: number) {
-        const periods: Array<{ startDate: Date; endDate: Date; label: string }> = [];
-        let lastEndDate = currentPeriodEndDate;
+        const { periods } = Array.from({ length: count }).reduce<{
+            periods: Array<{ startDate: Date; endDate: Date; label: string }>;
+            lastEndDate: Date;
+        }>(
+            ({ periods, lastEndDate }) => {
+                const dates =
+                    period === BudgetPeriodEnum.WEEKLY
+                        ? this.calculateNextWeeklyPeriodDates(lastEndDate)
+                        : this.calculateNextMonthlyPeriodDates(startDay, lastEndDate);
 
-        for (let i = 0; i < count; i += 1) {
-            const dates =
-                period === BudgetPeriodEnum.WEEKLY
-                    ? budgetPeriodService.calculateNextWeeklyPeriodDates(lastEndDate)
-                    : budgetPeriodService.calculateNextMonthlyPeriodDates(startDay, lastEndDate);
+                const label = this.formatPeriodLabel(period, dates.startDate);
 
-            const label = budgetPeriodService.formatPeriodLabel(period, dates.startDate);
-
-            periods.push({ ...dates, label });
-            lastEndDate = dates.endDate;
-        }
+                return {
+                    periods: [...periods, { ...dates, label }],
+                    lastEndDate: dates.endDate
+                };
+            },
+            { periods: [], lastEndDate: currentPeriodEndDate }
+        );
 
         return periods;
     }
