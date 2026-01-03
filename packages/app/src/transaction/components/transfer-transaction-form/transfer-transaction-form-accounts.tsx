@@ -1,7 +1,7 @@
 import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -15,12 +15,11 @@ import { getTransferCategoryId } from '../../utils/get-transfer-category-id.util
 
 interface Props {
     readonly variant: ColorPaletteVariant;
-    readonly control: Control<TransactionCreateInputInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
 }
 
-export const TransferTransactionFormAccounts = ({ control, setValue, variant }: Props) => {
+export const TransferTransactionFormAccounts = ({ variant }: Props) => {
     const { t } = useLingui();
+    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
 
     const [fromAccountId, toAccountId] = useWatch({
         control,
