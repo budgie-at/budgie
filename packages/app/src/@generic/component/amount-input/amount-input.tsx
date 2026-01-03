@@ -16,10 +16,11 @@ interface Props extends Omit<ComponentProps<typeof Input>, 'value'> {
     readonly value: number;
     readonly inputClassName?: string;
     readonly status?: FormFieldStatus;
+    readonly autoFocus?: boolean;
     readonly onChangeValue: (value: number) => void;
 }
 
-export const AmountInput = ({ value, onChangeValue, inputClassName, status, ...rest }: Props) => {
+export const AmountInput = ({ value, onChangeValue, inputClassName, status, autoFocus, ...rest }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -72,6 +73,7 @@ export const AmountInput = ({ value, onChangeValue, inputClassName, status, ...r
             onFocus={handleFocus}
             onBlur={handleBlur}
             keyboardType="decimal-pad"
+            autoFocus={autoFocus}
             className={inputClassName}
             {...rest}
         />
