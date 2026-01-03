@@ -72,10 +72,12 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             recorderRef.current = null;
         }
 
-        try {
-            stt.streamStop();
-        } catch {
-            // Ignore stream stop errors
+        if (isRecordingRef.current) {
+            try {
+                stt.streamStop();
+            } catch {
+                // Ignore stream stop errors
+            }
         }
 
         isRecordingRef.current = false;
@@ -83,9 +85,11 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
     const runStreamTranscription = useCallback(async () => {
         try {
-            await stt.stream({ language: locale.languageCode as SpeechToTextLanguage });
-        } catch {
-            // Stream ended or error - this is expected when stopping
+            console.log('[STT] Starting stream with language:', locale.languageCode);
+            const result = await stt.stream({ language: locale.languageCode as SpeechToTextLanguage });
+            console.log('[STT] Stream completed with result:', result);
+        } catch (error) {
+            console.log('[STT] Stream error:', error);
         }
     }, [locale.languageCode, stt]);
 
@@ -100,11 +104,15 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             setAudioLevel(0);
             setIsVoiceDetected(false);
 
+            console.log('[STT] Raw transcription - committed:', stt.committedTranscription, 'partial:', stt.nonCommittedTranscription);
+
             const finalCommitted = filterTranscriptionTokens(stt.committedTranscription);
             const finalPartial = filterTranscriptionTokens(stt.nonCommittedTranscription);
             const finalText = filterTranscriptionTokens(
                 finalCommitted + (needsSpace(finalCommitted, finalPartial) ? ' ' : '') + finalPartial
             );
+
+            console.log('[STT] Final text after filtering:', finalText);
 
             void onComplete(finalText.trim()).finally(() => {
                 if (session.isCurrentSession(sessionId)) {
@@ -141,8 +149,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
             try {
                 stt.streamInsert(samples);
-            } catch {
-                // Ignore insert errors
+            } catch (error) {
+                console.log('[STT] streamInsert error:', error);
             }
 
             if (rms > SILENCE_THRESHOLD) {
