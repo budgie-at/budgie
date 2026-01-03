@@ -7,10 +7,10 @@ import { InputProps, inputVariant } from '../input/input';
 
 interface Props extends ComponentProps<typeof GorhomBottomSheetTextInput>, InputProps {}
 
-const TextInput = styled(GorhomBottomSheetTextInput, {
+const StyledTextInput = styled(GorhomBottomSheetTextInput, {
     className: 'style'
 });
 
 export const BottomSheetTextInput = ({ className, size = 'sm', status = 'default', ...rest }: Props) => (
-    <TextInput className={cn(inputVariant({ size, status }), className)} {...rest} />
+    <StyledTextInput className={cn(inputVariant({ size, status }), className)} {...rest} />
 );
