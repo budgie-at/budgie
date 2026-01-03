@@ -174,16 +174,22 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
         runStreamTranscription();
 
-        const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
-        recorderRef.current = recorder;
-        recorder.onAudioReady(({ buffer }) => {
-            if (!session.isCurrentSession(sessionId) || !isRecordingRef.current) {
+        setTimeout(() => {
+            if (!session.isCurrentSession(sessionId)) {
                 return;
             }
-            handleAudioBuffer(buffer.getChannelData(0), sessionId);
-        });
-        recorder.start();
-        resetSilenceTimeout(sessionId);
+
+            const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
+            recorderRef.current = recorder;
+            recorder.onAudioReady(({ buffer }) => {
+                if (!session.isCurrentSession(sessionId) || !isRecordingRef.current) {
+                    return;
+                }
+                handleAudioBuffer(buffer.getChannelData(0), sessionId);
+            });
+            recorder.start();
+            resetSilenceTimeout(sessionId);
+        }, 100);
     };
 
     useEffect(
