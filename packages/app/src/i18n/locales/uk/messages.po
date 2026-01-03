@@ -933,7 +933,7 @@ msgstr "Позичено"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:56
 msgid "Listening..."
-msgstr ""
+msgstr "Слухає..."
 
 #: src/settings/components/locale-selector/locale-selector.tsx:37
 msgid "Locale"
@@ -1421,7 +1421,7 @@ msgstr "Іспанська (Іспанія)"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:53
 msgid "Speaking..."
-msgstr ""
+msgstr "Говорить..."
 
 #: src/app/(tabs)/analytics.tsx:82
 msgid "Spending by Category"
@@ -1597,7 +1597,7 @@ msgstr "Транзакції синхронізовано"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:50
 msgid "Transcribing..."
-msgstr ""
+msgstr "Транскрибує..."
 
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"

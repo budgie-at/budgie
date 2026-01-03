@@ -933,7 +933,7 @@ msgstr "Prêté"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:56
 msgid "Listening..."
-msgstr ""
+msgstr "Écoute..."
 
 #: src/settings/components/locale-selector/locale-selector.tsx:37
 msgid "Locale"
@@ -1421,7 +1421,7 @@ msgstr "Espagnol (Espagne)"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:53
 msgid "Speaking..."
-msgstr ""
+msgstr "Parle..."
 
 #: src/app/(tabs)/analytics.tsx:82
 msgid "Spending by Category"
@@ -1597,7 +1597,7 @@ msgstr "Transactions synchronisées"
 
 #: src/ai/component/live-transcription/live-transcription.tsx:50
 msgid "Transcribing..."
-msgstr ""
+msgstr "Transcription..."
 
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
