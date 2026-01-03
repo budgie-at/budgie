@@ -18,7 +18,11 @@ import { AccountSelector } from '../../../account/component/account-selector/acc
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
 import { transactionService } from '../../service/transaction.service';
-import { TransactionForm } from '../transaction-form';
+import { TransactionFormAmount } from '../transaction-form/transaction-form.amount';
+import { TransactionFormCategory } from '../transaction-form/transaction-form.category';
+import { TransactionFormComment } from '../transaction-form/transaction-form.comment';
+import { TransactionFormMetadata } from '../transaction-form/transaction-form.metadata';
+import { TransactionFormRoot } from '../transaction-form/transaction-form.root';
 
 const EXCLUDED_ACCOUNT_TYPES = [AccountTypeEnum.DEBT];
 
@@ -84,7 +88,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
     }, [categoryId, form]);
 
     return (
-        <TransactionForm.Root
+        <TransactionFormRoot
             form={form}
             variant="destructive"
             title={t`New Expense`}
@@ -94,18 +98,18 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
             onSubmit={handleSubmit}
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                <TransactionForm.Amount />
+                <TransactionFormAmount />
 
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name="fromAccountId" control={form.control} />
 
-                    <TransactionForm.Category transactionType={TransactionTypeEnum.EXPENSE} />
+                    <TransactionFormCategory transactionType={TransactionTypeEnum.EXPENSE} />
 
-                    <TransactionForm.Metadata />
+                    <TransactionFormMetadata />
 
-                    <TransactionForm.Comment />
+                    <TransactionFormComment />
                 </FormLayoutGroup>
             </KeyboardAwareScrollView>
-        </TransactionForm.Root>
+        </TransactionFormRoot>
     );
 };
