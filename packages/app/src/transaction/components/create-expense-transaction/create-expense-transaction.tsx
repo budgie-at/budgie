@@ -15,8 +15,9 @@ import { TransactionFormAccountSelector } from '../transaction-form-account-sele
 import { TransactionFormAmount } from '../transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
+import { TransactionFormDateField } from '../transaction-form-date-field/transaction-form-date-field';
 import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
-import { TransactionFormMetadataFields } from '../transaction-form-meta-fields/transaction-form-meta-fields';
+import { TransactionFormTagsField } from '../transaction-form-tags-field/transaction-form-tags-field';
 
 interface Props {
     readonly categoryId?: number;
@@ -84,7 +85,10 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
                         variant="destructive"
                     />
 
-                    <TransactionFormMetadataFields control={form.control} variant="destructive" />
+                    <FormLayoutGroup variant="horizontal">
+                        <TransactionFormDateField control={form.control} variant="destructive" />
+                        <TransactionFormTagsField control={form.control} variant="destructive" />
+                    </FormLayoutGroup>
 
                     <TransactionFormComment control={form.control} />
                 </FormLayoutGroup>
