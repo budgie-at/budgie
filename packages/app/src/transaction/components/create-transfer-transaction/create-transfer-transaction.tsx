@@ -33,6 +33,7 @@ export const CreateTransferTransaction = ({ accountId }: Props) => {
             icon={UserIconNameEnum.ArrowRightLeft}
             onSubmit={handleSubmit}
             buttonText={t`Add Transfer`}
+            autoFocus={true}
         />
     );
 };

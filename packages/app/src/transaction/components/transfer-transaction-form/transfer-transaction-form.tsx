@@ -28,10 +28,11 @@ interface Props {
     readonly title: string;
     readonly buttonText: string;
     readonly variant: ColorPaletteVariant;
+    readonly autoFocus?: boolean;
 }
 
 export const TransferTransactionForm = (props: Props) => {
-    const { onSubmit, icon, control, setValue, setError, clearErrors, title, buttonText, variant } = props;
+    const { onSubmit, icon, control, setValue, setError, clearErrors, title, buttonText, variant, autoFocus } = props;
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -80,6 +81,7 @@ export const TransferTransactionForm = (props: Props) => {
                     control={control}
                     instrumentSymbol={account?.instrument.symbol ?? defaultInstrument.symbol}
                     onAmountChange={handleAmountChange}
+                    autoFocus={autoFocus}
                 />
 
                 <FormLayoutGroup>

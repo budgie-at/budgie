@@ -30,10 +30,11 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: 'toAccountId' | 'fromAccountId';
+    readonly autoFocus?: boolean;
 }
 
 export const LiabilityTransactionForm = (props: Props) => {
-    const { onSubmit, transactionType, setValue, control, icon, buttonText, title, variant, accountFieldName, onDelete } = props;
+    const { onSubmit, transactionType, setValue, control, icon, buttonText, title, variant, accountFieldName, onDelete, autoFocus } = props;
     const { defaultInstrument } = useSettingsContext();
     const { t } = useLingui();
 
@@ -84,7 +85,7 @@ export const LiabilityTransactionForm = (props: Props) => {
                 contentContainerClassName="pb-7xl"
                 showsVerticalScrollIndicator={false}
             >
-                <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} />
+                <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} autoFocus={autoFocus} />
 
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name={accountFieldName} control={control} />
