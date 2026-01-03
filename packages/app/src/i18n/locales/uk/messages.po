@@ -460,6 +460,10 @@ msgstr "Не вдалося оновити категорію"
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
+msgid "Count this account in your net worth calculation"
+msgstr ""
+
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
@@ -886,6 +890,10 @@ msgstr "Імпорт бази даних замінить усі поточні 
 #: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
+
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:22
+msgid "Include in Net Worth"
+msgstr ""
 
 #: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/constant/transaction-type.constant.ts:7
