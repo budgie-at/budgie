@@ -73,6 +73,8 @@ export default function RootLayout() {
 
                     void budgetService.ensureSingleActiveBudget();
                     void budgetService.checkAndTransitionActiveBudget();
+                    void budgetService.registerBackgroundTask();
+
                     void monobankSyncService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
