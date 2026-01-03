@@ -64,6 +64,10 @@ export class AccountRepository {
         });
     }
 
+    findAll() {
+        return this.db.query.AccountEntityTable.findMany();
+    }
+
     getAll() {
         return this.db.query.AccountEntityTable.findMany({
             where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),

@@ -14,6 +14,10 @@ import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 export class TagRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
+    findAll() {
+        return this.db.query.TagEntityTable.findMany();
+    }
+
     findByIds(ids: number[]) {
         return this.db.query.TagEntityTable.findMany({
             where: inArray(TagEntityTable.id, ids)
