@@ -92,6 +92,7 @@ export default function CreateTransferTransactionPage() {
                         variant="default"
                         instrumentSymbol={account?.instrument.symbol ?? defaultInstrument.symbol}
                         onAmountChange={handleAmountChange}
+                        autoFocus
                     />
 
                     <FormLayoutGroup>

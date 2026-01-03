@@ -76,7 +76,7 @@ export default function CreateExpenseTransactionPage() {
                 footer={<TransactionFormFooter variant="destructive" buttonText={t`Add Expense`} onSubmit={handleSubmit} />}
             >
                 <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
+                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" autoFocus />
 
                     <FormLayoutGroup>
                         <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />

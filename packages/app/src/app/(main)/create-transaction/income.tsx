@@ -59,7 +59,7 @@ export default function CreateIncomeTransactionPage() {
                 footer={<TransactionFormFooter variant="positive" buttonText={t`Add Income`} onSubmit={handleSubmit} />}
             >
                 <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" />
+                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" autoFocus />
 
                     <FormLayoutGroup>
                         <TransactionFormAccountSelector variant="positive" fieldName="toAccountId" />
