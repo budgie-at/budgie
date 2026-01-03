@@ -84,7 +84,7 @@ export const LiabilityTransactionForm = (props: Props) => {
                 contentContainerClassName="pb-7xl"
                 showsVerticalScrollIndicator={false}
             >
-                <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} />
+                <TransactionFormAmount setValue={setValue} instrumentSymbol={instrumentSymbol} control={control} variant={variant} autoFocus />
 
                 <FormLayoutGroup>
                     <Controller render={renderAccountSelector} name={accountFieldName} control={control} />
