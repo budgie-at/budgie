@@ -1,5 +1,5 @@
 import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
@@ -13,12 +13,12 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 interface Props {
     readonly onRemove: (index: number) => void;
     readonly variant: ColorPaletteVariant;
-    readonly control: Control<TransactionCreateInputInterface>;
     readonly selectedCategoryIds: number[];
     readonly index: number;
 }
 
-export const TransactionEntry = ({ variant, control, index, onRemove, selectedCategoryIds }: Props) => {
+export const TransactionEntry = ({ variant, index, onRemove, selectedCategoryIds }: Props) => {
+    const { control } = useFormContext<TransactionCreateInputInterface>();
     const { defaultInstrument, decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
