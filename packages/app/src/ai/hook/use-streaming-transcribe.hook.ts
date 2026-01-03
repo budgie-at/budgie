@@ -114,23 +114,44 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         setAudioLevel(0);
         setIsVoiceDetected(false);
 
-        const streamResult = streamPromiseRef.current ? await streamPromiseRef.current : '';
+        if (recorderRef.current) {
+            try {
+                recorderRef.current.stop();
+            } catch {
+                // Ignore stop errors
+            }
+            recorderRef.current = null;
+        }
 
-        await cleanupRecorder();
+        if (streamPromiseRef.current) {
+            try {
+                stt.streamStop();
+                const streamResult = await streamPromiseRef.current;
 
-        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-        console.log('[STT] Stream result:', streamResult);
+                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+                console.log('[STT] Stream result:', streamResult);
 
-        const finalText = filterTranscriptionTokens(streamResult);
+                const finalText = filterTranscriptionTokens(streamResult);
 
-        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-        console.log('[STT] Final text after filtering:', finalText);
+                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+                console.log('[STT] Final text after filtering:', finalText);
 
-        void onComplete(finalText.trim()).finally(() => {
-            if (session.isCurrentSession(sessionId)) {
+                void onComplete(finalText.trim()).finally(() => {
+                    if (session.isCurrentSession(sessionId)) {
+                        setStatus('idle');
+                    }
+                });
+            } catch (error) {
+                // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+                console.log('[STT] Error getting stream result:', error);
                 setStatus('idle');
             }
-        });
+
+            streamPromiseRef.current = null;
+        }
+
+        isRecordingRef.current = false;
+        clearSilenceTimeout();
     };
 
     const resetSilenceTimeout = (sessionId: number) => {
