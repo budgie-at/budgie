@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.106.0](https://github.com/budgie-at/budgie/compare/v1.105.0...v1.106.0) (2026-01-03)
+
+### Bug Fixes
+
+- **app:** use imperative focus for bottom sheet search input ([6c02a6f](https://github.com/budgie-at/budgie/commit/6c02a6f8bc02436783899cd90f5d22fca585ee19))
+
+### Features
+
+- **app:** auto-focus search input in category selector bottom sheet ([a9998c9](https://github.com/budgie-at/budgie/commit/a9998c991a7a78f1354cb9f631a3f7cf6ed85c63))
+
 # [1.105.0](https://github.com/budgie-at/budgie/compare/v1.104.0...v1.105.0) (2026-01-03)
 
 ### Bug Fixes
