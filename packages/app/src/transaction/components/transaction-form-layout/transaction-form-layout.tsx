@@ -43,9 +43,9 @@ export const TransactionFormLayout = ({ title, description, icon, onDelete, vari
                                 <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
                             ) : null}
                             <Button
-                                leftIcon={UserIconNameEnum.RefreshCw}
+                                leftIcon={UserIconNameEnum.CircleCheck}
                                 onPress={onSubmit}
-                                variant="positive"
+                                variant={variant}
                                 className="flex-1"
                                 content={buttonText}
                             />
