@@ -51,6 +51,7 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
             title={t`New Expense`}
             buttonText={t`Add Expense`}
             transactionType={TransactionTypeEnum.EXPENSE}
+            autoFocus={true}
         />
     );
 };
