@@ -460,6 +460,10 @@ msgstr "Impossible de mettre à jour la catégorie"
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
 
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
+msgid "Count this account in your net worth calculation"
+msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
+
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
 msgstr "Créer une sauvegarde de toutes vos données"
@@ -886,6 +890,10 @@ msgstr "L'importation d'une base de données remplacera toutes les données actu
 #: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Comptes inactifs"
+
+#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:22
+msgid "Include in Net Worth"
+msgstr "Inclure dans la valeur nette"
 
 #: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/constant/transaction-type.constant.ts:7
