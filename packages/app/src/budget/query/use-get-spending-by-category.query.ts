@@ -13,7 +13,7 @@ interface Props {
     readonly endDate?: Date;
 }
 
-interface CategorySpending {
+export interface CategorySpendingInterface {
     readonly categoryId: number;
     readonly total: number;
 }
@@ -58,10 +58,10 @@ export const useGetSpendingByCategoryQuery = ({ categoryIds, startDate, endDate 
     const { data, updatedAt, error } = useLiveQuery(query, [categoryIds, startDate, endDate]);
 
     if (!isDefined(updatedAt)) {
-        return { isLoading: true, spendingByCategory: [] as CategorySpending[], error };
+        return { isLoading: true, spendingByCategory: [] as CategorySpendingInterface[], error };
     }
 
-    const spendingByCategory: CategorySpending[] = [];
+    const spendingByCategory: CategorySpendingInterface[] = [];
     for (const item of data) {
         if (isDefined(item.categoryId)) {
             spendingByCategory.push({ categoryId: item.categoryId, total: item.total });

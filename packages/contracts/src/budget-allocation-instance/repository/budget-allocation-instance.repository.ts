@@ -1,5 +1,7 @@
 import { eq } from 'drizzle-orm';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { TX } from '../../@generic/type/db.type';
 import * as schema from '../../schema';
 import { BudgetAllocationInstanceCreateEntityInterface } from '../entity/budget-allocation-instance-create-entity.interface';
@@ -8,7 +10,6 @@ import { BudgetAllocationInstanceEntityTable } from '../table/budget-allocation-
 
 import type { BudgetAllocationInstanceEntityInterface } from '../entity/budget-allocation-instance-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
-import { isDefined } from '@rnw-community/shared';
 
 export class BudgetAllocationInstanceRepository {
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}

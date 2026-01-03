@@ -1,8 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { BudgetStatItem } from '../budget-stat-item/budget-stat-item';
 import { isPositiveNumber } from '@rnw-community/shared';
+
+import { BudgetStatItem } from '../budget-stat-item/budget-stat-item';
 
 interface Props {
     readonly categoriesCount: number;

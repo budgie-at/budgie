@@ -2,13 +2,10 @@ import { BudgetPeriodEnum, BudgetRolloverRuleEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-interface PeriodDates {
-    startDate: Date;
-    endDate: Date;
-}
+import { PeriodDatesInterface } from '../util/budget-analytics-calculations.util';
 
 class BudgetPeriodService {
-    calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()): PeriodDates {
+    calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()): PeriodDatesInterface {
         const year = referenceDate.getFullYear();
         const month = referenceDate.getMonth();
         const effectiveStartDay = Math.min(startDay, new Date(year, month + 1, 0).getDate());
@@ -27,7 +24,7 @@ class BudgetPeriodService {
         return { startDate, endDate };
     }
 
-    calculateWeeklyPeriodDates(startDay: number, referenceDate: Date = new Date()): PeriodDates {
+    calculateWeeklyPeriodDates(startDay: number, referenceDate: Date = new Date()): PeriodDatesInterface {
         const daysInWeek = 7;
         const dayOfWeek = referenceDate.getDay();
         const diff = dayOfWeek - (startDay % daysInWeek);
@@ -48,7 +45,7 @@ class BudgetPeriodService {
         referenceDate?: Date;
         customStartDate?: Date | null;
         customEndDate?: Date | null;
-    }): PeriodDates {
+    }): PeriodDatesInterface {
         const { period, startDay, referenceDate = new Date(), customStartDate, customEndDate } = options;
 
         if (period === BudgetPeriodEnum.CUSTOM && isDefined(customStartDate) && isDefined(customEndDate)) {
@@ -62,7 +59,7 @@ class BudgetPeriodService {
         return this.calculateMonthlyPeriodDates(startDay, referenceDate);
     }
 
-    calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date): PeriodDates {
+    calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date): PeriodDatesInterface {
         const startDate = new Date(currentPeriodEndDate);
         startDate.setDate(startDate.getDate() + 1);
         startDate.setHours(0, 0, 0, 0);
@@ -77,7 +74,7 @@ class BudgetPeriodService {
         return { startDate, endDate };
     }
 
-    calculateNextWeeklyPeriodDates(currentPeriodEndDate: Date): PeriodDates {
+    calculateNextWeeklyPeriodDates(currentPeriodEndDate: Date): PeriodDatesInterface {
         const daysInWeek = 7;
         const startDate = new Date(currentPeriodEndDate);
         startDate.setDate(startDate.getDate() + 1);

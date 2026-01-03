@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useBudgetAnalytics } from '../../hook/use-budget-analytics.hook';
 import { BudgetHealthCard } from '../budget-health-card/budget-health-card';
 import { BudgetHistoricalPeriods } from '../budget-historical-periods/budget-historical-periods';
@@ -22,7 +23,8 @@ const TOP_CATEGORIES_COUNT = 5;
 
 export const BudgetAnalyticsContent = ({ budget }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useFormatDigits(0);
+    const { decimalPlaces } = useSettingsContext();
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const analytics = useBudgetAnalytics(budget);
 

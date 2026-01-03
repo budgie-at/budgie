@@ -87,6 +87,27 @@ export const accountRepository = new AccountRepository(db);
   ```
 - Inline all logic in route components, avoid wrapper components
 
+### React Compiler (React 19)
+This project uses React 19 with React Compiler enabled. The compiler automatically memoizes components, values, and callbacks.
+
+**Rules:**
+- **Never use `useMemo`** - the compiler handles value memoization automatically
+- **Never use `useCallback`** - the compiler handles function memoization automatically
+- **Never use `React.memo`** - the compiler handles component memoization automatically
+- **Write simple, straightforward code** - the compiler optimizes it for you
+
+**Why:** Manual memoization is redundant with React Compiler and adds unnecessary complexity. The compiler analyzes your code and applies optimal memoization automatically.
+
+```tsx
+// Good - Let the compiler handle it
+const categoryIds = allocations.map(a => a.categoryId).filter(isDefined);
+const handleClick = () => void doSomething();
+
+// Bad - Unnecessary manual memoization
+const categoryIds = useMemo(() => allocations.map(a => a.categoryId).filter(isDefined), [allocations]);
+const handleClick = useCallback(() => void doSomething(), []);
+```
+
 ### Internationalization (Lingui) Usage Rules
 
 - **JSX translations**

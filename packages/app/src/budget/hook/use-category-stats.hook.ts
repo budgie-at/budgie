@@ -1,7 +1,8 @@
 import { BudgetAllocationEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
-import { calculateEffectivePlannedAmount } from '../util/calculate-effective-planned-amount.util';
 import { isPositiveNumber } from '@rnw-community/shared';
+
+import { calculateEffectivePlannedAmount } from '../util/calculate-budget-stats.util';
 
 interface SpendingByCategory {
     categoryId: number;

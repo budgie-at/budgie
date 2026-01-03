@@ -1,8 +1,9 @@
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
-import { AllocationFormValues } from '../../schema/allocation-form.schema';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { useLingui } from '@lingui/react/macro';
+import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+
+import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { AllocationFormValues } from '../../schema/allocation-form.schema';
 
 interface Props {
     readonly control: Control<AllocationFormValues>;
