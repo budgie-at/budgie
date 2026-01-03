@@ -7,7 +7,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../@generic/component/page/page';
 import { PageHeader } from '../../@generic/component/page-header/page-header';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../category/components/stats-by-categories/stats-by-categories';
@@ -82,7 +81,7 @@ export default function StatisticsPage() {
                         variant="destructive"
                         title={t`Spending by Category`}
                         stats={expenseByCategory}
-                        totalAmount={convertFromMicroUnits(expense)}
+                        totalAmount={expense}
                     />
                 ) : null}
             </ScrollView>
