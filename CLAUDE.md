@@ -77,10 +77,49 @@ export class AccountRepository {
 export const accountRepository = new AccountRepository(db);
 ```
 
-### Routing (Expo Router)
-- One component per route file
-- Prefer direct routes (`expense.tsx`, `income.tsx`) over dynamic with switch statements
-- Use nested folders for variants with router pattern:
+### Service Layer
+- Services are classes (not functions) that orchestrate business logic
+- Export singleton instances (e.g., `export const myService = new MyService()`)
+- Services compose API and repository layers
+- Public methods first, then private methods (follow `@typescript-eslint/member-ordering`)
+- **Never create wrapper methods** - Don't create service methods that just delegate to a single repository method. Use repository methods directly instead.
+  ```typescript
+  // Bad - Unnecessary wrapper method
+  class BudgetService {
+      async deleteBudget(id: number) {
+          return budgetRepository.deleteById(id);
+      }
+  }
+  // Usage: await budgetService.deleteBudget(id);
+
+  // Good - Use repository directly
+  // Usage: await budgetRepository.deleteById(id);
+  ```
+  Service methods should only exist when they:
+  - Orchestrate multiple repository/API calls
+  - Contain business logic beyond simple CRUD
+  - Manage transactions across multiple operations
+
+### Layered Architecture
+1. **API Layer:** External service communication (third-party APIs)
+2. **Repository Layer:** Database operations (SQLite via Drizzle)
+3. **Service Layer:** Business logic orchestration
+4. **Task Layer:** Background job registration (Expo TaskManager)
+
+### Background Tasks
+- Named with `.task.ts` suffix
+- Registration logic is part of the service class
+- Import task definitions in app entry point to ensure `TaskManager.defineTask` runs
+
+### Navigation & Routing
+- **Framework:** Expo Router (file-based routing)
+- **Structure:** Routes defined in `packages/app/src/app/`
+- **Tabs:** Main navigation uses tab layout in `app/(tabs)/`
+
+**Routing Architecture:**
+- **One component per file** - Each route file should export a single default component
+- **Direct routes over dynamic routes** - Prefer explicit route files (`expense.tsx`, `income.tsx`, `transfer.tsx`) over dynamic routes with switch statements (`[type].tsx`)
+- **Nested routes for variants** - When a resource has multiple forms/views, use nested folders:
   ```
   transactions/[id].tsx          # Router redirects by type
   transactions/[id]/expense.tsx  # Specific form

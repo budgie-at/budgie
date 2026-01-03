@@ -50,6 +50,10 @@ export class BudgetRepository {
         return budget;
     }
 
+    async deleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(BudgetEntityTable).where(eq(BudgetEntityTable.id, id));
+    }
+
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BudgetEntityTable);
     }

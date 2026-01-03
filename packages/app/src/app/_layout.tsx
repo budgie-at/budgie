@@ -70,13 +70,9 @@ export default function RootLayout() {
                     void accountBalanceIncrementalService.registerBackgroundTask();
 
                     void monobankSyncService.sync();
-
-                    void budgetService.ensureSingleActiveBudget();
-                    void budgetService.ensureActiveBudgetHasCurrentInstance();
-                    void budgetService.checkAndTransitionActiveBudget();
-                    void budgetService.registerBackgroundTask();
-
                     void monobankSyncService.registerBackgroundTask();
+
+                    void budgetService.initialize();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
                     console.log(getErrorMessage(e));
