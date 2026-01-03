@@ -309,7 +309,30 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
 3. **No type circumvention** - Never use `@ts-ignore`, `@ts-expect-error`, `as any`, or any form of type assertion
 4. **Never write comments** - Code should be self-documenting with clear method and variable names
 5. **Maximize TypeScript usage** - Leverage the type system fully, let TypeScript infer types when possible
-6. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+6. **Never use manual memoization** - React 19 with React Compiler handles optimization automatically. Never use:
+   - `useCallback` - Let React Compiler memoize functions automatically
+   - `useMemo` - Let React Compiler memoize values automatically
+   - `memo()` - Let React Compiler optimize component re-renders automatically
+
+   The only exception is `useMemo` for expensive non-rendering computations where you need explicit control.
+
+   ```typescript
+   // Good - Let React Compiler optimize
+   const handleClick = () => {
+       doSomething();
+   };
+
+   const value = { llm, stt };
+
+   // Bad - Manual memoization not needed
+   const handleClick = useCallback(() => {
+       doSomething();
+   }, []);
+
+   const value = useMemo(() => ({ llm, stt }), [llm, stt]);
+   ```
+
+7. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
    ```typescript
    // Good
    setShouldAutoFocus(sheetIndex >= 0);
@@ -322,7 +345,7 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
    }
    ```
 
-6. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+8. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
    ```tsx
    // Good - Explicit and clear
    return (
