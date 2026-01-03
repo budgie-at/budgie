@@ -1,20 +1,20 @@
 import { BudgetPeriodEnum } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 
-type TranslateFunction = (strings: TemplateStringsArray, ...values: unknown[]) => string;
-
-export const getStartDayLabel = (period: BudgetPeriodEnum, t: TranslateFunction): string => {
+export const getStartDayLabel = (period: BudgetPeriodEnum): MessageDescriptor => {
     if (period === BudgetPeriodEnum.WEEKLY || period === BudgetPeriodEnum.BI_WEEKLY) {
-        return t`Start Day of Week`;
+        return msg`Start Day of Week`;
     }
 
     if (period === BudgetPeriodEnum.YEARLY) {
-        return t`Start Month`;
+        return msg`Start Month`;
     }
 
     if (period === BudgetPeriodEnum.QUARTERLY) {
-        return t`Start Month of Quarter`;
+        return msg`Start Month of Quarter`;
     }
 
-    return t`Start Day of Month`;
+    return msg`Start Day of Month`;
 };
 

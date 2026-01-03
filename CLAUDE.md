@@ -110,29 +110,72 @@ const handleClick = useCallback(() => void doSomething(), []);
 
 ### Internationalization (Lingui) Usage Rules
 
-- **JSX translations**
-  Only the `Trans` component from `@lingui/react/macro` **must** be used directly inside JSX.
+- **JSX text content**
+  Use `Trans` component from `@lingui/react/macro` for text content inside JSX elements.
+
+- **Component props**
+  Use `t` function for passing translated strings to component props (e.g., `label`, `title`, `placeholder`).
+  **Never pass `<Trans>` as a prop value** - always use `t` for props.
 
 - **`t` function usage**
-  The `t` function obtained via `const { t } = useLingui();` **must not** be used directly in JSX.
-  It **may** be used:
-    - As an argument passed to a component (for example: `label={t\`Save\`}`)
-    - Outside of JSX (for example: in hooks, services, utilities, or conditional logic)
+  The `t` function obtained via `const { t } = useLingui();` **must not** be used directly in JSX text content.
+  It **must** be used for:
+    - Component props (e.g., `label={t\`Save\`}`, `title={t\`Settings\`}`)
+    - Variables outside JSX (e.g., `const title = t\`Accounts\`;`)
+
+- **Utility functions with i18n**
+  Import `msg` from `@lingui/core/macro` directly in utility functions. Return `MessageDescriptor` and use `i18n.t()` in the caller.
+  ```typescript
+  // Good - import msg directly, return MessageDescriptor
+  import { MessageDescriptor } from '@lingui/core';
+  import { msg } from '@lingui/core/macro';
+
+  const getLabel = (): MessageDescriptor => msg`Label`;
+
+  // In component:
+  const { i18n } = useLingui();
+  const label = i18n.t(getLabel());
+
+  // Bad - don't pass t/msg as function argument
+  const getLabel = (t: TranslateFunction): string => t`Label`;
+  ```
 
 - **Rationale**
   This ensures consistent message extraction, predictable rendering behavior, and avoids subtle runtime or tooling issues caused by inline `t()` usage in JSX.
 
 **Correct examples**:
 ```tsx
+// Text content - use Trans
 <Trans>Settings</Trans>
 
+// Props - use t function
 <Button title={t`Save`} />
+<MyComponent label={t`Name`} placeholder={t`Enter name`} />
 
+// Variable - use t function
 const title = t`Accounts`;
+
+// Utility function - import msg, return MessageDescriptor
+// utils/get-label.util.ts
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+
+export const getLabel = (): MessageDescriptor => msg`Label`;
+
+// Component - use i18n.t() to translate
+const { i18n } = useLingui();
+const label = i18n.t(getLabel());
 ```
-**Incorrect example**:
+**Incorrect examples**:
 ```tsx
+// Don't use t for text content
 <Text>{t`Settings`}</Text>
+
+// Don't use Trans for props
+<MyComponent label={<Trans>Name</Trans>} />
+
+// Don't pass translation function as argument
+const getLabel = (t: SomeType): string => t`Label`;
 ```
 
 ### Forms
@@ -285,6 +328,23 @@ const title = t`Accounts`;
 - **Functions:** Use module name as prefix (e.g., `exchangeRatesFetchApi`)
 - **Classes:** PascalCase (e.g., `AccountRepository`)
 - **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
+- **Types:** Store type aliases in separate `.type.ts` files with contextual names
+  ```typescript
+  // Bad - Inline type in component file
+  type StatusType = 'positive' | 'negative';
+  export const Component = () => { ... };
+
+  // Bad - Generic name without context
+  // status.type.ts
+  export type StatusType = 'positive' | 'negative';
+
+  // Good - Contextual name reflecting usage
+  // budget-amount-status.type.ts
+  export type BudgetAmountStatusType = 'positive' | 'negative';
+
+  // budget-amount-display.tsx
+  import { BudgetAmountStatusType } from './budget-amount-status.type';
+  ```
 
 ### Module Organization
 

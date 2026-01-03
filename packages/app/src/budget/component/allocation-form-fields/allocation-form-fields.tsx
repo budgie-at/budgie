@@ -1,17 +1,14 @@
 import { BudgetAllocationTypeEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
 import { useState } from 'react';
 import { Control, UseFormSetValue } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { AllocationFormValues } from '../../schema/allocation-form.schema';
 import { AllocationAmountField } from '../allocation-amount-field/allocation-amount-field';
 import { AllocationCategoryField } from '../allocation-category-field/allocation-category-field';
 import { AllocationPercentageField } from '../allocation-percentage-field/allocation-percentage-field';
 import { AllocationRolloverRuleField } from '../allocation-rollover-rule-field/allocation-rollover-rule-field';
+import { AllocationTypeToggle } from '../allocation-type-toggle/allocation-type-toggle';
 
 interface Props {
     readonly currencySymbol: string;
@@ -19,26 +16,6 @@ interface Props {
     readonly setValue: UseFormSetValue<AllocationFormValues>;
     readonly defaultAllocationType?: BudgetAllocationTypeEnum;
 }
-
-const buttonVariants = cva('flex-1 items-center py-3 rounded-xl border', {
-    variants: {
-        active: {
-            true: 'bg-primary border-primary',
-            false: 'bg-secondary-background border-secondary-corner'
-        }
-    },
-    defaultVariants: { active: false }
-});
-
-const buttonTextVariants = cva('text-sm font-medium', {
-    variants: {
-        active: {
-            true: 'text-primary-reverse',
-            false: 'text-secondary-foreground'
-        }
-    },
-    defaultVariants: { active: false }
-});
 
 export const AllocationFormFields = (props: Props) => {
     const { control, setValue, currencySymbol, defaultAllocationType = BudgetAllocationTypeEnum.FIXED } = props;
@@ -56,19 +33,7 @@ export const AllocationFormFields = (props: Props) => {
 
     return (
         <FormLayoutGroup>
-            <View className="flex-row gap-2 mb-4">
-                <HapticPressable onPress={handleSetFixed} className={buttonVariants({ active: isFixed })}>
-                    <Text className={buttonTextVariants({ active: isFixed })}>
-                        <Trans>Fixed Amount</Trans>
-                    </Text>
-                </HapticPressable>
-
-                <HapticPressable onPress={handleSetPercentage} className={buttonVariants({ active: !isFixed })}>
-                    <Text className={buttonTextVariants({ active: !isFixed })}>
-                        <Trans>% of Income</Trans>
-                    </Text>
-                </HapticPressable>
-            </View>
+            <AllocationTypeToggle isFixed={isFixed} onSelectFixed={handleSetFixed} onSelectPercentage={handleSetPercentage} />
 
             {isFixed ? (
                 <AllocationAmountField currencySymbol={currencySymbol} control={control} />

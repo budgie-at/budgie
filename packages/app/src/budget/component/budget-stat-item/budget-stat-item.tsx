@@ -1,6 +1,8 @@
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
+import { BudgetStatStatusType } from './budget-stat-status.type';
+
 const valueVariants = cva('text-lg font-bold', {
     variants: {
         status: {
@@ -11,12 +13,10 @@ const valueVariants = cva('text-lg font-bold', {
     }
 });
 
-type StatusType = 'warning' | 'positive' | 'neutral';
-
 interface Props {
     readonly value: number;
     readonly label: string;
-    readonly status: StatusType;
+    readonly status: BudgetStatStatusType;
 }
 
 export const BudgetStatItem = ({ value, label, status }: Props) => (

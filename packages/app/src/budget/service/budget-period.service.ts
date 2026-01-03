@@ -129,6 +129,7 @@ class BudgetPeriodService {
             period === BudgetPeriodEnum.WEEKLY ? { month: 'short', day: 'numeric' } : { month: 'short', year: 'numeric' };
 
         const formatted = startDate.toLocaleDateString('en-US', options);
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Service layer cannot use Lingui hooks
         const WEEK_PREFIX = 'Week of ';
 
         if (period === BudgetPeriodEnum.WEEKLY) {
