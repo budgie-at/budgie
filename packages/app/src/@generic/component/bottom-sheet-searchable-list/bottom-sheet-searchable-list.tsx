@@ -1,5 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { JSX, RefObject, useState } from 'react';
+import { JSX, RefObject, useRef } from 'react';
+import { InteractionManager } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -65,16 +67,20 @@ export const SearchableListBottomSheet = <T,>({
     emptyIcon
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
-    const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
+    const inputRef = useRef<TextInput>(null);
 
     const handleSheetChange = (sheetIndex: number) => {
-        setShouldAutoFocus(sheetIndex >= 0);
+        if (sheetIndex >= 0) {
+            InteractionManager.runAfterInteractions(() => {
+                inputRef.current?.focus();
+            });
+        }
     };
 
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
-            <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} autoFocus={shouldAutoFocus} />
+            <BottomSheetSearch ref={inputRef} onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
