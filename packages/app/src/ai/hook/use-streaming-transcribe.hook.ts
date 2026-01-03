@@ -158,6 +158,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
         resetRecordingState();
 
+        void runStreamTranscription();
+
         const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
         recorderRef.current = recorder;
         recorder.onAudioReady(({ buffer }) => {
@@ -168,7 +170,6 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         });
         recorder.start();
         resetSilenceTimeout(sessionId);
-        void runStreamTranscription();
     }, [cleanupRecorder, handleAudioBuffer, resetRecordingState, resetSilenceTimeout, runStreamTranscription, session]);
 
     useEffect(() => cleanupRecorder, [cleanupRecorder]);
