@@ -49,15 +49,12 @@ export const useAiTransaction = (llm: LlmType, prompt: string) => {
         [categories]
     );
 
-    const systemPrompt = t`Reply with ONLY the number of the best matching category. No text, just the number.
+    const categoryCount = categories.length;
+    const systemPrompt = t`You categorize expenses. Output ONLY a number (1-${categoryCount}).
 
-Categories:
 ${categoriesWithIds}
 
-Examples:
-"coffee 5 euros" → 1
-"uber ride" → 2
-"netflix" → 3`;
+User says expense, you reply with the category number only.`;
 
     const reset = () => void setAiTransaction(null);
     const fillCategory = useCallback(

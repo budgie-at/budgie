@@ -27,6 +27,17 @@ interface Props {
     readonly onAccountChange: (accountId: number) => void;
 }
 
+/* eslint-disable lingui/no-unlocalized-strings */
+const CONFIRM_BUTTON_ENABLED = 'flex-1 py-4xl rounded-2xl bg-positive-background items-center justify-center';
+const CONFIRM_BUTTON_DISABLED = 'flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center opacity-50';
+const ACCOUNT_TEXT_SELECTED = 'text-primary text-lg font-semibold';
+const ACCOUNT_TEXT_MISSING = 'text-warning-foreground text-lg font-semibold';
+const ICON_CLASS_ENABLED = 'text-positive-foreground';
+const ICON_CLASS_DISABLED = 'text-secondary-foreground';
+const TEXT_CLASS_ENABLED = 'text-positive-foreground font-medium';
+const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
+/* eslint-enable lingui/no-unlocalized-strings */
+
  
 export const AiTransactionPreviewCard = (props: Props) => {
     const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
@@ -45,6 +56,11 @@ export const AiTransactionPreviewCard = (props: Props) => {
 
     const variant = TRANSACTION_COLOR[type];
     const categoryIcon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
+    const canConfirm = isDefined(selectedAccount);
+    const confirmButtonClass = canConfirm ? CONFIRM_BUTTON_ENABLED : CONFIRM_BUTTON_DISABLED;
+    const accountTextClass = canConfirm ? ACCOUNT_TEXT_SELECTED : ACCOUNT_TEXT_MISSING;
+    const confirmIconClass = canConfirm ? ICON_CLASS_ENABLED : ICON_CLASS_DISABLED;
+    const confirmTextClass = canConfirm ? TEXT_CLASS_ENABLED : TEXT_CLASS_DISABLED;
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
@@ -54,11 +70,8 @@ export const AiTransactionPreviewCard = (props: Props) => {
             <Card className="mt-4 p-5xl gap-y-4xl">
                 <HapticPressable onPress={handleOpenCategorySheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={categoryIcon} variant={variant} />
-
                     <View className="flex-1">
-                        <Text className="text-secondary-foreground text-xs uppercase">
-                            <Trans>Category</Trans>
-                        </Text>
+                        <Text className="text-secondary-foreground text-xs uppercase"><Trans>Category</Trans></Text>
                         <Text className="text-primary text-lg font-semibold">
                             {isDefined(category) ? category.title : t`Unknown Category`}
                         </Text>
@@ -68,12 +81,9 @@ export const AiTransactionPreviewCard = (props: Props) => {
 
                 <HapticPressable onPress={handleOpenAccountSheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={accountIcon} variant="ghost" />
-
                     <View className="flex-1">
-                        <Text className="text-secondary-foreground text-xs uppercase">
-                            <Trans>Account</Trans>
-                        </Text>
-                        <Text className="text-primary text-lg font-semibold">
+                        <Text className="text-secondary-foreground text-xs uppercase"><Trans>Account</Trans></Text>
+                        <Text className={accountTextClass}>
                             {isDefined(selectedAccount) ? selectedAccount.title : t`Select Account`}
                         </Text>
                     </View>
@@ -81,36 +91,24 @@ export const AiTransactionPreviewCard = (props: Props) => {
                 </HapticPressable>
 
                 <View className="bg-secondary-background rounded-2xl p-4xl">
-                    <Text className="text-secondary-foreground text-xs uppercase mb-xs">
-                        <Trans>Amount</Trans>
-                    </Text>
+                    <Text className="text-secondary-foreground text-xs uppercase mb-xs"><Trans>Amount</Trans></Text>
                     <Text className="text-destructive-foreground text-2xl font-bold">
                         {formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol)}
                     </Text>
                 </View>
 
                 <View className="flex-row gap-x-lg">
-                    <HapticPressable
-                        onPress={onCancel}
-                        className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center"
-                    >
+                    <HapticPressable onPress={onCancel} className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center">
                         <View className="flex-row items-center gap-x-sm">
                             <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
-                            <Text className="text-secondary-foreground font-medium">
-                                <Trans>Cancel</Trans>
-                            </Text>
+                            <Text className="text-secondary-foreground font-medium"><Trans>Cancel</Trans></Text>
                         </View>
                     </HapticPressable>
 
-                    <HapticPressable
-                        onPress={onConfirm}
-                        className="flex-1 py-4xl rounded-2xl bg-positive-background items-center justify-center"
-                    >
+                    <HapticPressable disabled={!canConfirm} onPress={onConfirm} className={confirmButtonClass}>
                         <View className="flex-row items-center gap-x-sm">
-                            <Icon icon={UserIconNameEnum.Check} size={18} className="text-positive-foreground" />
-                            <Text className="text-positive-foreground font-medium">
-                                <Trans>Confirm</Trans>
-                            </Text>
+                            <Icon icon={UserIconNameEnum.Check} size={18} className={confirmIconClass} />
+                            <Text className={confirmTextClass}><Trans>Confirm</Trans></Text>
                         </View>
                     </HapticPressable>
                 </View>
