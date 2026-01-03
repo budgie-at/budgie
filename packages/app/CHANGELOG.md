@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.102.7](https://github.com/budgie-at/budgie/compare/v1.102.6...v1.102.7) (2026-01-03)
+
+### Bug Fixes
+
+- update button icon and variant for transaction form layout ([013d5f3](https://github.com/budgie-at/budgie/commit/013d5f35abb6e6977ca122876d0c3af7d5873b90))
+- update totalAmount for expense-by-category analytics ([709f04c](https://github.com/budgie-at/budgie/commit/709f04cbe68377e7681143fbb6611e5ace80db4c))
+
 ## [1.102.6](https://github.com/budgie-at/budgie/compare/v1.102.5...v1.102.6) (2026-01-03)
 
 ### Bug Fixes
