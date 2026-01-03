@@ -39,11 +39,11 @@ msgstr "{iconsCount} icônes disponibles"
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} compte"
 
-#: src/app/(tabs)/analytics.tsx:35
+#: src/app/(tabs)/analytics.tsx:34
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% des dépenses"
 
-#: src/app/(tabs)/analytics.tsx:34
+#: src/app/(tabs)/analytics.tsx:33
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
@@ -63,7 +63,8 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:59
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:74
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:60
 msgid "Account"
 msgstr "Compte"
 
@@ -147,13 +148,9 @@ msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 msgid "Adjustment"
 msgstr "Ajustement"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:28
+#: src/ai/component/ai-chat-button/ai-chat-button.tsx:29
 msgid "AI"
 msgstr "IA"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
-msgid "AI Suggestion"
-msgstr "Suggestion IA"
 
 #: src/app/(main)/settings/index.tsx:142
 msgid ""
@@ -184,11 +181,11 @@ msgid "Already syncing"
 msgstr "Déjà en cours de synchronisation"
 
 #: src/app/(main)/settings/import.tsx:201
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
 msgid "Amount"
 msgstr "Montant"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:50
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:51
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
@@ -246,7 +243,7 @@ msgstr "Synchroniser automatiquement les comptes et transactions de Monobank"
 msgid "Available Columns"
 msgstr "Colonnes disponibles"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/app/(tabs)/analytics.tsx:64
 msgid "Balance"
 msgstr "Solde"
 
@@ -288,7 +285,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:260
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:100
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -309,6 +306,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(main)/settings/import.tsx:185
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:40
 msgid "Category"
 msgstr "Catégorie"
@@ -403,7 +401,7 @@ msgstr "Commentaire"
 msgid "Common Tags"
 msgstr "Étiquettes fréquentes"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:87
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:112
 msgid "Confirm"
 msgstr "Confirmer"
 
@@ -517,7 +515,7 @@ msgstr "Créer des étiquettes"
 msgid "Create tags to organize your transactions"
 msgstr "Créez des étiquettes pour organiser vos transactions"
 
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:66
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:67
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:78
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:103
 msgid "Create your first account to start tracking transactions"
@@ -895,12 +893,12 @@ msgstr "Comptes inactifs"
 msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
 
-#: src/app/(tabs)/analytics.tsx:64
+#: src/app/(tabs)/analytics.tsx:63
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Revenu"
 
-#: src/app/(tabs)/analytics.tsx:73
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Revenus par catégorie"
 
@@ -932,6 +930,10 @@ msgstr "Dernière synchronisation"
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
 msgstr "Prêté"
+
+#: src/ai/component/live-transcription/live-transcription.tsx:56
+msgid "Listening..."
+msgstr ""
 
 #: src/settings/components/locale-selector/locale-selector.tsx:37
 msgid "Locale"
@@ -981,7 +983,7 @@ msgstr "Monobank"
 msgid "Move between accounts"
 msgstr "Transférer entre comptes"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:69
+#: src/transaction/components/transfer-transaction-form/transfer-transaction-form.tsx:70
 msgid "Move Money"
 msgstr "Transférer de l'argent"
 
@@ -1082,7 +1084,7 @@ msgstr "Aucune transaction correspondante"
 msgid "No Results"
 msgstr "Aucun résultat"
 
-#: src/app/(main)/ai.tsx:37
+#: src/app/(main)/ai.tsx:50
 msgid "No speech detected"
 msgstr "Aucune parole détectée"
 
@@ -1131,7 +1133,7 @@ msgstr "Organisation"
 msgid "Over:"
 msgstr "Excédent :"
 
-#: src/app/(tabs)/analytics.tsx:54
+#: src/app/(tabs)/analytics.tsx:53
 msgid "Overview"
 msgstr "Aperçu"
 
@@ -1310,6 +1312,7 @@ msgid "Select account"
 msgstr "Sélectionner un compte"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:77
 msgid "Select Account"
 msgstr "Sélectionner un compte"
 
@@ -1326,7 +1329,7 @@ msgid "Select category"
 msgstr "Sélectionner une catégorie"
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
-#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:80
+#: src/transaction/components/liability-transaction-form/liability-transaction-form.tsx:81
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
 
@@ -1416,11 +1419,15 @@ msgstr "Espagnol"
 msgid "Spanish (Spain)"
 msgstr "Espagnol (Espagne)"
 
-#: src/app/(tabs)/analytics.tsx:83
+#: src/ai/component/live-transcription/live-transcription.tsx:53
+msgid "Speaking..."
+msgstr ""
+
+#: src/app/(tabs)/analytics.tsx:82
 msgid "Spending by Category"
 msgstr "Dépenses par catégorie"
 
-#: src/app/(tabs)/analytics.tsx:60
+#: src/app/(tabs)/analytics.tsx:59
 msgid "Spent"
 msgstr "Dépensé"
 
@@ -1440,7 +1447,7 @@ msgstr "Démarrer la synchronisation"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
-#: src/app/(tabs)/analytics.tsx:40
+#: src/app/(tabs)/analytics.tsx:39
 msgid "Statistics"
 msgstr "Statistiques"
 
@@ -1588,6 +1595,10 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
+#: src/ai/component/live-transcription/live-transcription.tsx:50
+msgid "Transcribing..."
+msgstr ""
+
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Virement"
@@ -1622,7 +1633,7 @@ msgstr "Ukrainien"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:63
 msgid "Unknown Category"
 msgstr "Catégorie inconnue"
 
@@ -1699,7 +1710,7 @@ msgstr "Vous avez reçu de l'argent"
 msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
 msgstr "Votre objectif est de retourner UNE SEULE catégorie correspondant le mieux, UNIQUEMENT LE NOM DE cette liste <CategoryList>{categoriesList}</CategoryList> en fonction du message de l'utilisateur, sans réponse, sans texte supplémentaire, uniquement la catégorie de la liste."
 
-#: src/app/(main)/ai.tsx:77
+#: src/ai/component/live-transcription/live-transcription.tsx:62
 msgid "Your message:"
 msgstr "Votre message:"
 
