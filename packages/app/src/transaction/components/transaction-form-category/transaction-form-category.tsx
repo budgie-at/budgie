@@ -1,6 +1,6 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, UseControllerReturn, UseFormSetValue, useWatch } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -8,15 +8,14 @@ import { CategorySelector } from '../../../category/components/category-selector
 import { TransactionSplit } from '../transaction-split/transaction-split';
 
 interface Props {
-    readonly control: Control<TransactionCreateInputInterface>;
-    readonly setValue: UseFormSetValue<TransactionCreateInputInterface>;
     readonly transactionType: TransactionTypeEnum;
     readonly variant: ColorPaletteVariant;
     readonly accountId: number;
 }
 
-export const TransactionFormCategory = ({ variant, control, accountId, transactionType }: Props) => {
+export const TransactionFormCategory = ({ variant, accountId, transactionType }: Props) => {
     const { t } = useLingui();
+    const { control } = useFormContext<TransactionCreateInputInterface>();
 
     const [entries, totalAmount] = useWatch({
         control,
@@ -46,7 +45,6 @@ export const TransactionFormCategory = ({ variant, control, accountId, transacti
                 accountId={accountId}
                 entries={entries}
                 variant={variant}
-                control={control}
             />
         </FormItem>
     );
