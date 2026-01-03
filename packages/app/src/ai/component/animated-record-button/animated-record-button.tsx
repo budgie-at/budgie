@@ -1,16 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 
 import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
-import { LoadingRing } from './loading-ring';
-import { PulseRing } from './pulse-ring';
-import { SpinnerRing } from './spinner-ring';
-import { ThinkingRing } from './thinking-ring';
+import { LoadingRing } from '../loading-ring/loading-ring';
+import { PulseRing } from '../pulse-ring/pulse-ring';
+import { SpinnerRing } from '../spinner-ring/spinner-ring';
+import { ThinkingRing } from '../thinking-ring/thinking-ring';
 
 type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
 
@@ -25,22 +25,6 @@ interface Props {
 const ICON_SIZE = 32;
 const AUDIO_THRESHOLD = 0.05;
 const SCALE_MULTIPLIER = 0.1;
-
-const styles = StyleSheet.create({
-    button: {
-        alignItems: 'center',
-        borderRadius: BUTTON_SIZE / 2,
-        height: BUTTON_SIZE,
-        justifyContent: 'center',
-        width: BUTTON_SIZE
-    },
-    container: {
-        alignItems: 'center',
-        height: RING_SIZE,
-        justifyContent: 'center',
-        width: RING_SIZE
-    }
-});
 
 const getButtonColor = (state: ButtonState): string => {
     'worklet';
@@ -80,14 +64,16 @@ export const AnimatedRecordButton = ({ state, audioLevel = 0, downloadProgress =
 
     const buttonAnimatedStyle = useAnimatedStyle(() => ({
         backgroundColor: getButtonColor(state),
+        borderRadius: BUTTON_SIZE / 2,
+        height: BUTTON_SIZE,
+        width: BUTTON_SIZE,
         transform: [{ scale: buttonScale.value }]
     }));
 
-    const buttonStyle = [styles.button, buttonAnimatedStyle];
     const isDisabled = disabled ?? (state === 'loading' || state === 'transcribing' || state === 'thinking');
 
     return (
-        <View style={styles.container}>
+        <View className="items-center justify-center" style={{ height: RING_SIZE, width: RING_SIZE }}>
             {state === 'loading' && <LoadingRing progress={downloadProgress} />}
             {state === 'recording' && (
                 <>
@@ -100,7 +86,7 @@ export const AnimatedRecordButton = ({ state, audioLevel = 0, downloadProgress =
             {state === 'thinking' && <ThinkingRing />}
 
             <HapticPressable disabled={isDisabled} onPress={onPress}>
-                <Animated.View style={buttonStyle}>
+                <Animated.View className="items-center justify-center" style={buttonAnimatedStyle}>
                     <Icon icon={getIcon(state)} size={ICON_SIZE} className="text-white" />
                 </Animated.View>
             </HapticPressable>

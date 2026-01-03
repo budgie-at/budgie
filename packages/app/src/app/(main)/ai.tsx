@@ -6,7 +6,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { Page } from '../../@generic/component/page/page';
 import { BottomSheetsProvider } from '../../@generic/providers/bottom-sheets.provider';
-import { AnimatedRecordButton } from '../../ai/component/record-button/animated-record-button';
+import { AnimatedRecordButton } from '../../ai/component/animated-record-button/animated-record-button';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
 import { useLlmGeneration } from '../../ai/hook/use-llm-generation.hook';

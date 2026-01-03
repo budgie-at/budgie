@@ -8,9 +8,8 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { THINKING_COLOR } from './animated-record-button.constant';
-import { BaseRing } from './base-ring';
-import { ringContainerStyle } from './ring-container.style';
+import { RING_SIZE, THINKING_COLOR } from '../animated-record-button/animated-record-button.constant';
+import { BaseRing } from '../base-ring/base-ring';
 
 const PULSE_DURATION = 1500;
 const MIN_OPACITY = 0.3;
@@ -26,14 +25,14 @@ export const ThinkingRing = () => {
     }, [progress]);
 
     const animatedStyle = useAnimatedStyle(() => ({
+        height: RING_SIZE,
+        width: RING_SIZE,
         opacity: interpolate(progress.value, [0, 1], [MIN_OPACITY, MAX_OPACITY]),
         transform: [{ scale: interpolate(progress.value, [0, 1], [MIN_SCALE, MAX_SCALE]) }]
     }));
 
-    const combinedStyle = [ringContainerStyle, animatedStyle];
-
     return (
-        <Animated.View style={combinedStyle}>
+        <Animated.View className="absolute left-0 top-0 items-center justify-center" style={animatedStyle}>
             <BaseRing stroke={THINKING_COLOR} />
         </Animated.View>
     );
