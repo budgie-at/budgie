@@ -1,12 +1,15 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { useWatch } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { Page } from '../../../@generic/component/page/page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useCreateTransactionForm } from '../../hook/use-create-transaction-form.hook';
@@ -16,7 +19,7 @@ import { TransactionFormAmount } from '../transaction-form-amount/transaction-fo
 import { TransactionFormCategory } from '../transaction-form-category/transaction-form-category';
 import { TransactionFormComment } from '../transaction-form-comment/transaction-form-comment';
 import { TransactionFormDateField } from '../transaction-form-date-field/transaction-form-date-field';
-import { TransactionFormLayout } from '../transaction-form-layout/transaction-form-layout';
+import { TransactionFormFooter } from '../transaction-form-footer/transaction-form-footer';
 import { TransactionFormTagsField } from '../transaction-form-tags-field/transaction-form-tags-field';
 
 interface Props {
@@ -40,7 +43,6 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
-    const entries = useWatch({ control: form.control, name: 'entries' });
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
@@ -56,43 +58,43 @@ export const CreateExpenseTransaction = ({ categoryId, amount, accountId }: Prop
         }
     }, [categoryId, form]);
 
+    const handleGoBack = () => void goBackOrReplace('/');
+
     return (
-        <TransactionFormLayout
-            title={t`New Expense`}
-            description={t`Select Category`}
-            icon={UserIconNameEnum.TrendingDown}
-            variant="destructive"
-            buttonText={t`Add Expense`}
-            onSubmit={handleSubmit}
-        >
-            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
-                <TransactionFormAmount setValue={form.setValue} instrumentSymbol={instrumentSymbol} control={form.control} variant="destructive" />
-
-                <FormLayoutGroup>
-                    <TransactionFormAccountSelector
-                        control={form.control}
-                        setValue={form.setValue}
-                        entries={entries}
-                        variant="destructive"
-                        fieldName="fromAccountId"
+        <FormProvider {...form}>
+            <Page
+                header={
+                    <PageHeader
+                        title={t`New Expense`}
+                        description={t`Select Category`}
+                        icon={UserIconNameEnum.TrendingDown}
+                        iconVariant="destructive"
+                        onGoBack={handleGoBack}
                     />
+                }
+                footer={<TransactionFormFooter variant="destructive" buttonText={t`Add Expense`} onSubmit={handleSubmit} />}
+            >
+                <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
-                    <TransactionFormCategory
-                        transactionType={TransactionTypeEnum.EXPENSE}
-                        accountId={fromAccountId ?? 0}
-                        setValue={form.setValue}
-                        control={form.control}
-                        variant="destructive"
-                    />
+                    <FormLayoutGroup>
+                        <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
 
-                    <FormLayoutGroup variant="horizontal">
-                        <TransactionFormDateField control={form.control} variant="destructive" />
-                        <TransactionFormTagsField control={form.control} variant="destructive" />
+                        <TransactionFormCategory
+                            transactionType={TransactionTypeEnum.EXPENSE}
+                            accountId={fromAccountId ?? 0}
+                            variant="destructive"
+                        />
+
+                        <FormLayoutGroup variant="horizontal">
+                            <TransactionFormDateField variant="destructive" />
+                            <TransactionFormTagsField variant="destructive" />
+                        </FormLayoutGroup>
+
+                        <TransactionFormComment />
                     </FormLayoutGroup>
-
-                    <TransactionFormComment control={form.control} />
-                </FormLayoutGroup>
-            </KeyboardAwareScrollView>
-        </TransactionFormLayout>
+                </KeyboardAwareScrollView>
+            </Page>
+        </FormProvider>
     );
 };
