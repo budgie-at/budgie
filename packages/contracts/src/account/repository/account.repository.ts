@@ -1,4 +1,4 @@
-import { and, count, desc, eq, inArray, isNotNull, isNull, ne, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -25,7 +25,11 @@ export class AccountRepository {
     }
 
     async updateById(id: number, input: AccountUpdateEntityInterface, tx?: TX): Promise<AccountEntityInterface> {
-        const [account] = await (tx ?? this.db).update(AccountEntityTable).set(input).where(eq(AccountEntityTable.id, id)).returning();
+        const [account] = await (tx ?? this.db)
+            .update(AccountEntityTable)
+            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+            .where(eq(AccountEntityTable.id, id))
+            .returning();
 
         return account;
     }
@@ -100,7 +104,10 @@ export class AccountRepository {
     }
 
     async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: TX): Promise<AccountEntityInterface[]> {
-        return await (tx ?? this.db).insert(AccountEntityTable).values(inputs).returning();
+        return await (tx ?? this.db)
+            .insert(AccountEntityTable)
+            .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
+            .returning();
     }
 
     async truncate(tx?: TX): Promise<void> {
@@ -113,7 +120,7 @@ export class AccountRepository {
         return and(
             isNull(AccountEntityTable.parentId),
             isNull(AccountEntityTable.deletedAt),
-            sql`LOWER(${AccountEntityTable.title}) LIKE ${`%${search.toLowerCase()}%`}`,
+            like(AccountEntityTable.titleSearch, `%${search.toLowerCase()}%`),
             isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
             isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
         );

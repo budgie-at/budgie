@@ -138,6 +138,7 @@ entity-name/
 - **Schema Location:** `packages/app/src/@generic/drizzle/db/schema.ts`
 - **Migration Generation:** `yarn db:generate` in packages/app
 - **Pattern:** Repository pattern with expert OOP classes
+- **After table changes in contracts:** Always run `cd packages/app && yarn db:generate` to generate migrations
 
 ### Repository Pattern
 
@@ -307,7 +308,23 @@ app/(main)/
    }
    ```
 
-6. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+7. **Avoid unnecessary variables** - Only create variables when they add semantic meaning or improve readability. Inline expressions when the logic is self-explanatory.
+   ```typescript
+   // Good - Inlined, logic is clear
+   .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+
+   // Bad - Unnecessary variable for simple conditional
+   const titleFields = isDefined(input.title) ? { titleSearch: input.title.toLowerCase() } : {};
+   .set({ ...input, ...titleFields })
+
+   // Good - Variable adds semantic meaning for complex logic
+   const isTransferBetweenOwnAccounts =
+       transaction.type === TransactionTypeEnum.TRANSFER &&
+       syncedAccountIds.has(transaction.fromAccountId) &&
+       syncedAccountIds.has(transaction.toAccountId);
+   ```
+
+8. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
    ```tsx
    // Good - Explicit and clear
    return (

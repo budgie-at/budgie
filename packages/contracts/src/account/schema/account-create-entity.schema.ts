@@ -2,15 +2,19 @@ import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-crea
 
 import { AccountEntitySchema } from './account-entity.schema';
 
-export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEntitySchema).partial({
-    iban: true,
-    debtType: true,
-    deadline: true,
-    parentId: true,
-    contactId: true,
-    externalId: true,
-    targetBalance: true,
-    externalSource: true,
-    includeInNetWorth: true,
-    isActive: true
-});
+export const AccountCreateEntitySchema = convertToCreateEntitySchema(AccountEntitySchema)
+    .omit({
+        titleSearch: true
+    })
+    .partial({
+        iban: true,
+        debtType: true,
+        deadline: true,
+        parentId: true,
+        contactId: true,
+        externalId: true,
+        targetBalance: true,
+        externalSource: true,
+        includeInNetWorth: true,
+        isActive: true
+    });
