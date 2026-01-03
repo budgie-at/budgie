@@ -80,6 +80,7 @@ export const TransferTransactionForm = (props: Props) => {
                     control={control}
                     instrumentSymbol={account?.instrument.symbol ?? defaultInstrument.symbol}
                     onAmountChange={handleAmountChange}
+                    autoFocus
                 />
 
                 <FormLayoutGroup>
