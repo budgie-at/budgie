@@ -10,17 +10,18 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
+    readonly autoFocus?: boolean;
     readonly onAmountChange: (amount: number) => void;
 }
 
-export const TransactionFormAmountBase = ({ variant, instrumentSymbol, onAmountChange }: Props) => {
+export const TransactionFormAmountBase = ({ variant, instrumentSymbol, onAmountChange, autoFocus }: Props) => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
     const renderAmountInput = ({
         field: { value },
         fieldState: { error }
     }: UseControllerReturn<TransactionCreateInputInterface, 'amount'>) => (
         <View>
-            <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={onAmountChange} />
+            <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={onAmountChange} autoFocus={autoFocus} />
 
             {isNotEmptyString(error?.message) ? (
                 <Text className="font-semibold text-xs text-destructive-foreground bg-destructive-background border border-destructive-corner p-lg rounded-5xl text-center mb-3xl">

@@ -8,9 +8,10 @@ import { TransactionFormAmountBase } from './transaction-form-amount-base';
 interface Props {
     readonly instrumentSymbol: string;
     readonly variant: ColorPaletteVariant;
+    readonly autoFocus?: boolean;
 }
 
-export const TransactionFormAmount = ({ variant, instrumentSymbol }: Props) => {
+export const TransactionFormAmount = ({ variant, instrumentSymbol, autoFocus }: Props) => {
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const entries = useWatch<TransactionCreateInputInterface, 'entries'>({ control, name: 'entries' });
 
@@ -27,6 +28,7 @@ export const TransactionFormAmount = ({ variant, instrumentSymbol }: Props) => {
             variant={variant}
             instrumentSymbol={instrumentSymbol}
             onAmountChange={handleAmountChange}
+            autoFocus={autoFocus}
         />
     );
 };
