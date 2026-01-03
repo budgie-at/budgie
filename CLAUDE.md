@@ -195,6 +195,43 @@ export const accountRepository = new AccountRepository(db);
 - TanStack Query for server state (mentioned in README)
 - Zustand/Jotai for client state (mentioned in README)
 
+### Forms
+- **Library:** React Hook Form + Zod validation
+- **Best Practice:** Use `FormProvider` and `useFormContext` to avoid prop drilling
+  ```tsx
+  // Good - Use FormProvider at form root
+  import { FormProvider } from 'react-hook-form';
+
+  const MyForm = () => {
+      const form = useForm();
+      return (
+          <FormProvider {...form}>
+              <FormField name="email" />
+              <FormField name="password" />
+          </FormProvider>
+      );
+  };
+
+  // Good - Use useFormContext in child components
+  import { useFormContext } from 'react-hook-form';
+
+  const FormField = ({ name }) => {
+      const { control, formState } = useFormContext();
+      return <Controller name={name} control={control} />;
+  };
+
+  // Bad - Prop drilling control/setValue through components
+  const MyForm = () => {
+      const { control, setValue } = useForm();
+      return (
+          <>
+              <FormField control={control} setValue={setValue} />
+              <AnotherField control={control} setValue={setValue} />
+          </>
+      );
+  };
+  ```
+
 ### Styling
 - **Framework:** NativeWind (Tailwind CSS for React Native)
 - **Global Styles:** `packages/app/src/global.css`
