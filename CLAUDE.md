@@ -212,7 +212,40 @@ const title = t`Accounts`;
 3. **No type circumvention** - Never use `@ts-ignore`, `@ts-expect-error`, `as any`, or any form of type assertion
 4. **Never write comments** - Code should be self-documenting with clear method and variable names
 5. **Maximize TypeScript usage** - Leverage the type system fully, let TypeScript infer types when possible
-6. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+6. **Never use `let`** - Prefer `const` with functional patterns like `reduce`, `map`, or recursion
+   ```typescript
+   // Good - Functional approach with reduce
+   const { periods } = items.reduce<{ periods: Period[]; lastDate: Date }>(
+       ({ periods, lastDate }) => ({
+           periods: [...periods, createPeriod(lastDate)],
+           lastDate: nextDate
+       }),
+       { periods: [], lastDate: startDate }
+   );
+
+   // Bad - Mutable let variables
+   let periods = [];
+   let lastDate = startDate;
+   for (let i = 0; i < count; i++) {
+       periods.push(createPeriod(lastDate));
+       lastDate = nextDate;
+   }
+   ```
+7. **Use descriptive variable names** - Never use short/abbreviated names like `tx`, `al`, `ai`, `inst`
+   ```typescript
+   // Good
+   await db.transaction(async transaction => {
+       const instance = await repository.create(data, transaction);
+       const allocation = allocations.find(allocation => allocation.id === id);
+   });
+
+   // Bad
+   await db.transaction(async tx => {
+       const inst = await repository.create(data, tx);
+       const al = allocations.find(a => a.id === id);
+   });
+   ```
+8. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
    ```typescript
    // Good
    setShouldAutoFocus(sheetIndex >= 0);
