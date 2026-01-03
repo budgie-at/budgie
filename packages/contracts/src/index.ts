@@ -268,10 +268,12 @@ export { BudgetEntityRelations } from './budget/relations/budget-entity.relation
 export { BudgetEntitySchema } from './budget/schema/budget-entity.schema';
 export { BudgetCreateEntitySchema } from './budget/schema/budget-create-entity.schema';
 export { BudgetUpdateEntitySchema } from './budget/schema/budget-update-entity.schema';
+export { BudgetCreateInputSchema } from './budget/schema/budget-create-input.schema';
 
 export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
 export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
 export type { BudgetUpdateEntityInterface } from './budget/entity/budget-update-entity.interface';
+export type { BudgetCreateInputInterface } from './budget/input/budget-create-input.interface';
 
 export { BudgetRepository } from './budget/repository/budget.repository';
 

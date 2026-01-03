@@ -272,8 +272,6 @@
 
 ## Coding Standards and Best Practices
 
-## Coding Standards and Best Practices
-
 ### Internationalization (Lingui) Usage Rules
 
 - **JSX translations**

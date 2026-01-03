@@ -87,18 +87,281 @@ export const accountRepository = new AccountRepository(db);
   ```
 - Inline all logic in route components, avoid wrapper components
 
-### Forms
-Use `FormProvider` and `useFormContext` to avoid prop drilling:
+### Internationalization (Lingui) Usage Rules
+
+- **JSX translations**
+  Only the `Trans` component from `@lingui/react/macro` **must** be used directly inside JSX.
+
+- **`t` function usage**
+  The `t` function obtained via `const { t } = useLingui();` **must not** be used directly in JSX.
+  It **may** be used:
+    - As an argument passed to a component (for example: `label={t\`Save\`}`)
+    - Outside of JSX (for example: in hooks, services, utilities, or conditional logic)
+
+- **Rationale**
+  This ensures consistent message extraction, predictable rendering behavior, and avoids subtle runtime or tooling issues caused by inline `t()` usage in JSX.
+
+**Correct examples**:
 ```tsx
-const MyForm = () => {
-    const form = useForm();
+<Trans>Settings</Trans>
+
+<Button title={t`Save`} />
+
+const title = t`Accounts`;
+```
+**Incorrect example**:
+```tsx
+<Text>{t`Settings`}</Text>
+```
+
+### Forms
+- **Library:** React Hook Form + Zod validation
+- **Schemas & Types:** Use input schemas and interfaces from `@budgie/contracts` directly
+  - Import `[Entity]CreateInputSchema` for form validation with `zodResolver`
+  - Import `[Entity]CreateInputInterface` for form type annotations
+  - **Never create custom form types** - use contracts interfaces directly
+  - **Never re-export schemas/interfaces** - import directly from `@budgie/contracts`
+  ```tsx
+  // Good - Import directly from contracts
+  import { BudgetCreateInputInterface, BudgetCreateInputSchema } from '@budgie/contracts';
+
+  const form = useForm<BudgetCreateInputInterface>({
+      resolver: zodResolver(BudgetCreateInputSchema)
+  });
+
+  // Bad - Creating custom type aliases
+  export type BudgetFormValues = BudgetCreateInputInterface; // Don't do this
+
+  // Bad - Re-exporting from contracts
+  export { BudgetCreateInputSchema }; // Don't do this
+  ```
+- **Best Practice:** Use `FormProvider` and `useFormContext` to avoid prop drilling
+  ```tsx
+  // Good - Use FormProvider at form root
+  import { FormProvider } from 'react-hook-form';
+
+  const MyForm = () => {
+      const form = useForm();
+      return (
+          <FormProvider {...form}>
+              <FormField name="email" />
+              <FormField name="password" />
+          </FormProvider>
+      );
+  };
+
+  // Good - Use useFormContext in child components
+  import { useFormContext } from 'react-hook-form';
+
+  const FormField = ({ name }) => {
+      const { control, formState } = useFormContext();
+      return <Controller name={name} control={control} />;
+  };
+
+  // Bad - Prop drilling control/setValue through components
+  const MyForm = () => {
+      const { control, setValue } = useForm();
+      return (
+          <>
+              <FormField control={control} setValue={setValue} />
+              <AnotherField control={control} setValue={setValue} />
+          </>
+      );
+  };
+  ```
+
+### Styling
+- **Framework:** NativeWind (Tailwind CSS for React Native)
+- **Global Styles:** `packages/app/src/global.css`
+- **Components:** Tailwind utility classes with `class-variance-authority` for variants
+
+### Internationalization (i18n)
+- **Library:** Lingui with compiled catalogs
+- **Supported Languages:** English, French, Spanish, Ukrainian, German
+- **Workflow:** Extract with `yarn i18n:extract`, compile with `yarn i18n:compile`, or use `yarn i18n:sync`
+- **App Locales:** `packages/app/src/locales/`
+- **Landing Locales:** `packages/landing/src/locales/`
+
+## TypeScript & Coding Standards
+
+### Critical Rules
+
+1. **Never use `any` type** - Everything must be properly typed. No exceptions.
+2. **Never use type assertions** - Never use `as` type casting (e.g., `foo as SomeType`). If types don't match, fix the actual types.
+3. **No type circumvention** - Never use `@ts-ignore`, `@ts-expect-error`, `as any`, or any form of type assertion
+4. **Never write comments** - Code should be self-documenting with clear method and variable names
+5. **Maximize TypeScript usage** - Leverage the type system fully, let TypeScript infer types when possible
+6. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+   ```typescript
+   // Good
+   setShouldAutoFocus(sheetIndex >= 0);
+
+   // Bad
+   if (sheetIndex >= 0) {
+       setShouldAutoFocus(true);
+   } else {
+       setShouldAutoFocus(false);
+   }
+   ```
+
+6. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+   ```tsx
+   // Good - Explicit and clear
+   return (
+       <>
+           <TabButton label="Expense" variant="expense" />
+           <TabButton label="Income" variant="income" />
+           <TabButton label="Transfer" variant="neutral" />
+       </>
+   );
+
+   // Bad - Unnecessary abstraction for fixed data
+   const tabs = [
+       { label: 'Expense', variant: 'expense' },
+       { label: 'Income', variant: 'income' },
+       { label: 'Transfer', variant: 'neutral' },
+   ];
+   return <>{tabs.map(tab => <TabButton key={tab.label} {...tab} />)}</>;
+   ```
+   Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
+
+### Naming Conventions
+- **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
+- **Enums:** Must end with `Enum` (e.g., `AccountTypeEnum`)
+- **Functions:** Use module name as prefix (e.g., `exchangeRatesFetchApi`)
+- **Classes:** PascalCase (e.g., `AccountRepository`)
+- **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
+
+### Module Organization
+
+**General Structure:**
+- Follow modular architecture with clear separation: `api/`, `repository/`, `service/`, `constant/`, `interface/`, `enum/`
+- Single Responsibility Principle - one file, one entity, one purpose
+- **No barrel exports in app package** - Import directly from specific files (no `index.ts` re-exports within app)
+  - ✅ Allowed: Root-level barrel exports in library packages (contracts, shared libraries)
+  - ❌ Forbidden: Any `index.ts` files within `packages/app/src/` directory structure
+  - Always use direct imports: `from './component-name/component-name'` not `from './component-name'`
+- **Flat structure** - Avoid deep nesting; entity/[file-type]/[file].ts not entity/[file-type]/[nested]/[file].ts
+
+**Component Organization:**
+- **One component per file** - Each `.tsx` file (route or component) should export exactly one default component
+- Each component must be in its own folder: `component-name/component-name.tsx`
+- Related files (types, utils, hooks) live in the same folder
+- Folder name and main file name must match exactly (kebab-case)
+- **Never group multiple components under a parent folder** - each component gets its own top-level folder
+- **Avoid wrapper components that only pass props or group components** - Don't create components that just:
+  - Extract values from context and pass them as props to existing components
+  - Simply group other components without adding logic
+
+  Inline them instead in the consuming component.
+
+  ```tsx
+  // Bad - Unnecessary context wrapper
+  export const FormComment = () => {
+      const { control } = useFormContext();
+      return <FormCommentBase control={control} />;
+  };
+
+  // Bad - Unnecessary grouping wrapper
+  export const FormMetadataFields = ({ control, variant }) => (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+
+  // Good - Inline directly in parent component
+  return (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+  ```
+
+Examples:
+```
+✓ Good
+packages/app/src/@generic/component/
+├── bottom-sheet/
+│   └── bottom-sheet.tsx
+├── amount-input/
+│   └── amount-input.tsx
+├── transaction-card/
+│   ├── transaction-card.tsx
+│   └── transaction-card.util.ts
+├── transaction-form-root/
+│   └── transaction-form-root.tsx
+└── transaction-form-amount/
+    └── transaction-form-amount.tsx
+
+✗ Bad
+packages/app/src/@generic/component/
+├── bottom-sheet.tsx                    # Missing folder
+├── forms/
+│   └── amount-input/                   # Too nested
+│       └── amount-input.tsx
+├── transaction/
+│   └── card/                           # Should be transaction-card/
+│       └── card.tsx
+└── transaction-form/                   # Never group multiple components
+    ├── root.tsx                        # Each should have own folder
+    ├── amount.tsx
+    └── category.tsx
+```
+
+**Entity Structure (Contracts Package):**
+Each entity follows flat organization:
+```
+entity-name/
+├── constant/[file].constant.ts         # NOT constant/validators/[file].ts
+├── entity/[file].entity.ts             # NOT entity/types/[file].ts
+├── enum/[file].enum.ts
+├── input/[file].input.ts
+├── interface/[file].interface.ts
+├── repository/[name].repository.ts
+├── relations/[name].relations.ts
+├── schema/[name].schema.ts
+└── table/[name].table.ts
+```
+Never nest beyond this level - all files within a type folder should be direct children.
+
+### Type Guards (Use @rnw-community/shared)
+Always use these type guards instead of manual checks:
+- `isDefined()` - for nullish checks (never use `!== null`, `!== undefined`, or `??`)
+- `isNotEmptyArray()` - for array validation
+- `isNotEmptyString()` - for string validation
+- `isPositiveNumber()` - for numeric validation
+
+### Code Duplication (jscpd)
+
+**Route Files in `src/app/`:**
+- Use `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to wrap **JSX only**
+- Place ignore comments around the JSX return statement to prevent false positives on similar form structures
+- Never ignore business logic or hooks - only the presentational JSX
+
+**Example:**
+```tsx
+export default function CreateExpenseTransactionPage() {
+    const { form, handleSubmit } = useCreateTransactionForm({ ... }); // Not ignored
+    const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' }); // Not ignored
+
+    const handleGoBack = () => void goBackOrReplace('/'); // Not ignored
+
+    /* jscpd:ignore-start */
     return (
         <FormProvider {...form}>
-            <FormField name="email" />  {/* Uses useFormContext internally */}
+            <Page header={...} footer={...}>
+                <TransactionFormAmount ... />
+                <TransactionFormCategory ... />
+            </Page>
         </FormProvider>
     );
-};
+    /* jscpd:ignore-end */
+}
 ```
+
+**Why:** Route files often share similar JSX structure (forms, layouts) but have different business logic. Ignoring only JSX prevents jscpd from flagging legitimate structural similarities while still detecting duplicated logic.
 
 ### i18n (Lingui)
 - **Prefer `<Trans>` in JSX** - Use `<Trans>Category</Trans>` not `{t\`Category\`}` when rendering text
