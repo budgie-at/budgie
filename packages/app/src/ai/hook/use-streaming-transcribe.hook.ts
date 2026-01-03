@@ -110,19 +110,18 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             return;
         }
 
-        await cleanupRecorder();
         setStatus('processing');
         setAudioLevel(0);
         setIsVoiceDetected(false);
 
-        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
-        console.log('[STT] Raw transcription - committed:', stt.committedTranscription, 'partial:', stt.nonCommittedTranscription);
+        const streamResult = streamPromiseRef.current ? await streamPromiseRef.current : '';
 
-        const finalCommitted = filterTranscriptionTokens(stt.committedTranscription);
-        const finalPartial = filterTranscriptionTokens(stt.nonCommittedTranscription);
-        const finalText = filterTranscriptionTokens(
-            finalCommitted + (needsSpace(finalCommitted, finalPartial) ? ' ' : '') + finalPartial
-        );
+        await cleanupRecorder();
+
+        // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
+        console.log('[STT] Stream result:', streamResult);
+
+        const finalText = filterTranscriptionTokens(streamResult);
 
         // eslint-disable-next-line no-console,lingui/no-unlocalized-strings
         console.log('[STT] Final text after filtering:', finalText);
@@ -199,8 +198,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
     );
 
     const transcription: TranscriptionState = {
-        committed: filterTranscriptionTokens(stt.committedTranscription),
-        partial: filterTranscriptionTokens(stt.nonCommittedTranscription)
+        committed: '',
+        partial: ''
     };
 
     return { startRecording, stopRecording, status, transcription, audioLevel, isVoiceDetected };
