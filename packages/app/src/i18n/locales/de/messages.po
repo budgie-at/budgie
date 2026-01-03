@@ -462,7 +462,7 @@ msgstr "Transaktion konnte nicht aktualisiert werden."
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
 msgid "Count this account in your net worth calculation"
-msgstr ""
+msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
@@ -893,7 +893,7 @@ msgstr "Inaktive Konten"
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:22
 msgid "Include in Net Worth"
-msgstr ""
+msgstr "In Nettovermögen einbeziehen"
 
 #: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/constant/transaction-type.constant.ts:7
