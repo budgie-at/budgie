@@ -278,6 +278,46 @@ app/(main)/
 - **Global Styles:** `packages/app/src/global.css`
 - **Components:** Tailwind utility classes with `class-variance-authority` for variants
 
+**CRITICAL: Always use NativeWind/Tailwind - Never use StyleSheet**
+- ✅ **Preferred:** Use `className` with Tailwind classes
+- ❌ **Never:** Use `StyleSheet.create()` or inline style objects (except for dynamic/animated values)
+- **Exception:** Use inline `style` prop ONLY for:
+  - Dynamic values from props/state (e.g., `style={{ width: dynamicWidth }}`)
+  - Reanimated `useAnimatedStyle` hooks (required by the library)
+  - SVG-specific properties not supported by NativeWind
+
+**Examples:**
+```tsx
+// Good - NativeWind classes
+<View className="flex-1 items-center justify-center bg-primary">
+  <Text className="text-lg font-bold text-white">Hello</Text>
+</View>
+
+// Good - Mixing NativeWind with dynamic values
+<View className="absolute left-0 top-0 items-center" style={{ width: RING_SIZE, height: RING_SIZE }}>
+  <Component />
+</View>
+
+// Good - Reanimated (required)
+const animatedStyle = useAnimatedStyle(() => ({
+  transform: [{ scale: scale.value }],
+  opacity: opacity.value
+}));
+<Animated.View className="flex-1" style={animatedStyle} />
+
+// Bad - StyleSheet
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center'
+  }
+});
+<View style={styles.container} />
+
+// Bad - Inline static styles
+<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} />
+```
+
 ### Color Palette
 Colors are defined as CSS variables in `global.css` and mirrored in `@generic/constant/colors.constant.ts` for programmatic use.
 
