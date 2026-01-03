@@ -261,7 +261,10 @@ export const accountRepository = new AccountRepository(db);
 **General Structure:**
 - Follow modular architecture with clear separation: `api/`, `repository/`, `service/`, `constant/`, `interface/`, `enum/`
 - Single Responsibility Principle - one file, one entity, one purpose
-- **No barrel exports** - import directly from specific files (no `index.ts` re-exports)
+- **No barrel exports in app package** - Import directly from specific files (no `index.ts` re-exports within app)
+  - ✅ Allowed: Root-level barrel exports in library packages (contracts, shared libraries)
+  - ❌ Forbidden: Any `index.ts` files within `packages/app/src/` directory structure
+  - Always use direct imports: `from './component-name/component-name'` not `from './component-name'`
 - **Flat structure** - Avoid deep nesting; entity/[file-type]/[file].ts not entity/[file-type]/[nested]/[file].ts
 
 **Component Organization:**
