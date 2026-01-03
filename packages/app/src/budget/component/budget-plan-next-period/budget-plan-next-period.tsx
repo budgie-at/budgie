@@ -35,7 +35,7 @@ export const BudgetPlanNextPeriod = ({ budget, currentPeriodEndDate }: Props) =>
         setCreatingPeriod(period.label);
 
         try {
-            await budgetService.createFutureBudgetInstance(budget.id, period.startDate, period.endDate);
+            await budgetService.createBudgetInstance(budget.id, period.startDate, period.endDate);
             setCreatedPeriods(prev => new Set([...prev, period.label]));
         } catch {
             Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to create budget period` });
