@@ -271,6 +271,19 @@ export const accountRepository = new AccountRepository(db);
 - Each component must be in its own folder: `component-name/component-name.tsx`
 - Related files (types, utils, hooks) live in the same folder
 - Folder name and main file name must match exactly (kebab-case)
+- **Never group multiple components under a parent folder** - each component gets its own top-level folder
+- **Avoid wrapper components that only pass props** - Don't create components that just extract values from context and pass them as props to existing components. Inline them instead.
+  ```tsx
+  // Bad - Unnecessary wrapper
+  export const TransactionFormComment = () => {
+      const { control } = useTransactionFormContext();
+      return <TransactionFormCommentBase control={control} />;
+  };
+
+  // Good - Use the base component directly with context in parent
+  const { control } = useTransactionFormContext();
+  return <TransactionFormComment control={control} />;
+  ```
 
 Examples:
 ```
@@ -280,9 +293,13 @@ packages/app/src/@generic/component/
 │   └── bottom-sheet.tsx
 ├── amount-input/
 │   └── amount-input.tsx
-└── transaction-card/
-    ├── transaction-card.tsx
-    └── transaction-card.util.ts
+├── transaction-card/
+│   ├── transaction-card.tsx
+│   └── transaction-card.util.ts
+├── transaction-form-root/
+│   └── transaction-form-root.tsx
+└── transaction-form-amount/
+    └── transaction-form-amount.tsx
 
 ✗ Bad
 packages/app/src/@generic/component/
@@ -290,9 +307,13 @@ packages/app/src/@generic/component/
 ├── forms/
 │   └── amount-input/                   # Too nested
 │       └── amount-input.tsx
-└── transaction/
-    └── card/                            # Should be transaction-card/
-        └── card.tsx
+├── transaction/
+│   └── card/                           # Should be transaction-card/
+│       └── card.tsx
+└── transaction-form/                   # Never group multiple components
+    ├── root.tsx                        # Each should have own folder
+    ├── amount.tsx
+    └── category.tsx
 ```
 
 **Entity Structure (Contracts Package):**
