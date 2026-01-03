@@ -12,13 +12,14 @@ interface Props {
     readonly budget: BudgetEntityInterface;
     readonly onPress: EmptyFn;
     readonly onActivate: EmptyFn;
+    readonly onDelete: EmptyFn;
 }
 
-export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
+export const BudgetListItem = ({ budget, onPress, onActivate, onDelete }: Props) => {
     const isActive = budget.status === BudgetStatusEnum.ACTIVE;
 
     return (
-        <Card className="gap-2">
+        <Card className="gap-3">
             <View className="flex-row items-center justify-between">
                 <HapticPressable onPress={onPress} className="flex-row items-center gap-3 flex-1">
                     <Icon icon={UserIconNameEnum.Wallet} size={20} className="text-primary" />
@@ -51,6 +52,12 @@ export const BudgetListItem = ({ budget, onPress, onActivate }: Props) => {
                     <Trans>Created</Trans>: {budget.createdAt.toLocaleDateString()}
                 </Text>
             )}
+
+            <HapticPressable onPress={onDelete}>
+                <Text className="text-sm text-destructive-foreground">
+                    <Trans>Delete</Trans>
+                </Text>
+            </HapticPressable>
         </Card>
     );
 };

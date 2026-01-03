@@ -44,6 +44,13 @@ class BudgetService {
         }
     }
 
+    async initialize(): Promise<void> {
+        await this.ensureSingleActiveBudget();
+        await this.ensureActiveBudgetHasCurrentInstance();
+        await this.checkAndTransitionActiveBudget();
+        await this.registerBackgroundTask();
+    }
+
     async cloneBudget(sourceBudgetId: number, newTitle: string) {
         const sourceBudget = await budgetRepository.findById(sourceBudgetId);
         if (!isDefined(sourceBudget)) {
@@ -125,14 +132,6 @@ class BudgetService {
         await budgetAllocationInstanceRepository.adjustAmount(toAllocationInstanceId, amount);
     }
 
-    calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()) {
-        return budgetPeriodService.calculateMonthlyPeriodDates(startDay, referenceDate);
-    }
-
-    calculateWeeklyPeriodDates(startDay: number, referenceDate: Date = new Date()) {
-        return budgetPeriodService.calculateWeeklyPeriodDates(startDay, referenceDate);
-    }
-
     calculatePeriodDatesForType(options: {
         period: BudgetPeriodEnum;
         startDay: number;
@@ -145,10 +144,6 @@ class BudgetService {
 
     calculateSafeToSpend(totalPlanned: number, totalActual: number, daysElapsed: number, totalDays: number) {
         return budgetPeriodService.calculateSafeToSpend(totalPlanned, totalActual, daysElapsed, totalDays);
-    }
-
-    calculateForecast(actualSpent: number, daysElapsed: number, totalDays: number) {
-        return budgetPeriodService.calculateForecast(actualSpent, daysElapsed, totalDays);
     }
 
     calculateRollover(planned: number, actual: number, rule: BudgetRolloverRuleEnum, cap: number | null) {
