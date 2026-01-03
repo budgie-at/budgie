@@ -68,11 +68,7 @@ export const SearchableListBottomSheet = <T,>({
     const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
 
     const handleSheetChange = (sheetIndex: number) => {
-        if (sheetIndex >= 0) {
-            setShouldAutoFocus(true);
-        } else {
-            setShouldAutoFocus(false);
-        }
+        setShouldAutoFocus(sheetIndex >= 0);
     };
 
     return (
