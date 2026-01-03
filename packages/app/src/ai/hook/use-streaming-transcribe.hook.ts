@@ -9,7 +9,7 @@ import { filterTranscriptionTokens } from '../util/filter-transcription-tokens.u
 
 import { useAudioManager } from './use-audio-manager.hook';
 
-export type TranscribeStatus = 'idle' | 'recording' | 'processing';
+type TranscribeStatus = 'idle' | 'recording' | 'processing';
 
 interface TranscriptionState {
     committed: string;
