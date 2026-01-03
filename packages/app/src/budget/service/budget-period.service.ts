@@ -7,9 +7,7 @@ interface PeriodDates {
     endDate: Date;
 }
 
-export type { PeriodDates };
-
-export class BudgetPeriodService {
+class BudgetPeriodService {
     calculateMonthlyPeriodDates(startDay: number, referenceDate: Date = new Date()): PeriodDates {
         const year = referenceDate.getFullYear();
         const month = referenceDate.getMonth();

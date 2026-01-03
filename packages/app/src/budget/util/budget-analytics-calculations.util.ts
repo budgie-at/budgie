@@ -2,13 +2,13 @@ import { BudgetEntityInterface } from '@budgie/contracts';
 
 import { formatMonthYear } from './format-month-year.util';
 
-export interface HistoricalPeriod {
+interface HistoricalPeriod {
     label: string;
     startDate: Date;
     endDate: Date;
 }
 
-export interface PeriodDates {
+interface PeriodDates {
     startDate: Date;
     endDate: Date;
 }

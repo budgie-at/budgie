@@ -46,6 +46,8 @@ CREATE TABLE `budgets` (
 	`period` text DEFAULT 'MONTHLY' NOT NULL,
 	`status` text DEFAULT 'DRAFT' NOT NULL,
 	`start_day` integer DEFAULT 1 NOT NULL,
+	`custom_start_date` integer,
+	`custom_end_date` integer,
 	`instrument_id` integer NOT NULL,
 	`is_template` integer DEFAULT false NOT NULL,
 	`exclude_transfers` integer DEFAULT true NOT NULL,

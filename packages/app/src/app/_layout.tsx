@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { Fragment, useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
@@ -72,7 +72,7 @@ export default function RootLayout() {
                     void monobankSyncService.sync();
 
                     void budgetService.ensureSingleActiveBudget();
-            void budgetService.checkAndTransitionActiveBudget();
+                    void budgetService.checkAndTransitionActiveBudget();
                     void monobankSyncService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
