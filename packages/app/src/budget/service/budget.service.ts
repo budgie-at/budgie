@@ -253,6 +253,13 @@ class BudgetService {
         await this.createBudgetInstance(budgetId, startDate, endDate);
     }
 
+    async ensureActiveBudgetHasCurrentInstance(): Promise<void> {
+        const activeBudget = await budgetRepository.findActive();
+        if (isDefined(activeBudget)) {
+            await this.ensureCurrentInstance(activeBudget.id);
+        }
+    }
+
     calculateNextMonthlyPeriodDates(startDay: number, currentPeriodEndDate: Date) {
         return budgetPeriodService.calculateNextMonthlyPeriodDates(startDay, currentPeriodEndDate);
     }
@@ -287,10 +294,6 @@ class BudgetService {
         );
 
         return periods;
-    }
-
-    async createFutureBudgetInstance(budgetId: number, startDate: Date, endDate: Date) {
-        return this.createBudgetInstance(budgetId, startDate, endDate);
     }
 }
 

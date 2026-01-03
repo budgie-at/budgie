@@ -72,6 +72,7 @@ export default function RootLayout() {
                     void monobankSyncService.sync();
 
                     void budgetService.ensureSingleActiveBudget();
+                    void budgetService.ensureActiveBudgetHasCurrentInstance();
                     void budgetService.checkAndTransitionActiveBudget();
                     void budgetService.registerBackgroundTask();
 
