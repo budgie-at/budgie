@@ -1,11 +1,11 @@
 import { count, eq, inArray, sql } from 'drizzle-orm';
 
 import { TX } from '../../@generic/type/db.type';
-import * as schema from '../../schema';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
 import { TagEntityTable } from '../table/tag-entity.table';
 
+import type * as schema from '../../schema';
 import type { TagEntityInterface } from '../entity/tag-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
