@@ -1,8 +1,8 @@
 import { and, eq } from 'drizzle-orm';
 
-import * as schema from '../../schema';
 import { ExchangeRateEntityTable } from '../table/exchange-rate-entity.table';
 
+import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class ExchangeRateRepository {

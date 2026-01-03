@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 
 import { TX } from '../../@generic/type/db.type';
-import * as schema from '../../schema';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
+import type * as schema from '../../schema';
 import type { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
