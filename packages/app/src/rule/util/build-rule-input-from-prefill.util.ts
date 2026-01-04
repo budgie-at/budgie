@@ -47,6 +47,7 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         enabled: true,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
         conditions,
-        actions
+        actions,
+        applyToExisting: false
     };
 };
