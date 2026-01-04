@@ -36,7 +36,7 @@ export default function CreateExpenseTransactionPage() {
     const parsedAmount = isDefined(amount) && isPositiveNumber(Number(amount)) ? Number(amount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternal(data),
+        handleSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,

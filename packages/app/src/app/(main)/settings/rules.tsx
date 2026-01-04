@@ -2,12 +2,12 @@ import { RuleEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
-import { ComponentProps, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { ComponentProps } from 'react';
+import { View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AnimatedFlatList } from '../../../@generic/component/animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
@@ -21,7 +21,7 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { IdInterface } from '../../../@generic/interface/id.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleCard } from '../../../rule/components/rule-card/rule-card';
-import { useSearchRulesQuery } from '../../../rule/query/use-search-rules.query';
+import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
 
 type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
 
@@ -32,8 +32,7 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function RulesPage() {
     const { t } = useLingui();
-    const [search, setSearch] = useState('');
-    const { rules } = useSearchRulesQuery(search);
+    const { rules } = useGetAllRulesQuery();
     const [notify] = useVibration();
 
     const handleDeleteRule = async (id: number) => {
@@ -59,29 +58,8 @@ export default function RulesPage() {
         );
     };
 
-    const emptyStateIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Zap;
-    const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Rules Yet`;
-    const emptyStateDescription = isNotEmptyString(search)
-        ? t`No rules match your search`
-        : t`Create rules to automatically categorize and tag your bank transactions`;
-
     return (
-        <Page
-            header={
-                <PageHeader
-                    onGoBack={handleGoBack}
-                    title={t`Rules`}
-                    bottom={
-                        <TextInput
-                            value={search}
-                            onChangeText={setSearch}
-                            placeholder={t`Search rules...`}
-                            className="text-primary placeholder:text-secondary-foreground h-11 px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                        />
-                    }
-                />
-            }
-        >
+        <Page header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />}>
             {isNotEmptyArray(rules) ? (
                 <AnimatedFlatList
                     className="flex-1"
@@ -92,7 +70,11 @@ export default function RulesPage() {
                     ListFooterComponent={listFooter}
                 />
             ) : (
-                <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
+                <SearchablePageEmptyState
+                    title={t`No Rules Yet`}
+                    icon={UserIconNameEnum.Zap}
+                    description={t`Create rules to automatically categorize and tag your bank transactions`}
+                />
             )}
 
             <View className="absolute bottom-1/10 right-10">

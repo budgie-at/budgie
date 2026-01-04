@@ -125,11 +125,6 @@ export const RuleCard = ({ onOpen, order, rule }: Props) => {
             </View>
 
             <View className="flex-1 gap-y-lg">
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-sm font-semibold text-primary flex-1">{rule.title}</Text>
-                    <ThemedSwitch value={rule.enabled} onValueChange={handleToggle} />
-                </View>
-
                 <View className="gap-y-xs">
                     <Text className="text-xs font-medium text-secondary-foreground">{matchTypeLabel}</Text>
                     <View className="pl-lg gap-y-xs">{rule.conditions.map(renderCondition)}</View>
@@ -141,6 +136,10 @@ export const RuleCard = ({ onOpen, order, rule }: Props) => {
                     </Text>
                     <View className="pl-lg gap-y-xs">{rule.actions.map(renderAction)}</View>
                 </View>
+            </View>
+
+            <View className="flex-row items-center justify-end">
+                <ThemedSwitch value={rule.enabled} onValueChange={handleToggle} />
             </View>
         </Card>
     );
