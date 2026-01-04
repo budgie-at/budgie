@@ -8,7 +8,6 @@ export const RuleEntityTable = sqliteTable(
     withBaseEntityTableColumns({
         title: text('title').notNull(),
         titleSearch: text('title_search').default('').notNull(),
-        priority: int('priority', { mode: 'number' }).notNull().default(0),
         enabled: int('enabled', { mode: 'boolean' }).notNull().default(true),
         conditionMatchType: text('condition_match_type', { enum: [RuleConditionMatchTypeEnum.ALL, RuleConditionMatchTypeEnum.ANY] })
             .$type<RuleConditionMatchTypeEnum>()

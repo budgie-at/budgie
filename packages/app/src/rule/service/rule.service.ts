@@ -26,7 +26,6 @@ class RuleService {
             const rule = await ruleRepository.create(
                 {
                     title: input.title,
-                    priority: input.priority,
                     enabled: input.enabled,
                     conditionMatchType: input.conditionMatchType
                 },
@@ -57,7 +56,6 @@ class RuleService {
                 id,
                 {
                     title: input.title,
-                    priority: input.priority,
                     enabled: input.enabled,
                     conditionMatchType: input.conditionMatchType
                 },

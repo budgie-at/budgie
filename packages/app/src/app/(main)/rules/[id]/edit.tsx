@@ -24,7 +24,6 @@ export default function EditRulePage() {
     const defaultValues = isDefined(rule)
         ? {
               title: rule.title,
-              priority: rule.priority,
               enabled: rule.enabled,
               conditionMatchType: rule.conditionMatchType,
               conditions: rule.conditions.map(condition => ({
