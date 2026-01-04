@@ -1,9 +1,8 @@
 import { RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
-
-import { RuleTextInput } from '../rule-text-input/rule-text-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { Input } from '../../../@generic/component/input/input';
 
 interface Props {
     readonly index: number;
@@ -15,17 +14,16 @@ export const RuleConditionValueInput = ({ index }: Props) => {
     const operator = useWatch({ control, name: `conditions.${index}.operator` });
     const showSecondaryValue = operator === RuleConditionOperatorEnum.BETWEEN;
 
-    const valuePlaceholder = t`Enter value...`;
-    const secondaryValuePlaceholder = t`Enter secondary value...`;
-
-    const renderValueInput = ({ field: { value, onChange } }: { field: { value: string; onChange: (value: string) => void } }) => (
-        <RuleTextInput value={value} onChange={onChange} placeholder={valuePlaceholder} />
+    const renderValueInput = ({
+        field: { value, onChange }
+    }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => (
+        <Input value={value} onChange={onChange} placeholder={t`Enter value...`} />
     );
 
     const renderSecondaryValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.secondaryValue`>) => (
-        <RuleTextInput value={value ?? ''} onChange={onChange} placeholder={secondaryValuePlaceholder} />
+        <Input value={value ?? ''} onChange={onChange} placeholder={t`Enter secondary value...`} />
     );
 
     return (

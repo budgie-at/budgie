@@ -1,9 +1,10 @@
-import { ArrayPath, FieldArray, FieldArrayPath, FieldValues, UseFieldArrayReturn, useFieldArray, useFormContext } from 'react-hook-form';
+import { ArrayPath, FieldArray, FieldArrayPath, FieldValues, useFieldArray, UseFieldArrayReturn, useFormContext } from 'react-hook-form';
+import { EmptyFn } from '@rnw-community/shared';
 
 interface UseMinimumFieldArrayResult<T extends FieldValues, N extends ArrayPath<T>> extends UseFieldArrayReturn<T, N> {
     canRemove: boolean;
     safeRemove: (index: number) => void;
-    add: () => void;
+    add: EmptyFn;
 }
 
 export const useMinimumFieldArray = <T extends FieldValues, N extends FieldArrayPath<T>>(

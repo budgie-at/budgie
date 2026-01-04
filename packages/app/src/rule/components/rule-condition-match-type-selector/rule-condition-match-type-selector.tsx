@@ -34,12 +34,14 @@ export const RuleConditionMatchTypeSelector = () => {
         subtitle: i18n.t(option.description)
     }));
 
-    const getLabel = (matchType: RuleConditionMatchTypeEnum) => options.find(option => option.value === matchType)?.label ?? '';
 
     const handleOpen = () => void sheetRef.current?.open();
     const handleClose = () => void sheetRef.current?.close();
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, 'conditionMatchType'>) => {
+        const selectedOption = options.find(option => option.value === value);
+        const label = selectedOption?.label ?? t`Select Matching`;
+
         const handleSelect = (newValue: RuleConditionMatchTypeEnum) => {
             onChange(newValue);
             handleClose();
@@ -51,7 +53,7 @@ export const RuleConditionMatchTypeSelector = () => {
                     onPress={handleOpen}
                     className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
                 >
-                    <Text className="text-secondary-foreground text-sm">{getLabel(value)}</Text>
+                    <Text className="text-secondary-foreground text-sm">{label}</Text>
                 </HapticPressable>
                 <RuleSelectorSheet
                     ref={sheetRef}

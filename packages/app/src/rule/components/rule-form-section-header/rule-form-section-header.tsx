@@ -2,9 +2,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
     readonly title: string;
