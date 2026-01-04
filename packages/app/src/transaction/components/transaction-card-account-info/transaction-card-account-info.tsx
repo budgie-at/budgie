@@ -43,9 +43,6 @@ export const TransactionCardAccountInfo = ({ transaction }: Props) => {
 
         return (
             <View className="flex-row items-center gap-x-sm flex-1">
-                <Text className="text-xs text-secondary-foreground">
-                    <Trans>from</Trans>
-                </Text>
                 <Icon icon={account.icon} className="text-secondary-foreground" size={12} />
                 <Text className="text-xs font-medium text-secondary-foreground flex-1" numberOfLines={1}>
                     {account.title}
