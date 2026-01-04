@@ -1,3 +1,4 @@
+ 
 export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';
@@ -265,12 +266,11 @@ export { RULE_TITLE_MIN_LENGTH } from './rule/constant/rule-title-min-length.con
 
 export { RuleConditionFieldEnum } from './rule/enum/rule-condition-field.enum';
 export { RuleConditionOperatorEnum } from './rule/enum/rule-condition-operator.enum';
+export { RuleConditionMatchTypeEnum } from './rule/enum/rule-condition-match-type.enum';
 export { RuleActionTypeEnum } from './rule/enum/rule-action-type.enum';
 export { RuleAssociationEnum } from './rule/enum/rule-association.enum';
-
 export { RuleEntityTable } from './rule/table/rule-entity.table';
 export { RuleEntityRelations } from './rule/relations/rule-entity.relations';
-
 export { RuleEntitySchema } from './rule/schema/rule-entity.schema';
 export { RuleCreateEntitySchema } from './rule/schema/rule-create-entity.schema';
 export { RuleUpdateEntitySchema } from './rule/schema/rule-update-entity.schema';
