@@ -1,4 +1,4 @@
-import { Ref } from 'react';
+import { ReactNode, Ref } from 'react';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
@@ -10,6 +10,7 @@ interface RuleSelectorOption<T> {
     value: T;
     label: string;
     subtitle?: string;
+    iconSlot?: ReactNode;
 }
 
 interface Props<T> {
@@ -33,6 +34,7 @@ export const RuleSelectorSheet = <T,>({ ref, title, options, selectedValue, onSe
                         onSelect={onSelect}
                         title={option.label}
                         subtitle={option.subtitle}
+                        iconSlot={option.iconSlot}
                     />
                 ))}
             </View>

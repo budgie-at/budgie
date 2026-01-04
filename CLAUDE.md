@@ -621,6 +621,24 @@ const handleSubmit = async () => {
   );
   ```
 
+- **Conditional rendering belongs in parent components** - Never use early `return null` inside a component based on props. The parent should decide whether to render a child.
+  ```tsx
+  // Bad - Hidden conditional rendering inside component
+  export const MatchTypeSelector = ({ itemCount }: Props) => {
+      if (itemCount < 2) {
+          return null;
+      }
+      return <Controller ... />;
+  };
+  // Usage: <MatchTypeSelector itemCount={items.length} />
+
+  // Good - Parent controls rendering
+  export const MatchTypeSelector = () => {
+      return <Controller ... />;
+  };
+  // Usage: {items.length >= 2 && <MatchTypeSelector />}
+  ```
+
 Examples:
 ```
 ✓ Good

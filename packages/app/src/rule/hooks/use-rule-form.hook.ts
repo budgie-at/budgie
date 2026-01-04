@@ -9,33 +9,33 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ruleService } from '../service/rule.service';
 
-const DEFAULT_CONDITION = {
-    field: RuleConditionFieldEnum.TITLE,
-    operator: RuleConditionOperatorEnum.CONTAINS,
-    value: '',
-    secondaryValue: null
-};
-
-const DEFAULT_ACTION = {
-    type: RuleActionTypeEnum.SET_CATEGORY,
-    categoryId: null,
-    tagId: null
-};
-
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     title: '',
     priority: 0,
     enabled: true,
     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-    conditions: [DEFAULT_CONDITION],
-    actions: [DEFAULT_ACTION]
+    conditions: [
+        {
+            field: RuleConditionFieldEnum.TITLE,
+            operator: RuleConditionOperatorEnum.CONTAINS,
+            value: '',
+            secondaryValue: null
+        }
+    ],
+    actions: [
+        {
+            type: RuleActionTypeEnum.SET_CATEGORY,
+            categoryId: null,
+            tagId: null
+        }
+    ]
 };
 
 interface UseRuleFormOptions {
@@ -55,36 +55,6 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         values: defaultValues,
         mode: 'onSubmit'
     });
-
-    const conditionsField = useFieldArray({
-        control: form.control,
-        name: 'conditions'
-    });
-
-    const actionsField = useFieldArray({
-        control: form.control,
-        name: 'actions'
-    });
-
-    const addCondition = () => {
-        conditionsField.append(DEFAULT_CONDITION);
-    };
-
-    const removeCondition = (index: number) => {
-        if (conditionsField.fields.length > 1) {
-            conditionsField.remove(index);
-        }
-    };
-
-    const addAction = () => {
-        actionsField.append(DEFAULT_ACTION);
-    };
-
-    const removeAction = (index: number) => {
-        if (actionsField.fields.length > 1) {
-            actionsField.remove(index);
-        }
-    };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
         try {
@@ -107,15 +77,5 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         void form.handleSubmit(handleSubmit)();
     };
 
-    return {
-        form,
-        conditionsField,
-        actionsField,
-        addCondition,
-        removeCondition,
-        addAction,
-        removeAction,
-        onSubmit,
-        isEditing
-    };
+    return { form, onSubmit, isEditing };
 };
