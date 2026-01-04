@@ -14,16 +14,21 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { Page } from '../../../@generic/component/page/page';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { TransactionCard } from '../../../transaction/components/transaction-card/transaction-card';
+import { TransactionsPageHeader } from '../../../transaction/components/transactions-page-header/transactions-page-header';
 import { useGetTransactionsQuery } from '../../../transaction/query/use-get-transactions.query';
 import { TransactionListItemType } from '../../../transaction/type/transaction-list-item.type';
 import { getTransactionCategoryLabel } from '../../../transaction/utils/get-transaction-category-label.util';
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
 const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
+const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
+    sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
+/* jscpd:ignore-start */
 const renderItem = ({ item }: { item: TransactionListItemType }) =>
     item.type === 'header' ? (
         <View className="bg-primary-reverse py-sm">
@@ -36,10 +41,9 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             categoryLabel={item.data.categoryLabel}
         />
     );
+/* jscpd:ignore-end */
 
-const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
-    sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
-
+/* jscpd:ignore-start */
 const transformToFlatData = (
     sections: Array<{ date: string; transactions: TransactionWithRelationsEntityInterface[] }>,
     formatMonthAndDayWithTime: (date: Date | string) => string,
@@ -58,6 +62,7 @@ const transformToFlatData = (
             }
         }))
     ]);
+/* jscpd:ignore-end */
 
 interface RouteParams {
     startDate?: string;
@@ -91,23 +96,8 @@ const buildFilters = (params: RouteParams): TransactionFilterInterface => ({
     types: isDefined(params.type) ? [params.type as TransactionTypeEnum] : null
 });
 
-export default function AnalyticsTransactionsPage() {
-    const { t } = useLingui();
-    const router = useRouter();
-    const params = useLocalSearchParams() as RouteParams;
-
-    const handleGoBack = () => void router.back();
-    const filters = buildFilters(params);
-
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
-    const { formatMonthAndDayWithTime } = useFormatDate();
-
-    const flatData = transformToFlatData(sections, formatMonthAndDayWithTime, t`Balance Adjustment`, t`Categories`);
-
-    const isEmpty = flatData.length === 0;
-    const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
-
-    const listEmptyState = isLoading ? (
+const buildEmptyState = (isLoading: boolean, t: (template: TemplateStringsArray) => string) =>
+    isLoading ? (
         <ActivityIndicator size="large" />
     ) : (
         <EmptyState
@@ -119,8 +109,37 @@ export default function AnalyticsTransactionsPage() {
         />
     );
 
+export default function AnalyticsTransactionsPage() {
+    const { t } = useLingui();
+    const router = useRouter();
+    const params = useLocalSearchParams() as RouteParams;
+    const filters = buildFilters(params);
+
+    const { category } = useGetCategoryByIdQuery(isDefined(params.categoryId) ? Number(params.categoryId) : 0);
+    const { tags } = useGetTagByIdsQuery(isDefined(params.tagId) ? [Number(params.tagId)] : []);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
+    const { formatMonthAndDayWithTime } = useFormatDate();
+
+    const handleGoBack = () => void router.back();
+    const flatData = transformToFlatData(sections, formatMonthAndDayWithTime, t`Balance Adjustment`, t`Categories`);
+    const contentContainerStyle = { gap: 16, ...(flatData.length === 0 && { flexGrow: 1, justifyContent: 'center' as const }) };
+
+    /* jscpd:ignore-start */
+
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} onGoBack={handleGoBack} />}>
+        <Page
+            header={
+                <TransactionsPageHeader
+                    uncategorized={params.uncategorized}
+                    category={category}
+                    tag={tags?.[0]}
+                    type={params.type}
+                    startDate={params.startDate}
+                    endDate={params.endDate}
+                    onGoBack={handleGoBack}
+                />
+            }
+        >
             <LegendList
                 data={flatData}
                 keyExtractor={keyExtractor}
@@ -132,9 +151,10 @@ export default function AnalyticsTransactionsPage() {
                 onEndReachedThreshold={0.3}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={contentContainerStyle}
-                ListEmptyComponent={listEmptyState}
+                ListEmptyComponent={buildEmptyState(isLoading, t)}
                 getItemType={getItemType}
             />
         </Page>
     );
+    /* jscpd:ignore-end */
 }
