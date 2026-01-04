@@ -41,10 +41,9 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
             } else {
                 const newCategory = await categoryRepository.create(values);
                 reset();
+                void ref.current?.close();
                 if (isDefined(onCategoryCreated)) {
                     onCategoryCreated(newCategory);
-                } else {
-                    void ref.current?.close();
                 }
             }
         } catch {
