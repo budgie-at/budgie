@@ -1,3 +1,3 @@
-import { useLLM } from 'react-native-executorch';
+import { LlmInterface } from '../interface/llm.interface';
 
-export type LlmType = ReturnType<typeof useLLM>;
+export type LlmType = LlmInterface;
