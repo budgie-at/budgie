@@ -1,8 +1,14 @@
-import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import {
+    RuleActionTypeEnum,
+    RuleConditionFieldEnum,
+    RuleConditionOperatorEnum,
+    RuleCreateInputInterface,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
+import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
 import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
 
@@ -12,14 +18,29 @@ interface Props {
 
 const ACTION_TYPE_OPTIONS: { value: RuleActionTypeEnum; label: MessageDescriptor }[] = [
     { value: RuleActionTypeEnum.SET_CATEGORY, label: msg`Set Category` },
-    { value: RuleActionTypeEnum.ADD_TAG, label: msg`Add Tag` }
+    { value: RuleActionTypeEnum.ADD_TAG, label: msg`Add Tag` },
+    { value: RuleActionTypeEnum.CONVERT_TO_TRANSFER, label: msg`Convert to Transfer` }
 ];
+
+const CONVERTIBLE_TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME];
 
 export const RuleActionTypeSelector = ({ index }: Props) => {
     const { t, i18n } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
+    const conditions = useWatch({ control, name: 'conditions' });
 
-    const options = ACTION_TYPE_OPTIONS.map(option => ({ value: option.value, label: i18n.t(option.label) }));
+    const hasConvertibleTypeCondition = conditions.some(
+        condition =>
+            condition.field === RuleConditionFieldEnum.TRANSACTION_TYPE &&
+            condition.operator === RuleConditionOperatorEnum.EQUALS &&
+            CONVERTIBLE_TRANSACTION_TYPES.includes(condition.value as TransactionTypeEnum)
+    );
+
+    const availableOptions = ACTION_TYPE_OPTIONS.filter(
+        option => option.value !== RuleActionTypeEnum.CONVERT_TO_TRANSFER || hasConvertibleTypeCondition
+    );
+
+    const options = availableOptions.map(option => ({ value: option.value, label: i18n.t(option.label) }));
     const getDisplayValue = (value: RuleActionTypeEnum) => options.find(option => option.value === value)?.label ?? t`Select Type`;
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.type`>) => (

@@ -16,7 +16,8 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         actions.push({
             type: RuleActionTypeEnum.SET_CATEGORY,
             categoryId: prefillData.categoryId,
-            tagId: null
+            tagId: null,
+            accountId: null
         });
     }
 
@@ -24,7 +25,8 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         actions.push({
             type: RuleActionTypeEnum.ADD_TAG,
             categoryId: null,
-            tagId
+            tagId,
+            accountId: null
         });
     });
 
@@ -32,7 +34,8 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         actions.push({
             type: RuleActionTypeEnum.SET_CATEGORY,
             categoryId: null,
-            tagId: null
+            tagId: null,
+            accountId: null
         });
     }
 
