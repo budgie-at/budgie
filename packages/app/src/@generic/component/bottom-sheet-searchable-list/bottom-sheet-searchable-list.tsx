@@ -41,6 +41,8 @@ interface SearchableListBottomSheetProps<T> {
         numColumns?: number;
         columnWrapperClassName?: string;
     };
+
+    readonly listHeaderContent?: JSX.Element;
 }
 
 const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
@@ -64,7 +66,8 @@ export const SearchableListBottomSheet = <T,>({
     emptyTitle,
     emptyDescription,
     flatListProps,
-    emptyIcon
+    emptyIcon,
+    listHeaderContent
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
     const inputRef = useRef<TextInput>(null);
@@ -92,10 +95,14 @@ export const SearchableListBottomSheet = <T,>({
                     keyExtractor={keyExtractor}
                     numColumns={numColumns}
                     renderItem={renderItem}
+                    ListHeaderComponent={listHeaderContent}
                     ListFooterComponent={listFooter}
                 />
             ) : (
-                <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
+                <>
+                    {listHeaderContent}
+                    <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
+                </>
             )}
         </BottomSheet>
     );
