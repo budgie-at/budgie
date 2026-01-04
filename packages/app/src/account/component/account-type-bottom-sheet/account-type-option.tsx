@@ -1,6 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useCallback } from 'react';
 import { Text } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -17,16 +16,16 @@ interface Props {
 }
 
 export const AccountTypeOption = ({ type, isSelected, onSelect }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
     const variant = ACCOUNT_COLOR[type];
 
-    const handleSelect = useCallback((selectedType: AccountTypeEnum) => void onSelect(selectedType), [onSelect]);
+    const handleSelect = (selectedType: AccountTypeEnum) => void onSelect(selectedType);
 
     const iconSlot = (
         <CircleIcon icon={ACCOUNT_ICON[type]} variant={variant} size={48} iconSize={24} className="rounded-5xl" border={false} />
     );
 
-    const subtitle = <Text className="text-secondary-foreground text-xs">{i18n.t(ACCOUNT_TYPE_DESCRIPTION[type])}</Text>;
+    const subtitle = <Text className="text-secondary-foreground text-xs">{t(ACCOUNT_TYPE_DESCRIPTION[type])}</Text>;
 
     return (
         <SelectorCard
@@ -34,7 +33,7 @@ export const AccountTypeOption = ({ type, isSelected, onSelect }: Props) => {
             isSelected={isSelected}
             onSelect={handleSelect}
             iconSlot={iconSlot}
-            title={i18n.t(ACCOUNT_TYPE[type])}
+            title={t(ACCOUNT_TYPE[type])}
             subtitle={subtitle}
         />
     );

@@ -31,13 +31,13 @@ const chipTextVariants = cva('font-semibold', {
 });
 
 export const DateFilterItem = ({ period, isSelected, onSelect }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleSelect = () => void onSelect(period);
 
     return (
         <HapticPressable className={chipVariants({ isSelected })} onPress={handleSelect}>
-            <Text className={chipTextVariants({ isSelected })}>{i18n.t(DATE_PERIOD[period])}</Text>
+            <Text className={chipTextVariants({ isSelected })}>{t(DATE_PERIOD[period])}</Text>
         </HapticPressable>
     );
 };

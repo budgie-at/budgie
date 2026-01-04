@@ -37,7 +37,7 @@ export const LanguageSelector = () => {
                 variant="default"
                 title={t`Language`}
                 onPress={handleOpen}
-                description={`${selectedLanguage.emoji} ${i18n.t(selectedLanguage.name)}`}
+                description={`${selectedLanguage.emoji} ${t(selectedLanguage.name)}`}
             />
 
             <LanguageSelectorBottomSheet language={language} onSelect={updateDefaultInstrument} ref={ref} />
