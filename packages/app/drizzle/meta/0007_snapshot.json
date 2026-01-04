@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "818ba9c1-b971-404d-b6d3-5b6a23116afa",
-  "prevId": "01910598-696d-49d8-a461-1153d219dbae",
+  "id": "7a8904e2-c3e0-4425-a1e2-90b9abd39a97",
+  "prevId": "70f3d47d-4f31-40d0-86a0-56b0b10a1bc7",
   "tables": {
     "account_balances": {
       "name": "account_balances",
@@ -1020,29 +1020,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "title_search": {
-          "name": "title_search",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "''"
-        },
-        "priority": {
-          "name": "priority",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
         "enabled": {
           "name": "enabled",
           "type": "integer",
@@ -1097,13 +1074,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
-        },
-        "locale": {
-          "name": "locale",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
           "autoincrement": false
         },
         "language": {
