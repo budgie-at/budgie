@@ -1,12 +1,12 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
+import { useLLM } from 'react-native-executorch';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { LlmType } from '../type/llm.type';
 import { parseNumberFromMessage } from '../util/parse-number-words.util';
 
 type CategoryItem = { id: number; title: string };
@@ -35,7 +35,7 @@ const findCategoryByTitle = (response: string, categories: CategoryItem[]): numb
     return categories.find(cat => cat.title.toLowerCase().startsWith(firstWord))?.id ?? null;
 };
 
-export const useAiTransaction = (llm: LlmType, prompt: string) => {
+export const useAiTransaction = (llm: ReturnType<typeof useLLM>, prompt: string) => {
     const { t } = useLingui();
 
     const { categories } = useAllCategoriesQuery();
