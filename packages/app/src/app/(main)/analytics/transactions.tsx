@@ -15,16 +15,15 @@ interface RouteParams {
     categoryId?: string;
     tagId?: string;
     type?: string;
-    uncategorized?: string;
 }
 
 const buildCategoryIds = (params: RouteParams): number[] | null => {
-    if (params.uncategorized === 'true') {
-        return [];
-    }
-
     if (isDefined(params.categoryId)) {
         return [Number(params.categoryId)];
+    }
+
+    if (isDefined(params.type)) {
+        return [];
     }
 
     return null;
@@ -51,16 +50,18 @@ export default function AnalyticsTransactionsPage() {
 
     const handleGoBack = () => void router.back();
 
+    const isUncategorized = !isDefined(params.categoryId) && isDefined(params.type);
+
     return (
         <Page
             header={
                 <TransactionsPageHeader
-                    uncategorized={params.uncategorized}
                     category={category}
                     tag={tags?.[0]}
                     type={params.type}
                     startDate={params.startDate}
                     endDate={params.endDate}
+                    isUncategorized={isUncategorized}
                     onGoBack={handleGoBack}
                 />
             }

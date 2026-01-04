@@ -8,7 +8,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 
 interface Props {
-    readonly uncategorized?: string;
+    readonly isUncategorized?: boolean;
     readonly type?: string;
     readonly startDate?: string;
     readonly endDate?: string;
@@ -17,11 +17,11 @@ interface Props {
     readonly onGoBack: () => void;
 }
 
-export const TransactionsPageHeader = ({ uncategorized, category, tag, type, startDate, endDate, onGoBack }: Props) => {
+export const TransactionsPageHeader = ({ isUncategorized, category, tag, type, startDate, endDate, onGoBack }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndDay } = useFormatDate();
 
-    const categoryName = uncategorized === 'true' ? t`Uncategorized` : category?.title;
+    const categoryName = isUncategorized ? t`Uncategorized` : category?.title;
     const filterName = categoryName ?? tag?.title;
 
     const periodText =
@@ -30,20 +30,30 @@ export const TransactionsPageHeader = ({ uncategorized, category, tag, type, sta
             : null;
 
     const getTypeText = () => {
-        if (type === 'INCOME') {return t`Income`;}
-        if (type === 'EXPENSE') {return t`Expenses`;}
-        
-return t`Transactions`;
+        if (type === 'INCOME') {
+            return t`Income`;
+        }
+        if (type === 'EXPENSE') {
+            return t`Expenses`;
+        }
+
+        return t`Transactions`;
     };
 
     const title = filterName ?? getTypeText();
 
     const getSubtitle = () => {
-        if (filterName && periodText) {return periodText;}
-        if (filterName && isDefined(type)) {return getTypeText();}
-        if (periodText) {return periodText;}
-        
-return null;
+        if (filterName && periodText) {
+            return periodText;
+        }
+        if (filterName && isDefined(type)) {
+            return getTypeText();
+        }
+        if (periodText) {
+            return periodText;
+        }
+
+        return null;
     };
 
     const subtitle = getSubtitle();
