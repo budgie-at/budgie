@@ -1,32 +1,37 @@
-import { RuleConditionOperatorEnum } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
+import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useEffect } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
+
+import { FIELD_OPERATORS } from './field-operators.constant';
+import { OPERATOR_LABELS } from './operator-options.constant';
 
 interface Props {
     readonly index: number;
 }
 
-const OPERATOR_OPTIONS = [
-    { value: RuleConditionOperatorEnum.EQUALS, label: msg`Equals` },
-    { value: RuleConditionOperatorEnum.NOT_EQUALS, label: msg`Not Equals` },
-    { value: RuleConditionOperatorEnum.CONTAINS, label: msg`Contains` },
-    { value: RuleConditionOperatorEnum.NOT_CONTAINS, label: msg`Not Contains` },
-    { value: RuleConditionOperatorEnum.MATCHES_REGEX, label: msg`Matches Regex` },
-    { value: RuleConditionOperatorEnum.GREATER_THAN, label: msg`Greater Than` },
-    { value: RuleConditionOperatorEnum.LESS_THAN, label: msg`Less Than` },
-    { value: RuleConditionOperatorEnum.BETWEEN, label: msg`Between` },
-    { value: RuleConditionOperatorEnum.IN, label: msg`In List` }
-];
-
 export const RuleConditionOperatorSelector = ({ index }: Props) => {
     const { t } = useLingui();
+    const { control, setValue } = useFormContext<RuleCreateInputInterface>();
+
+    const field = useWatch({ control, name: `conditions.${index}.field` });
+    const operator = useWatch({ control, name: `conditions.${index}.operator` });
+
+    const validOperators = FIELD_OPERATORS[field];
+    const options = validOperators.map(value => ({ value, label: OPERATOR_LABELS[value] }));
+
+    useEffect(() => {
+        if (!validOperators.includes(operator)) {
+            setValue(`conditions.${index}.operator`, validOperators[0]);
+        }
+    }, [field, operator, validOperators, setValue, index]);
 
     return (
         <RuleConditionEnumSelector
             index={index}
-            options={OPERATOR_OPTIONS}
+            options={options}
             fieldName="operator"
             label={t`Operator`}
             sheetTitle={t`Select Operator`}
