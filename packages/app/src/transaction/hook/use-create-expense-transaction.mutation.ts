@@ -12,14 +12,15 @@ export const useCreateExpenseTransactionMutation = () => {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
 
-    return async (amount: number, categoryId: number) => {
-        const accountId = defaultAccount?.id ?? 0;
+    return async (amount: number, categoryId: number, selectedAccountId?: number | null, comment?: string) => {
+        const accountId = selectedAccountId ?? defaultAccount?.id ?? 0;
 
         const transactionData = createTransactionInput({
             exchangeRate: 1,
             fromAccountId: accountId,
             toAccountId: null,
             type: TransactionTypeEnum.EXPENSE,
+            comment,
             entries: [
                 createTransactionEntryInput({
                     accountId,
