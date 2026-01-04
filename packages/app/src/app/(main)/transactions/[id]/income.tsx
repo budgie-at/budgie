@@ -1,13 +1,18 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    IncomeTransactionCreateInputSchema,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -18,7 +23,6 @@ import { useGetAccountByIdQuery } from '../../../../account/query/use-get-accoun
 import { SuggestRuleBottomSheet } from '../../../../rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet';
 import { useSuggestRuleOnUpdate } from '../../../../rule/hooks/use-suggest-rule-on-update.hook';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
-import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -44,12 +48,15 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const { defaultInstrument } = useSettingsContext();
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: IncomeTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
@@ -61,12 +68,30 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         <FormProvider {...form}>
             <Page
                 header={
-                    <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
+                    <PageHeader
+                        title={t`Edit Income`}
+                        description={t`Select Category`}
+                        icon={UserIconNameEnum.TrendingUp}
+                        iconVariant="positive"
+                        onGoBack={handleGoBack}
+                    />
                 }
-                footer={<TransactionFormFooter variant="positive" buttonText={t`Update Income`} onSubmit={handleSubmit} />}
-                withBlur
+                footer={
+                    <TransactionFormFooter
+                        variant="positive"
+                        buttonText={t`Update Income`}
+                        onSubmit={handleSubmit}
+                        onDelete={handleDelete}
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
+                    />
+                }
             >
-                <BlurScrollView>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
+                >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" />
 
                     {isDefined(transaction.entries[0]?.mccCategory) ? (
@@ -89,7 +114,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </BlurScrollView>
+                </KeyboardAwareScrollView>
             </Page>
 
             <SuggestRuleBottomSheet ref={bottomSheetRef} />

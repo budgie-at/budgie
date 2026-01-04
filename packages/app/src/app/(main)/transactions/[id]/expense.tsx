@@ -1,14 +1,19 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    ExpenseTransactionCreateInputSchema,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -21,8 +26,6 @@ import { SuggestRuleBottomSheet } from '../../../../rule/components/suggest-rule
 import { useSuggestRuleOnUpdate } from '../../../../rule/hooks/use-suggest-rule-on-update.hook';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { ConvertExpenseToTransferBottomSheet } from '../../../../transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet';
-import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
-import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -45,24 +48,32 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
+    const router = useRouter();
     const { defaultInstrument } = useSettingsContext();
 
     const convertSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
     const handleGoBack = () => void goBackOrReplace('/');
+
+    const handleConvertSuccess = () => {
+        router.replace(`/transactions/${transactionId}/transfer`);
+    };
 
     const handleOpenConvert = () => void convertSheetRef.current?.open();
 
@@ -73,19 +84,31 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     header={
                         <PageHeader
                             title={t`Edit Expense`}
+                            description={t`Select Category`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            iconVariant="destructive"
                             onGoBack={handleGoBack}
-                            right={
-                                <TransactionActionsMenu onDelete={handleDelete}>
-                                    <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
-                                </TransactionActionsMenu>
-                            }
                         />
                     }
-                    footer={<TransactionFormFooter variant="destructive" buttonText={t`Update Expense`} onSubmit={handleSubmit} />}
-                    withBlur
+                    footer={
+                        <TransactionFormFooter
+                            variant="destructive"
+                            buttonText={t`Update Expense`}
+                            onSubmit={handleSubmit}
+                            onDelete={handleDelete}
+                            showConvertButton
+                            onConvert={handleOpenConvert}
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
+                    />
+                }
+            >
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
                 >
-                    <BlurScrollView>
-                        <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
+                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
                         {isDefined(transaction.entries[0]?.mccCategory) ? (
                             <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
@@ -105,14 +128,18 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                                 <TransactionFormTagsField variant="destructive" />
                             </FormLayoutGroup>
 
-                            <TransactionFormComment />
-                        </FormLayoutGroup>
-                    </BlurScrollView>
-                </Page>
+                        <TransactionFormComment />
+                    </FormLayoutGroup>
+                </KeyboardAwareScrollView>
+            </Page>
 
-                <SuggestRuleBottomSheet ref={bottomSheetRef} />
-            </FormProvider>
-            <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />
+            <SuggestRuleBottomSheet ref={bottomSheetRef} />
+        </FormProvider><ConvertExpenseToTransferBottomSheet
+                ref={convertSheetRef}
+                transactionId={transactionId}
+                fromAccountId={transaction.fromAccountId ?? 0}
+                onSuccess={handleConvertSuccess}
+            />
         </>
     );
 };

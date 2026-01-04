@@ -1,13 +1,13 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -17,7 +17,6 @@ import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.u
 import { SuggestRuleBottomSheet } from '../../../../rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet';
 import { useSuggestRuleOnUpdate } from '../../../../rule/hooks/use-suggest-rule-on-update.hook';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
-import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAmountBase } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormComment } from '../../../../transaction/components/transaction-form-comment/transaction-form-comment';
 import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
@@ -42,12 +41,15 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { defaultInstrument } = useSettingsContext();
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const [fromAccountId, amount] = useWatch({ control: form.control, name: ['fromAccountId', 'amount'] });
@@ -66,14 +68,28 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                 header={
                     <PageHeader
                         title={t`Edit Transfer`}
+                        description={t`Move Money`}
+                        icon={UserIconNameEnum.ArrowRightLeft}
+                        iconVariant="default"
                         onGoBack={handleGoBack}
-                        right={<TransactionActionsMenu onDelete={handleDelete} />}
                     />
                 }
-                footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
-                withBlur
+                footer={
+                    <TransactionFormFooter
+                        variant="default"
+                        buttonText={t`Update Transfer`}
+                        onSubmit={handleSubmit}
+                        onDelete={handleDelete}
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
+                    />
+                }
             >
-                <BlurScrollView>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
+                >
                     <TransferTransactionFormAccounts variant="default" />
 
                     <TransactionFormAmountBase
@@ -94,7 +110,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </BlurScrollView>
+                </KeyboardAwareScrollView>
             </Page>
 
             <SuggestRuleBottomSheet ref={bottomSheetRef} />
