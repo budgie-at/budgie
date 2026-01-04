@@ -24,7 +24,7 @@ export const useCategoryForm = (defaultValues: CategoryEntityInterface | null, d
         if (!isDefined(defaultValues) && isNotEmptyString(defaultTitle)) {
             form.setValue('title', defaultTitle);
         }
-    }, [defaultTitle, defaultValues, form.setValue]);
+    }, [defaultTitle, defaultValues, form]);
 
     return {
         ...form,
