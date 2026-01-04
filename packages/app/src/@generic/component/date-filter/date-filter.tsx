@@ -26,7 +26,7 @@ export const DateFilter = ({ value, onChange }: Props) => {
     const [localValue, setLocalValue] = useState<DateRangeInterface | null>(() => value);
     const selectedPeriod = getPeriodByDateRange(localValue);
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleOpen = () => {
         setLocalValue(value);
@@ -49,7 +49,7 @@ export const DateFilter = ({ value, onChange }: Props) => {
         }
 
         if (isDefined(period)) {
-            return i18n.t(DATE_PERIOD[period]);
+            return t(DATE_PERIOD[period]);
         }
 
         if (isDefined(value.from) && isDefined(value.to)) {

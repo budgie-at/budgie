@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 import { LLAMA3_2_1B_QLORA, WHISPER_BASE, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { LlmContext } from '../context/llm.context';
@@ -11,7 +11,7 @@ export const LlmProvider = ({ children }: Props) => {
     const llm = useLLM({ model: LLAMA3_2_1B_QLORA });
     const stt = useSpeechToText({ model: WHISPER_BASE });
 
-    const value = useMemo(() => ({ llm, stt }), [llm, stt]);
+    const value = { llm, stt };
 
     return <LlmContext.Provider value={value}>{children}</LlmContext.Provider>;
 };

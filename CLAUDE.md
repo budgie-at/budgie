@@ -340,6 +340,57 @@ Colors are defined as CSS variables in `global.css` and mirrored in `@generic/co
 - **App Locales:** `packages/app/src/locales/`
 - **Landing Locales:** `packages/landing/src/locales/`
 
+**Best Practices:**
+
+1. **Use `t` for inline translations:**
+   ```tsx
+   const { t } = useLingui();
+   return <Text>{t`Welcome`}</Text>;
+   ```
+
+2. **Use `t()` for MessageDescriptor variables:**
+   ```tsx
+   const { t } = useLingui();
+   // ACCOUNT_TYPE is Record<AccountTypeEnum, MessageDescriptor>
+   return <Text>{t(ACCOUNT_TYPE[type])}</Text>;
+   ```
+
+3. **NEVER use `t()` or `i18n.t()` on already-translated strings:**
+   ```tsx
+   // Bad - double translation
+   const translated = t`Hello`;
+   return <Text>{t(translated)}</Text>; // Wrong! Already translated
+
+   // Good
+   const translated = t`Hello`;
+   return <Text>{translated}</Text>;
+   ```
+
+4. **Don't split `useLingui()` destructuring:**
+   ```tsx
+   // Good - keep destructuring together
+   const { i18n, t } = useLingui();
+
+   // Bad - unnecessary split
+   const { i18n } = useLingui();
+   const { t } = useLingui();
+   ```
+
+5. **Use `msg` for non-component translations:**
+   ```tsx
+   // In utility files/constants
+   import { msg } from '@lingui/core/macro';
+
+   export const MESSAGES = {
+     error: msg`Something went wrong`,
+     success: msg`Operation completed`
+   };
+
+   // In component
+   const { t } = useLingui();
+   return <Text>{t(MESSAGES.error)}</Text>;
+   ```
+
 ## TypeScript & Coding Standards
 
 ### Critical Rules

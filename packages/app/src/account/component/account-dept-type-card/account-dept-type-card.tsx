@@ -21,7 +21,7 @@ const cardVariants = cva('flex-col flex-1', {
 });
 
 export const AccountDeptTypeCard = ({ type, onSelect, isSelected }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleSelect = () => void onSelect(type);
 
@@ -36,9 +36,9 @@ export const AccountDeptTypeCard = ({ type, onSelect, isSelected }: Props) => {
             iconParams={iconParams}
             contentClassName="items-center"
             icon={ACCOUNT_DEBT_TYPE_ICON[type]}
-            title={i18n.t(ACCOUNT_DEBT_TYPE[type])}
+            title={t(ACCOUNT_DEBT_TYPE[type])}
             className={cardVariants({ isSelected })}
-            description={i18n.t(ACCOUNT_DEBT_TYPE_DESCRIPTION[type])}
+            description={t(ACCOUNT_DEBT_TYPE_DESCRIPTION[type])}
         />
     );
 };

@@ -37,7 +37,7 @@ export default function Account() {
 
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handleGoBack = () => void goBackOrReplace('/');
 
@@ -78,7 +78,7 @@ export default function Account() {
                             </HapticPressable>
                         </Link>
                     }
-                    description={i18n.t(ACCOUNT_TYPE[type])}
+                    description={t(ACCOUNT_TYPE[type])}
                     descriptionClassName={descriptionVariants({ variant })}
                 />
             }
