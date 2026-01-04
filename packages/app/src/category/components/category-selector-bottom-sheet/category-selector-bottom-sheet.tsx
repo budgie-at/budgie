@@ -5,12 +5,13 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
-import { CategorySelectorBottomSheetList } from '../category-selector-bottom-sheet-list/category-selector-bottom-sheet-list';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
 interface Props {
@@ -74,9 +75,20 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
             />
         );
 
+    const listHeaderContent = (
+        <View className="px-6 pb-lg">
+            <Button
+                variant={variant}
+                leftIcon={UserIconNameEnum.Plus}
+                content={t`Create New Category`}
+                onPress={handleCreateCategory}
+            />
+        </View>
+    );
+
     return (
         <>
-            <CategorySelectorBottomSheetList
+            <SearchableListBottomSheet
                 ref={ref}
                 title={t`Select Category`}
                 description={t`Choose your main category`}
@@ -89,8 +101,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
                 emptyTitle={t`No categories found`}
                 data={data}
                 flatListProps={flatListProps}
-                onCreateCategory={handleCreateCategory}
-                variant={variant}
+                listHeaderContent={listHeaderContent}
             />
             <CategoryFormBottomSheet
                 ref={categoryFormRef}
