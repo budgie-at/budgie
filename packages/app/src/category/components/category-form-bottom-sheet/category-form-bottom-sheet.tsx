@@ -37,14 +37,14 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
             if (isEditing) {
                 await categoryRepository.updateById(category.id, values);
                 reset();
-                ref.current?.close();
+                void ref.current?.close();
             } else {
                 const newCategory = await categoryRepository.create(values);
                 reset();
                 if (isDefined(onCategoryCreated)) {
                     onCategoryCreated(newCategory);
                 } else {
-                    ref.current?.close();
+                    void ref.current?.close();
                 }
             }
         } catch {
