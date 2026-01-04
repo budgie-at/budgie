@@ -1,0 +1,89 @@
+appId: ${APP_ID}
+---
+- startRecording:
+    path: '01.smoke-test'
+    optional: true
+
+# Launch the app
+- launchApp
+- extendedWaitUntil:
+    visible: 'No accounts yet'
+    timeout: 15000
+
+# Verify home screen with empty state
+- assertVisible: 'No accounts yet'
+- assertVisible: 'Add your first account to start tracking your finances'
+
+# Navigate to create account screen via bottom tab
+- tapOn:
+    point: 50%,95%
+- extendedWaitUntil:
+    visible: 'New Account'
+    timeout: 5000
+
+# Verify account selection screen
+- assertVisible: 'New Account'
+- assertVisible: 'Choose the type of account you want to add'
+- assertVisible: 'Checking Account'
+- assertVisible: 'Savings Account'
+- assertVisible: 'Debt Account'
+
+# Select Checking Account
+- tapOn: 'Checking Account'
+- extendedWaitUntil:
+    visible: 'Account name'
+    timeout: 5000
+
+# Fill in account details
+- tapOn: 'Account name'
+- inputText: 'My Test Account'
+
+# Tap on balance field
+- tapOn:
+    below: 'Current balance'
+- inputText: '1000'
+
+# Submit the account creation form
+- tapOn: 'Add Account'
+- extendedWaitUntil:
+    visible: 'My Test Account'
+    timeout: 10000
+
+# Verify account was created and appears on home screen
+- assertVisible: 'My Test Account'
+
+# Navigate to create expense via bottom tab
+- tapOn:
+    point: 50%,95%
+- extendedWaitUntil:
+    visible: 'New Expense'
+    timeout: 5000
+
+# Verify expense creation screen
+- assertVisible: 'New Expense'
+- assertVisible: 'Select Category'
+
+# Enter expense amount
+- tapOn:
+    below: 'Amount'
+- inputText: '50'
+
+# Select a category (tap on the category field)
+- tapOn:
+    below: 'Category'
+- extendedWaitUntil:
+    visible: 'Food'
+    timeout: 5000
+- tapOn: 'Food'
+
+# Submit the expense
+- tapOn: 'Add Expense'
+- extendedWaitUntil:
+    visible: 'My Test Account'
+    timeout: 10000
+
+# Verify we're back on home screen
+- assertVisible: 'My Test Account'
+
+# Stop the app
+- stopApp

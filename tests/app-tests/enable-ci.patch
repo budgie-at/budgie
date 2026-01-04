@@ -1,0 +1,38 @@
+diff --git a/.github/workflows/pr.yml b/.github/workflows/pr.yml
+index a8570b0..3b85115 100644
+--- a/.github/workflows/pr.yml
++++ b/.github/workflows/pr.yml
+@@ -192,7 +192,6 @@ jobs:
+
+
+   e2e-ios:
+-    if: false
+     needs: [code-quality, eas-deploy]
+     name: E2E Tests on iOS
+     runs-on: macos-latest
+@@ -260,7 +259,7 @@ jobs:
+       - name: Run Maestro UI tests
+         working-directory: tests/app-tests
+         run: |
+-          maestro test flows -e APP_ID=com.vitalyiegorov.suuudokuuu.preview --format junit  --config config.yaml --debug-output ./
++          maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --format junit --config config.yaml --debug-output ./
+
+       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
+         if: always()
+@@ -273,7 +272,6 @@ jobs:
+             tests/app-tests/*.mp4
+
+   e2e-android:
+-    if: false
+     needs: [ code-quality, eas-deploy ]
+     name: E2E Tests on Android
+     runs-on: ubuntu-latest
+@@ -360,7 +358,7 @@ jobs:
+           working-directory: tests/app-tests
+           script: |
+             cd ../../packages/app && eas build:run --platform android --path app.android.apk
+-            maestro test flows -e APP_ID=com.vitaliiyehorov.suuudokuuu.preview --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
++            maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+
+       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
+         if: always()
