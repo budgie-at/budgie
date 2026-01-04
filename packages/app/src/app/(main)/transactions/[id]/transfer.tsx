@@ -41,12 +41,15 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { defaultInstrument } = useSettingsContext();
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const [fromAccountId, amount] = useWatch({ control: form.control, name: ['fromAccountId', 'amount'] });
@@ -77,6 +80,8 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         buttonText={t`Update Transfer`}
                         onSubmit={handleSubmit}
                         onDelete={handleDelete}
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
                     />
                 }
             >
