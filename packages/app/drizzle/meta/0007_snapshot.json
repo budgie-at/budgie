@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "7a8904e2-c3e0-4425-a1e2-90b9abd39a97",
+  "id": "716b3c87-09f0-4229-80c4-ac38c4f5dbc8",
   "prevId": "70f3d47d-4f31-40d0-86a0-56b0b10a1bc7",
   "tables": {
     "account_balances": {
@@ -850,6 +850,13 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -892,11 +899,37 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+        },
+        "rule_actions_account_id_accounts_id_fk": {
+          "name": "rule_actions_account_id_accounts_id_fk",
+          "tableFrom": "rule_actions",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "checkConstraints": {
+        "rule_action_set_category_requires_category_id": {
+          "name": "rule_action_set_category_requires_category_id",
+          "value": "type != 'SET_CATEGORY' OR category_id IS NOT NULL"
+        },
+        "rule_action_add_tag_requires_tag_id": {
+          "name": "rule_action_add_tag_requires_tag_id",
+          "value": "type != 'ADD_TAG' OR tag_id IS NOT NULL"
+        },
+        "rule_action_convert_to_transfer_requires_account_id": {
+          "name": "rule_action_convert_to_transfer_requires_account_id",
+          "value": "type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL"
+        }
+      }
     },
     "rule_conditions": {
       "name": "rule_conditions",
@@ -985,7 +1018,12 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "checkConstraints": {
+        "rule_condition_between_requires_secondary_value": {
+          "name": "rule_condition_between_requires_secondary_value",
+          "value": "operator != 'BETWEEN' OR secondary_value IS NOT NULL"
+        }
+      }
     },
     "rules": {
       "name": "rules",
