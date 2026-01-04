@@ -48,7 +48,6 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
     };
 
     const handleCategoryCreated = (category: CategoryEntityInterface) => {
-        void categoryFormRef.current?.dismiss();
         setSearch('');
         setNewCategoryTitle('');
         handleSelect(category.id);
