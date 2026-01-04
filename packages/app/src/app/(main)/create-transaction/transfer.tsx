@@ -35,7 +35,7 @@ export default function CreateTransferTransactionPage() {
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternalTransfer(data),
+        handleSubmit: data => transactionService.createInternalTransfer(data),
         categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
