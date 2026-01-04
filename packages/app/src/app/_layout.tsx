@@ -46,7 +46,6 @@ const SQLOptions = { enableChangeListener: true };
 // eslint-disable-next-line dot-notation
 const isAiDisabled = process.env['AI_DISABLE'] === 'true';
 const AiProviderWrapper = isAiDisabled ? Fragment : LlmProvider;
-
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     ...DEFAULT_STACK_OPTIONS,
     presentation: 'modal'
