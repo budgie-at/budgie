@@ -114,6 +114,24 @@ const MyForm = () => {
 6. **Avoid unnecessary variables** - Inline when logic is self-explanatory
 7. **Explicit JSX for fixed arrays** - Don't map over hardcoded data
 8. **Type guards** - Use `@rnw-community/shared`: `isDefined()`, `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`
+9. **Component Styling with CVA** - Always use `class-variance-authority` (CVA) for components with style variants
+   ```typescript
+   // Good - Use CVA for variant-based styling
+   import { cva } from 'class-variance-authority';
+   import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
+   import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+
+   const buttonVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
+       'base classes here',
+       {
+           variants: { variant: BACKGROUND_COLOR_PALETTE },
+           defaultVariants: { variant: 'primary' }
+       }
+   );
+
+   // Bad - Template strings for variant-based styling
+   className={`bg-${variant}-background text-${variant}-foreground`}
+   ```
 
 ### Naming
 - Interfaces: `*Interface` (e.g., `AccountFilterInterface`)

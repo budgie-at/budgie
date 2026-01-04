@@ -9,6 +9,7 @@ interface Props<T extends FieldValues> {
     readonly placeholder: string;
     readonly name?: Path<T>;
     readonly maxLength: number;
+    readonly autoFocus?: boolean;
 }
 
 export const FormBottomSheetTitleField = <T extends FieldValues>({
@@ -16,7 +17,8 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
     label,
     placeholder,
     name = 'title' as Path<T>,
-    maxLength
+    maxLength,
+    autoFocus = false
 }: Props<T>) => {
     const render = ({ field: { value, onChange }, fieldState: { error, invalid } }: UseControllerReturn<T>) => {
         const status = invalid ? 'error' : 'default';
@@ -29,6 +31,7 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
                     maxLength={maxLength}
                     onChangeText={onChange}
                     placeholder={placeholder}
+                    autoFocus={autoFocus}
                     className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
                 />
             </FormItem>
