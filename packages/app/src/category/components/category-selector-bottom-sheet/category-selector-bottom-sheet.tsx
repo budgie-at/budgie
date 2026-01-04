@@ -5,8 +5,8 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
+import { Button } from '../../../@generic/component/button/button';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -45,7 +45,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
 
     const handleCreateCategory = () => {
         setNewCategoryTitle(search);
-        void categoryFormRef.current?.present();
+        void categoryFormRef.current?.open();
     };
 
     const handleCategoryCreated = (category: CategoryEntityInterface) => {
@@ -55,10 +55,11 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         handleSelect(category.id);
     };
 
-    const categoriesWithoutExcluded = isNotEmptyArray(categories)
-        ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
-        : [];
-    const data = padFlatListData(categoriesWithoutExcluded);
+    const data = padFlatListData(
+        isNotEmptyArray(categories)
+            ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
+            : []
+    );
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
