@@ -2,9 +2,12 @@ import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
+import { MccCategoryChip } from '../mcc-category-chip/mcc-category-chip';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -26,22 +29,31 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
         return (
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => (
-                    <View className="rounded-sm py-xxs px-sm bg-secondary-background" key={entry.id}>
-                        <Text className={textClassName}>
-                            {getTransactionEntryLabel(entry, unknownLabel)}{' '}
-                            <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
-                        </Text>
+                    <View className="flex-row gap-xs" key={entry.id}>
+                        <View className="rounded-sm py-xxs px-sm bg-secondary-background">
+                            <Text className={textClassName}>
+                                {getTransactionEntryLabel(entry, unknownLabel)}{' '}
+                                <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
+                            </Text>
+                        </View>
+                        {isDefined(entry.mccCategory) && isDefined(entry.category) ? (
+                            <MccCategoryChip mccCategory={entry.mccCategory} />
+                        ) : null}
                     </View>
                 ))}
             </View>
         );
     }
 
+    const firstEntry = transaction.entries[0];
+    const showMccChip = isDefined(firstEntry?.mccCategory) && isDefined(firstEntry?.category);
+
     return (
-        <View className="flex-row">
+        <View className="flex-row gap-xs">
             <View className={wrapperClassName}>
                 <Text className={textClassName}>{categoryLabel}</Text>
             </View>
+            {showMccChip ? <MccCategoryChip mccCategory={firstEntry.mccCategory} /> : null}
         </View>
     );
 };

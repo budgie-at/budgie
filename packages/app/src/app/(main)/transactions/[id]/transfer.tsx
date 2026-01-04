@@ -28,6 +28,7 @@ import { TransactionFormComment } from '../../../../transaction/components/trans
 import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
 import { TransactionFormFooter } from '../../../../transaction/components/transaction-form-footer/transaction-form-footer';
 import { TransactionFormTagsField } from '../../../../transaction/components/transaction-form-tags-field/transaction-form-tags-field';
+import { TransactionMccInfoField } from '../../../../transaction/components/transaction-mcc-info-field/transaction-mcc-info-field';
 import { TransferTransactionFormAccounts } from '../../../../transaction/components/transfer-transaction-form/transfer-transaction-form-accounts';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
@@ -113,6 +114,10 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     />
 
                     <FormLayoutGroup>
+                        {isDefined(transaction.entries[0]?.mccCategory) ? (
+                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                        ) : null}
+
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="default" />
                             <TransactionFormTagsField variant="default" />
