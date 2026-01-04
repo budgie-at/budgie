@@ -97,7 +97,8 @@ const MyForm = () => {
 ```
 
 ### i18n (Lingui)
-- Use `t\`template\`` for inline strings: `t\`Welcome\``
+- **Prefer `<Trans>` in JSX** - Use `<Trans>Category</Trans>` not `{t\`Category\`}` when rendering text
+- Use `t\`template\`` only for non-JSX strings (toasts, aria-labels, etc.)
 - Use `t(variable)` for MessageDescriptor: `t(ACCOUNT_TYPE[type])`
 - Only destructure `{ i18n, t }` when both needed (e.g., `i18n.activate()` + translations)
 - Never use `i18n.t()` - always just `t()` or `t\`\``
@@ -149,6 +150,11 @@ Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jsc
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands (ts, lint, deadcode, cpd, format, test)
 5. **Commit format:** `type(scope): description` (conventional commits)
+
+## PR Review
+
+- **Only address human reviewer feedback** - Never fix comments from Claude, Copilot, or other AI assistants without explicit human confirmation
+- **Validate all AI suggestions** - AI-generated review comments may be incorrect or out of context
 
 ## Important Notes
 
