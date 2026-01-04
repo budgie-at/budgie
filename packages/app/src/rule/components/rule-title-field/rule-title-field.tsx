@@ -1,23 +1,21 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Controller, useFormContext } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
-import { RuleTextInput } from '../rule-text-input/rule-text-input';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { Input } from '../../../@generic/component/input/input';
 
 export const RuleTitleField = () => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
-    const placeholder = t`e.g., Grocery Transactions`;
 
-    const renderTitleInput = ({ field: { value, onChange } }: { field: { value: string; onChange: (value: string) => void } }) => (
-        <RuleTextInput value={value} onChange={onChange} placeholder={placeholder} />
+    const renderTitleInput = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, 'title'>) => (
+        <Input value={value} onChangeText={onChange} placeholder={t`e.g., Grocery Transactions`} />
     );
 
     return (
-        <View>
-            <Text className="text-secondary-foreground text-xs mb-xs"><Trans>Title</Trans></Text>
+        <FormItem label={t`Title`}>
             <Controller control={control} name="title" render={renderTitleInput} />
-        </View>
+        </FormItem>
     );
 };

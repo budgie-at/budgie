@@ -19,7 +19,7 @@ export const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl
         },
         status: {
             error: 'border border-destructive-corner bg-destructive-background/5 text-destructive-foreground',
-            default: 'border border-secondary-corner'
+            default: 'border border-secondary-corner bg-secondary-background'
         }
     }
 });

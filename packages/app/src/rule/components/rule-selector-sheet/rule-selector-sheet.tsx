@@ -26,6 +26,7 @@ export const RuleSelectorSheet = <T,>({ ref, title, options, selectedValue, onSe
         <BottomSheetScrollView>
             <View className="p-5xl gap-y-lg">
                 <Text className="text-primary text-lg font-semibold mb-lg">{title}</Text>
+
                 {options.map(option => (
                     <SelectorCard
                         key={String(option.value)}
