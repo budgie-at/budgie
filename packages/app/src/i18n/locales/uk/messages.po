@@ -55,11 +55,11 @@ msgstr "{tagsCount} тегів доступно"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:56
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:137
+#: src/app/(main)/settings/index.tsx:135
 msgid "About"
 msgstr "Про застосунок"
 
@@ -152,7 +152,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/app/(main)/settings/index.tsx:142
+#: src/app/(main)/settings/index.tsx:140
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -168,7 +168,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:57
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -199,7 +199,7 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:117
+#: src/app/(main)/settings/index.tsx:115
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -220,7 +220,7 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:103
+#: src/app/(main)/settings/index.tsx:101
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -277,7 +277,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/settings/index.tsx:140
+#: src/app/(main)/settings/index.tsx:138
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -315,6 +315,13 @@ msgid ""
 "IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
 "Reply with the category number only."
 msgstr ""
+"Класифікуйте цю витрату. Відповідайте ЛИШЕ номером (1-{categoryCount}).\n"
+"\n"
+"Категорії:\n"
+"{categoriesWithIds}\n"
+"\n"
+"ВАЖЛИВО: Продукти харчування (м'ясо, овочі, бакалія) належать до категорії Бакалія/Їжа, а НЕ до Акції/Інвестиції.\n"
+"Відповідайте лише номером категорії."
 
 #: src/app/(main)/settings/import.tsx:182
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
@@ -377,12 +384,8 @@ msgid "Choose your main currency"
 msgstr "Оберіть вашу основну валюту"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
-msgid "Choose your preferred language for date and number formatting"
-msgstr "Оберіть бажану мову для форматування дат і чисел"
-
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:26
-msgid "Choose your preferred locale for date and number formatting"
-msgstr "Оберіть бажані регіональні налаштування для форматування дат і чисел"
+msgid "Choose your preferred language"
+msgstr "Оберіть вашу бажану мову"
 
 #: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
 msgid "Clear"
@@ -490,7 +493,7 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(main)/settings/index.tsx:97
+#: src/app/(main)/settings/index.tsx:95
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
 
@@ -566,7 +569,7 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(main)/settings/index.tsx:128
+#: src/app/(main)/settings/index.tsx:126
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -851,7 +854,7 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(main)/settings/index.tsx:79
+#: src/app/(main)/settings/index.tsx:78
 msgid "General"
 msgstr "Загальне"
 
@@ -867,7 +870,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(main)/settings/index.tsx:68
+#: src/app/(main)/settings/index.tsx:67
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -902,7 +905,7 @@ msgid "Importing a database will replace all current data. The app will restart 
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:110
+#: src/app/(main)/settings/index.tsx:108
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -948,19 +951,15 @@ msgstr "Остання синхронізація"
 msgid "Lent"
 msgstr "Позичено"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:37
-msgid "Locale"
-msgstr "Регіональні налаштування"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:87
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:96
+#: src/app/(main)/settings/index.tsx:94
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
@@ -1085,10 +1084,6 @@ msgstr "Немає неактивних рахунків"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:28
-msgid "No locales found"
-msgstr "Регіональні налаштування не знайдено"
-
 #: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -1139,7 +1134,7 @@ msgstr "Нотатка (необов'язково)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/app/(main)/settings/index.tsx:86
+#: src/app/(main)/settings/index.tsx:84
 msgid "Organization"
 msgstr "Організація"
 
@@ -1210,7 +1205,7 @@ msgstr "Шаблон застосовано. За потреби налашту�
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:53
+#: src/app/(main)/settings/index.tsx:52
 msgid "Privacy"
 msgstr "Конфіденційність"
 
@@ -1260,7 +1255,7 @@ msgstr "Ощадний рахунок"
 msgid "Savings accounts"
 msgstr "Ощадні рахунки"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/app/(main)/settings/index.tsx:66
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -1291,10 +1286,6 @@ msgstr "Пошук іконок (напр. гроші, подорожі, їжа)
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:27
-msgid "Search locales..."
-msgstr "Пошук регіональних налаштувань..."
-
 #: src/app/(main)/settings/tags.tsx:46
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1304,7 +1295,7 @@ msgstr "Пошук тегів..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:62
+#: src/app/(main)/settings/index.tsx:61
 msgid "Security"
 msgstr "Безпека"
 
@@ -1374,10 +1365,6 @@ msgstr "Вибрати шаблон імпорту"
 msgid "Select Language"
 msgstr "Виберіть мову"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:25
-msgid "Select Locale"
-msgstr "Виберіть регіональні налаштування"
-
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:41
 msgid "Select Tags"
 msgstr "Виберіть теги"
@@ -1398,15 +1385,15 @@ msgstr "Вибрано {selectedTagsCount}"
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:49
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(main)/settings/index.tsx:121
+#: src/app/(main)/settings/index.tsx:119
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/app/(main)/settings/index.tsx:120
+#: src/app/(main)/settings/index.tsx:118
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -1621,7 +1608,6 @@ msgstr "Переказ"
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:72
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -1687,15 +1673,15 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
-#: src/app/(main)/settings/index.tsx:111
+#: src/app/(main)/settings/index.tsx:109
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(main)/settings/index.tsx:90
+#: src/app/(main)/settings/index.tsx:88
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:104
+#: src/app/(main)/settings/index.tsx:102
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
