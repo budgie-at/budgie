@@ -10,10 +10,13 @@ import { PageHeader } from '../../@generic/component/page-header/page-header';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../account/query/use-net-worth.query';
 import { StatsByCategories } from '../../category/components/stats-by-categories/stats-by-categories';
+import { StatsByTags } from '../../tag/components/stats-by-tags/stats-by-tags';
 import { TransactionAnalyticsCard } from '../../transaction/components/transaction-analytics-card/transaction-analytics-card';
 import { TransactionFilters } from '../../transaction/components/transaction-filters/transaction-filters';
 import { useGetExpenseByCategoryQuery } from '../../transaction/query/use-get-expense-by-category.query';
+import { useGetExpenseByTagQuery } from '../../transaction/query/use-get-expense-by-tag.query';
 import { useGetIncomeByCategoryQuery } from '../../transaction/query/use-get-income-by-category.query';
+import { useGetIncomeByTagQuery } from '../../transaction/query/use-get-income-by-tag.query';
 import { useGetTotalIncomeAndExpensesQuery } from '../../transaction/query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../transaction/utils/check-if-filters-selected.util';
 
@@ -26,12 +29,11 @@ export default function StatisticsPage() {
 
     const { incomeByCategory } = useGetIncomeByCategoryQuery(filters);
     const { expenseByCategory } = useGetExpenseByCategoryQuery(filters);
+    const { incomeByTag } = useGetIncomeByTagQuery(filters);
+    const { expenseByTag } = useGetExpenseByTagQuery(filters);
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
 
     const netWorth = useNetWorthQuery();
-
-    const getIncomePercentageLabel = (percentage: number) => t`${percentage}% of income`;
-    const getExpensesPercentageLabel = (percentage: number) => t`${percentage}% of expenses`;
 
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
@@ -65,25 +67,49 @@ export default function StatisticsPage() {
                     </View>
                 </View>
 
-                {isNotEmptyArray(incomeByCategory) ? (
+                {isNotEmptyArray(incomeByCategory) && (
                     <StatsByCategories
-                        getPercentageLabel={getIncomePercentageLabel}
                         variant="positive"
                         title={t`Income by category`}
                         stats={incomeByCategory}
                         totalAmount={income}
+                        filters={filters}
+                        isIncome
                     />
-                ) : null}
+                )}
 
-                {isNotEmptyArray(expenseByCategory) ? (
+                {isNotEmptyArray(expenseByCategory) && (
                     <StatsByCategories
-                        getPercentageLabel={getExpensesPercentageLabel}
                         variant="destructive"
                         title={t`Spending by Category`}
                         stats={expenseByCategory}
                         totalAmount={expense}
+                        filters={filters}
+                        isIncome={false}
                     />
-                ) : null}
+                )}
+
+                {isNotEmptyArray(incomeByTag) && (
+                    <StatsByTags
+                        variant="positive"
+                        title={t`Income by Tag`}
+                        stats={incomeByTag}
+                        totalAmount={income}
+                        filters={filters}
+                        isIncome
+                    />
+                )}
+
+                {isNotEmptyArray(expenseByTag) && (
+                    <StatsByTags
+                        variant="destructive"
+                        title={t`Spending by Tag`}
+                        stats={expenseByTag}
+                        totalAmount={expense}
+                        filters={filters}
+                        isIncome={false}
+                    />
+                )}
             </ScrollView>
         </Page>
     );

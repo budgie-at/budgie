@@ -1,37 +1,29 @@
-import { CategoryEntityInterface, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { TagEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
-import { CategoryStatisticsCard } from '../category-statistics-card/category-statistics-card';
+import { TagStatisticsCard } from '../tag-statistics-card/tag-statistics-card';
 
 interface Props {
     readonly title: string;
     readonly totalAmount: number;
     readonly variant: ColorPaletteVariant;
-    readonly stats: { amount: number; category: CategoryEntityInterface | null }[];
+    readonly stats: { amount: number; tag: TagEntityInterface }[];
     readonly filters: TransactionFilterInterface;
     readonly isIncome: boolean;
 }
 
-export const StatsByCategories = ({ title, stats, totalAmount, variant, filters, isIncome }: Props) => {
-    const { t } = useLingui();
-
-    const renderStat = ({ category, amount }: { category: CategoryEntityInterface | null; amount: number }) => {
+export const StatsByTags = ({ title, stats, totalAmount, variant, filters, isIncome }: Props) => {
+    const renderStat = ({ tag, amount }: { tag: TagEntityInterface; amount: number }) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
-        const categoryData = category ?? {
-            icon: UserIconNameEnum.BadgeQuestionMark,
-            title: t`Uncategorized`
-        };
-
         return (
-            <CategoryStatisticsCard
-                key={category?.id ?? 'uncategorized'}
-                category={categoryData}
+            <TagStatisticsCard
+                key={tag.id}
+                tag={tag}
                 amount={amount}
                 percentage={percentage}
                 variant={variant}
