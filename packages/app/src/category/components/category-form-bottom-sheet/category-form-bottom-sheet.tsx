@@ -16,12 +16,14 @@ import { CategoryPreview } from '../category-preview/category-preview';
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly category: CategoryEntityInterface | null;
+    readonly defaultTitle?: string;
+    readonly onCategoryCreated?: (category: CategoryEntityInterface) => void;
 }
 
-export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
+export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategoryCreated }: Props) => {
     const { t } = useLingui();
 
-    const { handleSubmit, reset, control, title, icon } = useCategoryForm(category);
+    const { handleSubmit, reset, control, title, icon } = useCategoryForm(category, defaultTitle);
     const isEditing = isDefined(category?.id);
 
     const handleCancel = () => {
@@ -34,11 +36,17 @@ export const CategoryFormBottomSheet = ({ ref, category }: Props) => {
         try {
             if (isEditing) {
                 await categoryRepository.updateById(category.id, values);
+                reset();
+                ref.current?.close();
             } else {
-                await categoryRepository.create(values);
+                const newCategory = await categoryRepository.create(values);
+                reset();
+                if (isDefined(onCategoryCreated)) {
+                    onCategoryCreated(newCategory);
+                } else {
+                    ref.current?.close();
+                }
             }
-            reset();
-            ref.current?.close();
         } catch {
             Toast.show({
                 type: 'error',
