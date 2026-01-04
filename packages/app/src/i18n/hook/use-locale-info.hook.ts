@@ -6,12 +6,14 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 import { DEFAULT_LOCALE } from '../constant/default-locale.constant';
 import { LOCALES } from '../constant/locales.constant';
 import { LocaleInfoInterface } from '../interface/locale-info.interface';
+import { languageToLocale } from '../util/language-to-locale.util';
 
 export const useLocaleInfo = (): LocaleInfoInterface => {
-    const settingsLocale = useSetting('locale');
+    const language = useSetting('language');
     const [locale] = getLocales();
 
-    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === settingsLocale);
+    const localeTag = languageToLocale(language);
+    const localeFromSettings = LOCALES.find(({ languageTag }) => languageTag === localeTag);
 
     if (isDefined(localeFromSettings)) {
         return localeFromSettings;

@@ -57,11 +57,11 @@ msgstr "{tagsCount} tags available"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:56
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(main)/settings/index.tsx:137
+#: src/app/(main)/settings/index.tsx:135
 msgid "About"
 msgstr "About"
 
@@ -154,7 +154,7 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/app/(main)/settings/index.tsx:142
+#: src/app/(main)/settings/index.tsx:140
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -170,7 +170,7 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(main)/settings/index.tsx:58
+#: src/app/(main)/settings/index.tsx:57
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -201,7 +201,7 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(main)/settings/index.tsx:117
+#: src/app/(main)/settings/index.tsx:115
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -222,7 +222,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:103
+#: src/app/(main)/settings/index.tsx:101
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -279,7 +279,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/settings/index.tsx:140
+#: src/app/(main)/settings/index.tsx:138
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -386,12 +386,8 @@ msgid "Choose your main currency"
 msgstr "Choose your main currency"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
-msgid "Choose your preferred language for date and number formatting"
-msgstr "Choose your preferred language for date and number formatting"
-
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:26
-msgid "Choose your preferred locale for date and number formatting"
-msgstr "Choose your preferred locale for date and number formatting"
+msgid "Choose your preferred language"
+msgstr "Choose your preferred language"
 
 #: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
 msgid "Clear"
@@ -499,7 +495,7 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(main)/settings/index.tsx:97
+#: src/app/(main)/settings/index.tsx:95
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -575,7 +571,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(main)/settings/index.tsx:128
+#: src/app/(main)/settings/index.tsx:126
 msgid "Data management"
 msgstr "Data management"
 
@@ -860,7 +856,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(main)/settings/index.tsx:79
+#: src/app/(main)/settings/index.tsx:78
 msgid "General"
 msgstr "General"
 
@@ -876,7 +872,7 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(main)/settings/index.tsx:68
+#: src/app/(main)/settings/index.tsx:67
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -911,7 +907,7 @@ msgid "Importing a database will replace all current data. The app will restart 
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:110
+#: src/app/(main)/settings/index.tsx:108
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -957,19 +953,15 @@ msgstr "Last sync"
 msgid "Lent"
 msgstr "Lent"
 
-#: src/settings/components/locale-selector/locale-selector.tsx:37
-msgid "Locale"
-msgstr "Locale"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(main)/settings/index.tsx:89
+#: src/app/(main)/settings/index.tsx:87
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(main)/settings/index.tsx:96
+#: src/app/(main)/settings/index.tsx:94
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1094,10 +1086,6 @@ msgstr "No inactive accounts"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:28
-msgid "No locales found"
-msgstr "No locales found"
-
 #: src/transaction/components/transaction-list/transaction-list.tsx:69
 msgid "No matching transactions"
 msgstr "No matching transactions"
@@ -1148,7 +1136,7 @@ msgstr "Note (optional)"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/app/(main)/settings/index.tsx:86
+#: src/app/(main)/settings/index.tsx:84
 msgid "Organization"
 msgstr "Organization"
 
@@ -1219,7 +1207,7 @@ msgstr "Preset applied. Adjust columns below if needed."
 msgid "Preview"
 msgstr "Preview"
 
-#: src/app/(main)/settings/index.tsx:53
+#: src/app/(main)/settings/index.tsx:52
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1269,7 +1257,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/app/(main)/settings/index.tsx:66
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1300,10 +1288,6 @@ msgstr "Search icons (e.g., money, travel, food)..."
 msgid "Search languages..."
 msgstr "Search languages..."
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:27
-msgid "Search locales..."
-msgstr "Search locales..."
-
 #: src/app/(main)/settings/tags.tsx:46
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1313,7 +1297,7 @@ msgstr "Search tags..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(main)/settings/index.tsx:62
+#: src/app/(main)/settings/index.tsx:61
 msgid "Security"
 msgstr "Security"
 
@@ -1383,10 +1367,6 @@ msgstr "Select Import Preset"
 msgid "Select Language"
 msgstr "Select Language"
 
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:25
-msgid "Select Locale"
-msgstr "Select Locale"
-
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:41
 msgid "Select Tags"
 msgstr "Select Tags"
@@ -1407,15 +1387,15 @@ msgstr "Selected {selectedTagsCount}"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(main)/settings/index.tsx:50
+#: src/app/(main)/settings/index.tsx:49
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(main)/settings/index.tsx:121
+#: src/app/(main)/settings/index.tsx:119
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/(main)/settings/index.tsx:120
+#: src/app/(main)/settings/index.tsx:118
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -1630,7 +1610,6 @@ msgstr "Transfer"
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:72
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
-#: src/i18n/components/locale-selector-bottom-sheet/locale-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
@@ -1696,15 +1675,15 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/app/(main)/settings/index.tsx:111
+#: src/app/(main)/settings/index.tsx:109
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(main)/settings/index.tsx:90
+#: src/app/(main)/settings/index.tsx:88
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(main)/settings/index.tsx:104
+#: src/app/(main)/settings/index.tsx:102
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 

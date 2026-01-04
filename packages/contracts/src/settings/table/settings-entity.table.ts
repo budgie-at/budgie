@@ -10,7 +10,6 @@ import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.
 export const SettingsEntityTable = sqliteTable(
     'settings',
     withBaseEntityTableColumns({
-        locale: text('locale').notNull(),
         language: text('language', { enum: convertEnumToDrizzleEnum(LanguageEnum) })
             .notNull()
             .default(LanguageEnum.EN)

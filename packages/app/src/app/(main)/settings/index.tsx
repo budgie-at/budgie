@@ -16,7 +16,6 @@ import { ImportDatabase } from '../../../import/components/import-database/impor
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
-import { LocaleSelector } from '../../../settings/components/locale-selector/locale-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
@@ -79,7 +78,6 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`General`}>
                         <LanguageSelector />
                         <DefaultCurrencySelector />
-                        <LocaleSelector />
                         <DefaultAccountSelector />
                     </SettingsGroup>
 

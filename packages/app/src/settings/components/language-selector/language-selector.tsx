@@ -19,7 +19,7 @@ export const LanguageSelector = () => {
 
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 
-    const updateDefaultInstrument = async (language: LanguageEnum) => {
+    const handleLanguageSelect = async (language: LanguageEnum) => {
         await updateSettingsMutation({ language });
         i18n.activate(language);
     };
@@ -40,7 +40,7 @@ export const LanguageSelector = () => {
                 description={`${selectedLanguage.emoji} ${t(selectedLanguage.name)}`}
             />
 
-            <LanguageSelectorBottomSheet language={language} onSelect={updateDefaultInstrument} ref={ref} />
+            <LanguageSelectorBottomSheet language={language} onSelect={handleLanguageSelect} ref={ref} />
         </>
     );
 };
