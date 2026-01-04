@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.108.1](https://github.com/budgie-at/budgie/compare/v1.108.0...v1.108.1) (2026-01-04)
+
+### Bug Fixes
+
+- **app:** address PR review feedback ([6dc59ff](https://github.com/budgie-at/budgie/commit/6dc59ff4c6de9a4ef021bba8515b7e24f95c9e22))
+- review ([3de1e9f](https://github.com/budgie-at/budgie/commit/3de1e9f3e1910b4082ad2ea38d075b14cb2ca116))
+
+# [1.108.0](https://github.com/budgie-at/budgie/compare/v1.107.2...v1.108.0) (2026-01-04)
+
+### Features
+
+- **app:** improve AI voice transcription UX with streaming and visual feedback ([1d4ed41](https://github.com/budgie-at/budgie/commit/1d4ed410780162bb13ecbe933be760763c42e8b3))
+
 ## [1.107.2](https://github.com/budgie-at/budgie/compare/v1.107.1...v1.107.2) (2026-01-04)
 
 ### Bug Fixes

@@ -4,4 +4,5 @@ export interface AITransactionInterface {
     category: CategoryEntityInterface | null;
     amount: number;
     type: TransactionTypeEnum;
+    comment: string;
 }

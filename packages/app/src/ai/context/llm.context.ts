@@ -1,17 +1,14 @@
 import { createContext, use } from 'react';
-
-import { LlmType } from '../type/llm.type';
-
-import type { useSpeechToText } from 'react-native-executorch';
+import { useLLM, useSpeechToText } from 'react-native-executorch';
 
 interface LlmContextInterface {
-    llm: LlmType;
-    speechToText: ReturnType<typeof useSpeechToText>;
+    llm: ReturnType<typeof useLLM>;
+    stt: ReturnType<typeof useSpeechToText>;
 }
 
 export const LlmContext = createContext<LlmContextInterface>({
-    llm: {} as LlmContextInterface['llm'],
-    speechToText: {} as LlmContextInterface['speechToText']
+    llm: {} as ReturnType<typeof useLLM>,
+    stt: {} as ReturnType<typeof useSpeechToText>
 });
 
 export const useLlmContext = () => use(LlmContext);
