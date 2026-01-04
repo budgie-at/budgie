@@ -1,8 +1,11 @@
-import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
 import { useRouter } from 'expo-router';
 import { Text, View, ViewStyle } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -18,7 +21,7 @@ interface Props {
     readonly totalAmount: number;
     readonly variant: ColorPaletteVariant;
     readonly getPercentageLabel: (percentage: number) => string;
-    readonly stats: { amount: number; category: CategoryEntityInterface }[];
+    readonly stats: { amount: number; category: CategoryEntityInterface | null }[];
     readonly filters: TransactionFilterInterface;
     readonly isIncome: boolean;
 }
@@ -48,12 +51,21 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
     const formatDigits = useFormatDigits(decimalPlaces);
     const router = useRouter();
 
-    const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
+    const renderStats = ({ category, amount }: { category: CategoryEntityInterface | null; amount: number }) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
         const style: ViewStyle = { width: `${percentage}%` };
 
+        const isUncategorized = !isDefined(category);
+        const categoryTitle = isUncategorized ? <Trans>Uncategorized</Trans> : category.title;
+        const categoryIcon = isUncategorized ? UserIconNameEnum.BadgeQuestionMark : category.icon;
+        const itemKey = isUncategorized ? 'uncategorized' : String(category.id);
+
         const handlePress = () => {
+            if (isUncategorized) {
+                return;
+            }
+
             const params: Record<string, string> = {
                 categoryId: String(category.id),
                 type: isIncome ? 'income' : 'expense'
@@ -74,10 +86,10 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
         };
 
         return (
-            <HapticPressable key={category.id} onPress={handlePress} className="gap-y-md">
+            <HapticPressable key={itemKey} onPress={handlePress} className="gap-y-md" disabled={isUncategorized}>
                 <View className="flex-row items-center gap-x-md">
-                    <CircleIcon icon={category.icon} variant={variant} />
-                    <Text className="mr-auto text-primary text-xs">{category.title}</Text>
+                    <CircleIcon icon={categoryIcon} variant={variant} />
+                    <Text className="mr-auto text-primary text-xs">{categoryTitle}</Text>
                     <Text className={amountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
                 </View>
 
