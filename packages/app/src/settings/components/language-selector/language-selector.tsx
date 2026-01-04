@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { LanguageSelectorBottomSheet } from '../../../i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
+import { languageToLocale } from '../../../i18n/util/language-to-locale.util';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
@@ -20,7 +21,8 @@ export const LanguageSelector = () => {
     const selectedLanguage = LANGUAGES.find(({ code }) => code === language);
 
     const updateDefaultInstrument = async (language: LanguageEnum) => {
-        await updateSettingsMutation({ language });
+        const locale = languageToLocale(language);
+        await updateSettingsMutation({ language, locale });
         i18n.activate(language);
     };
 
