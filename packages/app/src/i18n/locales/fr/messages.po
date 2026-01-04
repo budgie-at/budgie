@@ -112,7 +112,7 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Add a new category to organize your transactions"
 msgstr "Ajoutez une nouvelle catégorie pour organiser vos transactions"
 
@@ -186,7 +186,7 @@ msgid "Amount"
 msgstr "Montant"
 
 #: src/app/(main)/create-transaction/transfer.tsx:58
-#: src/app/(main)/transactions/[id]/transfer.tsx:67
+#: src/app/(main)/transactions/[id]/transfer.tsx:68
 msgid "Amount exceeds debt account balance"
 msgstr "Le montant dépasse le solde du compte de dette"
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:67
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
 msgid "Category Name"
 msgstr "Nom de la catégorie"
 
@@ -371,7 +371,7 @@ msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 msgid "Choose your main account"
 msgstr "Choisissez votre compte principal"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:66
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:87
 msgid "Choose your main category"
 msgstr "Choisissez votre catégorie principale"
 
@@ -444,7 +444,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account. Please try again later"
 msgstr "Impossible d'archiver le compte. Veuillez réessayer plus tard"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
@@ -465,7 +465,7 @@ msgstr "Impossible de supprimer la transaction."
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Could not update category"
 msgstr "Impossible de mettre à jour la catégorie"
 
@@ -501,7 +501,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
@@ -643,23 +643,23 @@ msgstr "ex. Compte d'épargne"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ex. Professionnel, Personnel, Vacances"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ex. Épicerie, Salaire, Loyer"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:65
+#: src/app/(main)/transactions/[id]/expense.tsx:66
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:65
+#: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:86
+#: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
 msgstr "Modifier le transfert"
 
@@ -971,6 +971,14 @@ msgstr "Mapper les colonnes CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
+#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:24
+msgid "MCC"
+msgstr "MCC"
+
+#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:16
+msgid "Merchant Category"
+msgstr "Catégorie de Commerçant"
+
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
 msgstr "Argent prêté ou emprunté"
@@ -996,7 +1004,7 @@ msgid "Move between accounts"
 msgstr "Transférer entre comptes"
 
 #: src/app/(main)/create-transaction/transfer.tsx:78
-#: src/app/(main)/transactions/[id]/transfer.tsx:87
+#: src/app/(main)/transactions/[id]/transfer.tsx:88
 msgid "Move Money"
 msgstr "Transférer de l'argent"
 
@@ -1035,7 +1043,7 @@ msgstr "Aucun compte pour le moment"
 msgid "No archived accounts"
 msgstr "Aucun compte archivé"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:73
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -1183,7 +1191,7 @@ msgstr "Les codes PIN ne correspondent pas"
 msgid "Please enter your Monobank API token"
 msgstr "Veuillez entrer votre jeton API Monobank"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -1265,7 +1273,7 @@ msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Rechercher des catégories..."
@@ -1335,9 +1343,9 @@ msgstr "Sélectionner une catégorie"
 
 #: src/app/(main)/create-transaction/expense.tsx:72
 #: src/app/(main)/create-transaction/income.tsx:55
-#: src/app/(main)/transactions/[id]/expense.tsx:66
-#: src/app/(main)/transactions/[id]/income.tsx:66
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
+#: src/app/(main)/transactions/[id]/expense.tsx:67
+#: src/app/(main)/transactions/[id]/income.tsx:67
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
 
@@ -1606,7 +1614,7 @@ msgstr "Virement"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:72
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Essayez un autre terme de recherche"
@@ -1628,7 +1636,7 @@ msgstr "Type ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Ukrainien"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:23
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -1644,19 +1652,19 @@ msgstr "À jour"
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:75
+#: src/app/(main)/transactions/[id]/expense.tsx:76
 msgid "Update Expense"
 msgstr "Mettre à jour la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:75
+#: src/app/(main)/transactions/[id]/income.tsx:76
 msgid "Update Income"
 msgstr "Mettre à jour le revenu"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:96
+#: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
 msgstr "Mettre à jour le virement"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Update your category details"
 msgstr "Mettez à jour les détails de votre catégorie"
 
