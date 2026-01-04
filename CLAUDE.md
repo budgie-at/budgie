@@ -77,18 +77,547 @@ export class AccountRepository {
 export const accountRepository = new AccountRepository(db);
 ```
 
-### Routing (Expo Router)
-- One component per route file
-- Prefer direct routes (`expense.tsx`, `income.tsx`) over dynamic with switch statements
-- Use nested folders for variants with router pattern:
+### Service Layer
+- Services are classes (not functions) that orchestrate business logic
+- Export singleton instances (e.g., `export const myService = new MyService()`)
+- Services compose API and repository layers
+- Public methods first, then private methods (follow `@typescript-eslint/member-ordering`)
+- **Never create wrapper methods** - Don't create service methods that just delegate to a single repository method. Use repository methods directly instead.
+  ```typescript
+  // Bad - Unnecessary wrapper method
+  class BudgetService {
+      async deleteBudget(id: number) {
+          return budgetRepository.deleteById(id);
+      }
+  }
+  // Usage: await budgetService.deleteBudget(id);
+
+  // Good - Use repository directly
+  // Usage: await budgetRepository.deleteById(id);
+  ```
+  Service methods should only exist when they:
+  - Orchestrate multiple repository/API calls
+  - Contain business logic beyond simple CRUD
+  - Manage transactions across multiple operations
+
+### Layered Architecture
+1. **API Layer:** External service communication (third-party APIs)
+2. **Repository Layer:** Database operations (SQLite via Drizzle)
+3. **Service Layer:** Business logic orchestration
+4. **Task Layer:** Background job registration (Expo TaskManager)
+
+### Background Tasks
+- Named with `.task.ts` suffix
+- Registration logic is part of the service class
+- Import task definitions in app entry point to ensure `TaskManager.defineTask` runs
+
+### Navigation & Routing
+- **Framework:** Expo Router (file-based routing)
+- **Structure:** Routes defined in `packages/app/src/app/`
+- **Tabs:** Main navigation uses tab layout in `app/(tabs)/`
+
+**Routing Architecture:**
+- **One component per file** - Each route file should export a single default component
+- **Direct routes over dynamic routes** - Prefer explicit route files (`expense.tsx`, `income.tsx`, `transfer.tsx`) over dynamic routes with switch statements (`[type].tsx`)
+- **Nested routes for variants** - When a resource has multiple forms/views, use nested folders:
   ```
   transactions/[id].tsx          # Router redirects by type
   transactions/[id]/expense.tsx  # Specific form
   ```
-- Inline all logic in route components, avoid wrapper components
+- **Inline all logic** - Route components should contain all their logic directly, not delegate to wrapper components
+- **Never create shared screen components** - Don't create components like `EntityFormScreen` that multiple routes share. Each route (`create.tsx`, `[id].tsx`) should contain its own form JSX inline, even if similar. This ensures:
+  - Routes are self-contained and easy to understand
+  - Changes to one route don't accidentally affect others
+  - No unnecessary abstraction layers
+  ```tsx
+  // Bad - Shared screen component
+  // rule-form-screen.tsx
+  export const RuleFormScreen = ({ ruleId, defaultValues }: Props) => {
+      const { form } = useRuleForm({ ruleId, defaultValues });
+      return <Page>...</Page>;
+  };
+  // create.tsx
+  export default function CreateRulePage() {
+      return <RuleFormScreen />;
+  }
+  // [id].tsx
+  export default function EditRulePage() {
+      return <RuleFormScreen ruleId={id} defaultValues={...} />;
+  }
+
+  // Good - Each route contains its own form inline
+  // create.tsx
+  export default function CreateRulePage() {
+      const { form } = useRuleForm();
+      return <Page>... form JSX here ...</Page>;
+  }
+  // [id].tsx
+  export default function EditRulePage() {
+      const { form } = useRuleForm({ ruleId, defaultValues });
+      return <Page>... form JSX here ...</Page>;
+  }
+  ```
+- **Router pattern** - Parent `[id].tsx` determines transaction type and redirects to specific route:
+  ```tsx
+  // transactions/[id].tsx - Lightweight router
+  export default function TransactionDetailsScreen() {
+      const { transaction } = useGetTransactionByIdQuery(id);
+
+      if (isExpenseTransaction(transaction)) {
+          return <Redirect href={`/transactions/${id}/expense`} />;
+      }
+      // ... other type checks
+  }
+  ```
+
+**Example Structure:**
+```
+app/(main)/
+├── create-transaction/
+│   ├── expense.tsx       # Create expense (direct route)
+│   ├── income.tsx        # Create income (direct route)
+│   └── transfer.tsx      # Create transfer (direct route)
+└── transactions/
+    ├── [id].tsx          # Router: redirects to /[id]/expense|income|transfer
+    └── [id]/
+        ├── expense.tsx   # Update expense form
+        ├── income.tsx    # Update income form
+        └── transfer.tsx  # Update transfer form
+```
+
+### State Management
+- React Context + hooks (no Redux/MobX)
+- TanStack Query for server state (mentioned in README)
+- Zustand/Jotai for client state (mentioned in README)
+
+### React Compiler (React 19)
+This project uses React 19 with React Compiler enabled. The compiler automatically memoizes components, values, and callbacks.
+
+**Rules:**
+- **Never use `useMemo`** - the compiler handles value memoization automatically
+- **Never use `useCallback`** - the compiler handles function memoization automatically
+- **Never use `React.memo`** - the compiler handles component memoization automatically
+- **Write simple, straightforward code** - the compiler optimizes it for you
+
+**Why:** Manual memoization is redundant with React Compiler and adds unnecessary complexity. The compiler analyzes your code and applies optimal memoization automatically.
+
+```tsx
+// Good - Let the compiler handle it
+const categoryIds = allocations.map(a => a.categoryId).filter(isDefined);
+const handleClick = () => void doSomething();
+
+// Bad - Unnecessary manual memoization
+const categoryIds = useMemo(() => allocations.map(a => a.categoryId).filter(isDefined), [allocations]);
+const handleClick = useCallback(() => void doSomething(), []);
+```
+
+### Internationalization (Lingui) Usage Rules
+
+- **JSX text content**
+  Use `Trans` component from `@lingui/react/macro` for text content inside JSX elements.
+
+- **Component props**
+  Use `t` function for passing translated strings to component props (e.g., `label`, `title`, `placeholder`).
+  **Never pass `<Trans>` as a prop value** - always use `t` for props.
+
+- **`t` function usage**
+  The `t` function obtained via `const { t } = useLingui();` **must not** be used directly in JSX text content.
+  It **must** be used for:
+    - Component props (e.g., `label={t\`Save\`}`, `title={t\`Settings\`}`)
+    - Variables outside JSX (e.g., `const title = t\`Accounts\`;`)
+
+- **Utility functions with i18n**
+  Import `msg` from `@lingui/core/macro` directly in utility functions. Return `MessageDescriptor` and use `i18n.t()` in the caller.
+  ```typescript
+  // Good - import msg directly, return MessageDescriptor
+  import { MessageDescriptor } from '@lingui/core';
+  import { msg } from '@lingui/core/macro';
+
+  const getLabel = (): MessageDescriptor => msg`Label`;
+
+  // In component:
+  const { i18n } = useLingui();
+  const label = i18n.t(getLabel());
+
+  // Bad - don't pass t/msg as function argument
+  const getLabel = (t: TranslateFunction): string => t`Label`;
+  ```
+
+- **Rationale**
+  This ensures consistent message extraction, predictable rendering behavior, and avoids subtle runtime or tooling issues caused by inline `t()` usage in JSX.
+
+**Correct examples**:
+```tsx
+// Text content - use Trans
+<Trans>Settings</Trans>
+
+// Props - use t function
+<Button title={t`Save`} />
+<MyComponent label={t`Name`} placeholder={t`Enter name`} />
+
+// Variable - use t function
+const title = t`Accounts`;
+
+// Utility function - import msg, return MessageDescriptor
+// utils/get-label.util.ts
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+
+export const getLabel = (): MessageDescriptor => msg`Label`;
+
+// Component - use i18n.t() to translate
+const { i18n } = useLingui();
+const label = i18n.t(getLabel());
+```
+**Incorrect examples**:
+```tsx
+// Don't use t for text content
+<Text>{t`Settings`}</Text>
+
+// Don't use Trans for props
+<MyComponent label={<Trans>Name</Trans>} />
+
+// Don't pass translation function as argument
+const getLabel = (t: SomeType): string => t`Label`;
+```
 
 ### Forms
-Use `FormProvider` and `useFormContext` to avoid prop drilling:
+- **Library:** React Hook Form + Zod validation
+- **Schemas & Types:** All input schemas and interfaces must live in `@budgie/contracts`
+  - Input schemas go in `entity/schema/[entity]-create-input.schema.ts`
+  - Input interfaces go in `entity/input/[entity]-create-input.interface.ts`
+  - Create input schemas by extending entity schemas using Zod's `.extend()` or `.omit()` methods
+  - Infer interfaces from schemas using `extends infer<typeof Schema>`
+  - **Never create schemas or form types in the app package** - always define in contracts
+  ```typescript
+  // Good - Define input schema in contracts extending entity schema
+  // packages/contracts/src/rule/schema/rule-create-input.schema.ts
+  import { RuleCreateEntitySchema } from './rule-create-entity.schema';
+  import { RuleConditionCreateInputSchema } from '../../rule-condition/schema/rule-condition-create-input.schema';
+
+  export const RuleCreateInputSchema = RuleCreateEntitySchema.extend({
+      conditions: array(RuleConditionCreateInputSchema),
+      actions: array(RuleActionCreateInputSchema)
+  });
+
+  // Good - Define input interface in contracts inferring from schema
+  // packages/contracts/src/rule/input/rule-create-input.interface.ts
+  import { infer } from 'zod';
+  import { RuleCreateInputSchema } from '../schema/rule-create-input.schema';
+
+  export interface RuleCreateInputInterface extends infer<typeof RuleCreateInputSchema> {}
+
+  // Good - Import directly from contracts in app
+  import { RuleCreateInputInterface, RuleCreateInputSchema } from '@budgie/contracts';
+
+  const form = useForm<RuleCreateInputInterface>({
+      resolver: zodResolver(RuleCreateInputSchema)
+  });
+
+  // Bad - Creating schemas in app package
+  // packages/app/src/rule/schema/rule-form.schema.ts  // Don't do this!
+
+  // Bad - Creating custom type aliases
+  export type RuleFormValues = RuleCreateInputInterface; // Don't do this
+  ```
+- **Best Practice:** Use `FormProvider` and `useFormContext` to avoid prop drilling
+  ```tsx
+  // Good - Use FormProvider at form root
+  import { FormProvider } from 'react-hook-form';
+
+  const MyForm = () => {
+      const form = useForm();
+      return (
+          <FormProvider {...form}>
+              <FormField name="email" />
+              <FormField name="password" />
+          </FormProvider>
+      );
+  };
+
+  // Good - Use useFormContext in child components
+  import { useFormContext } from 'react-hook-form';
+
+  const FormField = ({ name }) => {
+      const { control, formState } = useFormContext();
+      return <Controller name={name} control={control} />;
+  };
+
+  // Bad - Prop drilling control/setValue through components
+  const MyForm = () => {
+      const { control, setValue } = useForm();
+      return (
+          <>
+              <FormField control={control} setValue={setValue} />
+              <AnotherField control={control} setValue={setValue} />
+          </>
+      );
+  };
+  ```
+
+### Styling
+- **Framework:** NativeWind (Tailwind CSS for React Native)
+- **Global Styles:** `packages/app/src/global.css`
+- **Components:** Tailwind utility classes with `class-variance-authority` for variants
+
+### Toast Messages
+- **Only show toasts for errors** - Never show success toasts for positive/expected outcomes
+- Users expect actions to succeed; only notify them when something goes wrong
+- Error toasts should include helpful context about what failed
+```typescript
+// Good - Only show toast on error
+const handleSubmit = async () => {
+    try {
+        await service.doAction();
+        bottomSheetRef.current?.close();
+    } catch {
+        Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to complete action` });
+    }
+};
+
+// Bad - Unnecessary success toast
+const handleSubmit = async () => {
+    try {
+        await service.doAction();
+        Toast.show({ type: 'success', text1: t`Success`, text2: t`Action completed` }); // Don't do this
+    } catch {
+        Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to complete action` });
+    }
+};
+```
+
+### Internationalization (i18n)
+- **Library:** Lingui with compiled catalogs
+- **Supported Languages:** English, French, Spanish, Ukrainian, German
+- **Workflow:** Extract with `yarn i18n:extract`, compile with `yarn i18n:compile`, or use `yarn i18n:sync`
+- **App Locales:** `packages/app/src/locales/`
+- **Landing Locales:** `packages/landing/src/locales/`
+
+## TypeScript & Coding Standards
+
+### Critical Rules
+
+1. **Never use `any` type** - Everything must be properly typed. No exceptions.
+2. **Never use type assertions** - Never use `as` type casting (e.g., `foo as SomeType`). If types don't match, fix the actual types.
+3. **No type circumvention** - Never use `@ts-ignore`, `@ts-expect-error`, `as any`, or any form of type assertion
+4. **Never write comments** - Code should be self-documenting with clear method and variable names
+5. **Maximize TypeScript usage** - Leverage the type system fully, let TypeScript infer types when possible
+6. **Never use `let`** - Prefer `const` with functional patterns like `reduce`, `map`, or recursion
+   ```typescript
+   // Good - Functional approach with reduce
+   const { periods } = items.reduce<{ periods: Period[]; lastDate: Date }>(
+       ({ periods, lastDate }) => ({
+           periods: [...periods, createPeriod(lastDate)],
+           lastDate: nextDate
+       }),
+       { periods: [], lastDate: startDate }
+   );
+
+   // Bad - Mutable let variables
+   let periods = [];
+   let lastDate = startDate;
+   for (let i = 0; i < count; i++) {
+       periods.push(createPeriod(lastDate));
+       lastDate = nextDate;
+   }
+   ```
+7. **Use descriptive variable names** - Never use short/abbreviated names like `tx`, `al`, `ai`, `inst`, `opt`, `val`, `el`, `cb`, `fn`
+   ```typescript
+   // Good
+   await db.transaction(async transaction => {
+       const instance = await repository.create(data, transaction);
+       const allocation = allocations.find(allocation => allocation.id === id);
+   });
+   const translatedOptions = options.map(option => ({ value: option.value, label: option.label }));
+
+   // Bad
+   await db.transaction(async tx => {
+       const inst = await repository.create(data, tx);
+       const al = allocations.find(a => a.id === id);
+   });
+   const translatedOptions = options.map(opt => ({ value: opt.value, label: opt.label }));
+   ```
+8. **Prefer concise setState calls** - Pass boolean expressions directly instead of if/else blocks
+   ```typescript
+   // Good
+   setShouldAutoFocus(sheetIndex >= 0);
+
+   // Bad
+   if (sheetIndex >= 0) {
+       setShouldAutoFocus(true);
+   } else {
+       setShouldAutoFocus(false);
+   }
+   ```
+9. **Use library types over inline definitions** - When typing callback parameters or return values from third-party libraries, use the types exported by that library instead of defining inline types
+   ```typescript
+   // Good - Use library's exported type
+   import { UseControllerReturn } from 'react-hook-form';
+
+   const renderField = ({ field }: UseControllerReturn<FormValues, 'email'>) => (
+       <Input value={field.value} onChange={field.onChange} />
+   );
+
+   // Bad - Inline type definition duplicating library types
+   const renderField = ({ field }: { field: { value: string; onChange: (v: string) => void } }) => (
+       <Input value={field.value} onChange={field.onChange} />
+   );
+   ```
+
+10. **Prefer explicit JSX over array mapping for fixed-size arrays** - When rendering a known, fixed number of elements, write explicit JSX instead of creating arrays and mapping
+   ```tsx
+   // Good - Explicit and clear
+   return (
+       <>
+           <TabButton label="Expense" variant="expense" />
+           <TabButton label="Income" variant="income" />
+           <TabButton label="Transfer" variant="neutral" />
+       </>
+   );
+
+   // Bad - Unnecessary abstraction for fixed data
+   const tabs = [
+       { label: 'Expense', variant: 'expense' },
+       { label: 'Income', variant: 'income' },
+       { label: 'Transfer', variant: 'neutral' },
+   ];
+   return <>{tabs.map(tab => <TabButton key={tab.label} {...tab} />)}</>;
+   ```
+   Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
+
+### Naming Conventions
+- **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
+- **Enums:** Must end with `Enum` (e.g., `AccountTypeEnum`)
+- **Functions:** Use module name as prefix (e.g., `exchangeRatesFetchApi`)
+- **Classes:** PascalCase (e.g., `AccountRepository`)
+- **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
+- **Types:** Store type aliases in separate `.type.ts` files with contextual names
+  ```typescript
+  // Bad - Inline type in component file
+  type StatusType = 'positive' | 'negative';
+  export const Component = () => { ... };
+
+  // Bad - Generic name without context
+  // status.type.ts
+  export type StatusType = 'positive' | 'negative';
+
+  // Good - Contextual name reflecting usage
+  // budget-amount-status.type.ts
+  export type BudgetAmountStatusType = 'positive' | 'negative';
+
+  // budget-amount-display.tsx
+  import { BudgetAmountStatusType } from './budget-amount-status.type';
+  ```
+
+### Module Organization
+
+**General Structure:**
+- Follow modular architecture with clear separation: `api/`, `repository/`, `service/`, `constant/`, `interface/`, `enum/`
+- Single Responsibility Principle - one file, one entity, one purpose
+- **No barrel exports in app package** - Import directly from specific files (no `index.ts` re-exports within app)
+  - ✅ Allowed: Root-level barrel exports in library packages (contracts, shared libraries)
+  - ❌ Forbidden: Any `index.ts` files within `packages/app/src/` directory structure
+  - Always use direct imports: `from './component-name/component-name'` not `from './component-name'`
+- **Flat structure** - Avoid deep nesting; entity/[file-type]/[file].ts not entity/[file-type]/[nested]/[file].ts
+
+**Component Organization:**
+- **One component per file** - Each `.tsx` file (route or component) should export exactly one default component
+- Each component must be in its own folder: `component-name/component-name.tsx`
+- Related files (types, utils, hooks) live in the same folder
+- Folder name and main file name must match exactly (kebab-case)
+- **Never group multiple components under a parent folder** - each component gets its own top-level folder
+- **Avoid wrapper components that only pass props or group components** - Don't create components that just:
+  - Extract values from context and pass them as props to existing components
+  - Simply group other components without adding logic
+
+  Inline them instead in the consuming component.
+
+  ```tsx
+  // Bad - Unnecessary context wrapper
+  export const FormComment = () => {
+      const { control } = useFormContext();
+      return <FormCommentBase control={control} />;
+  };
+
+  // Bad - Unnecessary grouping wrapper
+  export const FormMetadataFields = ({ control, variant }) => (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+
+  // Good - Inline directly in parent component
+  return (
+      <FormLayoutGroup variant="horizontal">
+          <FormDateField control={control} variant={variant} />
+          <FormTagsField control={control} variant={variant} />
+      </FormLayoutGroup>
+  );
+  ```
+
+Examples:
+```
+✓ Good
+packages/app/src/@generic/component/
+├── bottom-sheet/
+│   └── bottom-sheet.tsx
+├── amount-input/
+│   └── amount-input.tsx
+├── transaction-card/
+│   ├── transaction-card.tsx
+│   └── transaction-card.util.ts
+├── transaction-form-root/
+│   └── transaction-form-root.tsx
+└── transaction-form-amount/
+    └── transaction-form-amount.tsx
+
+✗ Bad
+packages/app/src/@generic/component/
+├── bottom-sheet.tsx                    # Missing folder
+├── forms/
+│   └── amount-input/                   # Too nested
+│       └── amount-input.tsx
+├── transaction/
+│   └── card/                           # Should be transaction-card/
+│       └── card.tsx
+└── transaction-form/                   # Never group multiple components
+    ├── root.tsx                        # Each should have own folder
+    ├── amount.tsx
+    └── category.tsx
+```
+
+**Entity Structure (Contracts Package):**
+Each entity follows flat organization:
+```
+entity-name/
+├── constant/[file].constant.ts         # NOT constant/validators/[file].ts
+├── entity/[file].entity.ts             # NOT entity/types/[file].ts
+├── enum/[file].enum.ts
+├── input/[file].input.ts
+├── interface/[file].interface.ts
+├── repository/[name].repository.ts
+├── relations/[name].relations.ts
+├── schema/[name].schema.ts
+└── table/[name].table.ts
+```
+Never nest beyond this level - all files within a type folder should be direct children.
+
+### Type Guards (Use @rnw-community/shared)
+Always use these type guards instead of manual checks:
+- `isDefined()` - for nullish checks (never use `!== null`, `!== undefined`, or `??`)
+- `isNotEmptyArray()` - for array validation
+- `isNotEmptyString()` - for string validation
+- `isPositiveNumber()` - for numeric validation
+
+### Code Duplication (jscpd)
+
+**Route Files in `src/app/`:**
+- Use `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to wrap **JSX only**
+- Place ignore comments around the JSX return statement to prevent false positives on similar form structures
+- Never ignore business logic or hooks - only the presentational JSX
+
+**Example:**
 ```tsx
 const MyForm = () => {
     const form = useForm();

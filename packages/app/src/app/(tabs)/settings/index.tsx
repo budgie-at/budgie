@@ -37,6 +37,7 @@ export default function SettingsPage() {
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
+    const navigateToRules = () => void router.push('/settings/rules');
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -94,6 +95,13 @@ export default function SettingsPage() {
                             description={t`Create and organize transaction tags`}
                             icon={UserIconNameEnum.Tag}
                             variant="pink"
+                        />
+                        <SettingsCard
+                            onPress={navigateToRules}
+                            title={t`Manage Rules`}
+                            description={t`Auto-categorize transactions`}
+                            icon={UserIconNameEnum.Zap}
+                            variant="ghost"
                         />
                         <SettingsCard
                             onPress={handleNavigateToArchived}
