@@ -20,6 +20,10 @@ yarn cpd                                  # Code duplication (~2s)
 yarn format                               # Prettier
 yarn test                                 # Jest (~4s)
 
+# IMPORTANT: After completing any task, ALWAYS run:
+yarn ts && yarn lint && yarn deadcode && yarn cpd
+yarn workspace @budgie-at/app i18n:sync  # ALWAYS run if you modified any user-facing text (uses i18n:sync, not extract/compile)
+
 # App-specific (cd packages/app)
 yarn start                                # Expo dev server
 yarn ios|android|web                      # Platform builds
@@ -143,6 +147,7 @@ const MyForm = () => {
 ### Module Organization
 - **No barrel exports in app** - Direct imports only (`./component-name/component-name` not `./component-name`)
 - **One component per file** - Each in own folder: `component-name/component-name.tsx`
+- **Components belong in entity folders** - Never create components in `src/app/`. All reusable components must be in `src/[entity]/components/` (e.g., `src/transaction/components/transaction-page-header/`)
 - **Flat structure** - No deep nesting
 - **No wrapper components** - Don't create components that only extract context or group others
 

@@ -16,7 +16,9 @@ import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
 interface Props {
-    readonly accountId: number | null;
+    readonly accountId?: number | null;
+    readonly filters?: TransactionFilterInterface;
+    readonly showFilters?: boolean;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -39,14 +41,15 @@ const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
 // eslint-disable-next-line max-statements
-export const TransactionList = ({ accountId }: Props) => {
-    const [filters, setFilters] = useState<TransactionFilterInterface>({
+export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true }: Props) => {
+    const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>({
         ...DEFAULT_TRANSACTION_FILTER,
         accountIds: isDefined(accountId) ? [accountId] : null
     });
 
-    const hasFiltersSelected = checkIfFiltersSelected(accountId, filters);
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
+    const activeFilters = externalFilters ?? internalFilters;
+    const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
     const { t } = useLingui();
     const { formatMonthAndDayWithTime } = useFormatDate();
 
@@ -86,9 +89,18 @@ export const TransactionList = ({ accountId }: Props) => {
     const isEmpty = flatData.length === 0;
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
 
+    const canShowFilters = showFilters && !externalFilters;
+
     return (
         <View className="gap-y-3xl flex-1">
-            <TransactionFilters filters={filters} onChange={setFilters} accountId={accountId} hasFiltersSelected={hasFiltersSelected} />
+            {canShowFilters && (
+                <TransactionFilters
+                    filters={activeFilters}
+                    onChange={setInternalFilters}
+                    accountId={accountId}
+                    hasFiltersSelected={hasFiltersSelected}
+                />
+            )}
 
             <LegendList
                 data={flatData}
