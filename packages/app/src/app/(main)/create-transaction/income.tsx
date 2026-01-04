@@ -33,7 +33,7 @@ export default function CreateIncomeTransactionPage() {
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternal(data),
+        handleSubmit: data => transactionService.createInternal(data),
         schema: IncomeTransactionCreateInputSchema,
         toAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,

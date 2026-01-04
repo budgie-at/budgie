@@ -25,7 +25,6 @@ class RuleService {
         return db.transaction(async tx => {
             const rule = await ruleRepository.create(
                 {
-                    title: input.title,
                     enabled: input.enabled,
                     conditionMatchType: input.conditionMatchType
                 },
@@ -55,7 +54,6 @@ class RuleService {
             const rule = await ruleRepository.updateById(
                 id,
                 {
-                    title: input.title,
                     enabled: input.enabled,
                     conditionMatchType: input.conditionMatchType
                 },

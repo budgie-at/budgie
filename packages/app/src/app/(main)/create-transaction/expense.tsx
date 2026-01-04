@@ -62,7 +62,7 @@ export default function CreateExpenseTransactionPage() {
     const parsedEntries = isDefined(entries) ? parseEntriesParam(entries) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternal(data),
+        handleSubmit: data => transactionService.createInternal(data),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,

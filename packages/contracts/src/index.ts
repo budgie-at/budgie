@@ -1,4 +1,4 @@
- 
+
 export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';

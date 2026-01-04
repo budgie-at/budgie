@@ -5,7 +5,7 @@ import {
     RuleCreateInputInterface
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 
@@ -43,10 +43,7 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         secondaryValue: null
     }));
 
-    const title = isNotEmptyArray(prefillData.conditions) ? prefillData.conditions[0].value.slice(0, 50) : '';
-
     return {
-        title,
         enabled: true,
         conditionMatchType: RuleConditionMatchTypeEnum.ALL,
         conditions,
