@@ -279,7 +279,7 @@ export class TransactionRepository {
     private buildFilteredTransactionIdsQuery(
         filters: TransactionFilterInterface,
         transactionType: TransactionTypeEnum,
-        entryType: TransactionEntryTypeEnum
+        _entryType: TransactionEntryTypeEnum
     ) {
         const baseWhere = this.buildWhere(filters);
 
@@ -290,7 +290,7 @@ export class TransactionRepository {
                 and(
                     // eslint-disable-next-line no-undefined
                     isDefined(baseWhere) ? baseWhere : undefined,
-                    or(eq(TransactionEntityTable.type, transactionType), this.buildAdjustmentCondition(entryType))
+                    eq(TransactionEntityTable.type, transactionType)
                 )
             );
     }

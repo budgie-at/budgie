@@ -72,11 +72,13 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
             };
 
             if (filters.date?.from) {
-                params.startDate = filters.date.from.toISOString();
+                // eslint-disable-next-line dot-notation
+                params['startDate'] = filters.date.from.toISOString();
             }
 
             if (filters.date?.to) {
-                params.endDate = filters.date.to.toISOString();
+                // eslint-disable-next-line dot-notation
+                params['endDate'] = filters.date.to.toISOString();
             }
 
             router.push({
