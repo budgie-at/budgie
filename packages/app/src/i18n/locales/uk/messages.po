@@ -63,6 +63,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:90
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Рахунок"
@@ -147,13 +148,9 @@ msgstr "Додайте свій перший рахунок, щоб почати
 msgid "Adjustment"
 msgstr "Коригування"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:28
+#: src/ai/component/ai-chat-button/ai-chat-button.tsx:29
 msgid "AI"
 msgstr "ШІ"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
-msgid "AI Suggestion"
-msgstr "Пропозиція ШІ"
 
 #: src/app/(main)/settings/index.tsx:142
 msgid ""
@@ -184,7 +181,7 @@ msgid "Already syncing"
 msgstr "Вже синхронізується"
 
 #: src/app/(main)/settings/import.tsx:198
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:99
 msgid "Amount"
 msgstr "Сума"
 
@@ -289,7 +286,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:257
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:114
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -308,8 +305,20 @@ msgstr "Категорії"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
+#: src/ai/hook/use-ai-transaction.hook.ts:47
+msgid ""
+"Categorize this expense. Reply with ONLY a number (1-{categoryCount}).\n"
+"\n"
+"Categories:\n"
+"{categoriesWithIds}\n"
+"\n"
+"IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
+"Reply with the category number only."
+msgstr ""
+
 #: src/app/(main)/settings/import.tsx:182
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:77
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Категорія"
@@ -404,7 +413,7 @@ msgstr "Коментар"
 msgid "Common Tags"
 msgstr "Поширені теги"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:87
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:123
 msgid "Confirm"
 msgstr "Підтвердити"
 
@@ -440,7 +449,7 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:41
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
@@ -824,7 +833,7 @@ msgstr "Французька (Франція)"
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:47
 msgid "from"
-msgstr ""
+msgstr "від"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
@@ -1089,7 +1098,7 @@ msgstr "Немає відповідних транзакцій"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/app/(main)/ai.tsx:37
+#: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
 msgstr "Мовлення не виявлено"
 
@@ -1317,6 +1326,7 @@ msgid "Select account"
 msgstr "Виберіть рахунок"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:92
 msgid "Select Account"
 msgstr "Виберіть рахунок"
 
@@ -1409,7 +1419,7 @@ msgstr "Показати цей рахунок на головній сторі�
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
@@ -1552,7 +1562,7 @@ msgstr "Цього року"
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
 msgid "to"
-msgstr ""
+msgstr "до"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
@@ -1636,7 +1646,7 @@ msgstr "Українська"
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:80
 msgid "Unknown Category"
 msgstr "Невідома категорія"
 
@@ -1709,11 +1719,7 @@ msgstr "Ви дали гроші"
 msgid "You received money"
 msgstr "Ви отримали гроші"
 
-#: src/ai/hook/use-ai-transaction.hook.ts:20
-msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Ваша мета - повернути ОДНУ найкращу відповідну категорію, ЛИШЕ НАЗВУ З цього списку <CategoryList>{categoriesList}</CategoryList> на основі повідомлення користувача, без відповіді, без додаткового тексту, лише категорію зі списку."
-
-#: src/app/(main)/ai.tsx:77
+#: src/app/(main)/ai.tsx:106
 msgid "Your message:"
 msgstr "Ваше повідомлення:"
 
