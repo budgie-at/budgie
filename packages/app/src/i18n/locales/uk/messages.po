@@ -112,7 +112,7 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
 
@@ -186,7 +186,7 @@ msgid "Amount"
 msgstr "Сума"
 
 #: src/app/(main)/create-transaction/transfer.tsx:58
-#: src/app/(main)/transactions/[id]/transfer.tsx:67
+#: src/app/(main)/transactions/[id]/transfer.tsx:68
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:67
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -371,7 +371,7 @@ msgstr "Оберіть тип рахунку, який ви хочете дод�
 msgid "Choose your main account"
 msgstr "Оберіть ваш основний рахунок"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:66
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:87
 msgid "Choose your main category"
 msgstr "Оберіть вашу основну категорію"
 
@@ -444,7 +444,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
@@ -465,7 +465,7 @@ msgstr "Не вдалося видалити транзакцію."
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:45
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
 
@@ -501,7 +501,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -643,23 +643,23 @@ msgstr "напр. Ощадний рахунок"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:65
+#: src/app/(main)/transactions/[id]/expense.tsx:66
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:65
+#: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:86
+#: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -971,6 +971,14 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
+#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:24
+msgid "MCC"
+msgstr "MCC"
+
+#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:16
+msgid "Merchant Category"
+msgstr "Категорія Продавця"
+
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
@@ -996,7 +1004,7 @@ msgid "Move between accounts"
 msgstr "Переказ між рахунками"
 
 #: src/app/(main)/create-transaction/transfer.tsx:78
-#: src/app/(main)/transactions/[id]/transfer.tsx:87
+#: src/app/(main)/transactions/[id]/transfer.tsx:88
 msgid "Move Money"
 msgstr "Переказати гроші"
 
@@ -1035,7 +1043,7 @@ msgstr "Ще немає рахунків"
 msgid "No archived accounts"
 msgstr "Немає архівованих рахунків"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:73
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -1183,7 +1191,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
@@ -1265,7 +1273,7 @@ msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:68
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Пошук категорій..."
@@ -1335,9 +1343,9 @@ msgstr "Виберіть категорію"
 
 #: src/app/(main)/create-transaction/expense.tsx:72
 #: src/app/(main)/create-transaction/income.tsx:55
-#: src/app/(main)/transactions/[id]/expense.tsx:66
-#: src/app/(main)/transactions/[id]/income.tsx:66
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
+#: src/app/(main)/transactions/[id]/expense.tsx:67
+#: src/app/(main)/transactions/[id]/income.tsx:67
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1606,7 +1614,7 @@ msgstr "Переказ"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:72
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
@@ -1628,7 +1636,7 @@ msgstr "Тип ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:23
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Невідомо"
 
@@ -1644,19 +1652,19 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:75
+#: src/app/(main)/transactions/[id]/expense.tsx:76
 msgid "Update Expense"
 msgstr "Оновити витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:75
+#: src/app/(main)/transactions/[id]/income.tsx:76
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:96
+#: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
 msgstr "Оновити переказ"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Update your category details"
 msgstr "Оновіть дані вашої категорії"
 
