@@ -48,12 +48,15 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const { defaultInstrument } = useSettingsContext();
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
@@ -79,6 +82,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                         buttonText={t`Update Expense`}
                         onSubmit={handleSubmit}
                         onDelete={handleDelete}
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
                     />
                 }
             >

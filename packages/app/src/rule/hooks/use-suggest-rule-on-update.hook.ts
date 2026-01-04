@@ -1,8 +1,6 @@
-import {
-    TransactionCreateInputInterface,
-    TransactionWithRelationsEntityInterface
-} from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRef } from 'react';
+import { Control, useWatch } from 'react-hook-form';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { hasCategoryOrTagsChanged } from '../../transaction/utils/has-category-or-tags-changed.util';
@@ -12,37 +10,39 @@ import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interfa
 interface UseSuggestRuleOnUpdateOptions {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionInput: TransactionCreateInputInterface;
+    readonly control: Control<TransactionCreateInputInterface>;
 }
 
 export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) => {
-    const { transaction, transactionInput } = options;
+    const { transaction, transactionInput, control } = options;
     const bottomSheetRef = useRef<BottomSheetInterface<SuggestRuleDataInterface>>(null);
+
+    const watchedEntries = useWatch({ control, name: 'entries' });
+    const watchedCategoryId = useWatch({ control, name: 'entries.0.categoryId' });
+    const watchedTagIds = useWatch({ control, name: 'tagIds' });
 
     const originalCategoryId = transactionInput.entries[0]?.categoryId ?? null;
     const originalTagIds = transactionInput.tagIds;
 
-    const handleSuccess = (data: TransactionCreateInputInterface): boolean => {
-        if (!isBankSyncTransaction(transaction)) {
-            return false;
-        }
+    const isBankSync = isBankSyncTransaction(transaction);
+    const hasChanges = hasCategoryOrTagsChanged(
+        { categoryId: originalCategoryId, tagIds: originalTagIds },
+        { categoryId: watchedCategoryId, tagIds: watchedTagIds }
+    );
 
-        const newCategoryId = data.entries[0]?.categoryId ?? null;
-        const newTagIds = data.tagIds;
+    const shouldShowAddRule = isBankSync && hasChanges;
 
-        if (!hasCategoryOrTagsChanged({ categoryId: originalCategoryId, tagIds: originalTagIds }, { categoryId: newCategoryId, tagIds: newTagIds })) {
-            return false;
-        }
+    const openBottomSheet = () => {
+        const categoryId = watchedEntries[0]?.categoryId ?? null;
 
         bottomSheetRef.current?.open({
             title: transaction.title,
             comment: transaction.comment,
             mccCode: transaction.entries[0]?.mccCategory?.mcc ?? null,
-            categoryId: newCategoryId,
-            tagIds: newTagIds
+            tagIds: watchedTagIds,
+            categoryId,
         });
-
-        return true;
     };
 
-    return { handleSuccess, bottomSheetRef };
+    return { shouldShowAddRule, openBottomSheet, bottomSheetRef };
 };

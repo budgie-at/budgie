@@ -9,6 +9,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { Footer } from '../../../@generic/component/footer/footer';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { SuggestRuleSection } from '../../../rule/components/suggest-rule-section/suggest-rule-section';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 
 interface Props {
@@ -16,9 +17,11 @@ interface Props {
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly onDelete?: EmptyFn;
+    readonly showSuggestRule?: boolean;
+    readonly onSuggestRulePress?: EmptyFn;
 }
 
-export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete }: Props) => {
+export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete, showSuggestRule, onSuggestRulePress }: Props) => {
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
 
@@ -26,6 +29,8 @@ export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete 
         <>
             <KeyboardStickyView>
                 <Footer>
+                    {showSuggestRule && isDefined(onSuggestRulePress) ? <SuggestRuleSection onPress={onSuggestRulePress} /> : null}
+
                     <View className="flex-row gap-2">
                         {isDefined(onDelete) ? (
                             <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
