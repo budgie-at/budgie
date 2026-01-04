@@ -1,9 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
+import { useLLM } from 'react-native-executorch';
 
 import { isNotEmptyString } from '@rnw-community/shared';
-
-import { LlmType } from '../type/llm.type';
 
 interface UseLlmGenerationReturn {
     generateFromTranscription: (transcribed: string) => Promise<void>;
@@ -11,7 +10,7 @@ interface UseLlmGenerationReturn {
     clearError: () => void;
 }
 
-export const useLlmGeneration = (llm: LlmType, systemPrompt: string): UseLlmGenerationReturn => {
+export const useLlmGeneration = (llm: ReturnType<typeof useLLM>, systemPrompt: string): UseLlmGenerationReturn => {
     const { t } = useLingui();
     const [error, setError] = useState('');
 
