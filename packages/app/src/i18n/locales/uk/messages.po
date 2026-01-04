@@ -39,14 +39,12 @@ msgstr "{iconsCount} іконок доступно"
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} рахунок"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
-#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
 
-#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
-#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
@@ -55,18 +53,28 @@ msgstr "{percentage}% доходів"
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} тегів доступно"
 
+#: src/rule/components/rule-card/rule-card.tsx:55
+msgid "<"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:54
+msgid ">"
+msgstr ""
+
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:57
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:135
+#: src/app/(main)/settings/index.tsx:143
 msgid "About"
 msgstr "Про застосунок"
 
+#: src/rule/components/rule-card/rule-card.tsx:42
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:90
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
@@ -103,6 +111,22 @@ msgstr "Архівовані рахунки відображатимуться �
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 msgstr "Рахунки, які ви позначите як неактивні, з'являться тут. Вони не відображатимуться на головній сторінці."
 
+#: src/rule/components/rule-action-row/rule-action-row.tsx:30
+msgid "Action {actionNumber}"
+msgstr ""
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:53
+msgid "Action Type"
+msgstr ""
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx:22
+msgid "Actions"
+msgstr ""
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx:24
+msgid "Actions to apply when conditions match"
+msgstr ""
+
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:24
 msgid "Activate"
 msgstr "Активувати"
@@ -136,9 +160,21 @@ msgstr "Додати витрату"
 msgid "Add Income"
 msgstr "Додати дохід"
 
+#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:22
+msgid "Add Rule"
+msgstr ""
+
 #: src/transaction/components/transaction-split/transaction-split.tsx:115
 msgid "Add Split"
 msgstr "Додати поділ"
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:22
+msgid "Add Tag"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:108
+msgid "add tag <0>{tagTitle}</0>"
+msgstr ""
 
 #: src/app/(main)/create-transaction/transfer.tsx:84
 msgid "Add Transfer"
@@ -148,6 +184,7 @@ msgstr "Додати переказ"
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:16
 #: src/transaction/constant/transaction-type.constant.ts:10
 msgid "Adjustment"
 msgstr "Коригування"
@@ -156,7 +193,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/app/(main)/settings/index.tsx:140
+#: src/app/(main)/settings/index.tsx:148
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -172,7 +209,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:58
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -185,12 +222,14 @@ msgid "Already syncing"
 msgstr "Вже синхронізується"
 
 #: src/app/(main)/settings/import.tsx:198
+#: src/rule/components/rule-card/rule-card.tsx:41
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:14
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:99
 msgid "Amount"
 msgstr "Сума"
 
 #: src/app/(main)/create-transaction/transfer.tsx:58
-#: src/app/(main)/transactions/[id]/transfer.tsx:68
+#: src/transaction/hook/use-transfer-debt-validation.hook.ts:25
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -203,7 +242,7 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:115
+#: src/app/(main)/settings/index.tsx:123
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -215,6 +254,11 @@ msgstr "Застосувати фільтр"
 msgid "Apply Filter ({selected})"
 msgstr "Застосувати фільтр ({selected})"
 
+#: src/rule/components/rule-apply-to-existing-toggle/rule-apply-to-existing-toggle.tsx:14
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:67
+msgid "Apply to existing transactions"
+msgstr ""
+
 #: src/account/component/archive-account/archive-account.tsx:44
 msgid "Archive"
 msgstr "Архівувати"
@@ -224,7 +268,7 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(main)/settings/index.tsx:109
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
@@ -232,7 +276,11 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:51
+#: src/rule/components/rule-form-footer/rule-form-footer.tsx:24
+msgid "Are you sure you want to delete this rule?"
+msgstr ""
+
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:27
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
 
@@ -240,9 +288,17 @@ msgstr "Ви впевнені, що хочете видалити цю тран�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/app/(main)/settings/index.tsx:103
+msgid "Auto-categorize transactions"
+msgstr ""
+
 #: src/app/(main)/create-account/index.tsx:49
 msgid "Auto-sync accounts and transactions from Monobank"
 msgstr "Автоматична синхронізація рахунків та транзакцій з Монобанку"
+
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:54
+msgid "Automatically apply these changes to similar transactions"
+msgstr ""
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:70
 msgid "Available Columns"
@@ -273,6 +329,18 @@ msgstr "Синхронізація з банком"
 msgid "Base currency"
 msgstr "Базова валюта"
 
+#: src/rule/components/rule-card/rule-card.tsx:56
+msgid "between"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:13
+msgid "Between"
+msgstr ""
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:16
+msgid "Binance"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:40
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
@@ -281,7 +349,7 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/settings/index.tsx:138
+#: src/app/(main)/settings/index.tsx:146
 msgid "BudgetAI"
 msgstr "BudgetAI"
 
@@ -329,6 +397,7 @@ msgstr ""
 
 #: src/app/(main)/settings/import.tsx:182
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:28
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:77
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
@@ -354,6 +423,10 @@ msgstr "Змінити PIN-код"
 #: src/app/(main)/create-account/index.tsx:28
 msgid "Checking Account"
 msgstr "Поточний рахунок"
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:93
+msgid "Choose a merchant category code"
+msgstr ""
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:29
 msgid "Choose a preset to auto-fill column mappings"
@@ -412,13 +485,32 @@ msgstr "Очистити кешовані баланси та перерахув
 msgid "Close"
 msgstr "Закрити"
 
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:17
+msgid "Coinbase"
+msgstr ""
+
 #: src/app/(main)/settings/import.tsx:242
+#: src/rule/components/rule-card/rule-card.tsx:40
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:13
+#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:39
 msgid "Comment"
 msgstr "Коментар"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
 msgid "Common Tags"
 msgstr "Поширені теги"
+
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx:25
+msgid "Condition {conditionNumber}"
+msgstr ""
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx:28
+msgid "Conditions"
+msgstr ""
+
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:74
+msgid "Configure Rule"
+msgstr ""
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:123
 msgid "Confirm"
@@ -436,9 +528,21 @@ msgstr "Підключити Монобанк"
 msgid "Contact (optional)"
 msgstr "Контакт (необов'язково)"
 
+#: src/rule/components/rule-card/rule-card.tsx:51
+msgid "contains"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:8
+msgid "Contains"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
 msgstr "Продовжити"
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:23
+msgid "Convert to Transfer"
+msgstr ""
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
@@ -452,6 +556,11 @@ msgstr "Не вдалося архівувати обліковий запис. 
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
+#: src/rule/hooks/use-rule-form.hook.ts:88
+#: src/rule/hooks/use-suggest-rule-bottom-sheet.hook.ts:106
+msgid "Could not create rule"
+msgstr ""
+
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:35
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
@@ -461,7 +570,11 @@ msgstr "Не вдалося створити тег"
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+#: src/rule/hooks/use-rule-form.hook.ts:105
+msgid "Could not delete rule."
+msgstr ""
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:51
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
@@ -473,7 +586,11 @@ msgstr "Не вдалося відновити рахунок."
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+#: src/rule/hooks/use-rule-form.hook.ts:88
+msgid "Could not update rule"
+msgstr ""
+
+#: src/transaction/hook/use-update-transaction-form.hook.ts:38
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
@@ -497,9 +614,13 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(main)/settings/index.tsx:95
+#: src/app/(main)/settings/index.tsx:96
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
+
+#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:19
+msgid "Create automation rule?"
+msgstr ""
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
 msgid "Create Categories"
@@ -521,6 +642,20 @@ msgstr "Створіть користувацькі теги в Налаштув
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:57
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
+
+#: src/app/(main)/rules/create.tsx:40
+#: src/app/(main)/rules/create.tsx:45
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:73
+msgid "Create Rule"
+msgstr ""
+
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:53
+msgid "Create Rule?"
+msgstr ""
+
+#: src/app/(main)/settings/rules.tsx:76
+msgid "Create rules to automatically categorize and tag your bank transactions"
+msgstr ""
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Create Tag"
@@ -556,6 +691,10 @@ msgstr "Криптовалюта"
 msgid "Cryptocurrency holdings"
 msgstr "Криптовалютні активи"
 
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:19
+msgid "CSV"
+msgstr ""
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx:15
 msgid "Currency"
 msgstr "Валюта"
@@ -573,7 +712,7 @@ msgstr "Створені вами власні категорії з'являт�
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(main)/settings/index.tsx:126
+#: src/app/(main)/settings/index.tsx:134
 msgid "Data management"
 msgstr "Управління даними"
 
@@ -589,6 +728,7 @@ msgid "Date Range"
 msgstr "Діапазон дат"
 
 #: src/account/constant/account-type.constant.ts:8
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:15
 #: src/transaction/constant/transaction-type.constant.ts:8
 msgid "Debt"
 msgstr "Борг"
@@ -602,6 +742,11 @@ msgstr "Борговий рахунок"
 msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
+#: src/app/(main)/rules/[id]/edit.tsx:58
+#: src/app/(main)/rules/create.tsx:42
+msgid "Define conditions and actions for your rule"
+msgstr ""
+
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
 msgid "Delete"
 msgstr "Видалити"
@@ -614,7 +759,11 @@ msgstr "Видалити всі транзакції та налаштуванн
 msgid "Delete data"
 msgstr "Видалити дані"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:48
+#: src/rule/components/rule-form-footer/rule-form-footer.tsx:25
+msgid "Delete rule"
+msgstr ""
+
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:28
 msgid "Delete transaction"
 msgstr "Видалити транзакцію"
 
@@ -655,15 +804,19 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:66
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:66
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:87
+#: src/app/(main)/rules/[id]/edit.tsx:58
+msgid "Edit Rule"
+msgstr ""
+
+#: src/app/(main)/transactions/[id]/transfer.tsx:70
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -721,6 +874,14 @@ msgstr "Введіть новий PIN-код"
 msgid "Enter new token"
 msgstr "Введіть новий токен"
 
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx:31
+msgid "Enter secondary value..."
+msgstr ""
+
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx:25
+msgid "Enter value..."
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:44
 msgid "Enter your {PIN_LENGTH}-digit PIN"
 msgstr "Введіть свій {PIN_LENGTH}-значний PIN-код"
@@ -736,6 +897,14 @@ msgstr "Введіть ваш API-токен Монобанку"
 #: src/app/(main)/pin.tsx:111
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
+
+#: src/rule/components/rule-card/rule-card.tsx:49
+msgid "equals"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:6
+msgid "Equals"
+msgstr ""
 
 #: src/app/(main)/settings/import.tsx:111
 #: src/import/components/import-csv/import-csv.tsx:30
@@ -760,6 +929,7 @@ msgstr "Очікувана дата повернення"
 msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:12
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
@@ -825,6 +995,10 @@ msgstr "Отримати рахунки"
 msgid "Fetching new..."
 msgstr "Завантаження нових..."
 
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:29
+msgid "Field"
+msgstr ""
+
 #: src/account/component/create-account-screen/create-account-screen.tsx:41
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
@@ -861,7 +1035,7 @@ msgstr "Сума з"
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(main)/settings/index.tsx:78
+#: src/app/(main)/settings/index.tsx:79
 msgid "General"
 msgstr "Загальне"
 
@@ -877,7 +1051,11 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:11
+msgid "Greater Than"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:68
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -888,6 +1066,14 @@ msgstr "Історію синхронізовано"
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:19
 msgid "Icon"
 msgstr "Іконка"
+
+#: src/rule/components/rule-card/rule-card.tsx:119
+msgid "If all of:"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:119
+msgid "If any of:"
+msgstr ""
 
 #: src/import/components/import-csv/import-csv.tsx:38
 msgid "Import CSV"
@@ -911,8 +1097,16 @@ msgstr "Імпортувати транзакції з CSV файлу"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
+#: src/rule/components/rule-card/rule-card.tsx:57
+msgid "in"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:14
+msgid "In List"
+msgstr ""
+
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(main)/settings/index.tsx:116
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -921,6 +1115,7 @@ msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
 #: src/app/(tabs)/analytics.tsx:65
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:13
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -963,25 +1158,71 @@ msgstr "Остання синхронізація"
 msgid "Lent"
 msgstr "Позичено"
 
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:12
+msgid "Less Than"
+msgstr ""
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:86
+msgid "Loading..."
+msgstr ""
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:88
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(main)/settings/index.tsx:102
+msgid "Manage Rules"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:95
 msgid "Manage Tags"
 msgstr "Керування тегами"
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:12
+msgid "Manual"
+msgstr ""
 
 #: src/app/(main)/settings/import.tsx:158
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
 
+#: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx:12
+msgid "Match All"
+msgstr ""
+
+#: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx:13
+msgid "Match Any"
+msgstr ""
+
 #: src/app/(main)/settings/import.tsx:159
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
+
+#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:21
+msgid "Match transactions by:"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:53
+msgid "matches"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:10
+msgid "Matches Regex"
+msgstr ""
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:77
+msgid "MCC categories are not loaded"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:43
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
+#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:53
+msgid "MCC Code"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1000,6 +1241,7 @@ msgid "Money you spend"
 msgstr "Гроші, які ви витрачаєте"
 
 #: src/app/(main)/create-account/index.tsx:50
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:13
 msgid "Monobank"
 msgstr "Монобанк"
 
@@ -1008,7 +1250,7 @@ msgid "Move between accounts"
 msgstr "Переказ між рахунками"
 
 #: src/app/(main)/create-transaction/transfer.tsx:78
-#: src/app/(main)/transactions/[id]/transfer.tsx:88
+#: src/app/(main)/transactions/[id]/transfer.tsx:71
 msgid "Move Money"
 msgstr "Переказати гроші"
 
@@ -1100,10 +1342,22 @@ msgstr "Мов не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:76
+msgid "No MCC codes available"
+msgstr ""
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:76
+msgid "No MCC codes found"
+msgstr ""
+
 #: src/app/(main)/settings/categories.tsx:36
 #: src/app/(main)/settings/tags.tsx:36
 msgid "No Results"
 msgstr "Немає результатів"
+
+#: src/app/(main)/settings/rules.tsx:74
+msgid "No Rules Yet"
+msgstr ""
 
 #: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
@@ -1126,6 +1380,10 @@ msgstr "Ще немає тегів"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:75
+msgid "No thanks"
+msgstr ""
+
 #: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
@@ -1138,6 +1396,22 @@ msgstr "Немає"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
+#: src/rule/components/rule-card/rule-card.tsx:52
+msgid "not contains"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:9
+msgid "Not Contains"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:50
+msgid "not equals"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/operator-options.constant.ts:7
+msgid "Not Equals"
+msgstr ""
+
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:13
 msgid "Note (optional)"
 msgstr "Нотатка (необов'язково)"
@@ -1146,7 +1420,11 @@ msgstr "Нотатка (необов'язково)"
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/app/(main)/settings/index.tsx:84
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:36
+msgid "Operator"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:85
 msgid "Organization"
 msgstr "Організація"
 
@@ -1196,6 +1474,8 @@ msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
+#: src/rule/hooks/use-rule-form.hook.ts:89
+#: src/rule/hooks/use-suggest-rule-bottom-sheet.hook.ts:106
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
@@ -1217,9 +1497,13 @@ msgstr "Шаблон застосовано. За потреби налашту�
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:52
+#: src/app/(main)/settings/index.tsx:53
 msgid "Privacy"
 msgstr "Конфіденційність"
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:14
+msgid "Privatbank"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
@@ -1250,9 +1534,21 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:15
+msgid "Revolut"
+msgstr ""
+
+#: src/app/(main)/settings/rules.tsx:62
+msgid "Rules"
+msgstr ""
+
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
 msgstr "Зберегти"
+
+#: src/app/(main)/rules/[id]/edit.tsx:60
+msgid "Save Changes"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1267,7 +1563,7 @@ msgstr "Ощадний рахунок"
 msgid "Savings accounts"
 msgstr "Ощадні рахунки"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:67
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -1275,6 +1571,10 @@ msgstr "Захист від скріншотів"
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:96
+msgid "Search by code or description..."
+msgstr ""
 
 #: src/app/(main)/settings/categories.tsx:46
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
@@ -1303,11 +1603,15 @@ msgstr "Пошук мов..."
 msgid "Search tags..."
 msgstr "Пошук тегів..."
 
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx:58
+msgid "Secondary Value"
+msgstr ""
+
 #: src/settings/components/security-settings/pin-disabled-card.tsx:20
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:62
 msgid "Security"
 msgstr "Безпека"
 
@@ -1325,10 +1629,13 @@ msgstr "Виберіть дійсний стовпець"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:57
 #: src/account/component/account-selector/account-selector.tsx:41
+#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:27
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:52
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:53
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:92
 msgid "Select Account"
 msgstr "Виберіть рахунок"
@@ -1336,6 +1643,10 @@ msgstr "Виберіть рахунок"
 #: src/sync/component/account-selection-step/account-selection-step.tsx:23
 msgid "Select accounts to sync:"
 msgstr "Виберіть рахунки для синхронізації:"
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:54
+msgid "Select Action Type"
+msgstr ""
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
@@ -1347,9 +1658,11 @@ msgstr "Виберіть категорію"
 
 #: src/app/(main)/create-transaction/expense.tsx:72
 #: src/app/(main)/create-transaction/income.tsx:55
-#: src/app/(main)/transactions/[id]/expense.tsx:67
-#: src/app/(main)/transactions/[id]/income.tsx:67
+#: src/app/(main)/transactions/[id]/expense.tsx:73
+#: src/app/(main)/transactions/[id]/income.tsx:73
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:29
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx:30
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1369,6 +1682,15 @@ msgstr "Виберіть валюту"
 msgid "Select Date"
 msgstr "Виберіть дату"
 
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:29
+msgid "Select External Source"
+msgstr ""
+
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:30
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:31
+msgid "Select Field"
+msgstr ""
+
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
@@ -1376,6 +1698,28 @@ msgstr "Вибрати шаблон імпорту"
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
 msgstr "Виберіть мову"
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:58
+msgid "Select MCC code"
+msgstr ""
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:92
+msgid "Select MCC Code"
+msgstr ""
+
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:37
+#: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx:38
+msgid "Select Operator"
+msgstr ""
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:30
+msgid "Select source"
+msgstr ""
+
+#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx:29
+#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx:30
+msgid "Select Tag"
+msgstr ""
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:41
 msgid "Select Tags"
@@ -1385,6 +1729,18 @@ msgstr "Виберіть теги"
 msgid "Select the type of account"
 msgstr "Оберіть тип рахунку"
 
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:26
+msgid "Select Transaction Type"
+msgstr ""
+
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:27
+msgid "Select type"
+msgstr ""
+
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:46
+msgid "Select Type"
+msgstr ""
+
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
 msgstr "Вибрано"
@@ -1393,19 +1749,27 @@ msgstr "Вибрано"
 msgid "Selected {selectedTagsCount}"
 msgstr "Вибрано {selectedTagsCount}"
 
+#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx:21
+msgid "Set Category"
+msgstr ""
+
+#: src/rule/components/rule-card/rule-card.tsx:93
+msgid "set category to <0>{categoryTitle}</0>"
+msgstr ""
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(main)/settings/index.tsx:49
+#: src/app/(main)/settings/index.tsx:50
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:127
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(main)/settings/index.tsx:126
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -1426,6 +1790,11 @@ msgstr "Щось пішло не так."
 #: src/account/component/account-action-card/account-action-card.tsx:51
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
+
+#: src/rule/components/rule-card/rule-card.tsx:45
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:18
+msgid "Source"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:31
 msgid "Spanish"
@@ -1505,6 +1874,10 @@ msgstr "Синхронізовані банківські рахунки"
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
+#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx:28
+msgid "Tag"
+msgstr ""
+
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:56
 msgid "Tag Name"
 msgstr "Назва тегу"
@@ -1532,6 +1905,10 @@ msgstr "Натисніть, щоб очистити"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
+#: src/rule/components/rule-card/rule-card.tsx:135
+msgid "Then:"
+msgstr ""
+
 #: src/account/component/archive-account/archive-account.tsx:43
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
@@ -1543,7 +1920,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:47
+#: src/@generic/component/form-footer/form-footer.tsx:61
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -1562,6 +1939,12 @@ msgstr "Це очистить всі кешовані баланси рахун�
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
 msgstr "Цього року"
+
+#: src/rule/components/rule-card/rule-card.tsx:39
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:12
+#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:26
+msgid "Title"
+msgstr ""
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
 msgid "to"
@@ -1616,15 +1999,25 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
+#: src/rule/components/rule-condition-transaction-type-selector/rule-condition-transaction-type-selector.tsx:14
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
+msgid "Transfer From Account"
+msgstr ""
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx:35
+msgid "Transfer To Account"
+msgstr ""
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:77
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
@@ -1632,6 +2025,8 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
+#: src/rule/components/rule-card/rule-card.tsx:44
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
 msgstr "Тип"
@@ -1645,7 +2040,7 @@ msgstr "Тип ({selectedTypesCount})"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:49
+#: src/category/components/stats-by-categories/stats-by-categories.tsx:28
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
 msgid "Uncategorized"
 msgstr "Без категорії"
@@ -1666,15 +2061,15 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:76
+#: src/app/(main)/transactions/[id]/expense.tsx:82
 msgid "Update Expense"
 msgstr "Оновити витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:76
+#: src/app/(main)/transactions/[id]/income.tsx:82
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:97
+#: src/app/(main)/transactions/[id]/transfer.tsx:80
 msgid "Update Transfer"
 msgstr "Оновити переказ"
 
@@ -1695,15 +2090,22 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
-#: src/app/(main)/settings/index.tsx:109
+#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx:58
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx:110
+#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx:41
+#: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx:46
+msgid "Value"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:117
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(main)/settings/index.tsx:88
+#: src/app/(main)/settings/index.tsx:89
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:102
+#: src/app/(main)/settings/index.tsx:110
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
 
@@ -1718,6 +2120,10 @@ msgstr "Коли це потрібно повернути?"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
+
+#: src/rule/components/rule-condition-external-source-selector/rule-condition-external-source-selector.tsx:18
+msgid "Wise"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
