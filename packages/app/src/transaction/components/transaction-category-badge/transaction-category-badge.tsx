@@ -14,7 +14,7 @@ interface Props {
     readonly categoryLabel: string;
 }
 
-const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background border border-secondary-corner';
+const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background/80 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
