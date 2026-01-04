@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
@@ -15,33 +15,30 @@ export const useLlmGeneration = (llm: LlmType, systemPrompt: string): UseLlmGene
     const { t } = useLingui();
     const [error, setError] = useState('');
 
-    const generateFromTranscription = useCallback(
-        async (transcribed: string) => {
-            setError('');
+    const generateFromTranscription = async (transcribed: string) => {
+        setError('');
 
-            if (!isNotEmptyString(transcribed)) {
-                setError(t`No speech detected`);
+        if (!isNotEmptyString(transcribed)) {
+            setError(t`No speech detected`);
 
+            return;
+        }
+
+        try {
+            await llm.generate([
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: transcribed }
+            ]);
+        } catch (e: unknown) {
+            if (llm.isGenerating) {
                 return;
             }
 
-            try {
-                await llm.generate([
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: transcribed }
-                ]);
-            } catch (e: unknown) {
-                if (llm.isGenerating) {
-                    return;
-                }
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    };
 
-                setError(e instanceof Error ? e.message : String(e));
-            }
-        },
-        [llm, systemPrompt, t]
-    );
-
-    const clearError = useCallback(() => void setError(''), []);
+    const clearError = () => void setError('');
 
     return { generateFromTranscription, error, clearError };
 };

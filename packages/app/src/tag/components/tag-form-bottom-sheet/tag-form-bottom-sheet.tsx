@@ -1,6 +1,6 @@
 import { CATEGORY_TITLE_MAX_LENGTH, TagCreateEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useCallback } from 'react';
+import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
@@ -24,26 +24,23 @@ export const TagFormBottomSheet = ({ ref, tag }: Props) => {
         reset();
     };
 
-    const createTag = useCallback(
-        async (values: TagCreateEntityInterface) => {
-            try {
-                await tagRepository.create(values);
-                reset();
-                ref.current?.close();
-            } catch {
-                Toast.show({
-                    type: 'error',
-                    text1: t`Could not create tag`,
-                    text2: t`Please try again later`
-                });
-            }
-        },
-        [ref, reset, t]
-    );
+    const createTag = async (values: TagCreateEntityInterface) => {
+        try {
+            await tagRepository.create(values);
+            reset();
+            ref.current?.close();
+        } catch {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not create tag`,
+                text2: t`Please try again later`
+            });
+        }
+    };
 
-    const onSubmit = useCallback(() => {
+    const onSubmit = () => {
         void handleSubmit(createTag)();
-    }, [handleSubmit, createTag]);
+    };
 
     return (
         <FormBottomSheet

@@ -1,6 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useCallback, useState } from 'react';
+import { RefObject, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
@@ -35,18 +35,18 @@ export const AccountTypeBottomSheet = ({ ref, currentType, onSelect }: Props) =>
     const [selectedType, setSelectedType] = useState<AccountTypeEnum>(currentType);
     const hasChanges = selectedType !== currentType;
 
-    const handleSelectType = useCallback((type: AccountTypeEnum) => {
+    const handleSelectType = (type: AccountTypeEnum) => {
         setSelectedType(type);
-    }, []);
+    };
 
-    const handleConfirm = useCallback(() => {
+    const handleConfirm = () => {
         onSelect(selectedType);
         ref.current?.dismiss();
-    }, [onSelect, selectedType, ref]);
+    };
 
-    const handleDismiss = useCallback(() => {
+    const handleDismiss = () => {
         setSelectedType(currentType);
-    }, [currentType]);
+    };
 
     const variant = ACCOUNT_COLOR[selectedType];
 

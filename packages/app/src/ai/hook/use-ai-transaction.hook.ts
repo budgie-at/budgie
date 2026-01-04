@@ -1,6 +1,6 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -42,11 +42,7 @@ export const useAiTransaction = (llm: LlmType, prompt: string) => {
 
     const [aiTransaction, setAiTransaction] = useState<AITransactionInterface | null>(null);
 
-    const categoriesWithIds = useMemo(
-        () => categories.map((category, index) => `${index + 1}. ${category.title}`).join('\n'),
-        [categories]
-    );
-
+    const categoriesWithIds = categories.map((category, index) => `${index + 1}. ${category.title}`).join('\n');
     const categoryCount = categories.length;
     const systemPrompt = t`Categorize this expense. Reply with ONLY a number (1-${categoryCount}).
 
@@ -57,17 +53,14 @@ IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food categor
 Reply with the category number only.`;
 
     const reset = () => void setAiTransaction(null);
-    const fillCategory = useCallback(
-        (categoryId: number) => {
-            setAiTransaction({
-                category: categories.find(category => category.id === categoryId) ?? null,
-                amount: parseNumberFromMessage(prompt),
-                type: TransactionTypeEnum.EXPENSE,
-                comment: prompt
-            });
-        },
-        [categories, prompt]
-    );
+    const fillCategory = (categoryId: number) => {
+        setAiTransaction({
+            category: categories.find(category => category.id === categoryId) ?? null,
+            amount: parseNumberFromMessage(prompt),
+            type: TransactionTypeEnum.EXPENSE,
+            comment: prompt
+        });
+    };
 
     useEffect(() => {
         if (!llm.isGenerating && isNotEmptyString(llm.response)) {
