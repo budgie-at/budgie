@@ -39,11 +39,15 @@ msgstr "{iconsCount} іконок доступно"
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} рахунок"
 
-#: src/app/(tabs)/analytics.tsx:34
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
 
-#: src/app/(tabs)/analytics.tsx:33
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
@@ -244,11 +248,11 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:64
+#: src/app/(tabs)/analytics.tsx:66
 msgid "Balance"
 msgstr "Баланс"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:53
+#: src/transaction/components/transaction-list/transaction-list.tsx:56
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -297,7 +301,7 @@ msgstr "Готівка"
 #: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:54
+#: src/transaction/components/transaction-list/transaction-list.tsx:57
 msgid "Categories"
 msgstr "Категорії"
 
@@ -760,6 +764,10 @@ msgstr "Очікувана дата повернення (Необов'язко�
 msgid "Expense"
 msgstr "Витрата"
 
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
+msgid "Expenses"
+msgstr ""
+
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Export all transactions to a CSV file"
 msgstr "Експортувати всі транзакції до CSV-файлу"
@@ -834,7 +842,6 @@ msgid "French (France)"
 msgstr "Французька (Франція)"
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
-#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:47
 msgid "from"
 msgstr "від"
 
@@ -913,14 +920,19 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:63
+#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/app/(tabs)/analytics.tsx:73
 msgid "Income by category"
 msgstr "Доходи за категоріями"
+
+#: src/app/(tabs)/analytics.tsx:95
+msgid "Income by Tag"
+msgstr ""
 
 #: src/app/(main)/pin.tsx:68
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -970,14 +982,6 @@ msgstr "Зіставлення стовпців CSV"
 #: src/app/(main)/settings/import.tsx:159
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
-
-#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:24
-msgid "MCC"
-msgstr "MCC"
-
-#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:16
-msgid "Merchant Category"
-msgstr "Категорія Продавця"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1092,7 +1096,7 @@ msgstr "Немає неактивних рахунків"
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1122,7 +1126,7 @@ msgstr "Ще немає тегів"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1150,7 +1154,7 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
-#: src/app/(tabs)/analytics.tsx:53
+#: src/app/(tabs)/analytics.tsx:55
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1431,11 +1435,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:82
+#: src/app/(tabs)/analytics.tsx:84
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:59
+#: src/app/(tabs)/analytics.tsx:106
+msgid "Spending by Tag"
+msgstr ""
+
+#: src/app/(tabs)/analytics.tsx:61
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1451,11 +1459,11 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:72
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:39
+#: src/app/(tabs)/analytics.tsx:41
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1600,6 +1608,7 @@ msgid "Transaction Type"
 msgstr "Тип транзакції"
 
 #: src/app/(tabs)/transactions.tsx:11
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
 msgstr "Транзакції"
 
@@ -1619,7 +1628,7 @@ msgstr "Переказ"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -1635,6 +1644,11 @@ msgstr "Тип ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Українська"
+
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:49
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
+msgid "Uncategorized"
+msgstr ""
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
