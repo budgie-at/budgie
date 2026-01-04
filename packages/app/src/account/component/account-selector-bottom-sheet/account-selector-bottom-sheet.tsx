@@ -75,6 +75,7 @@ export const AccountSelectorBottomSheet = (props: Props) => {
             emptyTitle={emptyTitle}
             data={accounts}
             flatListProps={flatListProps}
+            autoFocus={false}
         />
     );
 };

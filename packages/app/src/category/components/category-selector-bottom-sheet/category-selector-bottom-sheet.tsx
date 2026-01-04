@@ -1,6 +1,6 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { RefObject, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -10,6 +10,7 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
+import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
 interface Props {
@@ -31,18 +32,32 @@ const flatListProps = {
 
 export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
     const [search, setSearch] = useState('');
+    const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);
     const { t } = useLingui();
+    const categoryFormRef = useRef<BottomSheetInterface | null>(null);
 
     const handleSelect = (categoryId: number) => {
         void ref.current?.dismiss();
         onSelect(categoryId);
     };
 
-    const categoriesWithoutExcluded = isNotEmptyArray(categories)
-        ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
-        : [];
-    const data = padFlatListData(categoriesWithoutExcluded);
+    const handleCreateCategory = () => {
+        setNewCategoryTitle(search);
+        void categoryFormRef.current?.open();
+    };
+
+    const handleCategoryCreated = (category: CategoryEntityInterface) => {
+        setSearch('');
+        setNewCategoryTitle('');
+        handleSelect(category.id);
+    };
+
+    const data = padFlatListData(
+        isNotEmptyArray(categories)
+            ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
+            : []
+    );
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
@@ -59,20 +74,34 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
             />
         );
 
+    const rightAction = {
+        icon: UserIconNameEnum.Plus,
+        onPress: handleCreateCategory
+    };
+
     return (
-        <SearchableListBottomSheet
-            ref={ref}
-            title={t`Select Category`}
-            description={t`Choose your main category`}
-            onSearchChange={setSearch}
-            searchPlaceholder={t`Search categories...`}
-            search={search}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyDescription={t`Try a different search term`}
-            emptyTitle={t`No categories found`}
-            data={data}
-            flatListProps={flatListProps}
-        />
+        <>
+            <SearchableListBottomSheet
+                ref={ref}
+                title={t`Select Category`}
+                description={t`Choose your main category`}
+                onSearchChange={setSearch}
+                searchPlaceholder={t`Search categories...`}
+                search={search}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                emptyDescription={t`Try a different search term`}
+                emptyTitle={t`No categories found`}
+                data={data}
+                flatListProps={flatListProps}
+                rightAction={rightAction}
+            />
+            <CategoryFormBottomSheet
+                ref={categoryFormRef}
+                category={null}
+                defaultTitle={newCategoryTitle}
+                onCategoryCreated={handleCategoryCreated}
+            />
+        </>
     );
 };
