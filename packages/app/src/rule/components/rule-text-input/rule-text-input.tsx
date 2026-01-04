@@ -1,10 +1,10 @@
 import { KeyboardTypeOptions, TextInput } from 'react-native';
 
 interface Props {
-    value: string;
-    onChange: (value: string) => void;
-    placeholder: string;
-    keyboardType?: KeyboardTypeOptions;
+    readonly value: string;
+    readonly onChange: (value: string) => void;
+    readonly placeholder: string;
+    readonly keyboardType?: KeyboardTypeOptions;
 }
 
 export const RuleTextInput = ({ value, onChange, placeholder, keyboardType }: Props) => (

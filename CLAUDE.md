@@ -504,28 +504,64 @@ const handleSubmit = async () => {
    ```
    Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
 
+11. **Prefer readability over shortness** - Write clear, readable code instead of clever one-liners. Use explicit if statements instead of short-circuit evaluation for side effects.
+   ```typescript
+   // Good - Clear and readable
+   const removeItem = (index: number) => {
+       if (items.length > 1) {
+           remove(index);
+       }
+   };
+
+   // Bad - Confusing short-circuit pattern
+   const removeItem = (index: number) => void (items.length > 1 && remove(index));
+   ```
+
+12. **Never create type aliases inside functions or components** - Use types directly instead of creating wrapper aliases. This keeps code simple and avoids unnecessary indirection.
+   ```typescript
+   // Good - Use types directly
+   const getLabel = (value: FieldValueType<T>) => options.find(o => o.value === value)?.label;
+   const render = ({ field }: UseControllerReturn<FormInterface, `items.${number}.${T}`>) => <Input />;
+
+   // Bad - Unnecessary type aliases inside function
+   const Component = <T,>() => {
+       type ValueType = FieldValueType<T>;  // Don't do this
+       type FieldName = `items.${number}.${T}`;  // Don't do this
+       const getLabel = (value: ValueType) => ...;
+   };
+   ```
+
 ### Naming Conventions
 - **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
 - **Enums:** Must end with `Enum` (e.g., `AccountTypeEnum`)
 - **Functions:** Use module name as prefix (e.g., `exchangeRatesFetchApi`)
 - **Classes:** PascalCase (e.g., `AccountRepository`)
 - **Files:** kebab-case matching exported entity + type suffix (`.service.ts`, `.repository.ts`, `.constant.ts`)
-- **Types:** Store type aliases in separate `.type.ts` files with contextual names
+- **Types & Interfaces:** Always extract to separate files - never define inline in component files
+  - Type aliases go in `.type.ts` files with contextual names
+  - Interfaces go in `.interface.ts` files (except `Props` interface which stays in component file)
+  - Only the `Props` interface for a component should remain in the component file
   ```typescript
-  // Bad - Inline type in component file
-  type StatusType = 'positive' | 'negative';
+  // Bad - Inline types in component file
+  type ConditionFieldType = 'field' | 'operator';
+  interface OptionInterface { value: string; label: string; }
   export const Component = () => { ... };
 
-  // Bad - Generic name without context
-  // status.type.ts
-  export type StatusType = 'positive' | 'negative';
+  // Good - Separate files for each type/interface
+  // condition-field.type.ts
+  export type ConditionFieldType = 'field' | 'operator';
 
-  // Good - Contextual name reflecting usage
-  // budget-amount-status.type.ts
-  export type BudgetAmountStatusType = 'positive' | 'negative';
+  // option.interface.ts
+  export interface OptionInterface { value: string; label: string; }
 
-  // budget-amount-display.tsx
-  import { BudgetAmountStatusType } from './budget-amount-status.type';
+  // component.tsx
+  import { ConditionFieldType } from './condition-field.type';
+  import { OptionInterface } from './option.interface';
+
+  interface Props {  // Props interface stays in component file
+      readonly options: OptionInterface[];
+  }
+  export const Component = ({ options }: Props) => { ... };
   ```
 
 ### Module Organization

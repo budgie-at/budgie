@@ -5,8 +5,8 @@ import { Text } from 'react-native';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
-    tag: TagEntityInterface;
-    onOpen: (tag: TagEntityInterface) => void;
+    readonly tag: TagEntityInterface;
+    readonly onOpen: (tag: TagEntityInterface) => void;
 }
 
 const iconParams = { variant: 'destructive', size: 40, iconSize: 72 } as const;

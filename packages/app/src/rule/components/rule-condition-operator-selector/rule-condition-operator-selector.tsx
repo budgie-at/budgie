@@ -1,8 +1,12 @@
 import { RuleConditionOperatorEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
+
+interface Props {
+    readonly index: number;
+}
 
 const OPERATOR_OPTIONS = [
     { value: RuleConditionOperatorEnum.EQUALS, label: msg`Equals` },
@@ -16,7 +20,7 @@ const OPERATOR_OPTIONS = [
     { value: RuleConditionOperatorEnum.IN, label: msg`In List` }
 ];
 
-export const RuleConditionOperatorSelector = ({ index }: { index: number }) => {
+export const RuleConditionOperatorSelector = ({ index }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -24,7 +28,7 @@ export const RuleConditionOperatorSelector = ({ index }: { index: number }) => {
             index={index}
             options={OPERATOR_OPTIONS}
             fieldName="operator"
-            label={<Trans>Operator</Trans>}
+            label={t`Operator`}
             sheetTitle={t`Select Operator`}
             defaultLabel={t`Select Operator`}
         />

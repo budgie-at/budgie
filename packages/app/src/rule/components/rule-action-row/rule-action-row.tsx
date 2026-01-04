@@ -10,9 +10,9 @@ import { RuleActionTagSelector } from '../rule-action-tag-selector/rule-action-t
 import { RuleActionTypeSelector } from '../rule-action-type-selector/rule-action-type-selector';
 
 interface Props {
-    index: number;
-    onRemove: (index: number) => void;
-    canRemove: boolean;
+    readonly index: number;
+    readonly onRemove: (index: number) => void;
+    readonly canRemove: boolean;
 }
 
 export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
@@ -25,7 +25,10 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
     return (
         <View className="bg-secondary-background/50 rounded-2xl p-xl gap-y-lg border border-secondary-corner">
             <View className="flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-sm font-medium"><Trans>Action {actionNumber}</Trans></Text>
+                <Text className="text-secondary-foreground text-sm font-medium">
+                    <Trans>Action {actionNumber}</Trans>
+                </Text>
+
                 {canRemove && (
                     <HapticPressable onPress={handleRemove} className="p-xs">
                         <Icon icon={UserIconNameEnum.Trash} className="text-destructive" size={18} />
@@ -36,7 +39,6 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
             <RuleActionTypeSelector index={index} />
 
             {actionType === RuleActionTypeEnum.SET_CATEGORY && <RuleActionCategorySelector index={index} />}
-
             {actionType === RuleActionTypeEnum.ADD_TAG && <RuleActionTagSelector index={index} />}
         </View>
     );

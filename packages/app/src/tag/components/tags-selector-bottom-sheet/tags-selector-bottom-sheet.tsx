@@ -28,8 +28,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const { tags } = useSearchTagsQuery();
     const { t } = useLingui();
 
-    const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
-    const tagsCount = tags?.length ?? 0;
+    const selectedTags = tags.filter(tag => selectedTagIds.includes(tag.id));
+    const tagsCount = tags.length;
     const selectedTagsCount = selectedTags.length;
     const description = t`${tagsCount} tags available`;
 

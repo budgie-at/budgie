@@ -1,5 +1,5 @@
 import { RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
@@ -11,7 +11,7 @@ import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 import { RuleSelectorSheet } from '../rule-selector-sheet/rule-selector-sheet';
 
 interface Props {
-    index: number;
+    readonly index: number;
 }
 
 export const RuleActionTagSelector = ({ index }: Props) => {
@@ -21,18 +21,18 @@ export const RuleActionTagSelector = ({ index }: Props) => {
 
     const tagId = useWatch({ control, name: `actions.${index}.tagId` });
     const { tags } = useSearchTagsQuery('');
-    const selectedTag = tags?.find(tag => tag.id === tagId);
 
-    const options =
-        tags?.map(tag => ({
-            value: tag.id,
-            label: tag.title,
-            iconSlot: (
-                <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center">
-                    <Icon icon={UserIconNameEnum.Tag} className="text-primary" size={18} />
-                </View>
-            )
-        })) ?? [];
+    const selectedTag = tags.find(tag => tag.id === tagId);
+
+    const options = tags.map(tag => ({
+        value: tag.id,
+        label: tag.title,
+        iconSlot: (
+            <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center">
+                <Icon icon={UserIconNameEnum.Tag} className="text-primary" size={18} />
+            </View>
+        )
+    }));
 
     const handleOpen = () => void sheetRef.current?.open();
     const handleClose = () => void sheetRef.current?.close();
@@ -45,7 +45,7 @@ export const RuleActionTagSelector = ({ index }: Props) => {
 
         return (
             <>
-                <RuleSelectorField label={<Trans>Tag</Trans>} value={selectedTag?.title ?? t`Select Tag`} onPress={handleOpen} />
+                <RuleSelectorField label={t`Tag`} value={selectedTag?.title ?? t`Select Tag`} onPress={handleOpen} />
                 <RuleSelectorSheet ref={sheetRef} title={t`Select Tag`} options={options} selectedValue={value} onSelect={handleSelect} />
             </>
         );

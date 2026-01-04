@@ -2,8 +2,8 @@ import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 interface Props {
-    title: string;
-    children: ReactNode;
+    readonly title: string;
+    readonly children: ReactNode;
 }
 
 export const SettingsGroup = ({ title, children }: Props) => (

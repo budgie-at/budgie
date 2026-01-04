@@ -1,8 +1,12 @@
 import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
+
+interface Props {
+    readonly index: number;
+}
 
 const FIELD_OPTIONS = [
     { value: RuleConditionFieldEnum.TITLE, label: msg`Title` },
@@ -13,7 +17,7 @@ const FIELD_OPTIONS = [
     { value: RuleConditionFieldEnum.EXTERNAL_SOURCE, label: msg`Source` }
 ];
 
-export const RuleConditionFieldSelector = ({ index }: { index: number }) => {
+export const RuleConditionFieldSelector = ({ index }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -21,7 +25,7 @@ export const RuleConditionFieldSelector = ({ index }: { index: number }) => {
             index={index}
             options={FIELD_OPTIONS}
             fieldName="field"
-            label={<Trans>Field</Trans>}
+            label={t`Field`}
             sheetTitle={t`Select Field`}
             defaultLabel={t`Select Field`}
         />

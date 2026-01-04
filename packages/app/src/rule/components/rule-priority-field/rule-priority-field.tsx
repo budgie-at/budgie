@@ -19,6 +19,7 @@ export const RulePriorityField = () => {
             <Text className="text-secondary-foreground text-xs mb-xs">
                 <Trans>Priority</Trans>
             </Text>
+
             <Controller control={control} name="priority" render={renderPriorityInput} />
         </View>
     );

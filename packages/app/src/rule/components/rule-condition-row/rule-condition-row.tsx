@@ -9,9 +9,9 @@ import { RuleConditionOperatorSelector } from '../rule-condition-operator-select
 import { RuleConditionValueInput } from '../rule-condition-value-input/rule-condition-value-input';
 
 interface Props {
-    index: number;
-    onRemove: (index: number) => void;
-    canRemove: boolean;
+    readonly index: number;
+    readonly onRemove: (index: number) => void;
+    readonly canRemove: boolean;
 }
 
 export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
@@ -21,7 +21,10 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
     return (
         <View className="bg-secondary-background/50 rounded-2xl p-xl gap-y-lg border border-secondary-corner">
             <View className="flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-sm font-medium"><Trans>Condition {conditionNumber}</Trans></Text>
+                <Text className="text-secondary-foreground text-sm font-medium">
+                    <Trans>Condition {conditionNumber}</Trans>
+                </Text>
+
                 {canRemove && (
                     <HapticPressable onPress={handleRemove} className="p-xs">
                         <Icon icon={UserIconNameEnum.Trash} className="text-destructive" size={18} />

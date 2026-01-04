@@ -10,8 +10,10 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { RuleSelectorSheet } from '../rule-selector-sheet/rule-selector-sheet';
 
+const iconSlot = <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center" />;
+
 interface Props {
-    conditionCount: number;
+    readonly conditionCount: number;
 }
 
 const MATCH_TYPE_OPTIONS: { value: RuleConditionMatchTypeEnum; label: MessageDescriptor; description: MessageDescriptor }[] = [
@@ -26,8 +28,6 @@ const MATCH_TYPE_OPTIONS: { value: RuleConditionMatchTypeEnum; label: MessageDes
         description: msg`Any single condition matching will apply the rule`
     }
 ];
-
-const iconSlot = <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center" />;
 
 export const RuleConditionMatchTypeSelector = ({ conditionCount }: Props) => {
     const { t, i18n } = useLingui();

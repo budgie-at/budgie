@@ -1,12 +1,13 @@
-import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
+
+import { EmptyFn } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
-    label: ReactNode;
-    value: string;
-    onPress: () => void;
+    readonly label: string;
+    readonly value: string;
+    readonly onPress: EmptyFn;
 }
 
 export const RuleSelectorField = ({ label, value, onPress }: Props) => (

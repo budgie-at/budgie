@@ -23,7 +23,7 @@ import { useGetRuleByIdQuery } from '../../../../rule/query/use-get-rule-by-id.q
 export default function EditRulePage() {
     const { t } = useLingui();
     const { id } = useLocalSearchParams<{ id: string }>();
-    const ruleId = parseInt(id, 10);
+    const ruleId = Number(id);
     const { rule, isLoading } = useGetRuleByIdQuery(ruleId);
 
     const defaultValues = isDefined(rule)
@@ -63,7 +63,9 @@ export default function EditRulePage() {
     return (
         <FormProvider {...form}>
             <Page
-                header={<PageHeader title={t`Edit Rule`} onGoBack={handleGoBack} description={t`Define conditions and actions for your rule`} />}
+                header={
+                    <PageHeader title={t`Edit Rule`} onGoBack={handleGoBack} description={t`Define conditions and actions for your rule`} />
+                }
                 footer={
                     <KeyboardStickyView>
                         <Footer>
@@ -83,26 +85,21 @@ export default function EditRulePage() {
                         <View className="gap-y-lg">
                             <RuleFormSectionHeader title={t`Conditions`} onAdd={addCondition} />
                             <RuleConditionMatchTypeSelector conditionCount={conditionsField.fields.length} />
+
                             {conditionsField.fields.map((field, index) => (
-                                <RuleConditionRow
-                                    key={field.id}
-                                    index={index}
-                                    onRemove={removeCondition}
-                                    canRemove={canRemoveCondition}
-                                />
+                                <RuleConditionRow key={field.id} index={index} onRemove={removeCondition} canRemove={canRemoveCondition} />
                             ))}
                         </View>
 
                         <View className="gap-y-lg">
                             <RuleFormSectionHeader title={t`Actions`} onAdd={addAction} />
-                            <Text className="text-secondary-foreground text-sm"><Trans>Actions to apply when conditions match</Trans></Text>
+
+                            <Text className="text-secondary-foreground text-sm">
+                                <Trans>Actions to apply when conditions match</Trans>
+                            </Text>
+
                             {actionsField.fields.map((field, index) => (
-                                <RuleActionRow
-                                    key={field.id}
-                                    index={index}
-                                    onRemove={removeAction}
-                                    canRemove={canRemoveAction}
-                                />
+                                <RuleActionRow key={field.id} index={index} onRemove={removeAction} canRemove={canRemoveAction} />
                             ))}
                         </View>
                     </View>
