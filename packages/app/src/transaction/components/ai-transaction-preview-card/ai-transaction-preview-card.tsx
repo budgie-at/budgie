@@ -1,5 +1,5 @@
 import { CategoryEntityInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text, View } from 'react-native';
 
@@ -40,7 +40,6 @@ const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
 
 export const AiTransactionPreviewCard = (props: Props) => {
     const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
-    const { t } = useLingui();
     const categorySheetRef = useRef<BottomSheetInterface | null>(null);
     const accountSheetRef = useRef<BottomSheetInterface | null>(null);
 
@@ -78,7 +77,7 @@ export const AiTransactionPreviewCard = (props: Props) => {
                             <Trans>Category</Trans>
                         </Text>
                         <Text className="text-primary text-lg font-semibold">
-                            {isDefined(category) ? category.title : t`Unknown Category`}
+                            {isDefined(category) ? category.title : <Trans>Unknown Category</Trans>}
                         </Text>
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
@@ -90,7 +89,7 @@ export const AiTransactionPreviewCard = (props: Props) => {
                         <Text className="text-secondary-foreground text-xs uppercase">
                             <Trans>Account</Trans>
                         </Text>
-                        <Text className={accountTextClass}>{isDefined(selectedAccount) ? selectedAccount.title : t`Select Account`}</Text>
+                        <Text className={accountTextClass}>{isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}</Text>
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
