@@ -1,12 +1,5 @@
 import { useEffect } from 'react';
-import Animated, {
-    Easing,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { RING_SIZE, THINKING_COLOR } from '../animated-record-button/animated-record-button.constant';
 import { BaseRing } from '../base-ring/base-ring';

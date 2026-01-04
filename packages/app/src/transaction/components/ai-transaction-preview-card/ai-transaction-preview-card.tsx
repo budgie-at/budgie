@@ -38,7 +38,6 @@ const TEXT_CLASS_ENABLED = 'text-positive-foreground font-medium';
 const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
 /* eslint-enable lingui/no-unlocalized-strings */
 
- 
 export const AiTransactionPreviewCard = (props: Props) => {
     const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
     const { t } = useLingui();
@@ -48,7 +47,11 @@ export const AiTransactionPreviewCard = (props: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const { selectedAccount, icon: accountIcon, renderBottomSheet } = useAccountSelector({
+    const {
+        selectedAccount,
+        icon: accountIcon,
+        renderBottomSheet
+    } = useAccountSelector({
         accountId,
         onSelect: onAccountChange,
         excludeAccountId: null
@@ -71,7 +74,9 @@ export const AiTransactionPreviewCard = (props: Props) => {
                 <HapticPressable onPress={handleOpenCategorySheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={categoryIcon} variant={variant} />
                     <View className="flex-1">
-                        <Text className="text-secondary-foreground text-xs uppercase"><Trans>Category</Trans></Text>
+                        <Text className="text-secondary-foreground text-xs uppercase">
+                            <Trans>Category</Trans>
+                        </Text>
                         <Text className="text-primary text-lg font-semibold">
                             {isDefined(category) ? category.title : t`Unknown Category`}
                         </Text>
@@ -82,33 +87,42 @@ export const AiTransactionPreviewCard = (props: Props) => {
                 <HapticPressable onPress={handleOpenAccountSheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={accountIcon} variant="ghost" />
                     <View className="flex-1">
-                        <Text className="text-secondary-foreground text-xs uppercase"><Trans>Account</Trans></Text>
-                        <Text className={accountTextClass}>
-                            {isDefined(selectedAccount) ? selectedAccount.title : t`Select Account`}
+                        <Text className="text-secondary-foreground text-xs uppercase">
+                            <Trans>Account</Trans>
                         </Text>
+                        <Text className={accountTextClass}>{isDefined(selectedAccount) ? selectedAccount.title : t`Select Account`}</Text>
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
                 <View className="bg-secondary-background rounded-2xl p-4xl">
-                    <Text className="text-secondary-foreground text-xs uppercase mb-xs"><Trans>Amount</Trans></Text>
+                    <Text className="text-secondary-foreground text-xs uppercase mb-xs">
+                        <Trans>Amount</Trans>
+                    </Text>
                     <Text className="text-destructive-foreground text-2xl font-bold">
                         {formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol)}
                     </Text>
                 </View>
 
                 <View className="flex-row gap-x-lg">
-                    <HapticPressable onPress={onCancel} className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center">
+                    <HapticPressable
+                        onPress={onCancel}
+                        className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center"
+                    >
                         <View className="flex-row items-center gap-x-sm">
                             <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
-                            <Text className="text-secondary-foreground font-medium"><Trans>Cancel</Trans></Text>
+                            <Text className="text-secondary-foreground font-medium">
+                                <Trans>Cancel</Trans>
+                            </Text>
                         </View>
                     </HapticPressable>
 
                     <HapticPressable disabled={!canConfirm} onPress={onConfirm} className={confirmButtonClass}>
                         <View className="flex-row items-center gap-x-sm">
                             <Icon icon={UserIconNameEnum.Check} size={18} className={confirmIconClass} />
-                            <Text className={confirmTextClass}><Trans>Confirm</Trans></Text>
+                            <Text className={confirmTextClass}>
+                                <Trans>Confirm</Trans>
+                            </Text>
                         </View>
                     </HapticPressable>
                 </View>

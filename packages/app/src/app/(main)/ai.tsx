@@ -19,11 +19,7 @@ const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
 
 type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
 
-const getButtonState = (
-    isReady: boolean,
-    status: 'idle' | 'recording' | 'processing',
-    isGenerating: boolean
-): ButtonState => {
+const getButtonState = (isReady: boolean, status: 'idle' | 'recording' | 'processing', isGenerating: boolean): ButtonState => {
     if (!isReady) {
         return 'loading';
     }
@@ -59,8 +55,7 @@ export default function AiScreen() {
         await generateFromTranscription(transcribed);
     };
 
-    const { startRecording, stopRecording, status, transcription, audioLevel } =
-        useStreamingTranscribe(handleTranscriptionComplete);
+    const { startRecording, stopRecording, status, transcription, audioLevel } = useStreamingTranscribe(handleTranscriptionComplete);
 
     const isReady = llm.isReady && stt.isReady;
 

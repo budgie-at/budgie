@@ -25,9 +25,7 @@ const findCategoryByTitle = (response: string, categories: CategoryItem[]): numb
         return exact.id;
     }
 
-    const contains = categories.find(
-        cat => normalized.includes(cat.title.toLowerCase()) || cat.title.toLowerCase().includes(normalized)
-    );
+    const contains = categories.find(cat => normalized.includes(cat.title.toLowerCase()) || cat.title.toLowerCase().includes(normalized));
     if (isDefined(contains)) {
         return contains.id;
     }

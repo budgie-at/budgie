@@ -73,7 +73,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         if (isRecordingRef.current && streamPromiseRef.current) {
             try {
                 stt.streamStop();
-                 
+
                 await streamPromiseRef.current;
             } catch {
                 // Ignore stream stop errors
@@ -87,7 +87,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
     };
 
     const runStreamTranscription = () => {
-        streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage })
+        streamPromiseRef.current = stt
+            .stream({ language: locale.languageCode as SpeechToTextLanguage })
             .then((result: string) => result)
             .catch(() => '');
     };
