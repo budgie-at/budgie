@@ -5,14 +5,15 @@ import { ReactNode, useEffect } from 'react';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
+import { languageToLocale } from '../util/language-to-locale.util';
 
 interface Props {
     readonly children: ReactNode;
 }
 
 export const I18nProvider = ({ children }: Props) => {
-    const locale = useSetting('locale');
     const language = useSetting('language');
+    const locale = languageToLocale(language);
 
     useEffect(() => void i18n.activate(language), [language]);
 

@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 
 import { LocaleInfoInterface } from '../interface/locale-info.interface';
 
-export interface LocaleInfoWithDetailsInterface extends LocaleInfoInterface {
+interface LocaleInfoWithDetailsInterface extends LocaleInfoInterface {
     name: MessageDescriptor;
     emoji: string;
 }
