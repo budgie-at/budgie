@@ -9,6 +9,7 @@ export const RuleFormDetailsSection = () => (
         <Text className="text-primary text-lg font-semibold">
             <Trans>Rule Details</Trans>
         </Text>
+
         <View className="gap-y-lg">
             <RuleTitleField />
             <RuleEnabledField />

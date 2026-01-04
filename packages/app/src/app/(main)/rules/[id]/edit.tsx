@@ -55,7 +55,7 @@ export default function EditRulePage() {
                 footer={
                     <KeyboardStickyView>
                         <Footer>
-                            <Button variant="dark-warning" onPress={onSubmit} content={t`Save Changes`} />
+                            <Button variant="ghost" onPress={onSubmit} content={t`Save Changes`} />
                         </Footer>
                     </KeyboardStickyView>
                 }

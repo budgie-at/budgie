@@ -26,7 +26,9 @@ export const RuleConditionsSection = () => {
     return (
         <View className="gap-y-lg">
             <RuleFormSectionHeader title={t`Conditions`} onAdd={add} />
+
             {showMatchTypeSelector && <RuleConditionMatchTypeSelector />}
+
             {fields.map((field, index) => (
                 <RuleConditionRow key={field.id} index={index} onRemove={safeRemove} canRemove={canRemove} />
             ))}
