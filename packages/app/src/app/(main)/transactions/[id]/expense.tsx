@@ -86,6 +86,10 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                 >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
+                    {isDefined(transaction.entries[0]?.mccCategory) ? (
+                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                    ) : null}
+
                     <FormLayoutGroup>
                         <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
 
@@ -94,10 +98,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                             accountId={fromAccountId ?? 0}
                             variant="destructive"
                         />
-
-                        {isDefined(transaction.entries[0]?.mccCategory) ? (
-                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                        ) : null}
 
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="destructive" />

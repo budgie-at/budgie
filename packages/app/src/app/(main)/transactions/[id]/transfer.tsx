@@ -113,10 +113,11 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         onAmountChange={handleAmountChange}
                     />
 
+                    {isDefined(transaction.entries[0]?.mccCategory) ? (
+                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                    ) : null}
+
                     <FormLayoutGroup>
-                        {isDefined(transaction.entries[0]?.mccCategory) ? (
-                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                        ) : null}
 
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="default" />
