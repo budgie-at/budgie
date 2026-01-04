@@ -77,8 +77,8 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     };
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={
@@ -90,7 +90,14 @@ return (
                         onGoBack={handleGoBack}
                     />
                 }
-                footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} onDelete={handleDelete} />}
+                footer={
+                    <TransactionFormFooter
+                        variant="default"
+                        buttonText={t`Update Transfer`}
+                        onSubmit={handleSubmit}
+                        onDelete={handleDelete}
+                    />
+                }
             >
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps="handled"

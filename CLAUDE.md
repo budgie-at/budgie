@@ -286,6 +286,52 @@ app/(main)/
 - **App Locales:** `packages/app/src/locales/`
 - **Landing Locales:** `packages/landing/src/locales/`
 
+#### i18n Best Practices
+
+1. **Always use `t()` for translations** - Never use `i18n.t()` for translating message descriptors
+   ```tsx
+   // Good - Use t() function
+   const { t } = useLingui();
+   return <Text>{t(ACCOUNT_TYPE[type])}</Text>;
+
+   // Bad - Using i18n.t()
+   const { i18n } = useLingui();
+   return <Text>{i18n.t(ACCOUNT_TYPE[type])}</Text>;
+   ```
+
+2. **Use template literals for inline translations** - Use backticks with `t` for inline text
+   ```tsx
+   // Good - Template literal syntax
+   const { t } = useLingui();
+   return <Button content={t`Save Changes`} />;
+
+   // Bad - Function call syntax for inline text
+   return <Button content={t('Save Changes')} />;
+   ```
+
+3. **Keep i18n only when needed for other methods** - Only destructure both `t` and `i18n` when you need i18n for methods like `activate()`
+   ```tsx
+   // Good - Only t is needed for translations
+   const { t } = useLingui();
+   return <Text>{t(LOCALE[locale])}</Text>;
+
+   // Good - Both are needed (i18n for activate, t for translations)
+   const { i18n, t } = useLingui();
+   const handleChange = (locale: string) => {
+       i18n.activate(locale);
+       Toast.show({ text1: t`Locale changed` });
+   };
+
+   // Bad - Destructuring i18n when only t is needed
+   const { i18n } = useLingui();
+   return <Text>{i18n.t(LOCALE[locale])}</Text>;
+   ```
+
+4. **Translations workflow**
+   - After making i18n changes, run `yarn workspace @budgie-at/app i18n:sync` to extract and compile translations
+   - Add missing translations for all supported languages (en, fr, es, uk, de)
+   - Never commit extracted messages without translations
+
 ## TypeScript & Coding Standards
 
 ### Critical Rules
@@ -344,6 +390,26 @@ app/(main)/
    return <>{tabs.map(tab => <TabButton key={tab.label} {...tab} />)}</>;
    ```
    Note: Use `.map()` only for dynamic data (from API, database, props, etc.)
+
+9. **Never use manual memoization** - Never use `useCallback`, `useMemo`, or `React.memo`. React Compiler handles optimization automatically.
+   ```tsx
+   // Good - Direct function definition
+   const handleSubmit = async (values: FormValues) => {
+       await submitForm(values);
+   };
+
+   // Bad - Manual memoization (unnecessary with React Compiler)
+   const handleSubmit = useCallback(async (values: FormValues) => {
+       await submitForm(values);
+   }, []);
+
+   // Good - Direct computation
+   const filteredItems = items.filter(item => item.isActive);
+
+   // Bad - Manual memoization (unnecessary with React Compiler)
+   const filteredItems = useMemo(() => items.filter(item => item.isActive), [items]);
+   ```
+   Exception: When a function needs to be in a useEffect dependency array, define it inside the useEffect instead of using useCallback.
 
 ### Naming Conventions
 - **Interfaces:** Must end with `Interface` (e.g., `AccountFilterInterface`)
@@ -638,6 +704,7 @@ Runs on push to main:
    - `yarn lint` - Fix ESLint errors
    - `yarn deadcode` - Detect and remove unused files/exports
    - `yarn cpd` - Detect code duplication (review and refactor if needed)
+   - `yarn format` - Format all files with Prettier
    - `yarn workspace @budgie-at/app i18n:sync` - Extract and compile translations (add missing translations if any)
 6. **Full validation:** Run `yarn ts && yarn lint && yarn test` before pushing
 

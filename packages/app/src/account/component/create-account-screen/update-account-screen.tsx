@@ -4,7 +4,6 @@ import {
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface
 } from '@budgie/contracts';
-import { i18n } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
@@ -50,7 +49,7 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const handleGoBack = () => void goBackOrReplace('/');
 
-    const description = i18n.t(ACCOUNT_TYPE[currentType]);
+    const description = t(ACCOUNT_TYPE[currentType]);
     const variant = currentType === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[currentType];
 
     return (

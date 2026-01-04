@@ -62,8 +62,8 @@ export default function CreateExpenseTransactionPage() {
     }, [parsedCategoryId, form]);
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={
@@ -77,7 +77,11 @@ return (
                 }
                 footer={<TransactionFormFooter variant="destructive" buttonText={t`Add Expense`} onSubmit={handleSubmit} />}
             >
-                <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
+                >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" autoFocus />
 
                     <FormLayoutGroup>

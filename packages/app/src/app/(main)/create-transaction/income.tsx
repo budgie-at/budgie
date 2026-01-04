@@ -45,8 +45,8 @@ export default function CreateIncomeTransactionPage() {
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={
@@ -60,7 +60,11 @@ return (
                 }
                 footer={<TransactionFormFooter variant="positive" buttonText={t`Add Income`} onSubmit={handleSubmit} />}
             >
-                <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
+                >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" autoFocus />
 
                     <FormLayoutGroup>

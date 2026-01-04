@@ -56,8 +56,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={

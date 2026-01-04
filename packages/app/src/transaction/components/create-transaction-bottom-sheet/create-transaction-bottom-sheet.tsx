@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
 
     const handleNavigate = (type: TransactionTypeEnum) => {
@@ -39,21 +39,21 @@ export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
                     <CreateTransactionCard
                         description={t`Money you spend`}
                         icon={TRANSACTION_ICON.EXPENSE}
-                        title={i18n.t(TRANSACTION_TYPE.EXPENSE)}
+                        title={t(TRANSACTION_TYPE.EXPENSE)}
                         onNavigate={handleNavigate}
                         type={TransactionTypeEnum.EXPENSE}
                     />
                     <CreateTransactionCard
                         description={t`Money you earn`}
                         icon={TRANSACTION_ICON.INCOME}
-                        title={i18n.t(TRANSACTION_TYPE.INCOME)}
+                        title={t(TRANSACTION_TYPE.INCOME)}
                         onNavigate={handleNavigate}
                         type={TransactionTypeEnum.INCOME}
                     />
                     <CreateTransactionCard
                         description={t`Move between accounts`}
                         icon={TRANSACTION_ICON.TRANSFER}
-                        title={i18n.t(TRANSACTION_TYPE.TRANSFER)}
+                        title={t(TRANSACTION_TYPE.TRANSFER)}
                         onNavigate={handleNavigate}
                         type={TransactionTypeEnum.TRANSFER}
                     />

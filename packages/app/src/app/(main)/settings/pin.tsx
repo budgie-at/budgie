@@ -22,7 +22,7 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 export default function PinSetupScreen() {
     const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();
     const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({
         mode,
@@ -39,7 +39,7 @@ export default function PinSetupScreen() {
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
-    const error = isDefined(state.error) ? i18n.t(state.error) : null;
+    const error = isDefined(state.error) ? t(state.error) : null;
 
     return (
         <FullPage>
@@ -51,8 +51,8 @@ export default function PinSetupScreen() {
                 ) : (
                     <PinForm
                         error={error}
-                        title={i18n.t(title)}
-                        description={i18n.t(description)}
+                        title={t(title)}
+                        description={t(description)}
                         currentInput={state.input}
                         isLoading={state.isLoading}
                         onDigitPress={addDigit}
