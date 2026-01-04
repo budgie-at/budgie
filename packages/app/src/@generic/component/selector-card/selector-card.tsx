@@ -14,7 +14,7 @@ interface Props<T = number> {
     readonly onSelect: (identifier: T) => void;
     readonly isSelected: boolean;
     readonly className?: string;
-    readonly iconSlot: ReactNode;
+    readonly iconSlot?: ReactNode;
     readonly title: ReactNode;
     readonly subtitle?: ReactNode;
     readonly verticalAlign?: 'middle' | 'top' | 'bottom';

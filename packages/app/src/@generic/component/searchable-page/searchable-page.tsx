@@ -9,16 +9,16 @@ import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 
 interface Props<T extends IdInterface> {
-    title: string;
-    search: string;
-    data: T[] | null;
-    onGoBack: EmptyFn;
-    searchPlaceholder: string;
-    emptyState: ReactNode;
-    onSearchChange: (search: string) => void;
-    onDelete: (id: number) => Promise<void>;
-    renderCard: (item: T) => ReactNode;
-    children?: ReactNode;
+    readonly title: string;
+    readonly search: string;
+    readonly data: T[] | null;
+    readonly onGoBack: EmptyFn;
+    readonly searchPlaceholder: string;
+    readonly emptyState: ReactNode;
+    readonly onSearchChange: (search: string) => void;
+    readonly onDelete: (id: number) => Promise<void>;
+    readonly renderCard: (item: T) => ReactNode;
+    readonly children?: ReactNode;
 }
 
 export const SearchablePage = <T extends IdInterface>({

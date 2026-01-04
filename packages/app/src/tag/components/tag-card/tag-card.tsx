@@ -6,8 +6,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
-    tag: TagEntityInterface;
-    onOpen: (tag: TagEntityInterface) => void;
+    readonly tag: TagEntityInterface;
+    readonly onOpen: (tag: TagEntityInterface) => void;
 }
 
 export const TagCard = ({ onOpen, tag }: Props) => {

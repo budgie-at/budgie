@@ -6,8 +6,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
-    category: CategoryEntityInterface;
-    onOpen: (category: CategoryEntityInterface) => void;
+    readonly category: CategoryEntityInterface;
+    readonly onOpen: (category: CategoryEntityInterface) => void;
 }
 
 export const CategoryCard = ({ onOpen, category }: Props) => {

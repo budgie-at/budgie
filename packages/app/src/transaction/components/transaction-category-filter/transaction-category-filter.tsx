@@ -58,7 +58,7 @@ export const TransactionCategoryFilter = ({ value, onChange }: Props) => {
                 icon={UserIconNameEnum.Tag}
                 total={total}
                 title={t`Categories`}
-                items={categories ?? []}
+                items={categories}
                 renderItems={renderItems}
                 emptySearchText={t`No categories found`}
                 searchPlaceholder={t`Search categories...`}

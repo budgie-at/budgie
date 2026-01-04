@@ -50,6 +50,7 @@ export default defineConfig(
             'one-var': 'off',
             'new-cap': 'off',
             'lines-between-class-members': 'off',
+            'react/prefer-read-only-props': 'error',
             'no-duplicate-imports': 'off',
             'no-ternary': 'off',
             'no-void': 'off',

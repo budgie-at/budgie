@@ -9,7 +9,7 @@ export const useSearchTagsQuery = (query = '') => {
     const { data: countData } = useLiveQuery(tagRepository.count(), []);
 
     if (!isDefined(updatedAt)) {
-        return { isLoading: true, tags: null, total: 0, error, updatedAt: null };
+        return { isLoading: true, tags: [] as typeof data, total: 0, error, updatedAt: null };
     }
 
     return { tags: data, total: countData.at(0)?.count ?? 0, isLoading: false, error, updatedAt };
