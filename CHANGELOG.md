@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.110.0](https://github.com/budgie-at/budgie/compare/v1.109.0...v1.110.0) (2026-01-04)
+
+### Bug Fixes
+
+- **app:** fix ESLint errors in language-to-locale util and remove unused export ([f491fde](https://github.com/budgie-at/budgie/commit/f491fdea8ad9df448f39aefd4b067fa8ce7d6824))
+- fix db pin code ([8fb7318](https://github.com/budgie-at/budgie/commit/8fb73180679783d4c7056ce28d74e12021615cb1))
+
+### Features
+
+- **app:** merge locale and language settings ([f06d643](https://github.com/budgie-at/budgie/commit/f06d6438411611d4a42d56ad3ccca5a448c43712)), closes [#195](https://github.com/budgie-at/budgie/issues/195)
+
 # [1.109.0](https://github.com/budgie-at/budgie/compare/v1.108.1...v1.109.0) (2026-01-04)
 
 ### Bug Fixes
