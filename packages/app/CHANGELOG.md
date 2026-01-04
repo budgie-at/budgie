@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/budgie-at/budgie/compare/v1.111.0...v2.0.0) (2026-01-04)
+
+### Bug Fixes
+
+- **app:** add back button and fix empty transactions page ([8000089](https://github.com/budgie-at/budgie/commit/8000089e2e240f9b51b8dddfeb0d1cb306a52435))
+- **app:** add currency conversion to statistics queries ([f383f6e](https://github.com/budgie-at/budgie/commit/f383f6e8ad12efddad340a9ba97f6186a22d6ee9)), closes [#206](https://github.com/budgie-at/budgie/issues/206)
+- **contracts:** exclude adjustments from category/tag breakdown to match overview totals ([121f626](https://github.com/budgie-at/budgie/commit/121f626d17aed9b77ce9f05e72e671673c7c4fcb))
+
+### Features
+
+- **app:** add tag statistics to analytics screen ([40df830](https://github.com/budgie-at/budgie/commit/40df8306c967045035bfecbdaaa2bc6d488148b7)), closes [#206](https://github.com/budgie-at/budgie/issues/206)
+- **app:** add transaction detail pages for analytics drill-down ([d430c71](https://github.com/budgie-at/budgie/commit/d430c71ca91cdc9b502c1df1161aca67157ef375)), closes [#206](https://github.com/budgie-at/budgie/issues/206)
+- **app:** add uncategorized section to category statistics ([54bf919](https://github.com/budgie-at/budgie/commit/54bf919ba35cf32b122d8e2cc6b2cdb68b757bbe))
+- **app:** enable clicking uncategorized to view transactions ([e2169b1](https://github.com/budgie-at/budgie/commit/e2169b1578abc7dda2c5fc9d3c05b6db8e0a52e1))
+- **app:** improve analytics transactions page with category/tag display ([396fb38](https://github.com/budgie-at/budgie/commit/396fb38786f1df633f00a11bb45b6690930d9bee))
+
+### BREAKING CHANGES
+
+- **app:** Statistics queries now require defaultInstrumentId parameter
+
+* Add exchange rate joins to transaction statistics queries
+* Convert all transaction amounts to default currency before aggregation
+* Update buildCategoryBreakdownQuery() to apply currency conversion
+* Update getTotalIncomeAndExpenseQuery() to apply currency conversion
+* Add getExchangeRateSql() helper methods following net worth pattern
+* Update query hooks to pass defaultInstrumentId from settings context
+* Fix multi-currency bug where amounts were summed without conversion
+
+This fixes the critical issue where statistics incorrectly summed
+transaction amounts in different currencies. Now all amounts are
+properly converted to the default instrument before aggregation,
+using exchange rates with fallback to 1.0 for same currency.
+
 # [1.111.0](https://github.com/budgie-at/budgie/compare/v1.110.0...v1.111.0) (2026-01-04)
 
 ### Bug Fixes
