@@ -57,6 +57,13 @@
       "when": 1767546794086,
       "tag": "0007_serious_mentallo",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1767552462980,
+      "tag": "0008_abandoned_photon",
+      "breakpoints": true
     }
   ]
 }

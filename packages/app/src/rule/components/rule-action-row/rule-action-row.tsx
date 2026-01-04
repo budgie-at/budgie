@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { RuleActionAccountSelector } from '../rule-action-account-selector/rule-action-account-selector';
 import { RuleActionCategorySelector } from '../rule-action-category-selector/rule-action-category-selector';
 import { RuleActionTagSelector } from '../rule-action-tag-selector/rule-action-tag-selector';
 import { RuleActionTypeSelector } from '../rule-action-type-selector/rule-action-type-selector';
@@ -40,6 +41,7 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
 
             {actionType === RuleActionTypeEnum.SET_CATEGORY && <RuleActionCategorySelector index={index} />}
             {actionType === RuleActionTypeEnum.ADD_TAG && <RuleActionTagSelector index={index} />}
+            {actionType === RuleActionTypeEnum.CONVERT_TO_TRANSFER && <RuleActionAccountSelector index={index} />}
         </View>
     );
 };

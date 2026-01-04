@@ -2,6 +2,7 @@ import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { RuleActionTypeEnum } from '../../rule/enum/rule-action-type.enum';
 import { RuleEntityTable } from '../../rule/table/rule-entity.table';
@@ -15,6 +16,7 @@ export const RuleActionEntityTable = sqliteTable(
             .$type<RuleActionTypeEnum>()
             .notNull(),
         categoryId: int('category_id', { mode: 'number' }).references(() => CategoryEntityTable.id, { onDelete: 'cascade' }),
-        tagId: int('tag_id', { mode: 'number' }).references(() => TagEntityTable.id, { onDelete: 'cascade' })
+        tagId: int('tag_id', { mode: 'number' }).references(() => TagEntityTable.id, { onDelete: 'cascade' }),
+        accountId: int('account_id', { mode: 'number' }).references(() => AccountEntityTable.id, { onDelete: 'cascade' })
     })
 );
