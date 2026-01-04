@@ -8,11 +8,12 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useLlmContext } from '../../context/llm.context';
 
 export const AiChatButton = () => {
-    const { llm } = useLlmContext();
+    const { llm, stt } = useLlmContext();
+    const isReady = llm.isReady && stt.isReady;
 
     return (
         <View>
-            {llm.isReady ? (
+            {isReady ? (
                 <Link href="/ai" asChild>
                     <HapticPressable className="bg-primary p-7xl rounded-full mb-sm -translate-y-10 w-19 h-19 items-center justify-center">
                         <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={16} />
