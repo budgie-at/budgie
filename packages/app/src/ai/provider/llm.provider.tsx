@@ -9,9 +9,9 @@ interface Props {
 
 export const LlmProvider = ({ children }: Props) => {
     const llm = useLLM({ model: LLAMA3_2_1B_QLORA });
-    const speechToText = useSpeechToText({ model: WHISPER_BASE });
+    const stt = useSpeechToText({ model: WHISPER_BASE });
 
-    const value = { llm, speechToText };
+    const value = { llm, stt };
 
     return <LlmContext.Provider value={value}>{children}</LlmContext.Provider>;
 };
