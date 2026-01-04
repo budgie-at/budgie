@@ -766,7 +766,7 @@ msgstr "Ausgabe"
 
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
 msgid "Expenses"
-msgstr ""
+msgstr "Ausgaben"
 
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Export all transactions to a CSV file"
@@ -932,7 +932,7 @@ msgstr "Einnahmen nach Kategorie"
 
 #: src/app/(tabs)/analytics.tsx:95
 msgid "Income by Tag"
-msgstr ""
+msgstr "Einnahmen nach Tag"
 
 #: src/app/(main)/pin.tsx:68
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -1441,7 +1441,7 @@ msgstr "Ausgaben nach Kategorie"
 
 #: src/app/(tabs)/analytics.tsx:106
 msgid "Spending by Tag"
-msgstr ""
+msgstr "Ausgaben nach Tag"
 
 #: src/app/(tabs)/analytics.tsx:61
 msgid "Spent"
@@ -1648,7 +1648,7 @@ msgstr "Ukrainisch"
 #: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:49
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
 msgid "Uncategorized"
-msgstr ""
+msgstr "Nicht kategorisiert"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
