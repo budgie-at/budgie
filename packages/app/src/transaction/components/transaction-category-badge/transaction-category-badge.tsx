@@ -14,8 +14,8 @@ interface Props {
     readonly categoryLabel: string;
 }
 
-const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background';
-const textClassName = 'text-secondary-foreground/70 text-xxs font-medium';
+const wrapperClassName = 'rounded-sm py-xxs px-sm bg-secondary-background border border-secondary-corner';
+const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
@@ -30,7 +30,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
             <View className="flex-row flex-wrap gap-xs">
                 {transaction.entries.map(entry => (
                     <View className="flex-row gap-xs" key={entry.id}>
-                        <View className="rounded-sm py-xxs px-sm bg-secondary-background">
+                        <View className={wrapperClassName}>
                             <Text className={textClassName}>
                                 {getTransactionEntryLabel(entry, unknownLabel)}{' '}
                                 <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
