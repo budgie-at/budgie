@@ -60,7 +60,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
         schema: ExpenseTransactionCreateInputSchema,
         id: transactionId
     });
-    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
         control: form.control,
@@ -133,7 +133,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                 </KeyboardAwareScrollView>
             </Page>
 
-            <SuggestRuleBottomSheet ref={bottomSheetRef} />
+            <SuggestRuleBottomSheet ref={bottomSheetRef} onRuleCreated={onRuleCreated} />
         </FormProvider><ConvertExpenseToTransferBottomSheet
                 ref={convertSheetRef}
                 transactionId={transactionId}

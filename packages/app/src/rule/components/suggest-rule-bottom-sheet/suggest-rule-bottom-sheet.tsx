@@ -16,9 +16,10 @@ import { SuggestRuleConditionSelector } from '../suggest-rule-condition-selector
 
 interface Props {
     readonly ref: Ref<BottomSheetInterface<SuggestRuleDataInterface> | null>;
+    readonly onRuleCreated?: () => void;
 }
 
-export const SuggestRuleBottomSheet = ({ ref }: Props) => {
+export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const {
@@ -34,7 +35,7 @@ export const SuggestRuleBottomSheet = ({ ref }: Props) => {
         handleConfigureRule,
         hasComment,
         hasMccCode
-    } = useSuggestRuleBottomSheet({ ref });
+    } = useSuggestRuleBottomSheet({ ref, onRuleCreated });
     const contentContainerStyle = { paddingBottom: bottom + 16 };
     const handleApplyToExistingChange = (value: boolean) => void setApplyToExisting(value);
 
