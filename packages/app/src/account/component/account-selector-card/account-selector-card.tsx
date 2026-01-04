@@ -19,7 +19,7 @@ interface Props extends Pick<AccountWithInstrumentEntityInterface, 'id' | 'icon'
 export const AccountSelectorCard = (props: Props) => {
     const { className, isSelected, title, onSelect, id, icon, type, instrument } = props;
 
-    const { i18n } = useLingui();
+    const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -34,7 +34,7 @@ export const AccountSelectorCard = (props: Props) => {
             title={title}
             subtitle={
                 <View className="flex-row items-center">
-                    <Text className="text-secondary-foreground text-xs">{i18n.t(ACCOUNT_TYPE[type])}</Text>
+                    <Text className="text-secondary-foreground text-xs">{t(ACCOUNT_TYPE[type])}</Text>
                     <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
                     <ProtectedText className="text-sm font-medium text-primary">{formatDigits(balance, instrument.symbol)}</ProtectedText>
                 </View>
