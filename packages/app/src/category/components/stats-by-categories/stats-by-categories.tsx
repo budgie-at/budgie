@@ -1,10 +1,12 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
+import { useRouter } from 'expo-router';
 import { Text, View, ViewStyle } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
@@ -17,6 +19,8 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly getPercentageLabel: (percentage: number) => string;
     readonly stats: { amount: number; category: CategoryEntityInterface }[];
+    readonly filters: TransactionFilterInterface;
+    readonly isIncome: boolean;
 }
 
 const amountVariants = cva('text-xs', {
@@ -39,17 +43,38 @@ const barVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('h
     }
 });
 
-export const StatsByCategories = ({ title, stats, totalAmount, variant, getPercentageLabel }: Props) => {
+export const StatsByCategories = ({ title, stats, totalAmount, variant, getPercentageLabel, filters, isIncome }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
+    const router = useRouter();
 
     const renderStats = ({ category, amount }: { category: CategoryEntityInterface; amount: number }) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
         const style: ViewStyle = { width: `${percentage}%` };
 
+        const handlePress = () => {
+            const params: Record<string, string> = {
+                categoryId: String(category.id),
+                type: isIncome ? 'income' : 'expense'
+            };
+
+            if (filters.date?.from) {
+                params.startDate = filters.date.from.toISOString();
+            }
+
+            if (filters.date?.to) {
+                params.endDate = filters.date.to.toISOString();
+            }
+
+            router.push({
+                pathname: '/analytics/transactions',
+                params
+            });
+        };
+
         return (
-            <View key={category.id} className="gap-y-md">
+            <HapticPressable key={category.id} onPress={handlePress} className="gap-y-md">
                 <View className="flex-row items-center gap-x-md">
                     <CircleIcon icon={category.icon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{category.title}</Text>
@@ -61,7 +86,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
                 </View>
 
                 <Text className="text-secondary-foreground">{getPercentageLabel(percentage)}</Text>
-            </View>
+            </HapticPressable>
         );
     };
 
