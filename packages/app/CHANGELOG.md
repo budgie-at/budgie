@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.107.2](https://github.com/budgie-at/budgie/compare/v1.107.1...v1.107.2) (2026-01-04)
+
+### Bug Fixes
+
+- **app:** missing i18n translations ([4316fe4](https://github.com/budgie-at/budgie/commit/4316fe42486a5117d7c7ccbd227f6697c77063b8))
+
 ## [1.107.1](https://github.com/budgie-at/budgie/compare/v1.107.0...v1.107.1) (2026-01-03)
 
 ### Bug Fixes
