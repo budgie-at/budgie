@@ -41,11 +41,15 @@ msgstr "{iconsCount} icons available"
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} account"
 
-#: src/app/(tabs)/analytics.tsx:34
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% of expenses"
 
-#: src/app/(tabs)/analytics.tsx:33
+#: src/category/components/category-statistics-card/category-statistics-card.tsx:58
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:56
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:59
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
@@ -246,11 +250,11 @@ msgstr "Auto-sync accounts and transactions from Monobank"
 msgid "Available Columns"
 msgstr "Available Columns"
 
-#: src/app/(tabs)/analytics.tsx:64
+#: src/app/(tabs)/analytics.tsx:66
 msgid "Balance"
 msgstr "Balance"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:53
+#: src/transaction/components/transaction-list/transaction-list.tsx:56
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -299,7 +303,7 @@ msgstr "Cash"
 #: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:54
+#: src/transaction/components/transaction-list/transaction-list.tsx:57
 msgid "Categories"
 msgstr "Categories"
 
@@ -762,6 +766,10 @@ msgstr "Expected Return Date (Optional)"
 msgid "Expense"
 msgstr "Expense"
 
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:37
+msgid "Expenses"
+msgstr "Expenses"
+
 #: src/export/components/export-csv/export-csv.tsx:15
 msgid "Export all transactions to a CSV file"
 msgstr "Export all transactions to a CSV file"
@@ -836,7 +844,6 @@ msgid "French (France)"
 msgstr "French (France)"
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
-#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:47
 msgid "from"
 msgstr "from"
 
@@ -915,14 +922,19 @@ msgstr "Inactive Accounts"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
-#: src/app/(tabs)/analytics.tsx:63
+#: src/app/(tabs)/analytics.tsx:65
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Income"
 
-#: src/app/(tabs)/analytics.tsx:72
+#: src/app/(tabs)/analytics.tsx:73
 msgid "Income by category"
 msgstr "Income by category"
+
+#: src/app/(tabs)/analytics.tsx:95
+msgid "Income by Tag"
+msgstr "Income by Tag"
 
 #: src/app/(main)/pin.tsx:68
 #: src/auth/hook/use-pin-setup.hook.tsx:38
@@ -972,14 +984,6 @@ msgstr "Map CSV Columns"
 #: src/app/(main)/settings/import.tsx:159
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
-
-#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:24
-msgid "MCC"
-msgstr "MCC"
-
-#: src/transaction/components/transaction-mcc-info-field/transaction-mcc-info-field.tsx:16
-msgid "Merchant Category"
-msgstr "Merchant Category"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1094,7 +1098,7 @@ msgstr "No inactive accounts"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -1124,7 +1128,7 @@ msgstr "No tags yet"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:72
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1152,7 +1156,7 @@ msgstr "Organization"
 msgid "Over:"
 msgstr "Over:"
 
-#: src/app/(tabs)/analytics.tsx:53
+#: src/app/(tabs)/analytics.tsx:55
 msgid "Overview"
 msgstr "Overview"
 
@@ -1433,11 +1437,15 @@ msgstr "Spanish"
 msgid "Spanish (Spain)"
 msgstr "Spanish (Spain)"
 
-#: src/app/(tabs)/analytics.tsx:82
+#: src/app/(tabs)/analytics.tsx:84
 msgid "Spending by Category"
 msgstr "Spending by Category"
 
-#: src/app/(tabs)/analytics.tsx:59
+#: src/app/(tabs)/analytics.tsx:106
+msgid "Spending by Tag"
+msgstr "Spending by Tag"
+
+#: src/app/(tabs)/analytics.tsx:61
 msgid "Spent"
 msgstr "Spent"
 
@@ -1453,11 +1461,11 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:72
+#: src/transaction/components/transaction-list/transaction-list.tsx:75
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
-#: src/app/(tabs)/analytics.tsx:39
+#: src/app/(tabs)/analytics.tsx:41
 msgid "Statistics"
 msgstr "Statistics"
 
@@ -1602,6 +1610,7 @@ msgid "Transaction Type"
 msgstr "Transaction Type"
 
 #: src/app/(tabs)/transactions.tsx:11
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
 msgstr "Transactions"
 
@@ -1621,7 +1630,7 @@ msgstr "Transfer"
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:71
+#: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
@@ -1637,6 +1646,11 @@ msgstr "Type ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Ukrainian"
+
+#: src/category/components/uncategorized-statistics-card/uncategorized-statistics-card.tsx:49
+#: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
+msgid "Uncategorized"
+msgstr "Uncategorized"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
