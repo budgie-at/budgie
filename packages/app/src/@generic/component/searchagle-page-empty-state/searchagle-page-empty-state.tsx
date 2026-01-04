@@ -16,6 +16,6 @@ export const SearchablePageEmptyState = ({ title, icon, description }: Props) =>
         </View>
 
         <Text className="text-primary text-lg mb-md">{title}</Text>
-        <Text className="text-secondary-foreground text-sm">{description}</Text>
+        <Text className="text-secondary-foreground text-sm text-center">{description}</Text>
     </View>
 );
