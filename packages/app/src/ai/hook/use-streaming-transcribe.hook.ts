@@ -78,8 +78,8 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         }
 
         if (isRecordingRef.current && streamPromiseRef.current) {
-            stt.streamStop();
             try {
+                stt.streamStop();
                 await streamPromiseRef.current;
             } finally {
                 // eslint-disable-next-line require-atomic-updates
