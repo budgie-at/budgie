@@ -30,8 +30,6 @@ CREATE TABLE `rules` (
 	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
 	`deleted_at` integer,
-	`title` text NOT NULL,
-	`title_search` text DEFAULT '' NOT NULL,
-	`priority` integer DEFAULT 0 NOT NULL,
-	`enabled` integer DEFAULT true NOT NULL
+	`enabled` integer DEFAULT true NOT NULL,
+	`condition_match_type` text DEFAULT 'ALL' NOT NULL
 );
