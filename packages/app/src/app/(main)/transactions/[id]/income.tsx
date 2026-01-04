@@ -86,6 +86,10 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                 >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" />
 
+                    {isDefined(transaction.entries[0]?.mccCategory) ? (
+                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                    ) : null}
+
                     <FormLayoutGroup>
                         <TransactionFormAccountSelector variant="positive" fieldName="toAccountId" />
 
@@ -94,10 +98,6 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                             accountId={toAccountId ?? 0}
                             variant="positive"
                         />
-
-                        {isDefined(transaction.entries[0]?.mccCategory) ? (
-                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                        ) : null}
 
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="positive" />
