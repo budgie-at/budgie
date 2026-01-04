@@ -1,8 +1,8 @@
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
+import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -108,9 +108,10 @@ export class AccountBalanceRepository {
     }
 
     getNetWorth(defaultInstrumentId: number) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
-            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
-            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             1.0
         )`;
 
@@ -178,34 +179,6 @@ export class AccountBalanceRepository {
                    ELSE 0
                    END
                )
-        `;
-    }
-
-    private getDirectExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-            (
-                SELECT ${ExchangeRateEntityTable.rate} * 1.0
-                FROM ${ExchangeRateEntityTable}
-                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = accounts.instrument_id
-                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
-                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-                LIMIT 1
-            )
-        `;
-    }
-
-    private getInverseExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-            (
-                SELECT 1.0 / ${ExchangeRateEntityTable.rate}
-                FROM ${ExchangeRateEntityTable}
-                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = accounts.instrument_id
-                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-                LIMIT 1
-            )
         `;
     }
 }
