@@ -18,14 +18,14 @@ export class RuleRepository {
     findAll() {
         return this.db.query.RuleEntityTable.findMany({
             where: isNull(RuleEntityTable.deletedAt),
-            orderBy: [asc(RuleEntityTable.priority)]
+            orderBy: [asc(RuleEntityTable.id)]
         });
     }
 
     findAllWithRelations() {
         return this.db.query.RuleEntityTable.findMany({
             where: isNull(RuleEntityTable.deletedAt),
-            orderBy: [asc(RuleEntityTable.priority)],
+            orderBy: [asc(RuleEntityTable.id)],
             with: {
                 [RuleAssociationEnum.CONDITIONS]: true,
                 [RuleAssociationEnum.ACTIONS]: true
@@ -36,7 +36,7 @@ export class RuleRepository {
     findEnabledWithRelations() {
         return this.db.query.RuleEntityTable.findMany({
             where: eq(RuleEntityTable.enabled, true),
-            orderBy: [asc(RuleEntityTable.priority)],
+            orderBy: [asc(RuleEntityTable.id)],
             with: {
                 [RuleAssociationEnum.CONDITIONS]: true,
                 [RuleAssociationEnum.ACTIONS]: true
@@ -63,7 +63,7 @@ export class RuleRepository {
     findBySearchQuery(search: string) {
         return this.db.query.RuleEntityTable.findMany({
             where: like(RuleEntityTable.titleSearch, `%${search.toLowerCase()}%`),
-            orderBy: [asc(RuleEntityTable.priority)]
+            orderBy: [asc(RuleEntityTable.id)]
         });
     }
 

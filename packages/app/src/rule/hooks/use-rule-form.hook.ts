@@ -18,7 +18,6 @@ import { ruleService } from '../service/rule.service';
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     title: '',
-    priority: 0,
     enabled: true,
     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
     conditions: [
