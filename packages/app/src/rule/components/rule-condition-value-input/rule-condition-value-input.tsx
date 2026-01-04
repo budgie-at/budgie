@@ -1,9 +1,9 @@
 import { RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
 import { RuleTextInput } from '../rule-text-input/rule-text-input';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 
 interface Props {
     readonly index: number;
@@ -22,22 +22,22 @@ export const RuleConditionValueInput = ({ index }: Props) => {
         <RuleTextInput value={value} onChange={onChange} placeholder={valuePlaceholder} />
     );
 
-    const renderSecondaryValueInput = ({ field: { value, onChange } }: { field: { value: string | null; onChange: (value: string) => void } }) => (
+    const renderSecondaryValueInput = ({
+        field: { value, onChange }
+    }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.secondaryValue`>) => (
         <RuleTextInput value={value ?? ''} onChange={onChange} placeholder={secondaryValuePlaceholder} />
     );
 
     return (
         <>
-            <View>
-                <Text className="text-secondary-foreground text-xs mb-xs"><Trans>Value</Trans></Text>
+            <FormItem label={t`Value`}>
                 <Controller control={control} name={`conditions.${index}.value`} render={renderValueInput} />
-            </View>
+            </FormItem>
 
             {showSecondaryValue && (
-                <View>
-                    <Text className="text-secondary-foreground text-xs mb-xs"><Trans>Secondary Value</Trans></Text>
+                <FormItem label={t`Secondary Value`}>
                     <Controller control={control} name={`conditions.${index}.secondaryValue`} render={renderSecondaryValueInput} />
-                </View>
+                </FormItem>
             )}
         </>
     );

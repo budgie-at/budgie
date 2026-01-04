@@ -29,7 +29,7 @@ export default function CreateRulePage() {
                 footer={
                     <KeyboardStickyView>
                         <Footer>
-                            <Button variant="dark-warning" onPress={onSubmit} content={t`Create Rule`} />
+                            <Button variant="ghost" onPress={onSubmit} content={t`Create Rule`} />
                         </Footer>
                     </KeyboardStickyView>
                 }

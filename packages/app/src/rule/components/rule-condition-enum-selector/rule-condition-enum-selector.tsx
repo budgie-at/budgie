@@ -1,13 +1,13 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
 import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
 
 import { ConditionFieldType } from './condition-field.type';
 import { ConditionOptionInterface } from './condition-option.interface';
 import { FieldValueType } from './field-value.type';
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 
 interface Props<T extends ConditionFieldType> {
     readonly index: number;
@@ -37,9 +37,8 @@ export const RuleConditionEnumSelector = <T extends ConditionFieldType>(props: P
     );
 
     return (
-        <View className="flex-1">
-            <Text className="text-secondary-foreground text-xs mb-xs">{label}</Text>
+        <FormItem className="flex-1" label={label}>
             <Controller control={control} name={`conditions.${index}.${fieldName}`} render={renderSelector} />
-        </View>
+        </FormItem>
     );
 };
