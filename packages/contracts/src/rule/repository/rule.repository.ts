@@ -20,17 +20,6 @@ export class RuleRepository {
         });
     }
 
-    findAllWithRelations() {
-        return this.db.query.RuleEntityTable.findMany({
-            where: isNull(RuleEntityTable.deletedAt),
-            orderBy: [asc(RuleEntityTable.id)],
-            with: {
-                [RuleAssociationEnum.CONDITIONS]: true,
-                [RuleAssociationEnum.ACTIONS]: true
-            }
-        });
-    }
-
     findEnabledWithRelations() {
         return this.db.query.RuleEntityTable.findMany({
             where: eq(RuleEntityTable.enabled, true),
@@ -39,12 +28,6 @@ export class RuleRepository {
                 [RuleAssociationEnum.CONDITIONS]: true,
                 [RuleAssociationEnum.ACTIONS]: true
             }
-        });
-    }
-
-    findById(id: number) {
-        return this.db.query.RuleEntityTable.findFirst({
-            where: eq(RuleEntityTable.id, id)
         });
     }
 
