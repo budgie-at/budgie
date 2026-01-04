@@ -3,13 +3,14 @@ import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
+
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleFormContent } from '../../../rule/components/rule-form-content/rule-form-content';
+import { RuleFormFooter } from '../../../rule/components/rule-form-footer/rule-form-footer';
 import { useRuleForm } from '../../../rule/hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../../rule/interface/rule-prefill-data.interface';
-import { RuleFormFooter } from '../../../rule/components/rule-form-footer/rule-form-footer';
 
 const parsePrefillData = (prefillJson: string | undefined): RulePrefillDataInterface | null => {
     if (!isDefined(prefillJson)) {

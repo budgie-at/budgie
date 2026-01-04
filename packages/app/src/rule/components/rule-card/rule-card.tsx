@@ -17,7 +17,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { ruleService } from '../../service/rule.service';
+import { ruleRepository } from '../../../@generic/drizzle/db/db';
 
 interface RuleActionWithRelationsInterface extends RuleActionEntityInterface {
     readonly category?: CategoryEntityInterface | null;
@@ -62,7 +62,7 @@ export const RuleCard = ({ onOpen, order, rule }: Props) => {
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
-        await ruleService.setEnabled(rule.id, enabled);
+        await ruleRepository.updateById(rule.id, { enabled });
     };
 
     const renderCondition = (condition: RuleConditionEntityInterface) => {

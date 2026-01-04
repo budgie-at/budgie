@@ -14,10 +14,11 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { ruleRepository } from '../../@generic/drizzle/db/db';
+import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
-import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     enabled: true,
@@ -94,7 +95,7 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         }
 
         try {
-            await ruleService.deleteById(ruleId);
+            await ruleRepository.deleteById(ruleId);
             goBackOrReplace('/settings/rules');
         } catch (error: unknown) {
             Toast.show({
