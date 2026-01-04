@@ -30,7 +30,7 @@ const dbInit = () => {
 
     const pin = SecureStore.getItem(PIN_KEY);
     if (isNotEmptyString(pin)) {
-        expoDb.execSync(`PRAGMA key = '${pin}';`);
+        global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
 
     return global.__expoSqliteDb__;
