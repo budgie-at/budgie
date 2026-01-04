@@ -68,7 +68,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
 
             const params: Record<string, string> = {
                 categoryId: String(category.id),
-                type: isIncome ? 'income' : 'expense'
+                type: isIncome ? 'INCOME' : 'EXPENSE'
             };
 
             if (filters.date?.from) {
