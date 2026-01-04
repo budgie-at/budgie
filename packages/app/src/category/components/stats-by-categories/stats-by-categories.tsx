@@ -62,14 +62,17 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
         const itemKey = isUncategorized ? 'uncategorized' : String(category.id);
 
         const handlePress = () => {
-            if (isUncategorized) {
-                return;
-            }
-
             const params: Record<string, string> = {
-                categoryId: String(category.id),
                 type: isIncome ? 'INCOME' : 'EXPENSE'
             };
+
+            if (isUncategorized) {
+                // eslint-disable-next-line dot-notation
+                params['uncategorized'] = 'true';
+            } else {
+                // eslint-disable-next-line dot-notation
+                params['categoryId'] = String(category.id);
+            }
 
             if (filters.date?.from) {
                 // eslint-disable-next-line dot-notation
@@ -88,7 +91,7 @@ export const StatsByCategories = ({ title, stats, totalAmount, variant, getPerce
         };
 
         return (
-            <HapticPressable key={itemKey} onPress={handlePress} className="gap-y-md" disabled={isUncategorized}>
+            <HapticPressable key={itemKey} onPress={handlePress} className="gap-y-md">
                 <View className="flex-row items-center gap-x-md">
                     <CircleIcon icon={categoryIcon} variant={variant} />
                     <Text className="mr-auto text-primary text-xs">{categoryTitle}</Text>

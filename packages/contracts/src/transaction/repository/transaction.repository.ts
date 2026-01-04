@@ -331,6 +331,16 @@ export class TransactionRepository {
     }
 
     private buildCategoryCondition(categoryIds: number[]) {
+        if (categoryIds.length === 0) {
+            return inArray(
+                TransactionEntityTable.id,
+                this.db
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .where(isNull(TransactionEntryEntityTable.categoryId))
+            );
+        }
+
         return inArray(
             TransactionEntityTable.id,
             this.db
