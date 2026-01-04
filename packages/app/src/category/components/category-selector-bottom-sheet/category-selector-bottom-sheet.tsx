@@ -76,8 +76,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
 
     const rightAction = {
         icon: UserIconNameEnum.Plus,
-        onPress: handleCreateCategory,
-        variant
+        onPress: handleCreateCategory
     };
 
     return (
