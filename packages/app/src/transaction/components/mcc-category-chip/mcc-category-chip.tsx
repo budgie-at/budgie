@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const MccCategoryChip = ({ mccCategory }: Props) => (
-    <View className="rounded-sm py-xxs px-sm bg-primary/5 border border-primary/10">
-        <Text className="text-primary/60 text-xxs font-medium">{mccCategory.shortDescription}</Text>
+    <View className="rounded-sm py-xxs px-sm bg-secondary-background/50 border border-secondary-corner">
+        <Text className="text-secondary-foreground text-xxs font-medium">{mccCategory.shortDescription}</Text>
     </View>
 );
