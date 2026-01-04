@@ -17,6 +17,7 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
+import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -87,46 +88,48 @@ export default function RootLayout() {
     }
 
     return (
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
-                <SettingsProvider>
-                    <I18nProvider>
-                        <KeyboardProvider>
-                            <ThemeProvider>
-                                <BottomSheetsProvider>
-                                    <AuthProvider>
-                                        <AuthGuard>
-                                            <LlmProvider>
-                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                    <Stack.Screen name="(tabs)" />
+        <ErrorBoundary>
+            <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+                <SQLiteProvider databaseName={DB_NAME} options={SQLOptions}>
+                    <SettingsProvider>
+                        <I18nProvider>
+                            <KeyboardProvider>
+                                <ThemeProvider>
+                                    <BottomSheetsProvider>
+                                        <AuthProvider>
+                                            <AuthGuard>
+                                                <LlmProvider>
+                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                        <Stack.Screen name="(tabs)" />
 
-                                                    <Stack.Screen name="(main)/pin" />
-                                                    <Stack.Screen name="(main)/create-account" />
+                                                        <Stack.Screen name="(main)/pin" />
+                                                        <Stack.Screen name="(main)/create-account" />
 
-                                                    <Stack.Screen name="(main)/account/[id]/update" />
-                                                    <Stack.Screen name="(main)/account/[id]/details" />
+                                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                                        <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                    <Stack.Screen name="(main)/transactions/[id]" />
+                                                        <Stack.Screen name="(main)/transactions/[id]" />
 
-                                                    <Stack.Screen name="(main)/settings/index" />
-                                                    <Stack.Screen name="(main)/settings/pin" />
-                                                    <Stack.Screen name="(main)/settings/categories" />
-                                                    <Stack.Screen name="(main)/settings/tags" />
-                                                    <Stack.Screen name="(main)/settings/archived" />
-                                                    <Stack.Screen name="(main)/settings/import" />
+                                                        <Stack.Screen name="(main)/settings/index" />
+                                                        <Stack.Screen name="(main)/settings/pin" />
+                                                        <Stack.Screen name="(main)/settings/categories" />
+                                                        <Stack.Screen name="(main)/settings/tags" />
+                                                        <Stack.Screen name="(main)/settings/archived" />
+                                                        <Stack.Screen name="(main)/settings/import" />
 
-                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                                </Stack>
-                                                <Toast />
-                                            </LlmProvider>
-                                        </AuthGuard>
-                                    </AuthProvider>
-                                </BottomSheetsProvider>
-                            </ThemeProvider>
-                        </KeyboardProvider>
-                    </I18nProvider>
-                </SettingsProvider>
-            </SQLiteProvider>
-        </SafeAreaProvider>
+                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                    </Stack>
+                                                    <Toast />
+                                                </LlmProvider>
+                                            </AuthGuard>
+                                        </AuthProvider>
+                                    </BottomSheetsProvider>
+                                </ThemeProvider>
+                            </KeyboardProvider>
+                        </I18nProvider>
+                    </SettingsProvider>
+                </SQLiteProvider>
+            </SafeAreaProvider>
+        </ErrorBoundary>
     );
 }

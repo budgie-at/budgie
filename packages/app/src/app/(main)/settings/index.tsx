@@ -2,7 +2,7 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -37,6 +37,7 @@ export default function SettingsPage() {
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const navigateToTags = () => void router.push('/settings/tags');
+    const handleReportBug = () => void Linking.openURL('https://github.com/budgie-at/budgie/issues/new/choose');
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
@@ -142,6 +143,13 @@ export default function SettingsPage() {
                             description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
                             icon={UserIconNameEnum.Database}
                             variant="ghost"
+                        />
+                        <SettingsCard
+                            onPress={handleReportBug}
+                            title={t`Report a Bug`}
+                            description={t`Found an issue? Help us improve by reporting bugs or requesting features`}
+                            icon={UserIconNameEnum.Bug}
+                            variant="error"
                         />
                     </SettingsGroup>
                 </View>
