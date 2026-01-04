@@ -5,11 +5,11 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
+import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -239,13 +239,12 @@ export class TransactionRepository {
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
+        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
 
         return this.db
             .select({
                 category: CategoryEntityTable,
-                amount: sql<number>`
-                COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)
-            `.as('amount')
+                amount: amountSql.as('amount')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -253,18 +252,17 @@ export class TransactionRepository {
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
             .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
             .groupBy(TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`));
+            .orderBy(desc(amountSql));
     }
 
     private buildTagBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
         const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
+        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
 
         return this.db
             .select({
                 tag: TagEntityTable,
-                amount: sql<number>`
-                COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)
-            `.as('amount')
+                amount: amountSql.as('amount')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -273,7 +271,7 @@ export class TransactionRepository {
             .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
             .groupBy(TagEntityTable.id)
-            .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`));
+            .orderBy(desc(amountSql));
     }
 
     private buildFilteredTransactionIdsQuery(
@@ -388,37 +386,9 @@ export class TransactionRepository {
 
     private getExchangeRateSql(defaultInstrumentId: number) {
         return sql`COALESCE(
-            ${this.getDirectExchangeRateSql(defaultInstrumentId)},
-            ${this.getInverseExchangeRateSql(defaultInstrumentId)},
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
             1.0
         )`;
-    }
-
-    private getDirectExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-            (
-                SELECT ${ExchangeRateEntityTable.rate} * 1.0
-                FROM ${ExchangeRateEntityTable}
-                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
-                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
-                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-                LIMIT 1
-            )
-        `;
-    }
-
-    private getInverseExchangeRateSql(defaultInstrumentId: number) {
-        return sql`
-            (
-                SELECT 1.0 / ${ExchangeRateEntityTable.rate}
-                FROM ${ExchangeRateEntityTable}
-                WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${defaultInstrumentId}
-                  AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${AccountEntityTable.instrumentId}
-                  AND ${ExchangeRateEntityTable.deletedAt} IS NULL
-                ORDER BY ${ExchangeRateEntityTable.createdAt} DESC
-                LIMIT 1
-            )
-        `;
     }
 }
