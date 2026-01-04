@@ -2,7 +2,7 @@ import { RuleEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { ComponentProps, useState } from 'react';
 import { TextInput, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,12 +16,14 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
+import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { IdInterface } from '../../../@generic/interface/id.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleCard } from '../../../rule/components/rule-card/rule-card';
 import { useSearchRulesQuery } from '../../../rule/query/use-search-rules.query';
-import { ruleService } from '../../../rule/service/rule.service';
+
+type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 const safeEdges = ['bottom'] as const;
@@ -35,7 +37,7 @@ export default function RulesPage() {
     const [notify] = useVibration();
 
     const handleDeleteRule = async (id: number) => {
-        await ruleService.deleteById(id);
+        await ruleRepository.deleteById(id);
         notify(NotificationFeedbackType.Success);
     };
 
@@ -47,11 +49,15 @@ export default function RulesPage() {
         void router.push('/rules/create');
     };
 
-    const renderItem = (rule: RuleEntityInterface) => (
-        <DeletableRow id={rule.id} onDelete={handleDeleteRule}>
-            <RuleCard onOpen={handleOpenRule} rule={rule} />
-        </DeletableRow>
-    );
+    const renderItem = (rule: RuleWithRelationsType, index: number) => {
+        const order = index + 1;
+
+        return (
+            <DeletableRow id={rule.id} onDelete={handleDeleteRule}>
+                <RuleCard onOpen={handleOpenRule} order={order} rule={rule} />
+            </DeletableRow>
+        );
+    };
 
     const emptyStateIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Zap;
     const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Rules Yet`;

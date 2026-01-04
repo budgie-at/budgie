@@ -17,7 +17,7 @@ export const FormItem = ({ label, children, className, error, isRequired }: Prop
     <View className={cn('gap-y-lg', className)}>
         {isNotEmptyString(label) ? (
             <View className="flex-row items-center">
-                <Text className="text-secondary-foreground uppercase text-xs">{label}</Text>
+                <Text className="text-secondary-foreground text-xs">{label}</Text>
                 {isRequired && <Text className="text-destructive-foreground text-sm">*</Text>}
             </View>
         ) : null}

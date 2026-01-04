@@ -63,7 +63,16 @@ export class RuleRepository {
     findBySearchQuery(search: string) {
         return this.db.query.RuleEntityTable.findMany({
             where: like(RuleEntityTable.titleSearch, `%${search.toLowerCase()}%`),
-            orderBy: [asc(RuleEntityTable.id)]
+            orderBy: [asc(RuleEntityTable.id)],
+            with: {
+                [RuleAssociationEnum.CONDITIONS]: true,
+                [RuleAssociationEnum.ACTIONS]: {
+                    with: {
+                        category: true,
+                        tag: true
+                    }
+                }
+            }
         });
     }
 

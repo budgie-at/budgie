@@ -1,7 +1,8 @@
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
@@ -11,10 +12,9 @@ interface Props {
 }
 
 export const RuleSelectorField = ({ label, value, onPress }: Props) => (
-    <View>
-        <Text className="text-secondary-foreground text-xs mb-xs">{label}</Text>
+    <FormItem label={label}>
         <HapticPressable onPress={onPress} className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner">
             <Text className="text-primary text-sm">{value}</Text>
         </HapticPressable>
-    </View>
+    </FormItem>
 );
