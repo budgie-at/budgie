@@ -1,15 +1,16 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { RefObject, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
+import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
+import { CategorySelectorBottomSheetList } from '../category-selector-bottom-sheet-list/category-selector-bottom-sheet-list';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
 interface Props {
@@ -31,12 +32,26 @@ const flatListProps = {
 
 export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
     const [search, setSearch] = useState('');
+    const [newCategoryTitle, setNewCategoryTitle] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);
     const { t } = useLingui();
+    const categoryFormRef = useRef<BottomSheetInterface | null>(null);
 
     const handleSelect = (categoryId: number) => {
         void ref.current?.dismiss();
         onSelect(categoryId);
+    };
+
+    const handleCreateCategory = () => {
+        setNewCategoryTitle(search);
+        void categoryFormRef.current?.present();
+    };
+
+    const handleCategoryCreated = (category: CategoryEntityInterface) => {
+        void categoryFormRef.current?.dismiss();
+        setSearch('');
+        setNewCategoryTitle('');
+        handleSelect(category.id);
     };
 
     const categoriesWithoutExcluded = isNotEmptyArray(categories)
@@ -60,19 +75,29 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         );
 
     return (
-        <SearchableListBottomSheet
-            ref={ref}
-            title={t`Select Category`}
-            description={t`Choose your main category`}
-            onSearchChange={setSearch}
-            searchPlaceholder={t`Search categories...`}
-            search={search}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyDescription={t`Try a different search term`}
-            emptyTitle={t`No categories found`}
-            data={data}
-            flatListProps={flatListProps}
-        />
+        <>
+            <CategorySelectorBottomSheetList
+                ref={ref}
+                title={t`Select Category`}
+                description={t`Choose your main category`}
+                onSearchChange={setSearch}
+                searchPlaceholder={t`Search categories...`}
+                search={search}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                emptyDescription={t`Try a different search term`}
+                emptyTitle={t`No categories found`}
+                data={data}
+                flatListProps={flatListProps}
+                onCreateCategory={handleCreateCategory}
+                variant={variant}
+            />
+            <CategoryFormBottomSheet
+                ref={categoryFormRef}
+                category={null}
+                defaultTitle={newCategoryTitle}
+                onCategoryCreated={handleCategoryCreated}
+            />
+        </>
     );
 };
