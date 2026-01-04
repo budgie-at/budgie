@@ -5,6 +5,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { LoadingRing } from '../loading-ring/loading-ring';
 import { PulseRing } from '../pulse-ring/pulse-ring';
 import { SpinnerRing } from '../spinner-ring/spinner-ring';
@@ -12,10 +13,8 @@ import { ThinkingRing } from '../thinking-ring/thinking-ring';
 
 import { ACCENT_COLOR, BUTTON_SIZE, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
 
-type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
-
 interface Props {
-    readonly state: ButtonState;
+    readonly state: RecordButtonStateType;
     readonly audioLevel?: number;
     readonly downloadProgress?: number;
     readonly onPress: () => void;
@@ -26,7 +25,7 @@ const ICON_SIZE = 32;
 const AUDIO_THRESHOLD = 0.05;
 const SCALE_MULTIPLIER = 0.1;
 
-const getButtonColor = (state: ButtonState): string => {
+const getButtonColor = (state: RecordButtonStateType): string => {
     'worklet';
 
     switch (state) {
@@ -39,7 +38,7 @@ const getButtonColor = (state: ButtonState): string => {
     }
 };
 
-const getIcon = (state: ButtonState): UserIconNameEnum => {
+const getIcon = (state: RecordButtonStateType): UserIconNameEnum => {
     switch (state) {
         case 'recording':
             return UserIconNameEnum.Square;

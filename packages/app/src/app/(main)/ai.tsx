@@ -11,15 +11,14 @@ import { useLlmContext } from '../../ai/context/llm.context';
 import { useAiTransaction } from '../../ai/hook/use-ai-transaction.hook';
 import { useLlmGeneration } from '../../ai/hook/use-llm-generation.hook';
 import { useStreamingTranscribe } from '../../ai/hook/use-streaming-transcribe.hook';
+import { RecordButtonStateType } from '../../ai/type/record-button-state.type';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { AiTransactionPreviewCard } from '../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../../transaction/hook/use-create-expense-transaction.mutation';
 
 const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 180 };
 
-type ButtonState = 'idle' | 'loading' | 'recording' | 'transcribing' | 'thinking';
-
-const getButtonState = (isReady: boolean, status: 'idle' | 'recording' | 'processing', isGenerating: boolean): ButtonState => {
+const getButtonState = (isReady: boolean, status: 'idle' | 'recording' | 'processing', isGenerating: boolean): RecordButtonStateType => {
     if (!isReady) {
         return 'loading';
     }
