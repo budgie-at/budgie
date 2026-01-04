@@ -10,6 +10,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
 
 interface Props {
@@ -22,7 +23,7 @@ const ACTION_TYPE_OPTIONS: { value: RuleActionTypeEnum; label: MessageDescriptor
     { value: RuleActionTypeEnum.CONVERT_TO_TRANSFER, label: msg`Convert to Transfer` }
 ];
 
-const CONVERTIBLE_TRANSACTION_TYPES = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME];
+const CONVERTIBLE_TRANSACTION_TYPES: TransactionTypeEnum[] = [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME];
 
 export const RuleActionTypeSelector = ({ index }: Props) => {
     const { t, i18n } = useLingui();
@@ -33,7 +34,8 @@ export const RuleActionTypeSelector = ({ index }: Props) => {
         condition =>
             condition.field === RuleConditionFieldEnum.TRANSACTION_TYPE &&
             condition.operator === RuleConditionOperatorEnum.EQUALS &&
-            CONVERTIBLE_TRANSACTION_TYPES.includes(condition.value as TransactionTypeEnum)
+            isEnumValue(condition.value, TransactionTypeEnum) &&
+            CONVERTIBLE_TRANSACTION_TYPES.includes(condition.value)
     );
 
     const availableOptions = ACTION_TYPE_OPTIONS.filter(

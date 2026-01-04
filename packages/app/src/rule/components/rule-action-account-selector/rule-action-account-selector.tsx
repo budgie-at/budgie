@@ -7,6 +7,7 @@ import {
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
 import { RuleIconSlot } from '../rule-icon-slot/rule-icon-slot';
@@ -27,6 +28,7 @@ export const RuleActionAccountSelector = ({ index }: Props) => {
         condition =>
             condition.field === RuleConditionFieldEnum.TRANSACTION_TYPE &&
             condition.operator === RuleConditionOperatorEnum.EQUALS &&
+            isEnumValue(condition.value, TransactionTypeEnum) &&
             condition.value === TransactionTypeEnum.EXPENSE
     );
 
