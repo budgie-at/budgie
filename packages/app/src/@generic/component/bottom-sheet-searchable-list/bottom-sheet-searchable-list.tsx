@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { JSX, RefObject, useRef } from 'react';
+import { ComponentProps, JSX, RefObject, useRef } from 'react';
 import { InteractionManager } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
@@ -43,6 +43,7 @@ interface SearchableListBottomSheetProps<T> {
     };
 
     readonly listHeaderContent?: JSX.Element;
+    readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
 }
 
 const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
@@ -67,7 +68,8 @@ export const SearchableListBottomSheet = <T,>({
     emptyDescription,
     flatListProps,
     emptyIcon,
-    listHeaderContent
+    listHeaderContent,
+    rightAction
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
     const inputRef = useRef<TextInput>(null);
@@ -83,7 +85,13 @@ export const SearchableListBottomSheet = <T,>({
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
-            <BottomSheetSearch ref={inputRef} onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} />
+            <BottomSheetSearch
+                ref={inputRef}
+                onChangeText={onSearchChange}
+                placeholder={searchPlaceholder}
+                value={search}
+                rightAction={rightAction}
+            />
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
