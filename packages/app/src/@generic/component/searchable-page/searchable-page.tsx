@@ -12,15 +12,15 @@ import { SearchablePageList } from '../searchable-page-list/searchable-page-list
 import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
 
 interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof SearchablePageList<T>>, 'data'> {
-    title: string;
-    search: string;
-    data: T[] | null;
-    onGoBack: EmptyFn;
-    searchPlaceholder: string;
-    emptyStateTitle: string;
-    emptyStateDescription: string;
-    emptyStateIcon: UserIconNameEnum;
-    onSearchChange: (search: string) => void;
+    readonly title: string;
+    readonly search: string;
+    readonly data: T[] | null;
+    readonly onGoBack: EmptyFn;
+    readonly searchPlaceholder: string;
+    readonly emptyStateTitle: string;
+    readonly emptyStateDescription: string;
+    readonly emptyStateIcon: UserIconNameEnum;
+    readonly onSearchChange: (search: string) => void;
 }
 
 export const SearchablePage = <T extends IdInterface>({

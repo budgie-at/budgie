@@ -10,10 +10,10 @@ import { DeletableRow } from '../deletable-row/deletable-row';
 import { FloatingAddButtonProps } from '../floating-add-button/floating-add-button';
 
 interface Props<T extends IdInterface> {
-    data: T[];
-    onDelete: (id: number) => Promise<void>;
-    renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
-    renderBottomSheet: FloatingAddButtonProps<T>['renderBottomSheet'];
+    readonly data: T[];
+    readonly onDelete: (id: number) => Promise<void>;
+    readonly renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
+    readonly renderBottomSheet: FloatingAddButtonProps<T>['renderBottomSheet'];
 }
 
 const safeEdges = ['bottom'] as const;

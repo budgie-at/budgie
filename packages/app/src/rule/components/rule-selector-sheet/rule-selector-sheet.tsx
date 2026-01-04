@@ -1,4 +1,4 @@
-import { ReactNode, Ref } from 'react';
+import { Ref } from 'react';
 import { Text, View } from 'react-native';
 
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
@@ -10,15 +10,14 @@ interface RuleSelectorOption<T> {
     value: T;
     label: string;
     subtitle?: string;
-    iconSlot: ReactNode;
 }
 
 interface Props<T> {
-    ref: Ref<BottomSheetInterface | null>;
-    title: string;
-    options: RuleSelectorOption<T>[];
-    selectedValue: T | null;
-    onSelect: (value: T) => void;
+    readonly ref: Ref<BottomSheetInterface | null>;
+    readonly title: string;
+    readonly options: RuleSelectorOption<T>[];
+    readonly selectedValue: T | null;
+    readonly onSelect: (value: T) => void;
 }
 
 export const RuleSelectorSheet = <T,>({ ref, title, options, selectedValue, onSelect }: Props<T>) => (
@@ -32,7 +31,6 @@ export const RuleSelectorSheet = <T,>({ ref, title, options, selectedValue, onSe
                         identifier={option.value}
                         isSelected={option.value === selectedValue}
                         onSelect={onSelect}
-                        iconSlot={option.iconSlot}
                         title={option.label}
                         subtitle={option.subtitle}
                     />

@@ -7,8 +7,8 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { ruleService } from '../../service/rule.service';
 
 interface Props {
-    rule: RuleEntityInterface;
-    onOpen: (rule: RuleEntityInterface) => void;
+    readonly rule: RuleEntityInterface;
+    readonly onOpen: (rule: RuleEntityInterface) => void;
 }
 
 const iconParams = { variant: 'dark-warning', size: 40, iconSize: 20 } as const;

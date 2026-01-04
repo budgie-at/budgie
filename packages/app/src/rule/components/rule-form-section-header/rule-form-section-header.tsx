@@ -6,8 +6,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
-    title: string;
-    onAdd: () => void;
+    readonly title: string;
+    readonly onAdd: () => void;
 }
 
 export const RuleFormSectionHeader = ({ title, onAdd }: Props) => (

@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import {
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
@@ -8,6 +7,7 @@ import {
     RuleCreateInputSchema
 } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -44,6 +44,7 @@ interface UseRuleFormOptions {
 }
 
 export const useRuleForm = (options: UseRuleFormOptions = {}) => {
+    const { t } = useLingui();
     const { ruleId, defaultValues: providedDefaultValues } = options;
     const defaultValues = providedDefaultValues ?? DEFAULT_VALUES;
     const isEditing = isDefined(ruleId);
@@ -69,13 +70,21 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         conditionsField.append(DEFAULT_CONDITION);
     };
 
-    const removeCondition = (index: number) => void (conditionsField.fields.length > 1 && conditionsField.remove(index));
+    const removeCondition = (index: number) => {
+        if (conditionsField.fields.length > 1) {
+            conditionsField.remove(index);
+        }
+    };
 
     const addAction = () => {
         actionsField.append(DEFAULT_ACTION);
     };
 
-    const removeAction = (index: number) => void (actionsField.fields.length > 1 && actionsField.remove(index));
+    const removeAction = (index: number) => {
+        if (actionsField.fields.length > 1) {
+            actionsField.remove(index);
+        }
+    };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
         try {
@@ -88,8 +97,8 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         } catch {
             Toast.show({
                 type: 'error',
-                text1: isEditing ? 'Could not update rule' : 'Could not create rule',
-                text2: 'Please try again later'
+                text1: isEditing ? t`Could not update rule` : t`Could not create rule`,
+                text2: t`Please try again later`
             });
         }
     };

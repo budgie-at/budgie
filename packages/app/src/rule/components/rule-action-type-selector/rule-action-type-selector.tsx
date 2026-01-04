@@ -1,7 +1,7 @@
 import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
@@ -11,7 +11,7 @@ import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 import { RuleSelectorSheet } from '../rule-selector-sheet/rule-selector-sheet';
 
 interface Props {
-    index: number;
+    readonly index: number;
 }
 
 const ACTION_TYPE_OPTIONS: { value: RuleActionTypeEnum; label: MessageDescriptor }[] = [
@@ -41,7 +41,7 @@ export const RuleActionTypeSelector = ({ index }: Props) => {
 
         return (
             <>
-                <RuleSelectorField label={<Trans>Action Type</Trans>} value={getLabel(value)} onPress={handleOpen} />
+                <RuleSelectorField label={t`Action Type`} value={getLabel(value)} onPress={handleOpen} />
                 <RuleSelectorSheet ref={sheetRef} title={t`Select Action Type`} options={options} selectedValue={value} onSelect={handleSelect} />
             </>
         );

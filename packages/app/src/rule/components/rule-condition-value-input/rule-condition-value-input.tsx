@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import { RuleTextInput } from '../rule-text-input/rule-text-input';
 
 interface Props {
-    index: number;
+    readonly index: number;
 }
 
 export const RuleConditionValueInput = ({ index }: Props) => {

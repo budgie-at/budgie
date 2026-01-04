@@ -33,8 +33,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const { t } = useLingui();
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
-    const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
-    const tagsCount = tags?.length ?? 0;
+    const selectedTags = tags.filter(tag => selectedTagIds.includes(tag.id));
+    const tagsCount = tags.length;
 
     const handleCreateTag = () => void tagFormRef.current?.open();
 
@@ -44,7 +44,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     };
 
     const handleClose = () => void ref.current?.close();
-
     const selectedTagsCount = selectedTags.length;
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
     const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;

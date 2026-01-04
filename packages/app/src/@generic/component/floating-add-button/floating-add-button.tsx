@@ -9,7 +9,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 export interface FloatingAddButtonProps<T extends IdInterface> {
-    renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
+    readonly renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
 
 export const FloatingAddButton = <T extends IdInterface>({ renderBottomSheet }: FloatingAddButtonProps<T>) => {

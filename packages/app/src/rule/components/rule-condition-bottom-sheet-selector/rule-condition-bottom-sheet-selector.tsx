@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -11,14 +11,12 @@ interface Option<T extends string> {
 }
 
 interface Props<T extends string> {
-    value: T;
-    onChange: (value: T) => void;
-    options: Option<T>[];
-    sheetTitle: string;
-    getLabel: (value: T) => string;
+    readonly value: T;
+    readonly onChange: (value: T) => void;
+    readonly options: Option<T>[];
+    readonly sheetTitle: string;
+    readonly getLabel: (value: T) => string;
 }
-
-const iconSlot = <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center" />;
 
 export const RuleConditionBottomSheetSelector = <T extends string>({ value, onChange, options, sheetTitle, getLabel }: Props<T>) => {
     const sheetRef = useRef<BottomSheetInterface | null>(null);
@@ -31,8 +29,6 @@ export const RuleConditionBottomSheetSelector = <T extends string>({ value, onCh
         handleCloseSheet();
     };
 
-    const optionsWithIcon = options.map(option => ({ ...option, iconSlot }));
-
     return (
         <>
             <HapticPressable
@@ -41,7 +37,8 @@ export const RuleConditionBottomSheetSelector = <T extends string>({ value, onCh
             >
                 <Text className="text-primary text-sm">{getLabel(value)}</Text>
             </HapticPressable>
-            <RuleSelectorSheet ref={sheetRef} title={sheetTitle} options={optionsWithIcon} selectedValue={value} onSelect={handleSelect} />
+
+            <RuleSelectorSheet ref={sheetRef} title={sheetTitle} options={options} selectedValue={value} onSelect={handleSelect} />
         </>
     );
 };
