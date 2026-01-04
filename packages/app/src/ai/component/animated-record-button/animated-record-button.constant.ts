@@ -1,0 +1,18 @@
+import {
+    DEFAULT_FOREGROUND_COLOR,
+    DESTRUCTIVE_FOREGROUND_COLOR,
+    SECONDARY_FOREGROUND_COLOR
+} from '../../../@generic/constant/colors.constant';
+
+export const BUTTON_SIZE = 80;
+export const RING_SIZE = 120;
+export const STROKE_WIDTH = 3;
+
+export const ACCENT_COLOR = DEFAULT_FOREGROUND_COLOR;
+export const RECORDING_COLOR = DESTRUCTIVE_FOREGROUND_COLOR;
+export const THINKING_COLOR = DEFAULT_FOREGROUND_COLOR;
+export const LOADING_COLOR = SECONDARY_FOREGROUND_COLOR;
+
+export const RING_CENTER = RING_SIZE / 2;
+export const RING_RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
+export const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;

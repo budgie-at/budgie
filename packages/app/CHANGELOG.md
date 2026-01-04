@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.108.0](https://github.com/budgie-at/budgie/compare/v1.107.2...v1.108.0) (2026-01-04)
+
+### Features
+
+- **app:** improve AI voice transcription UX with streaming and visual feedback ([1d4ed41](https://github.com/budgie-at/budgie/commit/1d4ed410780162bb13ecbe933be760763c42e8b3))
+
 ## [1.107.2](https://github.com/budgie-at/budgie/compare/v1.107.1...v1.107.2) (2026-01-04)
 
 ### Bug Fixes
