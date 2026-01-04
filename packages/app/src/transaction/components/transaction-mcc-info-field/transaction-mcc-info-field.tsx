@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const TransactionMccInfoField = ({ mccCategory }: Props) => (
-    <View className="px-sm py-xs rounded-full bg-primary border border-primary self-center my-md">
+    <View className="px-sm py-xs rounded-full bg-primary border border-primary self-center mb-md">
         <Text className="text-xxs font-medium text-primary-foreground">{mccCategory.shortDescription}</Text>
     </View>
 );
