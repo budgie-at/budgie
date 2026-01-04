@@ -59,56 +59,59 @@ export default function StatisticsPage() {
                     </Text>
 
                     <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard
-                            amount={expense}
-                            label={t`Spent`}
-                            icon={UserIconNameEnum.TrendingDown}
-                            variant="destructive"
-                        />
+                        <TransactionAnalyticsCard amount={expense} label={t`Spent`} icon={UserIconNameEnum.TrendingDown} variant="destructive" />
                         <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
                         <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
                     </View>
                 </View>
 
-                {isNotEmptyArray(incomeByCategory) ? (
+                {isNotEmptyArray(incomeByCategory) && (
                     <StatsByCategories
                         getPercentageLabel={getIncomePercentageLabel}
                         variant="positive"
                         title={t`Income by category`}
                         stats={incomeByCategory}
                         totalAmount={income}
+                        filters={filters}
+                        isIncome
                     />
-                ) : null}
+                )}
 
-                {isNotEmptyArray(expenseByCategory) ? (
+                {isNotEmptyArray(expenseByCategory) && (
                     <StatsByCategories
                         getPercentageLabel={getExpensesPercentageLabel}
                         variant="destructive"
                         title={t`Spending by Category`}
                         stats={expenseByCategory}
                         totalAmount={expense}
+                        filters={filters}
+                        isIncome={false}
                     />
-                ) : null}
+                )}
 
-                {isNotEmptyArray(incomeByTag) ? (
+                {isNotEmptyArray(incomeByTag) && (
                     <StatsByTags
                         getPercentageLabel={getIncomePercentageLabel}
                         variant="positive"
                         title={t`Income by Tag`}
                         stats={incomeByTag}
                         totalAmount={income}
+                        filters={filters}
+                        isIncome
                     />
-                ) : null}
+                )}
 
-                {isNotEmptyArray(expenseByTag) ? (
+                {isNotEmptyArray(expenseByTag) && (
                     <StatsByTags
                         getPercentageLabel={getExpensesPercentageLabel}
                         variant="destructive"
                         title={t`Spending by Tag`}
                         stats={expenseByTag}
                         totalAmount={expense}
+                        filters={filters}
+                        isIncome={false}
                     />
-                ) : null}
+                )}
             </ScrollView>
         </Page>
     );
