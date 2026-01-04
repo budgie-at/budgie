@@ -63,6 +63,7 @@ msgstr "100% Sin conexión y privado"
 msgid "About"
 msgstr "Acerca de"
 
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:90
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Cuenta"
@@ -147,13 +148,9 @@ msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 msgid "Adjustment"
 msgstr "Ajuste"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:28
+#: src/ai/component/ai-chat-button/ai-chat-button.tsx:29
 msgid "AI"
 msgstr "IA"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:49
-msgid "AI Suggestion"
-msgstr "Sugerencia de IA"
 
 #: src/app/(main)/settings/index.tsx:140
 msgid ""
@@ -184,7 +181,7 @@ msgid "Already syncing"
 msgstr "Ya sincronizando"
 
 #: src/app/(main)/settings/import.tsx:198
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:99
 msgid "Amount"
 msgstr "Cantidad"
 
@@ -289,7 +286,7 @@ msgstr "PresupuestoIA"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:257
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:114
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -308,8 +305,20 @@ msgstr "Categorías"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categorías ({selectedCategoriesCount})"
 
+#: src/ai/hook/use-ai-transaction.hook.ts:47
+msgid ""
+"Categorize this expense. Reply with ONLY a number (1-{categoryCount}).\n"
+"\n"
+"Categories:\n"
+"{categoriesWithIds}\n"
+"\n"
+"IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
+"Reply with the category number only."
+msgstr ""
+
 #: src/app/(main)/settings/import.tsx:182
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:77
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Categoría"
@@ -400,7 +409,7 @@ msgstr "Comentario"
 msgid "Common Tags"
 msgstr "Etiquetas frecuentes"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:87
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:123
 msgid "Confirm"
 msgstr "Confirmar"
 
@@ -436,7 +445,7 @@ msgstr "No se pudo crear la categoría"
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:41
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "No se pudo crear la transacción. Por favor, inténtalo de nuevo más tarde."
@@ -820,7 +829,7 @@ msgstr "Francés (Francia)"
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:47
 msgid "from"
-msgstr ""
+msgstr "de"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
@@ -1077,7 +1086,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/app/(main)/ai.tsx:37
+#: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
 msgstr "No se detectó voz"
 
@@ -1301,6 +1310,7 @@ msgid "Select account"
 msgstr "Seleccionar cuenta"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:92
 msgid "Select Account"
 msgstr "Seleccionar cuenta"
 
@@ -1389,7 +1399,7 @@ msgstr "Mostrar esta cuenta en la página principal"
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:39
+#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
 msgid "Something went wrong."
 msgstr "Algo salió mal."
@@ -1532,7 +1542,7 @@ msgstr "Este año"
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
 msgid "to"
-msgstr ""
+msgstr "a"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
@@ -1615,7 +1625,7 @@ msgstr "Ucraniano"
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:52
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:80
 msgid "Unknown Category"
 msgstr "Categoría desconocida"
 
@@ -1688,11 +1698,7 @@ msgstr "Diste dinero"
 msgid "You received money"
 msgstr "Recibiste dinero"
 
-#: src/ai/hook/use-ai-transaction.hook.ts:20
-msgid "Your goal is to return ONE best matching category, ONLY THE NAME FROM this list <CategoryList>{categoriesList}</CategoryList> based on the user message, no reply, no additional text, just the category from the list."
-msgstr "Tu objetivo es devolver UNA categoría que mejor coincida, SOLO EL NOMBRE DE esta lista <CategoryList>{categoriesList}</CategoryList> basado en el mensaje del usuario, sin respuesta, sin texto adicional, solo la categoría de la lista."
-
-#: src/app/(main)/ai.tsx:77
+#: src/app/(main)/ai.tsx:106
 msgid "Your message:"
 msgstr "Tu mensaje:"
 
