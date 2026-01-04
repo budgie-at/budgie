@@ -1,5 +1,6 @@
 export enum RuleActionAssociationEnum {
     RULE = 'rule',
     CATEGORY = 'category',
-    TAG = 'tag'
+    TAG = 'tag',
+    ACCOUNT = 'account'
 }

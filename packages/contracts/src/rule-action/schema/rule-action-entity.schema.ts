@@ -10,5 +10,6 @@ export const RuleActionEntitySchema = createSelectSchema(RuleActionEntityTable, 
     ruleId: schema => schema.describe('The rule ID this action belongs to.'),
     type: zodEnum(RuleActionTypeEnum).describe('The action type.'),
     categoryId: schema => schema.nullable().describe('The category ID for SET_CATEGORY action.'),
-    tagId: schema => schema.nullable().describe('The tag ID for ADD_TAG action.')
+    tagId: schema => schema.nullable().describe('The tag ID for ADD_TAG action.'),
+    accountId: schema => schema.nullable().describe('The account ID for CONVERT_TO_TRANSFER action.')
 });
