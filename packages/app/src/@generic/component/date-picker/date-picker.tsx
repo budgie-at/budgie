@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import DateTimePicker, { CalendarComponents, useDefaultClassNames } from 'react-native-ui-datepicker';
 
-import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { Icon } from '../icon/icon';
 
 const components: CalendarComponents = {
@@ -11,7 +11,7 @@ const components: CalendarComponents = {
 };
 
 export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
-    const locale = useSetting('locale');
+    const { languageTag } = useLocaleInfo();
     const defaultClassNames = useDefaultClassNames();
 
     /* eslint-disable lingui/no-unlocalized-strings */
@@ -46,5 +46,5 @@ export const DatePicker = (props: ComponentProps<typeof DateTimePicker>) => {
     };
     /* eslint-enable lingui/no-unlocalized-strings */
 
-    return <DateTimePicker {...props} classNames={classNames} locale={locale} components={components} />;
+    return <DateTimePicker {...props} classNames={classNames} locale={languageTag} components={components} />;
 };
