@@ -1,0 +1,8 @@
+export enum RuleConditionFieldEnum {
+    TITLE = 'TITLE',
+    AMOUNT = 'AMOUNT',
+    ACCOUNT_ID = 'ACCOUNT_ID',
+    MCC_CODE = 'MCC_CODE',
+    TRANSACTION_TYPE = 'TRANSACTION_TYPE',
+    EXTERNAL_SOURCE = 'EXTERNAL_SOURCE'
+}
