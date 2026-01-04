@@ -6,7 +6,6 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
-import { Button } from '../../../@generic/component/button/button';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -76,16 +75,11 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
             />
         );
 
-    const listHeaderContent = (
-        <View className="px-6 pb-lg">
-            <Button
-                variant={variant}
-                leftIcon={UserIconNameEnum.Plus}
-                content={t`Create New Category`}
-                onPress={handleCreateCategory}
-            />
-        </View>
-    );
+    const rightAction = {
+        icon: UserIconNameEnum.Plus,
+        onPress: handleCreateCategory,
+        variant
+    };
 
     return (
         <>
@@ -102,7 +96,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
                 emptyTitle={t`No categories found`}
                 data={data}
                 flatListProps={flatListProps}
-                listHeaderContent={listHeaderContent}
+                rightAction={rightAction}
             />
             <CategoryFormBottomSheet
                 ref={categoryFormRef}
