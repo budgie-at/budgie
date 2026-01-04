@@ -68,8 +68,8 @@ export default function CreateTransferTransactionPage() {
     };
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={
