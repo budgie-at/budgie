@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.109.0](https://github.com/budgie-at/budgie/compare/v1.108.1...v1.109.0) (2026-01-04)
+
+### Bug Fixes
+
+- **app:** ensure category form closes before selecting new category ([13aeeff](https://github.com/budgie-at/budgie/commit/13aeeff913afd605348a58372e6aa4543c74fa22))
+- **app:** fix TypeScript and ESLint errors in category selector ([945ffee](https://github.com/budgie-at/budgie/commit/945ffee909d5fc52c28003c4a95d9c52a3702ba3))
+- **app:** refactor category selector to eliminate code duplication ([c587607](https://github.com/budgie-at/budgie/commit/c587607c47289ef08de3009ad21e6a6a13d6a84f))
+- llm disable locally ([aa034b5](https://github.com/budgie-at/budgie/commit/aa034b5c1d121ea30cf5284f03968375c3b9298e))
+
+### Features
+
+- **app:** add create new category in category selector bottom sheet ([b862a60](https://github.com/budgie-at/budgie/commit/b862a60b925dfdac06870f912fb9fc40ab92fba8)), closes [#184](https://github.com/budgie-at/budgie/issues/184)
+- **app:** improve autofocus behavior across bottom sheets ([8dddb48](https://github.com/budgie-at/budgie/commit/8dddb487d3ddca003db6d7ddc1ad5d4f32058b61))
+
 ## [1.108.1](https://github.com/budgie-at/budgie/compare/v1.108.0...v1.108.1) (2026-01-04)
 
 ### Bug Fixes
