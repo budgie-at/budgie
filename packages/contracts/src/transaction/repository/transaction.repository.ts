@@ -250,9 +250,9 @@ export class TransactionRepository {
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
+            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .groupBy(TransactionEntryEntityTable.categoryId)
             .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`));
     }
 
