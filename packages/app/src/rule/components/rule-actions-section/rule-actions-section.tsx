@@ -9,7 +9,8 @@ import { RuleFormSectionHeader } from '../rule-form-section-header/rule-form-sec
 const DEFAULT_ACTION = {
     type: RuleActionTypeEnum.SET_CATEGORY,
     categoryId: null,
-    tagId: null
+    tagId: null,
+    accountId: null
 };
 
 export const RuleActionsSection = () => {

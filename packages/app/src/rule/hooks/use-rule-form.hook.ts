@@ -35,7 +35,8 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
         {
             type: RuleActionTypeEnum.SET_CATEGORY,
             categoryId: null,
-            tagId: null
+            tagId: null,
+            accountId: null
         }
     ],
     applyToExisting: false

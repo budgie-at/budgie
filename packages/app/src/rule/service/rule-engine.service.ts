@@ -17,6 +17,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, ruleRepository, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 const BATCH_SIZE = 100;
@@ -186,6 +187,13 @@ class RuleEngineService {
                     if (isDefined(action.tagId)) {
                         // eslint-disable-next-line no-await-in-loop
                         await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId }], tx);
+                    }
+                    break;
+
+                case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
+                    if (isDefined(action.accountId)) {
+                        // eslint-disable-next-line no-await-in-loop
+                        await convertTransactionToTransfer({ transactionId, targetAccountId: action.accountId, tx });
                     }
                     break;
 
