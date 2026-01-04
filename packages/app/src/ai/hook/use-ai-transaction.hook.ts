@@ -74,7 +74,8 @@ Reply with the category number only.`;
                 fillCategory(categoryId ?? 0);
             }
         }
-    }, [llm.response, llm.isGenerating, categories, fillCategory]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [llm.response, llm.isGenerating, categories]);
 
     return [systemPrompt, aiTransaction, reset, fillCategory] as const;
 };
