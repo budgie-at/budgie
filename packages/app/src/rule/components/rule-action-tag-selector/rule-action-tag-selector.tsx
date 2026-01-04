@@ -2,15 +2,13 @@ import { RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
-import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
+import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
+import { RuleSelectorSheet } from '../rule-selector-sheet/rule-selector-sheet';
 
 interface Props {
     index: number;
@@ -25,6 +23,17 @@ export const RuleActionTagSelector = ({ index }: Props) => {
     const { tags } = useSearchTagsQuery('');
     const selectedTag = tags?.find(tag => tag.id === tagId);
 
+    const options =
+        tags?.map(tag => ({
+            value: tag.id,
+            label: tag.title,
+            iconSlot: (
+                <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center">
+                    <Icon icon={UserIconNameEnum.Tag} className="text-primary" size={18} />
+                </View>
+            )
+        })) ?? [];
+
     const handleOpen = () => void sheetRef.current?.open();
     const handleClose = () => void sheetRef.current?.close();
 
@@ -36,38 +45,11 @@ export const RuleActionTagSelector = ({ index }: Props) => {
 
         return (
             <>
-                <HapticPressable onPress={handleOpen} className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner">
-                    <Text className="text-primary text-sm">{selectedTag?.title ?? t`Select Tag`}</Text>
-                </HapticPressable>
-                <BottomSheet enableDynamicSizing ref={sheetRef}>
-                    <BottomSheetScrollView>
-                        <View className="p-5xl gap-y-lg">
-                            <Text className="text-primary text-lg font-semibold mb-lg"><Trans>Select Tag</Trans></Text>
-                            {tags?.map(tag => (
-                                <SelectorCard
-                                    key={tag.id}
-                                    identifier={tag.id}
-                                    isSelected={tag.id === value}
-                                    onSelect={handleSelect}
-                                    iconSlot={
-                                        <View className="w-10 h-10 bg-secondary-background rounded-full items-center justify-center">
-                                            <Icon icon={UserIconNameEnum.Tag} className="text-primary" size={18} />
-                                        </View>
-                                    }
-                                    title={tag.title}
-                                />
-                            ))}
-                        </View>
-                    </BottomSheetScrollView>
-                </BottomSheet>
+                <RuleSelectorField label={<Trans>Tag</Trans>} value={selectedTag?.title ?? t`Select Tag`} onPress={handleOpen} />
+                <RuleSelectorSheet ref={sheetRef} title={t`Select Tag`} options={options} selectedValue={value} onSelect={handleSelect} />
             </>
         );
     };
 
-    return (
-        <View>
-            <Text className="text-secondary-foreground text-xs mb-xs"><Trans>Tag</Trans></Text>
-            <Controller control={control} name={`actions.${index}.tagId`} render={renderSelector} />
-        </View>
-    );
+    return <Controller control={control} name={`actions.${index}.tagId`} render={renderSelector} />;
 };

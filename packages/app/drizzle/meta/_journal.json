@@ -50,6 +50,13 @@
       "when": 1767517737235,
       "tag": "0006_nice_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1767496461263,
+      "tag": "0007_lean_lily_hollister",
+      "breakpoints": true
     }
   ]
 }

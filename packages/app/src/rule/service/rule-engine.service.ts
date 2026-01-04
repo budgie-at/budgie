@@ -1,6 +1,7 @@
 import {
     RuleActionEntityInterface,
     RuleActionTypeEnum,
+    RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionCreateInputInterface
 } from '@budgie/contracts';
@@ -53,7 +54,9 @@ class RuleEngineService {
             return false;
         }
 
-        return rule.conditions.every(condition => evaluateRuleCondition(condition, input));
+        const evaluator = rule.conditionMatchType === RuleConditionMatchTypeEnum.ANY ? 'some' : 'every';
+
+        return rule.conditions[evaluator](condition => evaluateRuleCondition(condition, input));
     }
 
     private async applyRuleActions(

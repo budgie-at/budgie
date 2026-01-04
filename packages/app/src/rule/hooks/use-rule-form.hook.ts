@@ -2,6 +2,7 @@
 import {
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
+    RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     RuleCreateInputInterface,
     RuleCreateInputSchema
@@ -32,6 +33,7 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
     title: '',
     priority: 0,
     enabled: true,
+    conditionMatchType: RuleConditionMatchTypeEnum.ALL,
     conditions: [DEFAULT_CONDITION],
     actions: [DEFAULT_ACTION]
 };

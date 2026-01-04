@@ -27,7 +27,8 @@ class RuleService {
                 {
                     title: input.title,
                     priority: input.priority,
-                    enabled: input.enabled
+                    enabled: input.enabled,
+                    conditionMatchType: input.conditionMatchType
                 },
                 tx
             );
@@ -57,7 +58,8 @@ class RuleService {
                 {
                     title: input.title,
                     priority: input.priority,
-                    enabled: input.enabled
+                    enabled: input.enabled,
+                    conditionMatchType: input.conditionMatchType
                 },
                 tx
             );
