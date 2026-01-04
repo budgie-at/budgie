@@ -47,11 +47,10 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
     index
 }: Props<T, TItem>) => {
     const [search, setSearch] = useState('');
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const filteredData = data.filter(
-        item =>
-            i18n.t(item.name).toLowerCase().includes(search.toLowerCase()) || getItemCode(item).toLowerCase().includes(search.toLowerCase())
+        item => t(item.name).toLowerCase().includes(search.toLowerCase()) || getItemCode(item).toLowerCase().includes(search.toLowerCase())
     );
 
     const handleSelect = (value: T) => {
@@ -74,7 +73,7 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
                         <Text className="text-primary text-4xl">{item.emoji}</Text>
                     </View>
                 }
-                title={<Text className="text-primary font-medium text-md">{i18n.t(item.name)}</Text>}
+                title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}
                 subtitle={<Text className="text-sm text-secondary-foreground">{getItemCode(item)}</Text>}
             />
         );
