@@ -10,6 +10,7 @@ interface Props {
 
 const FIELD_OPTIONS = [
     { value: RuleConditionFieldEnum.TITLE, label: msg`Title` },
+    { value: RuleConditionFieldEnum.COMMENT, label: msg`Comment` },
     { value: RuleConditionFieldEnum.AMOUNT, label: msg`Amount` },
     { value: RuleConditionFieldEnum.ACCOUNT_ID, label: msg`Account` },
     { value: RuleConditionFieldEnum.MCC_CODE, label: msg`MCC Code` },

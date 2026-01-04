@@ -16,13 +16,11 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     schema: ZodType<T, T>;
     transaction: T;
     id: number;
+    onSuccess?: (data: TransactionCreateInputInterface) => boolean;
 }
 
-export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>({
-    id,
-    schema,
-    transaction
-}: UseTransactionFormConfig<T>) => {
+export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>(config: UseTransactionFormConfig<T>) => {
+    const { id, schema, transaction, onSuccess } = config;
     const { t } = useLingui();
 
     const form = useForm({
@@ -34,7 +32,12 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
             await transactionService.updateById(id, data);
-            goBackOrReplace('/');
+
+            const shouldSkipNavigation = onSuccess?.(data) ?? false;
+
+            if (!shouldSkipNavigation) {
+                goBackOrReplace('/');
+            }
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',

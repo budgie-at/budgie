@@ -2,12 +2,12 @@ import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
+import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { RuleConditionBottomSheetSelector } from '../rule-condition-bottom-sheet-selector/rule-condition-bottom-sheet-selector';
 
 import { ConditionFieldType } from './condition-field.type';
 import { ConditionOptionInterface } from './condition-option.interface';
 import { FieldValueType } from './field-value.type';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 
 interface Props<T extends ConditionFieldType> {
     readonly index: number;

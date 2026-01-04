@@ -1,14 +1,8 @@
-/* eslint-disable react/no-multi-comp, max-statements */
+/* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    AccountTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    TransferTransactionCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -20,8 +14,8 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
-import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
-import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { SuggestRuleBottomSheet } from '../../../../rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet';
+import { useSuggestRuleOnUpdate } from '../../../../rule/hooks/use-suggest-rule-on-update.hook';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { TransactionFormAmountBase } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormComment } from '../../../../transaction/components/transaction-form-comment/transaction-form-comment';
@@ -30,53 +24,39 @@ import { TransactionFormFooter } from '../../../../transaction/components/transa
 import { TransactionFormTagsField } from '../../../../transaction/components/transaction-form-tags-field/transaction-form-tags-field';
 import { TransactionMccInfoField } from '../../../../transaction/components/transaction-mcc-info-field/transaction-mcc-info-field';
 import { TransferTransactionFormAccounts } from '../../../../transaction/components/transfer-transaction-form/transfer-transaction-form-accounts';
+import { useTransferDebtValidation } from '../../../../transaction/hook/use-transfer-debt-validation.hook';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
+/* jscpd:ignore-end */
 
 interface UpdateTransferFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
-/* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
 const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
-
     const transactionInput = convertTransactionToInput(transaction);
 
+    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onSuccess: handleSuccess
     });
 
-    const [fromAccountId, amount] = useWatch({
-        control: form.control,
-        name: ['fromAccountId', 'amount']
-    });
-    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
-
-    const isDebtAccount = account?.type === AccountTypeEnum.DEBT;
-    const exceedsDebtBalance = isDebtAccount && amount > balance;
-
-    useEffect(() => {
-        if (exceedsDebtBalance) {
-            form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
-        } else {
-            form.clearErrors('amount');
-        }
-    }, [exceedsDebtBalance, form, t]);
+    const [fromAccountId, amount] = useWatch({ control: form.control, name: ['fromAccountId', 'amount'] });
+    const { account } = useTransferDebtValidation({ fromAccountId, amount, form });
 
     const handleAmountChange = (newAmount: number) => {
         form.setValue('amount', newAmount);
         form.setValue('entries.0.amount', newAmount);
         form.setValue('entries.1.amount', newAmount);
     };
-
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -128,6 +108,8 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     </FormLayoutGroup>
                 </KeyboardAwareScrollView>
             </Page>
+
+            <SuggestRuleBottomSheet ref={bottomSheetRef} />
         </FormProvider>
     );
 };

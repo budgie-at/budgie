@@ -8,6 +8,13 @@ export const FIELD_OPERATORS: Record<RuleConditionFieldEnum, RuleConditionOperat
         RuleConditionOperatorEnum.NOT_CONTAINS,
         RuleConditionOperatorEnum.MATCHES_REGEX
     ],
+    [RuleConditionFieldEnum.COMMENT]: [
+        RuleConditionOperatorEnum.EQUALS,
+        RuleConditionOperatorEnum.NOT_EQUALS,
+        RuleConditionOperatorEnum.CONTAINS,
+        RuleConditionOperatorEnum.NOT_CONTAINS,
+        RuleConditionOperatorEnum.MATCHES_REGEX
+    ],
     [RuleConditionFieldEnum.AMOUNT]: [
         RuleConditionOperatorEnum.EQUALS,
         RuleConditionOperatorEnum.NOT_EQUALS,
