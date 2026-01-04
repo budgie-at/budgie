@@ -10,6 +10,7 @@ import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { ExchangeRateEntityTable } from '../../exchange-rate/table/exchange-rate-entity.table';
+import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -65,6 +66,26 @@ export class TransactionRepository {
         );
 
         return this.buildCategoryBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
+    }
+
+    getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.INCOME,
+            TransactionEntryTypeEnum.DEBIT
+        );
+
+        return this.buildTagBreakdownQuery(incomeTransactionIds, defaultInstrumentId);
+    }
+
+    getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.EXPENSE,
+            TransactionEntryTypeEnum.CREDIT
+        );
+
+        return this.buildTagBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
     }
 
     getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
@@ -232,6 +253,26 @@ export class TransactionRepository {
             .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
             .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
             .groupBy(CategoryEntityTable.id)
+            .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`));
+    }
+
+    private buildTagBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
+        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
+
+        return this.db
+            .select({
+                tag: TagEntityTable,
+                amount: sql<number>`
+                COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)
+            `.as('amount')
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .groupBy(TagEntityTable.id)
             .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`));
     }
 
