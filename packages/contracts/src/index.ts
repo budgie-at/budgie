@@ -253,9 +253,6 @@ export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/en
 
 export { SettingsRepository } from './settings/repository/settings.repository';
 
-export { RULE_TITLE_MAX_LENGTH } from './rule/constant/rule-title-max-length.constant';
-export { RULE_TITLE_MIN_LENGTH } from './rule/constant/rule-title-min-length.constant';
-
 export { RuleConditionFieldEnum } from './rule/enum/rule-condition-field.enum';
 export { RuleConditionOperatorEnum } from './rule/enum/rule-condition-operator.enum';
 export { RuleConditionMatchTypeEnum } from './rule/enum/rule-condition-match-type.enum';

@@ -1,12 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { Button } from '../../../../@generic/component/button/button';
-import { Footer } from '../../../../@generic/component/footer/footer';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -14,6 +10,7 @@ import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.u
 import { RuleFormContent } from '../../../../rule/components/rule-form-content/rule-form-content';
 import { useRuleForm } from '../../../../rule/hooks/use-rule-form.hook';
 import { useGetRuleByIdQuery } from '../../../../rule/query/use-get-rule-by-id.query';
+import { RuleFormFooter } from '../../../../rule/components/rule-form-footer/rule-form-footer';
 
 export default function EditRulePage() {
     const { t } = useLingui();
@@ -23,7 +20,6 @@ export default function EditRulePage() {
 
     const defaultValues = isDefined(rule)
         ? {
-              title: rule.title,
               enabled: rule.enabled,
               conditionMatchType: rule.conditionMatchType,
               conditions: rule.conditions.map(condition => ({
@@ -36,7 +32,7 @@ export default function EditRulePage() {
           }
         : null;
 
-    const { form, onSubmit } = useRuleForm({ ruleId, defaultValues });
+    const { form, handleSubmit, handleDelete } = useRuleForm({ ruleId, defaultValues });
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -51,14 +47,10 @@ export default function EditRulePage() {
     return (
         <FormProvider {...form}>
             <Page
-                header={<PageHeader title={t`Edit Rule`} onGoBack={handleGoBack} description={t`Define conditions and actions for your rule`} />}
-                footer={
-                    <KeyboardStickyView>
-                        <Footer>
-                            <Button variant="ghost" onPress={onSubmit} content={t`Save Changes`} />
-                        </Footer>
-                    </KeyboardStickyView>
+                header={
+                    <PageHeader title={t`Edit Rule`} onGoBack={handleGoBack} description={t`Define conditions and actions for your rule`} />
                 }
+                footer={<RuleFormFooter onDelete={handleDelete} onSubmit={handleSubmit} variant="ghost" buttonText={t`Save Changes`} />}
             >
                 <RuleFormContent />
             </Page>

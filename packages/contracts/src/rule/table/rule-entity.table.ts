@@ -6,8 +6,6 @@ import { RuleConditionMatchTypeEnum } from '../enum/rule-condition-match-type.en
 export const RuleEntityTable = sqliteTable(
     'rules',
     withBaseEntityTableColumns({
-        title: text('title').notNull(),
-        titleSearch: text('title_search').default('').notNull(),
         enabled: int('enabled', { mode: 'boolean' }).notNull().default(true),
         conditionMatchType: text('condition_match_type', { enum: [RuleConditionMatchTypeEnum.ALL, RuleConditionMatchTypeEnum.ANY] })
             .$type<RuleConditionMatchTypeEnum>()

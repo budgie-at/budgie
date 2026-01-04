@@ -12,14 +12,14 @@ import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
+import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
-    title: '',
     enabled: true,
     conditionMatchType: RuleConditionMatchTypeEnum.ALL,
     conditions: [
@@ -88,9 +88,22 @@ export const useRuleForm = (options: UseRuleFormOptions = {}) => {
         }
     };
 
-    const onSubmit = () => {
-        void form.handleSubmit(handleSubmit)();
+    const handleDelete = async () => {
+        if (!isDefined(ruleId)) {
+            return;
+        }
+
+        try {
+            await ruleService.deleteById(ruleId);
+            goBackOrReplace('/settings/rules');
+        } catch (error: unknown) {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not delete rule.`,
+                text2: getErrorMessage(error)
+            });
+        }
     };
 
-    return { form, onSubmit, isEditing };
+    return { form, handleSubmit: form.handleSubmit(handleSubmit), handleDelete, isEditing };
 };

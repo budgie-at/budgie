@@ -1,18 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { Button } from '../../../@generic/component/button/button';
-import { Footer } from '../../../@generic/component/footer/footer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleFormContent } from '../../../rule/components/rule-form-content/rule-form-content';
 import { useRuleForm } from '../../../rule/hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../../rule/interface/rule-prefill-data.interface';
+import { RuleFormFooter } from '../../../rule/components/rule-form-footer/rule-form-footer';
 
 const parsePrefillData = (prefillJson: string | undefined): RulePrefillDataInterface | null => {
     if (!isDefined(prefillJson)) {
@@ -30,7 +27,7 @@ export default function CreateRulePage() {
     const { t } = useLingui();
     const { prefill } = useLocalSearchParams<{ prefill?: string }>();
     const prefillData = parsePrefillData(prefill);
-    const { form, onSubmit } = useRuleForm({ prefillData });
+    const { form, handleSubmit } = useRuleForm({ prefillData });
 
     const handleGoBack = () => void goBackOrReplace('/settings/rules');
 
@@ -44,13 +41,7 @@ export default function CreateRulePage() {
                         description={t`Define conditions and actions for your rule`}
                     />
                 }
-                footer={
-                    <KeyboardStickyView>
-                        <Footer>
-                            <Button variant="ghost" onPress={onSubmit} content={t`Create Rule`} />
-                        </Footer>
-                    </KeyboardStickyView>
-                }
+                footer={<RuleFormFooter onSubmit={handleSubmit} variant="ghost" buttonText={t`Create Rule`} />}
             >
                 <RuleFormContent />
             </Page>
