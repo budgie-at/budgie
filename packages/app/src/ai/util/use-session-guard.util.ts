@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 
 interface SessionGuard {
     startNewSession: () => number;
@@ -9,15 +9,15 @@ interface SessionGuard {
 export const useSessionGuard = (): SessionGuard => {
     const sessionIdRef = useRef(0);
 
-    const startNewSession = useCallback(() => {
+    const startNewSession = () => {
         sessionIdRef.current += 1;
 
         return sessionIdRef.current;
-    }, []);
+    };
 
-    const isCurrentSession = useCallback((sessionId: number) => sessionIdRef.current === sessionId, []);
+    const isCurrentSession = (sessionId: number) => sessionIdRef.current === sessionId;
 
-    const getCurrentSessionId = useCallback(() => sessionIdRef.current, []);
+    const getCurrentSessionId = () => sessionIdRef.current;
 
     return { startNewSession, isCurrentSession, getCurrentSessionId };
 };
