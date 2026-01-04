@@ -15,7 +15,7 @@ export const RuleActionCategorySelector = ({ index }: Props) => {
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     const categoryId = useWatch({ control, name: `actions.${index}.categoryId` });
-    const { categories } = useSearchCategoriesQuery('', false);
+    const { categories } = useSearchCategoriesQuery('', true);
 
     const selectedCategory = categories.find(category => category.id === categoryId);
     const options = categories.map(category => ({ value: category.id, label: category.title, iconSlot: <RuleIconSlot icon={category.icon} /> }));

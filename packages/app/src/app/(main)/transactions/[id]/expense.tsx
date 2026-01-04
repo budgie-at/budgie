@@ -55,12 +55,15 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
 
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
-        id: transactionId,
-        onSuccess: handleSuccess
+        id: transactionId
+    });
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+        transaction,
+        transactionInput,
+        control: form.control,
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
@@ -95,15 +98,17 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                             onDelete={handleDelete}
                             showConvertButton
                             onConvert={handleOpenConvert}
-                        />
-                    }
+                        showSuggestRule={shouldShowAddRule}
+                        onSuggestRulePress={openBottomSheet}
+                    />
+                }
+            >
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
                 >
-                    <KeyboardAwareScrollView
-                        keyboardShouldPersistTaps="handled"
-                        contentContainerClassName="pb-7xl"
-                        showsVerticalScrollIndicator={false}
-                    >
-                        <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
+                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
                         {isDefined(transaction.entries[0]?.mccCategory) ? (
                             <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
