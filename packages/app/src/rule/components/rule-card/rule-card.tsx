@@ -1,5 +1,5 @@
 import { RuleEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -14,8 +14,6 @@ interface Props {
 const iconParams = { variant: 'dark-warning', size: 40, iconSize: 20 } as const;
 
 export const RuleCard = ({ onOpen, rule }: Props) => {
-    const { t } = useLingui();
-    const {priority} = rule;
     const handleOpen = () => void onOpen(rule);
 
     const handleToggle = async (enabled: boolean) => {
@@ -35,7 +33,6 @@ export const RuleCard = ({ onOpen, rule }: Props) => {
             onPress={handleOpen}
             iconParams={iconParams}
             title={rule.title}
-            description={t`Priority: ${priority}`}
             icon={UserIconNameEnum.Sparkles}
         />
     );
