@@ -29,7 +29,8 @@ export default function EditRulePage() {
                   operator: condition.operator,
                   secondaryValue: condition.secondaryValue
               })),
-              actions: rule.actions.map(action => ({ type: action.type, tagId: action.tagId, categoryId: action.categoryId }))
+              actions: rule.actions.map(action => ({ type: action.type, tagId: action.tagId, categoryId: action.categoryId })),
+              applyToExisting: false
           }
         : null;
 

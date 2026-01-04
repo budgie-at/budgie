@@ -37,7 +37,8 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
             categoryId: null,
             tagId: null
         }
-    ]
+    ],
+    applyToExisting: false
 };
 
 interface UseRuleFormOptions {
