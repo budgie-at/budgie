@@ -1,17 +1,15 @@
-import {
-    RuleCreateInputInterface,
-    RuleEntityInterface,
-    RuleUpdateInputInterface
-} from '@budgie/contracts';
+import { RuleCreateInputInterface, RuleEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
 
+import { ruleEngineService } from './rule-engine.service';
+
 class RuleService {
     async create(input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
-        return db.transaction(async tx => {
-            const rule = await ruleRepository.create(
+        const rule = await db.transaction(async tx => {
+            const createdRule = await ruleRepository.create(
                 {
                     enabled: input.enabled,
                     conditionMatchType: input.conditionMatchType
@@ -21,25 +19,31 @@ class RuleService {
 
             if (isNotEmptyArray(input.conditions)) {
                 await ruleConditionRepository.bulkCreate(
-                    input.conditions.map(condition => ({ ...condition, ruleId: rule.id })),
+                    input.conditions.map(condition => ({ ...condition, ruleId: createdRule.id })),
                     tx
                 );
             }
 
             if (isNotEmptyArray(input.actions)) {
                 await ruleActionRepository.bulkCreate(
-                    input.actions.map(action => ({ ...action, ruleId: rule.id })),
+                    input.actions.map(action => ({ ...action, ruleId: createdRule.id })),
                     tx
                 );
             }
 
-            return rule;
+            return createdRule;
         });
+
+        if (input.applyToExisting) {
+            await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+        }
+
+        return rule;
     }
 
-    async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {
-        return db.transaction(async tx => {
-            const rule = await ruleRepository.updateById(
+    async updateById(id: number, input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
+        const rule = await db.transaction(async tx => {
+            const updatedRule = await ruleRepository.updateById(
                 id,
                 {
                     enabled: input.enabled,
@@ -68,8 +72,14 @@ class RuleService {
                 }
             }
 
-            return rule;
+            return updatedRule;
         });
+
+        if (input.applyToExisting) {
+            await ruleEngineService.applyRuleToMatchingTransactions(id);
+        }
+
+        return rule;
     }
 }
 
