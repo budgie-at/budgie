@@ -378,6 +378,16 @@ const getLabel = (t: SomeType): string => t`Label`;
 - **Framework:** NativeWind (Tailwind CSS for React Native)
 - **Global Styles:** `packages/app/src/global.css`
 - **Components:** Tailwind utility classes with `class-variance-authority` for variants
+- **Color classes must match global.css variables** - Use full variable names from global.css
+  ```tsx
+  // Good - Matches --color-destructive-foreground from global.css
+  <Icon className="text-destructive-foreground" />
+  <View className="bg-positive-background border-warning-corner" />
+
+  // Bad - Incomplete variable name
+  <Icon className="text-destructive" />  // Should be text-destructive-foreground
+  <View className="bg-positive" />  // Should be bg-positive-background
+  ```
 
 ### Toast Messages
 - **Only show toasts for errors** - Never show success toasts for positive/expected outcomes

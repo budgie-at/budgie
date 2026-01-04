@@ -31,7 +31,7 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
 
                 {canRemove && (
                     <HapticPressable onPress={handleRemove} className="p-xs">
-                        <Icon icon={UserIconNameEnum.Trash} className="text-destructive" size={18} />
+                        <Icon icon={UserIconNameEnum.Trash2} className="text-destructive-foreground" size={18} />
                     </HapticPressable>
                 )}
             </View>
