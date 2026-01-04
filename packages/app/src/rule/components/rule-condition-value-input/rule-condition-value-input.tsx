@@ -1,6 +1,7 @@
 import { RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
+
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
 

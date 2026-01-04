@@ -15,6 +15,8 @@ import { PageHeader } from '../../../../@generic/component/page-header/page-head
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { SuggestRuleBottomSheet } from '../../../../rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet';
+import { useSuggestRuleOnUpdate } from '../../../../rule/hooks/use-suggest-rule-on-update.hook';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
@@ -29,29 +31,30 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
+/* jscpd:ignore-end */
+
 interface UpdateIncomeFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
-/* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
-
     const transactionInput = convertTransactionToInput(transaction);
 
+    const { handleSuccess, bottomSheetRef } = useSuggestRuleOnUpdate({ transaction, transactionInput });
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: IncomeTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onSuccess: handleSuccess
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
     const { account } = useGetAccountByIdQuery(toAccountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
-
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -88,6 +91,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     </FormLayoutGroup>
                 </BlurScrollView>
             </Page>
+
+            <SuggestRuleBottomSheet ref={bottomSheetRef} />
         </FormProvider>
     );
 };

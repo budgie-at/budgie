@@ -37,6 +37,7 @@ interface Props {
 
 const FIELD_LABELS = {
     [RuleConditionFieldEnum.TITLE]: msg`Title`,
+    [RuleConditionFieldEnum.COMMENT]: msg`Comment`,
     [RuleConditionFieldEnum.AMOUNT]: msg`Amount`,
     [RuleConditionFieldEnum.ACCOUNT_ID]: msg`Account`,
     [RuleConditionFieldEnum.MCC_CODE]: msg`MCC Code`,
