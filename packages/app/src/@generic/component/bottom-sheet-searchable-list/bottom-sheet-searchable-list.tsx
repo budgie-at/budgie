@@ -44,6 +44,7 @@ interface SearchableListBottomSheetProps<T> {
 
     readonly listHeaderContent?: JSX.Element;
     readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
+    readonly autoFocus?: boolean;
 }
 
 const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
@@ -69,13 +70,14 @@ export const SearchableListBottomSheet = <T,>({
     flatListProps,
     emptyIcon,
     listHeaderContent,
-    rightAction
+    rightAction,
+    autoFocus = true
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
     const inputRef = useRef<TextInput>(null);
 
     const handleSheetChange = (sheetIndex: number) => {
-        if (sheetIndex >= 0) {
+        if (autoFocus && sheetIndex >= 0) {
             InteractionManager.runAfterInteractions(() => {
                 inputRef.current?.focus();
             });
