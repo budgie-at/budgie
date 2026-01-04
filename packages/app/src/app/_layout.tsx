@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
@@ -43,6 +43,9 @@ i18n.activate(i18nGetOSLocale());
 void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
+// eslint-disable-next-line dot-notation
+const isAiDisabled = process.env['AI_DISABLE'] === 'true';
+const AiProviderWrapper = isAiDisabled ? Fragment : LlmProvider;
 
 const aiScreenOptions: ExtendedStackNavigationOptions = {
     ...DEFAULT_STACK_OPTIONS,
@@ -96,7 +99,7 @@ export default function RootLayout() {
                                 <BottomSheetsProvider>
                                     <AuthProvider>
                                         <AuthGuard>
-                                            <LlmProvider>
+                                            <AiProviderWrapper>
                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                     <Stack.Screen name="(tabs)" />
 
@@ -124,7 +127,7 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                 </Stack>
                                                 <Toast />
-                                            </LlmProvider>
+                                            </AiProviderWrapper>
                                         </AuthGuard>
                                     </AuthProvider>
                                 </BottomSheetsProvider>
