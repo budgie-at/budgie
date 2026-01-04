@@ -1,11 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly title: string;
@@ -16,12 +15,8 @@ export const RuleFormSectionHeader = ({ title, onAdd }: Props) => (
     <View className="flex-row items-center justify-between">
         <Text className="text-primary text-lg font-semibold">{title}</Text>
 
-        <HapticPressable onPress={onAdd} className="bg-primary rounded-full px-lg py-xs flex-row items-center gap-x-xs">
-            <Icon icon={UserIconNameEnum.Plus} className="text-primary-reverse" size={16} />
-
-            <Text className="text-primary-reverse text-sm font-medium">
-                <Trans>Add</Trans>
-            </Text>
+        <HapticPressable onPress={onAdd}>
+            <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
         </HapticPressable>
     </View>
 );
