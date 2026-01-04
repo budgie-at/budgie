@@ -53,6 +53,7 @@ export default function CreateRulePage() {
                         <View className="gap-y-lg">
                             <RuleFormSectionHeader title={t`Conditions`} onAdd={addCondition} />
                             <RuleConditionMatchTypeSelector conditionCount={conditionsField.fields.length} />
+
                             {conditionsField.fields.map((field, index) => (
                                 <RuleConditionRow key={field.id} index={index} onRemove={removeCondition} canRemove={canRemoveCondition} />
                             ))}

@@ -9,7 +9,7 @@ export const useSearchCategoriesQuery = (query: string, includeDefault: boolean)
     const { data: countData } = useLiveQuery(categoryRepository.count(includeDefault), [includeDefault]);
 
     if (!isDefined(updatedAt)) {
-        return { isLoading: true, categories: null, total: 0, error, updatedAt: null };
+        return { isLoading: true, categories: [] as typeof data, total: 0, error, updatedAt: null };
     }
 
     return { categories: data, total: countData.at(0)?.count ?? 0, isLoading: false, error, updatedAt };

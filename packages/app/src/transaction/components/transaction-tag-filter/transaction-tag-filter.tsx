@@ -59,7 +59,7 @@ export const TransactionTagFilter = ({ value, onChange }: Props) => {
                 search={search}
                 onSearchChange={setSearch}
                 icon={UserIconNameEnum.Hash}
-                items={tags ?? []}
+                items={tags}
                 title={t`Tags`}
                 renderItems={renderItems}
                 emptySearchText={t`No tags found`}

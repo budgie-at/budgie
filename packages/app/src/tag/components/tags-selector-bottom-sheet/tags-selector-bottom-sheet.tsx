@@ -37,6 +37,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
 
     const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
     const data = padFlatListData(sortedTags, 3);
+
     const handleCreateTag = () => void tagFormRef.current?.open();
     const handleClose = () => void ref.current?.close();
     const handleTagCreated = (tag: TagEntityInterface) => {
