@@ -43,6 +43,13 @@
       "when": 1767472006304,
       "tag": "0005_omniscient_jasper_sitwell",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1767517737235,
+      "tag": "0006_nice_warlock",
+      "breakpoints": true
     }
   ]
 }
