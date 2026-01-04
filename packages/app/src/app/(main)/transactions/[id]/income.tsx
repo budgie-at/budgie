@@ -53,7 +53,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         schema: IncomeTransactionCreateInputSchema,
         id: transactionId
     });
-    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
         control: form.control,
@@ -117,7 +117,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                 </KeyboardAwareScrollView>
             </Page>
 
-            <SuggestRuleBottomSheet ref={bottomSheetRef} />
+            <SuggestRuleBottomSheet ref={bottomSheetRef} onRuleCreated={onRuleCreated} />
         </FormProvider>
     );
 };
