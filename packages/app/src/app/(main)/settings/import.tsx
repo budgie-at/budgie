@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -85,13 +85,10 @@ export default function ImportScreen() {
     const formValues = useWatch({ control });
     const selectedHeaders = Object.values(formValues).filter(isNotEmptyString);
 
-    const handlePresetSelect = useCallback(
-        (preset: ImportPresetEnum) => {
-            setSelectedPreset(preset);
-            reset(IMPORT_PRESETS[preset]);
-        },
-        [reset]
-    );
+    const handlePresetSelect = (preset: ImportPresetEnum) => {
+        setSelectedPreset(preset);
+        reset(IMPORT_PRESETS[preset]);
+    };
 
     useEffect(() => {
         // eslint-disable-next-line max-statements

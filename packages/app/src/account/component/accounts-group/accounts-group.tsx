@@ -37,7 +37,7 @@ const cardVariants = cva('rounded-5xl border border-secondary-corner overflow-hi
 
 export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const accountsCount = accounts.length;
 
@@ -63,7 +63,7 @@ export const AccountsGroup = ({ type, accounts, selectedAccountIds, onSelect }: 
                     <Icon size={16} icon={ACCOUNT_ICON[type]} className="text-secondary-foreground" />
 
                     <View className="gap-y-xxs mr-auto">
-                        <Text className="text-sm text-secondary-foreground font-medium">{i18n.t(ACCOUNT_TYPE[type])}</Text>
+                        <Text className="text-sm text-secondary-foreground font-medium">{t(ACCOUNT_TYPE[type])}</Text>
                         <Text className="text-sm text-secondary-foreground">
                             <Trans>{accountsCount} accounts</Trans>
                         </Text>

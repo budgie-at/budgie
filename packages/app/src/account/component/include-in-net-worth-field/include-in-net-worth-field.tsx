@@ -12,7 +12,7 @@ export const IncludeInNetWorthField = <T extends { includeInNetWorth?: boolean }
     const { t } = useLingui();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => (
-        <ThemedSwitch className='my-auto' value={value} onValueChange={onChange} />
+        <ThemedSwitch className="my-auto" value={value} onValueChange={onChange} />
     );
 
     return (

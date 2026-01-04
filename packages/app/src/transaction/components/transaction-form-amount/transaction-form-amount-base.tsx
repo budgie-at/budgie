@@ -21,7 +21,13 @@ export const TransactionFormAmountBase = ({ variant, instrumentSymbol, onAmountC
         fieldState: { error }
     }: UseControllerReturn<TransactionCreateInputInterface, 'amount'>) => (
         <View>
-            <FormAmountInput instrumentSymbol={instrumentSymbol} variant={variant} value={value} onChange={onAmountChange} autoFocus={autoFocus} />
+            <FormAmountInput
+                instrumentSymbol={instrumentSymbol}
+                variant={variant}
+                value={value}
+                onChange={onAmountChange}
+                autoFocus={autoFocus}
+            />
 
             {isNotEmptyString(error?.message) ? (
                 <Text className="font-semibold text-xs text-destructive-foreground bg-destructive-background border border-destructive-corner p-lg rounded-5xl text-center mb-3xl">

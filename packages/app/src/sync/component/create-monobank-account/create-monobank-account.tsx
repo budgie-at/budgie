@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 
@@ -28,7 +28,7 @@ export const CreateMonobankAccount = () => {
 
     const handleGoBack = () => void goBackOrReplace('/');
 
-    const handleFetchAccounts = useCallback(async () => {
+    const handleFetchAccounts = async () => {
         const trimmedToken = token.trim();
 
         if (!isNotEmptyString(trimmedToken)) {
@@ -48,9 +48,9 @@ export const CreateMonobankAccount = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [t, token]);
+    };
 
-    const handleToggleAccountSelection = useCallback((externalId: string) => {
+    const handleToggleAccountSelection = (externalId: string) => {
         setSelectedAccounts(prev => {
             const next = new Set(prev);
             if (next.has(externalId)) {
@@ -61,9 +61,9 @@ export const CreateMonobankAccount = () => {
 
             return next;
         });
-    }, []);
+    };
 
-    const handleSetupSync = useCallback(async () => {
+    const handleSetupSync = async () => {
         setIsLoading(true);
         try {
             await monobankSyncService.setupAccountSyncBatch(token.trim(), [...selectedAccounts]);
@@ -73,7 +73,7 @@ export const CreateMonobankAccount = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [selectedAccounts, t, token]);
+    };
 
     return (
         <FullPage

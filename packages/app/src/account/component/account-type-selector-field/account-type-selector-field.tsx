@@ -18,7 +18,7 @@ interface Props<T extends { type: AccountTypeEnum }> {
 }
 
 export const AccountTypeSelectorField = <T extends { type: AccountTypeEnum }>({ control }: Props<T>) => {
-    const { t, i18n } = useLingui();
+    const { t } = useLingui();
     const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const handleOpenSheet = () => void bottomSheetRef.current?.open();
@@ -35,7 +35,7 @@ export const AccountTypeSelectorField = <T extends { type: AccountTypeEnum }>({ 
                     >
                         <View className="flex-row items-center gap-x-lg">
                             <CircleIcon icon={ACCOUNT_ICON[value]} variant={variant} size={40} iconSize={18} border={false} />
-                            <Text className="text-primary text-base font-medium">{i18n.t(ACCOUNT_TYPE[value])}</Text>
+                            <Text className="text-primary text-base font-medium">{t(ACCOUNT_TYPE[value])}</Text>
                         </View>
 
                         <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />

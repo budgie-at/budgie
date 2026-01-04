@@ -56,8 +56,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleGoBack = () => void goBackOrReplace('/');
-    
-return (
+
+    return (
         <FormProvider {...form}>
             <Page
                 header={
@@ -69,9 +69,20 @@ return (
                         onGoBack={handleGoBack}
                     />
                 }
-                footer={<TransactionFormFooter variant="positive" buttonText={t`Update Income`} onSubmit={handleSubmit} onDelete={handleDelete} />}
+                footer={
+                    <TransactionFormFooter
+                        variant="positive"
+                        buttonText={t`Update Income`}
+                        onSubmit={handleSubmit}
+                        onDelete={handleDelete}
+                    />
+                }
             >
-                <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" contentContainerClassName="pb-7xl" showsVerticalScrollIndicator={false}>
+                <KeyboardAwareScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerClassName="pb-7xl"
+                    showsVerticalScrollIndicator={false}
+                >
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" />
 
                     <FormLayoutGroup>

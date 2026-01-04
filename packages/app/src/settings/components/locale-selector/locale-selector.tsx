@@ -37,7 +37,7 @@ export const LocaleSelector = () => {
                 title={t`Locale`}
                 variant="warning"
                 onPress={handleOpen}
-                description={`${selectedLocale.emoji} ${i18n.t(selectedLocale.name)}`}
+                description={`${selectedLocale.emoji} ${t(selectedLocale.name)}`}
             />
 
             <LocaleSelectorBottomSheet locale={locale} onSelect={updateDefaultInstrument} ref={ref} />

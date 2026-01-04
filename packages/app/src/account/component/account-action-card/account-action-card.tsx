@@ -36,7 +36,7 @@ export const AccountActionCard = (props: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const ref = useRef<BottomSheetInterface | null>(null);
-    const { i18n, t } = useLingui();
+    const { t } = useLingui();
 
     const handlePress = () => ref.current?.open();
 
@@ -69,7 +69,7 @@ export const AccountActionCard = (props: Props) => {
                 }
                 icon={icon}
                 title={title}
-                description={i18n.t(ACCOUNT_TYPE[type])}
+                description={t(ACCOUNT_TYPE[type])}
                 iconParams={iconParams}
             />
 
