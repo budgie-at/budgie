@@ -35,9 +35,6 @@ export default function StatisticsPage() {
 
     const netWorth = useNetWorthQuery();
 
-    const getIncomePercentageLabel = (percentage: number) => t`${percentage}% of income`;
-    const getExpensesPercentageLabel = (percentage: number) => t`${percentage}% of expenses`;
-
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     return (
@@ -59,7 +56,12 @@ export default function StatisticsPage() {
                     </Text>
 
                     <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard amount={expense} label={t`Spent`} icon={UserIconNameEnum.TrendingDown} variant="destructive" />
+                        <TransactionAnalyticsCard
+                            amount={expense}
+                            label={t`Spent`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            variant="destructive"
+                        />
                         <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
                         <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
                     </View>
@@ -67,7 +69,6 @@ export default function StatisticsPage() {
 
                 {isNotEmptyArray(incomeByCategory) && (
                     <StatsByCategories
-                        getPercentageLabel={getIncomePercentageLabel}
                         variant="positive"
                         title={t`Income by category`}
                         stats={incomeByCategory}
@@ -79,7 +80,6 @@ export default function StatisticsPage() {
 
                 {isNotEmptyArray(expenseByCategory) && (
                     <StatsByCategories
-                        getPercentageLabel={getExpensesPercentageLabel}
                         variant="destructive"
                         title={t`Spending by Category`}
                         stats={expenseByCategory}
@@ -91,7 +91,6 @@ export default function StatisticsPage() {
 
                 {isNotEmptyArray(incomeByTag) && (
                     <StatsByTags
-                        getPercentageLabel={getIncomePercentageLabel}
                         variant="positive"
                         title={t`Income by Tag`}
                         stats={incomeByTag}
@@ -103,7 +102,6 @@ export default function StatisticsPage() {
 
                 {isNotEmptyArray(expenseByTag) && (
                     <StatsByTags
-                        getPercentageLabel={getExpensesPercentageLabel}
                         variant="destructive"
                         title={t`Spending by Tag`}
                         stats={expenseByTag}
