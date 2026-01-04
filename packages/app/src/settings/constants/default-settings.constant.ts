@@ -2,7 +2,6 @@ import { LanguageEnum, SettingsEntityInterface, ThemeEnum } from '@budgie/contra
 
 export const DEFAULT_SETTINGS = {
     id: 0,
-    locale: 'en-US',
     deletedAt: null,
     showCents: true,
     defaultAccountId: 0,
