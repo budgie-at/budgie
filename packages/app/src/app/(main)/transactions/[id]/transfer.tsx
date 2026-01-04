@@ -46,7 +46,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
         schema: TransferTransactionCreateInputSchema,
         id: transactionId
     });
-    const { shouldShowAddRule, openBottomSheet, bottomSheetRef } = useSuggestRuleOnUpdate({
+    const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
         control: form.control,
@@ -114,7 +114,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                 </KeyboardAwareScrollView>
             </Page>
 
-            <SuggestRuleBottomSheet ref={bottomSheetRef} />
+            <SuggestRuleBottomSheet ref={bottomSheetRef} onRuleCreated={onRuleCreated} />
         </FormProvider>
     );
 };

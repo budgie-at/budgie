@@ -41,9 +41,10 @@ const buildPrefillData = (selectedFields: RuleConditionFieldEnum[], ruleData: Su
 
 interface UseSuggestRuleBottomSheetOptions {
     readonly ref: Ref<BottomSheetInterface<SuggestRuleDataInterface> | null>;
+    readonly onRuleCreated?: () => void;
 }
 
-export const useSuggestRuleBottomSheet = ({ ref }: UseSuggestRuleBottomSheetOptions) => {
+export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRuleBottomSheetOptions) => {
     const { t } = useLingui();
     const modalRef = useRef<BottomSheetInterface | null>(null);
     const [data, setData] = useState<SuggestRuleDataInterface | null>(null);
@@ -99,6 +100,7 @@ export const useSuggestRuleBottomSheet = ({ ref }: UseSuggestRuleBottomSheetOpti
                 await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
             }
 
+            onRuleCreated?.();
             modalRef.current?.close();
         } catch {
             Toast.show({ type: 'error', text1: t`Could not create rule`, text2: t`Please try again later` });
