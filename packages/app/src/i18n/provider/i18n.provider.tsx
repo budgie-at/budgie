@@ -4,7 +4,9 @@ import { I18nProvider as LinguiProvider } from '@lingui/react';
 import { ReactNode, useEffect } from 'react';
 
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
+import { languageToLocale } from '../util/language-to-locale.util';
 
 interface Props {
     readonly children: ReactNode;
@@ -15,6 +17,13 @@ export const I18nProvider = ({ children }: Props) => {
     const language = useSetting('language');
 
     useEffect(() => void i18n.activate(language), [language]);
+
+    useEffect(() => {
+        const expectedLocale = languageToLocale(language);
+        if (locale !== expectedLocale) {
+            void updateSettingsMutation({ locale: expectedLocale });
+        }
+    }, [language, locale]);
 
     const cache = createIntlCache();
     const intl = createIntl({ locale }, cache);
