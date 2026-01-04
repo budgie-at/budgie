@@ -71,11 +71,11 @@ msgstr "Cuenta"
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:63
+#: src/account/component/create-account-screen/update-account-screen.tsx:62
 msgid "Account Settings"
 msgstr "Configuración de la cuenta"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 #: src/account/component/account-type-selector-field/account-type-selector-field.tsx:31
 msgid "Account Type"
 msgstr "Tipo de cuenta"
@@ -115,7 +115,7 @@ msgstr "Activo"
 msgid "Add a new category to organize your transactions"
 msgstr "Agrega una nueva categoría para organizar tus transacciones"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Add a new tag to organize your transactions"
 msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 
@@ -123,11 +123,11 @@ msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 msgid "Add a note..."
 msgstr "Agregar una nota..."
 
-#: src/app/(main)/create-transaction/expense.tsx:76
+#: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
 msgstr "Agregar gasto"
 
-#: src/app/(main)/create-transaction/income.tsx:59
+#: src/app/(main)/create-transaction/income.tsx:61
 msgid "Add Income"
 msgstr "Agregar ingreso"
 
@@ -135,7 +135,7 @@ msgstr "Agregar ingreso"
 msgid "Add Split"
 msgstr "Agregar división"
 
-#: src/app/(main)/create-transaction/transfer.tsx:82
+#: src/app/(main)/create-transaction/transfer.tsx:84
 msgid "Add Transfer"
 msgstr "Añadir transferencia"
 
@@ -183,13 +183,13 @@ msgstr "Asignado"
 msgid "Already syncing"
 msgstr "Ya sincronizando"
 
-#: src/app/(main)/settings/import.tsx:201
+#: src/app/(main)/settings/import.tsx:198
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:60
 msgid "Amount"
 msgstr "Cantidad"
 
-#: src/app/(main)/create-transaction/transfer.tsx:55
-#: src/app/(main)/transactions/[id]/transfer.tsx:64
+#: src/app/(main)/create-transaction/transfer.tsx:58
+#: src/app/(main)/transactions/[id]/transfer.tsx:67
 msgid "Amount exceeds debt account balance"
 msgstr "El monto excede el saldo de la cuenta de deuda"
 
@@ -287,7 +287,7 @@ msgstr "PresupuestoIA"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:260
+#: src/app/(main)/settings/import.tsx:257
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:75
 msgid "Cancel"
@@ -308,7 +308,7 @@ msgstr "Categorías"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categorías ({selectedCategoriesCount})"
 
-#: src/app/(main)/settings/import.tsx:185
+#: src/app/(main)/settings/import.tsx:182
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
@@ -322,7 +322,7 @@ msgstr "Nombre de la categoría"
 msgid "Change"
 msgstr "Cambiar"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:69
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:65
 msgid "Change Account Type"
 msgstr "Cambiar tipo de cuenta"
 
@@ -339,7 +339,7 @@ msgstr "Cuenta corriente"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
 msgid "Choose a type to get started"
 msgstr "Elige un tipo para comenzar"
 
@@ -396,7 +396,7 @@ msgstr "Borrar saldos en caché y recalcular"
 msgid "Close"
 msgstr "Cerrar"
 
-#: src/app/(main)/settings/import.tsx:245
+#: src/app/(main)/settings/import.tsx:242
 msgid "Comment"
 msgstr "Comentario"
 
@@ -436,7 +436,7 @@ msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:35
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -506,7 +506,7 @@ msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:54
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
@@ -563,7 +563,7 @@ msgstr "Gestión de datos"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:193
+#: src/app/(main)/settings/import.tsx:190
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Fecha"
@@ -627,7 +627,7 @@ msgstr "Neerlandés (Países Bajos)"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:59
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:54
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ej. Negocios, Personal, Vacaciones"
 
@@ -639,15 +639,15 @@ msgstr "ej. Comestibles, Salario, Alquiler"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:63
+#: src/app/(main)/transactions/[id]/expense.tsx:65
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:63
+#: src/app/(main)/transactions/[id]/income.tsx:65
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:84
+#: src/app/(main)/transactions/[id]/transfer.tsx:86
 msgid "Edit Transfer"
 msgstr "Editar transferencia"
 
@@ -721,7 +721,7 @@ msgstr "Ingrese su token API de Monobank"
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
-#: src/app/(main)/settings/import.tsx:114
+#: src/app/(main)/settings/import.tsx:111
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -764,7 +764,7 @@ msgstr "Exportar base de datos"
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
-#: src/app/(main)/settings/import.tsx:217
+#: src/app/(main)/settings/import.tsx:214
 msgid "External ID"
 msgstr "ID externo"
 
@@ -781,7 +781,7 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to fetch accounts"
 msgstr "No se pudieron obtener las cuentas"
 
-#: src/@generic/hook/use-contacts.hook.ts:58
+#: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
 msgstr "Error al cargar los contactos."
 
@@ -809,7 +809,7 @@ msgstr "Obteniendo nuevos..."
 msgid "Fill in the account details"
 msgstr "Completa los detalles de la cuenta"
 
-#: src/app/(main)/settings/import.tsx:154
+#: src/app/(main)/settings/import.tsx:151
 msgid "Fix Errors"
 msgstr "Corregir errores"
 
@@ -821,19 +821,24 @@ msgstr "Francés"
 msgid "French (France)"
 msgstr "Francés (Francia)"
 
+#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
+#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:47
+msgid "from"
+msgstr ""
+
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
 msgstr "DE"
 
-#: src/app/(main)/settings/import.tsx:224
+#: src/app/(main)/settings/import.tsx:221
 msgid "From Account"
 msgstr "Desde cuenta"
 
-#: src/app/(main)/settings/import.tsx:238
+#: src/app/(main)/settings/import.tsx:235
 msgid "From Amount"
 msgstr "Monto origen"
 
-#: src/app/(main)/settings/import.tsx:231
+#: src/app/(main)/settings/import.tsx:228
 msgid "From Currency"
 msgstr "Moneda origen"
 
@@ -875,7 +880,7 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
-#: src/app/(main)/settings/import.tsx:146
+#: src/app/(main)/settings/import.tsx:143
 msgid "Import Failed"
 msgstr "Importación fallida"
 
@@ -910,7 +915,7 @@ msgstr "Ingresos por categoría"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/app/(main)/settings/import.tsx:252
+#: src/app/(main)/settings/import.tsx:249
 msgid "Is Planned"
 msgstr "Es planificado"
 
@@ -950,11 +955,11 @@ msgstr "Gestionar categorías"
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
-#: src/app/(main)/settings/import.tsx:161
+#: src/app/(main)/settings/import.tsx:158
 msgid "Map CSV Columns"
 msgstr "Asignar columnas CSV"
 
-#: src/app/(main)/settings/import.tsx:162
+#: src/app/(main)/settings/import.tsx:159
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
@@ -962,7 +967,7 @@ msgstr "Asigna cada campo a una columna de tu archivo CSV"
 msgid "Money lent or borrowed"
 msgstr "Dinero prestado o recibido"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:50
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:47
 msgid "Money you earn"
 msgstr "Dinero que ganas"
 
@@ -970,7 +975,7 @@ msgstr "Dinero que ganas"
 msgid "Money you owe or are owed"
 msgstr "Dinero que debes o te deben"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:43
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:40
 msgid "Money you spend"
 msgstr "Dinero que gastas"
 
@@ -978,12 +983,12 @@ msgstr "Dinero que gastas"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:57
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:54
 msgid "Move between accounts"
 msgstr "Transferir entre cuentas"
 
-#: src/app/(main)/create-transaction/transfer.tsx:76
-#: src/app/(main)/transactions/[id]/transfer.tsx:85
+#: src/app/(main)/create-transaction/transfer.tsx:78
+#: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Move Money"
 msgstr "Transferir dinero"
 
@@ -991,19 +996,19 @@ msgstr "Transferir dinero"
 msgid "New Account"
 msgstr "Nueva cuenta"
 
-#: src/app/(main)/create-transaction/expense.tsx:69
+#: src/app/(main)/create-transaction/expense.tsx:71
 msgid "New Expense"
 msgstr "Nuevo gasto"
 
-#: src/app/(main)/create-transaction/income.tsx:52
+#: src/app/(main)/create-transaction/income.tsx:54
 msgid "New Income"
 msgstr "Nuevo ingreso"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:39
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
 msgid "New Transaction"
 msgstr "Nueva transacción"
 
-#: src/app/(main)/create-transaction/transfer.tsx:75
+#: src/app/(main)/create-transaction/transfer.tsx:77
 msgid "New Transfer"
 msgstr "Nueva transferencia"
 
@@ -1039,7 +1044,7 @@ msgstr "Aún no hay categorías"
 msgid "No contacts found"
 msgstr "No se encontraron contactos"
 
-#: src/@generic/hook/use-contacts.hook.ts:42
+#: src/@generic/hook/use-contacts.hook.ts:43
 msgid "No contacts found on this device."
 msgstr "No se encontraron contactos en este dispositivo."
 
@@ -1153,7 +1158,7 @@ msgstr "Pegue su token API a continuación:"
 msgid "Payment Progress"
 msgstr "Progreso del pago"
 
-#: src/@generic/hook/use-contacts.hook.ts:49
+#: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Se denegó el permiso para acceder a los contactos."
 
@@ -1175,7 +1180,7 @@ msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:46
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:36
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1327,10 +1332,10 @@ msgstr "Seleccionar todo"
 msgid "Select category"
 msgstr "Seleccionar categoría"
 
-#: src/app/(main)/create-transaction/expense.tsx:70
-#: src/app/(main)/create-transaction/income.tsx:53
-#: src/app/(main)/transactions/[id]/expense.tsx:64
-#: src/app/(main)/transactions/[id]/income.tsx:64
+#: src/app/(main)/create-transaction/expense.tsx:72
+#: src/app/(main)/create-transaction/income.tsx:55
+#: src/app/(main)/transactions/[id]/expense.tsx:66
+#: src/app/(main)/transactions/[id]/income.tsx:66
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:65
 msgid "Select Category"
 msgstr "Seleccionar categoría"
@@ -1367,7 +1372,7 @@ msgstr "Seleccionar configuración regional"
 msgid "Select Tags"
 msgstr "Seleccionar etiquetas"
 
-#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:56
+#: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
 msgstr "Selecciona el tipo de cuenta"
 
@@ -1433,7 +1438,7 @@ msgstr "Gastado"
 msgid "Split by Category"
 msgstr "Dividir por categoría"
 
-#: src/app/(main)/settings/import.tsx:154
+#: src/app/(main)/settings/import.tsx:151
 msgid "Start Import"
 msgstr "Iniciar importación"
 
@@ -1487,7 +1492,7 @@ msgstr "Cuentas bancarias sincronizadas"
 msgid "Syncing history..."
 msgstr "Sincronizando historial..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:56
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
@@ -1545,15 +1550,19 @@ msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a
 msgid "This Year"
 msgstr "Este año"
 
+#: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
+msgid "to"
+msgstr ""
+
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
 msgstr "PARA"
 
-#: src/app/(main)/settings/import.tsx:177
+#: src/app/(main)/settings/import.tsx:174
 msgid "To Account"
 msgstr "A cuenta"
 
-#: src/app/(main)/settings/import.tsx:209
+#: src/app/(main)/settings/import.tsx:206
 msgid "To Currency"
 msgstr "Moneda destino"
 
@@ -1635,19 +1644,19 @@ msgstr "Categoría desconocida"
 msgid "Up to date"
 msgstr "Actualizado"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:72
+#: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Actualizar cuenta"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:73
+#: src/app/(main)/transactions/[id]/expense.tsx:75
 msgid "Update Expense"
 msgstr "Actualizar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:70
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Update Income"
 msgstr "Actualizar ingreso"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:91
+#: src/app/(main)/transactions/[id]/transfer.tsx:96
 msgid "Update Transfer"
 msgstr "Actualizar transferencia"
 

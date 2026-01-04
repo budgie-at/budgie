@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     const handlePress = () => void onSelect(type);
 
@@ -23,7 +23,7 @@ export const TransactionTypeFilterItem = ({ type, isSelected, onSelect }: Props)
             isSelected={isSelected}
             icon={TRANSACTION_ICON[type]}
             variant={TRANSACTION_COLOR[type]}
-            label={i18n.t(TRANSACTION_TYPE[type])}
+            label={t(TRANSACTION_TYPE[type])}
         />
     );
 };
