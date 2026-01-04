@@ -12,11 +12,11 @@ interface Props {
 }
 
 export const AccountList = ({ accounts, type }: Props) => {
-    const { i18n } = useLingui();
+    const { t } = useLingui();
 
     return (
         <View className="gap-y-xl">
-            <Text className="text-xs uppercase text-secondary-foreground">{i18n.t(ACCOUNT_TYPE[type])}</Text>
+            <Text className="text-xs uppercase text-secondary-foreground">{t(ACCOUNT_TYPE[type])}</Text>
 
             <View className="flex-row flex-wrap -mx-1.5 gap-y-3 pb-7.5">
                 {accounts.map(({ id, title, icon, instrument, deadline, debtType, targetBalance, createdAt }) => (

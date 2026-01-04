@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -8,7 +8,7 @@ export const useExportAction = (exportFn: () => Promise<void>) => {
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleExport = useCallback(async () => {
+    const handleExport = async () => {
         setIsLoading(true);
         try {
             await exportFn();
@@ -17,7 +17,7 @@ export const useExportAction = (exportFn: () => Promise<void>) => {
         } finally {
             setIsLoading(false);
         }
-    }, [exportFn, t]);
+    };
 
     return { isLoading, handleExport };
 };
