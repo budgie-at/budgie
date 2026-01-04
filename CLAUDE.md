@@ -20,6 +20,10 @@ yarn cpd                                  # Code duplication (~2s)
 yarn format                               # Prettier
 yarn test                                 # Jest (~4s)
 
+# IMPORTANT: After completing any task, ALWAYS run:
+yarn ts && yarn lint && yarn deadcode && yarn cpd
+yarn workspace @budgie-at/app i18n:sync  # ALWAYS run if you modified any user-facing text (uses i18n:sync, not extract/compile)
+
 # App-specific (cd packages/app)
 yarn start                                # Expo dev server
 yarn ios|android|web                      # Platform builds
