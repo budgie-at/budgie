@@ -1,1 +1,0 @@
-ALTER TABLE `rule_actions` ADD `account_id` integer REFERENCES accounts(id);

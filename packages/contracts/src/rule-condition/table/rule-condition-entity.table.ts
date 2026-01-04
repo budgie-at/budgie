@@ -1,4 +1,5 @@
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
+import { check, int, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
@@ -18,5 +19,8 @@ export const RuleConditionEntityTable = sqliteTable(
             .notNull(),
         value: text('value').notNull(),
         secondaryValue: text('secondary_value')
-    })
+    }),
+    () => [
+        check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)
+    ]
 );
