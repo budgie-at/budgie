@@ -6,6 +6,7 @@ import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import {
     AUDIO_LEVEL_MULTIPLIER,
     BUFFER_LENGTH,
+    RECORDER_INIT_DELAY_MS,
     SAMPLE_RATE,
     SILENCE_THRESHOLD,
     SILENCE_TIMEOUT_MS,
@@ -46,6 +47,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
     const recorderRef = useRef<AudioRecorder | null>(null);
     const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const recorderInitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isRecordingRef = useRef(false);
     const streamPromiseRef = useRef<Promise<string> | null>(null);
 
@@ -58,39 +60,35 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         }
     };
 
+    const clearRecorderInitTimeout = () => {
+        if (recorderInitTimeoutRef.current) {
+            clearTimeout(recorderInitTimeoutRef.current);
+            recorderInitTimeoutRef.current = null;
+        }
+    };
+
     const cleanupRecorder = async () => {
         clearSilenceTimeout();
+        clearRecorderInitTimeout();
 
-        if (recorderRef.current) {
-            try {
-                recorderRef.current.stop();
-            } catch {
-                // Ignore stop errors
-            }
+        try {
+            recorderRef.current?.stop();
+        } finally {
             recorderRef.current = null;
         }
 
         if (isRecordingRef.current && streamPromiseRef.current) {
+            stt.streamStop();
             try {
-                stt.streamStop();
-
                 await streamPromiseRef.current;
-            } catch {
-                // Ignore stream stop errors
+            } finally {
+                // eslint-disable-next-line require-atomic-updates
+                streamPromiseRef.current = null;
             }
-            // eslint-disable-next-line require-atomic-updates
-            streamPromiseRef.current = null;
         }
 
         // eslint-disable-next-line require-atomic-updates
         isRecordingRef.current = false;
-    };
-
-    const runStreamTranscription = () => {
-        streamPromiseRef.current = stt
-            .stream({ language: locale.languageCode as SpeechToTextLanguage })
-            .then((result: string) => result)
-            .catch(() => '');
     };
 
     // eslint-disable-next-line max-statements
@@ -103,12 +101,9 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         setAudioLevel(0);
         setIsVoiceDetected(false);
 
-        if (recorderRef.current) {
-            try {
-                recorderRef.current.stop();
-            } catch {
-                // Ignore stop errors
-            }
+        try {
+            recorderRef.current?.stop();
+        } finally {
             recorderRef.current = null;
         }
 
@@ -155,11 +150,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
         setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
         setIsVoiceDetected(rms > VOICE_DETECTION_THRESHOLD);
 
-        try {
-            stt.streamInsert(samples);
-        } catch {
-            // Ignore stream insert errors
-        }
+        stt.streamInsert(samples);
 
         if (rms > SILENCE_THRESHOLD) {
             resetSilenceTimeout(sessionId);
@@ -172,9 +163,9 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
 
         resetRecordingState();
 
-        runStreamTranscription();
+        streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
 
-        setTimeout(() => {
+        recorderInitTimeoutRef.current = setTimeout(() => {
             if (!session.isCurrentSession(sessionId)) {
                 return;
             }
@@ -189,7 +180,7 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
             });
             recorder.start();
             resetSilenceTimeout(sessionId);
-        }, 100);
+        }, RECORDER_INIT_DELAY_MS);
     };
 
     useEffect(
