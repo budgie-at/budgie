@@ -1,0 +1,1 @@
+ALTER TABLE `rules` ADD `condition_match_type` text DEFAULT 'ALL' NOT NULL;
