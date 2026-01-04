@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.111.0](https://github.com/budgie-at/budgie/compare/v1.110.0...v1.111.0) (2026-01-04)
+
+### Bug Fixes
+
+- add border to category badge for better visibility in dark theme ([e3ba4b6](https://github.com/budgie-at/budgie/commit/e3ba4b6fbd31c370765e565cf2f5210d38b7923a))
+- improve MCC chip visibility in dark theme with bg-primary/10 ([52ddadc](https://github.com/budgie-at/budgie/commit/52ddadcf55c182e6edde3e4c7153e0e3ca130376))
+
+### Features
+
+- **app:** add MCC category display to transactions ([d7a685a](https://github.com/budgie-at/budgie/commit/d7a685a3a41cfd0b09bf1ce7b6cfd2e538fbab85))
+- enhance MCC chip with inverse colors and cleaner design ([57fc2c3](https://github.com/budgie-at/budgie/commit/57fc2c34987818a57533ce3030a9a6522c75dd8b))
+
 # [1.110.0](https://github.com/budgie-at/budgie/compare/v1.109.0...v1.110.0) (2026-01-04)
 
 ### Bug Fixes
