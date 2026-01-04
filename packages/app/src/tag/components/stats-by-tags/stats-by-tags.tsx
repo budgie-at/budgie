@@ -55,7 +55,7 @@ export const StatsByTags = ({ title, stats, totalAmount, variant, getPercentageL
         const handlePress = () => {
             const params: Record<string, string> = {
                 tagId: String(tag.id),
-                type: isIncome ? 'income' : 'expense'
+                type: isIncome ? 'INCOME' : 'EXPENSE'
             };
 
             if (filters.date?.from) {

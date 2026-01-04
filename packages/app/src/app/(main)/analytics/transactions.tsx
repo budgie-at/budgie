@@ -1,8 +1,13 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import {
+    DEFAULT_TRANSACTION_FILTER,
+    TransactionFilterInterface,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
 import { useLingui } from '@lingui/react/macro';
-import { useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -35,37 +40,13 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-export default function AnalyticsTransactionsPage() {
-    const { t } = useLingui();
-    const { startDate, endDate, categoryId, tagId, type } = useLocalSearchParams<{
-        startDate?: string;
-        endDate?: string;
-        categoryId?: string;
-        tagId?: string;
-        type?: string;
-    }>();
-
-    const filters: TransactionFilterInterface = useMemo(
-        () => ({
-            ...DEFAULT_TRANSACTION_FILTER,
-            date: {
-                from: isDefined(startDate) ? new Date(startDate) : null,
-                to: isDefined(endDate) ? new Date(endDate) : null
-            },
-            categoryIds: isDefined(categoryId) ? [Number(categoryId)] : null,
-            tagIds: isDefined(tagId) ? [Number(tagId)] : null,
-            types: isDefined(type) ? [type as TransactionTypeEnum] : null
-        }),
-        [startDate, endDate, categoryId, tagId, type]
-    );
-
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
-    const { formatMonthAndDayWithTime } = useFormatDate();
-
-    const balanceAdjustmentLabel = t`Balance Adjustment`;
-    const categoriesLabel = t`Categories`;
-
-    const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
+const transformToFlatData = (
+    sections: Array<{ date: string; transactions: TransactionWithRelationsEntityInterface[] }>,
+    formatMonthAndDayWithTime: (date: Date | string) => string,
+    balanceAdjustmentLabel: string,
+    categoriesLabel: string
+): TransactionListItemType[] =>
+    sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
         ...transactions.map(transaction => ({
             type: 'transaction' as const,
@@ -77,6 +58,38 @@ export default function AnalyticsTransactionsPage() {
             }
         }))
     ]);
+
+interface RouteParams {
+    startDate?: string;
+    endDate?: string;
+    categoryId?: string;
+    tagId?: string;
+    type?: string;
+}
+
+const buildFilters = (params: RouteParams): TransactionFilterInterface => ({
+    ...DEFAULT_TRANSACTION_FILTER,
+    date: {
+        from: isDefined(params.startDate) ? new Date(params.startDate) : null,
+        to: isDefined(params.endDate) ? new Date(params.endDate) : null
+    },
+    categoryIds: isDefined(params.categoryId) ? [Number(params.categoryId)] : null,
+    tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null,
+    types: isDefined(params.type) ? [params.type as TransactionTypeEnum] : null
+});
+
+export default function AnalyticsTransactionsPage() {
+    const { t } = useLingui();
+    const router = useRouter();
+    const params = useLocalSearchParams() as RouteParams;
+
+    const handleGoBack = () => void router.back();
+    const filters = buildFilters(params);
+
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(filters);
+    const { formatMonthAndDayWithTime } = useFormatDate();
+
+    const flatData = transformToFlatData(sections, formatMonthAndDayWithTime, t`Balance Adjustment`, t`Categories`);
 
     const isEmpty = flatData.length === 0;
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
@@ -94,7 +107,7 @@ export default function AnalyticsTransactionsPage() {
     );
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} onGoBack={handleGoBack} />}>
             <LegendList
                 data={flatData}
                 keyExtractor={keyExtractor}
