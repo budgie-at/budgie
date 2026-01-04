@@ -65,7 +65,20 @@ interface RouteParams {
     categoryId?: string;
     tagId?: string;
     type?: string;
+    uncategorized?: string;
 }
+
+const buildCategoryIds = (params: RouteParams): number[] | null => {
+    if (params.uncategorized === 'true') {
+        return [];
+    }
+
+    if (isDefined(params.categoryId)) {
+        return [Number(params.categoryId)];
+    }
+
+    return null;
+};
 
 const buildFilters = (params: RouteParams): TransactionFilterInterface => ({
     ...DEFAULT_TRANSACTION_FILTER,
@@ -73,7 +86,7 @@ const buildFilters = (params: RouteParams): TransactionFilterInterface => ({
         from: isDefined(params.startDate) ? new Date(params.startDate) : null,
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
-    categoryIds: isDefined(params.categoryId) ? [Number(params.categoryId)] : null,
+    categoryIds: buildCategoryIds(params),
     tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null,
     types: isDefined(params.type) ? [params.type as TransactionTypeEnum] : null
 });
