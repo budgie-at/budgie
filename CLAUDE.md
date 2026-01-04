@@ -378,15 +378,18 @@ const getLabel = (t: SomeType): string => t`Label`;
 - **Framework:** NativeWind (Tailwind CSS for React Native)
 - **Global Styles:** `packages/app/src/global.css`
 - **Components:** Tailwind utility classes with `class-variance-authority` for variants
-- **Color classes must match global.css variables** - Use full variable names from global.css
+- **Color classes must use actual CSS variables from global.css** - Only use class names that correspond to variables defined in `packages/app/src/global.css`. Check the file to verify variable names exist before using them.
   ```tsx
-  // Good - Matches --color-destructive-foreground from global.css
+  // Good - Uses actual variables from global.css
+  <Text className="text-primary" />              // --color-primary exists
+  <Text className="text-secondary-foreground" /> // --color-secondary-foreground exists
   <Icon className="text-destructive-foreground" />
   <View className="bg-positive-background border-warning-corner" />
 
-  // Bad - Incomplete variable name
-  <Icon className="text-destructive" />  // Should be text-destructive-foreground
-  <View className="bg-positive" />  // Should be bg-positive-background
+  // Bad - Variable doesn't exist in global.css
+  <Text className="text-foreground" />  // No --color-foreground, use text-primary
+  <Icon className="text-destructive" />  // No --color-destructive, use text-destructive-foreground
+  <View className="bg-positive" />  // No --color-positive, use bg-positive-background
   ```
 
 ### Toast Messages

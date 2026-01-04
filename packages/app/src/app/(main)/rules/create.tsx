@@ -1,6 +1,9 @@
 import { useLingui } from '@lingui/react/macro';
+import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
@@ -9,10 +12,25 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleFormContent } from '../../../rule/components/rule-form-content/rule-form-content';
 import { useRuleForm } from '../../../rule/hooks/use-rule-form.hook';
+import { RulePrefillDataInterface } from '../../../rule/interface/rule-prefill-data.interface';
+
+const parsePrefillData = (prefillJson: string | undefined): RulePrefillDataInterface | null => {
+    if (!isDefined(prefillJson)) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(prefillJson) as RulePrefillDataInterface;
+    } catch {
+        return null;
+    }
+};
 
 export default function CreateRulePage() {
     const { t } = useLingui();
-    const { form, onSubmit } = useRuleForm();
+    const { prefill } = useLocalSearchParams<{ prefill?: string }>();
+    const prefillData = parsePrefillData(prefill);
+    const { form, onSubmit } = useRuleForm({ prefillData });
 
     const handleGoBack = () => void goBackOrReplace('/settings/rules');
 

@@ -45,7 +45,7 @@ export const FormAmountInput = ({ value, onChange, variant, textClassName, instr
             <AmountInput
                 value={value}
                 onChangeValue={onChange}
-                inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto', textClassName)}
+                inputClassName={cn('text-primary placeholder-secondary-reverse-foreground border-0 h-auto bg-transparent', textClassName)}
                 placeholder={formatDigits(0)}
                 autoFocus={autoFocus}
                 style={fontSizeStyle}

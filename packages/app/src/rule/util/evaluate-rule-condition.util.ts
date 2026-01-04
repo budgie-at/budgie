@@ -14,6 +14,8 @@ const getConditionFieldValue = (
     switch (field) {
         case RuleConditionFieldEnum.TITLE:
             return input.title;
+        case RuleConditionFieldEnum.COMMENT:
+            return input.comment;
         case RuleConditionFieldEnum.AMOUNT:
             return input.amount;
         case RuleConditionFieldEnum.ACCOUNT_ID:
