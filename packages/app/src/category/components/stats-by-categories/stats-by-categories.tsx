@@ -1,13 +1,11 @@
-import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { CategoryStatisticsCard } from '../category-statistics-card/category-statistics-card';
-import { UncategorizedStatisticsCard } from '../uncategorized-statistics-card/uncategorized-statistics-card';
 
 interface Props {
     readonly title: string;
@@ -19,27 +17,21 @@ interface Props {
 }
 
 export const StatsByCategories = ({ title, stats, totalAmount, variant, filters, isIncome }: Props) => {
+    const { t } = useLingui();
+
     const renderStat = ({ category, amount }: { category: CategoryEntityInterface | null; amount: number }) => {
         const microAmount = convertFromMicroUnits(amount);
         const percentage = Number((totalAmount > 0 ? (microAmount / totalAmount) * 100 : 0).toFixed(2));
 
-        if (!isDefined(category)) {
-            return (
-                <UncategorizedStatisticsCard
-                    key="uncategorized"
-                    amount={amount}
-                    percentage={percentage}
-                    variant={variant}
-                    filters={filters}
-                    isIncome={isIncome}
-                />
-            );
-        }
+        const categoryData = category ?? {
+            icon: UserIconNameEnum.BadgeQuestionMark,
+            title: t`Uncategorized`
+        };
 
         return (
             <CategoryStatisticsCard
-                key={category.id}
-                category={category}
+                key={category?.id ?? 'uncategorized'}
+                category={categoryData}
                 amount={amount}
                 percentage={percentage}
                 variant={variant}
