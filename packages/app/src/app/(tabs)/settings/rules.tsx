@@ -64,7 +64,7 @@ export default function RulesPage() {
                 <AnimatedFlatList
                     className="flex-1"
                     data={rules}
-                    contentContainerClassName="gap-y-5xl pt-5xl"
+                    contentContainerClassName="gap-y-5xl"
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     ListFooterComponent={listFooter}
