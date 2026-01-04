@@ -17,13 +17,13 @@ export const RuleConditionValueInput = ({ index }: Props) => {
     const renderValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => (
-        <Input value={value} onChange={onChange} placeholder={t`Enter value...`} />
+        <Input value={value} onChangeText={onChange} placeholder={t`Enter value...`} />
     );
 
     const renderSecondaryValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.secondaryValue`>) => (
-        <Input value={value ?? ''} onChange={onChange} placeholder={t`Enter secondary value...`} />
+        <Input value={value ?? ''} onChangeText={onChange} placeholder={t`Enter secondary value...`} />
     );
 
     return (
