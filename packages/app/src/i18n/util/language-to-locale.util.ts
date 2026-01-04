@@ -12,5 +12,7 @@ export const languageToLocale = (language: LanguageEnum): string => {
             return 'de-DE';
         case LanguageEnum.ES:
             return 'es-ES';
+        default:
+            return 'en-US';
     }
 };
