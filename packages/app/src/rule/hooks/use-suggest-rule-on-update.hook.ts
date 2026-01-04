@@ -1,5 +1,5 @@
 import { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Control, useWatch } from 'react-hook-form';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
@@ -16,6 +16,7 @@ interface UseSuggestRuleOnUpdateOptions {
 export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) => {
     const { transaction, transactionInput, control } = options;
     const bottomSheetRef = useRef<BottomSheetInterface<SuggestRuleDataInterface>>(null);
+    const [ruleCreatedInSession, setRuleCreatedInSession] = useState(false);
 
     const watchedEntries = useWatch({ control, name: 'entries' });
     const watchedCategoryId = useWatch({ control, name: 'entries.0.categoryId' });
@@ -30,7 +31,9 @@ export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) =
         { categoryId: watchedCategoryId, tagIds: watchedTagIds }
     );
 
-    const shouldShowAddRule = isBankSync && hasChanges;
+    const shouldShowAddRule = isBankSync && hasChanges && !ruleCreatedInSession;
+
+    const handleRuleCreated = () => void setRuleCreatedInSession(true);
 
     const openBottomSheet = () => {
         const categoryId = watchedEntries[0]?.categoryId ?? null;
@@ -44,5 +47,5 @@ export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) =
         });
     };
 
-    return { shouldShowAddRule, openBottomSheet, bottomSheetRef };
+    return { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated: handleRuleCreated };
 };
