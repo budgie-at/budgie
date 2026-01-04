@@ -14,7 +14,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
-    readonly category: CategoryEntityInterface;
+    readonly category: Pick<CategoryEntityInterface, 'icon' | 'title'> & { id?: CategoryEntityInterface['id'] };
     readonly amount: number;
     readonly percentage: number;
     readonly variant: ColorPaletteVariant;
@@ -29,7 +29,7 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
-/* jscpd:ignore-end */
+    /* jscpd:ignore-end */
 
     /* jscpd:ignore-start */
     const handlePress = () => {
@@ -37,7 +37,7 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
             pathname: '/analytics/transactions',
             params: {
                 type: isIncome ? 'INCOME' : 'EXPENSE',
-                categoryId: String(category.id),
+                ...(category.id && { categoryId: String(category.id) }),
                 ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
                 ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
             }
@@ -54,9 +54,7 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
 
             <StatsBar percentage={percentage} variant={variant} />
 
-            <Text className="text-secondary-foreground">
-                {isIncome ? t`${percentage}% of income` : t`${percentage}% of expenses`}
-            </Text>
+            <Text className="text-secondary-foreground">{isIncome ? t`${percentage}% of income` : t`${percentage}% of expenses`}</Text>
         </HapticPressable>
     );
     /* jscpd:ignore-end */
