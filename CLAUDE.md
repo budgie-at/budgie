@@ -197,6 +197,7 @@ This project uses React 19 with React Compiler enabled. The compiler automatical
 - **Never use `useMemo`** - the compiler handles value memoization automatically
 - **Never use `useCallback`** - the compiler handles function memoization automatically
 - **Never use `React.memo`** - the compiler handles component memoization automatically
+- **Never use `forwardRef`** - React 19 supports `ref` as a regular prop
 - **Write simple, straightforward code** - the compiler optimizes it for you
 
 **Why:** Manual memoization is redundant with React Compiler and adds unnecessary complexity. The compiler analyzes your code and applies optimal memoization automatically.
@@ -209,6 +210,24 @@ const handleClick = () => void doSomething();
 // Bad - Unnecessary manual memoization
 const categoryIds = useMemo(() => allocations.map(a => a.categoryId).filter(isDefined), [allocations]);
 const handleClick = useCallback(() => void doSomething(), []);
+```
+
+**Refs in React 19:**
+```tsx
+// Good - ref as a regular prop (React 19)
+interface Props {
+    ref: Ref<SomeInterface | null>;
+    title: string;
+}
+
+export const MyComponent = ({ ref, title }: Props) => (
+    <ChildComponent ref={ref} title={title} />
+);
+
+// Bad - Using forwardRef (deprecated pattern)
+const MyComponent = forwardRef<SomeInterface, Props>(({ title }, ref) => (
+    <ChildComponent ref={ref} title={title} />
+));
 ```
 
 ### Internationalization (Lingui) Usage Rules

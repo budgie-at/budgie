@@ -9,6 +9,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleActionRow } from '../../../rule/components/rule-action-row/rule-action-row';
+import { RuleConditionMatchTypeSelector } from '../../../rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector';
 import { RuleConditionRow } from '../../../rule/components/rule-condition-row/rule-condition-row';
 import { RuleFormDetailsSection } from '../../../rule/components/rule-form-details-section/rule-form-details-section';
 import { RuleFormSectionHeader } from '../../../rule/components/rule-form-section-header/rule-form-section-header';
@@ -51,9 +52,7 @@ export default function CreateRulePage() {
 
                         <View className="gap-y-lg">
                             <RuleFormSectionHeader title={t`Conditions`} onAdd={addCondition} />
-                            <Text className="text-secondary-foreground text-sm">
-                                <Trans>All conditions must match for the rule to apply</Trans>
-                            </Text>
+                            <RuleConditionMatchTypeSelector conditionCount={conditionsField.fields.length} />
                             {conditionsField.fields.map((field, index) => (
                                 <RuleConditionRow key={field.id} index={index} onRemove={removeCondition} canRemove={canRemoveCondition} />
                             ))}

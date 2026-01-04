@@ -13,13 +13,12 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { RuleActionRow } from '../../../../rule/components/rule-action-row/rule-action-row';
+import { RuleConditionMatchTypeSelector } from '../../../../rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector';
 import { RuleConditionRow } from '../../../../rule/components/rule-condition-row/rule-condition-row';
 import { RuleFormDetailsSection } from '../../../../rule/components/rule-form-details-section/rule-form-details-section';
 import { RuleFormSectionHeader } from '../../../../rule/components/rule-form-section-header/rule-form-section-header';
 import { useRuleForm } from '../../../../rule/hooks/use-rule-form.hook';
 import { useGetRuleByIdQuery } from '../../../../rule/query/use-get-rule-by-id.query';
-
-import type { RuleActionEntityInterface, RuleConditionEntityInterface } from '@budgie/contracts';
 
 export default function EditRulePage() {
     const { t } = useLingui();
@@ -32,17 +31,14 @@ export default function EditRulePage() {
               title: rule.title,
               priority: rule.priority,
               enabled: rule.enabled,
-              conditions: rule.conditions.map((condition: RuleConditionEntityInterface) => ({
+              conditionMatchType: rule.conditionMatchType,
+              conditions: rule.conditions.map(condition => ({
                   field: condition.field,
                   value: condition.value,
                   operator: condition.operator,
                   secondaryValue: condition.secondaryValue
               })),
-              actions: rule.actions.map((action: RuleActionEntityInterface) => ({
-                  type: action.type,
-                  tagId: action.tagId,
-                  categoryId: action.categoryId
-              }))
+              actions: rule.actions.map(action => ({ type: action.type, tagId: action.tagId, categoryId: action.categoryId }))
           }
         : null;
 
@@ -86,7 +82,7 @@ export default function EditRulePage() {
 
                         <View className="gap-y-lg">
                             <RuleFormSectionHeader title={t`Conditions`} onAdd={addCondition} />
-                            <Text className="text-secondary-foreground text-sm"><Trans>All conditions must match for the rule to apply</Trans></Text>
+                            <RuleConditionMatchTypeSelector conditionCount={conditionsField.fields.length} />
                             {conditionsField.fields.map((field, index) => (
                                 <RuleConditionRow
                                     key={field.id}
