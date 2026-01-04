@@ -6,6 +6,8 @@ import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.inte
 import { hasCategoryOrTagsChanged } from '../../transaction/utils/has-category-or-tags-changed.util';
 import { isBankSyncTransaction } from '../../transaction/utils/is-bank-sync-transaction.util';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
+import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
+import { hasMatchingRule } from '../util/has-matching-rule.util';
 
 interface UseSuggestRuleOnUpdateOptions {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -17,6 +19,7 @@ export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) =
     const { transaction, transactionInput, control } = options;
     const bottomSheetRef = useRef<BottomSheetInterface<SuggestRuleDataInterface>>(null);
     const [ruleCreatedInSession, setRuleCreatedInSession] = useState(false);
+    const { rules } = useGetEnabledRulesQuery();
 
     const watchedEntries = useWatch({ control, name: 'entries' });
     const watchedCategoryId = useWatch({ control, name: 'entries.0.categoryId' });
@@ -31,20 +34,21 @@ export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) =
         { categoryId: watchedCategoryId, tagIds: watchedTagIds }
     );
 
-    const shouldShowAddRule = isBankSync && hasChanges && !ruleCreatedInSession;
+    const suggestRuleData: SuggestRuleDataInterface = {
+        title: transaction.title,
+        comment: transaction.comment,
+        mccCode: transaction.entries[0]?.mccCategory?.mcc ?? null,
+        tagIds: watchedTagIds,
+        categoryId: watchedEntries[0]?.categoryId ?? null
+    };
+
+    const matchingRuleExists = hasMatchingRule(rules, transactionInput, suggestRuleData);
+    const shouldShowAddRule = isBankSync && hasChanges && !ruleCreatedInSession && !matchingRuleExists;
 
     const handleRuleCreated = () => void setRuleCreatedInSession(true);
 
     const openBottomSheet = () => {
-        const categoryId = watchedEntries[0]?.categoryId ?? null;
-
-        bottomSheetRef.current?.open({
-            title: transaction.title,
-            comment: transaction.comment,
-            mccCode: transaction.entries[0]?.mccCategory?.mcc ?? null,
-            tagIds: watchedTagIds,
-            categoryId,
-        });
+        bottomSheetRef.current?.open(suggestRuleData);
     };
 
     return { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated: handleRuleCreated };
