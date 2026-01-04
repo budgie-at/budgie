@@ -1,5 +1,6 @@
 export enum RuleConditionFieldEnum {
     TITLE = 'TITLE',
+    COMMENT = 'COMMENT',
     AMOUNT = 'AMOUNT',
     ACCOUNT_ID = 'ACCOUNT_ID',
     MCC_CODE = 'MCC_CODE',

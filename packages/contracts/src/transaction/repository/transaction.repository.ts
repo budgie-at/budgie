@@ -158,7 +158,11 @@ export class TransactionRepository {
 
     getAllWithOffset(limit: number, offset: number) {
         return this.db.query.TransactionEntityTable.findMany({
-            with: { [TransactionAssociationEnum.ENTRIES]: true },
+            with: {
+                [TransactionAssociationEnum.ENTRIES]: {
+                    with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
+                }
+            },
             orderBy: (transaction, { desc }) => [desc(transaction.id)],
             limit,
             offset,

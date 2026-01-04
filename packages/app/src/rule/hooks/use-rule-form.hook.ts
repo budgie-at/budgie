@@ -14,7 +14,9 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { ruleService } from '../service/rule.service';
+import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 
 const DEFAULT_VALUES: RuleCreateInputInterface = {
     title: '',
@@ -40,12 +42,26 @@ const DEFAULT_VALUES: RuleCreateInputInterface = {
 interface UseRuleFormOptions {
     ruleId?: number;
     defaultValues?: RuleCreateInputInterface | null;
+    prefillData?: RulePrefillDataInterface | null;
 }
 
 export const useRuleForm = (options: UseRuleFormOptions = {}) => {
     const { t } = useLingui();
-    const { ruleId, defaultValues: providedDefaultValues } = options;
-    const defaultValues = providedDefaultValues ?? DEFAULT_VALUES;
+    const { ruleId, defaultValues: providedDefaultValues, prefillData } = options;
+
+    const getDefaultValues = (): RuleCreateInputInterface => {
+        if (isDefined(providedDefaultValues)) {
+            return providedDefaultValues;
+        }
+
+        if (isDefined(prefillData)) {
+            return buildRuleInputFromPrefill(prefillData);
+        }
+
+        return DEFAULT_VALUES;
+    };
+
+    const defaultValues = getDefaultValues();
     const isEditing = isDefined(ruleId);
 
     const form = useForm<RuleCreateInputInterface>({
