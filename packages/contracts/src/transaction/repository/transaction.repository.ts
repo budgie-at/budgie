@@ -5,9 +5,12 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
 import { DB, TX } from '../../@generic/type/db.type';
+import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -45,42 +48,64 @@ export class TransactionRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
-    getIncomeByCategoryQuery(filters: TransactionFilterInterface) {
+    getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
         const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.INCOME,
             TransactionEntryTypeEnum.DEBIT
         );
 
-        return this.buildCategoryBreakdownQuery(incomeTransactionIds);
+        return this.buildCategoryBreakdownQuery(incomeTransactionIds, defaultInstrumentId);
     }
 
-    getExpenseByCategoryQuery(filters: TransactionFilterInterface) {
+    getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
         const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
             filters,
             TransactionTypeEnum.EXPENSE,
             TransactionEntryTypeEnum.CREDIT
         );
 
-        return this.buildCategoryBreakdownQuery(expenseTransactionIds);
+        return this.buildCategoryBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
     }
 
-    getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface) {
+    getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.INCOME,
+            TransactionEntryTypeEnum.DEBIT
+        );
+
+        return this.buildTagBreakdownQuery(incomeTransactionIds, defaultInstrumentId);
+    }
+
+    getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
+        const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
+            filters,
+            TransactionTypeEnum.EXPENSE,
+            TransactionEntryTypeEnum.CREDIT
+        );
+
+        return this.buildTagBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
+    }
+
+    getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
         const baseWhere = this.buildWhere(filters);
+        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
 
         return this.db
             .select({
                 income: sql<number>`
                 COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                                  THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
+                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
             `.as('income'),
                 expense: sql<number>`
                 COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                                  THEN ${TransactionEntryEntityTable.amount} ELSE 0 END), 0)
+                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
             `.as('expense')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .where(
                 and(
                     // eslint-disable-next-line no-undefined
@@ -212,26 +237,47 @@ export class TransactionRepository {
             .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
-    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper) {
+    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
+        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
+        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+
         return this.db
             .select({
                 category: CategoryEntityTable,
-                amount: sql<number>`
-                COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0)
-            `.as('amount')
+                amount: amountSql.as('amount')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), isNotNull(TransactionEntryEntityTable.categoryId)))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(desc(sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount}), 0)`));
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .groupBy(TransactionEntryEntityTable.categoryId)
+            .orderBy(desc(amountSql));
+    }
+
+    private buildTagBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
+        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
+        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
+
+        return this.db
+            .select({
+                tag: TagEntityTable,
+                amount: amountSql.as('amount')
+            })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .groupBy(TagEntityTable.id)
+            .orderBy(desc(amountSql));
     }
 
     private buildFilteredTransactionIdsQuery(
         filters: TransactionFilterInterface,
         transactionType: TransactionTypeEnum,
-        entryType: TransactionEntryTypeEnum
+        _entryType: TransactionEntryTypeEnum
     ) {
         const baseWhere = this.buildWhere(filters);
 
@@ -242,7 +288,7 @@ export class TransactionRepository {
                 and(
                     // eslint-disable-next-line no-undefined
                     isDefined(baseWhere) ? baseWhere : undefined,
-                    or(eq(TransactionEntityTable.type, transactionType), this.buildAdjustmentCondition(entryType))
+                    eq(TransactionEntityTable.type, transactionType)
                 )
             );
     }
@@ -283,6 +329,16 @@ export class TransactionRepository {
     }
 
     private buildCategoryCondition(categoryIds: number[]) {
+        if (categoryIds.length === 0) {
+            return inArray(
+                TransactionEntityTable.id,
+                this.db
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .where(isNull(TransactionEntryEntityTable.categoryId))
+            );
+        }
+
         return inArray(
             TransactionEntityTable.id,
             this.db
@@ -326,5 +382,13 @@ export class TransactionRepository {
         }
 
         return isNotEmptyArray(parts) ? and(...parts) : null;
+    }
+
+    private getExchangeRateSql(defaultInstrumentId: number) {
+        return sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
+            1.0
+        )`;
     }
 }
