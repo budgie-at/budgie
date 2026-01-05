@@ -15,6 +15,9 @@ import { CategorySelectorBottomSheet } from '../../../category/components/catego
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { AiTransactionAmountDisplay } from '../ai-transaction-amount-display/ai-transaction-amount-display';
+import { AiTransactionCancelButton } from '../ai-transaction-cancel-button/ai-transaction-cancel-button';
+import { AiTransactionConfirmButton } from '../ai-transaction-confirm-button/ai-transaction-confirm-button';
 
 interface Props {
     readonly amount: number;
@@ -37,34 +40,6 @@ const ICON_CLASS_DISABLED = 'text-secondary-foreground';
 const TEXT_CLASS_ENABLED = 'text-positive-foreground font-medium';
 const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
 /* eslint-enable lingui/no-unlocalized-strings */
-
-const renderCancelButton = (onCancel: () => void) => (
-    <HapticPressable onPress={onCancel} className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center">
-        <View className="flex-row items-center gap-x-sm">
-            <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
-            <Text className="text-secondary-foreground font-medium">
-                <Trans>Cancel</Trans>
-            </Text>
-        </View>
-    </HapticPressable>
-);
-
-const renderConfirmButton = (props: {
-    canConfirm: boolean;
-    onConfirm: () => void;
-    confirmButtonClass: string;
-    confirmIconClass: string;
-    confirmTextClass: string;
-}) => (
-    <HapticPressable disabled={!props.canConfirm} onPress={props.onConfirm} className={props.confirmButtonClass}>
-        <View className="flex-row items-center gap-x-sm">
-            <Icon icon={UserIconNameEnum.Check} size={18} className={props.confirmIconClass} />
-            <Text className={props.confirmTextClass}>
-                <Trans>Confirm</Trans>
-            </Text>
-        </View>
-    </HapticPressable>
-);
 
 export const AiTransactionPreviewCard = ({
     amount,
@@ -107,6 +82,8 @@ export const AiTransactionPreviewCard = ({
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
 
+    const formattedAmount = formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol);
+
     return (
         <>
             <Card className="mt-4 p-5xl gap-y-4xl">
@@ -136,18 +113,17 @@ export const AiTransactionPreviewCard = ({
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
-                <View className="bg-secondary-background rounded-2xl p-4xl">
-                    <Text className="text-secondary-foreground text-xs uppercase mb-xs">
-                        <Trans>Amount</Trans>
-                    </Text>
-                    <Text className="text-destructive-foreground text-2xl font-bold">
-                        {formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol)}
-                    </Text>
-                </View>
+                <AiTransactionAmountDisplay formattedAmount={formattedAmount} />
 
                 <View className="flex-row gap-x-lg">
-                    {renderCancelButton(onCancel)}
-                    {renderConfirmButton(confirmProps)}
+                    <AiTransactionCancelButton onCancel={onCancel} />
+                    <AiTransactionConfirmButton
+                        canConfirm={confirmProps.canConfirm}
+                        onConfirm={confirmProps.onConfirm}
+                        confirmButtonClass={confirmProps.confirmButtonClass}
+                        confirmIconClass={confirmProps.confirmIconClass}
+                        confirmTextClass={confirmProps.confirmTextClass}
+                    />
                 </View>
             </Card>
 
