@@ -1625,7 +1625,7 @@ msgstr "Essayez un autre terme de recherche"
 
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:93
 msgid "Try a different search term or create a new tag"
-msgstr ""
+msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx:74
 msgid "Try adjusting your filters to see more results"
