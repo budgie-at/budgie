@@ -107,7 +107,6 @@ class TransactionService {
         });
     }
 
-     
     async convertExpenseToTransfer(id: number, toAccountId: number): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
@@ -125,7 +124,7 @@ class TransactionService {
                 throw new Error('Transaction must have a source account');
             }
 
-            const {entries} = transaction;
+            const { entries } = transaction;
 
             if (entries.length !== 1) {
                 throw new Error('Only single-entry expenses can be converted');
