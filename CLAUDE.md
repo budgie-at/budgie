@@ -13,15 +13,15 @@ yarn build                                # Build all (~15s)
 yarn build:force                          # Without cache
 
 # Validation (run in this order before committing)
+yarn format                               # Prettier (run first - may modify files)
 yarn ts                                   # TypeScript (~10s)
 yarn lint                                 # ESLint (~18s)
 yarn deadcode                             # Knip (~5s)
 yarn cpd                                  # Code duplication (~2s)
-yarn format                               # Prettier
 yarn test                                 # Jest (~4s)
 
 # IMPORTANT: After completing any task, ALWAYS run:
-yarn ts && yarn lint && yarn deadcode && yarn cpd
+yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
 yarn workspace @budgie-at/app i18n:sync  # ALWAYS run if you modified any user-facing text (uses i18n:sync, not extract/compile)
 
 # App-specific (cd packages/app)
@@ -117,7 +117,7 @@ const MyForm = () => {
 5. **Concise setState** - `setShouldAutoFocus(index >= 0)` not if/else blocks
 6. **Avoid unnecessary variables** - Inline when logic is self-explanatory
 7. **Explicit JSX for fixed arrays** - Don't map over hardcoded data
-8. **Type guards** - Use `@rnw-community/shared`: `isDefined()`, `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`
+8. **Type guards** - Use `@rnw-community/shared` for checks: `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`. For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)` instead of `if (isDefined(callback)) callback(value)`
 9. **Component Styling with CVA** - Always use `class-variance-authority` (CVA) for components with style variants
    ```typescript
    // Good - Use CVA for variant-based styling
@@ -136,6 +136,19 @@ const MyForm = () => {
    // Bad - Template strings for variant-based styling
    className={`bg-${variant}-background text-${variant}-foreground`}
    ```
+10. **Single const declarations** - Each variable gets its own `const` declaration
+   ```typescript
+   // Good - Separate const declarations
+   const buttonText = isPositiveNumber(count) ? t`Done (${count})` : t`Done`;
+   const description = t`${total} items available`;
+   const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
+
+   // Bad - Multiple variables in one declaration
+   const buttonText = isPositiveNumber(count) ? t`Done (${count})` : t`Done`,
+       description = t`${total} items available`,
+       rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
+   ```
+11. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments or similar suppressions without explicit user approval. Always fix the underlying issue or ask the user first.
 
 ### Naming
 - Interfaces: `*Interface` (e.g., `AccountFilterInterface`)
@@ -150,6 +163,26 @@ const MyForm = () => {
 - **Components belong in entity folders** - Never create components in `src/app/`. All reusable components must be in `src/[entity]/components/` (e.g., `src/transaction/components/transaction-page-header/`)
 - **Flat structure** - No deep nesting
 - **No wrapper components** - Don't create components that only extract context or group others
+- **No render helper functions** - Never create `renderSomething()` helper functions. Extract to separate components instead. Each component should be in its own file with proper naming.
+- **Prefer handle* methods** - Always extract event handlers into named `handle*` methods instead of inline callbacks. This makes component behavior explicit and improves readability.
+  ```typescript
+  // Good - Named handler shows intent
+  const handleClose = () => void ref.current?.close();
+  <Button onPress={handleClose} />
+
+  // Bad - Inline callback hides behavior
+  <Button onPress={() => void ref.current?.close()} />
+  ```
+- **Prefer children for composition** - Use `children` prop for the most natural content slot in wrapper components. Use named props (e.g., `topRight`, `balanceContent`) for specific, non-primary slots.
+  ```typescript
+  // Good - children for primary/bottom content
+  <AccountCardBase topRight={<DeadlineIndicator />} balanceContent={<Balance />}>
+      <ProgressBar />
+  </AccountCardBase>
+
+  // Bad - named prop for primary content
+  <AccountCardBase topRight={<DeadlineIndicator />} balanceContent={<Balance />} bottomContent={<ProgressBar />} />
+  ```
 
 ### Code Duplication (jscpd)
 Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to prevent false positives on similar form structures.

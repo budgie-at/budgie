@@ -20,8 +20,9 @@ export default function Inactive() {
             title={t`Inactive Accounts`}
             description={t`${inactiveAccountsCount} account`}
             icon={UserIconNameEnum.EyeOff}
-            emptyState={<InactiveAccountsEmptyState />}
             renderCard={renderCard}
-        />
+        >
+            <InactiveAccountsEmptyState />
+        </AccountsListPage>
     );
 }
