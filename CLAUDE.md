@@ -693,8 +693,22 @@ Never nest beyond this level - all files within a type folder should be direct c
 Always use these type guards instead of manual checks:
 - `isDefined()` - for nullish checks (never use `!== null`, `!== undefined`, or `??`)
 - `isNotEmptyArray()` - for array validation
-- `isNotEmptyString()` - for string validation
+- `isNotEmptyString()` - for string validation (never use truthy checks like `value ? ...` or `!!value`)
+- `isNotEmptyString()` - also use for conditional rendering of optional string values in JSX
 - `isPositiveNumber()` - for numeric validation
+- `isNumber()` - for checking if value is a number
+
+```tsx
+// Good - Use type guards
+{isNotEmptyString(description) ? <Text>{description}</Text> : null}
+{isNotEmptyArray(items) ? <List items={items} /> : null}
+{isDefined(user) ? <UserCard user={user} /> : null}
+
+// Bad - Truthy checks
+{description ? <Text>{description}</Text> : null}
+{items.length > 0 ? <List items={items} /> : null}
+{user ? <UserCard user={user} /> : null}
+```
 
 ### Code Duplication (jscpd)
 
