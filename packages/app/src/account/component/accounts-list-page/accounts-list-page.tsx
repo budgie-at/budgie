@@ -17,15 +17,15 @@ interface Props<T extends AccountType> {
     readonly title: string;
     readonly description: string;
     readonly icon: UserIconNameEnum;
-    readonly emptyState: ReactNode;
     readonly renderCard: (account: T) => ReactElement;
+    readonly children: ReactNode;
 }
 
 const safeEdges: Edges = ['bottom'];
 const listFooter = <SafeAreaView edges={safeEdges} />;
 
 export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
-    const { accounts, title, description, icon, emptyState, renderCard } = props;
+    const { accounts, title, description, icon, renderCard, children } = props;
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
@@ -44,7 +44,7 @@ export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
                     ListFooterComponent={listFooter}
                 />
             ) : (
-                emptyState
+                children
             )}
         </Page>
     );
