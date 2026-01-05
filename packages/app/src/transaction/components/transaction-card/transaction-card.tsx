@@ -80,7 +80,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                     <TransactionAmount transaction={transaction} />
                 </View>
 
-                <View className="flex-row justify-between items-center flex-1 gap-x-lg">
+                <View className="flex-row justify-between items-end flex-1 gap-x-lg">
                     <TransactionCardAccountInfo transaction={transaction} />
 
                     <View className="items-end gap-y-xs">
