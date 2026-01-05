@@ -57,8 +57,7 @@ interface Props {
 
 export const AiTransactionPreviewCard = (props: Props) => {
     const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
-    const categorySheetRef = useRef<BottomSheetInterface | null>(null);
-    const accountSheetRef = useRef<BottomSheetInterface | null>(null);
+    const [categorySheetRef, accountSheetRef] = [useRef<BottomSheetInterface | null>(null), useRef<BottomSheetInterface | null>(null)];
 
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
