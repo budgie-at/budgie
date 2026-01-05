@@ -3,8 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
 import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
@@ -33,9 +31,7 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagCreated }: Pro
             const newTag = await tagRepository.create(values);
             reset();
             void ref.current?.close();
-            if (isDefined(onTagCreated)) {
-                onTagCreated(newTag);
-            }
+            onTagCreated?.(newTag);
         } catch {
             Toast.show({
                 type: 'error',
