@@ -23,9 +23,8 @@ interface Props {
 
 const BOTTOM_SHEET_SNAP_POINTS = [500];
 
- 
 export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterface, Props>(
-    // eslint-disable-next-line max-lines-per-function
+     
     ({ transactionId, fromAccountId, onSuccess }, ref) => {
         const { t } = useLingui();
         const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
@@ -78,13 +77,7 @@ export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterfa
             <>
                 <BottomSheet ref={ref} detached snapPoints={BOTTOM_SHEET_SNAP_POINTS}>
                     <View className="p-5xl gap-y-4xl">
-                        <CircleIcon
-                            icon={UserIconNameEnum.Info}
-                            variant="default"
-                            size={50}
-                            iconSize={24}
-                            className="self-center"
-                        />
+                        <CircleIcon icon={UserIconNameEnum.Info} variant="default" size={50} iconSize={24} className="self-center" />
 
                         <Text className="text-primary text-xl font-semibold text-center">
                             <Trans>Convert to Transfer?</Trans>
@@ -92,8 +85,7 @@ export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterfa
 
                         <Text className="text-secondary-foreground text-center text-sm">
                             <Trans>
-                                This will change the transaction type. The category will be replaced with &apos;Currency
-                                Transfer&apos;.
+                                This will change the transaction type. The category will be replaced with &apos;Currency Transfer&apos;.
                             </Trans>
                         </Text>
 
@@ -107,23 +99,13 @@ export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterfa
                                     <Text className="flex-1 text-primary text-base font-medium">
                                         {isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}
                                     </Text>
-                                    <CircleIcon
-                                        icon={UserIconNameEnum.ChevronRight}
-                                        variant="ghost"
-                                        size={20}
-                                        iconSize={16}
-                                    />
+                                    <CircleIcon icon={UserIconNameEnum.ChevronRight} variant="ghost" size={20} iconSize={16} />
                                 </Card>
                             </HapticPressable>
                         </View>
 
                         <View className="flex-row gap-x-lg">
-                            <Button
-                                content={<Trans>Cancel</Trans>}
-                                variant="ghost"
-                                onPress={handleClose}
-                                className="flex-1"
-                            />
+                            <Button content={<Trans>Cancel</Trans>} variant="ghost" onPress={handleClose} className="flex-1" />
                             <Button
                                 content={<Trans>Convert</Trans>}
                                 variant="default"
