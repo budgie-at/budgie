@@ -55,9 +55,11 @@ interface Props {
     readonly onAccountChange: (accountId: number) => void;
 }
 
+// eslint-disable-next-line max-statements
 export const AiTransactionPreviewCard = (props: Props) => {
     const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
-    const [categorySheetRef, accountSheetRef] = [useRef<BottomSheetInterface | null>(null), useRef<BottomSheetInterface | null>(null)];
+    const categorySheetRef = useRef<BottomSheetInterface | null>(null);
+    const accountSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -66,20 +68,16 @@ export const AiTransactionPreviewCard = (props: Props) => {
         selectedAccount,
         icon: accountIcon,
         renderBottomSheet
-    } = useAccountSelector({
-        accountId,
-        onSelect: onAccountChange,
-        excludeAccountId: null
-    });
+    } = useAccountSelector({ accountId, onSelect: onAccountChange, excludeAccountId: null });
 
     const variant = TRANSACTION_COLOR[type];
     const canConfirm = isDefined(selectedAccount);
     const formattedAmount = formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol);
+    const categoryIcon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
 
-    const categoryIcon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
     const categoryValue = isDefined(category) ? category.title : <Trans>Unknown Category</Trans>;
     const accountValue = isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>;
     const accountValueColor = canConfirm ? ('primary' as const) : ('warning' as const);
