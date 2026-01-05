@@ -21,7 +21,7 @@ yarn format                               # Prettier
 yarn test                                 # Jest (~4s)
 
 # IMPORTANT: After completing any task, ALWAYS run:
-yarn ts && yarn lint && yarn deadcode && yarn cpd
+yarn ts && yarn lint && yarn deadcode && yarn cpd && yarn format
 yarn workspace @budgie-at/app i18n:sync  # ALWAYS run if you modified any user-facing text (uses i18n:sync, not extract/compile)
 
 # App-specific (cd packages/app)
@@ -135,6 +135,18 @@ const MyForm = () => {
 
    // Bad - Template strings for variant-based styling
    className={`bg-${variant}-background text-${variant}-foreground`}
+   ```
+10. **Single const declarations** - Each variable gets its own `const` declaration
+   ```typescript
+   // Good - Separate const declarations
+   const buttonText = isPositiveNumber(count) ? t`Done (${count})` : t`Done`;
+   const description = t`${total} items available`;
+   const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
+
+   // Bad - Multiple variables in one declaration
+   const buttonText = isPositiveNumber(count) ? t`Done (${count})` : t`Done`,
+       description = t`${total} items available`,
+       rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
    ```
 
 ### Naming
