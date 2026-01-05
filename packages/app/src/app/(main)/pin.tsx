@@ -18,6 +18,7 @@ interface AuthFormStateInterface {
     hasAttemptedBiometric: boolean;
 }
 
+// eslint-disable-next-line max-statements
 export default function PinScreen() {
     const { t } = useLingui();
 
