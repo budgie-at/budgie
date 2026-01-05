@@ -24,7 +24,6 @@ interface Props {
 const BOTTOM_SHEET_SNAP_POINTS = [500];
 
 export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterface, Props>(
-     
     ({ transactionId, fromAccountId, onSuccess }, ref) => {
         const { t } = useLingui();
         const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
