@@ -1,9 +1,9 @@
 import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { View } from 'react-native';
 
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
+import { MultiSelectChip } from '../../../@generic/component/multi-select-chip/multi-select-chip';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 
 interface Props {
@@ -18,46 +18,36 @@ export const SuggestRuleConditionSelector = ({ data, selectedFields, onToggleFie
     const { t } = useLingui();
 
     return (
-        <FormItem label={t`Match transactions by:`} className="gap-y-lg mt-3xl">
-            <SelectorCard
-                identifier={RuleConditionFieldEnum.TITLE}
-                onSelect={onToggleField}
-                isSelected={selectedFields.includes(RuleConditionFieldEnum.TITLE)}
-                title={t`Title`}
-                subtitle={
-                    <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
-                        {data?.title}
-                    </Text>
-                }
-            />
-
-            {hasComment ? (
-                <SelectorCard
-                    identifier={RuleConditionFieldEnum.COMMENT}
-                    onSelect={onToggleField}
-                    isSelected={selectedFields.includes(RuleConditionFieldEnum.COMMENT)}
-                    title={t`Comment`}
-                    subtitle={
-                        <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
-                            {data?.comment}
-                        </Text>
-                    }
+        <FormItem label={t`Match transactions by:`} className="mt-3xl">
+            <View className="flex-row flex-wrap gap-md">
+                <MultiSelectChip
+                    identifier={RuleConditionFieldEnum.TITLE}
+                    onToggle={onToggleField}
+                    isSelected={selectedFields.includes(RuleConditionFieldEnum.TITLE)}
+                    label={t`Title`}
+                    value={data?.title}
                 />
-            ) : null}
 
-            {hasMccCode ? (
-                <SelectorCard
-                    identifier={RuleConditionFieldEnum.MCC_CODE}
-                    onSelect={onToggleField}
-                    isSelected={selectedFields.includes(RuleConditionFieldEnum.MCC_CODE)}
-                    title={t`MCC Code`}
-                    subtitle={
-                        <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
-                            {data?.mccCode}
-                        </Text>
-                    }
-                />
-            ) : null}
+                {hasComment ? (
+                    <MultiSelectChip
+                        identifier={RuleConditionFieldEnum.COMMENT}
+                        onToggle={onToggleField}
+                        isSelected={selectedFields.includes(RuleConditionFieldEnum.COMMENT)}
+                        label={t`Comment`}
+                        value={data?.comment ?? ''}
+                    />
+                ) : null}
+
+                {hasMccCode ? (
+                    <MultiSelectChip
+                        identifier={RuleConditionFieldEnum.MCC_CODE}
+                        onToggle={onToggleField}
+                        isSelected={selectedFields.includes(RuleConditionFieldEnum.MCC_CODE)}
+                        label={t`MCC Code`}
+                        value={data?.mccCode ?? ''}
+                    />
+                ) : null}
+            </View>
         </FormItem>
     );
 };

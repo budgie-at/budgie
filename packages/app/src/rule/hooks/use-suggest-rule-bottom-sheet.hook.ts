@@ -26,7 +26,11 @@ const getConditionValue = (field: RuleConditionFieldEnum, ruleData: SuggestRuleD
     }
 };
 
-const buildPrefillData = (selectedFields: RuleConditionFieldEnum[], ruleData: SuggestRuleDataInterface): RulePrefillDataInterface => {
+const buildPrefillData = (
+    selectedFields: RuleConditionFieldEnum[],
+    ruleData: SuggestRuleDataInterface,
+    applyToExisting: boolean
+): RulePrefillDataInterface => {
     const conditions: RulePrefillConditionInterface[] = selectedFields.map(field => ({
         field,
         value: getConditionValue(field, ruleData)
@@ -35,7 +39,8 @@ const buildPrefillData = (selectedFields: RuleConditionFieldEnum[], ruleData: Su
     return {
         conditions,
         categoryId: ruleData.categoryId,
-        tagIds: ruleData.tagIds
+        tagIds: ruleData.tagIds,
+        applyToExisting
     };
 };
 
@@ -69,10 +74,6 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         setSelectedFields(current => {
             const isSelected = current.includes(field);
 
-            if (isSelected && current.length === 1) {
-                return current;
-            }
-
             return isSelected ? current.filter(currentField => currentField !== field) : [...current, field];
         });
     };
@@ -83,7 +84,7 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         }
 
         modalRef.current?.close();
-        router.push({ pathname: '/rules/create', params: { prefill: JSON.stringify(buildPrefillData(selectedFields, data)) } });
+        router.push({ pathname: '/rules/create', params: { prefill: JSON.stringify(buildPrefillData(selectedFields, data, applyToExisting)) } });
     };
 
     const handleCreateRule = async () => {
@@ -93,7 +94,7 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
 
         setIsCreating(true);
         try {
-            const ruleInput = buildRuleInputFromPrefill(buildPrefillData(selectedFields, data));
+            const ruleInput = buildRuleInputFromPrefill(buildPrefillData(selectedFields, data, applyToExisting));
             const rule = await ruleService.create(ruleInput);
 
             if (applyToExisting) {
@@ -121,6 +122,7 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         handleCreateRule,
         handleConfigureRule,
         hasComment: isDefined(data) && isNotEmptyString(data.comment),
-        hasMccCode: isDefined(data) && isNotEmptyString(data.mccCode)
+        hasMccCode: isDefined(data) && isNotEmptyString(data.mccCode),
+        hasSelectedFields: selectedFields.length > 0
     };
 };
