@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/budgie-at/budgie/compare/v2.0.1...v2.1.0) (2026-01-05)
+
+### Bug Fixes
+
+- **app:** resolve max-lines-per-function lint error ([bf8850d](https://github.com/budgie-at/budgie/commit/bf8850d6a876ff4504170ce33a119c8c6265e398))
+- **app:** resolve prettier vs max-statements conflict ([4d22710](https://github.com/budgie-at/budgie/commit/4d22710511a91443284d4ec4988e2f6ee8def24f))
+
+### Features
+
+- **app:** add inline tag creation in tag selector ([4de95fd](https://github.com/budgie-at/budgie/commit/4de95fd87d4c84cf715dd6ea9de5ad6d57ebc8a0))
+
 ## [2.0.1](https://github.com/budgie-at/budgie/compare/v2.0.0...v2.0.1) (2026-01-05)
 
 ### Bug Fixes
