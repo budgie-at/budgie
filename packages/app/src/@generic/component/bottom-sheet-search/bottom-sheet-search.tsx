@@ -28,7 +28,10 @@ export const BottomSheetSearch = ({ className, inputClassName, rightAction, ...r
                 {...rest}
             />
             {rightAction && (
-                <HapticPressable onPress={rightAction.onPress} className="h-[44px] w-[44px] items-center justify-center rounded-full bg-white">
+                <HapticPressable
+                    onPress={rightAction.onPress}
+                    className="h-[44px] w-[44px] items-center justify-center rounded-full bg-white"
+                >
                     <Icon icon={rightAction.icon} size={20} className="text-black" />
                 </HapticPressable>
             )}

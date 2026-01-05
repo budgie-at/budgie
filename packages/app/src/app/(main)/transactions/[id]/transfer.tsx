@@ -118,7 +118,6 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     ) : null}
 
                     <FormLayoutGroup>
-
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="default" />
                             <TransactionFormTagsField variant="default" />

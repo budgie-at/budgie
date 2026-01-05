@@ -34,14 +34,7 @@ const renderSelectedTags = (selectedTags: TagEntityInterface[], selectedTagsCoun
 
         <View className="flex-row flex-wrap gap-xl">
             {selectedTags.map(({ id, title }) => (
-                <TagsSelectorCard
-                    variant="removable"
-                    key={id}
-                    title={title}
-                    id={id}
-                    onSelect={onRemoveSelection}
-                    isSelected
-                />
+                <TagsSelectorCard variant="removable" key={id} title={title} id={id} onSelect={onRemoveSelection} isSelected />
             ))}
         </View>
     </View>
@@ -49,87 +42,76 @@ const renderSelectedTags = (selectedTags: TagEntityInterface[], selectedTagsCoun
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
     const [search, setSearch] = useState('');
-    const [newTagTitle, setNewTagTitle] = useState('');
     const { tags } = useSearchTagsQuery(search);
     const { t } = useLingui();
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
     const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
-    const selectedTagsCount = selectedTags.length, tagsCount = tags?.length ?? 0;
+    const selectedTagsCount = selectedTags.length;
+    const tagsCount = tags?.length ?? 0;
 
-    const handleClose = () => void ref.current?.close();
-
-    const handleCreateTag = () => {
-        setNewTagTitle(search);
-        void tagFormRef.current?.open();
-    };
+    const handleCreateTag = () => void tagFormRef.current?.open();
 
     const handleTagCreated = (tag: TagEntityInterface) => {
         setSearch('');
-        setNewTagTitle('');
         onSelect(tag.id);
     };
 
-    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`,
-        description = t`${tagsCount} tags available`,
-        rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
+    const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
+    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
 
     return (
         <>
             <BottomSheet snapPoints={snapPoints} ref={ref}>
-                <BottomSheetHeader className="border-b border-b-secondary-corner" size="md" title={t`Select Tags`} description={description} />
-
-                <BottomSheetSearch
-                    onChangeText={setSearch}
-                    placeholder={t`Search tags...`}
-                    value={search}
-                    rightAction={rightAction}
+                <BottomSheetHeader
+                    className="border-b border-b-secondary-corner"
+                    size="md"
+                    title={t`Select Tags`}
+                    description={t`${tagsCount} tags available`}
                 />
 
+                <BottomSheetSearch onChangeText={setSearch} placeholder={t`Search tags...`} value={search} rightAction={rightAction} />
+
                 <BottomSheetScrollView contentContainerClassName="flex-1 pt-5xl px-5xl gap-y-5xl">
-                {isNotEmptyArray(selectedTags) ? renderSelectedTags(selectedTags, selectedTagsCount, onRemoveSelection) : null}
+                    {isNotEmptyArray(selectedTags) ? renderSelectedTags(selectedTags, selectedTagsCount, onRemoveSelection) : null}
 
-                <View className="flex-1">
-                    <Text className="text-secondary-foreground uppercase mb-xl text-sm font-medium">
-                        <Trans>Common Tags</Trans>
-                    </Text>
+                    <View className="flex-1">
+                        <Text className="text-secondary-foreground uppercase mb-xl text-sm font-medium">
+                            <Trans>Common Tags</Trans>
+                        </Text>
 
-                    {isNotEmptyArray(tags) ? (
-                        <View className="flex-row flex-wrap gap-xl">
-                            {tags.map(({ id, title }) => (
-                                <TagsSelectorCard
-                                    isSelected={selectedTagIds.includes(id)}
-                                    onSelect={onSelect}
-                                    variant="static"
-                                    title={title}
-                                    key={id}
-                                    id={id}
-                                />
-                            ))}
-                        </View>
-                    ) : (
-                        <EmptyState
-                            circleIcon={UserIconNameEnum.Tag}
-                            title={t`No tags found`}
-                            titleClassName="text-primary font-semibold"
-                            descriptionClassName="max-w-[250px] text-center mx-auto"
-                            description={t`Try a different search term or create a new tag`}
-                        />
-                    )}
-                </View>
-            </BottomSheetScrollView>
+                        {isNotEmptyArray(tags) ? (
+                            <View className="flex-row flex-wrap gap-xl">
+                                {tags.map(({ id, title }) => (
+                                    <TagsSelectorCard
+                                        isSelected={selectedTagIds.includes(id)}
+                                        onSelect={onSelect}
+                                        variant="static"
+                                        title={title}
+                                        key={id}
+                                        id={id}
+                                    />
+                                ))}
+                            </View>
+                        ) : (
+                            <EmptyState
+                                circleIcon={UserIconNameEnum.Tag}
+                                title={t`No tags found`}
+                                titleClassName="text-primary font-semibold"
+                                descriptionClassName="max-w-[250px] text-center mx-auto"
+                                description={t`Try a different search term or create a new tag`}
+                            />
+                        )}
+                    </View>
+                </BottomSheetScrollView>
 
-            <Footer>
-                <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
-            </Footer>
-        </BottomSheet>
+                <Footer>
+                    {/* eslint-disable-next-line @rnw-community/no-complex-jsx-logic -- React 19 Compiler handles callback optimization */}
+                    <Button size="md" variant="ghost" content={buttonText} onPress={() => void ref.current?.close()} />
+                </Footer>
+            </BottomSheet>
 
-        <TagFormBottomSheet
-            ref={tagFormRef}
-            tag={null}
-            defaultTitle={newTagTitle}
-            onTagCreated={handleTagCreated}
-        />
+            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
         </>
     );
 };

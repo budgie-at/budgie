@@ -28,7 +28,7 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
-/* jscpd:ignore-end */
+    /* jscpd:ignore-end */
 
     /* jscpd:ignore-start */
     const handlePress = () => {
@@ -55,9 +55,7 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
 
             <StatsBar percentage={percentage} variant={variant} />
 
-            <Text className="text-secondary-foreground">
-                {isIncome ? t`${percentage}% of income` : t`${percentage}% of expenses`}
-            </Text>
+            <Text className="text-secondary-foreground">{isIncome ? t`${percentage}% of income` : t`${percentage}% of expenses`}</Text>
         </HapticPressable>
     );
     /* jscpd:ignore-end */
