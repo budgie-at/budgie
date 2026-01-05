@@ -38,8 +38,7 @@ const TEXT_CLASS_ENABLED = 'text-positive-foreground font-medium';
 const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
 /* eslint-enable lingui/no-unlocalized-strings */
 
-export const AiTransactionPreviewCard = (props: Props) => {
-    const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
+export const AiTransactionPreviewCard = ({ amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange }: Props) => {
     const categorySheetRef = useRef<BottomSheetInterface | null>(null);
     const accountSheetRef = useRef<BottomSheetInterface | null>(null);
 
