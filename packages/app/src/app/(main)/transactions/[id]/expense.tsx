@@ -7,7 +7,8 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Redirect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -17,10 +18,12 @@ import { FormLayoutGroup } from '../../../../@generic/component/form-layout-grou
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
+import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
+import { ConvertExpenseToTransferBottomSheet } from '../../../../transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -42,7 +45,10 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
+    const router = useRouter();
     const { defaultInstrument } = useSettingsContext();
+
+    const convertSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -58,27 +64,36 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
 
     const handleGoBack = () => void goBackOrReplace('/');
 
+    const handleConvertSuccess = () => {
+        router.replace(`/transactions/${transactionId}/transfer`);
+    };
+
+    const handleOpenConvert = () => void convertSheetRef.current?.open();
+
     return (
-        <FormProvider {...form}>
-            <Page
-                header={
-                    <PageHeader
-                        title={t`Edit Expense`}
-                        description={t`Select Category`}
-                        icon={UserIconNameEnum.TrendingDown}
-                        iconVariant="destructive"
-                        onGoBack={handleGoBack}
-                    />
-                }
-                footer={
-                    <TransactionFormFooter
-                        variant="destructive"
-                        buttonText={t`Update Expense`}
-                        onSubmit={handleSubmit}
-                        onDelete={handleDelete}
-                    />
-                }
-            >
+        <>
+            <FormProvider {...form}>
+                <Page
+                    header={
+                        <PageHeader
+                            title={t`Edit Expense`}
+                            description={t`Select Category`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            iconVariant="destructive"
+                            onGoBack={handleGoBack}
+                        />
+                    }
+                    footer={
+                        <TransactionFormFooter
+                            variant="destructive"
+                            buttonText={t`Update Expense`}
+                            onSubmit={handleSubmit}
+                            onDelete={handleDelete}
+                            showConvertButton
+                            onConvert={handleOpenConvert}
+                        />
+                    }
+                >
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps="handled"
                     contentContainerClassName="pb-7xl"
@@ -109,6 +124,13 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                 </KeyboardAwareScrollView>
             </Page>
         </FormProvider>
+        <ConvertExpenseToTransferBottomSheet
+            ref={convertSheetRef}
+            transactionId={transactionId}
+            fromAccountId={transaction.fromAccountId ?? 0}
+            onSuccess={handleConvertSuccess}
+        />
+    </>
     );
 };
 /* jscpd:ignore-end */
