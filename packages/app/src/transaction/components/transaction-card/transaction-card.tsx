@@ -81,12 +81,12 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                 </View>
 
                 <View className="flex-row justify-between items-center flex-1 gap-x-lg">
-                    <View className="flex-row items-center gap-x-lg flex-1">
-                        <TransactionCardAccountInfo transaction={transaction} />
-                        <TransactionCardTag transaction={transaction} />
-                    </View>
+                    <TransactionCardAccountInfo transaction={transaction} />
 
-                    <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                    <View className="items-end gap-y-xs">
+                        <TransactionCardTag transaction={transaction} />
+                        <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                    </View>
                 </View>
             </Card>
         </Link>
