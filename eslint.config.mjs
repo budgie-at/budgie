@@ -329,13 +329,14 @@ export default defineConfig(
         }
     },
     {
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.tsx', '**/*.hook.ts'],
         extends: [reactPlugin.configs.flat.recommended, reactHooksPlugin.configs.flat.recommended],
         plugins: { '@rnw-community': rnwcPlugin },
         settings: {
             react: { version: 'detect' }
         },
         rules: {
+            'max-statements': ['error', 15],
             '@rnw-community/no-complex-jsx-logic': 'error',
             'react/jsx-curly-brace-presence': [
                 'error',

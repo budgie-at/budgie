@@ -1,4 +1,4 @@
-/* eslint-disable react/no-multi-comp, max-statements */
+/* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import {
     AccountTypeEnum,
@@ -118,7 +118,6 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     ) : null}
 
                     <FormLayoutGroup>
-
                         <FormLayoutGroup variant="horizontal">
                             <TransactionFormDateField variant="default" />
                             <TransactionFormTagsField variant="default" />
