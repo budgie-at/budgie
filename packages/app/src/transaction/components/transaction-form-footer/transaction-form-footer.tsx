@@ -20,14 +20,7 @@ interface Props {
     readonly onConvert?: EmptyFn;
 }
 
-export const TransactionFormFooter = ({
-    variant,
-    buttonText,
-    onSubmit,
-    onDelete,
-    showConvertButton,
-    onConvert
-}: Props) => {
+export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete, showConvertButton, onConvert }: Props) => {
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
 
