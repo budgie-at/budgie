@@ -164,6 +164,25 @@ const MyForm = () => {
 - **Flat structure** - No deep nesting
 - **No wrapper components** - Don't create components that only extract context or group others
 - **No render helper functions** - Never create `renderSomething()` helper functions. Extract to separate components instead. Each component should be in its own file with proper naming.
+- **Prefer handle* methods** - Always extract event handlers into named `handle*` methods instead of inline callbacks. This makes component behavior explicit and improves readability.
+  ```typescript
+  // Good - Named handler shows intent
+  const handleClose = () => void ref.current?.close();
+  <Button onPress={handleClose} />
+
+  // Bad - Inline callback hides behavior
+  <Button onPress={() => void ref.current?.close()} />
+  ```
+- **Prefer children for composition** - Use `children` prop for the most natural content slot in wrapper components. Use named props (e.g., `topRight`, `balanceContent`) for specific, non-primary slots.
+  ```typescript
+  // Good - children for primary/bottom content
+  <AccountCardBase topRight={<DeadlineIndicator />} balanceContent={<Balance />}>
+      <ProgressBar />
+  </AccountCardBase>
+
+  // Bad - named prop for primary content
+  <AccountCardBase topRight={<DeadlineIndicator />} balanceContent={<Balance />} bottomContent={<ProgressBar />} />
+  ```
 
 ### Code Duplication (jscpd)
 Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to prevent false positives on similar form structures.
