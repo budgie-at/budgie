@@ -14,6 +14,7 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
@@ -37,7 +38,11 @@ export class TransactionRepository {
                 [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
             }
         },
-        [TransactionAssociationEnum.TRANSACTION_TAGS]: true,
+        [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+            with: {
+                [TransactionTagsAssociationEnum.TAG]: true
+            }
+        },
         [TransactionAssociationEnum.FROM_ACCOUNT]: true,
         [TransactionAssociationEnum.TO_ACCOUNT]: true
     } as const;
