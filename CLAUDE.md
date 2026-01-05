@@ -117,7 +117,7 @@ const MyForm = () => {
 5. **Concise setState** - `setShouldAutoFocus(index >= 0)` not if/else blocks
 6. **Avoid unnecessary variables** - Inline when logic is self-explanatory
 7. **Explicit JSX for fixed arrays** - Don't map over hardcoded data
-8. **Type guards** - Use `@rnw-community/shared`: `isDefined()`, `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`
+8. **Type guards** - Use `@rnw-community/shared` for checks: `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`. For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)` instead of `if (isDefined(callback)) callback(value)`
 9. **Component Styling with CVA** - Always use `class-variance-authority` (CVA) for components with style variants
    ```typescript
    // Good - Use CVA for variant-based styling
