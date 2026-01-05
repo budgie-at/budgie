@@ -17,6 +17,7 @@ import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
+import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 class TransactionService {
@@ -103,6 +104,87 @@ class TransactionService {
             await this.upsertEntriesAndTags(id, input, tx);
 
             return transaction;
+        });
+    }
+
+     
+    async convertExpenseToTransfer(id: number, toAccountId: number): Promise<TransactionEntityInterface> {
+        // eslint-disable-next-line max-statements
+        return await db.transaction(async tx => {
+            const transaction = await transactionRepository.getById(id);
+
+            if (!isDefined(transaction)) {
+                throw new Error('Transaction not found');
+            }
+
+            if (transaction.type !== TransactionTypeEnum.EXPENSE) {
+                throw new Error('Only expense transactions can be converted');
+            }
+
+            if (!isDefined(transaction.fromAccountId)) {
+                throw new Error('Transaction must have a source account');
+            }
+
+            const {entries} = transaction;
+
+            if (entries.length !== 1) {
+                throw new Error('Only single-entry expenses can be converted');
+            }
+
+            const [fromAccount, toAccount] = await Promise.all([
+                accountService.findByIdOrFail(transaction.fromAccountId),
+                accountService.findByIdOrFail(toAccountId)
+            ]);
+
+            const fromAmountInMicroUnits = entries[0].amount;
+
+            const { amount: toAmount, exchangeRate } = await exchangeRatesService.convert(
+                fromAccount.instrumentId,
+                toAccount.instrumentId,
+                fromAmountInMicroUnits
+            );
+
+            const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
+
+            const updated = await transactionRepository.updateById(
+                id,
+                {
+                    type: isDebtTransaction ? TransactionTypeEnum.DEBT : TransactionTypeEnum.TRANSFER,
+                    toAccountId,
+                    exchangeRate
+                },
+                tx
+            );
+
+            await transactionEntryRepository.deleteByTransactionId(id, tx);
+
+            await transactionEntryRepository.bulkCreate(
+                [
+                    {
+                        transactionId: id,
+                        accountId: transaction.fromAccountId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: fromAmountInMicroUnits,
+                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
+                        mccCategoryId: null,
+                        externalId: null
+                    },
+                    {
+                        transactionId: id,
+                        accountId: toAccountId,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        amount: toAmount,
+                        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
+                        mccCategoryId: null,
+                        externalId: null
+                    }
+                ],
+                tx
+            );
+
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+
+            return updated;
         });
     }
 
