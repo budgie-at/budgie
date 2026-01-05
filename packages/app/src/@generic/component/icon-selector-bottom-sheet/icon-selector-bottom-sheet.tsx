@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 
 import { USER_ICONS_LIST, UserIcon } from '../../constant/user-icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
@@ -39,8 +39,10 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const data = padFlatListData(showedIcons);
 
     const handleSelect = (icon: UserIconNameEnum) => {
-        void ref.current?.dismiss();
         onSelect(icon);
+        InteractionManager.runAfterInteractions(() => {
+            void ref.current?.dismiss();
+        });
     };
 
     const renderItem = ({ item }: { item: FlatListDataItem<UserIcon> }) =>
