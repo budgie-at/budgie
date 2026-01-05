@@ -104,15 +104,13 @@ export const AiTransactionPreviewCard = ({
         confirmTextClass: canConfirm ? TEXT_CLASS_ENABLED : TEXT_CLASS_DISABLED
     };
 
-    const handlers = {
-        openCategorySheet: () => void categorySheetRef.current?.open(),
-        openAccountSheet: () => void accountSheetRef.current?.open()
-    };
+    const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
+    const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
 
     return (
         <>
             <Card className="mt-4 p-5xl gap-y-4xl">
-                <HapticPressable onPress={handlers.openCategorySheet} className="flex-row items-center gap-x-lg">
+                <HapticPressable onPress={handleOpenCategorySheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={categoryIcon} variant={variant} />
                     <View className="flex-1">
                         <Text className="text-secondary-foreground text-xs uppercase">
@@ -125,7 +123,7 @@ export const AiTransactionPreviewCard = ({
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
-                <HapticPressable onPress={handlers.openAccountSheet} className="flex-row items-center gap-x-lg">
+                <HapticPressable onPress={handleOpenAccountSheet} className="flex-row items-center gap-x-lg">
                     <CircleIcon size={34} iconSize={18} icon={accountIcon} variant="ghost" />
                     <View className="flex-1">
                         <Text className="text-secondary-foreground text-xs uppercase">
