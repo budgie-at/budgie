@@ -20,8 +20,9 @@ export default function Archived() {
             title={t`Archived Accounts`}
             description={t`${archivedAccountsCount} account`}
             icon={UserIconNameEnum.Archive}
-            emptyState={<ArchivedAccountsEmptyState />}
             renderCard={renderCard}
-        />
+        >
+            <ArchivedAccountsEmptyState />
+        </AccountsListPage>
     );
 }
