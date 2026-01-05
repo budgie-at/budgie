@@ -46,7 +46,7 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     }
 
     const [firstEntry] = transaction.entries;
-    const {mccCategory} = firstEntry;
+    const { mccCategory } = firstEntry;
     const showMccChip = isDefined(mccCategory) && isDefined(firstEntry.category);
 
     return (
