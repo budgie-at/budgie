@@ -148,6 +148,7 @@ const MyForm = () => {
        description = t`${total} items available`,
        rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
    ```
+11. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments or similar suppressions without explicit user approval. Always fix the underlying issue or ask the user first.
 
 ### Naming
 - Interfaces: `*Interface` (e.g., `AccountFilterInterface`)
@@ -162,6 +163,7 @@ const MyForm = () => {
 - **Components belong in entity folders** - Never create components in `src/app/`. All reusable components must be in `src/[entity]/components/` (e.g., `src/transaction/components/transaction-page-header/`)
 - **Flat structure** - No deep nesting
 - **No wrapper components** - Don't create components that only extract context or group others
+- **No render helper functions** - Never create `renderSomething()` helper functions. Extract to separate components instead. Each component should be in its own file with proper naming.
 
 ### Code Duplication (jscpd)
 Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to prevent false positives on similar form structures.
