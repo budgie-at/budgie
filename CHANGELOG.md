@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/budgie-at/budgie/compare/v2.2.0...v2.3.0) (2026-01-05)
+
+### Features
+
+- **transaction:** add expense to transfer conversion ([f2bb01e](https://github.com/budgie-at/budgie/commit/f2bb01e928ccb74f7cd43414aea0a68a1e158c6f))
+
 # [2.2.0](https://github.com/budgie-at/budgie/compare/v2.1.0...v2.2.0) (2026-01-05)
 
 ### Bug Fixes
