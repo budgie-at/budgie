@@ -15,6 +15,9 @@ import { CategorySelectorBottomSheet } from '../../../category/components/catego
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { AiTransactionAmountDisplay } from '../ai-transaction-amount-display/ai-transaction-amount-display';
+import { AiTransactionCancelButton } from '../ai-transaction-cancel-button/ai-transaction-cancel-button';
+import { AiTransactionConfirmButton } from '../ai-transaction-confirm-button/ai-transaction-confirm-button';
 
 interface Props {
     readonly amount: number;
@@ -38,8 +41,16 @@ const TEXT_CLASS_ENABLED = 'text-positive-foreground font-medium';
 const TEXT_CLASS_DISABLED = 'text-secondary-foreground font-medium';
 /* eslint-enable lingui/no-unlocalized-strings */
 
-export const AiTransactionPreviewCard = (props: Props) => {
-    const { amount, category, type, accountId, onConfirm, onCancel, onCategoryChange, onAccountChange } = props;
+export const AiTransactionPreviewCard = ({
+    amount,
+    category,
+    type,
+    accountId,
+    onConfirm,
+    onCancel,
+    onCategoryChange,
+    onAccountChange
+}: Props) => {
     const categorySheetRef = useRef<BottomSheetInterface | null>(null);
     const accountSheetRef = useRef<BottomSheetInterface | null>(null);
 
@@ -59,13 +70,19 @@ export const AiTransactionPreviewCard = (props: Props) => {
     const variant = TRANSACTION_COLOR[type];
     const categoryIcon = isDefined(category) ? category.icon : UserIconNameEnum.Receipt;
     const canConfirm = isDefined(selectedAccount);
-    const confirmButtonClass = canConfirm ? CONFIRM_BUTTON_ENABLED : CONFIRM_BUTTON_DISABLED;
     const accountTextClass = canConfirm ? ACCOUNT_TEXT_SELECTED : ACCOUNT_TEXT_MISSING;
-    const confirmIconClass = canConfirm ? ICON_CLASS_ENABLED : ICON_CLASS_DISABLED;
-    const confirmTextClass = canConfirm ? TEXT_CLASS_ENABLED : TEXT_CLASS_DISABLED;
+    const confirmProps = {
+        canConfirm,
+        onConfirm,
+        confirmButtonClass: canConfirm ? CONFIRM_BUTTON_ENABLED : CONFIRM_BUTTON_DISABLED,
+        confirmIconClass: canConfirm ? ICON_CLASS_ENABLED : ICON_CLASS_DISABLED,
+        confirmTextClass: canConfirm ? TEXT_CLASS_ENABLED : TEXT_CLASS_DISABLED
+    };
 
     const handleOpenCategorySheet = () => void categorySheetRef.current?.open();
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
+
+    const formattedAmount = formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol);
 
     return (
         <>
@@ -89,41 +106,24 @@ export const AiTransactionPreviewCard = (props: Props) => {
                         <Text className="text-secondary-foreground text-xs uppercase">
                             <Trans>Account</Trans>
                         </Text>
-                        <Text className={accountTextClass}>{isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}</Text>
+                        <Text className={accountTextClass}>
+                            {isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}
+                        </Text>
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
 
-                <View className="bg-secondary-background rounded-2xl p-4xl">
-                    <Text className="text-secondary-foreground text-xs uppercase mb-xs">
-                        <Trans>Amount</Trans>
-                    </Text>
-                    <Text className="text-destructive-foreground text-2xl font-bold">
-                        {formatDigits(amount, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol)}
-                    </Text>
-                </View>
+                <AiTransactionAmountDisplay formattedAmount={formattedAmount} />
 
                 <View className="flex-row gap-x-lg">
-                    <HapticPressable
-                        onPress={onCancel}
-                        className="flex-1 py-4xl rounded-2xl bg-secondary-background items-center justify-center"
-                    >
-                        <View className="flex-row items-center gap-x-sm">
-                            <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
-                            <Text className="text-secondary-foreground font-medium">
-                                <Trans>Cancel</Trans>
-                            </Text>
-                        </View>
-                    </HapticPressable>
-
-                    <HapticPressable disabled={!canConfirm} onPress={onConfirm} className={confirmButtonClass}>
-                        <View className="flex-row items-center gap-x-sm">
-                            <Icon icon={UserIconNameEnum.Check} size={18} className={confirmIconClass} />
-                            <Text className={confirmTextClass}>
-                                <Trans>Confirm</Trans>
-                            </Text>
-                        </View>
-                    </HapticPressable>
+                    <AiTransactionCancelButton onCancel={onCancel} />
+                    <AiTransactionConfirmButton
+                        canConfirm={confirmProps.canConfirm}
+                        onConfirm={confirmProps.onConfirm}
+                        confirmButtonClass={confirmProps.confirmButtonClass}
+                        confirmIconClass={confirmProps.confirmIconClass}
+                        confirmTextClass={confirmProps.confirmTextClass}
+                    />
                 </View>
             </Card>
 

@@ -65,6 +65,9 @@ export type { BankSyncUpdateEntityInterface } from './bank-sync/entity/bank-sync
 
 export { BankSyncRepository } from './bank-sync/repository/bank-sync.repository';
 
+export { TAG_TITLE_MAX_LENGTH } from './tag/constant/tag-title-max-length.constant';
+export { TAG_TITLE_MIN_LENGTH } from './tag/constant/tag-title-min-length.constant';
+
 export { TagAssociationEnum } from './tag/enum/tag-association.enum';
 
 export { TagEntityTable } from './tag/table/tag-entity.table';
