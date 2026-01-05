@@ -36,7 +36,7 @@ import type { Edge } from 'react-native-safe-area-context';
 
 const SAFE_EDGES: Edge[] = ['bottom', 'top'];
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri: string }>();
 
@@ -91,7 +91,6 @@ export default function ImportScreen() {
     };
 
     useEffect(() => {
-        // eslint-disable-next-line max-statements
         const loadFile = async () => {
             if (!isNotEmptyString(fileUri)) {
                 return;
@@ -118,7 +117,6 @@ export default function ImportScreen() {
         void loadFile();
     }, [fileUri, t]);
 
-    // eslint-disable-next-line max-statements
     const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 

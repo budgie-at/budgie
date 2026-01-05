@@ -57,6 +57,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
         onSelect(tag.id);
     };
 
+    const handleClose = () => void ref.current?.close();
+
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
     const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
 
@@ -106,8 +108,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 </BottomSheetScrollView>
 
                 <Footer>
-                    {/* eslint-disable-next-line @rnw-community/no-complex-jsx-logic -- React 19 Compiler handles callback optimization */}
-                    <Button size="md" variant="ghost" content={buttonText} onPress={() => void ref.current?.close()} />
+                    <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
                 </Footer>
             </BottomSheet>
 
