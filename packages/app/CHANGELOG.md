@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/budgie-at/budgie/compare/v2.0.0...v2.0.1) (2026-01-05)
+
+### Bug Fixes
+
+- **app:** resolve icon selection dismissing wrong bottom sheet ([950d0fd](https://github.com/budgie-at/budgie/commit/950d0fdd8be2087ff6fd6a81baac8be2f436d27c))
+
 # [2.0.0](https://github.com/budgie-at/budgie/compare/v1.111.0...v2.0.0) (2026-01-04)
 
 ### Bug Fixes
