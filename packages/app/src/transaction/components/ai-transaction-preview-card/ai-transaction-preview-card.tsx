@@ -89,7 +89,9 @@ export const AiTransactionPreviewCard = (props: Props) => {
                         <Text className="text-secondary-foreground text-xs uppercase">
                             <Trans>Account</Trans>
                         </Text>
-                        <Text className={accountTextClass}>{isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}</Text>
+                        <Text className={accountTextClass}>
+                            {isDefined(selectedAccount) ? selectedAccount.title : <Trans>Select Account</Trans>}
+                        </Text>
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
