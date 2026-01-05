@@ -19,6 +19,7 @@ import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardAccountInfo } from '../transaction-card-account-info/transaction-card-account-info';
+import { TransactionCardTag } from '../transaction-card-tag/transaction-card-tag';
 import { TransactionCategoryBadge } from '../transaction-category-badge/transaction-category-badge';
 
 export interface TransactionCardProps {
@@ -79,10 +80,13 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
                     <TransactionAmount transaction={transaction} />
                 </View>
 
-                <View className="flex-row justify-between items-center flex-1 gap-x-lg">
+                <View className="flex-row justify-between items-end flex-1 gap-x-lg">
                     <TransactionCardAccountInfo transaction={transaction} />
 
-                    <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                    <View className="items-end gap-y-xs">
+                        <TransactionCardTag transaction={transaction} />
+                        <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                    </View>
                 </View>
             </Card>
         </Link>
