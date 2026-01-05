@@ -13,15 +13,15 @@ yarn build                                # Build all (~15s)
 yarn build:force                          # Without cache
 
 # Validation (run in this order before committing)
+yarn format                               # Prettier (run first - may modify files)
 yarn ts                                   # TypeScript (~10s)
 yarn lint                                 # ESLint (~18s)
 yarn deadcode                             # Knip (~5s)
 yarn cpd                                  # Code duplication (~2s)
-yarn format                               # Prettier
 yarn test                                 # Jest (~4s)
 
 # IMPORTANT: After completing any task, ALWAYS run:
-yarn ts && yarn lint && yarn deadcode && yarn cpd && yarn format
+yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
 yarn workspace @budgie-at/app i18n:sync  # ALWAYS run if you modified any user-facing text (uses i18n:sync, not extract/compile)
 
 # App-specific (cd packages/app)
