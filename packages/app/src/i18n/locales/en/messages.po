@@ -67,7 +67,7 @@ msgstr "100% Offline & Private"
 msgid "About"
 msgstr "About"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:100
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:97
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
@@ -185,8 +185,7 @@ msgid "Already syncing"
 msgstr "Already syncing"
 
 #: src/app/(main)/settings/import.tsx:196
-#: src/transaction/components/ai-transaction-amount-display/ai-transaction-amount-display.tsx:11
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:110
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:107
 msgid "Amount"
 msgstr "Amount"
 
@@ -233,7 +232,7 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:51
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:63
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Are you sure you want to delete this transaction?"
 
@@ -291,8 +290,8 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/transaction/components/ai-transaction-cancel-button/ai-transaction-cancel-button.tsx:17
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:123
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:120
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:122
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -331,7 +330,7 @@ msgstr ""
 
 #: src/app/(main)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:92
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:89
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Category"
@@ -422,8 +421,7 @@ msgstr "Comment"
 msgid "Common Tags"
 msgstr "Common Tags"
 
-#: src/transaction/components/ai-transaction-confirm-button/ai-transaction-confirm-button.tsx:21
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:132
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:129
 msgid "Confirm"
 msgstr "Confirm"
 
@@ -442,6 +440,18 @@ msgstr "Contact (optional)"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
 msgstr "Continue"
+
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:58
+msgid "Conversion failed"
+msgstr "Conversion failed"
+
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:128
+msgid "Convert"
+msgstr "Convert"
+
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
+msgid "Convert to Transfer?"
+msgstr "Convert to Transfer?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
@@ -613,13 +623,17 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:48
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:60
 msgid "Delete transaction"
 msgstr "Delete transaction"
 
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:29
 msgid "Deselect All"
 msgstr "Deselect All"
+
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:102
+msgid "Destination Account"
+msgstr "Destination Account"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
@@ -654,7 +668,7 @@ msgstr "e.g., Groceries, Salary, Rent"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:66
+#: src/app/(main)/transactions/[id]/expense.tsx:79
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
@@ -1191,6 +1205,10 @@ msgstr "PINs do not match"
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
+msgid "Please try again"
+msgstr "Please try again"
+
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
 msgid "Please try again later"
@@ -1326,7 +1344,8 @@ msgid "Select account"
 msgstr "Select account"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:85
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:82
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:108
 msgid "Select Account"
 msgstr "Select Account"
 
@@ -1344,7 +1363,7 @@ msgstr "Select category"
 
 #: src/app/(main)/create-transaction/expense.tsx:72
 #: src/app/(main)/create-transaction/income.tsx:55
-#: src/app/(main)/transactions/[id]/expense.tsx:67
+#: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
 msgid "Select Category"
@@ -1540,7 +1559,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:47
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:59
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
@@ -1551,6 +1570,10 @@ msgstr "This Month"
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
 msgstr "This Week"
+
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:94
+msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
+msgstr "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
@@ -1655,7 +1678,7 @@ msgstr "Uncategorized"
 msgid "Unknown"
 msgstr "Unknown"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:84
+#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:81
 msgid "Unknown Category"
 msgstr "Unknown Category"
 
@@ -1667,7 +1690,7 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:76
+#: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Update Expense"
 msgstr "Update Expense"
 
