@@ -16,9 +16,18 @@ interface Props {
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly onDelete?: EmptyFn;
+    readonly showConvertButton?: boolean;
+    readonly onConvert?: EmptyFn;
 }
 
-export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete }: Props) => {
+export const TransactionFormFooter = ({
+    variant,
+    buttonText,
+    onSubmit,
+    onDelete,
+    showConvertButton,
+    onConvert
+}: Props) => {
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
 
@@ -29,6 +38,9 @@ export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete 
                     <View className="flex-row gap-2">
                         {isDefined(onDelete) ? (
                             <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
+                        ) : null}
+                        {showConvertButton && isDefined(onConvert) ? (
+                            <Button leftIcon={UserIconNameEnum.ArrowRightLeft} onPress={onConvert} variant="default" />
                         ) : null}
                         <Button
                             leftIcon={UserIconNameEnum.CircleCheck}
