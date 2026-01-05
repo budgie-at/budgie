@@ -14,6 +14,7 @@ import { EmptyState } from '../../../@generic/component/empty-state/empty-state'
 import { Footer } from '../../../@generic/component/footer/footer';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchTagsQuery } from '../../query/use-search-tags.query';
+import { SelectedTagsList } from '../selected-tags-list/selected-tags-list';
 import { TagFormBottomSheet } from '../tag-form-bottom-sheet/tag-form-bottom-sheet';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
@@ -26,20 +27,6 @@ interface Props {
 
 const snapPoints = ['70%'];
 
-const renderSelectedTags = (selectedTags: TagEntityInterface[], selectedTagsCount: number, onRemoveSelection: (tagId: number) => void) => (
-    <View>
-        <Text className="text-secondary-foreground uppercase mb-xl text-sm font-medium">
-            <Trans>Selected {selectedTagsCount}</Trans>
-        </Text>
-
-        <View className="flex-row flex-wrap gap-xl">
-            {selectedTags.map(({ id, title }) => (
-                <TagsSelectorCard variant="removable" key={id} title={title} id={id} onSelect={onRemoveSelection} isSelected />
-            ))}
-        </View>
-    </View>
-);
-
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);
@@ -47,7 +34,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
     const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
-    const selectedTagsCount = selectedTags.length;
     const tagsCount = tags?.length ?? 0;
 
     const handleCreateTag = () => void tagFormRef.current?.open();
@@ -59,6 +45,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
 
     const handleClose = () => void ref.current?.close();
 
+    const selectedTagsCount = selectedTags.length;
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
     const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
 
@@ -75,7 +62,9 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 <BottomSheetSearch onChangeText={setSearch} placeholder={t`Search tags...`} value={search} rightAction={rightAction} />
 
                 <BottomSheetScrollView contentContainerClassName="flex-1 pt-5xl px-5xl gap-y-5xl">
-                    {isNotEmptyArray(selectedTags) ? renderSelectedTags(selectedTags, selectedTagsCount, onRemoveSelection) : null}
+                    {isNotEmptyArray(selectedTags) ? (
+                        <SelectedTagsList selectedTags={selectedTags} onRemoveSelection={onRemoveSelection} />
+                    ) : null}
 
                     <View className="flex-1">
                         <Text className="text-secondary-foreground uppercase mb-xl text-sm font-medium">
