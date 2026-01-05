@@ -35,7 +35,7 @@ interface UseStreamingTranscribeReturn {
     isVoiceDetected: boolean;
 }
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export const useStreamingTranscribe = (onComplete: (transcribed: string) => Promise<void>): UseStreamingTranscribeReturn => {
     const locale = useLocaleInfo();
     const { stt } = useLlmContext();
