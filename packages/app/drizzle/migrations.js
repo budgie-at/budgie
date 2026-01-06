@@ -8,6 +8,7 @@ import m0003 from './0003_unusual_maestro.sql';
 import m0004 from './0004_cloudy_juggernaut.sql';
 import m0005 from './0005_omniscient_jasper_sitwell.sql';
 import m0006 from './0006_nice_warlock.sql';
+import m0007 from './0007_small_virginia_dare.sql';
 
   export default {
     journal,
@@ -18,7 +19,8 @@ m0002,
 m0003,
 m0004,
 m0005,
-m0006
+m0006,
+m0007
     }
   }
   
