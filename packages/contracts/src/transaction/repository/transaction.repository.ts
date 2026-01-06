@@ -253,18 +253,10 @@ export class TransactionRepository {
     async findTransfersForConversion(
         accountId: number,
         tx?: TX
-    ): Promise<
-        Array<{
-            id: number;
-            fromAccountId: number | null;
-            toAccountId: number | null;
-            entries: Array<{ type: TransactionEntryTypeEnum; amount: number }>;
-        }>
-    > {
+    ): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
-            columns: { id: true, fromAccountId: true, toAccountId: true },
-            with: { [TransactionAssociationEnum.ENTRIES]: { columns: { type: true, amount: true } } }
+            with: { [TransactionAssociationEnum.ENTRIES]: true }
         });
     }
 
