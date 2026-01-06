@@ -281,6 +281,7 @@ export default defineConfig(
             node: { version: '>=22.0.0' }
         },
         rules: {
+            'no-await-in-loop': 'off',
             'n/no-missing-import': 'off',
             'n/no-unsupported-features/es-syntax': 'off',
             'n/no-extraneous-import': [
