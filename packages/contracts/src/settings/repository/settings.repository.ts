@@ -18,8 +18,8 @@ export class SettingsRepository {
         return settings;
     }
 
-    async getSettings(): Promise<SettingsEntityInterface> {
-        const settings = await this.db.query.SettingsEntityTable.findFirst();
+    async getSettings(tx?: TX): Promise<SettingsEntityInterface> {
+        const settings = await (tx ?? this.db).query.SettingsEntityTable.findFirst();
 
         if (!isDefined(settings)) {
             throw new Error('Settings not found');
