@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
@@ -13,6 +14,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+/* jscpd:ignore-end */
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
