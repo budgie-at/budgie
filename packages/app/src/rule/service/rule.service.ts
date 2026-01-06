@@ -35,7 +35,7 @@ class RuleService {
         });
 
         if (input.applyToExisting) {
-            await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
+            setTimeout(() => void ruleEngineService.applyRuleToMatchingTransactions(rule.id), 0);
         }
 
         return rule;
@@ -76,7 +76,7 @@ class RuleService {
         });
 
         if (input.applyToExisting) {
-            await ruleEngineService.applyRuleToMatchingTransactions(id);
+            setTimeout(() => void ruleEngineService.applyRuleToMatchingTransactions(id), 0);
         }
 
         return rule;
