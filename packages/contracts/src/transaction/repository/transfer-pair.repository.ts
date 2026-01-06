@@ -5,9 +5,7 @@ import { TransferPairCandidateInterface } from '../interface/transfer-pair-candi
 export class TransferPairRepository {
     constructor(private db: DB) {}
 
-    async findCandidates(timeWindowMs: number): Promise<TransferPairCandidateInterface[]> {
-        const timeWindowSeconds = Math.floor(timeWindowMs / 1000);
-
+    async findCandidates(): Promise<TransferPairCandidateInterface[]> {
         const sql = `
             WITH all_pairs AS (
                 SELECT
@@ -37,7 +35,6 @@ export class TransferPairRepository {
                 INNER JOIN transactions income_tx ON
                     income_tx.type = '${TransactionTypeEnum.INCOME}'
                     AND income_tx.deleted_at IS NULL
-                    AND ABS(CAST(income_tx.operated_at AS INTEGER) - CAST(expense_tx.operated_at AS INTEGER)) <= ${timeWindowSeconds}
                 INNER JOIN transaction_entries income_entry ON
                     income_tx.id = income_entry.transaction_id
                     AND income_entry.deleted_at IS NULL
