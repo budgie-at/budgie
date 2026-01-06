@@ -15,7 +15,11 @@ msgstr ""
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} comptes"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:28
+#: src/account/component/archived-account-card/archived-account-card.tsx:95
+msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
+msgstr ""
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:84
 msgid "{accountTitle} will be restored to your main view and included in totals."
 msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans les totaux."
 
@@ -23,7 +27,7 @@ msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans l
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} sera restauré dans votre vue principale."
 
-#: src/app/(main)/settings/archived.tsx:21
+#: src/app/(main)/settings/archived.tsx:22
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} compte"
 
@@ -74,7 +78,7 @@ msgstr "Compte"
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:64
+#: src/account/component/create-account-screen/update-account-screen.tsx:62
 msgid "Account Settings"
 msgstr "Paramètres du compte"
 
@@ -213,15 +217,15 @@ msgstr "Appliquer le filtre"
 msgid "Apply Filter ({selected})"
 msgstr "Appliquer le filtre ({selected})"
 
-#: src/account/component/archive-account/archive-account.tsx:44
+#: src/account/component/archive-account/archive-account.tsx:42
 msgid "Archive"
 msgstr "Archiver"
 
-#: src/account/component/archive-account/archive-account.tsx:47
+#: src/account/component/archive-account/archive-account.tsx:45
 msgid "Archive Account?"
 msgstr "Archiver le compte ?"
 
-#: src/app/(main)/settings/archived.tsx:20
+#: src/app/(main)/settings/archived.tsx:21
 #: src/app/(main)/settings/index.tsx:102
 msgid "Archived Accounts"
 msgstr "Comptes archivés"
@@ -230,7 +234,7 @@ msgstr "Comptes archivés"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action ne peut pas être annulée."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:56
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:57
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette transaction ?"
 
@@ -263,13 +267,13 @@ msgid "Bank sync"
 msgstr "Synchronisation bancaire"
 
 #: src/app/(main)/create-account/index.tsx:45
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:65
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:67
 msgid "Bank Sync"
 msgstr "Synchronisation bancaire"
 
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:28
 msgid "Bank sync has been reset. History will be re-synced on next sync."
-msgstr ""
+msgstr "La synchronisation bancaire a été réinitialisée. L'historique sera resynchronisé lors de la prochaine synchronisation."
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:61
 msgid "Base currency"
@@ -288,7 +292,7 @@ msgid "BudgetAI"
 msgstr "BudgetAI"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
-#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
+#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -437,12 +441,12 @@ msgstr "Connecter Monobank"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:42
 msgid "Consolidate"
-msgstr ""
+msgstr "Consolider"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:31
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:45
 msgid "Consolidate Transfers"
-msgstr ""
+msgstr "Consolider les transferts"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx:16
 msgid "Contact (optional)"
@@ -454,25 +458,25 @@ msgstr "Continuer"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:56
 msgid "Conversion failed"
-msgstr ""
+msgstr "Échec de la conversion"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:109
 msgid "Convert"
-msgstr ""
+msgstr "Convertir"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:32
 msgid "Convert matching income/expense pairs from synced accounts into transfer transactions"
-msgstr ""
+msgstr "Convertir les paires de revenus/dépenses correspondantes des comptes synchronisés en transactions de transfert"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:82
 msgid "Convert to Transfer?"
-msgstr ""
+msgstr "Convertir en transfert ?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
 msgstr "Impossible d'activer le compte."
 
-#: src/account/component/archive-account/archive-account.tsx:29
+#: src/account/component/archive-account/archive-account.tsx:26
 msgid "Could not archive account. Please try again later"
 msgstr "Impossible d'archiver le compte. Veuillez réessayer plus tard"
 
@@ -489,15 +493,19 @@ msgstr "Impossible de créer l'étiquette"
 msgid "Could not create transaction. Please try again later."
 msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:44
+msgid "Could not delete account."
+msgstr "Impossible de supprimer le compte."
+
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:34
 msgid "Could not reset sync. Please try again later"
-msgstr ""
+msgstr "Impossible de réinitialiser la synchronisation. Veuillez réessayer plus tard"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:29
+#: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
@@ -634,6 +642,10 @@ msgstr "Compte par défaut"
 msgid "Delete"
 msgstr "Supprimer"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:94
+msgid "Delete Account Permanently?"
+msgstr "Supprimer le compte définitivement ?"
+
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Supprimer toutes les transactions et les paramètres"
@@ -642,7 +654,11 @@ msgstr "Supprimer toutes les transactions et les paramètres"
 msgid "Delete data"
 msgstr "Supprimer les données"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:53
+#: src/account/component/archived-account-card/archived-account-card.tsx:92
+msgid "Delete Permanently"
+msgstr "Supprimer définitivement"
+
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:54
 msgid "Delete transaction"
 msgstr "Supprimer la transaction"
 
@@ -652,7 +668,7 @@ msgstr "Tout désélectionner"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Destination Account"
-msgstr ""
+msgstr "Compte de destination"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
@@ -673,7 +689,7 @@ msgstr "Néerlandais (Pays-Bas)"
 
 #: src/account/component/iban-field/iban-field.tsx:24
 msgid "e.g. DE89370400440532013000"
-msgstr ""
+msgstr "ex. DE89370400440532013000"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx:47
 msgid "e.g. Savings Account"
@@ -781,7 +797,7 @@ msgstr "Entrez votre code PIN"
 msgid "Error"
 msgstr "Erreur"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:85
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:89
 msgid "Errors"
 msgstr "Erreurs"
 
@@ -858,7 +874,7 @@ msgstr "Échec de la mise à jour du jeton"
 msgid "Fetch Accounts"
 msgstr "Récupérer les comptes"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:47
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:48
 msgid "Fetching new..."
 msgstr "Récupération des nouvelles..."
 
@@ -918,13 +934,13 @@ msgstr "Obtenir le jeton API"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'écran"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:80
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:84
 msgid "History synced"
 msgstr "Historique synchronisé"
 
 #: src/account/component/iban-field/iban-field.tsx:18
 msgid "IBAN"
-msgstr ""
+msgstr "IBAN"
 
 #: src/category/components/category-form-icon-field/category-form-icon-field.tsx:19
 msgid "Icon"
@@ -992,11 +1008,11 @@ msgstr "Italien (Italie)"
 msgid "Language"
 msgstr "Langue"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:89
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:93
 msgid "Last error"
 msgstr "Dernière erreur"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:76
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:80
 msgid "Last sync"
 msgstr "Dernière synchronisation"
 
@@ -1235,7 +1251,7 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
-msgstr ""
+msgstr "Veuillez réessayer"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
@@ -1269,11 +1285,11 @@ msgstr "Entrez à nouveau votre code PIN pour confirmer"
 
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:55
 msgid "Re-sync Bank Account?"
-msgstr ""
+msgstr "Resynchroniser le compte bancaire ?"
 
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:52
 msgid "Re-sync History"
-msgstr ""
+msgstr "Resynchroniser l'historique"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
 msgid "Recalculate"
@@ -1288,11 +1304,11 @@ msgstr "Recalculer les soldes"
 msgid "Remaining:"
 msgstr "Restant :"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:26
+#: src/account/component/archived-account-card/archived-account-card.tsx:81
 msgid "Restore"
 msgstr "Restaurer"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:27
+#: src/account/component/archived-account-card/archived-account-card.tsx:83
 msgid "Restore Account?"
 msgstr "Restaurer le compte ?"
 
@@ -1466,7 +1482,7 @@ msgid "Show this account on the main page"
 msgstr "Afficher ce compte sur la page principale"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:28
+#: src/account/component/archive-account/archive-account.tsx:25
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:33
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
@@ -1476,7 +1492,9 @@ msgstr "Quelque chose s'est mal passé"
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
 
-#: src/account/component/account-action-card/account-action-card.tsx:51
+#: src/account/component/account-action-card/account-action-card.tsx:48
+#: src/account/component/archived-account-card/archived-account-card.tsx:36
+#: src/account/component/archived-account-card/archived-account-card.tsx:44
 msgid "Something went wrong. Please try again later."
 msgstr "Quelque chose s'est mal passé. Veuillez réessayer plus tard."
 
@@ -1536,7 +1554,7 @@ msgstr "Soumettre"
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:19
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:27
 msgid "Success"
-msgstr ""
+msgstr "Succès"
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1547,7 +1565,7 @@ msgstr "Faites glisser vers la gauche"
 msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:44
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:45
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
 
@@ -1559,7 +1577,7 @@ msgstr "Synchronisez vos comptes et transactions Monobank"
 msgid "Synced bank accounts"
 msgstr "Comptes bancaires synchronisés"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:47
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:48
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
 
@@ -1590,7 +1608,7 @@ msgstr "Appuyez pour effacer"
 msgid "Target balance"
 msgstr "Solde cible"
 
-#: src/account/component/archive-account/archive-account.tsx:43
+#: src/account/component/archive-account/archive-account.tsx:41
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
 "\n"
@@ -1601,7 +1619,7 @@ msgstr ""
 " 💡 Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:52
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:53
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
@@ -1615,7 +1633,7 @@ msgstr "Cette semaine"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:86
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
-msgstr ""
+msgstr "Cela changera le type de transaction. La catégorie sera remplacée par 'Transfert de devise'."
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
@@ -1623,7 +1641,7 @@ msgstr "Cela effacera tous les soldes de compte mis en cache et les recalculera 
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:41
 msgid "This will find matching income and expense transactions from your synced bank accounts and consolidate them into proper transfer transactions. The process preserves all transaction data and external IDs."
-msgstr ""
+msgstr "Cela permettra de trouver les transactions de revenus et de dépenses correspondantes de vos comptes bancaires synchronisés et de les consolider en transactions de transfert appropriées. Le processus préserve toutes les données de transaction et les identifiants externes."
 
 #: src/sync/component/resync-bank-sync-account/resync-bank-sync-account.tsx:51
 msgid ""
@@ -1631,6 +1649,9 @@ msgid ""
 "\n"
 " 💡 Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr ""
+"Cela réinitialisera l'historique de synchronisation et resynchronisera toutes les transactions de ce compte bancaire.\n"
+"\n"
+" 💡 Vos transactions, étiquettes et catégories existantes seront préservées et mises à jour avec toutes les nouvelles données."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
@@ -1685,7 +1706,7 @@ msgstr "Type de transaction"
 msgid "Transactions"
 msgstr "Transactions"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:73
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:77
 msgid "Transactions synced"
 msgstr "Transactions synchronisées"
 
@@ -1695,7 +1716,7 @@ msgstr "Virement"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx:19
 msgid "Transfer consolidation completed"
-msgstr ""
+msgstr "Consolidation des transferts terminée"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
@@ -1739,11 +1760,11 @@ msgstr "Inconnu"
 msgid "Unknown Category"
 msgstr "Catégorie inconnue"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:51
 msgid "Up to date"
 msgstr "À jour"
 
-#: src/account/component/create-account-screen/update-account-screen.tsx:74
+#: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
 
@@ -1788,7 +1809,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:53
+#: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:54
 msgid "Waiting"
 msgstr "En attente"
 
