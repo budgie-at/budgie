@@ -55,6 +55,13 @@ export class TransferPairRepository {
                          AND expense_account.iban IS NOT NULL
                          AND income_entry.to_iban = expense_account.iban)
                     )
+                    AND (
+                        (expense_account.instrument_id = income_account.instrument_id
+                         AND expense_entry.amount = income_entry.amount)
+                        OR
+                        (expense_account.instrument_id != income_account.instrument_id
+                         AND ABS(expense_entry.amount * expense_entry.exchange_rate - income_entry.amount * income_entry.exchange_rate) < (expense_entry.amount * expense_entry.exchange_rate * 0.05))
+                    )
             )
             SELECT
                 expense_transaction_id,
