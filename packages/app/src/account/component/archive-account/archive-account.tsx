@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 
 import { Button } from '../../../@generic/component/button/button';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { accountService } from '../../service/account.service';
@@ -18,9 +17,10 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
     const handleArchive = async () => {
         try {
+            console.log('handleArchive');
             await microPause();
             await accountService.archiveById(accountId);
-            dismissAllOrReplace('/');
+            console.log('handleArchive end');
         } catch {
             Toast.show({
                 type: 'error',
@@ -30,7 +30,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
         }
     };
 
-    const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleArchive);
+    const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleArchive, '/');
 
     return (
         <>

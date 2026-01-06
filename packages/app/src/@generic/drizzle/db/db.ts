@@ -33,6 +33,9 @@ const dbInit = () => {
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
     }
 
+    global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
+
     return global.__expoSqliteDb__;
 };
 
