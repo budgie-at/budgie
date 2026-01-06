@@ -250,10 +250,7 @@ export class TransactionRepository {
         });
     }
 
-    async findTransfersForConversion(
-        accountId: number,
-        tx?: TX
-    ): Promise<TransactionWithEntriesEntityInterface[]> {
+    async findTransfersForConversion(accountId: number, tx?: TX): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
             where: this.buildTransfersByAccountIdWhere(accountId),
             with: { [TransactionAssociationEnum.ENTRIES]: true }

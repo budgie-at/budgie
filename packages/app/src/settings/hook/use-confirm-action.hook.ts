@@ -1,8 +1,12 @@
 import { useRef, useState } from 'react';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
+import { InteractionManager } from 'react-native';
+import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
+import { Href } from 'expo-router';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-export const useConfirmAction = (onConfirm: () => Promise<void> | void) => {
+export const useConfirmAction = (onConfirm: () => Promise<void> | void, redirectUrl?: Href) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -11,10 +15,18 @@ export const useConfirmAction = (onConfirm: () => Promise<void> | void) => {
     const handleConfirm = async () => {
         try {
             setIsLoading(true);
+
             await onConfirm();
-            ref.current?.close();
         } finally {
-            setIsLoading(false);
+            InteractionManager.runAfterInteractions(() => {
+                ref.current?.close();
+
+                setIsLoading(false);
+
+                if (isNotEmptyString(redirectUrl)) {
+                    dismissAllOrReplace(redirectUrl);
+                }
+            });
         }
     };
 
