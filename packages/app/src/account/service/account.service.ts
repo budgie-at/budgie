@@ -159,6 +159,7 @@ class AccountService {
 
     private async convertAccountTransfers(accountId: number, tx: Transaction): Promise<void> {
         const transfers = await transactionRepository.findTransfersForConversion(accountId, tx);
+
         if (!isNotEmptyArray(transfers)) {
             return;
         }
@@ -168,6 +169,7 @@ class AccountService {
 
         const entriesToCreate = this.collectTransferEntries(transfers, accountId);
         const transactionIds = transfers.map(t => t.id);
+
         await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
 
         if (entriesToCreate.length > 0) {
@@ -175,10 +177,7 @@ class AccountService {
         }
     }
 
-    private collectTransferEntries(
-        transfers: TransactionWithEntriesEntityInterface[],
-        accountId: number
-    ) {
+    private collectTransferEntries(transfers: TransactionWithEntriesEntityInterface[], accountId: number) {
         const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
 
         for (const transfer of transfers) {
