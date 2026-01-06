@@ -38,7 +38,17 @@ class TransferConsolidationService {
         this.isRunning = true;
 
         try {
-            await this.executeConsolidation();
+            const pairCandidates = await transferPairRepository.findCandidates();
+
+            for (const candidate of pairCandidates) {
+                try {
+                    await this.consolidatePair(candidate);
+                } catch {
+                    // Consolidation failed, skip this pair
+                } finally {
+                    await accountBalanceIncrementalService.updateAllBalances(true);
+                }
+            }
 
             return BackgroundTask.BackgroundTaskResult.Success;
         } catch {
@@ -48,23 +58,7 @@ class TransferConsolidationService {
         }
     }
 
-    private async executeConsolidation(): Promise<void> {
-        const pairCandidates = await transferPairRepository.findCandidates();
-
-        for (const candidate of pairCandidates) {
-            const exchangeRate =
-                candidate.income_entry_exchange_rate === 1 ? candidate.expense_entry_exchange_rate : candidate.income_entry_exchange_rate;
-
-            try {
-                await this.consolidatePair(candidate, exchangeRate);
-            } catch {
-                // Consolidation failed, skip this pair
-            }
-        }
-    }
-
-    private async consolidatePair(candidate: TransferPairCandidateInterface, exchangeRate: number): Promise<void> {
-        // eslint-disable-next-line max-statements
+    private async consolidatePair(candidate: TransferPairCandidateInterface): Promise<void> {
         await db.transaction(async tx => {
             const incomeTags = await transactionTagsRepository.findByTransactionId(candidate.income_transaction_id);
 
@@ -78,7 +72,10 @@ class TransferConsolidationService {
                 {
                     type: TransactionTypeEnum.TRANSFER,
                     toAccountId: candidate.income_entry_account_id,
-                    exchangeRate,
+                    exchangeRate:
+                        candidate.income_entry_exchange_rate === 1
+                            ? candidate.expense_entry_exchange_rate
+                            : candidate.income_entry_exchange_rate,
                     comment: updatedComment
                 },
                 tx
@@ -111,9 +108,8 @@ class TransferConsolidationService {
                 );
             }
 
-            await transactionRepository.softDeleteById(candidate.income_transaction_id, tx);
+            await transactionRepository.deleteById(candidate.income_transaction_id, tx);
             await transactionTagsRepository.deleteByTransactionId(candidate.income_transaction_id, tx);
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
     }
 }
