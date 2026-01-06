@@ -3,11 +3,13 @@ import {
     AccountNatureEnum,
     DebtAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface,
+    TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    type TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
-import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -19,6 +21,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 
 class AccountService {
@@ -126,6 +129,8 @@ class AccountService {
     }
 
     async restoreById(id: number): Promise<void> {
+        await microPause();
+
         return db.transaction(async tx => {
             await accountRepository.restoreById(id, tx);
             await transactionEntryRepository.restoreByAccountIds([id], tx);
@@ -133,8 +138,91 @@ class AccountService {
         });
     }
 
+    async deleteById(id: number): Promise<void> {
+        return db.transaction(async tx => {
+            await this.convertAccountTransfers(id, tx);
+            await transactionRepository.deleteByAccountId(id, tx);
+            await transactionEntryRepository.deleteByAccountId(id, tx);
+
+            const settings = await settingsRepository.getSettings();
+            if (settings.defaultAccountId === id) {
+                await settingsRepository.update({ defaultAccountId: null }, tx);
+            }
+
+            await accountRepository.deleteById(id, tx);
+        });
+    }
+
     async activateById(id: number): Promise<void> {
         await accountRepository.updateById(id, { isActive: true });
+    }
+
+    private async convertAccountTransfers(accountId: number, tx: Transaction): Promise<void> {
+        console.log('convertAccountTransfers', accountId);
+        const transfers = await transactionRepository.findTransfersByAccountId(accountId, tx);
+        if (!isNotEmptyArray(transfers)) {
+            return;
+        }
+        console.log('transfers', transfers.length);
+
+        await transactionRepository.convertTransfersFromAccountToIncome(accountId, tx);
+        console.log('converted transfers from account to income', ' ');
+        await transactionRepository.convertTransfersToAccountToExpense(accountId, tx);
+        console.log('converted transfers to account to expense', ' ');
+
+        const entriesToCreate = this.collectTransferEntries(transfers, accountId);
+        console.log('collected transfer entries', entriesToCreate.length);
+
+        await this.deleteTransferEntries(transfers, tx);
+        console.log('deleted transfer entries', ' ');
+
+        if (entriesToCreate.length > 0) {
+            await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
+        }
+        console.log('created transfer entries', ' ');
+    }
+
+    private collectTransferEntries(
+        transfers: TransactionWithEntriesEntityInterface[],
+        accountId: number
+    ) {
+        const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
+
+        for (const transfer of transfers) {
+            const isFromDeleted = transfer.fromAccountId === accountId;
+
+            if (isFromDeleted) {
+                const debitEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+                if (isDefined(debitEntry) && isDefined(transfer.toAccountId)) {
+                    entriesToCreate.push({
+                        ...debitEntry,
+                        transactionId: transfer.id,
+                        accountId: transfer.toAccountId,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                    });
+                }
+            } else {
+                const creditEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
+                if (isDefined(creditEntry) && isDefined(transfer.fromAccountId)) {
+                    entriesToCreate.push({
+                        ...creditEntry,
+                        transactionId: transfer.id,
+                        accountId: transfer.fromAccountId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                    });
+                }
+            }
+        }
+
+        return entriesToCreate;
+    }
+
+    private async deleteTransferEntries(transfers: Array<{ id: number }>, tx: Transaction): Promise<void> {
+        const transactionIds = transfers.map(t => t.id);
+        for (const transactionId of transactionIds) {
+            // eslint-disable-next-line no-await-in-loop
+            await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
+        }
     }
 
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: Transaction): Promise<void> {
