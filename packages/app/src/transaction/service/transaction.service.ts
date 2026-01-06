@@ -141,21 +141,24 @@ class TransactionService {
 
     async updateFromSync(externalId: string, input: TransactionCreateInputInterface): Promise<void> {
         await db.transaction(async tx => {
-            const existingTransactions = await transactionRepository.findById(
-                (
-                    await db
-                        .select({ id: TransactionEntityTable.id })
-                        .from(TransactionEntityTable)
-                        .where(eq(TransactionEntityTable.externalId, externalId))
-                )[0]?.id ?? 0
-            );
+            const [result] = await db
+                .select({ id: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.externalId, externalId))
+                .limit(1);
 
-            if (!isDefined(existingTransactions)) {
+            if (!isDefined(result)) {
+                return;
+            }
+
+            const existingTransaction = await transactionRepository.findById(result.id);
+
+            if (!isDefined(existingTransaction)) {
                 return;
             }
 
             await transactionRepository.updateById(
-                existingTransactions.id,
+                existingTransaction.id,
                 {
                     title: input.title,
                     comment: input.comment,
@@ -164,19 +167,20 @@ class TransactionService {
                 tx
             );
 
-            const [existingEntry] = existingTransactions.entries;
-            const [syncEntry] = input.entries;
+            for (const syncEntry of input.entries) {
+                const matchingEntry = existingTransaction.entries.find(entry => entry.externalId === syncEntry.externalId);
 
-            if (isDefined(existingEntry) && isDefined(syncEntry)) {
-                await transactionEntryRepository.updateById(
-                    existingEntry.id,
-                    {
-                        amount: convertToMicroUnits(syncEntry.amount),
-                        exchangeRate: syncEntry.exchangeRate,
-                        toIban: syncEntry.toIban
-                    },
-                    tx
-                );
+                if (isDefined(matchingEntry)) {
+                    await transactionEntryRepository.updateById(
+                        matchingEntry.id,
+                        {
+                            amount: convertToMicroUnits(syncEntry.amount),
+                            exchangeRate: syncEntry.exchangeRate,
+                            toIban: syncEntry.toIban
+                        },
+                        tx
+                    );
+                }
             }
         });
     }
