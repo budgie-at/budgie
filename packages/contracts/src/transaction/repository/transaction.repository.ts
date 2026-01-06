@@ -158,12 +158,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db)
             .update(TransactionEntityTable)
             .set({ deletedAt: new Date() })
-            .where(
-                and(
-                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
-                )
-            );
+            .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
     }
 
     async restoreByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
