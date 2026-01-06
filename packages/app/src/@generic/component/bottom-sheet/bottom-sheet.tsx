@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import React, { ComponentProps, FC, Ref, useImperativeHandle, useMemo, useRef } from 'react';
+import React, { ComponentProps, FC, Ref, useImperativeHandle, useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
@@ -50,9 +50,9 @@ export const BottomSheet = (props: Props) => {
     useImperativeHandle(ref, (): BottomSheetInterface => ({ open, close, dismiss }));
 
     const backdropPressBehavior = isCloseable ? 'close' : 'none';
-    const backdropComponent = useMemo(() => (props: ComponentProps<typeof BottomSheetBackdrop>) => (
-        <BottomSheetBackdrop {...props} pressBehavior={backdropPressBehavior} />
-    ), [backdropPressBehavior]);
+    const renderBackdrop = (backdropProps: ComponentProps<typeof BottomSheetBackdrop>) => (
+        <BottomSheetBackdrop {...backdropProps} pressBehavior={backdropPressBehavior} />
+    );
 
     return (
         <Modal
@@ -60,7 +60,7 @@ export const BottomSheet = (props: Props) => {
             handleClassName={cn('bg-primary-reverse rounded-t-3xl', handleClassName)}
             enableDynamicSizing={enableDynamicSizing}
             backgroundClassName="bg-primary-reverse"
-            backdropComponent={backdropComponent}
+            backdropComponent={renderBackdrop}
             handleIndicatorClassName="bg-primary"
             footerComponent={footerComponent}
             enableContentPanningGesture
