@@ -46,4 +46,8 @@ export class TransactionEntryRepository {
             .set({ deletedAt: null })
             .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
     }
+
+    async deleteByAccountId(accountId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
+    }
 }
