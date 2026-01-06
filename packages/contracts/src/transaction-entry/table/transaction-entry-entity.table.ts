@@ -23,6 +23,8 @@ export const TransactionEntryEntityTable = sqliteTable(
             .notNull()
             .references(() => TransactionEntityTable.id, { onDelete: 'cascade' }),
         amount: int('amount', { mode: 'number' }).notNull(),
-        externalId: text('external_id')
+        externalId: text('external_id'),
+        exchangeRate: int('exchange_rate', { mode: 'number' }).notNull().default(1),
+        toIban: text('to_iban')
     })
 );

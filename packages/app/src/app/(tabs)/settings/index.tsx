@@ -16,6 +16,7 @@ import { ExportDatabase } from '../../../export/components/export-database/expor
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { AiDataCard } from '../../../settings/components/ai-data-card/ai-data-card';
+import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
@@ -155,6 +156,7 @@ export default function SettingsPage() {
                             <ImportDatabase />
                             <ExportDatabase />
                             <RecalculateBalances />
+                            <ConsolidateTransfers />
                             <TruncateData />
                         </Animated.View>
                     </SettingsGroup>

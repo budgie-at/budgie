@@ -218,6 +218,10 @@ export type { RepeatedTransactionPatternInterface } from './transaction/interfac
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 
+export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
+
+export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
+
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
 export { isTransferTransaction } from './transaction/type-guard/is-transfer-transaction.type-guard';

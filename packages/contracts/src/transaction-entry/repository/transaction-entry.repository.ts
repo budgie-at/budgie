@@ -25,6 +25,16 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
+    async updateById(id: number, input: Partial<TransactionEntryCreateEntityInterface>, tx?: TX): Promise<TransactionEntryEntityInterface> {
+        const [transactionEntry] = await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set(input)
+            .where(eq(TransactionEntryEntityTable.id, id))
+            .returning();
+
+        return transactionEntry;
+    }
+
     async deleteByTransactionId(transactionId: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId));
     }

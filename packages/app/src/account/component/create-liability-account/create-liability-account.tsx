@@ -14,6 +14,7 @@ import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
+import { IbanField } from '../iban-field/iban-field';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
@@ -50,6 +51,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
 
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
+                <IbanField control={control} />
                 <CreateAccountCurrencyField control={control} />
                 <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
