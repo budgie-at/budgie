@@ -15,7 +15,11 @@ msgstr ""
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} Konten"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:28
+#: src/account/component/archived-account-card/archived-account-card.tsx:106
+msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
+msgstr ""
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:96
 msgid "{accountTitle} will be restored to your main view and included in totals."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den Gesamtsummen berücksichtigt."
 
@@ -472,11 +476,15 @@ msgstr "Tag konnte nicht erstellt werden"
 msgid "Could not create transaction. Please try again later."
 msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später erneut."
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:57
+msgid "Could not delete account."
+msgstr ""
+
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
 msgstr "Transaktion konnte nicht gelöscht werden."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:29
+#: src/account/component/archived-account-card/archived-account-card.tsx:44
 msgid "Could not restore account."
 msgstr "Konto konnte nicht wiederhergestellt werden."
 
@@ -613,6 +621,10 @@ msgstr "Standardkonto"
 msgid "Delete"
 msgstr "Löschen"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:105
+msgid "Delete Account Permanently?"
+msgstr ""
+
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Alle Transaktionen und Einstellungen löschen"
@@ -620,6 +632,10 @@ msgstr "Alle Transaktionen und Einstellungen löschen"
 #: src/settings/components/truncate-data/truncate-data.tsx:35
 msgid "Delete data"
 msgstr "Daten löschen"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:103
+msgid "Delete Permanently"
+msgstr ""
 
 #: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:60
 msgid "Delete transaction"
@@ -1250,11 +1266,11 @@ msgstr "Salden neu berechnen"
 msgid "Remaining:"
 msgstr "Verbleibend:"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:26
+#: src/account/component/archived-account-card/archived-account-card.tsx:93
 msgid "Restore"
 msgstr "Wiederherstellen"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:27
+#: src/account/component/archived-account-card/archived-account-card.tsx:95
 msgid "Restore Account?"
 msgstr "Konto wiederherstellen?"
 
@@ -1438,6 +1454,8 @@ msgid "Something went wrong."
 msgstr "Etwas ist schief gelaufen."
 
 #: src/account/component/account-action-card/account-action-card.tsx:51
+#: src/account/component/archived-account-card/archived-account-card.tsx:45
+#: src/account/component/archived-account-card/archived-account-card.tsx:58
 msgid "Something went wrong. Please try again later."
 msgstr "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut."
 

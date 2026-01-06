@@ -53,7 +53,6 @@ export const ConfirmActionBottomSheet = (props: Props) => {
 
     const handleCancel = () => void ref.current?.close();
     const buttonDisabled = isLoading || isDisabled;
-
     const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : buttonText;
 
     return (
@@ -62,7 +61,7 @@ export const ConfirmActionBottomSheet = (props: Props) => {
             ref={ref}
             enableDynamicSizing
             bottomInset={bottom}
-            enablePanDownToClose
+            isCloseable={false}
             detached={true}
         >
             <BottomSheetView className="mx-5 bg-transparent pt-xl pb-5xl">
@@ -74,7 +73,7 @@ export const ConfirmActionBottomSheet = (props: Props) => {
 
                 <View className="gap-y-md">
                     <Button content={submitButtonContent} disabled={buttonDisabled} onPress={onSubmit} variant={variant} size="md" />
-                    <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" />
+                    <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
                 </View>
             </BottomSheetView>
         </BottomSheet>

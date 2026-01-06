@@ -94,43 +94,43 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                         />
                     }
                 >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
+                    <KeyboardAwareScrollView
+                        keyboardShouldPersistTaps="handled"
+                        contentContainerClassName="pb-7xl"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
-                    {isDefined(transaction.entries[0]?.mccCategory) ? (
-                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                    ) : null}
+                        {isDefined(transaction.entries[0]?.mccCategory) ? (
+                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                        ) : null}
 
-                    <FormLayoutGroup>
-                        <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
+                        <FormLayoutGroup>
+                            <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
 
-                        <TransactionFormCategory
-                            transactionType={TransactionTypeEnum.EXPENSE}
-                            accountId={fromAccountId ?? 0}
-                            variant="destructive"
-                        />
+                            <TransactionFormCategory
+                                transactionType={TransactionTypeEnum.EXPENSE}
+                                accountId={fromAccountId ?? 0}
+                                variant="destructive"
+                            />
 
-                        <FormLayoutGroup variant="horizontal">
-                            <TransactionFormDateField variant="destructive" />
-                            <TransactionFormTagsField variant="destructive" />
+                            <FormLayoutGroup variant="horizontal">
+                                <TransactionFormDateField variant="destructive" />
+                                <TransactionFormTagsField variant="destructive" />
+                            </FormLayoutGroup>
+
+                            <TransactionFormComment />
                         </FormLayoutGroup>
-
-                        <TransactionFormComment />
-                    </FormLayoutGroup>
-                </KeyboardAwareScrollView>
-            </Page>
-        </FormProvider>
-        <ConvertExpenseToTransferBottomSheet
-            ref={convertSheetRef}
-            transactionId={transactionId}
-            fromAccountId={transaction.fromAccountId ?? 0}
-            onSuccess={handleConvertSuccess}
-        />
-    </>
+                    </KeyboardAwareScrollView>
+                </Page>
+            </FormProvider>
+            <ConvertExpenseToTransferBottomSheet
+                ref={convertSheetRef}
+                transactionId={transactionId}
+                fromAccountId={transaction.fromAccountId ?? 0}
+                onSuccess={handleConvertSuccess}
+            />
+        </>
     );
 };
 /* jscpd:ignore-end */
