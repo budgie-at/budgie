@@ -1,6 +1,6 @@
+/* jscpd:ignore-start */
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -9,13 +9,13 @@ import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-ac
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
+/* jscpd:ignore-end */
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -29,44 +29,25 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const restoreRef = useRef<BottomSheetInterface | null>(null);
-    const deleteRef = useRef<BottomSheetInterface | null>(null);
-
-    const [isRestoring, setIsRestoring] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    const handleOpenRestore = () => restoreRef.current?.open();
-    const handleOpenDelete = () => deleteRef.current?.open();
-
-    const showErrorToast = (message: string) => {
-        Toast.show({ type: 'error', text1: message, text2: t`Something went wrong. Please try again later.` });
-    };
-
-    const handleRestore = async () => {
-        setIsRestoring(true);
+    const handleRestoreAction = async () => {
         try {
-            await microPause();
             await accountService.restoreById(account.id);
-            restoreRef.current?.close();
         } catch {
-            showErrorToast(t`Could not restore account.`);
-        } finally {
-            setIsRestoring(false);
+            Toast.show({ type: 'error', text1: t`Could not restore account.`, text2: t`Something went wrong. Please try again later.` });
         }
     };
 
-    const handleDelete = async () => {
-        setIsDeleting(true);
+    const handleDeleteAction = async () => {
         try {
-            await microPause();
             await accountService.deleteById(account.id);
-            deleteRef.current?.close();
         } catch {
-            showErrorToast(t`Could not delete account.`);
-        } finally {
-            setIsDeleting(false);
+            Toast.show({ type: 'error', text1: t`Could not delete account.`, text2: t`Something went wrong. Please try again later.` });
         }
     };
+
+    const restore = useConfirmAction(handleRestoreAction);
+    const deleteAction = useConfirmAction(handleDeleteAction);
+
     const accountTitle = account.title;
 
     return (
@@ -78,11 +59,11 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                             {formatDigits(balance, defaultInstrument.symbol)}
                         </ProtectedText>
 
-                        <HapticPressable onPress={handleOpenRestore}>
+                        <HapticPressable onPress={restore.handleOpen}>
                             <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
                         </HapticPressable>
 
-                        <HapticPressable onPress={handleOpenDelete}>
+                        <HapticPressable onPress={deleteAction.handleOpen}>
                             <CircleIcon variant="destructive" icon={UserIconNameEnum.Trash2} />
                         </HapticPressable>
                     </View>
@@ -94,25 +75,25 @@ export const ArchivedAccountCard = ({ account }: Props) => {
             />
 
             <ConfirmActionBottomSheet
-                ref={restoreRef}
+                ref={restore.ref}
                 icon={UserIconNameEnum.RotateCcw}
                 variant="positive"
                 buttonText={t`Restore`}
-                onSubmit={handleRestore}
+                onSubmit={restore.handleConfirm}
                 title={t`Restore Account?`}
                 description={t`${accountTitle} will be restored to your main view and included in totals.`}
-                isLoading={isRestoring}
+                isLoading={restore.isLoading}
             />
 
             <ConfirmActionBottomSheet
-                ref={deleteRef}
+                ref={deleteAction.ref}
                 icon={UserIconNameEnum.OctagonAlert}
                 variant="destructive"
                 buttonText={t`Delete Permanently`}
-                onSubmit={handleDelete}
+                onSubmit={deleteAction.handleConfirm}
                 title={t`Delete Account Permanently?`}
                 description={t`${accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone.`}
-                isLoading={isDeleting}
+                isLoading={deleteAction.isLoading}
             />
         </>
     );

@@ -5,8 +5,7 @@ import {
     LiabilityAccountCreateInputInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    type TransactionWithEntriesEntityInterface
+    TransactionTypeEnum
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNumber, isPositiveNumber } from '@rnw-community/shared';
@@ -141,8 +140,8 @@ class AccountService {
     async deleteById(id: number): Promise<void> {
         return db.transaction(async tx => {
             await this.convertAccountTransfers(id, tx);
-            await transactionRepository.deleteByAccountId(id, tx);
             await transactionEntryRepository.deleteByAccountId(id, tx);
+            await transactionRepository.deleteByAccountId(id, tx);
 
             const settings = await settingsRepository.getSettings();
             if (settings.defaultAccountId === id) {
@@ -158,7 +157,7 @@ class AccountService {
     }
 
     private async convertAccountTransfers(accountId: number, tx: Transaction): Promise<void> {
-        const transfers = await transactionRepository.findTransfersByAccountId(accountId, tx);
+        const transfers = await transactionRepository.findTransfersForConversion(accountId, tx);
         if (!isNotEmptyArray(transfers)) {
             return;
         }
@@ -167,14 +166,23 @@ class AccountService {
         await transactionRepository.convertTransfersToAccountToExpense(accountId, tx);
 
         const entriesToCreate = this.collectTransferEntries(transfers, accountId);
-        await this.deleteTransferEntries(transfers, tx);
+        const transactionIds = transfers.map(t => t.id);
+        await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
 
         if (entriesToCreate.length > 0) {
             await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
         }
     }
 
-    private collectTransferEntries(transfers: TransactionWithEntriesEntityInterface[], accountId: number) {
+    private collectTransferEntries(
+        transfers: Array<{
+            id: number;
+            fromAccountId: number | null;
+            toAccountId: number | null;
+            entries: Array<{ type: TransactionEntryTypeEnum; amount: number }>;
+        }>,
+        accountId: number
+    ) {
         const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
 
         for (const transfer of transfers) {
@@ -184,9 +192,11 @@ class AccountService {
                 const debitEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
                 if (isDefined(debitEntry) && isDefined(transfer.toAccountId)) {
                     entriesToCreate.push({
-                        ...debitEntry,
                         transactionId: transfer.id,
                         accountId: transfer.toAccountId,
+                        amount: debitEntry.amount,
+                        categoryId: null,
+                        mccCategoryId: null,
                         type: TransactionEntryTypeEnum.DEBIT
                     });
                 }
@@ -194,9 +204,11 @@ class AccountService {
                 const creditEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
                 if (isDefined(creditEntry) && isDefined(transfer.fromAccountId)) {
                     entriesToCreate.push({
-                        ...creditEntry,
                         transactionId: transfer.id,
                         accountId: transfer.fromAccountId,
+                        amount: creditEntry.amount,
+                        categoryId: null,
+                        mccCategoryId: null,
                         type: TransactionEntryTypeEnum.CREDIT
                     });
                 }
@@ -204,14 +216,6 @@ class AccountService {
         }
 
         return entriesToCreate;
-    }
-
-    private async deleteTransferEntries(transfers: Array<{ id: number }>, tx: Transaction): Promise<void> {
-        const transactionIds = transfers.map(t => t.id);
-        for (const transactionId of transactionIds) {
-            // eslint-disable-next-line no-await-in-loop
-            await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
-        }
     }
 
     private async adjustBalanceTo(accountId: number, targetBalance: number, tx: Transaction): Promise<void> {
