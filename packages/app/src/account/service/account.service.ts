@@ -158,34 +158,23 @@ class AccountService {
     }
 
     private async convertAccountTransfers(accountId: number, tx: Transaction): Promise<void> {
-        console.log('convertAccountTransfers', accountId);
         const transfers = await transactionRepository.findTransfersByAccountId(accountId, tx);
         if (!isNotEmptyArray(transfers)) {
             return;
         }
-        console.log('transfers', transfers.length);
 
         await transactionRepository.convertTransfersFromAccountToIncome(accountId, tx);
-        console.log('converted transfers from account to income', ' ');
         await transactionRepository.convertTransfersToAccountToExpense(accountId, tx);
-        console.log('converted transfers to account to expense', ' ');
 
         const entriesToCreate = this.collectTransferEntries(transfers, accountId);
-        console.log('collected transfer entries', entriesToCreate.length);
-
         await this.deleteTransferEntries(transfers, tx);
-        console.log('deleted transfer entries', ' ');
 
         if (entriesToCreate.length > 0) {
             await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
         }
-        console.log('created transfer entries', ' ');
     }
 
-    private collectTransferEntries(
-        transfers: TransactionWithEntriesEntityInterface[],
-        accountId: number
-    ) {
+    private collectTransferEntries(transfers: TransactionWithEntriesEntityInterface[], accountId: number) {
         const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
 
         for (const transfer of transfers) {
@@ -198,7 +187,7 @@ class AccountService {
                         ...debitEntry,
                         transactionId: transfer.id,
                         accountId: transfer.toAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT,
+                        type: TransactionEntryTypeEnum.DEBIT
                     });
                 }
             } else {
@@ -208,7 +197,7 @@ class AccountService {
                         ...creditEntry,
                         transactionId: transfer.id,
                         accountId: transfer.fromAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT,
+                        type: TransactionEntryTypeEnum.CREDIT
                     });
                 }
             }
