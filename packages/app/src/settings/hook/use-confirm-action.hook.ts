@@ -7,7 +7,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 
-
 export const useConfirmAction = (onConfirm: () => Promise<void> | void, redirectUrl?: Href) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const [isLoading, setIsLoading] = useState(false);
