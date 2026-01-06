@@ -217,11 +217,11 @@ msgstr "Aplicar filtro"
 msgid "Apply Filter ({selected})"
 msgstr "Aplicar filtro ({selected})"
 
-#: src/account/component/archive-account/archive-account.tsx:44
+#: src/account/component/archive-account/archive-account.tsx:42
 msgid "Archive"
 msgstr "Archivar"
 
-#: src/account/component/archive-account/archive-account.tsx:47
+#: src/account/component/archive-account/archive-account.tsx:45
 msgid "Archive Account?"
 msgstr "¿Archivar cuenta?"
 
@@ -459,7 +459,7 @@ msgstr ""
 msgid "Could not activate account."
 msgstr "No se pudo activar la cuenta."
 
-#: src/account/component/archive-account/archive-account.tsx:28
+#: src/account/component/archive-account/archive-account.tsx:26
 msgid "Could not archive account. Please try again later"
 msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 
@@ -1444,7 +1444,7 @@ msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:27
+#: src/account/component/archive-account/archive-account.tsx:25
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
@@ -1564,7 +1564,7 @@ msgstr "Toca para limpiar"
 msgid "Target balance"
 msgstr "Saldo objetivo"
 
-#: src/account/component/archive-account/archive-account.tsx:43
+#: src/account/component/archive-account/archive-account.tsx:41
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
 "\n"
