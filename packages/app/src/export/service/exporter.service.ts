@@ -3,9 +3,8 @@ import {
     AccountEntityInterface,
     CategoryEntityInterface,
     InstrumentEntityInterface,
-    TransactionEntityInterface,
-    TransactionEntryEntityInterface,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 import { format } from 'date-fns';
 import { File, Paths } from 'expo-file-system';
@@ -22,8 +21,6 @@ import { ExportRowInterface } from '../interface/export-row.interface';
 type AccountsMap = Map<number, AccountEntityInterface>;
 type CategoriesMap = Map<number, CategoryEntityInterface>;
 type InstrumentsMap = Map<number, InstrumentEntityInterface>;
-
-type TransactionWithEntries = TransactionEntityInterface & { entries: TransactionEntryEntityInterface[] };
 
 class ExporterService {
     private readonly BATCH_SIZE = 750;
@@ -117,7 +114,7 @@ class ExporterService {
         return rows;
     }
 
-    private mapTransferTransaction(transaction: TransactionWithEntries): ExportRowInterface {
+    private mapTransferTransaction(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
         const entry = transaction.entries.at(0);
 
         const fromAccount = isDefined(transaction.fromAccountId) ? this.accountsMap.get(transaction.fromAccountId) : null;
@@ -144,7 +141,7 @@ class ExporterService {
         };
     }
 
-    private mapDeletedFromAccountTransfer(transaction: TransactionWithEntries): ExportRowInterface {
+    private mapDeletedFromAccountTransfer(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
         const toAccount = isDefined(transaction.toAccountId) ? this.accountsMap.get(transaction.toAccountId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? this.instrumentsMap.get(toAccount.instrumentId) : null;
         const toEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
@@ -154,7 +151,7 @@ class ExporterService {
         return this.createExportRow(transaction, toAccount, toInstrument, category, amount);
     }
 
-    private mapDeletedToAccountTransfer(transaction: TransactionWithEntries): ExportRowInterface {
+    private mapDeletedToAccountTransfer(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
         const fromAccount = isDefined(transaction.fromAccountId) ? this.accountsMap.get(transaction.fromAccountId) : null;
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? this.instrumentsMap.get(fromAccount.instrumentId) : null;
         const fromEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
@@ -164,7 +161,7 @@ class ExporterService {
         return this.createExportRow(transaction, fromAccount, fromInstrument, category, amount);
     }
 
-    private mapIncomeExpenseTransaction(transaction: TransactionWithEntries): ExportRowInterface[] {
+    private mapIncomeExpenseTransaction(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface[] {
         const toAccount = isDefined(transaction.toAccountId) ? this.accountsMap.get(transaction.toAccountId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? this.instrumentsMap.get(toAccount.instrumentId) : null;
 
@@ -178,7 +175,7 @@ class ExporterService {
 
     // eslint-disable-next-line @typescript-eslint/max-params
     private createExportRow(
-        transaction: TransactionWithEntries,
+        transaction: TransactionWithEntriesEntityInterface,
         account: AccountEntityInterface | null | undefined,
         instrument: InstrumentEntityInterface | null | undefined,
         category: CategoryEntityInterface | null | undefined,
