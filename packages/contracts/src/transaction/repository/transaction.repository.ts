@@ -24,6 +24,7 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
+import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
 export class TransactionRepository {
     private transactionRelations = {
@@ -240,6 +241,41 @@ export class TransactionRepository {
             .update(TransactionEntityTable)
             .set({ deletedAt: null })
             .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
+    }
+
+    async findTransfersByAccountId(accountId: number, tx?: TX): Promise<TransactionWithEntriesEntityInterface[]> {
+        return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+            where: and(
+                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
+            ),
+            with: this.transactionRelations
+        });
+    }
+
+    async deleteByAccountId(accountId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .delete(TransactionEntityTable)
+            .where(
+                and(
+                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                )
+            );
+    }
+
+    async convertTransfersFromAccountToIncome(accountId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
+            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId)));
+    }
+
+    async convertTransfersToAccountToExpense(accountId: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
+            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
