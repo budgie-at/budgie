@@ -5,8 +5,8 @@ import {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
-    TransactionEntityTable,
     TransactionEntryCreateInputInterface,
+    TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -139,26 +139,30 @@ class TransactionService {
         });
     }
 
-    async updateFromSync(externalId: string, input: TransactionCreateInputInterface): Promise<void> {
+    async updateFromSync(input: TransactionCreateInputInterface): Promise<void> {
         await db.transaction(async tx => {
-            const [result] = await db
-                .select({ id: TransactionEntityTable.id })
-                .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.externalId, externalId))
-                .limit(1);
+            const [entry] = input.entries;
 
-            if (!isDefined(result)) {
+            if (!isDefined(entry) || !isDefined(entry.externalId)) {
                 return;
             }
 
-            const existingTransaction = await transactionRepository.findById(result.id);
+            const [updatedEntry] = await tx
+                .update(TransactionEntryEntityTable)
+                .set({
+                    amount: convertToMicroUnits(entry.amount),
+                    exchangeRate: entry.exchangeRate,
+                    toIban: entry.toIban
+                })
+                .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
+                .returning({ transactionId: TransactionEntryEntityTable.transactionId });
 
-            if (!isDefined(existingTransaction)) {
+            if (!isDefined(updatedEntry)) {
                 return;
             }
 
             await transactionRepository.updateById(
-                existingTransaction.id,
+                updatedEntry.transactionId,
                 {
                     title: input.title,
                     comment: input.comment,
@@ -166,22 +170,6 @@ class TransactionService {
                 },
                 tx
             );
-
-            for (const syncEntry of input.entries) {
-                const matchingEntry = existingTransaction.entries.find(entry => entry.externalId === syncEntry.externalId);
-
-                if (isDefined(matchingEntry)) {
-                    await transactionEntryRepository.updateById(
-                        matchingEntry.id,
-                        {
-                            amount: convertToMicroUnits(syncEntry.amount),
-                            exchangeRate: syncEntry.exchangeRate,
-                            toIban: syncEntry.toIban
-                        },
-                        tx
-                    );
-                }
-            }
         });
     }
 

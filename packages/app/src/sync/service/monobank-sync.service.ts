@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings */
+/* eslint-disable lingui/no-unlocalized-strings */
 import { BankAccountInterface, BankSyncBatchResultInterface, MONOBANK_RATE_LIMIT_MS, MonobankSyncService } from '@budgie/bank-sync';
 import { BankSyncEntityInterface, BankSyncModeEnum, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
@@ -243,7 +243,6 @@ class AppMonobankSyncService {
         if (isNotEmptyArray(existingTxs)) {
             for (const tx of existingTxs) {
                 await transactionService.updateFromSync(
-                    tx.id,
                     mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
                 );
             }
