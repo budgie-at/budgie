@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9166c7b8-1577-4bc4-bdeb-3fd403fb46c9",
+  "id": "d140b244-323e-4788-b37b-06678dc771b6",
   "prevId": "70f3d47d-4f31-40d0-86a0-56b0b10a1bc7",
   "tables": {
     "account_balances": {
@@ -455,20 +455,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "''"
-        },
-        "title_tags": {
-          "name": "title_tags",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "tags_generated_at": {
-          "name": "tags_generated_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "icon": {
           "name": "icon",
@@ -1205,6 +1191,21 @@
         },
         "external_id": {
           "name": "external_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "exchange_rate": {
+          "name": "exchange_rate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "to_iban": {
+          "name": "to_iban",
           "type": "text",
           "primaryKey": false,
           "notNull": false,

@@ -217,6 +217,7 @@ class AppMonobankSyncService {
         }
     }
 
+    // eslint-disable-next-line max-statements
     private async executeSyncBatch(sync: BankSyncEntityInterface): Promise<BankSyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
         if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
@@ -227,7 +228,9 @@ class AppMonobankSyncService {
         await microPause();
 
         const existingIds = await transactionService.findByExternalSource(this.provider);
-        const newTxs = result.transactions.filter(tx => !existingIds.has(tx.id));
+        const validTxs = result.transactions.filter(tx => !tx.hold);
+        const newTxs = validTxs.filter(tx => !existingIds.has(tx.id));
+        const existingTxs = validTxs.filter(tx => existingIds.has(tx.id));
 
         if (isNotEmptyArray(newTxs)) {
             await transactionService.bulkCreate(
@@ -235,6 +238,15 @@ class AppMonobankSyncService {
                     mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
                 )
             );
+        }
+
+        if (isNotEmptyArray(existingTxs)) {
+            for (const tx of existingTxs) {
+                await transactionService.updateFromSync(
+                    tx.id,
+                    mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
+                );
+            }
         }
         await microPause();
 

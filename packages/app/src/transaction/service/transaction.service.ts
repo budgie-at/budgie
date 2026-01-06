@@ -5,10 +5,12 @@ import {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
+    TransactionEntityTable,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -137,10 +139,51 @@ class TransactionService {
         });
     }
 
+    async updateFromSync(externalId: string, input: TransactionCreateInputInterface): Promise<void> {
+        await db.transaction(async tx => {
+            const existingTransactions = await transactionRepository.findById(
+                (
+                    await db
+                        .select({ id: TransactionEntityTable.id })
+                        .from(TransactionEntityTable)
+                        .where(eq(TransactionEntityTable.externalId, externalId))
+                )[0]?.id ?? 0
+            );
+
+            if (!isDefined(existingTransactions)) {
+                return;
+            }
+
+            await transactionRepository.updateById(
+                existingTransactions.id,
+                {
+                    title: input.title,
+                    comment: input.comment,
+                    operatedAt: input.operatedAt
+                },
+                tx
+            );
+
+            const [existingEntry] = existingTransactions.entries;
+            const [syncEntry] = input.entries;
+
+            if (isDefined(existingEntry) && isDefined(syncEntry)) {
+                await transactionEntryRepository.updateById(
+                    existingEntry.id,
+                    {
+                        amount: convertToMicroUnits(syncEntry.amount),
+                        exchangeRate: syncEntry.exchangeRate,
+                        toIban: syncEntry.toIban
+                    },
+                    tx
+                );
+            }
+        });
+    }
+
     /* jscpd:ignore-start */
     async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         const { id, accountId: toAccountId, customExchangeRate } = params;
-
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.getById(id);

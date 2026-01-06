@@ -17,7 +17,8 @@ import {
     TransactionEntryRepository,
     TransactionPatternRepository,
     TransactionRepository,
-    TransactionTagsRepository
+    TransactionTagsRepository,
+    TransferPairRepository
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
@@ -137,3 +138,4 @@ export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db, expoDb);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db, expoDb);
+export const transferPairRepository = new TransferPairRepository(db);
