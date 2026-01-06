@@ -1,8 +1,6 @@
 import { BankTransactionInterface, BankTransactionTypeEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum, TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
-const EXCHANGE_RATE_PRECISION = 1000000;
-
 export const mapBankTransactionToCreateInput = (
     bankTransaction: BankTransactionInterface,
     accountId: number,
@@ -14,8 +12,7 @@ export const mapBankTransactionToCreateInput = (
     const operationAmount = Math.abs(bankTransaction.operationAmount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
-    const exchangeRate =
-        operationAmount !== 0 && amount !== operationAmount ? Math.floor((amount / operationAmount) * EXCHANGE_RATE_PRECISION) : 1;
+    const exchangeRate = operationAmount !== 0 && amount !== operationAmount ? amount / operationAmount : 1;
 
     return {
         amount,

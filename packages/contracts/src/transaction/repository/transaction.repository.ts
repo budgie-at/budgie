@@ -46,6 +46,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
+    async softDeleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ deletedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
+    }
+
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
@@ -72,12 +76,14 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     getAll(limit = 20, filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
         const where = this.buildWhere(filters);
+        const deletedAtCondition = isNull(TransactionEntityTable.deletedAt);
+        const finalWhere = isDefined(where) ? and(where, deletedAtCondition) : deletedAtCondition;
 
         return this.db.query.TransactionEntityTable.findMany({
             with: this.transactionRelations,
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)],
             limit,
-            ...(isDefined(where) ? { where } : {})
+            where: finalWhere
         });
     }
 
@@ -106,13 +112,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })
             .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    isNotNull(TransactionEntityTable.externalId),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
+            .where(and(eq(TransactionEntityTable.externalSource, externalSource), isNotNull(TransactionEntityTable.externalId)));
 
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }

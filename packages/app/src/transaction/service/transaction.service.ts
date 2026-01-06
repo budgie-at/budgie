@@ -154,6 +154,10 @@ class TransactionService {
                 return;
             }
 
+            if (isDefined(existingTransactions.deletedAt)) {
+                return;
+            }
+
             await transactionRepository.updateById(
                 existingTransactions.id,
                 {
