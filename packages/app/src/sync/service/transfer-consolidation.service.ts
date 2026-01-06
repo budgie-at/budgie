@@ -64,6 +64,7 @@ class TransferConsolidationService {
     }
 
     private async consolidatePair(candidate: TransferPairCandidateInterface, exchangeRate: number): Promise<void> {
+        // eslint-disable-next-line max-statements
         await db.transaction(async tx => {
             const incomeTags = await transactionTagsRepository.findByTransactionId(candidate.income_transaction_id);
 
@@ -83,7 +84,22 @@ class TransferConsolidationService {
                 tx
             );
 
-            await transactionEntryRepository.updateById(candidate.income_entry_id, { transactionId: candidate.expense_transaction_id }, tx);
+            await transactionEntryRepository.updateById(
+                candidate.income_entry_id,
+                {
+                    transactionId: candidate.expense_transaction_id,
+                    categoryId: null
+                },
+                tx
+            );
+
+            await transactionEntryRepository.updateById(
+                candidate.expense_entry_id,
+                {
+                    categoryId: null
+                },
+                tx
+            );
 
             if (isNotEmptyArray(incomeTags)) {
                 await transactionTagsRepository.bulkCreate(
@@ -95,7 +111,7 @@ class TransferConsolidationService {
                 );
             }
 
-            await transactionRepository.deleteById(candidate.income_transaction_id, tx);
+            await transactionRepository.softDeleteById(candidate.income_transaction_id, tx);
             await transactionTagsRepository.deleteByTransactionId(candidate.income_transaction_id, tx);
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
         });
