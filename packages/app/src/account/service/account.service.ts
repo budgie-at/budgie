@@ -117,6 +117,7 @@ class AccountService {
 
     async archiveById(id: number): Promise<void> {
         return db.transaction(async tx => {
+            await transactionRepository.unconsolidateTransfersByAccountIds([id], tx);
             await accountRepository.archiveById(id, tx);
             await transactionEntryRepository.archiveByAccountIds([id], tx);
             await transactionRepository.archiveByAccountIds([id], tx);
