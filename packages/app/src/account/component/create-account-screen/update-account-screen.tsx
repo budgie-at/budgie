@@ -21,7 +21,6 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { ResyncBankSyncAccount } from '../../../sync/component/resync-bank-sync-account/resync-bank-sync-account';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_DEBT_TYPE_COLOR } from '../../constant/account-debt-type-color.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -53,7 +52,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
 
     const description = t(ACCOUNT_TYPE[currentType]);
     const variant = currentType === AccountTypeEnum.DEBT ? ACCOUNT_DEBT_TYPE_COLOR[account.debtType] : ACCOUNT_COLOR[currentType];
-    const isBankSyncAccount = account.type === AccountTypeEnum.BANK_SYNC;
 
     return (
         <Page
@@ -71,7 +69,6 @@ export const UpdateAccountScreen = <T extends LiabilityAccountCreateInputInterfa
                     <Footer>
                         <View className="flex-row gap-2">
                             <ArchiveAccount accountId={account.id} />
-                            {isBankSyncAccount ? <ResyncBankSyncAccount accountId={account.id} /> : null}
                             <Button onPress={onSubmit} size="sm" variant={variant} content={t`Update Account`} className="flex-1" />
                         </View>
                     </Footer>
