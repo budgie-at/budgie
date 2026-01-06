@@ -8,7 +8,7 @@ class CategoryService {
         for (let i = 0; i < inputs.length; i += batchSize) {
             const batch = inputs.slice(i, i + batchSize);
 
-            // eslint-disable-next-line no-await-in-loop
+             
             results.push(...(await db.transaction(async tx => categoryRepository.bulkCreate(batch, tx))));
         }
 
