@@ -60,15 +60,13 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
 
     return (
         <Card className="p-4xl gap-y-lg">
-            <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center gap-md flex-1 mr-md">
-                    <ResyncBankSyncAccount accountId={accountId} />
-                    <View className="flex-1">
-                        <Text className="text-primary font-semibold text-base">
-                            <Trans>Bank Sync</Trans>
-                        </Text>
-                        <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
-                    </View>
+            <View className="flex-row items-center justify-between gap-2">
+                <ResyncBankSyncAccount accountId={accountId} />
+                <View className="content-center">
+                    <Text className="text-primary font-semibold text-base">
+                        <Trans>Bank Sync</Trans>
+                    </Text>
+                    <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
                 </View>
                 <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
             </View>
