@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/budgie-at/budgie/compare/v2.3.1...v2.4.0) (2026-01-06)
+
+### Bug Fixes
+
+- correct apostrophe escaping in license metadata ([ac9b54b](https://github.com/budgie-at/budgie/commit/ac9b54bc714784eeef70a20ab425caf14020b2cd))
+- properly escape apostrophe in metadata to fix build ([3a1c828](https://github.com/budgie-at/budgie/commit/3a1c828f76873f9b2b05c4eb8d19475482260882))
+
+### Features
+
+- update license to O'Saasy ([3bf0fa1](https://github.com/budgie-at/budgie/commit/3bf0fa1324f62ee6292f2344a22d888f82b04d5b))
+
 ## [2.3.1](https://github.com/budgie-at/budgie/compare/v2.3.0...v2.3.1) (2026-01-05)
 
 ### Bug Fixes
