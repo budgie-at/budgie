@@ -245,11 +245,26 @@ export class TransactionRepository {
 
     async findTransfersByAccountId(accountId: number, tx?: TX): Promise<TransactionWithEntriesEntityInterface[]> {
         return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-            where: and(
-                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
-            ),
+            where: this.buildTransfersByAccountIdWhere(accountId),
             with: this.transactionRelations
+        });
+    }
+
+    async findTransfersForConversion(
+        accountId: number,
+        tx?: TX
+    ): Promise<
+        Array<{
+            id: number;
+            fromAccountId: number | null;
+            toAccountId: number | null;
+            entries: Array<{ type: TransactionEntryTypeEnum; amount: number }>;
+        }>
+    > {
+        return await (tx ?? this.db).query.TransactionEntityTable.findMany({
+            where: this.buildTransfersByAccountIdWhere(accountId),
+            columns: { id: true, fromAccountId: true, toAccountId: true },
+            with: { [TransactionAssociationEnum.ENTRIES]: { columns: { type: true, amount: true } } }
         });
     }
 
@@ -276,6 +291,13 @@ export class TransactionRepository {
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
+    }
+
+    private buildTransfersByAccountIdWhere(accountId: number) {
+        return and(
+            eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+            or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
+        );
     }
 
     private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
