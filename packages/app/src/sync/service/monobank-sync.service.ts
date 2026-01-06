@@ -242,7 +242,7 @@ class AppMonobankSyncService {
 
         if (isNotEmptyArray(existingTxs)) {
             for (const tx of existingTxs) {
-                await transactionService.updateFromSync(
+                await transactionService.update(
                     mapBankTransactionToCreateInput(tx, account.id, this.mccCategoryIdMap.get(String(tx.mcc)) ?? null, this.provider)
                 );
             }

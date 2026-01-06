@@ -22,7 +22,7 @@ class ExchangeRatesSyncService {
 
         for (const instrument of await instrumentRepository.getAll()) {
             if (instrument.code !== baseInstrument.code) {
-                // eslint-disable-next-line no-await-in-loop
+                 
                 await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
             }
         }
