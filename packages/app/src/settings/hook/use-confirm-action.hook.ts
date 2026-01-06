@@ -1,10 +1,12 @@
+import { Href } from 'expo-router';
 import { useRef, useState } from 'react';
+import { InteractionManager } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
-import { InteractionManager } from 'react-native';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
-import { Href } from 'expo-router';
-import { isNotEmptyString } from '@rnw-community/shared';
+
 
 export const useConfirmAction = (onConfirm: () => Promise<void> | void, redirectUrl?: Href) => {
     const ref = useRef<BottomSheetInterface | null>(null);
