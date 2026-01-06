@@ -202,6 +202,9 @@ export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sel
 export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/transfer-asset-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
+export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
+
+export { TransferPairRepository } from './transaction/repository/transfer-pair.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';

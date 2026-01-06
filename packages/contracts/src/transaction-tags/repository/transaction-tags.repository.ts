@@ -10,6 +10,13 @@ import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.tab
 export class TransactionTagsRepository {
     constructor(private db: DB) {}
 
+    async findByTransactionId(transactionId: number, tx?: TX): Promise<TransactionTagsEntityInterface[]> {
+        return await (tx ?? this.db)
+            .select()
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
+    }
+
     async bulkCreate(inputs: TransactionTagsCreateEntityInterface[], tx?: TX): Promise<TransactionTagsEntityInterface[]> {
         if (isNotEmptyArray(inputs)) {
             return await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).returning();
