@@ -15,12 +15,19 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, ruleRepository, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    db,
+    ruleRepository,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 20;
+const BATCH_DELAY_MS = 50;
 
 type TransactionWithEntries = TransactionEntityInterface & {
     readonly [TransactionAssociationEnum.ENTRIES]: Array<
@@ -70,18 +77,15 @@ const convertTransactionForRuleEvaluation = (transaction: TransactionWithEntries
 };
 
 class RuleEngineService {
-    async applyRulesToTransactions(
-        transactionIds: number[],
-        transactionInputs: TransactionCreateInputInterface[]
-    ): Promise<void> {
+    async applyRulesToTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): Promise<void> {
         const rules = await ruleRepository.findEnabledWithRelations();
         if (!isNotEmptyArray(rules)) {
             return;
         }
 
-        for (let i = 0; i < transactionIds.length; i += 1) {
-            const transactionId = transactionIds[i];
-            const input = transactionInputs[i];
+        for (let index = 0; index < transactionIds.length; index += 1) {
+            const transactionId = transactionIds[index];
+            const input = transactionInputs[index];
 
             // eslint-disable-next-line no-await-in-loop
             await this.applyRulesToTransaction(transactionId, input, rules);
@@ -90,6 +94,7 @@ class RuleEngineService {
 
     async applyRuleToMatchingTransactions(ruleId: number): Promise<void> {
         const rule = await ruleRepository.findByIdWithRelations(ruleId);
+
         if (!isDefined(rule) || !isNotEmptyArray(rule.conditions)) {
             return;
         }
@@ -102,6 +107,12 @@ class RuleEngineService {
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         while (true) {
+            // Yield to UI thread before each batch
+            // eslint-disable-next-line no-await-in-loop
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, BATCH_DELAY_MS);
+            });
+
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
 

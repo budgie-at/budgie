@@ -9,7 +9,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { RulePrefillConditionInterface, RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
-import { ruleEngineService } from '../service/rule-engine.service';
 import { ruleService } from '../service/rule.service';
 import { buildRuleInputFromPrefill } from '../util/build-rule-input-from-prefill.util';
 
@@ -93,14 +92,10 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         }
 
         setIsCreating(true);
+
         try {
             const ruleInput = buildRuleInputFromPrefill(buildPrefillData(selectedFields, data, applyToExisting));
-            const rule = await ruleService.create(ruleInput);
-
-            if (applyToExisting) {
-                await ruleEngineService.applyRuleToMatchingTransactions(rule.id);
-            }
-
+            await ruleService.create(ruleInput);
             onRuleCreated?.();
             modalRef.current?.close();
         } catch {
