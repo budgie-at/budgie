@@ -1,6 +1,6 @@
+/* jscpd:ignore-start */
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -9,11 +9,12 @@ import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-ac
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+/* jscpd:ignore-end */
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
@@ -35,15 +36,11 @@ export const AccountActionCard = (props: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
-
-    const handlePress = () => ref.current?.open();
 
     const handleAction = async () => {
         try {
             await onAction();
-            ref.current?.close();
         } catch {
             Toast.show({
                 type: 'error',
@@ -52,6 +49,8 @@ export const AccountActionCard = (props: Props) => {
             });
         }
     };
+
+    const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleAction);
 
     return (
         <>
@@ -62,7 +61,7 @@ export const AccountActionCard = (props: Props) => {
                             {formatDigits(balance, currencySymbol)}
                         </ProtectedText>
 
-                        <HapticPressable onPress={handlePress}>
+                        <HapticPressable onPress={handleOpen}>
                             <CircleIcon variant="positive" icon={actionIcon} />
                         </HapticPressable>
                     </View>
@@ -76,9 +75,10 @@ export const AccountActionCard = (props: Props) => {
             <ConfirmActionBottomSheet
                 ref={ref}
                 icon={actionIcon}
+                isLoading={isLoading}
                 variant="positive"
                 buttonText={actionButtonText}
-                onSubmit={handleAction}
+                onSubmit={handleConfirm}
                 title={confirmTitle}
                 description={confirmDescription}
             />
