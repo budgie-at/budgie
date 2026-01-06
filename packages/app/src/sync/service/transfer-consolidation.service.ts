@@ -13,7 +13,7 @@ import {
     transferPairRepository
 } from '../../@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { FIVE_MINUTES_MS, THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
+import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
 class TransferConsolidationService {
@@ -49,7 +49,7 @@ class TransferConsolidationService {
     }
 
     private async executeConsolidation(): Promise<void> {
-        const pairCandidates = await transferPairRepository.findCandidates(FIVE_MINUTES_MS);
+        const pairCandidates = await transferPairRepository.findCandidates();
 
         for (const candidate of pairCandidates) {
             const exchangeRate =
