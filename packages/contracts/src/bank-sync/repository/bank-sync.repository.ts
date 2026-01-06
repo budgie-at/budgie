@@ -121,6 +121,7 @@ export class BankSyncRepository {
                 backwardSyncedAt: null,
                 forwardSyncFromAt: now,
                 forwardSyncedAt: null,
+                transactionCount: 0,
                 errorCount: 0,
                 lastError: null
             })
