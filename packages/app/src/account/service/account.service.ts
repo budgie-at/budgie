@@ -5,7 +5,8 @@ import {
     LiabilityAccountCreateInputInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNumber, isPositiveNumber } from '@rnw-community/shared';
@@ -175,12 +176,7 @@ class AccountService {
     }
 
     private collectTransferEntries(
-        transfers: Array<{
-            id: number;
-            fromAccountId: number | null;
-            toAccountId: number | null;
-            entries: Array<{ type: TransactionEntryTypeEnum; amount: number }>;
-        }>,
+        transfers: TransactionWithEntriesEntityInterface[],
         accountId: number
     ) {
         const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];
@@ -192,11 +188,9 @@ class AccountService {
                 const debitEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
                 if (isDefined(debitEntry) && isDefined(transfer.toAccountId)) {
                     entriesToCreate.push({
+                        ...debitEntry,
                         transactionId: transfer.id,
                         accountId: transfer.toAccountId,
-                        amount: debitEntry.amount,
-                        categoryId: null,
-                        mccCategoryId: null,
                         type: TransactionEntryTypeEnum.DEBIT
                     });
                 }
@@ -204,11 +198,9 @@ class AccountService {
                 const creditEntry = transfer.entries.find(entry => entry.type === TransactionEntryTypeEnum.CREDIT);
                 if (isDefined(creditEntry) && isDefined(transfer.fromAccountId)) {
                     entriesToCreate.push({
+                        ...creditEntry,
                         transactionId: transfer.id,
                         accountId: transfer.fromAccountId,
-                        amount: creditEntry.amount,
-                        categoryId: null,
-                        mccCategoryId: null,
                         type: TransactionEntryTypeEnum.CREDIT
                     });
                 }
