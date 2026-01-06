@@ -17,7 +17,11 @@ msgstr ""
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:28
+#: src/account/component/archived-account-card/archived-account-card.tsx:95
+msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
+msgstr "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
+
+#: src/account/component/archived-account-card/archived-account-card.tsx:84
 msgid "{accountTitle} will be restored to your main view and included in totals."
 msgstr "{accountTitle} will be restored to your main view and included in totals."
 
@@ -25,7 +29,7 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
-#: src/app/(main)/settings/archived.tsx:21
+#: src/app/(main)/settings/archived.tsx:22
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} account"
 
@@ -215,15 +219,15 @@ msgstr "Apply Filter"
 msgid "Apply Filter ({selected})"
 msgstr "Apply Filter ({selected})"
 
-#: src/account/component/archive-account/archive-account.tsx:44
+#: src/account/component/archive-account/archive-account.tsx:42
 msgid "Archive"
 msgstr "Archive"
 
-#: src/account/component/archive-account/archive-account.tsx:47
+#: src/account/component/archive-account/archive-account.tsx:45
 msgid "Archive Account?"
 msgstr "Archive Account?"
 
-#: src/app/(main)/settings/archived.tsx:20
+#: src/app/(main)/settings/archived.tsx:21
 #: src/app/(main)/settings/index.tsx:101
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
@@ -232,7 +236,7 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:63
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:57
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Are you sure you want to delete this transaction?"
 
@@ -286,12 +290,12 @@ msgid "BudgetAI"
 msgstr "BudgetAI"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
-#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
+#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:120
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:122
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:107
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -441,15 +445,15 @@ msgstr "Contact (optional)"
 msgid "Continue"
 msgstr "Continue"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:58
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:56
 msgid "Conversion failed"
 msgstr "Conversion failed"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:128
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:109
 msgid "Convert"
 msgstr "Convert"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:82
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
 
@@ -457,7 +461,7 @@ msgstr "Convert to Transfer?"
 msgid "Could not activate account."
 msgstr "Could not activate account."
 
-#: src/account/component/archive-account/archive-account.tsx:29
+#: src/account/component/archive-account/archive-account.tsx:26
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
@@ -474,11 +478,15 @@ msgstr "Could not create tag"
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:44
+msgid "Could not delete account."
+msgstr "Could not delete account."
+
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:29
+#: src/account/component/archived-account-card/archived-account-card.tsx:36
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
@@ -615,6 +623,10 @@ msgstr "Default Account"
 msgid "Delete"
 msgstr "Delete"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx:94
+msgid "Delete Account Permanently?"
+msgstr "Delete Account Permanently?"
+
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
@@ -623,7 +635,11 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:60
+#: src/account/component/archived-account-card/archived-account-card.tsx:92
+msgid "Delete Permanently"
+msgstr "Delete Permanently"
+
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:54
 msgid "Delete transaction"
 msgstr "Delete transaction"
 
@@ -631,7 +647,7 @@ msgstr "Delete transaction"
 msgid "Deselect All"
 msgstr "Deselect All"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:102
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Destination Account"
 msgstr "Destination Account"
 
@@ -1205,7 +1221,7 @@ msgstr "PINs do not match"
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
 msgstr "Please try again"
 
@@ -1252,11 +1268,11 @@ msgstr "Recalculate Balances"
 msgid "Remaining:"
 msgstr "Remaining:"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:26
+#: src/account/component/archived-account-card/archived-account-card.tsx:81
 msgid "Restore"
 msgstr "Restore"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:27
+#: src/account/component/archived-account-card/archived-account-card.tsx:83
 msgid "Restore Account?"
 msgstr "Restore Account?"
 
@@ -1345,7 +1361,7 @@ msgstr "Select account"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:82
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:108
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:99
 msgid "Select Account"
 msgstr "Select Account"
 
@@ -1430,7 +1446,7 @@ msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:28
+#: src/account/component/archive-account/archive-account.tsx:25
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
@@ -1439,7 +1455,9 @@ msgstr "Something went wrong"
 msgid "Something went wrong."
 msgstr "Something went wrong."
 
-#: src/account/component/account-action-card/account-action-card.tsx:51
+#: src/account/component/account-action-card/account-action-card.tsx:48
+#: src/account/component/archived-account-card/archived-account-card.tsx:36
+#: src/account/component/archived-account-card/archived-account-card.tsx:44
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
@@ -1548,7 +1566,7 @@ msgstr "Tap to clear"
 msgid "Target balance"
 msgstr "Target balance"
 
-#: src/account/component/archive-account/archive-account.tsx:43
+#: src/account/component/archive-account/archive-account.tsx:41
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
 "\n"
@@ -1559,7 +1577,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:59
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:53
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
@@ -1571,7 +1589,7 @@ msgstr "This Month"
 msgid "This Week"
 msgstr "This Week"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:94
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:86
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
 msgstr "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
 

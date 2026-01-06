@@ -12,7 +12,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly instrumentSymbol: string;
 }
 
-const syncStatusVariants = cva('absolute bottom-3 right-3 size-2 rounded-full', {
+const syncStatusVariants = cva('absolute bottom-3 right-3 size-2 rounded-full will-change-animation', {
     variants: {
         status: {
             [BankSyncStatusEnum.SYNCING]: 'bg-amber-500 animate-pulse',
@@ -27,9 +27,15 @@ export const BankSyncAccountCard = (props: Props) => {
 
     const { bankSync } = useAccountBankSync(id);
 
+    const shouldShow = isDefined(bankSync);
+    const statusClassName = shouldShow
+        ? syncStatusVariants({ status: bankSync.status })
+        : syncStatusVariants({ status: BankSyncStatusEnum.IDLE });
+    const statusStyle = { opacity: shouldShow ? 1 : 0 };
+
     return (
         <AccountCardBase id={id} title={title} icon={icon} instrumentSymbol={instrumentSymbol} className={className}>
-            {isDefined(bankSync) ? <View className={syncStatusVariants({ status: bankSync.status })} /> : null}
+            <View className={statusClassName} style={statusStyle} />
         </AccountCardBase>
     );
 };
