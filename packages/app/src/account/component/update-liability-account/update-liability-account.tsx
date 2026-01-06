@@ -10,6 +10,7 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { accountService } from '../../service/account.service';
 import { AccountTypeSelectorField } from '../account-type-selector-field/account-type-selector-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
+import { IbanField } from '../iban-field/iban-field';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
@@ -56,6 +57,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         <UpdateAccountScreen instrumentSymbol={instrument.symbol} onSubmit={handleSubmit} account={updatedAccount} control={control}>
             {canChangeType ? <AccountTypeSelectorField control={control} /> : null}
             {isBankSyncAccount ? <AccountBankSyncCard accountId={account.id} /> : null}
+            <IbanField control={control} />
             <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
     );
