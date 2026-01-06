@@ -68,7 +68,9 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
                     </Text>
                     <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
                 </View>
-                <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                <View className="content-center">
+                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                </View>
             </View>
 
             <View className="gap-y-sm border-t border-secondary-corner pt-lg">
