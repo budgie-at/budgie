@@ -17,7 +17,7 @@ msgstr "{accountsCount} comptes"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:95
 msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
-msgstr ""
+msgstr "{accountTitle} et ses transactions seront définitivement supprimés. Les transferts seront convertis en revenus/dépenses sur d'autres comptes. Cette action est irréversible."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:84
 msgid "{accountTitle} will be restored to your main view and included in totals."
@@ -445,15 +445,15 @@ msgstr "Continuer"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:56
 msgid "Conversion failed"
-msgstr ""
+msgstr "Échec de la conversion"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:109
 msgid "Convert"
-msgstr ""
+msgstr "Convertir"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:82
 msgid "Convert to Transfer?"
-msgstr ""
+msgstr "Convertir en virement ?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
@@ -478,7 +478,7 @@ msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:44
 msgid "Could not delete account."
-msgstr ""
+msgstr "Impossible de supprimer le compte."
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
@@ -623,7 +623,7 @@ msgstr "Supprimer"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:94
 msgid "Delete Account Permanently?"
-msgstr ""
+msgstr "Supprimer le compte définitivement ?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
@@ -635,7 +635,7 @@ msgstr "Supprimer les données"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:92
 msgid "Delete Permanently"
-msgstr ""
+msgstr "Supprimer définitivement"
 
 #: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:54
 msgid "Delete transaction"
@@ -647,7 +647,7 @@ msgstr "Tout désélectionner"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Destination Account"
-msgstr ""
+msgstr "Compte de destination"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
@@ -1221,7 +1221,7 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
-msgstr ""
+msgstr "Veuillez réessayer"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
@@ -1589,7 +1589,7 @@ msgstr "Cette semaine"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:86
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
-msgstr ""
+msgstr "Ceci changera le type de transaction. La catégorie sera remplacée par 'Transfert de devises'."
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
