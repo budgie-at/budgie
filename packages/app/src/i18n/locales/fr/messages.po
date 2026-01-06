@@ -31,6 +31,30 @@ msgstr "{archivedAccountsCount} compte"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
+#: src/budget/component/widget-status-indicator/widget-status-indicator.tsx:19
+msgid "{categoriesOverBudget} over budget"
+msgstr ""
+
+#: src/budget/component/budget-category-item/budget-category-item.tsx:71
+msgid "{catRemainingFormatted} left"
+msgstr ""
+
+#: src/budget/component/budget-over-budget-warning/budget-over-budget-warning.tsx:15
+msgid "{count} categories over budget"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:57
+msgid "{dailyBudgetFormatted}/day"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:76
+msgid "{daysRemaining} of {totalDays} days left"
+msgstr ""
+
+#: src/budget/component/widget-header/widget-header.tsx:20
+msgid "{daysRemaining}d left"
+msgstr ""
+
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} icônes disponibles"
@@ -49,19 +73,43 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
+#: src/budget/component/widget-amounts/widget-amounts.tsx:42
+msgid "{safeToSpendPerDayFormatted}/day"
+msgstr ""
+
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:59
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} étiquettes disponibles"
+
+#: src/budget/component/allocation-type-toggle/allocation-type-toggle.tsx:43
+msgid "% of Income"
+msgstr ""
+
+#: src/budget/component/historical-category-breakdown/historical-category-breakdown.tsx:47
+msgid "+{remainingCount} more"
+msgstr ""
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:58
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
 
-#: src/app/(main)/settings/index.tsx:135
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "1st Month"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "2nd Month"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "3rd Month"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:154
 msgid "About"
 msgstr "À propos"
 
@@ -102,6 +150,7 @@ msgid "Accounts you mark as inactive will appear here. They won't be shown on th
 msgstr "Les comptes que vous marquez comme inactifs apparaîtront ici. Ils ne seront pas affichés sur la page principale."
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:24
+#: src/budget/component/budget-list-item/budget-list-item.tsx:45
 msgid "Activate"
 msgstr "Activer"
 
@@ -110,9 +159,15 @@ msgid "Activate Account?"
 msgstr "Activer le compte ?"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:20
+#: src/budget/component/budget-list-item/budget-list-item.tsx:31
+#: src/budget/component/budget-list-item/budget-list-item.tsx:39
 #: src/settings/components/security-settings/pin-enabled-card.tsx:54
 msgid "Active"
 msgstr "Actif"
+
+#: src/budget/component/budget-categories-header/budget-categories-header.tsx:23
+msgid "Add"
+msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Add a new category to organize your transactions"
@@ -125,6 +180,14 @@ msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
 msgid "Add a note..."
 msgstr "Ajouter une note..."
+
+#: src/budget/component/create-allocation/create-allocation.tsx:51
+msgid "Add Allocation"
+msgstr ""
+
+#: src/budget/component/create-allocation/create-allocation.tsx:47
+msgid "Add Category"
+msgstr ""
 
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
@@ -154,7 +217,7 @@ msgstr "Ajustement"
 msgid "AI"
 msgstr "IA"
 
-#: src/app/(main)/settings/index.tsx:140
+#: src/app/(main)/settings/index.tsx:159
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -170,7 +233,7 @@ msgstr "Toutes les colonnes ont été assignées"
 msgid "All Time"
 msgstr "Tout le temps"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:59
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Toutes vos données financières sont stockées localement sur votre appareil. Pas de synchronisation cloud, pas de suivi, aucun partage de données."
 
@@ -182,7 +245,8 @@ msgstr "Alloué"
 msgid "Already syncing"
 msgstr "Déjà en cours de synchronisation"
 
-#: src/app/(main)/settings/import.tsx:196
+#: src/app/(main)/settings/import.tsx:195
+#: src/budget/component/allocation-amount-field/allocation-amount-field.tsx:17
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:107
 msgid "Amount"
 msgstr "Montant"
@@ -201,7 +265,7 @@ msgstr "Jeton API"
 msgid "App Lock"
 msgstr "Verrouillage de l'application"
 
-#: src/app/(main)/settings/index.tsx:115
+#: src/app/(main)/settings/index.tsx:134
 msgid "Appearance"
 msgstr "Apparence"
 
@@ -213,6 +277,10 @@ msgstr "Appliquer le filtre"
 msgid "Apply Filter ({selected})"
 msgstr "Appliquer le filtre ({selected})"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Apr"
+msgstr ""
+
 #: src/account/component/archive-account/archive-account.tsx:44
 msgid "Archive"
 msgstr "Archiver"
@@ -222,21 +290,25 @@ msgid "Archive Account?"
 msgstr "Archiver le compte ?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(main)/settings/index.tsx:103
 msgid "Archived Accounts"
 msgstr "Comptes archivés"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action ne peut pas être annulée."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:63
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:56
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette transaction ?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Aug"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:49
 msgid "Auto-sync accounts and transactions from Monobank"
@@ -271,6 +343,10 @@ msgstr "Synchronisation bancaire"
 msgid "Base currency"
 msgstr "Devise de base"
 
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:17
+msgid "Bi-weekly"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:40
 msgid "Biometric Authentication"
 msgstr "Authentification biométrique"
@@ -279,25 +355,75 @@ msgstr "Authentification biométrique"
 msgid "Borrowed"
 msgstr "Emprunté"
 
-#: src/app/(main)/settings/index.tsx:138
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:15
+msgid "Both surplus and deficit roll over"
+msgstr ""
+
+#: src/app/(tabs)/index.tsx:46
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:118
+msgid "Budget"
+msgstr ""
+
+#: src/app/(main)/settings/budget-analytics.tsx:22
+#: src/app/(main)/settings/index.tsx:127
+msgid "Budget Analytics"
+msgstr ""
+
+#: src/budget/component/budget-health-card/budget-health-card.tsx:22
+msgid "Budget Health"
+msgstr ""
+
+#: src/budget/component/budget-title-field/budget-title-field.tsx:16
+msgid "Budget Name"
+msgstr ""
+
+#: src/budget/component/budget-period-field/budget-period-field.tsx:16
+msgid "Budget Period"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:26
+msgid "Budget Usage"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:157
 msgid "BudgetAI"
 msgstr "BudgetAI"
+
+#: src/app/(main)/settings/index.tsx:117
+msgid "Budgeting"
+msgstr ""
+
+#: src/app/(main)/settings/budgets.tsx:33
+msgid "Budgets"
+msgstr ""
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:255
+#: src/@generic/component/input-action-bottom-sheet/input-action-bottom-sheet.tsx:65
+#: src/app/(main)/settings/import.tsx:254
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:120
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:122
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:107
 msgid "Cancel"
 msgstr "Annuler"
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:15
+msgid "Carry All"
+msgstr ""
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:14
+msgid "Carry Surplus"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:7
 msgid "Cash"
 msgstr "Espèces"
 
 #: src/app/(main)/settings/categories.tsx:45
+#: src/budget/component/budget-categories-header/budget-categories-header.tsx:17
+#: src/budget/component/budget-health-card/budget-health-card.tsx:26
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:20
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:57
@@ -326,12 +452,17 @@ msgstr ""
 "IMPORTANT: Les aliments (viande, légumes, épicerie) vont dans la catégorie Épicerie/Alimentation, PAS dans Actions/Investissement.\n"
 "Répondez uniquement avec le numéro de catégorie."
 
-#: src/app/(main)/settings/import.tsx:180
+#: src/app/(main)/settings/import.tsx:179
+#: src/budget/component/allocation-category-field/allocation-category-field.tsx:19
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:89
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Catégorie"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:123
+msgid "Category Breakdown"
+msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
 msgid "Category Name"
@@ -398,8 +529,8 @@ msgstr "Effacer"
 msgid "Clear All"
 msgstr "Tout effacer"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:24
-#: src/settings/components/truncate-data/truncate-data.tsx:38
+#: src/settings/components/truncate-data/truncate-data.tsx:26
+#: src/settings/components/truncate-data/truncate-data.tsx:40
 msgid "Clear All Data"
 msgstr "Effacer toutes les données"
 
@@ -407,11 +538,20 @@ msgstr "Effacer toutes les données"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Effacer les soldes mis en cache et recalculer à partir des transactions"
 
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:79
+#: src/budget/component/budget-list-item/budget-list-item.tsx:60
+msgid "Clone"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:77
+msgid "Clone Budget"
+msgstr ""
+
 #: src/sync/component/get-token-card/get-token-card.tsx:42
 msgid "Close"
 msgstr "Fermer"
 
-#: src/app/(main)/settings/import.tsx:240
+#: src/app/(main)/settings/import.tsx:239
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -439,15 +579,15 @@ msgstr "Contact (optionnel)"
 msgid "Continue"
 msgstr "Continuer"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:58
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:56
 msgid "Conversion failed"
 msgstr ""
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:128
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:109
 msgid "Convert"
 msgstr ""
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:82
 msgid "Convert to Transfer?"
 msgstr ""
 
@@ -496,6 +636,14 @@ msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 msgid "Create a backup of all your data"
 msgstr "Créer une sauvegarde de toutes vos données"
 
+#: src/app/(main)/settings/budget-analytics.tsx:33
+msgid "Create a budget to start tracking your spending patterns"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:78
+msgid "Create a copy of this budget with all its allocations."
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Créer un code PIN"
@@ -508,9 +656,17 @@ msgstr "Créer des comptes"
 msgid "Create and copy the personal token"
 msgstr "Créer et copier le jeton personnel"
 
-#: src/app/(main)/settings/index.tsx:95
+#: src/app/(main)/settings/index.tsx:121
+msgid "Create and manage your spending budgets"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:97
 msgid "Create and organize transaction tags"
 msgstr "Créer et organiser les étiquettes de transaction"
+
+#: src/app/(main)/budget/create.tsx:44
+msgid "Create Budget"
+msgstr ""
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
 msgid "Create Categories"
@@ -555,6 +711,18 @@ msgstr "Créez votre premier compte pour commencer à suivre vos transactions"
 msgid "Create your first account to start tracking your finances"
 msgstr "Créez votre premier compte pour commencer à suivre vos finances"
 
+#: src/app/(main)/settings/budgets.tsx:57
+msgid "Create your first budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item/budget-list-item.tsx:53
+msgid "Created"
+msgstr ""
+
+#: src/budget/component/future-period-status/future-period-status.tsx:27
+msgid "Creating..."
+msgstr ""
+
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Crypto"
@@ -572,21 +740,33 @@ msgstr "Devise"
 msgid "Current Balance"
 msgstr "Solde actuel"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:64
+msgid "Current: Day {currentDayValue}"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:21
+msgid "Custom"
+msgstr ""
+
 #: src/app/(main)/settings/categories.tsx:37
 msgid "Custom categories you create will appear here"
 msgstr "Les catégories personnalisées que vous créez apparaîtront ici"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:30
+msgid "Daily Avg"
+msgstr ""
 
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
 msgstr "Mode sombre"
 
-#: src/app/(main)/settings/index.tsx:126
+#: src/app/(main)/settings/index.tsx:145
 msgid "Data management"
 msgstr "Gestion des données"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:188
+#: src/app/(main)/settings/import.tsx:187
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Date"
@@ -594,6 +774,10 @@ msgstr "Date"
 #: src/@generic/component/date-filter/date-filter.tsx:81
 msgid "Date Range"
 msgstr "Plage de dates"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:21
+msgid "Days Left"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -605,23 +789,34 @@ msgstr "Dette"
 msgid "Debt Account"
 msgstr "Compte de dette"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:38
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Dec"
+msgstr ""
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:37
 msgid "Default Account"
 msgstr "Compte par défaut"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:69
+#: src/budget/component/budget-list-item/budget-list-item.tsx:66
+#: src/budget/component/update-allocation/update-allocation.tsx:32
 msgid "Delete"
 msgstr "Supprimer"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:25
+#: src/settings/components/truncate-data/truncate-data.tsx:27
 msgid "Delete all transactions and settings"
 msgstr "Supprimer toutes les transactions et les paramètres"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:67
+msgid "Delete Budget?"
+msgstr ""
+
+#: src/settings/components/truncate-data/truncate-data.tsx:37
 msgid "Delete data"
 msgstr "Supprimer les données"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:60
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:53
 msgid "Delete transaction"
 msgstr "Supprimer la transaction"
 
@@ -629,7 +824,7 @@ msgstr "Supprimer la transaction"
 msgid "Deselect All"
 msgstr "Tout désélectionner"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:102
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Destination Account"
 msgstr ""
 
@@ -662,6 +857,11 @@ msgstr "ex. Professionnel, Personnel, Vacances"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ex. Épicerie, Salaire, Loyer"
 
+#: src/budget/component/budget-title-field/budget-title-field.tsx:17
+msgid "e.g., Monthly Budget"
+msgstr ""
+
+#: src/budget/component/update-allocation/update-allocation.tsx:27
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
@@ -698,6 +898,14 @@ msgstr "Activer le déverrouillage Face ID ?"
 #: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
 msgstr "Activer le déverrouillage Touch ID ?"
+
+#: src/app/(main)/budget/create.tsx:64
+msgid "End"
+msgstr ""
+
+#: src/app/(main)/budget/create.tsx:64
+msgid "End Date"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -748,7 +956,11 @@ msgstr "Entrez votre jeton API Monobank"
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/app/(main)/settings/import.tsx:110
+#: src/app/(main)/settings/import.tsx:109
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:27
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:38
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:49
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:41
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -795,7 +1007,7 @@ msgstr "Exporter la base de données"
 msgid "Export Failed"
 msgstr "Échec de l'export"
 
-#: src/app/(main)/settings/import.tsx:212
+#: src/app/(main)/settings/import.tsx:211
 msgid "External ID"
 msgstr "ID externe"
 
@@ -807,6 +1019,22 @@ msgstr "Face ID"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:27
+msgid "Failed to activate budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:49
+msgid "Failed to clone budget"
+msgstr ""
+
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:41
+msgid "Failed to create budget period"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:38
+msgid "Failed to delete budget"
+msgstr ""
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
@@ -828,6 +1056,10 @@ msgstr "Échec de la configuration de la synchronisation"
 msgid "Failed to update token"
 msgstr "Échec de la mise à jour du jeton"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Feb"
+msgstr ""
+
 #: src/sync/component/token-input-step/token-input-step.tsx:49
 msgid "Fetch Accounts"
 msgstr "Récupérer les comptes"
@@ -840,9 +1072,13 @@ msgstr "Récupération des nouvelles..."
 msgid "Fill in the account details"
 msgstr "Remplissez les détails du compte"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(main)/settings/import.tsx:148
 msgid "Fix Errors"
 msgstr "Corriger les erreurs"
+
+#: src/budget/component/allocation-type-toggle/allocation-type-toggle.tsx:37
+msgid "Fixed Amount"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -852,6 +1088,10 @@ msgstr "Français"
 msgid "French (France)"
 msgstr "Français (France)"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Fri"
+msgstr ""
+
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
 msgid "from"
 msgstr "de"
@@ -860,19 +1100,19 @@ msgstr "de"
 msgid "FROM"
 msgstr "DE"
 
-#: src/app/(main)/settings/import.tsx:219
+#: src/app/(main)/settings/import.tsx:218
 msgid "From Account"
 msgstr "Du compte"
 
-#: src/app/(main)/settings/import.tsx:233
+#: src/app/(main)/settings/import.tsx:232
 msgid "From Amount"
 msgstr "Montant source"
 
-#: src/app/(main)/settings/import.tsx:226
+#: src/app/(main)/settings/import.tsx:225
 msgid "From Currency"
 msgstr "Devise source"
 
-#: src/app/(main)/settings/index.tsx:78
+#: src/app/(main)/settings/index.tsx:80
 msgid "General"
 msgstr "Général"
 
@@ -888,7 +1128,7 @@ msgstr "Allemand (Allemagne)"
 msgid "Get API Token"
 msgstr "Obtenir le jeton API"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/app/(main)/settings/index.tsx:69
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'écran"
 
@@ -910,7 +1150,7 @@ msgstr "Importer CSV"
 msgid "Import Database"
 msgstr "Importer la base de données"
 
-#: src/app/(main)/settings/import.tsx:141
+#: src/app/(main)/settings/import.tsx:140
 msgid "Import Failed"
 msgstr "Importation échouée"
 
@@ -922,8 +1162,12 @@ msgstr "Importer des transactions depuis un fichier CSV"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "L'importation d'une base de données remplacera toutes les données actuelles. L'application redémarrera après l'importation. Cette action ne peut pas être annulée."
 
+#: src/budget/component/budget-list-item/budget-list-item.tsx:31
+msgid "Inactive"
+msgstr ""
+
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Comptes inactifs"
 
@@ -950,13 +1194,25 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/app/(main)/settings/import.tsx:247
+#: src/app/(main)/settings/import.tsx:246
 msgid "Is Planned"
 msgstr "Est planifié"
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Italien (Italie)"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Jan"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Jul"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Jun"
+msgstr ""
 
 #: src/settings/components/language-selector/language-selector.tsx:38
 msgid "Language"
@@ -978,21 +1234,41 @@ msgstr "Prêté"
 msgid "Main Currency"
 msgstr "Devise principale"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:120
+msgid "Manage Budgets"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:89
 msgid "Manage Categories"
 msgstr "Gérer les catégories"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(main)/settings/index.tsx:96
 msgid "Manage Tags"
 msgstr "Gérer les étiquettes"
 
-#: src/app/(main)/settings/import.tsx:156
+#: src/app/(main)/settings/budgets.tsx:34
+msgid "Manage your budgets"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:155
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
 
-#: src/app/(main)/settings/import.tsx:157
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Mar"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:156
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "May"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Mon"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1014,6 +1290,11 @@ msgstr "Argent que vous dépensez"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:18
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:49
+msgid "Monthly"
+msgstr ""
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:54
 msgid "Move between accounts"
 msgstr "Transférer entre comptes"
@@ -1026,6 +1307,14 @@ msgstr "Transférer de l'argent"
 #: src/app/(main)/create-account/index.tsx:21
 msgid "New Account"
 msgstr "Nouveau compte"
+
+#: src/app/(main)/budget/create.tsx:40
+msgid "New Budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:80
+msgid "New budget name"
+msgstr ""
 
 #: src/app/(main)/create-transaction/expense.tsx:71
 msgid "New Expense"
@@ -1057,6 +1346,19 @@ msgstr "Aucun compte pour le moment"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
 msgstr "Aucun compte archivé"
+
+#: src/app/(main)/settings/budget-analytics.tsx:30
+msgid "No budgets to analyze"
+msgstr ""
+
+#: src/app/(main)/settings/budgets.tsx:52
+#: src/budget/component/budget-empty-state/budget-empty-state.tsx:15
+msgid "No budgets yet"
+msgstr ""
+
+#: src/app/(main)/budget/[id]/index.tsx:107
+msgid "No categories added yet"
+msgstr ""
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
@@ -1138,11 +1440,12 @@ msgstr "Aucune étiquette pour le moment"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:13
 #: src/tag/components/tags-selector/tags-selector.tsx:59
 msgid "None"
 msgstr "Aucune"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:39
+#: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "None selected"
 msgstr "Aucune sélectionnée"
 
@@ -1150,17 +1453,70 @@ msgstr "Aucune sélectionnée"
 msgid "Note (optional)"
 msgstr "Note (optionnel)"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Nov"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Oct"
+msgstr ""
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:25
+msgid "of {totalDays}"
+msgstr ""
+
+#: src/budget/component/widget-amounts/widget-amounts.tsx:51
+msgid "of {totalFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:65
+msgid "of {totalPlannedFormatted}"
+msgstr ""
+
+#: src/budget/component/widget-status-indicator/widget-status-indicator.tsx:27
+msgid "On track"
+msgstr ""
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:67
+msgid "On Track"
+msgstr ""
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:14
+msgid "Only unspent amounts roll over"
+msgstr ""
+
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
 msgstr "Ouvrez Monobank pour obtenir votre jeton"
 
-#: src/app/(main)/settings/index.tsx:84
+#: src/app/(main)/settings/index.tsx:86
 msgid "Organization"
 msgstr "Organisation"
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:68
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:21
+msgid "Over"
+msgstr ""
+
+#: src/budget/component/budget-health-card/budget-health-card.tsx:27
+msgid "Over Budget"
+msgstr ""
+
+#: src/budget/component/budget-category-item/budget-category-item.tsx:71
+msgid "Over by {catRemainingFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:67
+msgid "Over Pace"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Over:"
 msgstr "Excédent :"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:105
+msgid "Over: {remainingFormatted}"
+msgstr ""
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Overview"
@@ -1182,6 +1538,10 @@ msgstr "Collez votre jeton API ci-dessous :"
 msgid "Payment Progress"
 msgstr "Progression du paiement"
 
+#: src/budget/component/allocation-percentage-field/allocation-percentage-field.tsx:19
+msgid "Percentage of Income"
+msgstr ""
+
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "La permission d'accéder aux contacts a été refusée."
@@ -1199,11 +1559,23 @@ msgstr "Le code PIN doit comporter {PIN_LENGTH} chiffres"
 msgid "PINs do not match"
 msgstr "Les codes PIN ne correspondent pas"
 
+#: src/budget/component/future-period-status/future-period-status.tsx:36
+msgid "Plan"
+msgstr ""
+
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:57
+msgid "Plan Future Periods"
+msgstr ""
+
+#: src/budget/component/future-period-status/future-period-status.tsx:18
+msgid "Planned"
+msgstr ""
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:35
 msgid "Please enter your Monobank API token"
 msgstr "Veuillez entrer votre jeton API Monobank"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
 msgstr ""
 
@@ -1220,6 +1592,10 @@ msgstr "Polonais (Pologne)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugais (Portugal)"
 
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:64
+msgid "Pre-plan your budget for upcoming periods"
+msgstr ""
+
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
@@ -1229,9 +1605,25 @@ msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 msgid "Preview"
 msgstr "Aperçu"
 
-#: src/app/(main)/settings/index.tsx:52
+#: src/budget/component/budget-historical-periods/budget-historical-periods.tsx:26
+msgid "Previous Periods"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:54
 msgid "Privacy"
 msgstr "Confidentialité"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:32
+msgid "Projected"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:25
+msgid "Projected End"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:19
+msgid "Quarterly"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
@@ -1245,6 +1637,12 @@ msgstr "Recalculer"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Recalculer les soldes"
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:68
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:60
+#: src/budget/component/widget-amounts/widget-amounts.tsx:47
+msgid "Remaining"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1262,9 +1660,27 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
+#: src/budget/component/allocation-rollover-rule-field/allocation-rollover-rule-field.tsx:16
+msgid "Rollover Rule"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:54
+#: src/budget/component/widget-amounts/widget-amounts.tsx:38
+msgid "Safe to Spend"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Sat"
+msgstr ""
+
+#: src/budget/component/update-allocation/update-allocation.tsx:33
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
 msgstr "Enregistrer"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:105
+msgid "Saved: {savedFormatted}"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1279,7 +1695,7 @@ msgstr "Compte d'épargne"
 msgid "Savings accounts"
 msgstr "Comptes d'épargne"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:68
 msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
 
@@ -1320,7 +1736,7 @@ msgstr "Rechercher des étiquettes..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Sécurisez votre application avec un code PIN et Face ID"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:63
 msgid "Security"
 msgstr "Sécurité"
 
@@ -1328,22 +1744,22 @@ msgstr "Sécurité"
 msgid "Select a contact"
 msgstr "Sélectionner un contact"
 
-#: src/app/(main)/settings/import.tsx:54
+#: src/app/(main)/settings/import.tsx:53
+#: src/app/(main)/settings/import.tsx:56
 #: src/app/(main)/settings/import.tsx:57
 #: src/app/(main)/settings/import.tsx:58
 #: src/app/(main)/settings/import.tsx:59
-#: src/app/(main)/settings/import.tsx:60
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
-#: src/account/component/account-selector-square/account-selector-square.tsx:57
-#: src/account/component/account-selector/account-selector.tsx:41
+#: src/account/component/account-selector-square/account-selector-square.tsx:66
+#: src/account/component/account-selector/account-selector.tsx:44
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:82
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:108
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:99
 msgid "Select Account"
 msgstr "Sélectionner un compte"
 
@@ -1379,6 +1795,10 @@ msgstr "Sélectionner un contact"
 msgid "Select Currency"
 msgstr "Sélectionner une devise"
 
+#: src/@generic/component/date-input/date-input.tsx:37
+msgid "Select date"
+msgstr ""
+
 #: src/@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:45
 msgid "Select Date"
 msgstr "Sélectionner une date"
@@ -1407,19 +1827,31 @@ msgstr "Sélectionné"
 msgid "Selected {selectedTagsCount}"
 msgstr "Sélectionnées : {selectedTagsCount}"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Sep"
+msgstr ""
+
+#: src/budget/component/create-allocation/create-allocation.tsx:47
+msgid "Set allocation for this category"
+msgstr ""
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
 msgstr "Définir la date de retour"
 
-#: src/app/(main)/settings/index.tsx:49
+#: src/app/(main)/budget/create.tsx:40
+msgid "Set up your spending plan"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:51
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:138
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Afficher 1 234,56 $ au lieu de 1 235 $"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(main)/settings/index.tsx:137
 msgid "Show Cents"
 msgstr "Afficher les centimes"
 
@@ -1458,16 +1890,50 @@ msgid "Spending by Tag"
 msgstr "Dépenses par étiquette"
 
 #: src/app/(tabs)/analytics.tsx:61
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:77
 msgid "Spent"
 msgstr "Dépensé"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:102
+#: src/budget/component/budget-home-widget/budget-home-widget.tsx:77
+msgid "Spent: {spentFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:73
+msgid "Spent: {totalSpentFormatted}"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:89
 msgid "Split by Category"
 msgstr "Répartir par catégorie"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(main)/budget/create.tsx:61
+msgid "Start"
+msgstr ""
+
+#: src/app/(main)/budget/create.tsx:61
+msgid "Start Date"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:18
+msgid "Start Day of Month"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:7
+msgid "Start Day of Week"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:148
 msgid "Start Import"
 msgstr "Démarrer l'importation"
+
+#: src/budget/util/get-start-day-label.util.ts:11
+msgid "Start Month"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:15
+msgid "Start Month of Quarter"
+msgstr ""
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx:35
 msgid "Start Sync"
@@ -1493,6 +1959,14 @@ msgstr "Actions"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Soumettre"
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:20
+msgid "Summary"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Sun"
+msgstr ""
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1534,13 +2008,17 @@ msgstr "Étiquettes"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Étiquettes ({selectedTagsCount})"
 
-#: src/account/component/account-selector-square/account-selector-square.tsx:58
+#: src/account/component/account-selector-square/account-selector-square.tsx:67
 msgid "Tap to choose"
 msgstr "Appuyez pour choisir"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
+
+#: src/budget/component/budget-empty-state/budget-empty-state.tsx:18
+msgid "Tap to create your first budget"
+msgstr ""
 
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:19
 msgid "Target balance"
@@ -1557,7 +2035,7 @@ msgstr ""
 " 💡 Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:59
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:52
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
@@ -1569,7 +2047,7 @@ msgstr "Ce mois-ci"
 msgid "This Week"
 msgstr "Cette semaine"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:94
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:86
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
 msgstr ""
 
@@ -1577,9 +2055,17 @@ msgstr ""
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Cela effacera tous les soldes de compte mis en cache et les recalculera à partir de vos transactions. Cela peut prendre un moment."
 
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:68
+msgid "This will permanently delete this budget and all its allocations. This action cannot be undone."
+msgstr ""
+
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
 msgstr "Cette année"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Thu"
+msgstr ""
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
 msgid "to"
@@ -1589,11 +2075,11 @@ msgstr "à"
 msgid "TO"
 msgstr "VERS"
 
-#: src/app/(main)/settings/import.tsx:172
+#: src/app/(main)/settings/import.tsx:171
 msgid "To Account"
 msgstr "Vers le compte"
 
-#: src/app/(main)/settings/import.tsx:204
+#: src/app/(main)/settings/import.tsx:203
 msgid "To Currency"
 msgstr "Devise cible"
 
@@ -1605,9 +2091,25 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
+#: src/budget/component/top-categories-card/top-categories-card.tsx:23
+msgid "Top Categories"
+msgstr ""
+
+#: src/budget/component/widget-top-spending/widget-top-spending.tsx:22
+msgid "Top Spending"
+msgstr ""
+
 #: src/@generic/component/total-balance/net-worth.tsx:15
 msgid "Total Balance"
 msgstr "Solde total"
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:23
+msgid "Total Budget"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:24
+msgid "Total Spent"
+msgstr ""
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
@@ -1654,6 +2156,10 @@ msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Tue"
+msgstr ""
+
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
 msgstr "Type"
@@ -1672,6 +2178,11 @@ msgstr "Ukrainien"
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
+#: src/budget/component/budget-health-card/budget-health-card.tsx:28
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:22
+msgid "Under 50%"
+msgstr ""
+
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Inconnu"
@@ -1680,6 +2191,10 @@ msgstr "Inconnu"
 msgid "Unknown Category"
 msgstr "Catégorie inconnue"
 
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:13
+msgid "Unused budget is lost at period end"
+msgstr ""
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "À jour"
@@ -1687,6 +2202,10 @@ msgstr "À jour"
 #: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Mettre à jour le compte"
+
+#: src/budget/component/update-allocation/update-allocation.tsx:27
+msgid "Update allocation settings"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Update Expense"
@@ -1717,21 +2236,38 @@ msgstr "Utilisez Face ID pour déverrouiller votre application rapidement et en 
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Utilisez Touch ID pour déverrouiller votre application rapidement et en toute sécurité"
 
-#: src/app/(main)/settings/index.tsx:109
+#: src/budget/hook/use-allocation-form.hook.ts:48
+msgid "Validation Error"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
 msgstr "Afficher et activer les comptes cachés"
 
-#: src/app/(main)/settings/index.tsx:88
+#: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
 msgstr "Afficher et supprimer les catégories personnalisées"
 
-#: src/app/(main)/settings/index.tsx:102
+#: src/app/(main)/settings/index.tsx:104
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
+
+#: src/app/(main)/settings/index.tsx:128
+msgid "View spending insights and projections"
+msgstr ""
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:53
 msgid "Waiting"
 msgstr "En attente"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Wed"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:16
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:49
+msgid "Weekly"
+msgstr ""
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:26
 msgid "When should it be returned?"
@@ -1740,6 +2276,10 @@ msgstr "Quand devrait-il être retourné ?"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Qui vous doit de l'argent ?"
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:20
+msgid "Yearly"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"

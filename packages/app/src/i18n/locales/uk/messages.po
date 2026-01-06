@@ -31,6 +31,30 @@ msgstr "{archivedAccountsCount} рахунок"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/budget/component/widget-status-indicator/widget-status-indicator.tsx:19
+msgid "{categoriesOverBudget} over budget"
+msgstr ""
+
+#: src/budget/component/budget-category-item/budget-category-item.tsx:71
+msgid "{catRemainingFormatted} left"
+msgstr ""
+
+#: src/budget/component/budget-over-budget-warning/budget-over-budget-warning.tsx:15
+msgid "{count} categories over budget"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:57
+msgid "{dailyBudgetFormatted}/day"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:76
+msgid "{daysRemaining} of {totalDays} days left"
+msgstr ""
+
+#: src/budget/component/widget-header/widget-header.tsx:20
+msgid "{daysRemaining}d left"
+msgstr ""
+
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "{iconsCount} icons available"
 msgstr "{iconsCount} іконок доступно"
@@ -49,19 +73,43 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
+#: src/budget/component/widget-amounts/widget-amounts.tsx:42
+msgid "{safeToSpendPerDayFormatted}/day"
+msgstr ""
+
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:59
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} тегів доступно"
+
+#: src/budget/component/allocation-type-toggle/allocation-type-toggle.tsx:43
+msgid "% of Income"
+msgstr ""
+
+#: src/budget/component/historical-category-breakdown/historical-category-breakdown.tsx:47
+msgid "+{remainingCount} more"
+msgstr ""
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(main)/settings/index.tsx:58
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
 
-#: src/app/(main)/settings/index.tsx:135
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "1st Month"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "2nd Month"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:27
+msgid "3rd Month"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:154
 msgid "About"
 msgstr "Про застосунок"
 
@@ -102,6 +150,7 @@ msgid "Accounts you mark as inactive will appear here. They won't be shown on th
 msgstr "Рахунки, які ви позначите як неактивні, з'являться тут. Вони не відображатимуться на головній сторінці."
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:24
+#: src/budget/component/budget-list-item/budget-list-item.tsx:45
 msgid "Activate"
 msgstr "Активувати"
 
@@ -110,9 +159,15 @@ msgid "Activate Account?"
 msgstr "Активувати рахунок?"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:20
+#: src/budget/component/budget-list-item/budget-list-item.tsx:31
+#: src/budget/component/budget-list-item/budget-list-item.tsx:39
 #: src/settings/components/security-settings/pin-enabled-card.tsx:54
 msgid "Active"
 msgstr "Активний"
+
+#: src/budget/component/budget-categories-header/budget-categories-header.tsx:23
+msgid "Add"
+msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
 msgid "Add a new category to organize your transactions"
@@ -125,6 +180,14 @@ msgstr "Додайте новий тег для організації ваши�
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
 msgid "Add a note..."
 msgstr "Додати нотатку..."
+
+#: src/budget/component/create-allocation/create-allocation.tsx:51
+msgid "Add Allocation"
+msgstr ""
+
+#: src/budget/component/create-allocation/create-allocation.tsx:47
+msgid "Add Category"
+msgstr ""
 
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
@@ -154,7 +217,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/app/(main)/settings/index.tsx:140
+#: src/app/(main)/settings/index.tsx:159
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -170,7 +233,7 @@ msgstr "Усі стовпці було призначено"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(main)/settings/index.tsx:57
+#: src/app/(main)/settings/index.tsx:59
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
 
@@ -182,7 +245,8 @@ msgstr "Розподілено"
 msgid "Already syncing"
 msgstr "Вже синхронізується"
 
-#: src/app/(main)/settings/import.tsx:196
+#: src/app/(main)/settings/import.tsx:195
+#: src/budget/component/allocation-amount-field/allocation-amount-field.tsx:17
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:107
 msgid "Amount"
 msgstr "Сума"
@@ -201,7 +265,7 @@ msgstr "API токен"
 msgid "App Lock"
 msgstr "Блокування додатка"
 
-#: src/app/(main)/settings/index.tsx:115
+#: src/app/(main)/settings/index.tsx:134
 msgid "Appearance"
 msgstr "Вигляд"
 
@@ -213,6 +277,10 @@ msgstr "Застосувати фільтр"
 msgid "Apply Filter ({selected})"
 msgstr "Застосувати фільтр ({selected})"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Apr"
+msgstr ""
+
 #: src/account/component/archive-account/archive-account.tsx:44
 msgid "Archive"
 msgstr "Архівувати"
@@ -222,21 +290,25 @@ msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
 #: src/app/(main)/settings/archived.tsx:20
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(main)/settings/index.tsx:103
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:36
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:63
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:56
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Aug"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:49
 msgid "Auto-sync accounts and transactions from Monobank"
@@ -271,6 +343,10 @@ msgstr "Синхронізація з банком"
 msgid "Base currency"
 msgstr "Базова валюта"
 
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:17
+msgid "Bi-weekly"
+msgstr ""
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:40
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
@@ -279,25 +355,75 @@ msgstr "Біометрична автентифікація"
 msgid "Borrowed"
 msgstr "Позичено"
 
-#: src/app/(main)/settings/index.tsx:138
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:15
+msgid "Both surplus and deficit roll over"
+msgstr ""
+
+#: src/app/(tabs)/index.tsx:46
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:118
+msgid "Budget"
+msgstr ""
+
+#: src/app/(main)/settings/budget-analytics.tsx:22
+#: src/app/(main)/settings/index.tsx:127
+msgid "Budget Analytics"
+msgstr ""
+
+#: src/budget/component/budget-health-card/budget-health-card.tsx:22
+msgid "Budget Health"
+msgstr ""
+
+#: src/budget/component/budget-title-field/budget-title-field.tsx:16
+msgid "Budget Name"
+msgstr ""
+
+#: src/budget/component/budget-period-field/budget-period-field.tsx:16
+msgid "Budget Period"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:26
+msgid "Budget Usage"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:157
 msgid "BudgetAI"
 msgstr "BudgetAI"
+
+#: src/app/(main)/settings/index.tsx:117
+msgid "Budgeting"
+msgstr ""
+
+#: src/app/(main)/settings/budgets.tsx:33
+msgid "Budgets"
+msgstr ""
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:255
+#: src/@generic/component/input-action-bottom-sheet/input-action-bottom-sheet.tsx:65
+#: src/app/(main)/settings/import.tsx:254
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:120
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:122
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:107
 msgid "Cancel"
 msgstr "Скасувати"
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:15
+msgid "Carry All"
+msgstr ""
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:14
+msgid "Carry Surplus"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:7
 msgid "Cash"
 msgstr "Готівка"
 
 #: src/app/(main)/settings/categories.tsx:45
+#: src/budget/component/budget-categories-header/budget-categories-header.tsx:17
+#: src/budget/component/budget-health-card/budget-health-card.tsx:26
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:20
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:57
@@ -326,12 +452,17 @@ msgstr ""
 "ВАЖЛИВО: Продукти харчування (м'ясо, овочі, бакалія) належать до категорії Бакалія/Їжа, а НЕ до Акції/Інвестиції.\n"
 "Відповідайте лише номером категорії."
 
-#: src/app/(main)/settings/import.tsx:180
+#: src/app/(main)/settings/import.tsx:179
+#: src/budget/component/allocation-category-field/allocation-category-field.tsx:19
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:89
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:39
 msgid "Category"
 msgstr "Категорія"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:123
+msgid "Category Breakdown"
+msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
 msgid "Category Name"
@@ -398,8 +529,8 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:24
-#: src/settings/components/truncate-data/truncate-data.tsx:38
+#: src/settings/components/truncate-data/truncate-data.tsx:26
+#: src/settings/components/truncate-data/truncate-data.tsx:40
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
@@ -407,11 +538,20 @@ msgstr "Очистити всі дані"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:79
+#: src/budget/component/budget-list-item/budget-list-item.tsx:60
+msgid "Clone"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:77
+msgid "Clone Budget"
+msgstr ""
+
 #: src/sync/component/get-token-card/get-token-card.tsx:42
 msgid "Close"
 msgstr "Закрити"
 
-#: src/app/(main)/settings/import.tsx:240
+#: src/app/(main)/settings/import.tsx:239
 msgid "Comment"
 msgstr "Коментар"
 
@@ -439,15 +579,15 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:58
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:56
 msgid "Conversion failed"
 msgstr ""
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:128
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:109
 msgid "Convert"
 msgstr ""
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:82
 msgid "Convert to Transfer?"
 msgstr ""
 
@@ -496,6 +636,14 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
 
+#: src/app/(main)/settings/budget-analytics.tsx:33
+msgid "Create a budget to start tracking your spending patterns"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:78
+msgid "Create a copy of this budget with all its allocations."
+msgstr ""
+
 #: src/auth/util/get-pin-setup-meta.util.ts:50
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
@@ -508,9 +656,17 @@ msgstr "Створити рахунки"
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
 
-#: src/app/(main)/settings/index.tsx:95
+#: src/app/(main)/settings/index.tsx:121
+msgid "Create and manage your spending budgets"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:97
 msgid "Create and organize transaction tags"
 msgstr "Створіть та організуйте теги транзакцій"
+
+#: src/app/(main)/budget/create.tsx:44
+msgid "Create Budget"
+msgstr ""
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
 msgid "Create Categories"
@@ -555,6 +711,18 @@ msgstr "Створіть свій перший рахунок, щоб почат
 msgid "Create your first account to start tracking your finances"
 msgstr "Створіть свій перший рахунок, щоб почати відстежувати свої фінанси"
 
+#: src/app/(main)/settings/budgets.tsx:57
+msgid "Create your first budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item/budget-list-item.tsx:53
+msgid "Created"
+msgstr ""
+
+#: src/budget/component/future-period-status/future-period-status.tsx:27
+msgid "Creating..."
+msgstr ""
+
 #: src/account/constant/account-type.constant.ts:9
 msgid "Crypto"
 msgstr "Криптовалюта"
@@ -572,21 +740,33 @@ msgstr "Валюта"
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:64
+msgid "Current: Day {currentDayValue}"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:21
+msgid "Custom"
+msgstr ""
+
 #: src/app/(main)/settings/categories.tsx:37
 msgid "Custom categories you create will appear here"
 msgstr "Створені вами власні категорії з'являться тут"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:30
+msgid "Daily Avg"
+msgstr ""
 
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
 msgstr "Темний режим"
 
-#: src/app/(main)/settings/index.tsx:126
+#: src/app/(main)/settings/index.tsx:145
 msgid "Data management"
 msgstr "Управління даними"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:188
+#: src/app/(main)/settings/import.tsx:187
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Дата"
@@ -594,6 +774,10 @@ msgstr "Дата"
 #: src/@generic/component/date-filter/date-filter.tsx:81
 msgid "Date Range"
 msgstr "Діапазон дат"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:21
+msgid "Days Left"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:8
 #: src/transaction/constant/transaction-type.constant.ts:8
@@ -605,23 +789,34 @@ msgstr "Борг"
 msgid "Debt Account"
 msgstr "Борговий рахунок"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:38
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Dec"
+msgstr ""
+
+#: src/settings/components/default-account-selector/default-account-selector.tsx:37
 msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:69
+#: src/budget/component/budget-list-item/budget-list-item.tsx:66
+#: src/budget/component/update-allocation/update-allocation.tsx:32
 msgid "Delete"
 msgstr "Видалити"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:25
+#: src/settings/components/truncate-data/truncate-data.tsx:27
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:67
+msgid "Delete Budget?"
+msgstr ""
+
+#: src/settings/components/truncate-data/truncate-data.tsx:37
 msgid "Delete data"
 msgstr "Видалити дані"
 
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:60
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:53
 msgid "Delete transaction"
 msgstr "Видалити транзакцію"
 
@@ -629,7 +824,7 @@ msgstr "Видалити транзакцію"
 msgid "Deselect All"
 msgstr "Скасувати вибір усіх"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:102
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Destination Account"
 msgstr ""
 
@@ -662,6 +857,11 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
+#: src/budget/component/budget-title-field/budget-title-field.tsx:17
+msgid "e.g., Monthly Budget"
+msgstr ""
+
+#: src/budget/component/update-allocation/update-allocation.tsx:27
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Edit Category"
 msgstr "Редагувати категорію"
@@ -698,6 +898,14 @@ msgstr "Увімкнути розблокування Face ID?"
 #: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
 msgstr "Увімкнути розблокування Touch ID?"
+
+#: src/app/(main)/budget/create.tsx:64
+msgid "End"
+msgstr ""
+
+#: src/app/(main)/budget/create.tsx:64
+msgid "End Date"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -748,7 +956,11 @@ msgstr "Введіть ваш API-токен Монобанку"
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
-#: src/app/(main)/settings/import.tsx:110
+#: src/app/(main)/settings/import.tsx:109
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:27
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:38
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:49
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:41
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -795,7 +1007,7 @@ msgstr "Експортувати базу даних"
 msgid "Export Failed"
 msgstr "Помилка експорту"
 
-#: src/app/(main)/settings/import.tsx:212
+#: src/app/(main)/settings/import.tsx:211
 msgid "External ID"
 msgstr "Зовнішній ID"
 
@@ -807,6 +1019,22 @@ msgstr "Face ID"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:27
+msgid "Failed to activate budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:49
+msgid "Failed to clone budget"
+msgstr ""
+
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:41
+msgid "Failed to create budget period"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:38
+msgid "Failed to delete budget"
+msgstr ""
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
@@ -828,6 +1056,10 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Failed to update token"
 msgstr "Не вдалося оновити токен"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Feb"
+msgstr ""
+
 #: src/sync/component/token-input-step/token-input-step.tsx:49
 msgid "Fetch Accounts"
 msgstr "Отримати рахунки"
@@ -840,9 +1072,13 @@ msgstr "Завантаження нових..."
 msgid "Fill in the account details"
 msgstr "Заповніть деталі рахунку"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(main)/settings/import.tsx:148
 msgid "Fix Errors"
 msgstr "Виправити помилки"
+
+#: src/budget/component/allocation-type-toggle/allocation-type-toggle.tsx:37
+msgid "Fixed Amount"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts:16
 msgid "French"
@@ -852,6 +1088,10 @@ msgstr "Французька"
 msgid "French (France)"
 msgstr "Французька (Франція)"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Fri"
+msgstr ""
+
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
 msgid "from"
 msgstr "від"
@@ -860,19 +1100,19 @@ msgstr "від"
 msgid "FROM"
 msgstr "З"
 
-#: src/app/(main)/settings/import.tsx:219
+#: src/app/(main)/settings/import.tsx:218
 msgid "From Account"
 msgstr "З рахунку"
 
-#: src/app/(main)/settings/import.tsx:233
+#: src/app/(main)/settings/import.tsx:232
 msgid "From Amount"
 msgstr "Сума з"
 
-#: src/app/(main)/settings/import.tsx:226
+#: src/app/(main)/settings/import.tsx:225
 msgid "From Currency"
 msgstr "Валюта з"
 
-#: src/app/(main)/settings/index.tsx:78
+#: src/app/(main)/settings/index.tsx:80
 msgid "General"
 msgstr "Загальне"
 
@@ -888,7 +1128,7 @@ msgstr "Німецька (Німеччина)"
 msgid "Get API Token"
 msgstr "Отримати API-токен"
 
-#: src/app/(main)/settings/index.tsx:67
+#: src/app/(main)/settings/index.tsx:69
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
@@ -910,7 +1150,7 @@ msgstr "Імпортувати CSV"
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
-#: src/app/(main)/settings/import.tsx:141
+#: src/app/(main)/settings/import.tsx:140
 msgid "Import Failed"
 msgstr "Імпорт не вдався"
 
@@ -922,8 +1162,12 @@ msgstr "Імпортувати транзакції з CSV файлу"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
+#: src/budget/component/budget-list-item/budget-list-item.tsx:31
+msgid "Inactive"
+msgstr ""
+
 #: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(main)/settings/index.tsx:110
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
@@ -950,13 +1194,25 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/app/(main)/settings/import.tsx:247
+#: src/app/(main)/settings/import.tsx:246
 msgid "Is Planned"
 msgstr "Заплановано"
 
 #: src/i18n/constant/locales.constant.ts:124
 msgid "Italian (Italy)"
 msgstr "Італійська (Італія)"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Jan"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Jul"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "Jun"
+msgstr ""
 
 #: src/settings/components/language-selector/language-selector.tsx:38
 msgid "Language"
@@ -978,21 +1234,41 @@ msgstr "Позичено"
 msgid "Main Currency"
 msgstr "Основна валюта"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(main)/settings/index.tsx:120
+msgid "Manage Budgets"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:89
 msgid "Manage Categories"
 msgstr "Керування категоріями"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(main)/settings/index.tsx:96
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
-#: src/app/(main)/settings/import.tsx:156
+#: src/app/(main)/settings/budgets.tsx:34
+msgid "Manage your budgets"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:155
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
 
-#: src/app/(main)/settings/import.tsx:157
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:22
+msgid "Mar"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:156
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:23
+msgid "May"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Mon"
+msgstr ""
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1014,6 +1290,11 @@ msgstr "Гроші, які ви витрачаєте"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:18
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:49
+msgid "Monthly"
+msgstr ""
+
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:54
 msgid "Move between accounts"
 msgstr "Переказ між рахунками"
@@ -1026,6 +1307,14 @@ msgstr "Переказати гроші"
 #: src/app/(main)/create-account/index.tsx:21
 msgid "New Account"
 msgstr "Новий рахунок"
+
+#: src/app/(main)/budget/create.tsx:40
+msgid "New Budget"
+msgstr ""
+
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:80
+msgid "New budget name"
+msgstr ""
 
 #: src/app/(main)/create-transaction/expense.tsx:71
 msgid "New Expense"
@@ -1057,6 +1346,19 @@ msgstr "Ще немає рахунків"
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
 msgstr "Немає архівованих рахунків"
+
+#: src/app/(main)/settings/budget-analytics.tsx:30
+msgid "No budgets to analyze"
+msgstr ""
+
+#: src/app/(main)/settings/budgets.tsx:52
+#: src/budget/component/budget-empty-state/budget-empty-state.tsx:15
+msgid "No budgets yet"
+msgstr ""
+
+#: src/app/(main)/budget/[id]/index.tsx:107
+msgid "No categories added yet"
+msgstr ""
 
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
@@ -1138,11 +1440,12 @@ msgstr "Ще немає тегів"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:13
 #: src/tag/components/tags-selector/tags-selector.tsx:59
 msgid "None"
 msgstr "Немає"
 
-#: src/settings/components/default-account-selector/default-account-selector.tsx:39
+#: src/settings/components/default-account-selector/default-account-selector.tsx:38
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
@@ -1150,17 +1453,70 @@ msgstr "Нічого не вибрано"
 msgid "Note (optional)"
 msgstr "Нотатка (необов'язково)"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Nov"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Oct"
+msgstr ""
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:25
+msgid "of {totalDays}"
+msgstr ""
+
+#: src/budget/component/widget-amounts/widget-amounts.tsx:51
+msgid "of {totalFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:65
+msgid "of {totalPlannedFormatted}"
+msgstr ""
+
+#: src/budget/component/widget-status-indicator/widget-status-indicator.tsx:27
+msgid "On track"
+msgstr ""
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:67
+msgid "On Track"
+msgstr ""
+
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:14
+msgid "Only unspent amounts roll over"
+msgstr ""
+
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
-#: src/app/(main)/settings/index.tsx:84
+#: src/app/(main)/settings/index.tsx:86
 msgid "Organization"
 msgstr "Організація"
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:68
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:21
+msgid "Over"
+msgstr ""
+
+#: src/budget/component/budget-health-card/budget-health-card.tsx:27
+msgid "Over Budget"
+msgstr ""
+
+#: src/budget/component/budget-category-item/budget-category-item.tsx:71
+msgid "Over by {catRemainingFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:67
+msgid "Over Pace"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
 msgid "Over:"
 msgstr "Перевищення:"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:105
+msgid "Over: {remainingFormatted}"
+msgstr ""
 
 #: src/app/(tabs)/analytics.tsx:55
 msgid "Overview"
@@ -1182,6 +1538,10 @@ msgstr "Вставте ваш API-токен нижче:"
 msgid "Payment Progress"
 msgstr "Прогрес платежу"
 
+#: src/budget/component/allocation-percentage-field/allocation-percentage-field.tsx:19
+msgid "Percentage of Income"
+msgstr ""
+
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
@@ -1199,11 +1559,23 @@ msgstr "PIN-код має бути {PIN_LENGTH} цифр"
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
 
+#: src/budget/component/future-period-status/future-period-status.tsx:36
+msgid "Plan"
+msgstr ""
+
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:57
+msgid "Plan Future Periods"
+msgstr ""
+
+#: src/budget/component/future-period-status/future-period-status.tsx:18
+msgid "Planned"
+msgstr ""
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:35
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
 msgstr ""
 
@@ -1220,6 +1592,10 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:64
+msgid "Pre-plan your budget for upcoming periods"
+msgstr ""
+
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
@@ -1229,9 +1605,25 @@ msgstr "Шаблон застосовано. За потреби налашту�
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: src/app/(main)/settings/index.tsx:52
+#: src/budget/component/budget-historical-periods/budget-historical-periods.tsx:26
+msgid "Previous Periods"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:54
 msgid "Privacy"
 msgstr "Конфіденційність"
+
+#: src/budget/component/budget-stats-cards/budget-stats-cards.tsx:32
+msgid "Projected"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:25
+msgid "Projected End"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:19
+msgid "Quarterly"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
@@ -1245,6 +1637,12 @@ msgstr "Перерахувати"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
+
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:68
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:60
+#: src/budget/component/widget-amounts/widget-amounts.tsx:47
+msgid "Remaining"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1262,9 +1660,27 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/budget/component/allocation-rollover-rule-field/allocation-rollover-rule-field.tsx:16
+msgid "Rollover Rule"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:54
+#: src/budget/component/widget-amounts/widget-amounts.tsx:38
+msgid "Safe to Spend"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Sat"
+msgstr ""
+
+#: src/budget/component/update-allocation/update-allocation.tsx:33
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 msgid "Save"
 msgstr "Зберегти"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:105
+msgid "Saved: {savedFormatted}"
+msgstr ""
 
 #: src/account/constant/account-type.constant.ts:11
 msgid "Savings"
@@ -1279,7 +1695,7 @@ msgstr "Ощадний рахунок"
 msgid "Savings accounts"
 msgstr "Ощадні рахунки"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(main)/settings/index.tsx:68
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
@@ -1320,7 +1736,7 @@ msgstr "Пошук тегів..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
-#: src/app/(main)/settings/index.tsx:61
+#: src/app/(main)/settings/index.tsx:63
 msgid "Security"
 msgstr "Безпека"
 
@@ -1328,22 +1744,22 @@ msgstr "Безпека"
 msgid "Select a contact"
 msgstr "Виберіть контакт"
 
-#: src/app/(main)/settings/import.tsx:54
+#: src/app/(main)/settings/import.tsx:53
+#: src/app/(main)/settings/import.tsx:56
 #: src/app/(main)/settings/import.tsx:57
 #: src/app/(main)/settings/import.tsx:58
 #: src/app/(main)/settings/import.tsx:59
-#: src/app/(main)/settings/import.tsx:60
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
-#: src/account/component/account-selector-square/account-selector-square.tsx:57
-#: src/account/component/account-selector/account-selector.tsx:41
+#: src/account/component/account-selector-square/account-selector-square.tsx:66
+#: src/account/component/account-selector/account-selector.tsx:44
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:82
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:108
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:99
 msgid "Select Account"
 msgstr "Виберіть рахунок"
 
@@ -1379,6 +1795,10 @@ msgstr "Вибрати контакт"
 msgid "Select Currency"
 msgstr "Виберіть валюту"
 
+#: src/@generic/component/date-input/date-input.tsx:37
+msgid "Select date"
+msgstr ""
+
 #: src/@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:45
 msgid "Select Date"
 msgstr "Виберіть дату"
@@ -1407,19 +1827,31 @@ msgstr "Вибрано"
 msgid "Selected {selectedTagsCount}"
 msgstr "Вибрано {selectedTagsCount}"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:24
+msgid "Sep"
+msgstr ""
+
+#: src/budget/component/create-allocation/create-allocation.tsx:47
+msgid "Set allocation for this category"
+msgstr ""
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
 
-#: src/app/(main)/settings/index.tsx:49
+#: src/app/(main)/budget/create.tsx:40
+msgid "Set up your spending plan"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:51
 msgid "Settings"
 msgstr "Налаштування"
 
-#: src/app/(main)/settings/index.tsx:119
+#: src/app/(main)/settings/index.tsx:138
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Показувати $1 234,56 замість $1 235"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(main)/settings/index.tsx:137
 msgid "Show Cents"
 msgstr "Показати копійки"
 
@@ -1458,16 +1890,50 @@ msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
 #: src/app/(tabs)/analytics.tsx:61
+#: src/budget/component/budget-analytics-content/budget-analytics-content.tsx:77
 msgid "Spent"
 msgstr "Витрачено"
+
+#: src/budget/component/budget-historical-period-card/budget-historical-period-card.tsx:102
+#: src/budget/component/budget-home-widget/budget-home-widget.tsx:77
+msgid "Spent: {spentFormatted}"
+msgstr ""
+
+#: src/budget/component/budget-details-summary-card/budget-details-summary-card.tsx:73
+msgid "Spent: {totalSpentFormatted}"
+msgstr ""
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:89
 msgid "Split by Category"
 msgstr "Поділ за категоріями"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(main)/budget/create.tsx:61
+msgid "Start"
+msgstr ""
+
+#: src/app/(main)/budget/create.tsx:61
+msgid "Start Date"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:18
+msgid "Start Day of Month"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:7
+msgid "Start Day of Week"
+msgstr ""
+
+#: src/app/(main)/settings/import.tsx:148
 msgid "Start Import"
 msgstr "Почати імпорт"
+
+#: src/budget/util/get-start-day-label.util.ts:11
+msgid "Start Month"
+msgstr ""
+
+#: src/budget/util/get-start-day-label.util.ts:15
+msgid "Start Month of Quarter"
+msgstr ""
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx:35
 msgid "Start Sync"
@@ -1493,6 +1959,14 @@ msgstr "Акції"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Відправити"
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:20
+msgid "Summary"
+msgstr ""
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Sun"
+msgstr ""
 
 #: src/category/components/category-card/category-card.tsx:23
 #: src/tag/components/tag-card/tag-card.tsx:21
@@ -1534,13 +2008,17 @@ msgstr "Теги"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Теги ({selectedTagsCount})"
 
-#: src/account/component/account-selector-square/account-selector-square.tsx:58
+#: src/account/component/account-selector-square/account-selector-square.tsx:67
 msgid "Tap to choose"
 msgstr "Натисніть, щоб вибрати"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
+
+#: src/budget/component/budget-empty-state/budget-empty-state.tsx:18
+msgid "Tap to create your first budget"
+msgstr ""
 
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx:19
 msgid "Target balance"
@@ -1557,7 +2035,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:59
+#: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:52
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
@@ -1569,7 +2047,7 @@ msgstr "Цього місяця"
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:94
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:86
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
 msgstr ""
 
@@ -1577,9 +2055,17 @@ msgstr ""
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
+#: src/budget/component/budget-list-item-wrapper/budget-list-item-wrapper.tsx:68
+msgid "This will permanently delete this budget and all its allocations. This action cannot be undone."
+msgstr ""
+
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
 msgstr "Цього року"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Thu"
+msgstr ""
 
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:30
 msgid "to"
@@ -1589,11 +2075,11 @@ msgstr "до"
 msgid "TO"
 msgstr "НА"
 
-#: src/app/(main)/settings/import.tsx:172
+#: src/app/(main)/settings/import.tsx:171
 msgid "To Account"
 msgstr "На рахунок"
 
-#: src/app/(main)/settings/import.tsx:204
+#: src/app/(main)/settings/import.tsx:203
 msgid "To Currency"
 msgstr "Валюта на"
 
@@ -1605,9 +2091,25 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
+#: src/budget/component/top-categories-card/top-categories-card.tsx:23
+msgid "Top Categories"
+msgstr ""
+
+#: src/budget/component/widget-top-spending/widget-top-spending.tsx:22
+msgid "Top Spending"
+msgstr ""
+
 #: src/@generic/component/total-balance/net-worth.tsx:15
 msgid "Total Balance"
 msgstr "Загальний баланс"
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:23
+msgid "Total Budget"
+msgstr ""
+
+#: src/budget/component/budget-summary-card/budget-summary-card.tsx:24
+msgid "Total Spent"
+msgstr ""
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
@@ -1654,6 +2156,10 @@ msgstr "Спробуйте інший пошуковий запит або ст�
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:17
+msgid "Tue"
+msgstr ""
+
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
 msgstr "Тип"
@@ -1672,6 +2178,11 @@ msgstr "Українська"
 msgid "Uncategorized"
 msgstr "Без категорії"
 
+#: src/budget/component/budget-health-card/budget-health-card.tsx:28
+#: src/budget/component/historical-period-stats/historical-period-stats.tsx:22
+msgid "Under 50%"
+msgstr ""
+
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Невідомо"
@@ -1680,6 +2191,10 @@ msgstr "Невідомо"
 msgid "Unknown Category"
 msgstr "Невідома категорія"
 
+#: src/budget/component/rollover-rule-selector/rollover-rule-selector.tsx:13
+msgid "Unused budget is lost at period end"
+msgstr ""
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Актуальний"
@@ -1687,6 +2202,10 @@ msgstr "Актуальний"
 #: src/account/component/create-account-screen/update-account-screen.tsx:71
 msgid "Update Account"
 msgstr "Оновити рахунок"
+
+#: src/budget/component/update-allocation/update-allocation.tsx:27
+msgid "Update allocation settings"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/expense.tsx:89
 msgid "Update Expense"
@@ -1717,21 +2236,38 @@ msgstr "Використовуйте Face ID для швидкого та без
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
 
-#: src/app/(main)/settings/index.tsx:109
+#: src/budget/hook/use-allocation-form.hook.ts:48
+msgid "Validation Error"
+msgstr ""
+
+#: src/app/(main)/settings/index.tsx:111
 msgid "View and activate hidden accounts"
 msgstr "Переглянути та активувати приховані рахунки"
 
-#: src/app/(main)/settings/index.tsx:88
+#: src/app/(main)/settings/index.tsx:90
 msgid "View and delete custom categories"
 msgstr "Перегляд та видалення власних категорій"
 
-#: src/app/(main)/settings/index.tsx:102
+#: src/app/(main)/settings/index.tsx:104
 msgid "View and restore archived accounts"
 msgstr "Перегляд та відновлення архівованих рахунків"
+
+#: src/app/(main)/settings/index.tsx:128
+msgid "View spending insights and projections"
+msgstr ""
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:53
 msgid "Waiting"
 msgstr "Очікування"
+
+#: src/budget/component/budget-start-day-selector/budget-start-day-selector.tsx:18
+msgid "Wed"
+msgstr ""
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:16
+#: src/budget/component/budget-plan-next-period/budget-plan-next-period.tsx:49
+msgid "Weekly"
+msgstr ""
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:26
 msgid "When should it be returned?"
@@ -1740,6 +2276,10 @@ msgstr "Коли це потрібно повернути?"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
+
+#: src/budget/component/budget-period-selector/budget-period-selector.tsx:20
+msgid "Yearly"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
