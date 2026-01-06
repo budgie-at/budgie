@@ -17,7 +17,9 @@ interface Props {
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly onDelete?: EmptyFn;
+    readonly onConvert?: EmptyFn;
     readonly deleteConfirmTitle: string;
+    readonly showConvertButton?: boolean;
     readonly deleteConfirmButtonText: string;
     readonly children?: ReactNode;
 }
@@ -27,6 +29,8 @@ export const FormFooter = ({
     buttonText,
     onSubmit,
     onDelete,
+    onConvert,
+    showConvertButton,
     deleteConfirmTitle,
     deleteConfirmButtonText,
     children
@@ -43,6 +47,9 @@ export const FormFooter = ({
                     <View className="flex-row gap-2">
                         {isDefined(onDelete) ? (
                             <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
+                        ) : null}
+                        {showConvertButton && isDefined(onConvert) ? (
+                            <Button leftIcon={UserIconNameEnum.ArrowRightLeft} onPress={onConvert} variant="default" />
                         ) : null}
                         <Button
                             leftIcon={UserIconNameEnum.CircleCheck}

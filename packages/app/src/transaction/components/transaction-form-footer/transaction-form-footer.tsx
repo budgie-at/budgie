@@ -17,7 +17,8 @@ interface Props {
     readonly onConvert?: EmptyFn;
 }
 
-export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete, showSuggestRule, onSuggestRulePress }: Props) => {
+export const TransactionFormFooter = (props: Props) => {
+    const { variant, buttonText, onSubmit, onDelete, showConvertButton, onConvert, showSuggestRule, onSuggestRulePress } = props;
     const { t } = useLingui();
 
     return (
@@ -26,6 +27,8 @@ export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete,
             buttonText={buttonText}
             onSubmit={onSubmit}
             onDelete={onDelete}
+            onConvert={onConvert}
+            showConvertButton={showConvertButton}
             deleteConfirmTitle={t`Are you sure you want to delete this transaction?`}
             deleteConfirmButtonText={t`Delete transaction`}
         >
