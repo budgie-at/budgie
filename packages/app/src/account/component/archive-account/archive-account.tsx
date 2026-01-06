@@ -17,10 +17,8 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
     const handleArchive = async () => {
         try {
-            console.log('handleArchive');
             await microPause();
             await accountService.archiveById(accountId);
-            console.log('handleArchive end');
         } catch {
             Toast.show({
                 type: 'error',
