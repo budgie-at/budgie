@@ -48,10 +48,12 @@ const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
 
 export const ConfirmActionBottomSheet = (props: Props) => {
     const { ref, icon, isLoading, isDisabled, onSubmit, variant, title, buttonText, description } = props;
-    const { bottom } = useSafeAreaInsets();
+
     const { t } = useLingui();
+    const { bottom } = useSafeAreaInsets();
 
     const handleCancel = () => void ref.current?.close();
+
     const buttonDisabled = isLoading || isDisabled;
     const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : buttonText;
 

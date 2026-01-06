@@ -10,6 +10,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -44,6 +45,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const handleRestore = async () => {
         setIsRestoring(true);
         try {
+            await microPause();
             await accountService.restoreById(account.id);
             restoreRef.current?.close();
         } catch {
@@ -56,6 +58,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     const handleDelete = async () => {
         setIsDeleting(true);
         try {
+            await microPause();
             await accountService.deleteById(account.id);
             deleteRef.current?.close();
         } catch {

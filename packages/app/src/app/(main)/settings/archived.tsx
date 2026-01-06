@@ -7,8 +7,9 @@ import { ArchivedAccountsEmptyState } from '../../../account/component/archived-
 import { useGetArchivedAccountsQuery } from '../../../account/query/use-get-archived-accounts.query';
 
 export default function Archived() {
-    const { accounts } = useGetArchivedAccountsQuery();
     const { t } = useLingui();
+
+    const { accounts } = useGetArchivedAccountsQuery();
 
     const archivedAccountsCount = accounts?.length ?? 0;
 
