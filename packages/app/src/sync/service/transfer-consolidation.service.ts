@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop,lingui/no-unlocalized-strings */
+/* eslint-disable lingui/no-unlocalized-strings */
 import { TransactionTypeEnum, TransferPairCandidateInterface } from '@budgie/contracts';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
