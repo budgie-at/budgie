@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/budgie-at/budgie/compare/v2.4.0...v2.4.1) (2026-01-06)
+
+### Bug Fixes
+
+- fix missing icons ([#214](https://github.com/budgie-at/budgie/issues/214)) ([891c5a7](https://github.com/budgie-at/budgie/commit/891c5a75608381b047442f6fc3b5a2f90a151b8e))
+
+# [2.4.0](https://github.com/budgie-at/budgie/compare/v2.3.1...v2.4.0) (2026-01-06)
+
+### Bug Fixes
+
+- correct apostrophe escaping in license metadata ([ac9b54b](https://github.com/budgie-at/budgie/commit/ac9b54bc714784eeef70a20ab425caf14020b2cd))
+- properly escape apostrophe in metadata to fix build ([3a1c828](https://github.com/budgie-at/budgie/commit/3a1c828f76873f9b2b05c4eb8d19475482260882))
+
+### Features
+
+- update license to O'Saasy ([3bf0fa1](https://github.com/budgie-at/budgie/commit/3bf0fa1324f62ee6292f2344a22d888f82b04d5b))
+
+## [2.3.1](https://github.com/budgie-at/budgie/compare/v2.3.0...v2.3.1) (2026-01-05)
+
+### Bug Fixes
+
+- **contracts:** shorten account icon validation error message ([2ba7270](https://github.com/budgie-at/budgie/commit/2ba7270b290bdc7709fb841e916cdc40119e3b7b))
+- **contracts:** shorten category icon validation error message ([d19a93d](https://github.com/budgie-at/budgie/commit/d19a93dde4282614b6d45021af987e06853aa3dd))
+
 # [2.3.0](https://github.com/budgie-at/budgie/compare/v2.2.0...v2.3.0) (2026-01-05)
 
 ### Features
