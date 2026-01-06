@@ -12,7 +12,6 @@
         "lint": "run -T eslint --fix src",
         "prebuild": "expo prebuild --clean",
         "start": "expo start --dev-client -c",
-        "start:mcp": "EXPO_UNSTABLE_MCP_SERVER=1 expo start --dev-client -c",
         "ts": "run -T tsc -p .",
         "web": "expo start --web",
         "db:generate": "drizzle-kit generate"
@@ -96,7 +95,6 @@
         "babel-plugin-react-compiler": "^1.0.0",
         "drizzle-kit": "^0.31.7",
         "eas-build-cache-provider": "^16.4.2",
-        "expo-mcp": "~0.2.1",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.14",
         "tsx": "^4.20.6"
