@@ -112,7 +112,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })
             .from(TransactionEntityTable)
-            .where(and(eq(TransactionEntityTable.externalSource, externalSource), isNotNull(TransactionEntityTable.externalId)));
+            .where(
+                and(
+                    eq(TransactionEntityTable.externalSource, externalSource),
+                    isNotNull(TransactionEntityTable.externalId),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            );
 
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }
