@@ -5,6 +5,7 @@ export enum UserIconNameEnum {
     ALargeSmall = 'ALargeSmall',
     Accessibility = 'Accessibility',
     Activity = 'Activity',
+    Home = 'Home',
     AirVent = 'AirVent',
     Airplay = 'Airplay',
     AlarmClock = 'AlarmClock',
