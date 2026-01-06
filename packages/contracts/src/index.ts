@@ -157,6 +157,7 @@ export { TransactionEntityRelations } from './transaction/relations/transaction-
 
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
+export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
 export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';

@@ -22,7 +22,7 @@ interface Props {
 
 export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete, showConvertButton, onConvert }: Props) => {
     const { t } = useLingui();
-    const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
+    const { ref, isLoading, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
 
     return (
         <>
@@ -48,6 +48,7 @@ export const TransactionFormFooter = ({ variant, buttonText, onSubmit, onDelete,
 
             <ConfirmActionBottomSheet
                 ref={ref}
+                isLoading={isLoading}
                 variant="destructive"
                 description={t`This action cannot be undone.`}
                 buttonText={t`Delete transaction`}

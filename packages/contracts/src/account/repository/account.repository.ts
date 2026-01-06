@@ -42,6 +42,10 @@ export class AccountRepository {
         await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
     }
 
+    async deleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
+    }
+
     async getAllActiveAccounts(): Promise<AccountEntityInterface[]> {
         return await this.db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
