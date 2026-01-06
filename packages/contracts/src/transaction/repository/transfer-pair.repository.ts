@@ -49,7 +49,6 @@ export class TransferPairRepository {
                     AND expense_tx.deleted_at IS NULL
                     AND expense_entry.deleted_at IS NULL
                     AND expense_account.id != income_account.id
-                    AND expense_account.instrument_id = income_account.instrument_id
                     AND (
                         (expense_entry.to_iban IS NOT NULL
                          AND income_account.iban IS NOT NULL
