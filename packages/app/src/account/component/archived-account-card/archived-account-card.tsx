@@ -46,7 +46,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
     };
 
     const restore = useConfirmAction(handleRestoreAction);
-    const deleteAction = useConfirmAction(handleDeleteAction);
+    const deletion = useConfirmAction(handleDeleteAction);
 
     const accountTitle = account.title;
 
@@ -63,7 +63,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                             <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
                         </HapticPressable>
 
-                        <HapticPressable onPress={deleteAction.handleOpen}>
+                        <HapticPressable onPress={deletion.handleOpen}>
                             <CircleIcon variant="destructive" icon={UserIconNameEnum.Trash2} />
                         </HapticPressable>
                     </View>
@@ -86,14 +86,14 @@ export const ArchivedAccountCard = ({ account }: Props) => {
             />
 
             <ConfirmActionBottomSheet
-                ref={deleteAction.ref}
+                ref={deletion.ref}
                 icon={UserIconNameEnum.OctagonAlert}
                 variant="destructive"
                 buttonText={t`Delete Permanently`}
-                onSubmit={deleteAction.handleConfirm}
+                onSubmit={deletion.handleConfirm}
                 title={t`Delete Account Permanently?`}
                 description={t`${accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone.`}
-                isLoading={deleteAction.isLoading}
+                isLoading={deletion.isLoading}
             />
         </>
     );
