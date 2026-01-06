@@ -1,12 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { Button } from '../../../@generic/component/button/button';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
+import { microPause } from '../../../@generic/utils/micro-pause.util';
+import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { accountService } from '../../service/account.service';
 
 interface Props {
@@ -14,14 +13,12 @@ interface Props {
 }
 
 export const ArchiveAccount = ({ accountId }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
 
     const handleArchive = async () => {
         try {
+            await microPause();
             await accountService.archiveById(accountId);
-            ref.current?.close();
-            dismissAllOrReplace('/');
         } catch {
             Toast.show({
                 type: 'error',
@@ -31,7 +28,7 @@ export const ArchiveAccount = ({ accountId }: Props) => {
         }
     };
 
-    const handleOpen = () => ref.current?.open();
+    const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleArchive, '/');
 
     return (
         <>
@@ -39,10 +36,11 @@ export const ArchiveAccount = ({ accountId }: Props) => {
 
             <ConfirmActionBottomSheet
                 ref={ref}
+                isLoading={isLoading}
                 variant="dark-warning"
                 description={t`This account will be hidden from your main view and won't be included in totals. \n\n 💡 You can restore it anytime from Settings → Archived Accounts`}
                 buttonText={t`Archive`}
-                onSubmit={handleArchive}
+                onSubmit={handleConfirm}
                 icon={UserIconNameEnum.Archive}
                 title={t`Archive Account?`}
             />
