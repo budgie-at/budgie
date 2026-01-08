@@ -44,11 +44,14 @@ export const BottomSheet = (props: Props) => {
     const modalRef = useRef<BottomSheetModal | null>(null);
     const { top } = useSafeAreaInsets();
 
-    const close = () => void modalRef.current?.close();
-    const open = () => void modalRef.current?.present();
-    const dismiss = () => void modalRef.current?.dismiss();
-
-    useImperativeHandle(ref, (): BottomSheetInterface => ({ open, close, dismiss }));
+    useImperativeHandle(
+        ref,
+        (): BottomSheetInterface => ({
+            open: () => void modalRef.current?.present(),
+            close: () => void modalRef.current?.close(),
+            dismiss: () => void modalRef.current?.dismiss()
+        })
+    );
 
     const backdropPressBehavior = isCloseable ? 'close' : 'none';
     const renderBackdrop = (backdropProps: ComponentProps<typeof BottomSheetBackdrop>) => (
