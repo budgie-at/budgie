@@ -19,7 +19,7 @@ interface Props {
     readonly categoryId: number | null;
     readonly variant: ColorPaletteVariant;
     readonly excludeCategoryIds: number[];
-    readonly onSelect: (categoryId: number) => void;
+    readonly onSelect: (categoryId: number | null) => void;
 }
 
 const cardVariants = cva<{ status: Record<FormFieldStatus, ClassValue> }>(

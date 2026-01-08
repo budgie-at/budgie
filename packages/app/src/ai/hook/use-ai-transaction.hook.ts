@@ -53,9 +53,9 @@ IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food categor
 Reply with the category number only.`;
 
     const reset = () => void setAiTransaction(null);
-    const fillCategory = (categoryId: number) => {
+    const fillCategory = (categoryId: number | null) => {
         setAiTransaction({
-            category: categories.find(category => category.id === categoryId) ?? null,
+            category: isDefined(categoryId) ? (categories.find(category => category.id === categoryId) ?? null) : null,
             amount: parseNumberFromMessage(prompt),
             type: TransactionTypeEnum.EXPENSE,
             comment: prompt
