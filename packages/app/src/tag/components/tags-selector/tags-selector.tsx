@@ -31,12 +31,9 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
 
     const handleOpen = () => void ref.current?.open();
 
-    const handleSelect = (id: number) => {
-        onChange(Array.from(new Set([...tagIds, id])));
-    };
-
-    const handleRemoveSelection = (id: number) => {
-        onChange(tagIds.filter(tagId => tagId !== id));
+    const handleToggleTag = (id: number) => {
+        const isSelected = tagIds.includes(id);
+        onChange(isSelected ? tagIds.filter(tagId => tagId !== id) : [...tagIds, id]);
     };
 
     return (
@@ -61,7 +58,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 )}
             </HorizontalCell>
 
-            <TagsSelectorBottomSheet onRemoveSelection={handleRemoveSelection} onSelect={handleSelect} selectedTagIds={tagIds} ref={ref} />
+            <TagsSelectorBottomSheet onSelect={handleToggleTag} selectedTagIds={tagIds} ref={ref} />
         </>
     );
 };

@@ -3,13 +3,10 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchTagsQuery } from '../../query/use-search-tags.query';
-import { SelectedTagsList } from '../selected-tags-list/selected-tags-list';
 import { TagFormBottomSheet } from '../tag-form-bottom-sheet/tag-form-bottom-sheet';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 import { TagsSelectorFooter } from '../tags-selector-footer/tags-selector-footer';
@@ -17,7 +14,6 @@ import { TagsSelectorFooter } from '../tags-selector-footer/tags-selector-footer
 interface Props {
     readonly selectedTagIds: number[];
     readonly onSelect: (tagId: number) => void;
-    readonly onRemoveSelection: (tagId: number) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
@@ -29,15 +25,14 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg px-6 pt-xl'
 };
 
-export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
+export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props) => {
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);
     const { t } = useLingui();
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
-    const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
+    const tagsCount = tags?.length ?? 0;
     const data = padFlatListData(tags ?? [], 3);
-    const tagsCount = data.length;
     const handleCreateTag = () => void tagFormRef.current?.open();
     const handleClose = () => void ref.current?.close();
     const handleTagCreated = (tag: TagEntityInterface) => {
@@ -50,14 +45,16 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
         item.isEmpty ? (
             <View className="flex-1" />
         ) : (
-            <TagsSelectorCard isSelected={selectedTagIds.includes(item.id)} onSelect={onSelect} variant="static" title={item.title} id={item.id} />
+            <TagsSelectorCard
+                isSelected={selectedTagIds.includes(item.id)}
+                onSelect={onSelect}
+                variant="static"
+                title={item.title}
+                id={item.id}
+            />
         );
 
-    const listHeaderContent = isNotEmptyArray(selectedTags) ? (
-        <SelectedTagsList selectedTags={selectedTags} onRemoveSelection={onRemoveSelection} />
-    ) : null;
-
-    const footerContent = <TagsSelectorFooter selectedTagsCount={selectedTags.length} onClose={handleClose} />;
+    const footerContent = <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />;
 
     return (
         <>
@@ -76,7 +73,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 data={data}
                 flatListProps={flatListProps}
                 rightAction={rightAction}
-                listHeaderContent={listHeaderContent}
                 footerContent={footerContent}
                 autoFocus={false}
             />
