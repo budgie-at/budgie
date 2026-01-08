@@ -29,6 +29,13 @@ export const AnimatedFlatList = <T,>({ data, keyExtractor, renderItem, ...rest }
     );
 
     return (
-        <FlatList data={data} keyExtractor={keyExtractor} renderItem={internalRenderItem} showsVerticalScrollIndicator={false} {...rest} />
+        <FlatList
+            data={data}
+            keyExtractor={keyExtractor}
+            renderItem={internalRenderItem}
+            showsVerticalScrollIndicator={false}
+            automaticallyAdjustKeyboardInsets
+            {...rest}
+        />
     );
 };
