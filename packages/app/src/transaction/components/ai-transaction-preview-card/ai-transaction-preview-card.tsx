@@ -51,7 +51,7 @@ interface Props {
     readonly accountId: number | null;
     readonly onConfirm: () => void;
     readonly onCancel: () => void;
-    readonly onCategoryChange: (categoryId: number) => void;
+    readonly onCategoryChange: (categoryId: number | null) => void;
     readonly onAccountChange: (accountId: number) => void;
 }
 
