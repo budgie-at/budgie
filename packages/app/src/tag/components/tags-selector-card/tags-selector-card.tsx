@@ -29,7 +29,7 @@ const cardVariants = cva(`border-2 rounded-3xl px-xl items-center justify-center
         {
             isSelected: true,
             variant: 'static',
-            className: 'border-secondary-foreground'
+            className: 'bg-primary border-primary'
         },
         {
             isSelected: false,
@@ -54,7 +54,7 @@ const textVariants = cva('font-medium text-sm', {
         {
             isSelected: true,
             variant: 'static',
-            className: 'text-primary'
+            className: 'text-primary-reverse'
         },
         {
             isSelected: false,
