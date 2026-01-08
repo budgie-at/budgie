@@ -1,22 +1,18 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
-import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { BottomSheetSearch } from '../../../@generic/component/bottom-sheet-search/bottom-sheet-search';
-import { Button } from '../../../@generic/component/button/button';
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { Footer } from '../../../@generic/component/footer/footer';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
 import { useSearchTagsQuery } from '../../query/use-search-tags.query';
 import { SelectedTagsList } from '../selected-tags-list/selected-tags-list';
 import { TagFormBottomSheet } from '../tag-form-bottom-sheet/tag-form-bottom-sheet';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
+import { TagsSelectorFooter } from '../tags-selector-footer/tags-selector-footer';
 
 interface Props {
     readonly selectedTagIds: number[];
@@ -25,7 +21,13 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
-const snapPoints = ['70%'];
+const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.id.toString());
+
+const flatListProps = {
+    numColumns: 3,
+    columnWrapperClassName: 'gap-x-lg',
+    contentContainerClassName: 'gap-y-lg px-6 pt-xl'
+};
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemoveSelection }: Props) => {
     const [search, setSearch] = useState('');
@@ -34,72 +36,50 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
     const selectedTags = tags?.filter(tag => selectedTagIds.includes(tag.id)) ?? [];
-    const tagsCount = tags?.length ?? 0;
-
+    const data = padFlatListData(tags ?? [], 3);
+    const tagsCount = data.length;
     const handleCreateTag = () => void tagFormRef.current?.open();
-
+    const handleClose = () => void ref.current?.close();
     const handleTagCreated = (tag: TagEntityInterface) => {
         setSearch('');
         onSelect(tag.id);
     };
 
-    const handleClose = () => void ref.current?.close();
-
-    const selectedTagsCount = selectedTags.length;
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
-    const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
+    const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
+        item.isEmpty ? (
+            <View className="flex-1" />
+        ) : (
+            <TagsSelectorCard isSelected={selectedTagIds.includes(item.id)} onSelect={onSelect} variant="static" title={item.title} id={item.id} />
+        );
+
+    const listHeaderContent = isNotEmptyArray(selectedTags) ? (
+        <SelectedTagsList selectedTags={selectedTags} onRemoveSelection={onRemoveSelection} />
+    ) : null;
+
+    const footerContent = <TagsSelectorFooter selectedTagsCount={selectedTags.length} onClose={handleClose} />;
 
     return (
         <>
-            <BottomSheet snapPoints={snapPoints} ref={ref}>
-                <BottomSheetHeader
-                    className="border-b border-b-secondary-corner"
-                    size="md"
-                    title={t`Select Tags`}
-                    description={t`${tagsCount} tags available`}
-                />
-
-                <BottomSheetSearch onChangeText={setSearch} placeholder={t`Search tags...`} value={search} rightAction={rightAction} />
-
-                <BottomSheetScrollView contentContainerClassName="flex-1 pt-5xl px-5xl gap-y-5xl">
-                    {isNotEmptyArray(selectedTags) ? (
-                        <SelectedTagsList selectedTags={selectedTags} onRemoveSelection={onRemoveSelection} />
-                    ) : null}
-
-                    <View className="flex-1">
-                        <Text className="text-secondary-foreground uppercase mb-xl text-sm font-medium">
-                            <Trans>Common Tags</Trans>
-                        </Text>
-
-                        {isNotEmptyArray(tags) ? (
-                            <View className="flex-row flex-wrap gap-xl">
-                                {tags.map(({ id, title }) => (
-                                    <TagsSelectorCard
-                                        isSelected={selectedTagIds.includes(id)}
-                                        onSelect={onSelect}
-                                        variant="static"
-                                        title={title}
-                                        key={id}
-                                        id={id}
-                                    />
-                                ))}
-                            </View>
-                        ) : (
-                            <EmptyState
-                                circleIcon={UserIconNameEnum.Tag}
-                                title={t`No tags found`}
-                                titleClassName="text-primary font-semibold"
-                                descriptionClassName="max-w-[250px] text-center mx-auto"
-                                description={t`Try a different search term or create a new tag`}
-                            />
-                        )}
-                    </View>
-                </BottomSheetScrollView>
-
-                <Footer>
-                    <Button size="md" variant="ghost" content={buttonText} onPress={handleClose} />
-                </Footer>
-            </BottomSheet>
+            <SearchableListBottomSheet
+                ref={ref}
+                title={t`Select Tags`}
+                description={t`${tagsCount} tags available`}
+                onSearchChange={setSearch}
+                searchPlaceholder={t`Search tags...`}
+                search={search}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                emptyDescription={t`Try a different search term or create a new tag`}
+                emptyIcon={UserIconNameEnum.Tag}
+                emptyTitle={t`No tags found`}
+                data={data}
+                flatListProps={flatListProps}
+                rightAction={rightAction}
+                listHeaderContent={listHeaderContent}
+                footerContent={footerContent}
+                autoFocus={false}
+            />
 
             <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
         </>
