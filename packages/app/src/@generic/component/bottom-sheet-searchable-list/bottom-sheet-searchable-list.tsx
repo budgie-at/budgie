@@ -79,9 +79,7 @@ export const SearchableListBottomSheet = <T,>({
     const handleSheetChange = (sheetIndex: number) => {
         if (autoFocus && sheetIndex >= 0) {
             InteractionManager.runAfterInteractions(() => {
-                setTimeout(() => {
-                    inputRef.current?.focus();
-                }, 350);
+                inputRef.current?.focus();
             });
         }
     };
