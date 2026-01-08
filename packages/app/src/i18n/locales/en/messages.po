@@ -55,7 +55,7 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:64
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} tags available"
 
@@ -120,11 +120,11 @@ msgstr "Activate Account?"
 msgid "Active"
 msgstr "Active"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:53
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
@@ -339,7 +339,7 @@ msgstr ""
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -380,7 +380,7 @@ msgstr "Choose the type of account you want to add"
 msgid "Choose your main account"
 msgstr "Choose your main account"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:87
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:96
 msgid "Choose your main category"
 msgstr "Choose your main category"
 
@@ -461,11 +461,11 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
@@ -486,7 +486,7 @@ msgstr "Could not delete transaction."
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "Could not update category"
 
@@ -522,7 +522,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -539,7 +539,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -668,15 +668,15 @@ msgstr "Dutch (Netherlands)"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:70
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Edit Category"
 msgstr "Edit Category"
 
@@ -1072,7 +1072,7 @@ msgstr "No accounts yet"
 msgid "No archived accounts"
 msgstr "No archived accounts"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:103
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "No categories found"
@@ -1134,7 +1134,7 @@ msgstr "No Results"
 msgid "No speech detected"
 msgstr "No speech detected"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No tags found"
@@ -1152,7 +1152,7 @@ msgstr "No Tags Yet"
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
-#: src/tag/components/tags-selector/tags-selector.tsx:59
+#: src/tag/components/tags-selector/tags-selector.tsx:56
 msgid "None"
 msgstr "None"
 
@@ -1221,8 +1221,8 @@ msgstr "Please enter your Monobank API token"
 msgid "Please try again"
 msgstr "Please try again"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -1237,11 +1237,6 @@ msgstr "Portuguese (Portugal)"
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
-
-#: src/category/components/category-preview/category-preview.tsx:16
-#: src/tag/components/tag-preview/tag-preview.tsx:13
-msgid "Preview"
-msgstr "Preview"
 
 #: src/app/(main)/settings/index.tsx:52
 msgid "Privacy"
@@ -1303,7 +1298,7 @@ msgid "Search accounts..."
 msgstr "Search accounts..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Search categories..."
@@ -1325,7 +1320,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -1377,7 +1372,7 @@ msgstr "Select category"
 #: src/app/(main)/create-transaction/income.tsx:55
 #: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:95
 msgid "Select Category"
 msgstr "Select Category"
 
@@ -1405,7 +1400,7 @@ msgstr "Select Import Preset"
 msgid "Select Language"
 msgstr "Select Language"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
 msgid "Select Tags"
 msgstr "Select Tags"
 
@@ -1416,10 +1411,6 @@ msgstr "Select the type of account"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
 msgstr "Selected"
-
-#: src/tag/components/selected-tags-list/selected-tags-list.tsx:18
-msgid "Selected {selectedTagsCount}"
-msgstr "Selected {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
@@ -1535,7 +1526,7 @@ msgstr "Synced bank accounts"
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:59
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
 msgid "Tag Name"
 msgstr "Tag Name"
 
@@ -1657,12 +1648,12 @@ msgstr "Transfer"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:70
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
@@ -1716,7 +1707,7 @@ msgstr "Update Income"
 msgid "Update Transfer"
 msgstr "Update Transfer"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Update your category details"
 msgstr "Update your category details"
 
