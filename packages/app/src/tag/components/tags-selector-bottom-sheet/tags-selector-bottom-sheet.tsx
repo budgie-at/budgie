@@ -1,5 +1,4 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -102,9 +101,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onRemov
                 </Footer>
             </BottomSheet>
 
-            <BottomSheetModalProvider>
-                <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
-            </BottomSheetModalProvider>
+            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
         </>
     );
 };
