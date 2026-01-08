@@ -8,6 +8,7 @@ import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sh
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
+import { sortSelectedFirst } from '../../../@generic/utils/sort-selected-first.util';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
@@ -52,12 +53,10 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         handleSelect(category.id);
     };
 
-    const data = padFlatListData(
-        isNotEmptyArray(categories)
-            ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
-            : [],
-        3
-    );
+    const filteredCategories = isNotEmptyArray(categories)
+        ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
+        : [];
+    const data = padFlatListData(sortSelectedFirst(filteredCategories, isDefined(selectedCategory) ? [selectedCategory.id] : []), 3);
 
     const handleEmptySelect = () => void 0;
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
