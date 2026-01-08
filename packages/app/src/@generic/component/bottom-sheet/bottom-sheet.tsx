@@ -40,8 +40,6 @@ export const BottomSheet = (props: Props) => {
         isCloseable = true,
         ...rest
     } = props;
-
-    const safeIndex = enableDynamicSizing ? 0 : index;
     const modalRef = useRef<BottomSheetModal | null>(null);
     const { top } = useSafeAreaInsets();
 
@@ -71,7 +69,7 @@ export const BottomSheet = (props: Props) => {
             enablePanDownToClose={isCloseable}
             ref={modalRef}
             topInset={top}
-            index={safeIndex}
+            index={index}
             {...rest}
         >
             {children}
