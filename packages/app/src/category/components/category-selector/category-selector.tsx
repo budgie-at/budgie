@@ -12,7 +12,7 @@ import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/c
 interface Props {
     readonly categoryId: number | null;
     readonly variant: ColorPaletteVariant;
-    readonly onSelect: (categoryId: number) => void;
+    readonly onSelect: (categoryId: number | null) => void;
     readonly status?: FormFieldStatus;
 }
 

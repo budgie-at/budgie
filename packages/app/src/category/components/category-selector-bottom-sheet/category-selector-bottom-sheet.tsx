@@ -16,7 +16,7 @@ import { CategorySelectorCard } from '../category-selector-card/category-selecto
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly excludeCategoryIds?: number[];
-    readonly onSelect: (categoryId: number) => void;
+    readonly onSelect: (categoryId: number | null) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly selectedCategory: CategoryEntityInterface | null;
 }
@@ -39,7 +39,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
 
     const handleSelect = (categoryId: number) => {
         void ref.current?.dismiss();
-        onSelect(categoryId);
+        onSelect(categoryId === selectedCategory?.id ? null : categoryId);
     };
 
     const handleCreateCategory = () => {

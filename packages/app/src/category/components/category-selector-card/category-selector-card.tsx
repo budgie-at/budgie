@@ -55,7 +55,7 @@ export const CategorySelectorCard = (props: Props) => {
     const iconVariant = isSelected ? variant : 'ghost';
 
     return (
-        <HapticPressable disabled={isSelected} className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
+        <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
             <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
             <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
