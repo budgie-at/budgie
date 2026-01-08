@@ -1,7 +1,6 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
-import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -25,9 +24,9 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
     item.isEmpty ? `empty-${index}` : item.id.toString();
 
 const flatListProps = {
-    numColumns: 2,
-    columnWrapperClassName: 'gap-x-lg',
-    contentContainerClassName: 'gap-y-lg px-6 pt-xl'
+    numColumns: 3,
+    columnWrapperClassName: 'gap-x-md',
+    contentContainerClassName: 'gap-y-md px-3 pt-xl'
 };
 
 export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
@@ -56,12 +55,22 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
     const data = padFlatListData(
         isNotEmptyArray(categories)
             ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
-            : []
+            : [],
+        3
     );
 
+    const handleEmptySelect = () => void 0;
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
-            <View className="flex-1" />
+            <CategorySelectorCard
+                className="opacity-0"
+                isSelected={false}
+                onSelect={handleEmptySelect}
+                title=""
+                variant={variant}
+                icon={UserIconNameEnum.Circle}
+                id={0}
+            />
         ) : (
             <CategorySelectorCard
                 isSelected={item.id === selectedCategory?.id}
