@@ -55,7 +55,7 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:59
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} tags available"
 
@@ -421,10 +421,6 @@ msgstr "Close"
 msgid "Comment"
 msgstr "Comment"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:71
-msgid "Common Tags"
-msgstr "Common Tags"
-
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:129
 msgid "Confirm"
 msgstr "Confirm"
@@ -656,11 +652,11 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:50
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:50
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
@@ -1138,7 +1134,7 @@ msgstr "No Results"
 msgid "No speech detected"
 msgstr "No speech detected"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:90
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No tags found"
@@ -1329,7 +1325,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:62
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -1409,7 +1405,7 @@ msgstr "Select Import Preset"
 msgid "Select Language"
 msgstr "Select Language"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:58
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 msgid "Select Tags"
 msgstr "Select Tags"
 
@@ -1666,7 +1662,7 @@ msgstr "Transfer"
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:93
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 

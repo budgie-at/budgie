@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ComponentProps, JSX, RefObject, useRef } from 'react';
+import { ComponentProps, FC, JSX, RefObject, useRef } from 'react';
 import { InteractionManager } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +14,8 @@ import { BottomSheetFlatList } from '../bottom-sheet-flat-list/bottom-sheet-flat
 import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetSearch } from '../bottom-sheet-search/bottom-sheet-search';
 import { EmptyState } from '../empty-state/empty-state';
+
+import type { BottomSheetFooterProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter';
 
 interface SearchableListBottomSheetProps<T> {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -42,8 +44,11 @@ interface SearchableListBottomSheetProps<T> {
         columnWrapperClassName?: string;
     };
 
-    readonly listHeaderContent?: JSX.Element;
+    readonly listHeaderContent?: JSX.Element | null;
     readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
+    readonly footerComponent?: FC<BottomSheetFooterProps>;
+    readonly footerContent?: JSX.Element;
+    readonly searchPosition?: 'top' | 'bottom';
     readonly autoFocus?: boolean;
 }
 
@@ -71,6 +76,9 @@ export const SearchableListBottomSheet = <T,>({
     emptyIcon,
     listHeaderContent,
     rightAction,
+    footerComponent,
+    footerContent,
+    searchPosition = 'top',
     autoFocus = true
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
@@ -84,16 +92,21 @@ export const SearchableListBottomSheet = <T,>({
         }
     };
 
+    const searchComponent = (
+        <BottomSheetSearch
+            ref={inputRef}
+            onChangeText={onSearchChange}
+            placeholder={searchPlaceholder}
+            value={search}
+            rightAction={rightAction}
+        />
+    );
+
     return (
-        <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange}>
+        <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange} footerComponent={footerComponent}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
-            <BottomSheetSearch
-                ref={inputRef}
-                onChangeText={onSearchChange}
-                placeholder={searchPlaceholder}
-                value={search}
-                rightAction={rightAction}
-            />
+
+            {searchPosition === 'top' ? searchComponent : null}
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
@@ -114,6 +127,10 @@ export const SearchableListBottomSheet = <T,>({
                     <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
                 </>
             )}
+
+            {searchPosition === 'bottom' ? searchComponent : null}
+
+            {footerContent}
         </BottomSheet>
     );
 };
