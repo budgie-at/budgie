@@ -58,7 +58,6 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagCreated }: Pro
                 maxLength={TAG_TITLE_MAX_LENGTH}
                 label={t`Tag Name`}
                 control={control}
-                autoFocus
             />
 
             <TagPreview title={title} />
