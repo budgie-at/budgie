@@ -38,8 +38,13 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
     const categoryFormRef = useRef<BottomSheetInterface | null>(null);
 
     const handleSelect = (categoryId: number) => {
-        void ref.current?.dismiss();
-        onSelect(categoryId === selectedCategory?.id ? null : categoryId);
+        const isDeselecting = categoryId === selectedCategory?.id;
+
+        if (!isDeselecting) {
+            void ref.current?.dismiss();
+        }
+
+        onSelect(isDeselecting ? null : categoryId);
     };
 
     const handleCreateCategory = () => {
