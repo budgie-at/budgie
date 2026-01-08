@@ -1,7 +1,6 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
-import { View } from 'react-native';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -22,7 +21,7 @@ const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number)
 const flatListProps = {
     numColumns: 3,
     columnWrapperClassName: 'gap-x-lg',
-    contentContainerClassName: 'gap-y-lg px-6 pt-xl'
+    contentContainerClassName: 'gap-y-lg px-3 pt-xl'
 };
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props) => {
@@ -41,9 +40,10 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
     };
 
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
+    const handleEmptySelect = () => void 0;
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
-            <View className="flex-1" />
+            <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={handleEmptySelect} variant="static" title="" id={0} />
         ) : (
             <TagsSelectorCard
                 isSelected={selectedTagIds.includes(item.id)}

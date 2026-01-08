@@ -53,7 +53,7 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:64
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} étiquettes disponibles"
 
@@ -118,11 +118,11 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Ajoutez une nouvelle catégorie pour organiser vos transactions"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:53
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
 msgid "Add a new tag to organize your transactions"
 msgstr "Ajoutez une nouvelle étiquette pour organiser vos transactions"
 
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
 msgid "Category Name"
 msgstr "Nom de la catégorie"
 
@@ -378,7 +378,7 @@ msgstr "Choisissez le type de compte que vous souhaitez ajouter"
 msgid "Choose your main account"
 msgstr "Choisissez votre compte principal"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:87
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:96
 msgid "Choose your main category"
 msgstr "Choisissez votre catégorie principale"
 
@@ -459,11 +459,11 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account. Please try again later"
 msgstr "Impossible d'archiver le compte. Veuillez réessayer plus tard"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
@@ -484,7 +484,7 @@ msgstr "Impossible de supprimer la transaction."
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "Impossible de mettre à jour la catégorie"
 
@@ -520,7 +520,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
@@ -537,7 +537,7 @@ msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étique
 msgid "Create one to get started."
 msgstr "Créez-en un pour commencer."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Create Tag"
 msgstr "Créer une étiquette"
 
@@ -666,15 +666,15 @@ msgstr "Néerlandais (Pays-Bas)"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ex. Professionnel, Personnel, Vacances"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:70
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ex. Épicerie, Salaire, Loyer"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
@@ -1070,7 +1070,7 @@ msgstr "Aucun compte pour le moment"
 msgid "No archived accounts"
 msgstr "Aucun compte archivé"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:103
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Aucune catégorie trouvée"
@@ -1132,7 +1132,7 @@ msgstr "Aucun résultat"
 msgid "No speech detected"
 msgstr "Aucune parole détectée"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -1150,7 +1150,7 @@ msgstr "Aucune étiquette pour le moment"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
-#: src/tag/components/tags-selector/tags-selector.tsx:59
+#: src/tag/components/tags-selector/tags-selector.tsx:56
 msgid "None"
 msgstr "Aucune"
 
@@ -1219,8 +1219,8 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 msgid "Please try again"
 msgstr ""
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -1235,11 +1235,6 @@ msgstr "Portugais (Portugal)"
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
-
-#: src/category/components/category-preview/category-preview.tsx:16
-#: src/tag/components/tag-preview/tag-preview.tsx:13
-msgid "Preview"
-msgstr "Aperçu"
 
 #: src/app/(main)/settings/index.tsx:52
 msgid "Privacy"
@@ -1301,7 +1296,7 @@ msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Rechercher des catégories..."
@@ -1323,7 +1318,7 @@ msgid "Search languages..."
 msgstr "Rechercher des langues..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Rechercher des étiquettes..."
@@ -1375,7 +1370,7 @@ msgstr "Sélectionner une catégorie"
 #: src/app/(main)/create-transaction/income.tsx:55
 #: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:95
 msgid "Select Category"
 msgstr "Sélectionner une catégorie"
 
@@ -1403,7 +1398,7 @@ msgstr "Sélectionner un modèle d'importation"
 msgid "Select Language"
 msgstr "Sélectionner une langue"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
 msgid "Select Tags"
 msgstr "Sélectionner des étiquettes"
 
@@ -1414,10 +1409,6 @@ msgstr "Sélectionnez le type de compte"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
 msgstr "Sélectionné"
-
-#: src/tag/components/selected-tags-list/selected-tags-list.tsx:18
-msgid "Selected {selectedTagsCount}"
-msgstr "Sélectionnées : {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
@@ -1533,7 +1524,7 @@ msgstr "Comptes bancaires synchronisés"
 msgid "Syncing history..."
 msgstr "Synchronisation de l'historique..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:59
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
 
@@ -1655,12 +1646,12 @@ msgstr "Virement"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Essayez un autre terme de recherche"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:70
 msgid "Try a different search term or create a new tag"
 msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
@@ -1714,7 +1705,7 @@ msgstr "Mettre à jour le revenu"
 msgid "Update Transfer"
 msgstr "Mettre à jour le virement"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Update your category details"
 msgstr "Mettez à jour les détails de votre catégorie"
 
