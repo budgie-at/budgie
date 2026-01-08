@@ -5,6 +5,7 @@ import { RefObject, useRef, useState } from 'react';
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
+import { sortSelectedFirst } from '../../../@generic/utils/sort-selected-first.util';
 import { useSearchTagsQuery } from '../../query/use-search-tags.query';
 import { TagFormBottomSheet } from '../tag-form-bottom-sheet/tag-form-bottom-sheet';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
@@ -31,7 +32,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
     const tagsCount = tags?.length ?? 0;
-    const data = padFlatListData(tags ?? [], 3);
+    const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
+    const data = padFlatListData(sortedTags, 3);
     const handleCreateTag = () => void tagFormRef.current?.open();
     const handleClose = () => void ref.current?.close();
     const handleTagCreated = (tag: TagEntityInterface) => {
