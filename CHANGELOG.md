@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/budgie-at/budgie/compare/v2.5.0...v2.5.1) (2026-01-08)
+
+### Bug Fixes
+
+- **app:** enable keyboard-aware scrolling in search lists ([#221](https://github.com/budgie-at/budgie/issues/221)) ([e54894a](https://github.com/budgie-at/budgie/commit/e54894ae3c1d3c9ce89c26e48e312eec428bc3a9))
+
 # [2.5.0](https://github.com/budgie-at/budgie/compare/v2.4.1...v2.5.0) (2026-01-06)
 
 ### Bug Fixes
