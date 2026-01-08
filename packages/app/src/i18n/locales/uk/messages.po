@@ -53,7 +53,7 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:64
 msgid "{tagsCount} tags available"
 msgstr "{tagsCount} тегів доступно"
 
@@ -118,11 +118,11 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:53
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:74
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -378,7 +378,7 @@ msgstr "Оберіть тип рахунку, який ви хочете дод�
 msgid "Choose your main account"
 msgstr "Оберіть ваш основний рахунок"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:87
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:96
 msgid "Choose your main category"
 msgstr "Оберіть вашу основну категорію"
 
@@ -459,11 +459,11 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
@@ -484,7 +484,7 @@ msgstr "Не вдалося видалити транзакцію."
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
 
@@ -520,7 +520,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -537,7 +537,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Create Tag"
 msgstr "Створити тег"
 
@@ -666,15 +666,15 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:70
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
@@ -1070,7 +1070,7 @@ msgstr "Ще немає рахунків"
 msgid "No archived accounts"
 msgstr "Немає архівованих рахунків"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:94
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:103
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Категорій не знайдено"
@@ -1132,7 +1132,7 @@ msgstr "Немає результатів"
 msgid "No speech detected"
 msgstr "Мовлення не виявлено"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -1150,7 +1150,7 @@ msgstr "Ще немає тегів"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
-#: src/tag/components/tags-selector/tags-selector.tsx:59
+#: src/tag/components/tags-selector/tags-selector.tsx:56
 msgid "None"
 msgstr "Немає"
 
@@ -1219,8 +1219,8 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 msgid "Please try again"
 msgstr ""
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:53
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:39
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
@@ -1235,11 +1235,6 @@ msgstr "Португальська (Португалія)"
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
-
-#: src/category/components/category-preview/category-preview.tsx:16
-#: src/tag/components/tag-preview/tag-preview.tsx:13
-msgid "Preview"
-msgstr "Попередній перегляд"
 
 #: src/app/(main)/settings/index.tsx:52
 msgid "Privacy"
@@ -1301,7 +1296,7 @@ msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:89
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Пошук категорій..."
@@ -1323,7 +1318,7 @@ msgid "Search languages..."
 msgstr "Пошук мов..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Пошук тегів..."
@@ -1375,7 +1370,7 @@ msgstr "Виберіть категорію"
 #: src/app/(main)/create-transaction/income.tsx:55
 #: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:86
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:95
 msgid "Select Category"
 msgstr "Виберіть категорію"
 
@@ -1403,7 +1398,7 @@ msgstr "Вибрати шаблон імпорту"
 msgid "Select Language"
 msgstr "Виберіть мову"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
 msgid "Select Tags"
 msgstr "Виберіть теги"
 
@@ -1414,10 +1409,6 @@ msgstr "Оберіть тип рахунку"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
 msgstr "Вибрано"
-
-#: src/tag/components/selected-tags-list/selected-tags-list.tsx:18
-msgid "Selected {selectedTagsCount}"
-msgstr "Вибрано {selectedTagsCount}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:27
 msgid "Set Return Date"
@@ -1533,7 +1524,7 @@ msgstr "Синхронізовані банківські рахунки"
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:59
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1655,12 +1646,12 @@ msgstr "Переказ"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:93
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:70
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
@@ -1714,7 +1705,7 @@ msgstr "Оновити дохід"
 msgid "Update Transfer"
 msgstr "Оновити переказ"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:59
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Update your category details"
 msgstr "Оновіть дані вашої категорії"
 

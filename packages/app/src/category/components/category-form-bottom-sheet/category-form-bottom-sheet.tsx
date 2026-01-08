@@ -1,4 +1,4 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
@@ -11,7 +11,6 @@ import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
-import { CategoryPreview } from '../category-preview/category-preview';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -23,7 +22,7 @@ interface Props {
 export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategoryCreated }: Props) => {
     const { t } = useLingui();
 
-    const { handleSubmit, reset, control, title, icon } = useCategoryForm(category, defaultTitle);
+    const { handleSubmit, reset, control } = useCategoryForm(category, defaultTitle);
     const isEditing = isDefined(category?.id);
 
     const handleCancel = () => {
@@ -63,7 +62,6 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon={UserIconNameEnum.Folder}
             title={formTitle}
             description={formDescription}
             ref={ref}
@@ -77,8 +75,6 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
             />
 
             <CategoryFormIconField control={control} />
-
-            <CategoryPreview icon={icon} title={title} />
         </FormBottomSheet>
     );
 };

@@ -17,7 +17,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly className?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-3xl p-3xl border-2 gap-y-md justify-between`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm pt-md pb-sm border-2 items-center h-[72px]`, {
     variants: {
         isSelected: {
             true: '',
@@ -32,7 +32,7 @@ const cardVariants = cva(`flex-1 rounded-3xl p-3xl border-2 gap-y-md justify-bet
     }))
 });
 
-const textVariants = cva('font-medium text-sm', {
+const textVariants = cva('font-medium text-xs text-center leading-tight', {
     variants: {
         isSelected: {
             true: '',
@@ -56,9 +56,11 @@ export const CategorySelectorCard = (props: Props) => {
 
     return (
         <HapticPressable disabled={isSelected} className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
-            <CircleIcon size={34} iconSize={18} className="rounded-5xl" icon={icon} variant={iconVariant} border={false} />
+            <CircleIcon size={28} iconSize={14} className="rounded-4xl" icon={icon} variant={iconVariant} border={false} />
 
-            <Text className={textVariants({ isSelected, variant })}>{title}</Text>
+            <Text className={textVariants({ isSelected, variant })} numberOfLines={2}>
+                {title}
+            </Text>
         </HapticPressable>
     );
 };

@@ -15,7 +15,7 @@ interface Props {
 
 export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => (
     <Footer>
-        <View className="flex-row">
+        <View className="flex-row gap-x-xl">
             <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
                 <Text className="text-primary text-center">
                     <Trans>Cancel</Trans>
