@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { FC, JSX, ReactNode, RefObject } from 'react';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
@@ -20,8 +20,8 @@ interface SearchableListBottomSheetProps<T> {
     readonly snapPoints?: BottomSheetSnapPoints;
     readonly index?: number;
 
-    readonly title: string;
-    readonly description: string;
+    readonly title?: string;
+    readonly description?: string;
     readonly search: string;
     readonly align?: BottomSheetHeaderAlign;
     readonly onSearchChange: (value: string) => void;
@@ -82,9 +82,11 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
 
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
 
+    const hasHeader = isNotEmptyString(title) || isNotEmptyString(description);
+
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} footerComponent={footerComponent}>
-            <BottomSheetHeader align={align} size="md" title={title} description={description} />
+            {hasHeader ? <BottomSheetHeader align={align} size="md" title={title ?? ''} description={description ?? ''} /> : null}
 
             <BottomSheetSearch
                 onChangeText={onSearchChange}
@@ -92,6 +94,7 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
                 value={search}
                 rightActionIcon={rightActionIcon}
                 rightActionOnPress={rightActionOnPress}
+                showTopBorder={hasHeader}
             />
 
             {isNotEmptyArray(data) ? (
