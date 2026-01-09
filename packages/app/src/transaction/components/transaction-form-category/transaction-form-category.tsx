@@ -17,20 +17,17 @@ export const TransactionFormCategory = ({ variant, accountId, transactionType }:
     const { t } = useLingui();
     const { control } = useFormContext<TransactionCreateInputInterface>();
 
-    const [entries, totalAmount] = useWatch({
-        control,
-        name: ['entries', 'amount']
-    });
+    const [entries, totalAmount] = useWatch({ control, name: ['entries', 'amount'] });
 
     const renderCategorySelector = ({
         field: { value, onChange },
         fieldState: { invalid, error }
     }: UseControllerReturn<TransactionCreateInputInterface, 'entries.0.categoryId'>) => {
-        const status = invalid ? 'error' : 'default';
+        const cardVariant = invalid ? 'destructive' : 'primary';
 
         return (
             <FormItem error={error?.message}>
-                <CategorySelector status={status} categoryId={value} onSelect={onChange} variant={variant} />
+                <CategorySelector cardVariant={cardVariant} categoryId={value} onSelect={onChange} variant={variant} />
             </FormItem>
         );
     };

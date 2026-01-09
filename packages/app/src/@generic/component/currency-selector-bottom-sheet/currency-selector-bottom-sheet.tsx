@@ -49,8 +49,6 @@ export const CurrencySelectorBottomSheet = ({ ref, selectedInstrumentId, onSelec
     return (
         <SearchableListBottomSheet
             ref={ref}
-            title={t`Select Currency`}
-            description={t`Choose your main currency`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search currencies...`}
             search={search}

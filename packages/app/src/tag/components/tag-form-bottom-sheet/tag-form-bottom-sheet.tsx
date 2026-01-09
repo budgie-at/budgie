@@ -1,4 +1,4 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
@@ -8,7 +8,6 @@ import { FormBottomSheetTitleField } from '../../../@generic/component/form-bott
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
-import { TagPreview } from '../tag-preview/tag-preview';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -18,7 +17,7 @@ interface Props {
 }
 
 export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagCreated }: Props) => {
-    const { handleSubmit, reset, control, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const { handleSubmit, reset, control } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
     const { t } = useLingui();
 
     const handleCancel = () => {
@@ -48,7 +47,6 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagCreated }: Pro
             onDismiss={handleCancel}
             onCancel={handleCancel}
             onSubmit={onSubmit}
-            icon={UserIconNameEnum.Tag}
             title={t`Create Tag`}
             description={t`Add a new tag to organize your transactions`}
             ref={ref}
@@ -58,10 +56,7 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagCreated }: Pro
                 maxLength={TAG_TITLE_MAX_LENGTH}
                 label={t`Tag Name`}
                 control={control}
-                autoFocus
             />
-
-            <TagPreview title={title} />
         </FormBottomSheet>
     );
 };

@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef } from 'react';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DatePickerBottomSheet } from '../../../@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -13,8 +14,6 @@ interface Props {
     readonly onChange: (date: Date) => void;
 }
 
-const iconParams = { variant: 'ghost', size: 16, iconSize: 16, border: false } as const;
-
 export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
     const { formatDayAndMonthAndYear } = useFormatDate();
@@ -24,11 +23,10 @@ export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) =>
     return (
         <>
             <SimpleHorizontalCell
-                size="lg"
+                size="md"
                 right={null}
-                icon={UserIconNameEnum.Calendar}
+                left={<CircleIcon icon={UserIconNameEnum.Calendar} variant="ghost" size={16} iconSize={16} border={false} />}
                 onPress={handleOpen}
-                iconParams={iconParams}
                 title={formatDayAndMonthAndYear(date)}
             />
 

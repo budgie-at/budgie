@@ -31,27 +31,30 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
 
     const handleOpen = () => void ref.current?.open();
 
-    const handleSelect = (id: number) => {
-        onChange(Array.from(new Set([...tagIds, id])));
+    const handleToggleTag = (id: number) => {
+        const isSelected = tagIds.includes(id);
+        onChange(isSelected ? tagIds.filter(tagId => tagId !== id) : [...tagIds, id]);
     };
 
-    const handleRemoveSelection = (id: number) => {
-        onChange(tagIds.filter(tagId => tagId !== id));
-    };
+    const remainingCount = (selectedTags?.length ?? 0) - 1;
 
     return (
         <>
             <HorizontalCell
                 onPress={handleOpen}
                 left={<Icon size={16} icon={UserIconNameEnum.Tag} className={iconVariants({ variant })} />}
-                size="lg"
+                size="md"
             >
                 {isNotEmptyArray(selectedTags) ? (
-                    <View className="mr-auto flex-row items-baseline">
-                        <Text className="text-sm text-primary font-semibold">{selectedTags[0].title}</Text>
+                    <View className="flex-row items-center flex-1 min-w-0">
+                        <Text className="text-sm text-primary font-semibold flex-shrink" numberOfLines={1}>
+                            {selectedTags[0].title}
+                        </Text>
 
-                        {selectedTags.length > 1 ? (
-                            <Text className="text-secondary-foreground">&nbsp;+{selectedTags.length - 1}</Text>
+                        {remainingCount > 0 ? (
+                            <View className="ml-sm bg-secondary-background rounded-full px-sm py-0.5">
+                                <Text className="text-xs text-secondary-foreground font-medium">+{remainingCount}</Text>
+                            </View>
                         ) : null}
                     </View>
                 ) : (
@@ -61,7 +64,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 )}
             </HorizontalCell>
 
-            <TagsSelectorBottomSheet onRemoveSelection={handleRemoveSelection} onSelect={handleSelect} selectedTagIds={tagIds} ref={ref} />
+            <TagsSelectorBottomSheet onSelect={handleToggleTag} selectedTagIds={tagIds} ref={ref} />
         </>
     );
 };
