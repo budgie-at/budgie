@@ -45,7 +45,7 @@ interface SearchableListBottomSheetProps<T> {
     readonly children?: ReactNode;
 }
 
-const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
+const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['50%', '85%'];
 
 const safeEdges: Edges = ['bottom'];
 const listFooter = <SafeAreaView edges={safeEdges} />;
