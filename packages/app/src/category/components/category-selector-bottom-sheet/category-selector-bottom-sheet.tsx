@@ -31,11 +31,13 @@ const flatListProps = {
 };
 
 export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
+    const { t } = useLingui();
+
     const [search, setSearch] = useState('');
     const [newCategoryTitle, setNewCategoryTitle] = useState('');
-    const { categories } = useSearchCategoriesQuery(search, true);
-    const { t } = useLingui();
     const categoryFormRef = useRef<BottomSheetInterface | null>(null);
+
+    const { categories } = useSearchCategoriesQuery(search, true);
 
     const handleSelect = (categoryId: number) => {
         if (categoryId === selectedCategory?.id) {
@@ -44,8 +46,8 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
             return;
         }
 
-        void ref.current?.dismiss();
         onSelect(categoryId);
+        void ref.current?.dismiss();
     };
 
     const handleCreateCategory = () => {
