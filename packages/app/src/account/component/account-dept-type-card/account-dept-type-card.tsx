@@ -25,17 +25,14 @@ export const AccountDeptTypeCard = ({ type, onSelect, isSelected }: Props) => {
 
     const handleSelect = () => void onSelect(type);
 
-    const iconParams = { variant: 'ghost', border: false, size: 40, iconSize: 20 } as const;
-
     const right = isSelected ? <CircleIcon variant="ghost" iconSize={12} size={20} icon={UserIconNameEnum.Check} /> : null;
 
     return (
         <SimpleHorizontalCell
             right={right}
             onPress={handleSelect}
-            iconParams={iconParams}
+            left={<CircleIcon icon={ACCOUNT_DEBT_TYPE_ICON[type]} variant="ghost" border={false} size={40} iconSize={20} />}
             contentClassName="items-center"
-            icon={ACCOUNT_DEBT_TYPE_ICON[type]}
             title={t(ACCOUNT_DEBT_TYPE[type])}
             className={cardVariants({ isSelected })}
             description={t(ACCOUNT_DEBT_TYPE_DESCRIPTION[type])}

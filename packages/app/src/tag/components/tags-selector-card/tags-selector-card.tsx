@@ -14,22 +14,22 @@ interface Props extends Pick<TagEntityInterface, 'id' | 'title'> {
     readonly className?: string;
 }
 
-const cardVariants = cva(`border-2 rounded-7xl px-2xl flex-row items-center gap-x-md`, {
+const cardVariants = cva(`border-2 rounded-3xl px-xl items-center justify-center gap-x-md`, {
     variants: {
         isSelected: {
             true: '',
             false: ''
         },
         variant: {
-            static: 'py-xl',
-            removable: 'bg-primary border-primary py-md'
+            static: 'flex-1 h-[56px]',
+            removable: 'flex-none flex-row bg-primary border-primary py-md px-2xl'
         }
     },
     compoundVariants: [
         {
             isSelected: true,
             variant: 'static',
-            className: 'border-secondary-foreground'
+            className: 'bg-primary border-primary'
         },
         {
             isSelected: false,
@@ -54,7 +54,7 @@ const textVariants = cva('font-medium text-sm', {
         {
             isSelected: true,
             variant: 'static',
-            className: 'text-primary'
+            className: 'text-primary-reverse'
         },
         {
             isSelected: false,
@@ -67,9 +67,13 @@ const textVariants = cva('font-medium text-sm', {
 export const TagsSelectorCard = ({ className, isSelected, title, variant, onSelect, id }: Props) => {
     const handleSelect = () => void onSelect(id);
 
+    const numberOfLines = variant === 'static' ? 2 : 1;
+
     return (
         <HapticPressable className={cn(cardVariants({ isSelected, variant }), className)} onPress={handleSelect}>
-            <Text className={textVariants({ isSelected, variant })}>{title}</Text>
+            <Text className={cn(textVariants({ isSelected, variant }), 'text-center')} numberOfLines={numberOfLines}>
+                {title}
+            </Text>
 
             {variant === 'removable' ? <Icon icon={UserIconNameEnum.X} className="text-primary-reverse" size={14} /> : null}
         </HapticPressable>

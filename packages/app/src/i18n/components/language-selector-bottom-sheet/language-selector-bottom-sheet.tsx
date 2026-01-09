@@ -24,14 +24,11 @@ export const LanguageSelectorBottomSheet = ({ ref, language, onSelect }: Props) 
             selectedValue={language}
             onSelect={onSelect}
             data={LANGUAGES}
-            title={t`Select Language`}
-            description={t`Choose your preferred language`}
             searchPlaceholder={t`Search languages...`}
             emptyTitle={t`No languages found`}
             emptyDescription={t`Try a different search term`}
             getItemKey={getItemKey}
             getItemCode={getItemKey}
-            autoFocus={false}
         />
     );
 };
