@@ -1,7 +1,4 @@
-import { useEffect, useRef } from 'react';
 import { Control, Controller, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
-import { InteractionManager } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
 
 import { BottomSheetTextInput } from '../bottom-sheet-text-input/bottom-sheet-text-input';
 import { FormItem } from '../form-item/form-item';
@@ -20,28 +17,14 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
     label,
     placeholder,
     name = 'title' as Path<T>,
-    maxLength,
-    autoFocus = false
+    maxLength
 }: Props<T>) => {
-    const inputRef = useRef<TextInput>(null);
-
-    useEffect(() => {
-        if (autoFocus) {
-            InteractionManager.runAfterInteractions(() => {
-                setTimeout(() => {
-                    inputRef.current?.focus();
-                }, 350);
-            });
-        }
-    }, [autoFocus]);
-
     const render = ({ field: { value, onChange }, fieldState: { error, invalid } }: UseControllerReturn<T>) => {
         const status = invalid ? 'error' : 'default';
 
         return (
             <FormItem label={label} error={error?.message}>
                 <BottomSheetTextInput
-                    ref={inputRef}
                     value={value}
                     status={status}
                     maxLength={maxLength}
