@@ -1,6 +1,7 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { BottomSheetFooterProps } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useRef, useState } from 'react';
+import { FC, RefObject, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -55,6 +56,10 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
             />
         );
 
+    const footerComponent: FC<BottomSheetFooterProps> = () => (
+        <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
+    );
+
     return (
         <>
             <SearchableListBottomSheet
@@ -71,9 +76,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 flatListProps={flatListProps}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreateTag}
-            >
-                <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
-            </SearchableListBottomSheet>
+                footerComponent={footerComponent}
+            />
 
             <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
         </>
