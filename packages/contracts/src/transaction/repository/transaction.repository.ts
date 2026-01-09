@@ -349,7 +349,7 @@ export class TransactionRepository {
         const conditions: SQL[] = [
             ...this.buildAccountCondition(accountIds),
             ...(isNotEmptyArray(types) ? [this.buildTypeCondition(types)] : []),
-            ...(isNotEmptyArray(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
+            ...(isDefined(categoryIds) ? [this.buildCategoryCondition(categoryIds)] : []),
             ...(isNotEmptyArray(tagIds) ? [this.buildTagCondition(tagIds)] : []),
             ...(isDefined(date) ? [this.buildDateCondition(date)] : [])
         ].filter(isDefined);
