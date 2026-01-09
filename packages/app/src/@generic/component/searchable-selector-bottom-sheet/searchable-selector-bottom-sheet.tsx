@@ -17,15 +17,12 @@ interface Props<T extends string, TItem extends Item> {
     readonly selectedValue: T;
     readonly onSelect: (value: T) => void;
     readonly data: readonly TItem[];
-    readonly title: string;
-    readonly description: string;
     readonly searchPlaceholder: string;
     readonly emptyTitle: string;
     readonly emptyDescription: string;
     readonly getItemKey: (item: TItem) => T;
     readonly getItemCode: (item: TItem) => string;
     readonly index?: number;
-    readonly autoFocus?: boolean;
 }
 
 const flatListProps = {
@@ -38,15 +35,12 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
     selectedValue,
     onSelect,
     data,
-    title,
-    description,
     searchPlaceholder,
     emptyTitle,
     emptyDescription,
     getItemKey,
     getItemCode,
-    index,
-    autoFocus = true
+    index
 }: Props<T, TItem>) => {
     const [search, setSearch] = useState('');
     const { t } = useLingui();
@@ -85,8 +79,6 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
         <SearchableListBottomSheet
             index={index}
             ref={ref}
-            title={title}
-            description={description}
             onSearchChange={setSearch}
             searchPlaceholder={searchPlaceholder}
             search={search}
@@ -96,7 +88,6 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
             emptyTitle={emptyTitle}
             data={filteredData}
             flatListProps={flatListProps}
-            autoFocus={autoFocus}
         />
     );
 };

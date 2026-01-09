@@ -10,6 +10,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { AccountSelectorBottomSheet } from '../../../account/component/account-selector-bottom-sheet/account-selector-bottom-sheet';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -51,7 +52,7 @@ interface Props {
     readonly accountId: number | null;
     readonly onConfirm: () => void;
     readonly onCancel: () => void;
-    readonly onCategoryChange: (categoryId: number) => void;
+    readonly onCategoryChange: (categoryId: number | null) => void;
     readonly onAccountChange: (accountId: number) => void;
 }
 
@@ -64,11 +65,7 @@ export const AiTransactionPreviewCard = (props: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const {
-        selectedAccount,
-        icon: accountIcon,
-        renderBottomSheet
-    } = useAccountSelector({ accountId, onSelect: onAccountChange, excludeAccountId: null });
+    const { selectedAccount, icon: accountIcon } = useAccountSelector({ accountId });
 
     const variant = TRANSACTION_COLOR[type];
     const canConfirm = isDefined(selectedAccount);
@@ -134,7 +131,7 @@ export const AiTransactionPreviewCard = (props: Props) => {
             </Card>
 
             <CategorySelectorBottomSheet variant={variant} selectedCategory={category} onSelect={onCategoryChange} ref={categorySheetRef} />
-            {renderBottomSheet(accountSheetRef)}
+            <AccountSelectorBottomSheet selectedAccount={selectedAccount} onSelect={onAccountChange} ref={accountSheetRef} />
         </>
     );
 };

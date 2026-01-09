@@ -53,7 +53,7 @@ IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food categor
 Reply with the category number only.`;
 
     const reset = () => void setAiTransaction(null);
-    const fillCategory = (categoryId: number) => {
+    const fillCategory = (categoryId: number | null) => {
         setAiTransaction({
             category: categories.find(category => category.id === categoryId) ?? null,
             amount: parseNumberFromMessage(prompt),
@@ -71,7 +71,7 @@ Reply with the category number only.`;
                 fillCategory(categoryByIndex.id);
             } else {
                 const categoryId = findCategoryByTitle(llm.response, categories);
-                fillCategory(categoryId ?? 0);
+                fillCategory(categoryId);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -29,12 +29,12 @@ export const TransactionFormAccountSelector = ({ variant, fieldName }: Props) =>
         field: { value },
         fieldState: { error, invalid }
     }: UseControllerReturn<TransactionCreateInputInterface, typeof fieldName>) => {
-        const status = invalid ? 'error' : 'default';
+        const cardVariant = invalid ? 'destructive' : 'primary';
 
         return (
             <FormItem label={t`Account`} error={error?.message}>
                 <AccountSelector
-                    status={status}
+                    cardVariant={cardVariant}
                     variant={variant}
                     accountId={value}
                     onSelect={handleAccountChange}

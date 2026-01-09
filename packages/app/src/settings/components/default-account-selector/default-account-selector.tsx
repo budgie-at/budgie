@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { AccountSelectorBottomSheet } from '../../../account/component/account-selector-bottom-sheet/account-selector-bottom-sheet';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -19,11 +20,7 @@ export const DefaultAccountSelector = () => {
         await updateSettingsMutation({ defaultAccountId });
     };
 
-    const { selectedAccount, icon, renderBottomSheet } = useAccountSelector({
-        accountId: defaultAccount?.id ?? null,
-        onSelect: updateDefaultAccount,
-        excludeAccountId: null
-    });
+    const { selectedAccount, icon } = useAccountSelector({ accountId: defaultAccount?.id ?? null });
 
     const description = isDefined(selectedAccount) ? `${selectedAccount.title} – ${selectedAccount.instrument.code}` : null;
 
@@ -39,7 +36,7 @@ export const DefaultAccountSelector = () => {
                 description={description ?? t`None selected`}
             />
 
-            {renderBottomSheet(ref)}
+            <AccountSelectorBottomSheet selectedAccount={selectedAccount} onSelect={updateDefaultAccount} ref={ref} />
         </>
     );
 };
