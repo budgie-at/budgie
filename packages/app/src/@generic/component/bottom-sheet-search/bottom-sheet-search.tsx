@@ -13,20 +13,10 @@ interface Props extends ComponentProps<typeof BottomSheetTextInput> {
     readonly inputClassName?: string;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
-    readonly showTopBorder?: boolean;
 }
 
-export const BottomSheetSearch = ({
-    className,
-    inputClassName,
-    rightActionIcon,
-    rightActionOnPress,
-    showTopBorder = true,
-    ...rest
-}: Props) => (
-    <View
-        className={cn('py-3xl px-xl border-b border-b-secondary-corner', showTopBorder && 'border-t border-t-secondary-corner', className)}
-    >
+export const BottomSheetSearch = ({ className, inputClassName, rightActionIcon, rightActionOnPress, ...rest }: Props) => (
+    <View className={cn('py-3xl px-xl border-b border-b-secondary-corner', className)}>
         <View className="flex-row items-center gap-x-md">
             <BottomSheetTextInput
                 className={cn(
