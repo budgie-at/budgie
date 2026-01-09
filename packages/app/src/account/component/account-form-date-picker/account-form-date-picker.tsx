@@ -1,14 +1,17 @@
+/* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DatePickerBottomSheet } from '../../../@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+/* jscpd:ignore-end */
 
 interface Props {
     readonly date: Date | null;
@@ -25,16 +28,14 @@ export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
 
     const description = isDefined(date) ? t`Expected return date` : t`When should it be returned?`;
     const title = isDefined(date) ? formatDayAndFullMonthAndYear(date) : t`Set Return Date`;
-    const iconParams = { variant };
 
     return (
         <>
             <SimpleHorizontalCell
-                iconParams={iconParams}
+                left={<CircleIcon icon={UserIconNameEnum.Calendar} variant={variant} />}
                 onPress={handleOpen}
                 title={title}
                 description={description}
-                icon={UserIconNameEnum.Calendar}
             />
 
             <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />

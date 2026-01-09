@@ -10,6 +10,7 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
+import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
 
 interface Props {
     readonly emptyStateDescription?: string;
@@ -44,12 +45,7 @@ export const AccountSelectorSquare = ({
     const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
 
-    const { selectedAccount, formattedBalance, icon, hasAccount, renderBottomSheet } = useAccountSelector({
-        accountId,
-        excludeAccountId,
-        emptyStateDescription,
-        onSelect
-    });
+    const { selectedAccount, formattedBalance, icon, hasAccount } = useAccountSelector({ accountId });
 
     const handleOpen = () => ref.current?.open();
 
@@ -71,7 +67,13 @@ export const AccountSelectorSquare = ({
                 <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
             </Card>
 
-            {renderBottomSheet(ref)}
+            <AccountSelectorBottomSheet
+                emptyStateDescription={emptyStateDescription}
+                excludeAccountId={excludeAccountId}
+                selectedAccount={selectedAccount}
+                onSelect={onSelect}
+                ref={ref}
+            />
         </>
     );
 };

@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode, RefObject } from 'react';
 import { View } from 'react-native';
 
@@ -9,11 +8,9 @@ import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFormFooter } from '../bottom-sheet-form-footer/bottom-sheet-form-footer';
 import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetScrollView } from '../bottom-sheet-scroll-view/bottom-sheet-scroll-view';
-import { Icon } from '../icon/icon';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly icon: UserIconNameEnum;
     readonly title: string;
     readonly description: string;
     readonly onSubmit: EmptyFn;
@@ -23,16 +20,12 @@ interface Props {
 }
 
 export const FormBottomSheet = (props: Props) => {
-    const { ref, icon, title, description, onSubmit, onCancel, onDismiss, children } = props;
+    const { ref, title, description, onSubmit, onCancel, onDismiss, children } = props;
 
     return (
         <BottomSheet enableDynamicSizing onDismiss={onDismiss} ref={ref}>
             <BottomSheetScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <View className="px-7xl py-5xl">
-                    <View className="bg-secondary-background p-xl rounded-3xl mx-auto mb-3xl border border-secondary-corner">
-                        <Icon icon={icon} className="text-primary" size={28} />
-                    </View>
-
                     <View className="mb-10">
                         <BottomSheetHeader size="lg" align="center" title={title} description={description} />
                     </View>
