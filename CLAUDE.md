@@ -193,6 +193,53 @@ const MyForm = () => {
   // Bad - named prop for primary content
   <AccountCardBase topRight={<DeadlineIndicator />} balanceContent={<Balance />} bottomContent={<ProgressBar />} />
   ```
+- **No render callback props** - Avoid `renderXxx` props that pass refs. Use JSX composition with children instead.
+  ```typescript
+  // Good - children composition
+  const ref = useRef<BottomSheetInterface | null>(null);
+  <>
+      <SimpleHorizontalCell onPress={() => ref.current?.open()} ... />
+      <SelectorBottomSheet ref={ref} ... />
+  </>
+
+  // Bad - render callback
+  <EntitySelector renderBottomSheet={ref => <SelectorBottomSheet ref={ref} />} />
+  ```
+- **No object props** - Pass plain props instead of bundled objects. Extract objects to variables if needed for readability.
+  ```typescript
+  // Good - plain props
+  <BottomSheetSearch rightActionIcon={UserIconNameEnum.Plus} rightActionOnPress={handleCreate} />
+
+  // Bad - object prop
+  <BottomSheetSearch rightAction={{ icon: UserIconNameEnum.Plus, onPress: handleCreate }} />
+  ```
+- **Component logic order** - Organize component internals in this order, separated by blank lines:
+  1. Props destructuring (if long)
+  2. Framework hooks (router, i18n: `useRouter`, `useLingui`)
+  3. State and refs (`useState`, `useRef`)
+  4. External hooks (queries, mutations, custom hooks)
+  5. Handlers (`handle*` functions)
+  6. Derived values and computed props (after hooks they depend on)
+  7. Effects (`useEffect`)
+  8. Render-related (JSX variables, conditional rendering helpers)
+  ```typescript
+  export const MyComponent = ({ variant, onSelect }: Props) => {
+      const { t } = useLingui();
+
+      const [search, setSearch] = useState('');
+      const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
+
+      const { data } = useMyQuery();
+
+      const handleOpen = () => bottomSheetRef.current?.open();
+
+      const cardVariant = status === 'error' ? 'destructive' : 'primary';
+
+      useEffect(() => { ... }, []);
+
+      return <View>...</View>;
+  };
+  ```
 
 ### Code Duplication (jscpd)
 Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jscpd:ignore-end */` to prevent false positives on similar form structures.
