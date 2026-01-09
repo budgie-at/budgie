@@ -71,7 +71,6 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
                 maxLength={CATEGORY_TITLE_MAX_LENGTH}
                 label={t`Category Name`}
                 control={control}
-                autoFocus
             />
 
             <CategoryFormIconField control={control} />
