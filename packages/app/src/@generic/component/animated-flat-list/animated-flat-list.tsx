@@ -35,6 +35,7 @@ export const AnimatedFlatList = <T,>({ data, keyExtractor, renderItem, ...rest }
             renderItem={internalRenderItem}
             showsVerticalScrollIndicator={false}
             automaticallyAdjustKeyboardInsets
+            keyboardShouldPersistTaps="handled"
             {...rest}
         />
     );
