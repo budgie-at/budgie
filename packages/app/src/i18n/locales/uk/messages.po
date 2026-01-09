@@ -111,7 +111,7 @@ msgstr "Активний"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Add a new bank, cash or debt account"
-msgstr ""
+msgstr "Додати новий банківський, готівковий або борговий рахунок"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
@@ -151,7 +151,7 @@ msgstr "Коригування"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
 msgid "AI Assistant"
-msgstr ""
+msgstr "ШІ-Асистент"
 
 #: src/app/(main)/settings/index.tsx:139
 msgid ""
@@ -525,7 +525,7 @@ msgstr "Створіть теги для організації ваших тр�
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:84
 msgid "Create transactions using voice"
-msgstr ""
+msgstr "Створювати транзакції голосом"
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77

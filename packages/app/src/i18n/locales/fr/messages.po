@@ -111,7 +111,7 @@ msgstr "Actif"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
 msgid "Add a new bank, cash or debt account"
-msgstr ""
+msgstr "Ajouter un nouveau compte bancaire, espèces ou dette"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
@@ -151,7 +151,7 @@ msgstr "Ajustement"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
 msgid "AI Assistant"
-msgstr ""
+msgstr "Assistant IA"
 
 #: src/app/(main)/settings/index.tsx:139
 msgid ""
@@ -525,7 +525,7 @@ msgstr "Créez des étiquettes pour organiser vos transactions"
 
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:84
 msgid "Create transactions using voice"
-msgstr ""
+msgstr "Créer des transactions par la voix"
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
