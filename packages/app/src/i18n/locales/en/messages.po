@@ -278,15 +278,15 @@ msgid "Borrowed"
 msgstr "Borrowed"
 
 #: src/app/(main)/settings/index.tsx:137
-msgid "BudgetAI"
-msgstr "BudgetAI"
+msgid "Budgie"
+msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:25
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
@@ -621,11 +621,11 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:20
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:20
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
@@ -1103,7 +1103,7 @@ msgstr "No Results"
 msgid "No speech detected"
 msgstr "No speech detected"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:74
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No tags found"
@@ -1289,7 +1289,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -1600,7 +1600,7 @@ msgstr "Transfer"
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
