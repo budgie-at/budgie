@@ -2,7 +2,7 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -66,7 +66,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         : [];
     const data = padFlatListData(sortSelectedFirst(filteredCategories, isDefined(selectedCategory) ? [selectedCategory.id] : []), 3);
 
-    const handleEmptySelect = () => void 0;
+    const handleEmptySelect = emptyFn;
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
             <CategorySelectorCard
