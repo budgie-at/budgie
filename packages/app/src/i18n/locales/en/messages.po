@@ -37,10 +37,6 @@ msgstr "{archivedAccountsCount} account"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
-msgid "{iconsCount} icons available"
-msgstr "{iconsCount} icons available"
-
 #: src/app/(main)/settings/inactive.tsx:21
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} account"
@@ -290,6 +286,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:25
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
@@ -364,29 +361,9 @@ msgstr "Choose a preset to auto-fill column mappings"
 msgid "Choose a type to get started"
 msgstr "Choose a type to get started"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
-msgid "Choose Icon"
-msgstr "Choose Icon"
-
 #: src/app/(main)/create-account/index.tsx:21
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
-
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
-msgid "Choose your main account"
-msgstr "Choose your main account"
-
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
-msgid "Choose your main contact"
-msgstr "Choose your main contact"
-
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
-msgid "Choose your main currency"
-msgstr "Choose your main currency"
-
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
-msgid "Choose your preferred language"
-msgstr "Choose your preferred language"
 
 #: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
 msgid "Clear"
@@ -644,11 +621,11 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
@@ -1089,7 +1066,7 @@ msgstr "No contacts found on this device."
 msgid "No contacts yet"
 msgstr "No contacts yet"
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:58
 msgid "No currencies found"
 msgstr "No currencies found"
 
@@ -1097,11 +1074,11 @@ msgstr "No currencies found"
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
 msgstr "No icons"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
 msgid "No icons found"
 msgstr "No icons found"
 
@@ -1109,7 +1086,7 @@ msgstr "No icons found"
 msgid "No inactive accounts"
 msgstr "No inactive accounts"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:30
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
 msgid "No languages found"
 msgstr "No languages found"
 
@@ -1284,7 +1261,7 @@ msgstr "Savings accounts"
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Search accounts..."
@@ -1295,19 +1272,19 @@ msgstr "Search accounts..."
 msgid "Search categories..."
 msgstr "Search categories..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:81
+#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
 msgid "Search contacts..."
 msgstr "Search contacts..."
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Search icons (e.g., money, travel, food)..."
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Search languages..."
 msgstr "Search languages..."
 
@@ -1342,7 +1319,6 @@ msgstr "Select a valid column"
 msgid "Select account"
 msgstr "Select account"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:79
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:96
 msgid "Select Account"
@@ -1371,21 +1347,9 @@ msgstr "Select Category"
 msgid "Select column..."
 msgstr "Select column..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:78
-msgid "Select Contact"
-msgstr "Select Contact"
-
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
-msgid "Select Currency"
-msgstr "Select Currency"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Select Import Preset"
-
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
-msgid "Select Language"
-msgstr "Select Language"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1629,10 +1593,10 @@ msgid "Transfer"
 msgstr "Transfer"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
