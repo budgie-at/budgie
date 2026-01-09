@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/budgie-at/budgie/compare/v2.6.0...v2.6.1) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** improve tags selector bottom sheet UX ([#223](https://github.com/budgie-at/budgie/issues/223)) ([9dd3085](https://github.com/budgie-at/budgie/commit/9dd308564e355ef10a3bf7ddf6bc8ee4e54a09cd))
+
 # [2.6.0](https://github.com/budgie-at/budgie/compare/v2.5.1...v2.6.0) (2026-01-09)
 
 ### Bug Fixes
