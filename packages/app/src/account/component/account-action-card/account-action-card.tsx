@@ -27,8 +27,6 @@ interface Props {
     readonly onAction: () => Promise<void>;
 }
 
-const iconParams = { size: 46, iconSize: 20, variant: 'dark-warning' } as const;
-
 export const AccountActionCard = (props: Props) => {
     const { account, actionIcon, actionButtonText, confirmTitle, confirmDescription, errorText, currencySymbol, onAction } = props;
     const { icon, title, type } = account;
@@ -66,10 +64,9 @@ export const AccountActionCard = (props: Props) => {
                         </HapticPressable>
                     </View>
                 }
-                icon={icon}
+                left={<CircleIcon icon={icon} variant="dark-warning" size={46} iconSize={20} />}
                 title={title}
                 description={t(ACCOUNT_TYPE[type])}
-                iconParams={iconParams}
             />
 
             <ConfirmActionBottomSheet
