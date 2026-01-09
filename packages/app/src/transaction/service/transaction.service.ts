@@ -103,6 +103,8 @@ class TransactionService {
 
             await this.upsertEntriesAndTags(id, input, tx);
 
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+
             return transaction;
         });
     }
@@ -226,7 +228,8 @@ class TransactionService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId }), tx)
+            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId })),
+            tx
         );
 
         await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
