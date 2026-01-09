@@ -29,6 +29,7 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props
         reset();
     };
 
+    // eslint-disable-next-line react-hooks/refs
     const onSubmit = handleSubmit(async (values: TagCreateEntityInterface) => {
         try {
             const savedTag = isEditing ? await tagRepository.updateById(tag.id, values) : await tagRepository.create(values);
