@@ -53,10 +53,6 @@ msgstr "{percentage}% de gastos"
 msgid "{percentage}% of income"
 msgstr "{percentage}% de ingresos"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:64
-msgid "{tagsCount} tags available"
-msgstr "{tagsCount} etiquetas disponibles"
-
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -358,10 +354,6 @@ msgstr "Cambiar PIN"
 msgid "Checking Account"
 msgstr "Cuenta corriente"
 
-#: src/@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:41
-msgid "Choose a date for your transaction"
-msgstr ""
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:29
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
@@ -381,10 +373,6 @@ msgstr "Elige el tipo de cuenta que deseas agregar"
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 msgid "Choose your main account"
 msgstr "Elige tu cuenta principal"
-
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
-msgid "Choose your main category"
-msgstr "Elige tu categoría principal"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
 msgid "Choose your main contact"
@@ -1074,7 +1062,7 @@ msgstr "Aún no hay cuentas"
 msgid "No archived accounts"
 msgstr "No hay cuentas archivadas"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:105
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:103
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -1136,7 +1124,7 @@ msgstr "Sin resultados"
 msgid "No speech detected"
 msgstr "No se detectó voz"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -1154,7 +1142,7 @@ msgstr "Aún no hay etiquetas"
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
-#: src/tag/components/tags-selector/tags-selector.tsx:56
+#: src/tag/components/tags-selector/tags-selector.tsx:62
 msgid "None"
 msgstr "Ninguno"
 
@@ -1300,7 +1288,7 @@ msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
 #: src/app/(main)/settings/categories.tsx:46
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:100
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Buscar categorías..."
@@ -1322,7 +1310,7 @@ msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:66
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
@@ -1374,7 +1362,6 @@ msgstr "Seleccionar categoría"
 #: src/app/(main)/create-transaction/income.tsx:55
 #: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:97
 msgid "Select Category"
 msgstr "Seleccionar categoría"
 
@@ -1390,10 +1377,6 @@ msgstr "Seleccionar contacto"
 msgid "Select Currency"
 msgstr "Seleccionar moneda"
 
-#: src/@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet.tsx:41
-msgid "Select Date"
-msgstr "Seleccionar fecha"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
@@ -1401,10 +1384,6 @@ msgstr "Seleccionar preset de importación"
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Select Language"
 msgstr "Seleccionar idioma"
-
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
-msgid "Select Tags"
-msgstr "Seleccionar etiquetas"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1650,12 +1629,12 @@ msgstr "Transferencia"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:104
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:70
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
