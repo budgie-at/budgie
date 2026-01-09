@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.7](https://github.com/budgie-at/budgie/compare/v2.6.6...v2.6.7) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** fix keyboard dismissing on item tap in searchable lists ([#237](https://github.com/budgie-at/budgie/issues/237)) ([f19e549](https://github.com/budgie-at/budgie/commit/f19e54981c9bf8571f05a1d30c23df4585e17a46)), closes [#236](https://github.com/budgie-at/budgie/issues/236)
+
 ## [2.6.6](https://github.com/budgie-at/budgie/compare/v2.6.5...v2.6.6) (2026-01-09)
 
 ### Bug Fixes
