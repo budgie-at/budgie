@@ -1,21 +1,15 @@
-/* eslint-disable max-lines */
-import { SQL, SQLWrapper, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, or, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { DateRangeInterface } from '../../@generic/interface/date-range.interface';
-import { DB, TX } from '../../@generic/type/db.type';
-import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { TX } from '../../@generic/type/db.type';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
-import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { DEFAULT_TRANSACTION_FILTER } from '../constant/default-transaction-filter.constant';
 import { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
@@ -26,7 +20,7 @@ import { TransactionEntityTable } from '../table/transaction-entity.table';
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 
-export class TransactionRepository {
+export class TransactionRepository extends BaseTransactionFilterRepository {
     private transactionRelations = {
         [TransactionAssociationEnum.ENTRIES]: {
             with: {
@@ -48,78 +42,8 @@ export class TransactionRepository {
         [TransactionAssociationEnum.TO_ACCOUNT]: true
     } as const;
 
-    constructor(private db: DB) {}
-
     async deleteById(id: number, tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
-    }
-
-    getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
-            filters,
-            TransactionTypeEnum.INCOME,
-            TransactionEntryTypeEnum.DEBIT
-        );
-
-        return this.buildCategoryBreakdownQuery(incomeTransactionIds, defaultInstrumentId);
-    }
-
-    getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
-            filters,
-            TransactionTypeEnum.EXPENSE,
-            TransactionEntryTypeEnum.CREDIT
-        );
-
-        return this.buildCategoryBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
-    }
-
-    getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const incomeTransactionIds = this.buildFilteredTransactionIdsQuery(
-            filters,
-            TransactionTypeEnum.INCOME,
-            TransactionEntryTypeEnum.DEBIT
-        );
-
-        return this.buildTagBreakdownQuery(incomeTransactionIds, defaultInstrumentId);
-    }
-
-    getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const expenseTransactionIds = this.buildFilteredTransactionIdsQuery(
-            filters,
-            TransactionTypeEnum.EXPENSE,
-            TransactionEntryTypeEnum.CREDIT
-        );
-
-        return this.buildTagBreakdownQuery(expenseTransactionIds, defaultInstrumentId);
-    }
-
-    getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const baseWhere = this.buildWhere(filters);
-        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-
-        return this.db
-            .select({
-                income: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
-            `.as('income'),
-                expense: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
-            `.as('expense')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    // eslint-disable-next-line no-undefined
-                    isDefined(baseWhere) ? baseWhere : undefined,
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
-                )
-            );
     }
 
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
@@ -282,67 +206,24 @@ export class TransactionRepository {
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
     }
 
+    protected override buildAccountCondition(accountIds: number[] | null) {
+        if (isNotEmptyArray(accountIds)) {
+            const condition = or(
+                inArray(TransactionEntityTable.fromAccountId, accountIds),
+                inArray(TransactionEntityTable.toAccountId, accountIds)
+            );
+
+            return isDefined(condition) ? [condition] : [];
+        }
+
+        return [];
+    }
+
     private buildTransfersByAccountIdWhere(accountId: number) {
         return and(
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
-    }
-
-    private buildCategoryBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
-        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
-
-        return this.db
-            .select({
-                category: CategoryEntityTable,
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
-            .groupBy(TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(amountSql));
-    }
-
-    private buildTagBreakdownQuery(transactionIdsSubquery: SQLWrapper, defaultInstrumentId: number) {
-        const exchangeRateSql = this.getExchangeRateSql(defaultInstrumentId);
-        const amountSql = sql<number>`COALESCE(SUM(${TransactionEntryEntityTable.amount} * ${exchangeRateSql}), 0)`;
-
-        return this.db
-            .select({
-                tag: TagEntityTable,
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
-            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
-            .groupBy(TagEntityTable.id)
-            .orderBy(desc(amountSql));
-    }
-
-    private buildFilteredTransactionIdsQuery(
-        filters: TransactionFilterInterface,
-        transactionType: TransactionTypeEnum,
-        _entryType: TransactionEntryTypeEnum
-    ) {
-        const baseWhere = this.buildWhere(filters);
-
-        return this.db
-            .selectDistinct({ transactionId: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    // eslint-disable-next-line no-undefined
-                    isDefined(baseWhere) ? baseWhere : undefined,
-                    eq(TransactionEntityTable.type, transactionType)
-                )
-            );
     }
 
     private buildWhere({ types, tagIds, categoryIds, accountIds, date }: TransactionFilterInterface) {
@@ -378,69 +259,5 @@ export class TransactionRepository {
                     .where(eq(TransactionEntryEntityTable.type, type))
             )
         );
-    }
-
-    private buildCategoryCondition(categoryIds: number[]) {
-        if (categoryIds.length === 0) {
-            return inArray(
-                TransactionEntityTable.id,
-                this.db
-                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                    .from(TransactionEntryEntityTable)
-                    .where(isNull(TransactionEntryEntityTable.categoryId))
-            );
-        }
-
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .where(inArray(TransactionEntryEntityTable.categoryId, categoryIds))
-        );
-    }
-
-    private buildTagCondition(tagIds: number[]) {
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionTagsEntityTable.transactionId })
-                .from(TransactionTagsEntityTable)
-                .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
-        );
-    }
-
-    private buildAccountCondition(accountIds: number[] | null) {
-        const baseConditions = [];
-
-        if (isNotEmptyArray(accountIds)) {
-            baseConditions.push(
-                or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds))
-            );
-        }
-
-        return baseConditions;
-    }
-
-    private buildDateCondition({ from, to }: DateRangeInterface) {
-        const parts: SQL[] = [];
-
-        if (isDefined(from)) {
-            parts.push(gte(TransactionEntityTable.operatedAt, from));
-        }
-
-        if (isDefined(to)) {
-            parts.push(lte(TransactionEntityTable.operatedAt, to));
-        }
-
-        return isNotEmptyArray(parts) ? and(...parts) : null;
-    }
-
-    private getExchangeRateSql(defaultInstrumentId: number) {
-        return sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, AccountEntityTable.instrumentId)},
-            1.0
-        )`;
     }
 }

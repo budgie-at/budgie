@@ -1,12 +1,12 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useGetIncomeByCategoryQuery = (filters: TransactionFilterInterface) => {
     const { defaultInstrument } = useSettingsContext();
-    const { data } = useLiveQuery(transactionRepository.getIncomeByCategoryQuery(filters, defaultInstrument.id), [
+    const { data } = useLiveQuery(statisticsRepository.getIncomeByCategoryQuery(filters, defaultInstrument.id), [
         filters,
         defaultInstrument.id
     ]);
