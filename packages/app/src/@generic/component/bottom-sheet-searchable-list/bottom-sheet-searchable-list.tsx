@@ -77,7 +77,7 @@ export const SearchableListBottomSheet = <T,>({
     rightAction,
     footerComponent,
     footerContent,
-    autoFocus = true
+    autoFocus = false
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
     const inputRef = useRef<TextInput>(null);
