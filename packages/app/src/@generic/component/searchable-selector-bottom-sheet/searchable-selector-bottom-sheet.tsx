@@ -17,8 +17,6 @@ interface Props<T extends string, TItem extends Item> {
     readonly selectedValue: T;
     readonly onSelect: (value: T) => void;
     readonly data: readonly TItem[];
-    readonly title: string;
-    readonly description: string;
     readonly searchPlaceholder: string;
     readonly emptyTitle: string;
     readonly emptyDescription: string;
@@ -37,8 +35,6 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
     selectedValue,
     onSelect,
     data,
-    title,
-    description,
     searchPlaceholder,
     emptyTitle,
     emptyDescription,
@@ -83,8 +79,6 @@ export const SearchableSelectorBottomSheet = <T extends string, TItem extends It
         <SearchableListBottomSheet
             index={index}
             ref={ref}
-            title={title}
-            description={description}
             onSearchChange={setSearch}
             searchPlaceholder={searchPlaceholder}
             search={search}

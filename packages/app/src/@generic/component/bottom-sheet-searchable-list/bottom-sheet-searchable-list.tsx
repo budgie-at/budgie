@@ -2,14 +2,12 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { FC, JSX, ReactNode, RefObject } from 'react';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
-import { BottomSheetHeaderAlign } from '../../type/bottom-sheet-header-align.type';
 import { BottomSheetSnapPoints } from '../../type/bottom-sheet-snap-points.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
 import { BottomSheetFlatList } from '../bottom-sheet-flat-list/bottom-sheet-flat-list';
-import { BottomSheetHeader } from '../bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetSearch } from '../bottom-sheet-search/bottom-sheet-search';
 import { EmptyState } from '../empty-state/empty-state';
 
@@ -20,10 +18,7 @@ interface SearchableListBottomSheetProps<T> {
     readonly snapPoints?: BottomSheetSnapPoints;
     readonly index?: number;
 
-    readonly title?: string;
-    readonly description?: string;
     readonly search: string;
-    readonly align?: BottomSheetHeaderAlign;
     readonly onSearchChange: (value: string) => void;
     readonly searchPlaceholder: string;
 
@@ -58,11 +53,8 @@ const listFooter = <SafeAreaView edges={safeEdges} />;
 export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetProps<T>) => {
     const {
         ref,
-        align,
         snapPoints = DEFAULT_SNAP_POINTS,
         index,
-        title,
-        description,
         search,
         onSearchChange,
         searchPlaceholder,
@@ -82,19 +74,14 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
 
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
 
-    const hasHeader = isNotEmptyString(title) || isNotEmptyString(description);
-
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} footerComponent={footerComponent}>
-            {hasHeader ? <BottomSheetHeader align={align} size="md" title={title ?? ''} description={description ?? ''} /> : null}
-
             <BottomSheetSearch
                 onChangeText={onSearchChange}
                 placeholder={searchPlaceholder}
                 value={search}
                 rightActionIcon={rightActionIcon}
                 rightActionOnPress={rightActionOnPress}
-                showTopBorder={hasHeader}
             />
 
             {isNotEmptyArray(data) ? (
