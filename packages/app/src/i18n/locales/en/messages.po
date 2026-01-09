@@ -42,12 +42,12 @@ msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} account"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% of expenses"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
-#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:58
+#: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
@@ -81,7 +81,6 @@ msgstr "Account Settings"
 msgid "Account Type"
 msgstr "Account Type"
 
-#: src/account/component/accounts-heading/accounts-heading.tsx:12
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:27
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:63
 msgid "Accounts"
@@ -112,11 +111,15 @@ msgstr "Activate Account?"
 msgid "Active"
 msgstr "Active"
 
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
+msgid "Add a new bank, cash or debt account"
+msgstr "Add a new bank, cash or debt account"
+
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
@@ -148,9 +151,9 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/ai/component/ai-chat-button/ai-chat-button.tsx:29
-msgid "AI"
-msgstr "AI"
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
+msgid "AI Assistant"
+msgstr "AI Assistant"
 
 #: src/app/(main)/settings/index.tsx:139
 msgid ""
@@ -248,7 +251,8 @@ msgstr "Available Columns"
 msgid "Balance"
 msgstr "Balance"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:56
+#: src/app/(main)/analytics/transactions.tsx:59
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -296,10 +300,11 @@ msgstr "Cancel"
 msgid "Cash"
 msgstr "Cash"
 
+#: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(main)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:57
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "Categories"
 msgstr "Categories"
 
@@ -356,10 +361,6 @@ msgstr "Checking Account"
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:29
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
-msgid "Choose a type to get started"
-msgstr "Choose a type to get started"
 
 #: src/app/(main)/create-account/index.tsx:21
 msgid "Choose the type of account you want to add"
@@ -434,7 +435,7 @@ msgstr "Could not archive account. Please try again later"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
@@ -459,7 +460,7 @@ msgstr "Could not restore account."
 msgid "Could not update category"
 msgstr "Could not update category"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
 msgid "Could not update tag"
 msgstr "Could not update tag"
 
@@ -512,7 +513,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -523,6 +524,10 @@ msgstr "Create Tags"
 #: src/app/(main)/settings/tags.tsx:37
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
+
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:84
+msgid "Create transactions using voice"
+msgstr "Create transactions using voice"
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
@@ -641,7 +646,7 @@ msgstr "Dutch (Netherlands)"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:60
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
@@ -661,7 +666,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
@@ -989,7 +994,7 @@ msgstr "Match each field to a column from your CSV file"
 msgid "Money lent or borrowed"
 msgstr "Money lent or borrowed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:47
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:68
 msgid "Money you earn"
 msgstr "Money you earn"
 
@@ -997,7 +1002,7 @@ msgstr "Money you earn"
 msgid "Money you owe or are owed"
 msgstr "Money you owe or are owed"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:40
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:75
 msgid "Money you spend"
 msgstr "Money you spend"
 
@@ -1005,7 +1010,7 @@ msgstr "Money you spend"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:54
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:61
 msgid "Move between accounts"
 msgstr "Move between accounts"
 
@@ -1015,6 +1020,7 @@ msgid "Move Money"
 msgstr "Move Money"
 
 #: src/app/(main)/create-account/index.tsx:21
+#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:56
 msgid "New Account"
 msgstr "New Account"
 
@@ -1025,10 +1031,6 @@ msgstr "New Expense"
 #: src/app/(main)/create-transaction/income.tsx:54
 msgid "New Income"
 msgstr "New Income"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:36
-msgid "New Transaction"
-msgstr "New Transaction"
 
 #: src/app/(main)/create-transaction/transfer.tsx:77
 msgid "New Transfer"
@@ -1098,7 +1100,8 @@ msgstr "No inactive accounts"
 msgid "No languages found"
 msgstr "No languages found"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:72
+#: src/app/(main)/analytics/transactions.tsx:67
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -1125,7 +1128,7 @@ msgstr "No tags match your search"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:72
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1199,7 +1202,7 @@ msgid "Please try again"
 msgstr "Please try again"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:43
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -1435,7 +1438,7 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:75
+#: src/transaction/components/transaction-list/transaction-list.tsx:37
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
@@ -1481,7 +1484,7 @@ msgstr "Synced bank accounts"
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:63
 msgid "Tag Name"
 msgstr "Tag Name"
 
@@ -1567,7 +1570,8 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
-#: src/@generic/component/total-balance/net-worth.tsx:15
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:95
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:102
 msgid "Total Balance"
 msgstr "Total Balance"
 
@@ -1612,7 +1616,8 @@ msgstr "Try a different search term"
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:74
+#: src/app/(main)/analytics/transactions.tsx:69
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
@@ -1658,7 +1663,7 @@ msgstr "Update Expense"
 msgid "Update Income"
 msgstr "Update Income"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Update the tag name"
 msgstr "Update the tag name"
 
