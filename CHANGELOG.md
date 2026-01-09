@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.4](https://github.com/budgie-at/budgie/compare/v2.6.3...v2.6.4) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** allow editing existing tag title ([#230](https://github.com/budgie-at/budgie/issues/230)) ([2259f9e](https://github.com/budgie-at/budgie/commit/2259f9ef08663bef03a214d98f7acbed85bf6f8c)), closes [#227](https://github.com/budgie-at/budgie/issues/227)
+- **app:** fix transaction update creating duplicate entries ([#232](https://github.com/budgie-at/budgie/issues/232)) ([c6a6350](https://github.com/budgie-at/budgie/commit/c6a6350d88724ab4369621b7bebfe23dcc975074)), closes [#228](https://github.com/budgie-at/budgie/issues/228)
+
 ## [2.6.3](https://github.com/budgie-at/budgie/compare/v2.6.2...v2.6.3) (2026-01-09)
 
 ### Bug Fixes
