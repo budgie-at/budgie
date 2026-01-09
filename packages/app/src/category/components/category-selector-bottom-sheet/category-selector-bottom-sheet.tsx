@@ -94,8 +94,6 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         <>
             <SearchableListBottomSheet
                 ref={ref}
-                title={t`Select Category`}
-                description={t`Choose your main category`}
                 onSearchChange={setSearch}
                 searchPlaceholder={t`Search categories...`}
                 search={search}

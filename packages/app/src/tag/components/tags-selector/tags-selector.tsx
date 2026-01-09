@@ -36,6 +36,8 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
         onChange(isSelected ? tagIds.filter(tagId => tagId !== id) : [...tagIds, id]);
     };
 
+    const remainingCount = (selectedTags?.length ?? 0) - 1;
+
     return (
         <>
             <HorizontalCell
@@ -44,11 +46,15 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 size="md"
             >
                 {isNotEmptyArray(selectedTags) ? (
-                    <View className="mr-auto flex-row items-baseline">
-                        <Text className="text-sm text-primary font-semibold">{selectedTags[0].title}</Text>
+                    <View className="flex-row items-center flex-1 min-w-0">
+                        <Text className="text-sm text-primary font-semibold flex-shrink" numberOfLines={1}>
+                            {selectedTags[0].title}
+                        </Text>
 
-                        {selectedTags.length > 1 ? (
-                            <Text className="text-secondary-foreground">&nbsp;+{selectedTags.length - 1}</Text>
+                        {remainingCount > 0 ? (
+                            <View className="ml-sm bg-secondary-background rounded-full px-sm py-0.5">
+                                <Text className="text-xs text-secondary-foreground font-medium">+{remainingCount}</Text>
+                            </View>
                         ) : null}
                     </View>
                 ) : (
