@@ -4,10 +4,10 @@ import { useRef } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
 
@@ -16,13 +16,13 @@ interface Props {
     readonly accountId: number | null;
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (accountId: number) => void;
-    readonly status?: FormFieldStatus;
+    readonly cardVariant?: ColorPaletteVariant;
     readonly description?: string;
     readonly excludeAccountTypes?: AccountTypeEnum[];
 }
 
 export const AccountSelector = (props: Props) => {
-    const { emptyStateDescription, accountId, onSelect, variant, status = 'default', description, excludeAccountTypes } = props;
+    const { emptyStateDescription, accountId, onSelect, variant, cardVariant = 'primary', description, excludeAccountTypes } = props;
 
     const { t } = useLingui();
 
@@ -33,8 +33,6 @@ export const AccountSelector = (props: Props) => {
     const handleOpen = () => bottomSheetRef.current?.open();
 
     const iconVariant = isDefined(selectedAccount) ? variant : 'secondary';
-    const cardVariant = status === 'error' ? 'destructive' : 'primary';
-    const iconParams = { variant: iconVariant, size: 38, iconSize: 18 };
 
     return (
         <>
@@ -42,9 +40,8 @@ export const AccountSelector = (props: Props) => {
                 variant={cardVariant}
                 title={selectedAccount?.title ?? t`Select account`}
                 description={description}
-                icon={icon}
+                left={<CircleIcon icon={icon} variant={iconVariant} />}
                 onPress={handleOpen}
-                iconParams={iconParams}
             />
 
             <AccountSelectorBottomSheet

@@ -3,6 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Input } from '../../../@generic/component/input/input';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { GetTokenCard } from '../get-token-card/get-token-card';
@@ -14,8 +15,6 @@ interface Props {
     readonly onFetchAccounts: () => void;
 }
 
-const ICON_PARAMS = { variant: 'warning', size: 15, iconSize: 15 } as const;
-
 export const TokenInputStep = ({ token, isLoading, onTokenChange, onFetchAccounts }: Props) => {
     const { t } = useLingui();
 
@@ -24,8 +23,7 @@ export const TokenInputStep = ({ token, isLoading, onTokenChange, onFetchAccount
             <GetTokenCard />
 
             <SimpleHorizontalCell
-                icon={UserIconNameEnum.Info}
-                iconParams={ICON_PARAMS}
+                left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}
                 size="lg"
                 variant="warning"
                 title={t`Your token is stored securely in the database. Sync continues in the background.`}
