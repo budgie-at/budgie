@@ -18,10 +18,11 @@ export const TagsSelectorFooter = ({ selectedTagsCount, onClose, animatedFooterP
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const buttonText = isPositiveNumber(selectedTagsCount) ? t`Done (${selectedTagsCount})` : t`Done`;
+    const containerStyle = { paddingBottom: bottom };
 
     return (
-        <BottomSheetFooter animatedFooterPosition={animatedFooterPosition} bottomInset={bottom}>
-            <View className="gap-md pt-xl px-7xl border-t border-t-secondary-corner bg-primary-reverse">
+        <BottomSheetFooter animatedFooterPosition={animatedFooterPosition}>
+            <View className="gap-md pt-xl px-7xl border-t border-t-secondary-corner bg-primary-reverse" style={containerStyle}>
                 <View className="flex-row gap-x-xl">
                     <HapticPressable
                         onPress={onClose}
