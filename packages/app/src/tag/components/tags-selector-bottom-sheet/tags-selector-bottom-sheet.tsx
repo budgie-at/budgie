@@ -33,7 +33,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
     const { t } = useLingui();
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
-    const tagsCount = tags?.length ?? 0;
     const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
     const data = padFlatListData(sortedTags, 3);
     const handleCreateTag = () => void tagFormRef.current?.open();
@@ -60,8 +59,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
         <>
             <SearchableListBottomSheet
                 ref={ref}
-                title={t`Select Tags`}
-                description={t`${tagsCount} tags available`}
                 onSearchChange={setSearch}
                 searchPlaceholder={t`Search tags...`}
                 search={search}
