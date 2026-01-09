@@ -4,8 +4,8 @@ import React from 'react';
 
 import { BottomTabs } from '../../@generic/component/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
-import { AiChatButton } from '../../ai/component/ai-chat-button/ai-chat-button';
-import { CreateTransactionTab } from '../../transaction/components/create-transaction-tab/create-transaction-tab';
+import { SettingsTabButton } from '../../settings/component/settings-tab-button/settings-tab-button';
+import { CreateTransactionTabButton } from '../../transaction/components/create-transaction-tab-button/create-transaction-tab-button';
 
 export default function TabsLayout() {
     return (
@@ -22,13 +22,13 @@ export default function TabsLayout() {
                         <TabButton icon={UserIconNameEnum.Receipt} />
                     </TabTrigger>
 
-                    <AiChatButton />
+                    <CreateTransactionTabButton />
 
                     <TabTrigger asChild href="/analytics" name="analytics">
                         <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                     </TabTrigger>
 
-                    <CreateTransactionTab />
+                    <SettingsTabButton />
                 </BottomTabs>
             </TabList>
         </Tabs>

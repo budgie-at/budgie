@@ -1,13 +1,15 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
-import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { CreateTransactionCard } from '../create-transaction-card/create-transaction-card';
@@ -22,10 +24,23 @@ interface Props {
 export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
+    const { llm, stt } = useLlmContext();
+
+    const isAiReady = llm.isReady && stt.isReady;
 
     const handleNavigate = (type: TransactionTypeEnum) => {
         ref.current?.close();
         router.push({ pathname: `/create-transaction/${type.toLowerCase() as 'income'}`, params: { accountId } });
+    };
+
+    const handleNavigateToCreateAccount = () => {
+        ref.current?.close();
+        router.push('/(main)/create-account');
+    };
+
+    const handleNavigateToAi = () => {
+        ref.current?.close();
+        router.push('/ai');
     };
 
     const style = { paddingBottom: bottom };
@@ -33,15 +48,21 @@ export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
     return (
         <BottomSheet enableDynamicSizing ref={ref}>
             <BottomSheetView style={style}>
-                <BottomSheetHeader size="md" title={t`New Transaction`} description={t`Choose a type to get started`} />
+                <View className="gap-y-3.5 px-5xl pt-lg">
+                    <SimpleHorizontalCell
+                        description={t`Add a new bank, cash or debt account`}
+                        left={<CircleIcon icon={UserIconNameEnum.Wallet} variant="secondary" size={52} iconSize={24} border={false} />}
+                        onPress={handleNavigateToCreateAccount}
+                        title={t`New Account`}
+                        size="lg"
+                    />
 
-                <View className="gap-y-3.5 px-5xl">
                     <CreateTransactionCard
-                        description={t`Money you spend`}
-                        icon={TRANSACTION_ICON.EXPENSE}
-                        title={t(TRANSACTION_TYPE.EXPENSE)}
+                        description={t`Move between accounts`}
+                        icon={TRANSACTION_ICON.TRANSFER}
+                        title={t(TRANSACTION_TYPE.TRANSFER)}
                         onNavigate={handleNavigate}
-                        type={TransactionTypeEnum.EXPENSE}
+                        type={TransactionTypeEnum.TRANSFER}
                     />
                     <CreateTransactionCard
                         description={t`Money you earn`}
@@ -51,12 +72,22 @@ export const CreateTransactionBottomSheet = ({ ref, accountId }: Props) => {
                         type={TransactionTypeEnum.INCOME}
                     />
                     <CreateTransactionCard
-                        description={t`Move between accounts`}
-                        icon={TRANSACTION_ICON.TRANSFER}
-                        title={t(TRANSACTION_TYPE.TRANSFER)}
+                        description={t`Money you spend`}
+                        icon={TRANSACTION_ICON.EXPENSE}
+                        title={t(TRANSACTION_TYPE.EXPENSE)}
                         onNavigate={handleNavigate}
-                        type={TransactionTypeEnum.TRANSFER}
+                        type={TransactionTypeEnum.EXPENSE}
                     />
+
+                    {isAiReady && (
+                        <SimpleHorizontalCell
+                            description={t`Create transactions using voice`}
+                            left={<CircleIcon icon={UserIconNameEnum.Mic} variant="primary" size={52} iconSize={24} border={false} />}
+                            onPress={handleNavigateToAi}
+                            title={t`AI Assistant`}
+                            size="lg"
+                        />
+                    )}
                 </View>
             </BottomSheetView>
         </BottomSheet>

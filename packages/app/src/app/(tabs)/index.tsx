@@ -1,20 +1,41 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import { router } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../@generic/component/icon/icon';
-import { Page } from '../../@generic/component/page/page';
-import { NetWorth } from '../../@generic/component/total-balance/net-worth';
+import { AnimatedSectionList } from '../../@generic/component/animated-section-list/animated-section-list';
+import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
-import { AccountList } from '../../account/component/account-list/account-list';
+import { AccountGridItem } from '../../account/component/account-grid-item/account-grid-item';
+import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
-import { AccountsHeading } from '../../account/component/accounts-heading/accounts-heading';
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
+
+interface AccountRowInterface {
+    readonly left: AccountWithInstrumentEntityInterface;
+    readonly right?: AccountWithInstrumentEntityInterface;
+}
+
+interface AccountSectionInterface {
+    readonly type: AccountTypeEnum;
+    readonly data: AccountRowInterface[];
+}
+
+const pairAccountsIntoRows = (accounts: AccountWithInstrumentEntityInterface[]): AccountRowInterface[] => {
+    const rows: AccountRowInterface[] = [];
+
+    for (let i = 0; i < accounts.length; i += 2) {
+        rows.push({
+            left: accounts[i],
+            right: accounts[i + 1]
+        });
+    }
+
+    return rows;
+};
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
@@ -22,27 +43,47 @@ export default function HomePage() {
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
-    const navigateToSettings = () => void router.push('/settings');
+    const scrollY = useSharedValue(0);
 
     const accountEntries = typedObjectEntries(accountsGrouped);
 
+    const sections: AccountSectionInterface[] = accountEntries
+        .filter(([, accounts]) => isNotEmptyArray(accounts))
+        .map(([type, accounts]) => ({
+            type,
+            data: pairAccountsIntoRows(accounts ?? [])
+        }));
+
+    const renderSectionHeader = ({ section }: { section: AccountSectionInterface }) => <AccountSectionHeader type={section.type} />;
+
+    const renderItem = ({ item, section }: { item: AccountRowInterface; section: AccountSectionInterface }) => (
+        <View className="flex-row mb-3">
+            <AccountGridItem account={item.left} type={section.type} isLeft />
+            {item.right ? <AccountGridItem account={item.right} type={section.type} isLeft={false} /> : <View className="flex-1" />}
+        </View>
+    );
+
+    const keyExtractor = (item: AccountRowInterface) => String(item.left.id);
+
     return (
-        <Page>
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                <HapticPressable className="ml-auto p-md" onPress={navigateToSettings} hitSlop={10}>
-                    <Icon className="text-primary" icon={UserIconNameEnum.Settings} size={16} />
-                </HapticPressable>
+        <View className="flex-1 bg-background">
+            <CollapsibleHeader scrollY={scrollY} />
 
-                <NetWorth />
-
-                <AccountsHeading />
-
-                {isNotEmptyArray(accountEntries) ? (
-                    accountEntries.map(([key, value]) => <AccountList type={key} accounts={value ?? []} key={key} />)
-                ) : (
+            {isNotEmptyArray(sections) ? (
+                <AnimatedSectionList
+                    scrollY={scrollY}
+                    sections={sections}
+                    renderSectionHeader={renderSectionHeader}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerClassName="px-5xl pb-24"
+                />
+            ) : (
+                <View className="flex-1 px-5xl">
                     <AccountsEmptyState />
-                )}
-            </ScrollView>
-        </Page>
+                </View>
+            )}
+        </View>
     );
 }

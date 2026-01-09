@@ -114,11 +114,12 @@ const MyForm = () => {
 2. **No type assertions** - Never use `as`, `@ts-ignore`, `@ts-expect-error`
 3. **No comments** - Self-documenting code with clear names
 4. **No manual memoization** - Never use `useCallback`, `useMemo`, `React.memo` (React 19 Compiler handles this)
-5. **Concise setState** - `setShouldAutoFocus(index >= 0)` not if/else blocks
-6. **Avoid unnecessary variables** - Inline when logic is self-explanatory
-7. **Explicit JSX for fixed arrays** - Don't map over hardcoded data
-8. **Type guards** - Use `@rnw-community/shared` for checks: `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`. For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)` instead of `if (isDefined(callback)) callback(value)`
-9. **Component Styling with CVA** - Always use `class-variance-authority` (CVA) for components with style variants
+5. **No displayName or forwardRef** - Never use `Component.displayName` or `forwardRef`. React 19 handles ref forwarding natively - just accept `ref` as a regular prop
+6. **Concise setState** - `setShouldAutoFocus(index >= 0)` not if/else blocks
+7. **Avoid unnecessary variables** - Inline when logic is self-explanatory
+8. **Explicit JSX for fixed arrays** - Don't map over hardcoded data
+9. **Type guards** - Use `@rnw-community/shared` for checks: `isNotEmptyArray()`, `isNotEmptyString()`, `isPositiveNumber()`. For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)` instead of `if (isDefined(callback)) callback(value)`
+10. **Component Styling with CVA** - Always use `class-variance-authority` (CVA) for components with style variants
    ```typescript
    // Good - Use CVA for variant-based styling
    import { cva } from 'class-variance-authority';
@@ -136,7 +137,7 @@ const MyForm = () => {
    // Bad - Template strings for variant-based styling
    className={`bg-${variant}-background text-${variant}-foreground`}
    ```
-10. **Single const declarations** - Each variable gets its own `const` declaration
+11. **Single const declarations** - Each variable gets its own `const` declaration
    ```typescript
    // Good - Separate const declarations
    const buttonText = isPositiveNumber(count) ? t`Done (${count})` : t`Done`;
@@ -148,8 +149,8 @@ const MyForm = () => {
        description = t`${total} items available`,
        rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
    ```
-11. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments or similar suppressions without explicit user approval. Always fix the underlying issue or ask the user first.
-12. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0` or `() => {}`
+12. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments or similar suppressions without explicit user approval. Always fix the underlying issue or ask the user first.
+13. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0` or `() => {}`
    ```typescript
    // Good
    import { emptyFn } from '@rnw-community/shared';
