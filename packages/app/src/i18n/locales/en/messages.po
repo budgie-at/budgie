@@ -116,7 +116,7 @@ msgstr "Active"
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
@@ -286,7 +286,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:25
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
@@ -434,7 +434,7 @@ msgstr "Could not archive account. Please try again later"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
@@ -458,6 +458,10 @@ msgstr "Could not restore account."
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "Could not update category"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
+msgid "Could not update tag"
+msgstr "Could not update tag"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -508,7 +512,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -621,11 +625,11 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:20
 msgid "Done"
 msgstr "Done"
 
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:20
 msgid "Done ({selectedTagsCount})"
 msgstr "Done ({selectedTagsCount})"
 
@@ -637,7 +641,7 @@ msgstr "Dutch (Netherlands)"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
@@ -656,6 +660,10 @@ msgstr "Edit Expense"
 #: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Edit Income"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+msgid "Edit Tag"
+msgstr "Edit Tag"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1103,7 +1111,7 @@ msgstr "No Results"
 msgid "No speech detected"
 msgstr "No speech detected"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:74
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No tags found"
@@ -1191,7 +1199,7 @@ msgid "Please try again"
 msgstr "Please try again"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -1289,7 +1297,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(main)/settings/tags.tsx:46
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:63
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -1473,7 +1481,7 @@ msgstr "Synced bank accounts"
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
 msgid "Tag Name"
 msgstr "Tag Name"
 
@@ -1600,7 +1608,7 @@ msgstr "Transfer"
 msgid "Try a different search term"
 msgstr "Try a different search term"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:67
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
@@ -1649,6 +1657,10 @@ msgstr "Update Expense"
 #: src/app/(main)/transactions/[id]/income.tsx:76
 msgid "Update Income"
 msgstr "Update Income"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+msgid "Update the tag name"
+msgstr "Update the tag name"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
