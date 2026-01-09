@@ -17,7 +17,7 @@ msgstr "{accountsCount} Konten"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:92
 msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
-msgstr ""
+msgstr "{accountTitle} und alle zugehörigen Transaktionen werden dauerhaft gelöscht. Überweisungen werden in Einnahmen/Ausgaben auf anderen Konten umgewandelt. Dies kann nicht rückgängig gemacht werden."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:81
 msgid "{accountTitle} will be restored to your main view and included in totals."
@@ -114,7 +114,7 @@ msgstr "Aktiv"
 msgid "Add a new category to organize your transactions"
 msgstr "Fügen Sie eine neue Kategorie hinzu, um Ihre Transaktionen zu organisieren"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Add a new tag to organize your transactions"
 msgstr "Fügen Sie ein neues Tag hinzu, um Ihre Transaktionen zu organisieren"
 
@@ -277,7 +277,7 @@ msgstr "Geliehen"
 
 #: src/app/(main)/settings/index.tsx:137
 msgid "Budgie"
-msgstr ""
+msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
@@ -410,15 +410,15 @@ msgstr "Weiter"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:53
 msgid "Conversion failed"
-msgstr ""
+msgstr "Konvertierung fehlgeschlagen"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:106
 msgid "Convert"
-msgstr ""
+msgstr "Konvertieren"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:79
 msgid "Convert to Transfer?"
-msgstr ""
+msgstr "In Überweisung umwandeln?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
@@ -443,7 +443,7 @@ msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:42
 msgid "Could not delete account."
-msgstr ""
+msgstr "Konto konnte nicht gelöscht werden."
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
@@ -459,7 +459,7 @@ msgstr "Kategorie konnte nicht aktualisiert werden"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
 msgid "Could not update tag"
-msgstr ""
+msgstr "Tag konnte nicht aktualisiert werden"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -510,7 +510,7 @@ msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Tran
 msgid "Create one to get started."
 msgstr "Erstellen Sie eines, um zu beginnen."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Create Tag"
 msgstr "Tag erstellen"
 
@@ -592,7 +592,7 @@ msgstr "Löschen"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:91
 msgid "Delete Account Permanently?"
-msgstr ""
+msgstr "Konto dauerhaft löschen?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
@@ -604,7 +604,7 @@ msgstr "Daten löschen"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:89
 msgid "Delete Permanently"
-msgstr ""
+msgstr "Dauerhaft löschen"
 
 #: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:54
 msgid "Delete transaction"
@@ -616,7 +616,7 @@ msgstr "Alle abwählen"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
 msgid "Destination Account"
-msgstr ""
+msgstr "Zielkonto"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
@@ -639,7 +639,7 @@ msgstr "Niederländisch (Niederlande)"
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:60
 msgid "e.g., Business, Personal, Vacation"
 msgstr "z. B. Geschäft, Privat, Urlaub"
 
@@ -659,9 +659,9 @@ msgstr "Ausgabe bearbeiten"
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Edit Tag"
-msgstr ""
+msgstr "Tag bearbeiten"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1194,7 +1194,7 @@ msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:54
 msgid "Please try again"
-msgstr ""
+msgstr "Bitte versuchen Sie es erneut"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
@@ -1479,7 +1479,7 @@ msgstr "Synchronisierte Bankkonten"
 msgid "Syncing history..."
 msgstr "Verlauf wird synchronisiert..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "Tag Name"
 msgstr "Tag-Name"
 
@@ -1531,7 +1531,7 @@ msgstr "Diese Woche"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:83
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
-msgstr ""
+msgstr "Dies ändert den Transaktionstyp. Die Kategorie wird durch 'Währungsüberweisung' ersetzt."
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
@@ -1656,9 +1656,9 @@ msgstr "Ausgabe aktualisieren"
 msgid "Update Income"
 msgstr "Einnahme aktualisieren"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Update the tag name"
-msgstr ""
+msgstr "Tag-Namen aktualisieren"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"

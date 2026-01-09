@@ -19,8 +19,8 @@ interface Props {
 }
 
 export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props) => {
-    const { handleSubmit, reset, control } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
     const { t } = useLingui();
+    const { handleSubmit, reset, control } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
     const isEditing = isDefined(tag?.id);
 
@@ -29,7 +29,8 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props
         reset();
     };
 
-    const saveTag = async (values: TagCreateEntityInterface) => {
+    // eslint-disable-next-line react-hooks/refs
+    const onSubmit = handleSubmit(async (values: TagCreateEntityInterface) => {
         try {
             const savedTag = isEditing ? await tagRepository.updateById(tag.id, values) : await tagRepository.create(values);
             reset();
@@ -42,9 +43,7 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props
                 text2: t`Please try again later`
             });
         }
-    };
-
-    const handleSave = () => void handleSubmit(saveTag)();
+    });
 
     const title = isEditing ? t`Edit Tag` : t`Create Tag`;
     const description = isEditing ? t`Update the tag name` : t`Add a new tag to organize your transactions`;
@@ -53,7 +52,7 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props
         <FormBottomSheet
             onDismiss={handleCancel}
             onCancel={handleCancel}
-            onSubmit={handleSave}
+            onSubmit={onSubmit}
             title={title}
             description={description}
             ref={ref}

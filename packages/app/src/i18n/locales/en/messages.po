@@ -116,7 +116,7 @@ msgstr "Active"
 msgid "Add a new category to organize your transactions"
 msgstr "Add a new category to organize your transactions"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Add a new tag to organize your transactions"
 msgstr "Add a new tag to organize your transactions"
 
@@ -512,7 +512,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -641,7 +641,7 @@ msgstr "Dutch (Netherlands)"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:60
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
@@ -661,7 +661,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
@@ -1481,7 +1481,7 @@ msgstr "Synced bank accounts"
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "Tag Name"
 msgstr "Tag Name"
 
@@ -1658,7 +1658,7 @@ msgstr "Update Expense"
 msgid "Update Income"
 msgstr "Update Income"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Update the tag name"
 msgstr "Update the tag name"
 

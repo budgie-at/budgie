@@ -17,7 +17,7 @@ msgstr "{accountsCount} рахунків"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:92
 msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
-msgstr ""
+msgstr "{accountTitle} та всі його транзакції будуть остаточно видалені. Перекази будуть конвертовані у доходи/витрати на інших рахунках. Цю дію неможливо скасувати."
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:81
 msgid "{accountTitle} will be restored to your main view and included in totals."
@@ -114,7 +114,7 @@ msgstr "Активний"
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
@@ -277,7 +277,7 @@ msgstr "Позичено"
 
 #: src/app/(main)/settings/index.tsx:137
 msgid "Budgie"
-msgstr ""
+msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
@@ -410,15 +410,15 @@ msgstr "Продовжити"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:53
 msgid "Conversion failed"
-msgstr ""
+msgstr "Помилка конвертації"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:106
 msgid "Convert"
-msgstr ""
+msgstr "Конвертувати"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:79
 msgid "Convert to Transfer?"
-msgstr ""
+msgstr "Конвертувати у переказ?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
@@ -443,7 +443,7 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:42
 msgid "Could not delete account."
-msgstr ""
+msgstr "Не вдалося видалити рахунок."
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:54
 msgid "Could not delete transaction."
@@ -459,7 +459,7 @@ msgstr "Не вдалося оновити категорію"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
 msgid "Could not update tag"
-msgstr ""
+msgstr "Не вдалося оновити тег"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -510,7 +510,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Create Tag"
 msgstr "Створити тег"
 
@@ -592,7 +592,7 @@ msgstr "Видалити"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:91
 msgid "Delete Account Permanently?"
-msgstr ""
+msgstr "Видалити рахунок назавжди?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
@@ -604,7 +604,7 @@ msgstr "Видалити дані"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:89
 msgid "Delete Permanently"
-msgstr ""
+msgstr "Видалити назавжди"
 
 #: src/transaction/components/transaction-form-footer/transaction-form-footer.tsx:54
 msgid "Delete transaction"
@@ -616,7 +616,7 @@ msgstr "Скасувати вибір усіх"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
 msgid "Destination Account"
-msgstr ""
+msgstr "Рахунок призначення"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
@@ -639,7 +639,7 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:60
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
@@ -659,9 +659,9 @@ msgstr "Редагувати витрату"
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:47
 msgid "Edit Tag"
-msgstr ""
+msgstr "Редагувати тег"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1194,7 +1194,7 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:54
 msgid "Please try again"
-msgstr ""
+msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
@@ -1479,7 +1479,7 @@ msgstr "Синхронізовані банківські рахунки"
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1531,7 +1531,7 @@ msgstr "Цього тижня"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:83
 msgid "This will change the transaction type. The category will be replaced with 'Currency Transfer'."
-msgstr ""
+msgstr "Це змінить тип транзакції. Категорія буде замінена на 'Валютний переказ'."
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
@@ -1656,9 +1656,9 @@ msgstr "Оновити витрату"
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Update the tag name"
-msgstr ""
+msgstr "Оновити назву тегу"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
