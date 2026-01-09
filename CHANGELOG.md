@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.5](https://github.com/budgie-at/budgie/compare/v2.6.4...v2.6.5) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** fix tag creation crash ([#233](https://github.com/budgie-at/budgie/issues/233)) ([667f87f](https://github.com/budgie-at/budgie/commit/667f87f28bece83e05185bcc9d5dc9a03f2aee02))
+
 ## [2.6.4](https://github.com/budgie-at/budgie/compare/v2.6.3...v2.6.4) (2026-01-09)
 
 ### Bug Fixes
