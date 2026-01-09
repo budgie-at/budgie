@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { StatisticsFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { Page } from '../../../@generic/component/page/page';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { TransactionList } from '../../../transaction/components/transaction-list/transaction-list';
+import { StatisticsTransactionList } from '../../../transaction/components/statistics-transaction-list/statistics-transaction-list';
 import { TransactionsPageHeader } from '../../../transaction/components/transactions-page-header/transactions-page-header';
 
 interface RouteParams {
@@ -29,15 +29,14 @@ const buildCategoryIds = (params: RouteParams): number[] | null => {
     return null;
 };
 
-const buildFilters = (params: RouteParams): TransactionFilterInterface => ({
-    ...DEFAULT_TRANSACTION_FILTER,
+const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
+    type: params.type as TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE,
     date: {
         from: isDefined(params.startDate) ? new Date(params.startDate) : null,
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
     categoryIds: buildCategoryIds(params),
-    tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null,
-    types: isDefined(params.type) ? [params.type as TransactionTypeEnum] : null
+    tagIds: isDefined(params.tagId) ? [Number(params.tagId)] : null
 });
 
 export default function AnalyticsTransactionsPage() {
@@ -66,7 +65,7 @@ export default function AnalyticsTransactionsPage() {
                 />
             }
         >
-            <TransactionList filters={filters} showFilters={false} />
+            <StatisticsTransactionList filters={filters} />
         </Page>
     );
 }

@@ -257,3 +257,5 @@ export type { SettingsWithDefaultInstrumentEntityInterface } from './settings/en
 export { SettingsRepository } from './settings/repository/settings.repository';
 
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
+
+export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
