@@ -24,9 +24,17 @@ export const SimpleHorizontalCell = (props: Props) => {
 
     return (
         <HorizontalCell right={right} {...(!disabled && { onPress })} {...rest}>
-            {isNotEmptyString(title) ? <Text className="text-sm font-medium text-primary">{title}</Text> : null}
+            {isNotEmptyString(title) ? (
+                <Text className="text-sm font-medium text-primary" numberOfLines={1}>
+                    {title}
+                </Text>
+            ) : null}
 
-            {isNotEmptyString(description) ? <Text className="text-sm font-medium text-secondary-foreground">{description}</Text> : null}
+            {isNotEmptyString(description) ? (
+                <Text className="text-sm font-medium text-secondary-foreground" numberOfLines={1}>
+                    {description}
+                </Text>
+            ) : null}
         </HorizontalCell>
     );
 };
