@@ -55,7 +55,7 @@ Reply with the category number only.`;
     const reset = () => void setAiTransaction(null);
     const fillCategory = (categoryId: number | null) => {
         setAiTransaction({
-            category: isDefined(categoryId) ? (categories.find(category => category.id === categoryId) ?? null) : null,
+            category: categories.find(category => category.id === categoryId) ?? null,
             amount: parseNumberFromMessage(prompt),
             type: TransactionTypeEnum.EXPENSE,
             comment: prompt
@@ -71,7 +71,7 @@ Reply with the category number only.`;
                 fillCategory(categoryByIndex.id);
             } else {
                 const categoryId = findCategoryByTitle(llm.response, categories);
-                fillCategory(categoryId ?? 0);
+                fillCategory(categoryId);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
