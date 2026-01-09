@@ -75,8 +75,6 @@ export const ContactSelectorBottomSheet = ({ ref, contacts, selectedContact, onS
         <SearchableListBottomSheet
             ref={ref}
             emptyIcon={emptyIcon}
-            title={t`Select Contact`}
-            description={t`Choose your main contact`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search contacts...`}
             search={search}

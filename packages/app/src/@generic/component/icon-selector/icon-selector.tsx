@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode, useRef } from 'react';
-import { Keyboard } from 'react-native';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
@@ -17,14 +16,11 @@ interface Props {
 export const IconSelector = ({ onSelect, icon, variant, trigger }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
 
-    const openIconSelector = () => {
-        ref.current?.open();
-        Keyboard.dismiss();
-    };
+    const handleOpen = () => void ref.current?.open();
 
     return (
         <>
-            <HapticPressable onPress={openIconSelector}>{trigger}</HapticPressable>
+            <HapticPressable onPress={handleOpen}>{trigger}</HapticPressable>
 
             <IconSelectorBottomSheet variant={variant} onSelect={onSelect} ref={ref} selectedIcon={icon} />
         </>

@@ -17,8 +17,7 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
     label,
     placeholder,
     name = 'title' as Path<T>,
-    maxLength,
-    autoFocus = false
+    maxLength
 }: Props<T>) => {
     const render = ({ field: { value, onChange }, fieldState: { error, invalid } }: UseControllerReturn<T>) => {
         const status = invalid ? 'error' : 'default';
@@ -31,7 +30,6 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
                     maxLength={maxLength}
                     onChangeText={onChange}
                     placeholder={placeholder}
-                    autoFocus={autoFocus}
                     className="text-md text-primary placeholder:text-secondary-foreground h-[56px] px-5xl bg-secondary-background rounded-5xl border border-secondary-corner"
                 />
             </FormItem>
