@@ -23,7 +23,7 @@ export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) =>
     return (
         <>
             <SimpleHorizontalCell
-                size="lg"
+                size="md"
                 right={null}
                 left={<CircleIcon icon={UserIconNameEnum.Calendar} variant="ghost" size={16} iconSize={16} border={false} />}
                 onPress={handleOpen}
