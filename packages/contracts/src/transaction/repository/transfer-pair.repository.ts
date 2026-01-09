@@ -33,6 +33,7 @@ export class TransferPairRepository {
                 INNER JOIN transaction_entries income_entry ON
                     income_entry.account_id = income_account.id
                     AND income_entry.deleted_at IS NULL
+                    AND income_entry.id != expense_entry.id
                 INNER JOIN mcc_categories income_mcc ON
                     income_entry.mcc_category_id = income_mcc.id
                     AND income_mcc.mcc_group_id = 10
@@ -41,18 +42,7 @@ export class TransferPairRepository {
             ),
             transaction_filtered AS (
                 SELECT
-                    ime.expense_entry_id,
-                    ime.expense_transaction_id,
-                    ime.expense_account_id,
-                    ime.expense_entry_amount,
-                    ime.expense_entry_exchange_rate,
-                    ime.expense_entry_to_iban,
-                    ime.income_entry_id,
-                    ime.income_transaction_id,
-                    ime.income_account_id,
-                    ime.income_entry_amount,
-                    ime.income_entry_exchange_rate,
-                    ime.income_entry_to_iban,
+                    ime.*,
                     expense_tx.title as expense_transaction_title,
                     expense_tx.comment as expense_transaction_comment,
                     expense_tx.operated_at as expense_operated_at,
@@ -73,14 +63,7 @@ export class TransferPairRepository {
                     tf.*,
                     expense_account.instrument_id as expense_instrument_id,
                     income_account.instrument_id as income_instrument_id,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY tf.expense_transaction_id
-                        ORDER BY ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER))
-                    ) as expense_rn,
-                    ROW_NUMBER() OVER (
-                        PARTITION BY tf.income_transaction_id
-                        ORDER BY ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER))
-                    ) as income_rn
+                    ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER)) as time_diff
                 FROM transaction_filtered tf
                 INNER JOIN accounts expense_account ON tf.expense_account_id = expense_account.id
                 INNER JOIN accounts income_account ON tf.income_account_id = income_account.id
@@ -91,6 +74,19 @@ export class TransferPairRepository {
                     (expense_account.instrument_id != income_account.instrument_id
                      AND ABS(tf.expense_entry_amount * tf.expense_entry_exchange_rate - tf.income_entry_amount * tf.income_entry_exchange_rate) < (tf.expense_entry_amount * tf.expense_entry_exchange_rate * 0.05))
                 )
+            ),
+            ranked_pairs AS (
+                SELECT
+                    am.*,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY am.expense_transaction_id
+                        ORDER BY am.time_diff
+                    ) as expense_rank,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY am.income_transaction_id
+                        ORDER BY am.time_diff
+                    ) as income_rank
+                FROM amount_matched am
             )
             SELECT
                 expense_transaction_id,
@@ -108,8 +104,8 @@ export class TransferPairRepository {
                 income_entry_amount,
                 income_entry_exchange_rate,
                 income_entry_to_iban
-            FROM amount_matched
-            WHERE expense_rn = 1 AND income_rn = 1
+            FROM ranked_pairs
+            WHERE expense_rank = 1 AND income_rank = 1
         `;
 
         return this.db.all<TransferPairCandidateInterface>(sql as never);
