@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/budgie-at/budgie/compare/v2.5.1...v2.6.0) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** adjust category selector card spacing ([6d42f38](https://github.com/budgie-at/budgie/commit/6d42f38263d44cb26cce6f6a3678395cbf3b4855))
+- **app:** keep bottom sheet open when deselecting category ([48490a2](https://github.com/budgie-at/budgie/commit/48490a28015ef6035a557f2231b20755c5a7cb24))
+- **app:** prevent crash from keyboard focus conflicts in bottom sheets ([a1aa244](https://github.com/budgie-at/budgie/commit/a1aa2449f301db5dcbacc23cdbb64649d7974e02))
+- **app:** reduce date and tags selector size to prevent text wrapping ([ac914e2](https://github.com/budgie-at/budgie/commit/ac914e28d33b5c4656415c7861c5bb20823e21ef))
+- **app:** revert safeIndex change that broke dynamic sizing bottom sheets ([3d2c155](https://github.com/budgie-at/budgie/commit/3d2c155f43752ae4b1b7c5b3eb75946e2fe53620))
+- bottom sheets ([62103da](https://github.com/budgie-at/budgie/commit/62103dada8c0c27687d0823bf66ea9fadb67b1fa))
+- refactor bottom sheet ui ([3bd05cb](https://github.com/budgie-at/budgie/commit/3bd05cb39870bfe25c61f0046eca83af711cde81))
+- remove autofocus ([152ed91](https://github.com/budgie-at/budgie/commit/152ed911391e8d54d6415319af6a6c615329c2c8))
+- remove autofocus ([9d28bf5](https://github.com/budgie-at/budgie/commit/9d28bf5e147d9de596657481a83bc540420d9e8c))
+
+### Features
+
+- **app:** allow deselecting category by clicking selected item ([a2c78f7](https://github.com/budgie-at/budgie/commit/a2c78f7bb816675d6ca6fb18d8c44d1ccb961fc4))
+- **app:** sort selected items first in category and tag selectors ([4334024](https://github.com/budgie-at/budgie/commit/4334024d31e476511a6bf4262cd3a8c289fbe4fd))
+
 ## [2.5.1](https://github.com/budgie-at/budgie/compare/v2.5.0...v2.5.1) (2026-01-08)
 
 ### Bug Fixes
