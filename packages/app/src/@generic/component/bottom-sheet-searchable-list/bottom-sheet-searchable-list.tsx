@@ -48,7 +48,6 @@ interface SearchableListBottomSheetProps<T> {
     readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
     readonly footerComponent?: FC<BottomSheetFooterProps>;
     readonly footerContent?: JSX.Element;
-    readonly searchPosition?: 'top' | 'bottom';
     readonly autoFocus?: boolean;
 }
 
@@ -78,7 +77,6 @@ export const SearchableListBottomSheet = <T,>({
     rightAction,
     footerComponent,
     footerContent,
-    searchPosition = 'top',
     autoFocus = true
 }: SearchableListBottomSheetProps<T>) => {
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
@@ -106,7 +104,7 @@ export const SearchableListBottomSheet = <T,>({
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange} footerComponent={footerComponent}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
-            {searchPosition === 'top' ? searchComponent : null}
+            {searchComponent}
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
@@ -127,8 +125,6 @@ export const SearchableListBottomSheet = <T,>({
                     <EmptyState circleIcon={emptyIcon} title={emptyTitle} description={emptyDescription} />
                 </>
             )}
-
-            {searchPosition === 'bottom' ? searchComponent : null}
 
             {footerContent}
         </BottomSheet>

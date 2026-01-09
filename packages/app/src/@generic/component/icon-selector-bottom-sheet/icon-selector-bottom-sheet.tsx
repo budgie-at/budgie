@@ -41,7 +41,7 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const handleSelect = (icon: UserIconNameEnum) => {
         onSelect(icon);
         InteractionManager.runAfterInteractions(() => {
-            ref.current?.dismiss();
+            void ref.current?.dismiss();
         });
     };
 

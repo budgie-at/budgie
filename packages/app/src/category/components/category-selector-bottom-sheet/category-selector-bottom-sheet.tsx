@@ -26,8 +26,8 @@ const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: nu
 
 const flatListProps = {
     numColumns: 3,
-    columnWrapperClassName: 'gap-x-md',
-    contentContainerClassName: 'gap-y-md px-3 pt-xl'
+    columnWrapperClassName: 'gap-x-lg',
+    contentContainerClassName: 'gap-y-lg px-3 pt-xl'
 };
 
 export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
@@ -38,13 +38,14 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
     const categoryFormRef = useRef<BottomSheetInterface | null>(null);
 
     const handleSelect = (categoryId: number) => {
-        const isDeselecting = categoryId === selectedCategory?.id;
+        if (categoryId === selectedCategory?.id) {
+            onSelect(null);
 
-        if (!isDeselecting) {
-            void ref.current?.dismiss();
+            return;
         }
 
-        onSelect(isDeselecting ? null : categoryId);
+        void ref.current?.dismiss();
+        onSelect(categoryId);
     };
 
     const handleCreateCategory = () => {
