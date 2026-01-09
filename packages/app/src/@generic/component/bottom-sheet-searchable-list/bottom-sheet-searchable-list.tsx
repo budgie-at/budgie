@@ -1,7 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ComponentProps, FC, JSX, RefObject, useRef } from 'react';
-import { InteractionManager } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { ComponentProps, FC, JSX, ReactNode, RefObject } from 'react';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -47,8 +45,9 @@ interface SearchableListBottomSheetProps<T> {
     readonly listHeaderContent?: JSX.Element | null;
     readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
     readonly footerComponent?: FC<BottomSheetFooterProps>;
-    readonly footerContent?: JSX.Element;
     readonly autoFocus?: boolean;
+
+    readonly children?: ReactNode;
 }
 
 const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
@@ -56,55 +55,37 @@ const DEFAULT_SNAP_POINTS: BottomSheetSnapPoints = ['70%'];
 const safeEdges: Edges = ['bottom'];
 const listFooter = <SafeAreaView edges={safeEdges} />;
 
-export const SearchableListBottomSheet = <T,>({
-    ref,
-    align,
-    snapPoints = DEFAULT_SNAP_POINTS,
-    index,
-    title,
-    description,
-    search,
-    onSearchChange,
-    searchPlaceholder,
-    data,
-    keyExtractor,
-    renderItem,
-    emptyTitle,
-    emptyDescription,
-    flatListProps,
-    emptyIcon,
-    listHeaderContent,
-    rightAction,
-    footerComponent,
-    footerContent,
-    autoFocus = false
-}: SearchableListBottomSheetProps<T>) => {
+export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetProps<T>) => {
+    const {
+        ref,
+        align,
+        snapPoints = DEFAULT_SNAP_POINTS,
+        index,
+        title,
+        description,
+        search,
+        onSearchChange,
+        searchPlaceholder,
+        data,
+        keyExtractor,
+        renderItem,
+        emptyTitle,
+        emptyDescription,
+        flatListProps,
+        emptyIcon,
+        listHeaderContent,
+        rightAction,
+        footerComponent,
+        children
+    } = props;
+
     const { className, contentContainerClassName, numColumns, columnWrapperClassName } = flatListProps ?? {};
-    const inputRef = useRef<TextInput>(null);
-
-    const handleSheetChange = (sheetIndex: number) => {
-        if (autoFocus && sheetIndex >= 0) {
-            InteractionManager.runAfterInteractions(() => {
-                inputRef.current?.focus();
-            });
-        }
-    };
-
-    const searchComponent = (
-        <BottomSheetSearch
-            ref={inputRef}
-            onChangeText={onSearchChange}
-            placeholder={searchPlaceholder}
-            value={search}
-            rightAction={rightAction}
-        />
-    );
 
     return (
-        <BottomSheet ref={ref} snapPoints={snapPoints} index={index} onChange={handleSheetChange} footerComponent={footerComponent}>
+        <BottomSheet ref={ref} snapPoints={snapPoints} index={index} footerComponent={footerComponent}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
-            {searchComponent}
+            <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} rightAction={rightAction} />
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList
@@ -126,7 +107,7 @@ export const SearchableListBottomSheet = <T,>({
                 </>
             )}
 
-            {footerContent}
+            {children}
         </BottomSheet>
     );
 };
