@@ -76,14 +76,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     getAll(limit = 20, filters: TransactionFilterInterface = DEFAULT_TRANSACTION_FILTER) {
         const where = this.buildWhere(filters);
-        const deletedAtCondition = isNull(TransactionEntityTable.deletedAt);
-        const finalWhere = isDefined(where) ? and(where, deletedAtCondition) : deletedAtCondition;
 
         return this.db.query.TransactionEntityTable.findMany({
             with: this.transactionRelations,
             orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)],
             limit,
-            where: finalWhere
+            ...(isDefined(where) ? { where } : {})
         });
     }
 
@@ -123,10 +121,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return results.map(row => row.externalId).filter((id): id is string => id !== null);
     }
 
-    async findById(id: number) {
-        return await this.db.query.TransactionEntityTable.findFirst({
-            where: eq(TransactionEntityTable.id, id),
-            with: this.transactionRelations
+    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
+        return await this.db.query.TransactionEntityTable.findMany({
+            where: or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
         });
     }
 
@@ -152,93 +150,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
 
         return null;
-    }
-
-    // eslint-disable-next-line max-statements
-    async unconsolidateTransfersByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
-        const db = tx ?? this.db;
-
-        const transfers = await db
-            .select()
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                    or(inArray(TransactionEntityTable.fromAccountId, accountIds), inArray(TransactionEntityTable.toAccountId, accountIds)),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
-
-        for (const transfer of transfers) {
-            const entries = await db.query.TransactionEntryEntityTable.findMany({
-                where: eq(TransactionEntryEntityTable.transactionId, transfer.id)
-            });
-
-            const expenseEntry = entries.find(e => e.type === TransactionEntryTypeEnum.CREDIT);
-            const incomeEntry = entries.find(e => e.type === TransactionEntryTypeEnum.DEBIT);
-
-            if (!isDefined(expenseEntry) || !isDefined(incomeEntry)) {
-                // eslint-disable-next-line no-continue
-                continue;
-            }
-
-            const cleanComment = transfer.comment.replace(/\[Automatically consolidated from:.*?\]\n?/gu, '').trim();
-
-            const [expenseTx] = await db
-                .insert(TransactionEntityTable)
-                .values({
-                    type: TransactionTypeEnum.EXPENSE,
-                    fromAccountId: expenseEntry.accountId,
-                    toAccountId: null,
-                    title: transfer.title,
-                    comment: cleanComment,
-                    operatedAt: transfer.operatedAt,
-                    exchangeRate: expenseEntry.exchangeRate,
-                    externalId: expenseEntry.externalId,
-                    externalSource: transfer.externalSource
-                })
-                .returning();
-
-            const [incomeTx] = await db
-                .insert(TransactionEntityTable)
-                .values({
-                    type: TransactionTypeEnum.INCOME,
-                    fromAccountId: null,
-                    toAccountId: incomeEntry.accountId,
-                    title: transfer.title,
-                    comment: cleanComment,
-                    operatedAt: transfer.operatedAt,
-                    exchangeRate: incomeEntry.exchangeRate,
-                    externalId: incomeEntry.externalId,
-                    externalSource: transfer.externalSource
-                })
-                .returning();
-
-            await db
-                .update(TransactionEntryEntityTable)
-                .set({ transactionId: expenseTx.id })
-                .where(eq(TransactionEntryEntityTable.id, expenseEntry.id));
-
-            await db
-                .update(TransactionEntryEntityTable)
-                .set({ transactionId: incomeTx.id })
-                .where(eq(TransactionEntryEntityTable.id, incomeEntry.id));
-
-            const tags = await db.query.TransactionTagsEntityTable.findMany({
-                where: eq(TransactionTagsEntityTable.transactionId, transfer.id)
-            });
-
-            if (isNotEmptyArray(tags)) {
-                await db
-                    .insert(TransactionTagsEntityTable)
-                    .values([
-                        ...tags.map(tag => ({ transactionId: expenseTx.id, tagId: tag.tagId })),
-                        ...tags.map(tag => ({ transactionId: incomeTx.id, tagId: tag.tagId }))
-                    ]);
-            }
-
-            await db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, transfer.id));
-        }
     }
 
     async archiveByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
