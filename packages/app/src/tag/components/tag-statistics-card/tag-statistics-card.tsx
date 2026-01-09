@@ -46,9 +46,6 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
     return (
         <HapticPressable onPress={handlePress} className="gap-y-md">
             <View className="flex-row items-center gap-x-md">
-                <View className="h-10 w-10 rounded-full bg-destructive-background border-2 border-destructive-corner items-center justify-center">
-                    <View className="w-3 h-3 rounded-full bg-destructive-foreground" />
-                </View>
                 <Text className="mr-auto text-primary text-xs">{tag.title}</Text>
                 <Text className={statsAmountVariants({ variant })}>{formatDigits(microAmount, defaultInstrument.symbol)}</Text>
             </View>
