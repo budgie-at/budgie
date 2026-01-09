@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.2](https://github.com/budgie-at/budgie/compare/v2.6.1...v2.6.2) (2026-01-09)
+
+### Bug Fixes
+
+- **app:** settings info blocks have collapsed text ([#229](https://github.com/budgie-at/budgie/issues/229)) ([ad22aa3](https://github.com/budgie-at/budgie/commit/ad22aa3a0a363647a89615b1cdf16d84ea966005)), closes [#226](https://github.com/budgie-at/budgie/issues/226)
+
 ## [2.6.1](https://github.com/budgie-at/budgie/compare/v2.6.0...v2.6.1) (2026-01-09)
 
 ### Bug Fixes
