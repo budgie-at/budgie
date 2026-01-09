@@ -41,7 +41,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
             <HorizontalCell
                 onPress={handleOpen}
                 left={<Icon size={16} icon={UserIconNameEnum.Tag} className={iconVariants({ variant })} />}
-                size="lg"
+                size="md"
             >
                 {isNotEmptyArray(selectedTags) ? (
                     <View className="mr-auto flex-row items-baseline">
