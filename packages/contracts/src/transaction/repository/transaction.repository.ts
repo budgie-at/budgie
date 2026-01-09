@@ -7,6 +7,7 @@ import { DateRangeInterface } from '../../@generic/interface/date-range.interfac
 import { DB, TX } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -101,13 +102,21 @@ export class TransactionRepository {
         return this.db
             .select({
                 income: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
-            `.as('income'),
+                    COALESCE(SUM(CASE
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
+                        ELSE 0
+                    END), 0)
+                `.as('income'),
                 expense: sql<number>`
-                COALESCE(SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                                  THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql} ELSE 0 END), 0)
-            `.as('expense')
+                    COALESCE(SUM(CASE
+                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                        THEN ${TransactionEntryEntityTable.amount} * ${exchangeRateSql}
+                        ELSE 0
+                    END), 0)
+                `.as('expense')
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -302,7 +311,7 @@ export class TransactionRepository {
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), ne(AccountEntityTable.type, AccountTypeEnum.DEBT)))
             .groupBy(TransactionEntryEntityTable.categoryId)
             .orderBy(desc(amountSql));
     }
@@ -321,7 +330,7 @@ export class TransactionRepository {
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .innerJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
             .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(inArray(TransactionEntityTable.id, transactionIdsSubquery))
+            .where(and(inArray(TransactionEntityTable.id, transactionIdsSubquery), ne(AccountEntityTable.type, AccountTypeEnum.DEBT)))
             .groupBy(TagEntityTable.id)
             .orderBy(desc(amountSql));
     }
