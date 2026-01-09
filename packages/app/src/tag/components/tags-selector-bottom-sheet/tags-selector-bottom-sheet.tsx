@@ -56,8 +56,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
             />
         );
 
-    const footerComponent: FC<BottomSheetFooterProps> = () => (
-        <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
+    const footerComponent: FC<BottomSheetFooterProps> = props => (
+        <TagsSelectorFooter {...props} selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
     );
 
     return (
