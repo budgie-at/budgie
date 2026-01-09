@@ -114,7 +114,7 @@ msgstr "Активний"
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Add a new tag to organize your transactions"
 msgstr "Додайте новий тег для організації ваших транзакцій"
 
@@ -432,7 +432,7 @@ msgstr "Не вдалося архівувати обліковий запис. 
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
@@ -456,6 +456,10 @@ msgstr "Не вдалося відновити рахунок."
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
+msgid "Could not update tag"
+msgstr ""
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -506,7 +510,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Create Tag"
 msgstr "Створити тег"
 
@@ -635,7 +639,7 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
@@ -654,6 +658,10 @@ msgstr "Редагувати витрату"
 #: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Редагувати дохід"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+msgid "Edit Tag"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1189,7 +1197,7 @@ msgid "Please try again"
 msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
@@ -1471,7 +1479,7 @@ msgstr "Синхронізовані банківські рахунки"
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1647,6 +1655,10 @@ msgstr "Оновити витрату"
 #: src/app/(main)/transactions/[id]/income.tsx:76
 msgid "Update Income"
 msgstr "Оновити дохід"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+msgid "Update the tag name"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"

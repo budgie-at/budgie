@@ -79,7 +79,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 footerComponent={footerComponent}
             />
 
-            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
+            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagSaved={handleTagCreated} />
         </>
     );
 };

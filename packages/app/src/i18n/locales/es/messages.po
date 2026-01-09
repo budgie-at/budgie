@@ -114,7 +114,7 @@ msgstr "Activo"
 msgid "Add a new category to organize your transactions"
 msgstr "Agrega una nueva categoría para organizar tus transacciones"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Add a new tag to organize your transactions"
 msgstr "Agrega una nueva etiqueta para organizar tus transacciones"
 
@@ -432,7 +432,7 @@ msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:37
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -456,6 +456,10 @@ msgstr "No se pudo restaurar la cuenta."
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
 msgid "Could not update category"
 msgstr "No se pudo actualizar la categoría"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:41
+msgid "Could not update tag"
+msgstr ""
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -506,7 +510,7 @@ msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
@@ -635,7 +639,7 @@ msgstr "Neerlandés (Países Bajos)"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:62
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ej. Negocios, Personal, Vacaciones"
 
@@ -654,6 +658,10 @@ msgstr "Editar gasto"
 #: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Editar ingreso"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+msgid "Edit Tag"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1189,7 +1197,7 @@ msgid "Please try again"
 msgstr ""
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:38
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1471,7 +1479,7 @@ msgstr "Cuentas bancarias sincronizadas"
 msgid "Syncing history..."
 msgstr "Sincronizando historial..."
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:64
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
@@ -1647,6 +1655,10 @@ msgstr "Actualizar gasto"
 #: src/app/(main)/transactions/[id]/income.tsx:76
 msgid "Update Income"
 msgstr "Actualizar ingreso"
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+msgid "Update the tag name"
+msgstr ""
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
