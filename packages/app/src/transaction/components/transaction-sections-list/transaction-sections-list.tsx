@@ -1,18 +1,19 @@
-/* jscpd:ignore-start */
-import { StatisticsFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { LegendList } from '@legendapp/list';
-import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ReactElement } from 'react';
+import { Text, View } from 'react-native';
 
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
+import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { getTransactionCategoryLabel } from '../../utils/get-transaction-category-label.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 
 interface Props {
-    readonly filters: StatisticsFilterInterface;
+    readonly sections: TransactionsByMonthSection[];
+    readonly onEndReached: () => void;
+    readonly listEmptyState: ReactElement;
+    readonly balanceAdjustmentLabel: string;
+    readonly categoriesLabel: string;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -34,13 +35,8 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-export const StatisticsTransactionList = ({ filters }: Props) => {
-    const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
-    const { t } = useLingui();
+export const TransactionSectionsList = ({ sections, onEndReached, listEmptyState, balanceAdjustmentLabel, categoriesLabel }: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
-
-    const balanceAdjustmentLabel = t`Balance Adjustment`;
-    const categoriesLabel = t`Categories`;
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
         { type: 'header' as const, title: date, id: `header-${date}` },
@@ -55,18 +51,6 @@ export const StatisticsTransactionList = ({ filters }: Props) => {
         }))
     ]);
 
-    const listEmptyState = isLoading ? (
-        <ActivityIndicator size="large" />
-    ) : (
-        <EmptyState
-            circleIcon={UserIconNameEnum.Receipt}
-            title={t`No matching transactions`}
-            titleClassName="text-md text-primary font-semibold"
-            description={t`Try adjusting your filters to see more results`}
-            descriptionClassName="text-center max-w-[250px]"
-        />
-    );
-
     const isEmpty = flatData.length === 0;
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
 
@@ -78,7 +62,7 @@ export const StatisticsTransactionList = ({ filters }: Props) => {
             estimatedItemSize={80}
             stickyIndices={getStickyIndices(flatData)}
             recycleItems
-            onEndReached={loadMore}
+            onEndReached={onEndReached}
             onEndReachedThreshold={0.3}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={contentContainerStyle}
@@ -87,4 +71,3 @@ export const StatisticsTransactionList = ({ filters }: Props) => {
         />
     );
 };
-/* jscpd:ignore-end */

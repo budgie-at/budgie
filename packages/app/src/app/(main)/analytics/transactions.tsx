@@ -1,13 +1,17 @@
-import { StatisticsFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { StatisticsFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { Page } from '../../../@generic/component/page/page';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { StatisticsTransactionList } from '../../../transaction/components/statistics-transaction-list/statistics-transaction-list';
+import { TransactionSectionsList } from '../../../transaction/components/transaction-sections-list/transaction-sections-list';
 import { TransactionsPageHeader } from '../../../transaction/components/transactions-page-header/transactions-page-header';
+import { useGetStatisticsTransactionsQuery } from '../../../transaction/query/use-get-statistics-transactions.query';
 
 interface RouteParams {
     startDate?: string;
@@ -40,16 +44,32 @@ const buildFilters = (params: RouteParams): StatisticsFilterInterface => ({
 });
 
 export default function AnalyticsTransactionsPage() {
+    const { t } = useLingui();
     const router = useRouter();
     const params = useLocalSearchParams() as RouteParams;
     const filters = buildFilters(params);
 
     const { category } = useGetCategoryByIdQuery(isDefined(params.categoryId) ? Number(params.categoryId) : 0);
     const { tags } = useGetTagByIdsQuery(isDefined(params.tagId) ? [Number(params.tagId)] : []);
+    const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
 
     const handleGoBack = () => void router.back();
 
     const isUncategorized = !isDefined(params.categoryId) && isDefined(params.type);
+    const balanceAdjustmentLabel = t`Balance Adjustment`;
+    const categoriesLabel = t`Categories`;
+
+    const listEmptyState = isLoading ? (
+        <ActivityIndicator size="large" />
+    ) : (
+        <EmptyState
+            circleIcon={UserIconNameEnum.Receipt}
+            title={t`No matching transactions`}
+            titleClassName="text-md text-primary font-semibold"
+            description={t`Try adjusting your filters to see more results`}
+            descriptionClassName="text-center max-w-[250px]"
+        />
+    );
 
     return (
         <Page
@@ -65,7 +85,13 @@ export default function AnalyticsTransactionsPage() {
                 />
             }
         >
-            <StatisticsTransactionList filters={filters} />
+            <TransactionSectionsList
+                sections={sections}
+                onEndReached={loadMore}
+                listEmptyState={listEmptyState}
+                balanceAdjustmentLabel={balanceAdjustmentLabel}
+                categoriesLabel={categoriesLabel}
+            />
         </Page>
     );
 }
