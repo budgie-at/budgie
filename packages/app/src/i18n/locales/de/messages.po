@@ -276,8 +276,8 @@ msgid "Borrowed"
 msgstr "Geliehen"
 
 #: src/app/(main)/settings/index.tsx:137
-msgid "BudgetAI"
-msgstr "BudgetKI"
+msgid "Budgie"
+msgstr ""
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78

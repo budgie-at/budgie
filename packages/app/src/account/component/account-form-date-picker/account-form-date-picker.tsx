@@ -36,6 +36,7 @@ export const AccountFormDatePicker = ({ date, onChange, variant }: Props) => {
                 onPress={handleOpen}
                 title={title}
                 description={description}
+                singleLine
             />
 
             <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />
