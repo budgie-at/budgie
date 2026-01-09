@@ -2,14 +2,13 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
     tag: TagEntityInterface;
     onOpen: (tag: TagEntityInterface) => void;
 }
-
-const iconParams = { variant: 'destructive', size: 40, iconSize: 72 } as const;
 
 export const TagCard = ({ onOpen, tag }: Props) => {
     const handleOpen = () => void onOpen(tag);
@@ -22,9 +21,8 @@ export const TagCard = ({ onOpen, tag }: Props) => {
                 </Text>
             }
             onPress={handleOpen}
-            iconParams={iconParams}
+            left={<CircleIcon icon={UserIconNameEnum.Dot} variant="destructive" size={40} iconSize={72} />}
             title={tag.title}
-            icon={UserIconNameEnum.Dot}
         />
     );
 };

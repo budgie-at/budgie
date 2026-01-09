@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -43,7 +44,6 @@ export default function SettingsPage() {
     };
 
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
-    const privacyIconParams = { variant: 'positive', border: false, size: 40, iconSize: 20 } as const;
 
     return (
         <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
@@ -51,8 +51,7 @@ export default function SettingsPage() {
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SimpleHorizontalCell
-                            icon={UserIconNameEnum.Shield}
-                            iconParams={privacyIconParams}
+                            left={<CircleIcon icon={UserIconNameEnum.Shield} variant="positive" border={false} size={40} iconSize={20} />}
                             title={t`100% Offline & Private`}
                             description={t`All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing.`}
                         />
