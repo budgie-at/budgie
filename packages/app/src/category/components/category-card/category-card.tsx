@@ -2,6 +2,7 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
@@ -11,12 +12,10 @@ interface Props {
 
 export const CategoryCard = ({ onOpen, category }: Props) => {
     const handleOpen = () => void onOpen(category);
-    const iconParams = { size: 42, iconSize: 20, variant: 'default' } as const;
 
     return (
         <SimpleHorizontalCell
-            icon={category.icon}
-            iconParams={iconParams}
+            left={<CircleIcon icon={category.icon} variant="default" size={42} iconSize={20} />}
             title={category.title}
             right={
                 <Text className="text-secondary-foreground font-medium text-xs ml-auto">
