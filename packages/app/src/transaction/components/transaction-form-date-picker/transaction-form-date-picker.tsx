@@ -28,6 +28,7 @@ export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) =>
                 left={<CircleIcon icon={UserIconNameEnum.Calendar} variant="ghost" size={16} iconSize={16} border={false} />}
                 onPress={handleOpen}
                 title={formatDayAndMonthAndYear(date)}
+                singleLine
             />
 
             <DatePickerBottomSheet ref={ref} date={date} variant={variant} onChange={onChange} />

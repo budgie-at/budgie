@@ -134,7 +134,7 @@ export default function SettingsPage() {
                     <SettingsGroup title={t`About`}>
                         <SettingsCard
                             align="top"
-                            title={t`BudgetAI`}
+                            title={t`Budgie`}
                             className="items-baseline"
                             description={t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\nVersion ${appVersion}`}
                             icon={UserIconNameEnum.Database}
