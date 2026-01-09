@@ -1,38 +1,40 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject } from 'react';
+import { useRef } from 'react';
 
-import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { useGetCategoryByIdQuery } from '../../query/use-get-category-by-id.query';
 import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
 
 interface Props {
     readonly categoryId: number | null;
     readonly variant: ColorPaletteVariant;
-    readonly onSelect: (categoryId: number) => void;
-    readonly status?: FormFieldStatus;
+    readonly onSelect: (categoryId: number | null) => void;
+    readonly cardVariant?: ColorPaletteVariant;
 }
 
-export const CategorySelector = ({ variant, categoryId, onSelect, status }: Props) => {
-    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
+export const CategorySelector = ({ variant, categoryId, onSelect, cardVariant = 'primary' }: Props) => {
     const { t } = useLingui();
 
-    const icon = selectedCategory?.icon ?? UserIconNameEnum.Home;
+    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
 
-    const renderBottomSheet = (ref: RefObject<BottomSheetInterface | null>) => (
-        <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={ref} />
-    );
+    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
+
+    const handleOpen = () => bottomSheetRef.current?.open();
 
     return (
-        <EntitySelector
-            variant={variant}
-            icon={icon}
-            status={status}
-            title={selectedCategory?.title ?? t`Select category`}
-            renderBottomSheet={renderBottomSheet}
-        />
+        <>
+            <SimpleHorizontalCell
+                variant={cardVariant}
+                title={selectedCategory?.title ?? t`Select category`}
+                left={<CircleIcon icon={selectedCategory?.icon ?? UserIconNameEnum.Home} variant={variant} />}
+                onPress={handleOpen}
+            />
+
+            <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={bottomSheetRef} />
+        </>
     );
 };

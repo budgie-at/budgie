@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { InteractionManager, View } from 'react-native';
+import { View } from 'react-native';
 
 import { USER_ICONS_LIST, UserIcon } from '../../constant/user-icons.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
@@ -35,14 +35,11 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const filteredIcons = USER_ICONS_LIST.filter(
         ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
     );
-    const showedIcons = filteredIcons.slice(0, 100);
-    const data = padFlatListData(showedIcons);
+    const data = padFlatListData(filteredIcons.slice(0, 100));
 
     const handleSelect = (icon: UserIconNameEnum) => {
         onSelect(icon);
-        InteractionManager.runAfterInteractions(() => {
-            void ref.current?.dismiss();
-        });
+        ref.current?.dismiss();
     };
 
     const renderItem = ({ item }: { item: FlatListDataItem<UserIcon> }) =>
@@ -58,13 +55,9 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
             />
         );
 
-    const iconsCount = filteredIcons.length;
-
     return (
         <SearchableListBottomSheet
             ref={ref}
-            title={t`Choose Icon`}
-            description={t`${iconsCount} icons available`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search icons (e.g., money, travel, food)...`}
             search={search}

@@ -21,8 +21,6 @@ interface Props {
     readonly account: AccountEntityInterface;
 }
 
-const iconParams = { size: 46, iconSize: 20, variant: 'dark-warning' } as const;
-
 export const ArchivedAccountCard = ({ account }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument, decimalPlaces } = useSettingsContext();
@@ -68,10 +66,9 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                         </HapticPressable>
                     </View>
                 }
-                icon={account.icon}
+                left={<CircleIcon icon={account.icon} variant="dark-warning" size={46} iconSize={20} />}
                 title={account.title}
                 description={t(ACCOUNT_TYPE[account.type])}
-                iconParams={iconParams}
             />
 
             <ConfirmActionBottomSheet
