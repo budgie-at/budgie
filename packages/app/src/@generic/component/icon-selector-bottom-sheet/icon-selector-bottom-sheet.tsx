@@ -35,8 +35,7 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
     const filteredIcons = USER_ICONS_LIST.filter(
         ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
     );
-    const showedIcons = filteredIcons.slice(0, 100);
-    const data = padFlatListData(showedIcons);
+    const data = padFlatListData(filteredIcons.slice(0, 100));
 
     const handleSelect = (icon: UserIconNameEnum) => {
         onSelect(icon);
@@ -56,13 +55,9 @@ export const IconSelectorBottomSheet = ({ ref, selectedIcon, variant, onSelect }
             />
         );
 
-    const iconsCount = filteredIcons.length;
-
     return (
         <SearchableListBottomSheet
             ref={ref}
-            title={t`Choose Icon`}
-            description={t`${iconsCount} icons available`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search icons (e.g., money, travel, food)...`}
             search={search}

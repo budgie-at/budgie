@@ -64,8 +64,6 @@ export const AccountSelectorBottomSheet = (props: Props) => {
         <SearchableListBottomSheet
             ref={ref}
             emptyIcon={emptyIcon}
-            title={t`Select Account`}
-            description={t`Choose your main account`}
             onSearchChange={setSearch}
             searchPlaceholder={t`Search accounts...`}
             search={search}

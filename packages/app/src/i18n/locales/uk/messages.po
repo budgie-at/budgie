@@ -35,10 +35,6 @@ msgstr "{archivedAccountsCount} рахунок"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:65
-msgid "{iconsCount} icons available"
-msgstr "{iconsCount} іконок доступно"
-
 #: src/app/(main)/settings/inactive.tsx:21
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} рахунок"
@@ -288,6 +284,7 @@ msgstr "BudgetAI"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(main)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:25
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
@@ -362,29 +359,9 @@ msgstr "Оберіть шаблон для автоматичного запов
 msgid "Choose a type to get started"
 msgstr "Оберіть тип, щоб почати"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:64
-msgid "Choose Icon"
-msgstr "Обрати іконку"
-
 #: src/app/(main)/create-account/index.tsx:21
 msgid "Choose the type of account you want to add"
 msgstr "Оберіть тип рахунку, який ви хочете додати"
-
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
-msgid "Choose your main account"
-msgstr "Оберіть ваш основний рахунок"
-
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
-msgid "Choose your main contact"
-msgstr "Виберіть основний контакт"
-
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
-msgid "Choose your main currency"
-msgstr "Оберіть вашу основну валюту"
-
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
-msgid "Choose your preferred language"
-msgstr "Оберіть вашу бажану мову"
 
 #: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
 msgid "Clear"
@@ -642,11 +619,11 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
 msgid "Done"
 msgstr "Готово"
 
-#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:15
+#: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:18
 msgid "Done ({selectedTagsCount})"
 msgstr "Готово ({selectedTagsCount})"
 
@@ -1087,7 +1064,7 @@ msgstr "На цьому пристрої не знайдено контакті�
 msgid "No contacts yet"
 msgstr "Поки немає контактів"
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:60
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:58
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
@@ -1095,11 +1072,11 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:72
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
 msgstr "Немає іконок"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:71
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
@@ -1107,7 +1084,7 @@ msgstr "Іконки не знайдено"
 msgid "No inactive accounts"
 msgstr "Немає неактивних рахунків"
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:30
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:28
 msgid "No languages found"
 msgstr "Мов не знайдено"
 
@@ -1282,7 +1259,7 @@ msgstr "Ощадні рахунки"
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:70
+#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
@@ -1293,19 +1270,19 @@ msgstr "Пошук рахунків..."
 msgid "Search categories..."
 msgstr "Пошук категорій..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:81
+#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:79
 msgid "Search contacts..."
 msgstr "Шукати контакти..."
 
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:55
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:53
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
+#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
@@ -1340,7 +1317,6 @@ msgstr "Виберіть дійсний стовпець"
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
-#: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:67
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:79
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:96
 msgid "Select Account"
@@ -1369,21 +1345,9 @@ msgstr "Виберіть категорію"
 msgid "Select column..."
 msgstr "Виберіть стовпець..."
 
-#: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:78
-msgid "Select Contact"
-msgstr "Вибрати контакт"
-
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:52
-msgid "Select Currency"
-msgstr "Виберіть валюту"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
-
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
-msgid "Select Language"
-msgstr "Виберіть мову"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1627,10 +1591,10 @@ msgid "Transfer"
 msgstr "Переказ"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
-#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:59
+#: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
-#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:31
+#: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
