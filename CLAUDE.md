@@ -149,6 +149,16 @@ const MyForm = () => {
        rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreate };
    ```
 11. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments or similar suppressions without explicit user approval. Always fix the underlying issue or ask the user first.
+12. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0` or `() => {}`
+   ```typescript
+   // Good
+   import { emptyFn } from '@rnw-community/shared';
+   const handleEmptySelect = emptyFn;
+
+   // Bad
+   const handleEmptySelect = () => void 0;
+   const handleEmptySelect = () => {};
+   ```
 
 ### Naming
 - Interfaces: `*Interface` (e.g., `AccountFilterInterface`)
