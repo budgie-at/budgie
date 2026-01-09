@@ -11,7 +11,7 @@ import { AccountSelectorCard } from '../account-selector-card/account-selector-c
 
 interface Props {
     readonly emptyStateDescription?: string;
-    readonly excludeAccountId: number | null;
+    readonly excludeAccountId?: number | null;
     readonly excludeAccountTypes?: AccountTypeEnum[];
     readonly onSelect: (accountId: number) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -75,7 +75,6 @@ export const AccountSelectorBottomSheet = (props: Props) => {
             emptyTitle={emptyTitle}
             data={accounts}
             flatListProps={flatListProps}
-            autoFocus={false}
         />
     );
 };

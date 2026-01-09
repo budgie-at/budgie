@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject } from 'react';
+import { useRef } from 'react';
 
-import { EntitySelector } from '../../../@generic/component/entity-selector/entity-selector';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
@@ -16,23 +16,30 @@ interface Props {
     readonly status?: FormFieldStatus;
 }
 
-export const CategorySelector = ({ variant, categoryId, onSelect, status }: Props) => {
-    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
+export const CategorySelector = ({ variant, categoryId, onSelect, status = 'default' }: Props) => {
     const { t } = useLingui();
 
-    const icon = selectedCategory?.icon ?? UserIconNameEnum.Home;
+    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
 
-    const renderBottomSheet = (ref: RefObject<BottomSheetInterface | null>) => (
-        <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={ref} />
-    );
+    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
+
+    const handleOpen = () => bottomSheetRef.current?.open();
+
+    const icon = selectedCategory?.icon ?? UserIconNameEnum.Home;
+    const cardVariant = status === 'error' ? 'destructive' : 'primary';
+    const iconParams = { variant, size: 38, iconSize: 18 };
 
     return (
-        <EntitySelector
-            variant={variant}
-            icon={icon}
-            status={status}
-            title={selectedCategory?.title ?? t`Select category`}
-            renderBottomSheet={renderBottomSheet}
-        />
+        <>
+            <SimpleHorizontalCell
+                variant={cardVariant}
+                title={selectedCategory?.title ?? t`Select category`}
+                icon={icon}
+                onPress={handleOpen}
+                iconParams={iconParams}
+            />
+
+            <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={bottomSheetRef} />
+        </>
     );
 };

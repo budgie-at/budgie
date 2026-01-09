@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ComponentProps, FC, JSX, ReactNode, RefObject } from 'react';
+import { FC, JSX, ReactNode, RefObject } from 'react';
 import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
@@ -43,9 +43,9 @@ interface SearchableListBottomSheetProps<T> {
     };
 
     readonly listHeaderContent?: JSX.Element | null;
-    readonly rightAction?: ComponentProps<typeof BottomSheetSearch>['rightAction'];
+    readonly rightActionIcon?: UserIconNameEnum;
+    readonly rightActionOnPress?: () => void;
     readonly footerComponent?: FC<BottomSheetFooterProps>;
-    readonly autoFocus?: boolean;
 
     readonly children?: ReactNode;
 }
@@ -74,7 +74,8 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
         flatListProps,
         emptyIcon,
         listHeaderContent,
-        rightAction,
+        rightActionIcon,
+        rightActionOnPress,
         footerComponent,
         children
     } = props;
@@ -85,7 +86,13 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} footerComponent={footerComponent}>
             <BottomSheetHeader align={align} size="md" title={title} description={description} />
 
-            <BottomSheetSearch onChangeText={onSearchChange} placeholder={searchPlaceholder} value={search} rightAction={rightAction} />
+            <BottomSheetSearch
+                onChangeText={onSearchChange}
+                placeholder={searchPlaceholder}
+                value={search}
+                rightActionIcon={rightActionIcon}
+                rightActionOnPress={rightActionOnPress}
+            />
 
             {isNotEmptyArray(data) ? (
                 <BottomSheetFlatList

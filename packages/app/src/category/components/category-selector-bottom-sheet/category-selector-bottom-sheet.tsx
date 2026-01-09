@@ -90,11 +90,6 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
             />
         );
 
-    const rightAction = {
-        icon: UserIconNameEnum.Plus,
-        onPress: handleCreateCategory
-    };
-
     return (
         <>
             <SearchableListBottomSheet
@@ -110,7 +105,8 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
                 emptyTitle={t`No categories found`}
                 data={data}
                 flatListProps={flatListProps}
-                rightAction={rightAction}
+                rightActionIcon={UserIconNameEnum.Plus}
+                rightActionOnPress={handleCreateCategory}
             />
             <CategoryFormBottomSheet
                 ref={categoryFormRef}

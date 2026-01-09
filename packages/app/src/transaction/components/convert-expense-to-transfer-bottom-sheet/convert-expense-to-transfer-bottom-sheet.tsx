@@ -12,6 +12,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { AccountSelectorBottomSheet } from '../../../account/component/account-selector-bottom-sheet/account-selector-bottom-sheet';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useConvertExpenseToTransferMutation } from '../../hooks/use-convert-expense-to-transfer.mutation';
 
@@ -31,11 +32,7 @@ export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterfa
         const accountSheetRef = useRef<BottomSheetInterface | null>(null);
 
         const convertMutation = useConvertExpenseToTransferMutation();
-        const { selectedAccount, icon, renderBottomSheet } = useAccountSelector({
-            accountId: selectedAccountId,
-            onSelect: setSelectedAccountId,
-            excludeAccountId: fromAccountId
-        });
+        const { selectedAccount, icon } = useAccountSelector({ accountId: selectedAccountId });
 
         const handleConvert = async () => {
             if (!isDefined(selectedAccountId)) {
@@ -115,7 +112,12 @@ export const ConvertExpenseToTransferBottomSheet = forwardRef<BottomSheetInterfa
                         </View>
                     </View>
                 </BottomSheet>
-                {renderBottomSheet(accountSheetRef)}
+                <AccountSelectorBottomSheet
+                    selectedAccount={selectedAccount}
+                    excludeAccountId={fromAccountId}
+                    onSelect={setSelectedAccountId}
+                    ref={accountSheetRef}
+                />
             </>
         );
     }

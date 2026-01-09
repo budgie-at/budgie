@@ -43,7 +43,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
         onSelect(tag.id);
     };
 
-    const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
             <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
@@ -73,8 +72,8 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 emptyTitle={t`No tags found`}
                 data={data}
                 flatListProps={flatListProps}
-                rightAction={rightAction}
-                autoFocus={false}
+                rightActionIcon={UserIconNameEnum.Plus}
+                rightActionOnPress={handleCreateTag}
             >
                 <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
             </SearchableListBottomSheet>
