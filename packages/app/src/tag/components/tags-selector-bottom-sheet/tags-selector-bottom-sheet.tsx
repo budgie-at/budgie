@@ -2,6 +2,8 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -42,10 +44,9 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
     };
 
     const rightAction = { icon: UserIconNameEnum.Plus, onPress: handleCreateTag };
-    const handleEmptySelect = () => void 0;
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
-            <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={handleEmptySelect} variant="static" title="" id={0} />
+            <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
         ) : (
             <TagsSelectorCard
                 isSelected={selectedTagIds.includes(item.id)}
@@ -55,8 +56,6 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 id={item.id}
             />
         );
-
-    const footerContent = <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />;
 
     return (
         <>
@@ -75,9 +74,10 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 data={data}
                 flatListProps={flatListProps}
                 rightAction={rightAction}
-                footerContent={footerContent}
                 autoFocus={false}
-            />
+            >
+                <TagsSelectorFooter selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
+            </SearchableListBottomSheet>
 
             <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagCreated={handleTagCreated} />
         </>
