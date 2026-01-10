@@ -1,4 +1,4 @@
-import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
 import { ReactElement, ReactNode } from 'react';
 import { FlatList } from 'react-native';
@@ -15,8 +15,6 @@ type AccountType = AccountEntityInterface | AccountWithInstrumentEntityInterface
 interface Props<T extends AccountType> {
     readonly accounts: T[] | null;
     readonly title: string;
-    readonly description: string;
-    readonly icon: UserIconNameEnum;
     readonly renderCard: (account: T) => ReactElement;
     readonly children: ReactNode;
 }
@@ -24,16 +22,14 @@ interface Props<T extends AccountType> {
 const listFooter = <MenuSpacer />;
 
 export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
-    const { accounts, title, description, icon, renderCard, children } = props;
+    const { accounts, title, renderCard, children } = props;
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
     const renderAccount = ({ item }: ListRenderItemInfo<T>) => renderCard(item);
 
     return (
-        <Page
-            header={<PageHeader onGoBack={handleGoBack} iconVariant="dark-warning" description={description} icon={icon} title={title} />}
-        >
+        <Page header={<PageHeader onGoBack={handleGoBack} title={title} />}>
             {isNotEmptyArray(accounts) ? (
                 <FlatList
                     contentContainerClassName="gap-y-xl pt-5xl"
