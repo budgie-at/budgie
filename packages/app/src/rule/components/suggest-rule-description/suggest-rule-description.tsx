@@ -7,8 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
-
-import { SuggestRuleDescriptionContent } from './suggest-rule-description-content';
+import { SuggestRuleDescriptionContent } from '../suggest-rule-description-content/suggest-rule-description-content';
 
 interface Props {
     readonly data: SuggestRuleDataInterface;

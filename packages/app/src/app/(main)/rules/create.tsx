@@ -11,6 +11,7 @@ import { RuleFormContent } from '../../../rule/components/rule-form-content/rule
 import { RuleFormFooter } from '../../../rule/components/rule-form-footer/rule-form-footer';
 import { useRuleForm } from '../../../rule/hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../../rule/interface/rule-prefill-data.interface';
+import { RulePrefillDataSchema } from '../../../rule/schema/rule-prefill-data.schema';
 
 const parsePrefillData = (prefillJson: string | undefined): RulePrefillDataInterface | null => {
     if (!isDefined(prefillJson)) {
@@ -18,7 +19,10 @@ const parsePrefillData = (prefillJson: string | undefined): RulePrefillDataInter
     }
 
     try {
-        return JSON.parse(prefillJson) as RulePrefillDataInterface;
+        const parsed: unknown = JSON.parse(prefillJson);
+        const result = RulePrefillDataSchema.safeParse(parsed);
+
+        return result.success ? result.data : null;
     } catch {
         return null;
     }
