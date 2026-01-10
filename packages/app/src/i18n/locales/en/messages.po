@@ -56,7 +56,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:127
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:84
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
@@ -237,7 +237,7 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:30
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -286,10 +286,10 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:45
+#: src/app/(tabs)/settings/categories.tsx:57
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:31
 msgid "Categories"
 msgstr "Categories"
 
@@ -315,6 +315,7 @@ msgstr ""
 "IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
 "Reply with the category number only."
 
+#: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
@@ -506,7 +507,7 @@ msgstr "Create Tag"
 msgid "Create Tags"
 msgstr "Create Tags"
 
-#: src/app/(tabs)/settings/tags.tsx:37
+#: src/app/(tabs)/settings/tags.tsx:49
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
 
@@ -537,7 +538,7 @@ msgstr "Currency"
 msgid "Current Balance"
 msgstr "Current Balance"
 
-#: src/app/(tabs)/settings/categories.tsx:37
+#: src/app/(tabs)/settings/categories.tsx:49
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
@@ -748,7 +749,7 @@ msgstr "Expected return date"
 msgid "Expected Return Date (Optional)"
 msgstr "Expected Return Date (Optional)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:81
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Expense"
@@ -910,7 +911,7 @@ msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
 #: src/app/(tabs)/analytics.tsx:66
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:109
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:82
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -1026,7 +1027,7 @@ msgstr "No archived accounts"
 msgid "No categories found"
 msgstr "No categories found"
 
-#: src/app/(tabs)/settings/categories.tsx:37
+#: src/app/(tabs)/settings/categories.tsx:49
 msgid "No categories match your search"
 msgstr "No categories match your search"
 
@@ -1050,7 +1051,7 @@ msgstr "No contacts yet"
 msgid "No currencies found"
 msgstr "No currencies found"
 
-#: src/app/(tabs)/settings/categories.tsx:36
+#: src/app/(tabs)/settings/categories.tsx:48
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
 
@@ -1071,12 +1072,12 @@ msgid "No languages found"
 msgstr "No languages found"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
-#: src/app/(tabs)/settings/categories.tsx:36
-#: src/app/(tabs)/settings/tags.tsx:36
+#: src/app/(tabs)/settings/categories.tsx:48
+#: src/app/(tabs)/settings/tags.tsx:48
 msgid "No Results"
 msgstr "No Results"
 
@@ -1089,16 +1090,16 @@ msgstr "No speech detected"
 msgid "No tags found"
 msgstr "No tags found"
 
-#: src/app/(tabs)/settings/tags.tsx:37
+#: src/app/(tabs)/settings/tags.tsx:49
 msgid "No tags match your search"
 msgstr "No tags match your search"
 
-#: src/app/(tabs)/settings/tags.tsx:36
+#: src/app/(tabs)/settings/tags.tsx:48
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1247,7 +1248,7 @@ msgstr "Screenshot Protection"
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
-#: src/app/(tabs)/settings/categories.tsx:46
+#: src/app/(tabs)/settings/categories.tsx:58
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1269,7 +1270,7 @@ msgstr "Search icons (e.g., money, travel, food)..."
 msgid "Search languages..."
 msgstr "Search languages..."
 
-#: src/app/(tabs)/settings/tags.tsx:46
+#: src/app/(tabs)/settings/tags.tsx:58
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1408,7 +1409,7 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:35
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
@@ -1454,11 +1455,15 @@ msgstr "Synced bank accounts"
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
+#: src/app/(tabs)/settings/tags.tsx:31
+msgid "Tag"
+msgstr "Tag"
+
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:63
 msgid "Tag Name"
 msgstr "Tag Name"
 
-#: src/app/(tabs)/settings/tags.tsx:45
+#: src/app/(tabs)/settings/tags.tsx:57
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1570,7 +1575,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:118
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:83
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transfer"
@@ -1588,7 +1593,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
