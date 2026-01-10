@@ -5,7 +5,6 @@ import { TextInput } from 'react-native';
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { IdInterface } from '../../interface/id.interface';
-import { MenuSpacer } from '../menu-spacer/menu-spacer';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
