@@ -37,6 +37,7 @@ interface SearchableListBottomSheetProps<T> {
         columnWrapperClassName?: string;
     };
 
+    readonly headerContent?: JSX.Element | null;
     readonly listHeaderContent?: JSX.Element | null;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
@@ -65,6 +66,7 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
         emptyDescription,
         flatListProps,
         emptyIcon,
+        headerContent,
         listHeaderContent,
         rightActionIcon,
         rightActionOnPress,
@@ -76,6 +78,7 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
 
     return (
         <BottomSheet ref={ref} snapPoints={snapPoints} index={index} footerComponent={footerComponent}>
+            {headerContent}
             <BottomSheetSearch
                 onChangeText={onSearchChange}
                 placeholder={searchPlaceholder}

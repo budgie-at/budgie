@@ -1023,7 +1023,7 @@ msgstr "No accounts yet"
 msgid "No archived accounts"
 msgstr "No archived accounts"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:103
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "No categories found"
@@ -1086,7 +1086,7 @@ msgstr "No Results"
 msgid "No speech detected"
 msgstr "No speech detected"
 
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:89
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:74
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
@@ -1255,7 +1255,7 @@ msgid "Search accounts..."
 msgstr "Search accounts..."
 
 #: src/app/(tabs)/settings/categories.tsx:76
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:106
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Search categories..."
@@ -1277,7 +1277,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(tabs)/settings/tags.tsx:76
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:84
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:92
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1508,9 +1508,17 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
+#: src/app/(tabs)/settings/categories.tsx:90
+msgid "This category has transactions. Select another category to reassign them to."
+msgstr "This category has transactions. Select another category to reassign them to."
+
 #: src/@generic/constant/date-period.constant.ts:9
 msgid "This Month"
 msgstr "This Month"
+
+#: src/app/(tabs)/settings/tags.tsx:90
+msgid "This tag has transactions. Select another tag to reassign them to."
+msgstr "This tag has transactions. Select another tag to reassign them to."
 
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
@@ -1590,9 +1598,9 @@ msgstr "Transfer"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:110
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:88
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:96
 msgid "Try a different search term"
 msgstr "Try a different search term"
 

@@ -87,6 +87,7 @@ export default function Categories() {
                     ref={reassignRef}
                     selectedCategory={null}
                     excludeCategoryIds={excludeCategoryIds}
+                    description={t`This category has transactions. Select another category to reassign them to.`}
                     variant="primary"
                     onSelect={handleReassignSelect}
                 />
