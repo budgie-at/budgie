@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/budgie-at/budgie/compare/v2.7.0...v2.7.1) (2026-01-10)
+
+### Bug Fixes
+
+- **app:** improve bottom sheet animation by stabilizing backdrop reference ([#239](https://github.com/budgie-at/budgie/issues/239)) ([790d22a](https://github.com/budgie-at/budgie/commit/790d22a4df01baffa2fd84135e253f04822e0dbd))
+
 # [2.7.0](https://github.com/budgie-at/budgie/compare/v2.6.7...v2.7.0) (2026-01-09)
 
 ### Features
