@@ -48,7 +48,7 @@ export default function HomePage() {
 
     const scrollY = useSharedValue(0);
 
-    const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
+    const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom, paddingHorizontal: 20 };
 
     const accountEntries = typedObjectEntries(accountsGrouped);
 
@@ -82,7 +82,6 @@ export default function HomePage() {
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
-                    contentContainerClassName="px-5xl"
                     contentContainerStyle={contentContainerStyle}
                 />
             ) : (
