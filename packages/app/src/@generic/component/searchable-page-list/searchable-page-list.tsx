@@ -1,34 +1,20 @@
-import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
 
-import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';
-import { DeletableRow } from '../deletable-row/deletable-row';
 import { MenuSpacer } from '../menu-spacer/menu-spacer';
 
 interface Props<T extends IdInterface> {
-    data: T[];
-    onDelete: (id: number) => Promise<void>;
-    renderCard: (item: T) => ReactNode;
-    children?: ReactNode;
+    readonly data: T[];
+    readonly onDelete: (id: number) => Promise<void>;
+    readonly renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
+    readonly children?: ReactNode;
 }
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 
-export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, children }: Props<T>) => {
-    const [notify] = useVibration();
-
-    const handleDeleteItem = async (id: number) => {
-        await onDelete(id);
-        notify(NotificationFeedbackType.Success);
-    };
-
-    const renderItem = (item: T) => (
-        <DeletableRow id={item.id} onDelete={handleDeleteItem}>
-            {renderCard(item)}
-        </DeletableRow>
-    );
+export const SearchablePageList = <T extends IdInterface>({ data, children, renderCard }: Props<T>) => {
+    const renderItem = (item: T) => renderCard(item);
 
     return (
         <>

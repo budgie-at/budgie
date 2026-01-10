@@ -23,7 +23,6 @@ interface Props<T extends IdInterface> {
 
 export const SearchablePage = <T extends IdInterface>({
     data,
-    onDelete,
     search,
     title,
     renderCard,
@@ -50,7 +49,7 @@ export const SearchablePage = <T extends IdInterface>({
         }
     >
         {isNotEmptyArray(data) ? (
-            <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard}>
+            <SearchablePageList data={data} renderCard={renderCard}>
                 {children}
             </SearchablePageList>
         ) : (
