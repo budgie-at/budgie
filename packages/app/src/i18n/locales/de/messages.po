@@ -27,17 +27,9 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt und in den G
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 
-#: src/app/(tabs)/settings/archived.tsx:22
-msgid "{archivedAccountsCount} account"
-msgstr "{archivedAccountsCount} Konto"
-
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
 msgstr "{availableCount} Spalten verfügbar"
-
-#: src/app/(tabs)/settings/inactive.tsx:21
-msgid "{inactiveAccountsCount} account"
-msgstr "{inactiveAccountsCount} Konto"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -62,7 +54,7 @@ msgid "About"
 msgstr "Über"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:56
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:127
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Konto"
@@ -110,10 +102,6 @@ msgstr "Konto aktivieren?"
 msgid "Active"
 msgstr "Aktiv"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
-msgid "Add a new bank, cash or debt account"
-msgstr "Ein neues Bank-, Bar- oder Schuldenkonto hinzufügen"
-
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Fügen Sie eine neue Kategorie hinzu, um Ihre Transaktionen zu organisieren"
@@ -149,10 +137,6 @@ msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
 #: src/transaction/constant/transaction-type.constant.ts:10
 msgid "Adjustment"
 msgstr "Anpassung"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
-msgid "AI Assistant"
-msgstr "KI-Assistent"
 
 #: src/app/(tabs)/settings/index.tsx:138
 msgid ""
@@ -221,7 +205,7 @@ msgstr "Archivieren"
 msgid "Archive Account?"
 msgstr "Konto archivieren?"
 
-#: src/app/(tabs)/settings/archived.tsx:21
+#: src/app/(tabs)/settings/archived.tsx:17
 #: src/app/(tabs)/settings/index.tsx:99
 msgid "Archived Accounts"
 msgstr "Archivierte Konten"
@@ -524,10 +508,6 @@ msgstr "Tags erstellen"
 msgid "Create tags to organize your transactions"
 msgstr "Erstellen Sie Tags, um Ihre Transaktionen zu organisieren"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:84
-msgid "Create transactions using voice"
-msgstr "Transaktionen per Sprache erstellen"
-
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:102
@@ -766,7 +746,7 @@ msgstr "Erwartetes Rückgabedatum"
 msgid "Expected Return Date (Optional)"
 msgstr "Erwartetes Rückgabedatum (Optional)"
 
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:32
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Ausgabe"
@@ -918,7 +898,7 @@ msgstr "Transaktionen aus einer CSV-Datei importieren"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt. Die App wird nach dem Import neu gestartet. Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/app/(tabs)/settings/inactive.tsx:20
+#: src/app/(tabs)/settings/inactive.tsx:17
 #: src/app/(tabs)/settings/index.tsx:106
 msgid "Inactive Accounts"
 msgstr "Inaktive Konten"
@@ -928,7 +908,7 @@ msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
 #: src/app/(tabs)/analytics.tsx:66
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:40
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:109
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -995,25 +975,13 @@ msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:68
-msgid "Money you earn"
-msgstr "Geld, das Sie verdienen"
-
 #: src/account/constant/account-type-description.constant.ts:8
 msgid "Money you owe or are owed"
 msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:75
-msgid "Money you spend"
-msgstr "Geld, das Sie ausgeben"
-
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Monobank"
 msgstr "Monobank"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:61
-msgid "Move between accounts"
-msgstr "Zwischen Konten übertragen"
 
 #: src/app/(main)/create-transaction/transfer.tsx:78
 #: src/app/(main)/transactions/[id]/transfer.tsx:88
@@ -1021,7 +989,6 @@ msgid "Move Money"
 msgstr "Geld übertragen"
 
 #: src/app/(main)/create-account/index.tsx:21
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:56
 msgid "New Account"
 msgstr "Neues Konto"
 
@@ -1601,7 +1568,7 @@ msgstr "Transaktionen"
 msgid "Transactions synced"
 msgstr "Transaktionen synchronisiert"
 
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:48
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:118
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Überweisung"

@@ -34,7 +34,7 @@ export default function TabsLayout() {
                 <TabTrigger name="transactions" href="/transactions" />
                 <TabTrigger name="analytics" href="/analytics" />
                 <TabTrigger name="settings" href="/settings" />
-                <TabTrigger name="account" href="/account" />
+                <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
             </TabList>
 
             <View className="absolute inset-x-0 bottom-0" style={blurContainerStyle} pointerEvents="none">

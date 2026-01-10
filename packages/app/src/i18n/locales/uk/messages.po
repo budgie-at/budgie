@@ -27,17 +27,9 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
-#: src/app/(tabs)/settings/archived.tsx:22
-msgid "{archivedAccountsCount} account"
-msgstr "{archivedAccountsCount} рахунок"
-
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
-
-#: src/app/(tabs)/settings/inactive.tsx:21
-msgid "{inactiveAccountsCount} account"
-msgstr "{inactiveAccountsCount} рахунок"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -62,7 +54,7 @@ msgid "About"
 msgstr "Про застосунок"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:56
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:127
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Рахунок"
@@ -110,10 +102,6 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:53
-msgid "Add a new bank, cash or debt account"
-msgstr "Додати новий банківський, готівковий або борговий рахунок"
-
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
 msgid "Add a new category to organize your transactions"
 msgstr "Додайте нову категорію для організації ваших транзакцій"
@@ -149,10 +137,6 @@ msgstr "Додайте свій перший рахунок, щоб почати
 #: src/transaction/constant/transaction-type.constant.ts:10
 msgid "Adjustment"
 msgstr "Коригування"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
-msgid "AI Assistant"
-msgstr "ШІ-Асистент"
 
 #: src/app/(tabs)/settings/index.tsx:138
 msgid ""
@@ -221,7 +205,7 @@ msgstr "Архівувати"
 msgid "Archive Account?"
 msgstr "Архівувати рахунок?"
 
-#: src/app/(tabs)/settings/archived.tsx:21
+#: src/app/(tabs)/settings/archived.tsx:17
 #: src/app/(tabs)/settings/index.tsx:99
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
@@ -524,10 +508,6 @@ msgstr "Створити теги"
 msgid "Create tags to organize your transactions"
 msgstr "Створіть теги для організації ваших транзакцій"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:84
-msgid "Create transactions using voice"
-msgstr "Створювати транзакції голосом"
-
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:102
@@ -766,7 +746,7 @@ msgstr "Очікувана дата повернення"
 msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:32
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:100
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
@@ -918,7 +898,7 @@ msgstr "Імпортувати транзакції з CSV файлу"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
-#: src/app/(tabs)/settings/inactive.tsx:20
+#: src/app/(tabs)/settings/inactive.tsx:17
 #: src/app/(tabs)/settings/index.tsx:106
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
@@ -928,7 +908,7 @@ msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
 #: src/app/(tabs)/analytics.tsx:66
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:40
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:109
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -995,25 +975,13 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:68
-msgid "Money you earn"
-msgstr "Гроші, які ви заробляєте"
-
 #: src/account/constant/account-type-description.constant.ts:8
 msgid "Money you owe or are owed"
 msgstr "Гроші, які ви винні або вам винні"
 
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:75
-msgid "Money you spend"
-msgstr "Гроші, які ви витрачаєте"
-
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Monobank"
 msgstr "Монобанк"
-
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:61
-msgid "Move between accounts"
-msgstr "Переказ між рахунками"
 
 #: src/app/(main)/create-transaction/transfer.tsx:78
 #: src/app/(main)/transactions/[id]/transfer.tsx:88
@@ -1021,7 +989,6 @@ msgid "Move Money"
 msgstr "Переказати гроші"
 
 #: src/app/(main)/create-account/index.tsx:21
-#: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:56
 msgid "New Account"
 msgstr "Новий рахунок"
 
@@ -1601,7 +1568,7 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:48
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:118
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
