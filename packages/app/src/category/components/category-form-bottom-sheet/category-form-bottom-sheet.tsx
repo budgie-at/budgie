@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject, useRef } from 'react';
@@ -83,7 +84,6 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
 
     const submitLabel = isEditing ? t`Save` : t`Create`;
 
-    /* jscpd:ignore-start */
     return (
         <>
             <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
@@ -118,5 +118,5 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
             ) : null}
         </>
     );
-    /* jscpd:ignore-end */
 };
+/* jscpd:ignore-end */

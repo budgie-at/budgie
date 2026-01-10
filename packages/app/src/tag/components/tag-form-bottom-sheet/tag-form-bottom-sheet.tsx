@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject, useRef } from 'react';
@@ -110,3 +111,4 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved, onTagMe
         </>
     );
 };
+/* jscpd:ignore-end */

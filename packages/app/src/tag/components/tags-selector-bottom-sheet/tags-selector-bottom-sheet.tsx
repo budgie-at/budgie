@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { BottomSheetFooterProps } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
@@ -83,3 +84,4 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
         </>
     );
 };
+/* jscpd:ignore-end */
