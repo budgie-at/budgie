@@ -64,6 +64,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
+#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:23
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"

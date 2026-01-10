@@ -17,6 +17,7 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
+import { RadialActionMenuProvider } from '../@generic/component/radial-action-menu/radial-action-menu.context';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -99,33 +100,35 @@ export default function RootLayout() {
                                     <AuthProvider>
                                         <AuthGuard>
                                             <AiProviderWrapper>
-                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                    <Stack.Screen name="(tabs)" />
+                                                <RadialActionMenuProvider>
+                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                        <Stack.Screen name="(tabs)" />
 
-                                                    <Stack.Screen name="(main)/pin" />
-                                                    <Stack.Screen name="(main)/create-account" />
+                                                        <Stack.Screen name="(main)/pin" />
+                                                        <Stack.Screen name="(main)/create-account" />
 
-                                                    <Stack.Screen name="(main)/account/[id]/update" />
-                                                    <Stack.Screen name="(main)/account/[id]/details" />
+                                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                                        <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                    <Stack.Screen name="(main)/create-transaction/expense" />
-                                                    <Stack.Screen name="(main)/create-transaction/income" />
-                                                    <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                        <Stack.Screen name="(main)/create-transaction/expense" />
+                                                        <Stack.Screen name="(main)/create-transaction/income" />
+                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
 
-                                                    <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                    <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                    <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                    <Stack.Screen name="(main)/settings/index" />
-                                                    <Stack.Screen name="(main)/settings/pin" />
-                                                    <Stack.Screen name="(main)/settings/categories" />
-                                                    <Stack.Screen name="(main)/settings/tags" />
-                                                    <Stack.Screen name="(main)/settings/archived" />
-                                                    <Stack.Screen name="(main)/settings/import" />
+                                                        <Stack.Screen name="(main)/settings/index" />
+                                                        <Stack.Screen name="(main)/settings/pin" />
+                                                        <Stack.Screen name="(main)/settings/categories" />
+                                                        <Stack.Screen name="(main)/settings/tags" />
+                                                        <Stack.Screen name="(main)/settings/archived" />
+                                                        <Stack.Screen name="(main)/settings/import" />
 
-                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                                </Stack>
-                                                <Toast />
+                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                    </Stack>
+                                                    <Toast />
+                                                </RadialActionMenuProvider>
                                             </AiProviderWrapper>
                                         </AuthGuard>
                                     </AuthProvider>
