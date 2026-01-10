@@ -107,6 +107,23 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
+    getArchivedAccountBalance(accountId: number) {
+        const totalBalanceSql = sql<number>`
+            COALESCE((
+                SELECT ${this.getTransactionsSumSql()}
+                FROM ${TransactionEntryEntityTable}
+                WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
+            ), 0)`;
+
+        return this.db
+            .select({
+                balance: totalBalanceSql
+            })
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.accountId, accountId))
+            .limit(1);
+    }
+
     getNetWorth(defaultInstrumentId: number) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
