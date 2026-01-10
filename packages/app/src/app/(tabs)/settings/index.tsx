@@ -33,10 +33,10 @@ export default function SettingsPage() {
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
 
-    const handleNavigateToCategories = () => void router.push('/settings/categories');
-    const handleNavigateToArchived = () => void router.push('/settings/archived');
-    const handleNavigateToInactive = () => void router.push('/settings/inactive');
-    const handleNavigateToTags = () => void router.push('/settings/tags');
+    const handleNavigateToCategories = () => void router.push('/(tabs)/settings/categories');
+    const handleNavigateToArchived = () => void router.push('/(tabs)/settings/archived');
+    const handleNavigateToInactive = () => void router.push('/(tabs)/settings/inactive');
+    const handleNavigateToTags = () => void router.push('/(tabs)/settings/tags');
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
