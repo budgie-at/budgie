@@ -5,6 +5,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../@generic/component/page/page';
 import { PageHeader } from '../../@generic/component/page-header/page-header';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
@@ -38,7 +39,7 @@ export default function StatisticsPage() {
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />} withFloatingTabBar>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />}>
             <View className="pb-2xl">
                 <TransactionFilters
                     accountId={null}
@@ -110,6 +111,7 @@ export default function StatisticsPage() {
                         isIncome={false}
                     />
                 )}
+                <MenuSpacer />
             </ScrollView>
         </Page>
     );

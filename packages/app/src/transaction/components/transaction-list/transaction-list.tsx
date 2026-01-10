@@ -51,7 +51,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
     const canShowFilters = showFilters && !externalFilters;
 
     return (
-        <View className="gap-y-3xl flex-1">
+        <View>
             {canShowFilters && (
                 <TransactionFilters
                     filters={activeFilters}

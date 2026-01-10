@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -44,7 +45,7 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withFloatingTabBar>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
@@ -139,6 +140,8 @@ export default function SettingsPage() {
                             variant="ghost"
                         />
                     </SettingsGroup>
+
+                    <MenuSpacer />
                 </View>
             </ScrollView>
         </Page>
