@@ -2,39 +2,63 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
+import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { CategoryFormBottomSheet } from '../../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
+import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
+import { categoryService } from '../../../category/service/category.service';
+
+const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
 
     const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
+    const reassignRef = useRef<BottomSheetInterface | null>(null);
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<CategoryEntityInterface | null>(null);
+    const [categoryToDelete, setCategoryToDelete] = useState<CategoryEntityInterface | null>(null);
     const { categories } = useSearchCategoriesQuery(search, false);
 
-    const handleOpenCreate = () => {
-        setSelectedCategory(null);
-        void bottomSheetRef.current?.open();
-    };
+    const excludeCategoryIds = isDefined(categoryToDelete) ? [categoryToDelete.id] : [];
 
     useCreateAction({
         icon: UserIconNameEnum.Folder,
         label: t`Category`,
         variant: 'primary',
-        onPress: handleOpenCreate
+        onPress: () => {
+            setSelectedCategory(null);
+            void bottomSheetRef.current?.open();
+        }
     });
 
     const handleDeleteCategory = async (id: number) => {
-        await categoryRepository.deleteById(id);
+        const count = await categoryService.countTransactionEntries(id);
+        if (isPositiveNumber(count)) {
+            const category = categories?.find(cat => cat.id === id);
+            if (isDefined(category)) {
+                setCategoryToDelete(category);
+                void reassignRef.current?.open();
+            }
+
+            return;
+        }
+        await categoryService.deleteById(id);
+    };
+
+    const handleReassignSelect = async (targetCategoryId: number | null) => {
+        if (isDefined(categoryToDelete) && isDefined(targetCategoryId)) {
+            await categoryService.deleteWithReassignment(categoryToDelete.id, targetCategoryId);
+            void reassignRef.current?.close();
+            setCategoryToDelete(null);
+        }
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
@@ -43,12 +67,6 @@ export default function Categories() {
     };
 
     const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
-
-    const icon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Folder;
-    const title = isNotEmptyString(search) ? t`No Results` : t`No Custom Categories`;
-    const description = isNotEmptyString(search) ? t`No categories match your search` : t`Custom categories you create will appear here`;
-
-    const handleGoBack = () => void goBackOrReplace('/settings');
 
     return (
         <SearchablePage
@@ -60,11 +78,19 @@ export default function Categories() {
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
-            emptyStateTitle={title}
-            emptyStateIcon={icon}
-            emptyStateDescription={description}
+            emptyState={<CategoryEmptyState search={search} />}
         >
             <CategoryFormBottomSheet ref={bottomSheetRef} category={selectedCategory} />
+
+            {isDefined(categoryToDelete) ? (
+                <CategorySelectorBottomSheet
+                    ref={reassignRef}
+                    selectedCategory={null}
+                    excludeCategoryIds={excludeCategoryIds}
+                    variant="primary"
+                    onSelect={handleReassignSelect}
+                />
+            ) : null}
         </SearchablePage>
     );
 }
