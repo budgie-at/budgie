@@ -90,7 +90,6 @@ export default function Categories() {
     return (
         <SearchablePage
             onGoBack={handleGoBack}
-            onDelete={handleDeleteCategory}
             title={t`Categories`}
             searchPlaceholder={t`Search categories...`}
             data={categories}

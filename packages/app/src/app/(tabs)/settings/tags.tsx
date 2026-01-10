@@ -90,7 +90,6 @@ export default function Tags() {
     return (
         <SearchablePage
             onGoBack={handleGoBack}
-            onDelete={handleDeleteTag}
             title={t`Tags`}
             searchPlaceholder={t`Search tags...`}
             data={tags}
