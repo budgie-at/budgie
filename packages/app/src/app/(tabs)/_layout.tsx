@@ -49,19 +49,19 @@ export default function TabsLayout() {
             <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
                 <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                     <View className="flex-row items-center gap-sm bg-secondary rounded-full px-md py-sm shadow-lg shadow-black/20">
-                        <TabTrigger name="home" asChild>
+                        <TabTrigger name="home" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.Home} />
                         </TabTrigger>
 
-                        <TabTrigger name="transactions" asChild>
+                        <TabTrigger name="transactions" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.Receipt} />
                         </TabTrigger>
 
-                        <TabTrigger name="analytics" asChild>
+                        <TabTrigger name="analytics" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                         </TabTrigger>
 
-                        <TabTrigger name="settings" asChild>
+                        <TabTrigger name="settings" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.Settings} />
                         </TabTrigger>
                     </View>
