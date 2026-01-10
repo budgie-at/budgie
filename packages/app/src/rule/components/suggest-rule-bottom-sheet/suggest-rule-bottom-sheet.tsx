@@ -45,7 +45,7 @@ export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
     const isSubmitDisabled = isCreating || !hasSelectedFields;
 
     return (
-        <BottomSheet ref={modalRef} enableDynamicSizing enablePanDownToClose>
+        <BottomSheet ref={modalRef} enableDynamicSizing>
             <BottomSheetScrollView
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}

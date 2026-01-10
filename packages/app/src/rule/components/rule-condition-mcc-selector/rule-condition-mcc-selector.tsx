@@ -89,8 +89,6 @@ export const RuleConditionMccSelector = ({ index }: Props) => {
 
                 <SearchableListBottomSheet
                     ref={sheetRef}
-                    title={t`Select MCC Code`}
-                    description={t`Choose a merchant category code`}
                     search={search}
                     onSearchChange={setSearch}
                     searchPlaceholder={t`Search by code or description...`}

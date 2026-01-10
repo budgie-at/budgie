@@ -35,7 +35,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
     const { t } = useLingui();
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
-    const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
+    const sortedTags = sortSelectedFirst(tags, selectedTagIds);
     const data = padFlatListData(sortedTags, 3);
 
     const handleCreateTag = () => void tagFormRef.current?.open();
