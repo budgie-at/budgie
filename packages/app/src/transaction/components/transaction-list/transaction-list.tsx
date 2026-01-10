@@ -20,12 +20,10 @@ interface Props {
 export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true }: Props) => {
     const { t } = useLingui();
 
-    const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>({
-        ...DEFAULT_TRANSACTION_FILTER,
-        accountIds: isDefined(accountId) ? [accountId] : null
-    });
+    const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
 
-    const activeFilters = externalFilters ?? internalFilters;
+    const baseAccountIds = isDefined(accountId) ? [accountId] : null;
+    const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds };
     const hasFiltersSelected = checkIfFiltersSelected(accountId, activeFilters);
     const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
 
