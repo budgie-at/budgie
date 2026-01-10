@@ -3,10 +3,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 
-export const MenuSpacer = () => {
+interface Props {
+    readonly multiplier?: number;
+}
+
+export const MenuSpacer = ({ multiplier = 1 }: Props) => {
     const { bottom } = useSafeAreaInsets();
 
-    const style = { height: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom };
+    const style = { height: (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) * multiplier + bottom };
 
     return <View style={style} />;
 };

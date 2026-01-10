@@ -15,9 +15,10 @@ interface Props {
     readonly accountId?: number | null;
     readonly filters?: TransactionFilterInterface;
     readonly showFilters?: boolean;
+    readonly footerSpacerMultiplier?: number;
 }
 
-export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true }: Props) => {
+export const TransactionList = ({ accountId = null, filters: externalFilters, showFilters = true, footerSpacerMultiplier }: Props) => {
     const { t } = useLingui();
 
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
@@ -65,6 +66,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
                 listEmptyState={listEmptyState}
                 balanceAdjustmentLabel={balanceAdjustmentLabel}
                 categoriesLabel={categoriesLabel}
+                footerSpacerMultiplier={footerSpacerMultiplier}
             />
         </View>
     );
