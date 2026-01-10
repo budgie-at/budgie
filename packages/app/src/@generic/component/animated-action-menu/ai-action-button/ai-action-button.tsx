@@ -20,32 +20,31 @@ interface Props {
     readonly onClose: () => void;
 }
 
-const BUTTON_SIZE = 56;
-const ICON_SIZE = 28;
+const BUTTON_SIZE = 72;
+const ICON_SIZE = 32;
+const PULSE_SCALE = 1.06;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
 
 export const AiActionButton = ({ onClose }: Props) => {
     const [, hapticImpact] = useVibration();
 
-    const scale = useSharedValue(0);
-    const rotation = useSharedValue(0);
+    const scale = useSharedValue(0.01);
     const pulseScale = useSharedValue(1);
 
     useEffect(() => {
         scale.value = withSpring(1, SPRING_CONFIG);
-        rotation.value = withSequence(withTiming(-10, { duration: 50 }), withSpring(0, { damping: 8, stiffness: 300 }));
         pulseScale.value = withRepeat(
             withSequence(
-                withTiming(1.08, { duration: 800, easing: Easing.inOut(Easing.ease) }),
-                withTiming(1, { duration: 800, easing: Easing.inOut(Easing.ease) })
+                withTiming(PULSE_SCALE, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+                withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
             ),
             -1,
             true
         );
-    }, [pulseScale, rotation, scale]);
+    }, [pulseScale, scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value * pulseScale.value }, { rotate: `${rotation.value}deg` }]
+        transform: [{ scale: scale.value * pulseScale.value }]
     }));
 
     const handlePress = () => {
@@ -59,11 +58,11 @@ export const AiActionButton = ({ onClose }: Props) => {
     return (
         <Animated.View style={animatedStyle}>
             <HapticPressable
-                className="bg-tertiary rounded-full items-center justify-center shadow-lg shadow-tertiary/50"
+                className="bg-primary rounded-full items-center justify-center shadow-lg shadow-black/30"
                 style={buttonStyle}
                 onPress={handlePress}
             >
-                <Icon className="text-tertiary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />
+                <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />
             </HapticPressable>
         </Animated.View>
     );
