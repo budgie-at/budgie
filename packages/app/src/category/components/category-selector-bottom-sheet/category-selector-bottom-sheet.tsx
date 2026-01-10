@@ -1,8 +1,9 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -14,11 +15,12 @@ import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
 
 interface Props {
-    readonly variant: ColorPaletteVariant;
+    readonly description?: string;
     readonly excludeCategoryIds?: number[];
     readonly onSelect: (categoryId: number | null) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly selectedCategory: CategoryEntityInterface | null;
+    readonly variant: ColorPaletteVariant;
 }
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
@@ -30,7 +32,7 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg px-3 pt-xl'
 };
 
-export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
+export const CategorySelectorBottomSheet = ({ ref, description, excludeCategoryIds, selectedCategory, variant, onSelect }: Props) => {
     const { t } = useLingui();
 
     const [search, setSearch] = useState('');
@@ -65,6 +67,12 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
         ? categories.filter(category => (isDefined(excludeCategoryIds) ? !excludeCategoryIds.includes(category.id) : true))
         : [];
     const data = padFlatListData(sortSelectedFirst(filteredCategories, isDefined(selectedCategory) ? [selectedCategory.id] : []), 3);
+
+    const headerContent = isNotEmptyString(description) ? (
+        <View className="px-3 pb-md">
+            <Text className="text-foreground text-sm">{description}</Text>
+        </View>
+    ) : null;
 
     const handleEmptySelect = emptyFn;
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
@@ -103,6 +111,7 @@ export const CategorySelectorBottomSheet = ({ ref, excludeCategoryIds, selectedC
                 emptyTitle={t`No categories found`}
                 data={data}
                 flatListProps={flatListProps}
+                headerContent={headerContent}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreateCategory}
             />
