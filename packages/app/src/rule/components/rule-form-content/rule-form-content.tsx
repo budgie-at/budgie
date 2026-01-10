@@ -7,15 +7,19 @@ import { RuleActionsSection } from '../rule-actions-section/rule-actions-section
 import { RuleApplyToExistingToggle } from '../rule-apply-to-existing-toggle/rule-apply-to-existing-toggle';
 import { RuleConditionsSection } from '../rule-conditions-section/rule-conditions-section';
 
-const renderApplyToExistingToggle = ({
-    field: { value, onChange }
-}: UseControllerReturn<RuleCreateInputInterface, 'applyToExisting'>) => <RuleApplyToExistingToggle value={value} onChange={onChange} />;
+const renderApplyToExistingToggle = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, 'applyToExisting'>) => (
+    <RuleApplyToExistingToggle value={value} onChange={onChange} />
+);
 
 export const RuleFormContent = () => {
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     return (
-        <KeyboardAwareScrollView contentContainerClassName="pb-5xl" keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <KeyboardAwareScrollView
+            contentContainerClassName="pb-5xl"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+        >
             <View className="gap-y-7xl">
                 <RuleConditionsSection />
                 <RuleActionsSection />

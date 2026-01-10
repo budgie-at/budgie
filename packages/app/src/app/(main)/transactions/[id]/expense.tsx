@@ -63,7 +63,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
-        control: form.control,
+        control: form.control
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
@@ -98,17 +98,17 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                             onDelete={handleDelete}
                             showConvertButton
                             onConvert={handleOpenConvert}
-                        showSuggestRule={shouldShowAddRule}
-                        onSuggestRulePress={openBottomSheet}
-                    />
-                }
-            >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
+                            showSuggestRule={shouldShowAddRule}
+                            onSuggestRulePress={openBottomSheet}
+                        />
+                    }
                 >
-                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
+                    <KeyboardAwareScrollView
+                        keyboardShouldPersistTaps="handled"
+                        contentContainerClassName="pb-7xl"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
                         {isDefined(transaction.entries[0]?.mccCategory) ? (
                             <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
@@ -128,13 +128,14 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                                 <TransactionFormTagsField variant="destructive" />
                             </FormLayoutGroup>
 
-                        <TransactionFormComment />
-                    </FormLayoutGroup>
-                </KeyboardAwareScrollView>
-            </Page>
+                            <TransactionFormComment />
+                        </FormLayoutGroup>
+                    </KeyboardAwareScrollView>
+                </Page>
 
-            <SuggestRuleBottomSheet ref={bottomSheetRef} onRuleCreated={onRuleCreated} />
-        </FormProvider><ConvertExpenseToTransferBottomSheet
+                <SuggestRuleBottomSheet ref={bottomSheetRef} onRuleCreated={onRuleCreated} />
+            </FormProvider>
+            <ConvertExpenseToTransferBottomSheet
                 ref={convertSheetRef}
                 transactionId={transactionId}
                 fromAccountId={transaction.fromAccountId ?? 0}

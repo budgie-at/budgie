@@ -56,7 +56,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
-        control: form.control,
+        control: form.control
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });

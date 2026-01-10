@@ -49,7 +49,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { shouldShowAddRule, openBottomSheet, bottomSheetRef, onRuleCreated } = useSuggestRuleOnUpdate({
         transaction,
         transactionInput,
-        control: form.control,
+        control: form.control
     });
 
     const [fromAccountId, amount] = useWatch({ control: form.control, name: ['fromAccountId', 'amount'] });

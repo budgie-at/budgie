@@ -10,7 +10,9 @@ import { RuleEntityTable } from '../../rule/table/rule-entity.table';
 export const RuleConditionEntityTable = sqliteTable(
     'rule_conditions',
     withBaseEntityTableColumns({
-        ruleId: int('rule_id', { mode: 'number' }).notNull().references(() => RuleEntityTable.id, { onDelete: 'cascade' }),
+        ruleId: int('rule_id', { mode: 'number' })
+            .notNull()
+            .references(() => RuleEntityTable.id, { onDelete: 'cascade' }),
         field: text('field', { enum: convertEnumToDrizzleEnum(RuleConditionFieldEnum) })
             .$type<RuleConditionFieldEnum>()
             .notNull(),
@@ -20,7 +22,5 @@ export const RuleConditionEntityTable = sqliteTable(
         value: text('value').notNull(),
         secondaryValue: text('secondary_value')
     }),
-    () => [
-        check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)
-    ]
+    () => [check('rule_condition_between_requires_secondary_value', sql`operator != 'BETWEEN' OR secondary_value IS NOT NULL`)]
 );

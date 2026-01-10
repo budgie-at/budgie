@@ -50,7 +50,7 @@ export const SuggestRuleDescriptionActions = ({ data, category, tags }: Props) =
             {actions.map((action, index) => (
                 <Text key={index} className="text-sm text-secondary-foreground">
                     {action}
-                    {index < actions.length - 1 ? <Trans>{' '}and{' '}</Trans> : ''}
+                    {index < actions.length - 1 ? <Trans> and </Trans> : ''}
                 </Text>
             ))}
         </>

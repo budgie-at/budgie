@@ -1,9 +1,4 @@
-import {
-    RuleActionTypeEnum,
-    RuleConditionMatchTypeEnum,
-    RuleConditionOperatorEnum,
-    RuleCreateInputInterface
-} from '@budgie/contracts';
+import { RuleActionTypeEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 

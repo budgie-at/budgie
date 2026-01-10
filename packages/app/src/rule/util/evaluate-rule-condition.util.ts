@@ -7,10 +7,7 @@ import {
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-const getConditionFieldValue = (
-    field: RuleConditionFieldEnum,
-    input: TransactionCreateInputInterface
-): string | number | null => {
+const getConditionFieldValue = (field: RuleConditionFieldEnum, input: TransactionCreateInputInterface): string | number | null => {
     switch (field) {
         case RuleConditionFieldEnum.TITLE:
             return input.title;
@@ -87,10 +84,7 @@ const matchOperator = (
     }
 };
 
-export const evaluateRuleCondition = (
-    condition: RuleConditionEntityInterface,
-    input: TransactionCreateInputInterface
-): boolean => {
+export const evaluateRuleCondition = (condition: RuleConditionEntityInterface, input: TransactionCreateInputInterface): boolean => {
     const fieldValue = getConditionFieldValue(condition.field, input);
 
     return matchOperator(condition.operator, fieldValue, condition.value, condition.secondaryValue);

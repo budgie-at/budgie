@@ -18,9 +18,15 @@ export const RuleActionCategorySelector = ({ index }: Props) => {
     const { categories } = useSearchCategoriesQuery('', true);
 
     const selectedCategory = categories.find(category => category.id === categoryId);
-    const options = categories.map(category => ({ value: category.id, label: category.title, iconSlot: <RuleIconSlot icon={category.icon} /> }));
+    const options = categories.map(category => ({
+        value: category.id,
+        label: category.title,
+        iconSlot: <RuleIconSlot icon={category.icon} />
+    }));
 
-    const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.categoryId`>) => (
+    const renderSelector = ({
+        field: { value, onChange }
+    }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.categoryId`>) => (
         <RuleActionBottomSheetSelector
             value={value}
             onChange={onChange}

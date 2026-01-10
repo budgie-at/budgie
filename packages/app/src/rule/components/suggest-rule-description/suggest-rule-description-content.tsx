@@ -16,9 +16,9 @@ interface Props {
 
 export const SuggestRuleDescriptionContent = ({ data, selectedFields, category, tags }: Props) => (
     <Text className="text-sm text-secondary-foreground">
-        <Trans>If{' '}</Trans>
+        <Trans>If </Trans>
         <SuggestRuleDescriptionConditions data={data} selectedFields={selectedFields} />
-        <Trans>, then{' '}</Trans>
+        <Trans>, then </Trans>
         <SuggestRuleDescriptionActions data={data} category={category} tags={tags} />
     </Text>
 );

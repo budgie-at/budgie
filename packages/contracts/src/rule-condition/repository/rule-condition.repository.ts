@@ -18,10 +18,7 @@ export class RuleConditionRepository {
     }
 
     async create(input: RuleConditionCreateEntityInterface, tx?: TX): Promise<RuleConditionEntityInterface> {
-        const [condition] = await (tx ?? this.db)
-            .insert(RuleConditionEntityTable)
-            .values([input])
-            .returning();
+        const [condition] = await (tx ?? this.db).insert(RuleConditionEntityTable).values([input]).returning();
 
         return condition;
     }
@@ -31,10 +28,7 @@ export class RuleConditionRepository {
             return [];
         }
 
-        return (tx ?? this.db)
-            .insert(RuleConditionEntityTable)
-            .values(inputs)
-            .returning();
+        return (tx ?? this.db).insert(RuleConditionEntityTable).values(inputs).returning();
     }
 
     async deleteByRuleId(ruleId: number, tx?: TX): Promise<void> {

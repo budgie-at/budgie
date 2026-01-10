@@ -46,11 +46,9 @@ export const SuggestRuleDescriptionConditions = ({ data, selectedFields }: Props
                 return (
                     <Text key={field} className="text-sm text-secondary-foreground">
                         <Text className="font-semibold text-primary">{fieldLabel}</Text>
-                        <Trans>
-                            {' '}contains{' '}
-                        </Trans>
+                        <Trans> contains </Trans>
                         <Text className="font-semibold text-primary">&quot;{fieldValue}&quot;</Text>
-                        {isLast ? '' : <Trans>{' '}and{' '}</Trans>}
+                        {isLast ? '' : <Trans> and </Trans>}
                     </Text>
                 );
             })}
