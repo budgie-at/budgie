@@ -17,7 +17,7 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
-import { RadialActionMenuProvider } from '../@generic/component/radial-action-menu/radial-action-menu.context';
+import { AnimatedActionMenuProvider } from '../@generic/component/animated-action-menu/animated-action-menu.context';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -100,7 +100,7 @@ export default function RootLayout() {
                                     <AuthProvider>
                                         <AuthGuard>
                                             <AiProviderWrapper>
-                                                <RadialActionMenuProvider>
+                                                <AnimatedActionMenuProvider>
                                                     <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                         <Stack.Screen name="(tabs)" />
 
@@ -128,7 +128,7 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                     </Stack>
                                                     <Toast />
-                                                </RadialActionMenuProvider>
+                                                </AnimatedActionMenuProvider>
                                             </AiProviderWrapper>
                                         </AuthGuard>
                                     </AuthProvider>

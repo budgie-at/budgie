@@ -9,12 +9,12 @@ import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palett
 import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
 
-import type { RadialActionItemInterface } from './radial-action-item.interface';
+import type { AnimatedActionItemInterface } from './animated-action-item.interface';
 import type { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import type { ClassValue } from 'clsx';
 
 interface Props {
-    readonly item: RadialActionItemInterface;
+    readonly item: AnimatedActionItemInterface;
     readonly index: number;
     readonly totalItems: number;
     readonly isOpen: boolean;
@@ -35,7 +35,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const RadialActionItem = ({ item, index, totalItems, isOpen, onClose }: Props) => {
+export const AnimatedActionItem = ({ item, index, totalItems, isOpen, onClose }: Props) => {
     const [, hapticImpact] = useVibration();
     const translateY = useSharedValue(0);
     const scale = useSharedValue(0);
