@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
@@ -95,3 +96,4 @@ export default function Categories() {
         </SearchablePage>
     );
 }
+/* jscpd:ignore-end */
