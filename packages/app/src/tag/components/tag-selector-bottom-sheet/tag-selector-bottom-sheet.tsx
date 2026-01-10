@@ -1,8 +1,9 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -13,6 +14,7 @@ import { TagFormBottomSheet } from '../tag-form-bottom-sheet/tag-form-bottom-she
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
 interface Props {
+    readonly description?: string;
     readonly excludeTagIds?: number[];
     readonly onSelect: (tagId: number | null) => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -27,7 +29,7 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg px-3 pt-xl'
 };
 
-export const TagSelectorBottomSheet = ({ ref, excludeTagIds, selectedTag, onSelect }: Props) => {
+export const TagSelectorBottomSheet = ({ ref, description, excludeTagIds, selectedTag, onSelect }: Props) => {
     const { t } = useLingui();
 
     const [search, setSearch] = useState('');
@@ -63,6 +65,12 @@ export const TagSelectorBottomSheet = ({ ref, excludeTagIds, selectedTag, onSele
         : [];
     const data = padFlatListData(sortSelectedFirst(filteredTags, isDefined(selectedTag) ? [selectedTag.id] : []), 3);
 
+    const headerContent = isNotEmptyString(description) ? (
+        <View className="px-3 pb-md">
+            <Text className="text-foreground text-sm">{description}</Text>
+        </View>
+    ) : null;
+
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
             <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
@@ -89,6 +97,7 @@ export const TagSelectorBottomSheet = ({ ref, excludeTagIds, selectedTag, onSele
                 emptyTitle={t`No tags found`}
                 data={data}
                 flatListProps={flatListProps}
+                headerContent={headerContent}
                 rightActionIcon={UserIconNameEnum.Plus}
                 rightActionOnPress={handleCreateTag}
             />
