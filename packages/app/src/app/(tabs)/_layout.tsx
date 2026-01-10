@@ -21,6 +21,7 @@ export default function TabsLayout() {
                 <TabTrigger name="home" href="/" />
                 <TabTrigger name="transactions" href="/transactions" />
                 <TabTrigger name="analytics" href="/analytics" />
+                <TabTrigger name="settings" href="/settings" />
             </TabList>
 
             <View className="absolute inset-x-0 bottom-0 flex-row items-center justify-between px-lg pb-lg" style={containerStyle}>
@@ -37,7 +38,9 @@ export default function TabsLayout() {
                         <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                     </TabTrigger>
 
-                    <TabButton icon={UserIconNameEnum.Settings} navigateTo="/(main)/settings" />
+                    <TabTrigger name="settings" asChild>
+                        <TabButton icon={UserIconNameEnum.Settings} />
+                    </TabTrigger>
                 </View>
 
                 <CreateTransactionTabButton />
