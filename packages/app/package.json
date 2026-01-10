@@ -30,6 +30,7 @@
         "@libsql/client": "^0.15.15",
         "@lingui/core": "^5.7.0",
         "@lingui/react": "^5.7.0",
+        "@react-native-masked-view/masked-view": "^0.3.2",
         "@react-native/virtualized-lists": "^0.82.1",
         "@rnw-community/shared": "^1.8.2",
         "class-variance-authority": "^0.7.1",
