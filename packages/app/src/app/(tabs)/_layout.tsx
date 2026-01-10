@@ -7,6 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
+import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTabButton } from '../../transaction/components/create-transaction-tab-button/create-transaction-tab-button';
 
 const BLUR_HEIGHT = 150;
@@ -62,6 +63,8 @@ export default function TabsLayout() {
                     <CreateTransactionTabButton />
                 </View>
             </View>
+
+            <CreateTransactionMenu />
         </Tabs>
     );
 }

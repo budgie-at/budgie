@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
@@ -24,29 +25,24 @@ const BUTTON_ROTATION_ACTIVE = 45;
 const CONTAINER_MARGIN_BOTTOM = 4;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 
-const useBackdropAnimation = (isOpen: boolean) => {
-    const opacity = useSharedValue(0);
-    opacity.value = withTiming(isOpen ? BACKDROP_OPACITY : 0, { duration: ANIMATION_DURATION });
-
-    return useAnimatedStyle(() => ({ opacity: opacity.value }));
-};
-
-const useButtonAnimation = (isOpen: boolean) => {
-    const rotation = useSharedValue(0);
-    rotation.value = withSpring(isOpen ? BUTTON_ROTATION_ACTIVE : 0, SPRING_CONFIG);
-
-    return useAnimatedStyle(() => ({
-        transform: [{ rotate: `${rotation.value}deg` }]
-    }));
-};
-
 export const AnimatedActionMenu = ({ children, triggerIcon = UserIconNameEnum.Plus }: Props) => {
     const { isOpen, close } = useAnimatedActionMenu();
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
 
-    const backdropStyle = useBackdropAnimation(isOpen);
-    const buttonStyle = useButtonAnimation(isOpen);
+    const opacity = useSharedValue(0);
+    const rotation = useSharedValue(0);
+
+    useEffect(() => {
+        opacity.value = withTiming(isOpen ? BACKDROP_OPACITY : 0, { duration: ANIMATION_DURATION });
+        rotation.value = withSpring(isOpen ? BUTTON_ROTATION_ACTIVE : 0, SPRING_CONFIG);
+    }, [isOpen, opacity, rotation]);
+
+    const backdropStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
+
+    const containerStyle = { paddingBottom: bottom, marginBottom: CONTAINER_MARGIN_BOTTOM };
+    const pointerEvents = isOpen ? 'box-none' : 'none';
 
     const handleClose = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -57,33 +53,34 @@ export const AnimatedActionMenu = ({ children, triggerIcon = UserIconNameEnum.Pl
         runOnJS(handleClose)();
     });
 
-    if (!isOpen) {
-        return null;
-    }
-
-    const containerStyle = { paddingBottom: bottom, marginBottom: CONTAINER_MARGIN_BOTTOM };
-
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+        <View style={StyleSheet.absoluteFill} pointerEvents={pointerEvents}>
             <GestureDetector gesture={tapGesture}>
                 <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
             </GestureDetector>
 
-            <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
-                <AiActionButton />
-            </View>
+            {isOpen && (
+                <>
+                    <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
+                        <AiActionButton />
+                    </View>
 
-            <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
-                <View className="items-end" pointerEvents="box-none">
-                    {children}
+                    <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+                        <View className="items-end" pointerEvents="box-none">
+                            {children}
 
-                    <Pressable onPress={handleClose}>
-                        <Animated.View className="bg-primary rounded-full items-center justify-center w-14 h-14" style={buttonStyle}>
-                            <Icon className="text-primary-reverse" icon={triggerIcon} size={ICON_SIZE} />
-                        </Animated.View>
-                    </Pressable>
-                </View>
-            </View>
+                            <Pressable onPress={handleClose}>
+                                <Animated.View
+                                    className="bg-primary rounded-full items-center justify-center w-14 h-14"
+                                    style={buttonStyle}
+                                >
+                                    <Icon className="text-primary-reverse" icon={triggerIcon} size={ICON_SIZE} />
+                                </Animated.View>
+                            </Pressable>
+                        </View>
+                    </View>
+                </>
+            )}
         </View>
     );
 };
