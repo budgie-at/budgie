@@ -1,4 +1,4 @@
-import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { AccountsListPage } from '../../../account/component/accounts-list-page/accounts-list-page';
@@ -13,7 +13,7 @@ export default function Archived() {
 
     const archivedAccountsCount = accounts?.length ?? 0;
 
-    const renderCard = (account: AccountEntityInterface) => <ArchivedAccountCard account={account} />;
+    const renderCard = (account: AccountWithInstrumentEntityInterface) => <ArchivedAccountCard account={account} />;
 
     return (
         <AccountsListPage
