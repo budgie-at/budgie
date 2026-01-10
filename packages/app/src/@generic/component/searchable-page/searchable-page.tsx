@@ -5,7 +5,6 @@ import { TextInput } from 'react-native';
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { IdInterface } from '../../interface/id.interface';
-import { FloatingAddButton } from '../floating-add-button/floating-add-button';
 import { MenuSpacer } from '../menu-spacer/menu-spacer';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
@@ -61,6 +60,5 @@ export const SearchablePage = <T extends IdInterface>({
         )}
 
         <MenuSpacer />
-        <FloatingAddButton renderBottomSheet={renderBottomSheet} />
     </Page>
 );

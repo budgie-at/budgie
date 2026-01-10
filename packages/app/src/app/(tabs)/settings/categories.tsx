@@ -4,7 +4,6 @@ import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
@@ -23,9 +22,7 @@ export default function Categories() {
     };
 
     const renderCard = (category: CategoryEntityInterface, onOpen: (category: CategoryEntityInterface) => void) => (
-        <DeletableRow id={category.id} onDelete={handleDeleteCategory}>
-            <CategoryCard onOpen={onOpen} category={category} />
-        </DeletableRow>
+        <CategoryCard onOpen={onOpen} category={category} />
     );
 
     const renderBottomSheet = (category: CategoryEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => (

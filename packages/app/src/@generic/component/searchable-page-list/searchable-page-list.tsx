@@ -1,5 +1,5 @@
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, RefObject, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useVibration } from '../../hook/use-vibration.hook';
@@ -7,13 +7,12 @@ import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
-import { FloatingAddButtonProps } from '../floating-add-button/floating-add-button';
 
 interface Props<T extends IdInterface> {
     data: T[];
     onDelete: (id: number) => Promise<void>;
     renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
-    renderBottomSheet: FloatingAddButtonProps<T>['renderBottomSheet'];
+    renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
 
 const safeEdges = ['bottom'] as const;
