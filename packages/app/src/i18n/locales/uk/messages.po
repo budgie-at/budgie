@@ -106,6 +106,10 @@ msgstr "Активний"
 msgid "Add a note..."
 msgstr "Додати нотатку..."
 
+#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
+msgid "Add Account"
+msgstr ""
+
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
 msgstr "Додати витрату"
@@ -122,7 +126,7 @@ msgstr "Додати поділ"
 msgid "Add Transfer"
 msgstr "Додати переказ"
 
-#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:17
+#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
@@ -276,7 +280,7 @@ msgid "Cash"
 msgstr "Готівка"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:57
+#: src/app/(tabs)/settings/categories.tsx:75
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
@@ -305,7 +309,7 @@ msgstr ""
 "ВАЖЛИВО: Продукти харчування (м'ясо, овочі, бакалія) належать до категорії Бакалія/Їжа, а НЕ до Акції/Інвестиції.\n"
 "Відповідайте лише номером категорії."
 
-#: src/app/(tabs)/settings/categories.tsx:31
+#: src/app/(tabs)/settings/categories.tsx:34
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
@@ -313,7 +317,7 @@ msgstr ""
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -407,11 +411,11 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:54
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
@@ -428,15 +432,23 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:78
+msgid "Could not merge category"
+msgstr ""
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:73
+msgid "Could not merge tag"
+msgstr ""
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:51
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:54
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:42
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
 msgid "Could not update tag"
 msgstr "Не вдалося оновити тег"
 
@@ -448,8 +460,8 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:84
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:79
 msgid "Create"
 msgstr "Створити"
 
@@ -494,9 +506,9 @@ msgstr "Створіть один, щоб розпочати."
 msgid "Create Tags"
 msgstr "Створити теги"
 
-#: src/app/(tabs)/settings/tags.tsx:49
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "Create tags to organize your transactions"
-msgstr "Створіть теги для організації ваших транзакцій"
+msgstr ""
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
@@ -525,9 +537,9 @@ msgstr "Валюта"
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
-#: src/app/(tabs)/settings/categories.tsx:49
+#: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "Custom categories you create will appear here"
-msgstr "Створені вами власні категорії з'являться тут"
+msgstr ""
 
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
@@ -615,11 +627,11 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:53
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:85
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:63
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:91
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
@@ -953,6 +965,14 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:105
+msgid "Merge into another category"
+msgstr ""
+
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:97
+msgid "Merge into another tag"
+msgstr ""
+
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
 msgstr "Позичені або надані гроші"
@@ -992,7 +1012,7 @@ msgid "No accounts found"
 msgstr "Рахунків не знайдено"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
-#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:14
+#: src/account/component/accounts-empty-state/accounts-empty-state.tsx:22
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
@@ -1006,9 +1026,9 @@ msgstr "Немає архівованих рахунків"
 msgid "No categories found"
 msgstr "Категорій не знайдено"
 
-#: src/app/(tabs)/settings/categories.tsx:49
+#: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "No categories match your search"
-msgstr "Жодна категорія не відповідає вашому пошуку"
+msgstr ""
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:68
 msgid "No Categories Yet"
@@ -1030,9 +1050,9 @@ msgstr "Поки немає контактів"
 msgid "No currencies found"
 msgstr "Не знайдено жодної валюти"
 
-#: src/app/(tabs)/settings/categories.tsx:48
+#: src/category/components/category-empty-state/category-empty-state.tsx:17
 msgid "No Custom Categories"
-msgstr "Немає власних категорій"
+msgstr ""
 
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
@@ -1055,25 +1075,26 @@ msgstr "Мов не знайдено"
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
-#: src/app/(tabs)/settings/categories.tsx:48
-#: src/app/(tabs)/settings/tags.tsx:48
+#: src/category/components/category-empty-state/category-empty-state.tsx:17
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
-msgstr "Немає результатів"
+msgstr ""
 
 #: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
 msgstr "Мовлення не виявлено"
 
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:89
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:74
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Тегів не знайдено"
 
-#: src/app/(tabs)/settings/tags.tsx:49
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "No tags match your search"
-msgstr "Жодний тег не відповідає вашому пошуку"
+msgstr ""
 
-#: src/app/(tabs)/settings/tags.tsx:48
+#: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
@@ -1151,8 +1172,10 @@ msgstr "Будь ласка, введіть ваш API-токен Монобан
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:52
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:43
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
@@ -1201,9 +1224,9 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:84
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:79
 msgid "Save"
 msgstr "Зберегти"
 
@@ -1229,7 +1252,7 @@ msgstr "Захист від скріншотів"
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
-#: src/app/(tabs)/settings/categories.tsx:58
+#: src/app/(tabs)/settings/categories.tsx:76
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1251,7 +1274,8 @@ msgstr "Пошук іконок (напр. гроші, подорожі, їжа)
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
-#: src/app/(tabs)/settings/tags.tsx:58
+#: src/app/(tabs)/settings/tags.tsx:76
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:84
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1436,15 +1460,15 @@ msgstr "Синхронізовані банківські рахунки"
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
 
-#: src/app/(tabs)/settings/tags.tsx:31
+#: src/app/(tabs)/settings/tags.tsx:34
 msgid "Tag"
 msgstr "Тег"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:87
 msgid "Tag Name"
 msgstr "Назва тегу"
 
-#: src/app/(tabs)/settings/tags.tsx:57
+#: src/app/(tabs)/settings/tags.tsx:75
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1566,6 +1590,7 @@ msgstr "Переказ"
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:102
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:88
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
