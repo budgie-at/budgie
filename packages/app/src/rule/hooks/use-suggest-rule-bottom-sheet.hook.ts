@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { Ref, useImperativeHandle, useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { RulePrefillConditionInterface, RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
@@ -124,6 +124,6 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         handleConfigureRule,
         hasComment: isDefined(data) && isNotEmptyString(data.comment),
         hasMccCode: isDefined(data) && isNotEmptyString(data.mccCode),
-        hasSelectedFields: selectedFields.length > 0
+        hasSelectedFields: isNotEmptyArray(selectedFields)
     };
 };
