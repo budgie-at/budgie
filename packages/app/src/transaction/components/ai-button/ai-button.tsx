@@ -11,9 +11,9 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../../@generic/component/icon/icon';
-import { useVibration } from '../../../../@generic/hook/use-vibration.hook';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 
 interface Props {
     readonly onPress: () => void;

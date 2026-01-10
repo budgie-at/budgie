@@ -3,11 +3,13 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
-import { CreateTransactionButton } from '../../transaction/components/create-transaction-button/create-transaction-button';
+import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
+import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
 const BLUR_HEIGHT = 150;
 const GRADIENT_COLORS = ['transparent', 'black'] as const;
@@ -15,9 +17,13 @@ const GRADIENT_LOCATIONS = [0, 0.6] as const;
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
     const blurContainerStyle = { height: BLUR_HEIGHT };
+
+    const handleOpenMenu = () => void setIsMenuOpen(true);
+    const handleCloseMenu = () => void setIsMenuOpen(false);
 
     return (
         <Tabs>
@@ -59,9 +65,11 @@ export default function TabsLayout() {
                         </TabTrigger>
                     </View>
 
-                    <CreateTransactionButton />
+                    <CreateTransactionTrigger isOpen={isMenuOpen} onPress={handleOpenMenu} />
                 </View>
             </View>
+
+            <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} />
         </Tabs>
     );
 }

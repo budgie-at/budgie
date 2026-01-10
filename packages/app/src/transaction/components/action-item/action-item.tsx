@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 
-import { Icon } from '../../../../@generic/component/icon/icon';
-import { BACKGROUND_COLOR_PALETTE } from '../../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
-import { useVibration } from '../../../../@generic/hook/use-vibration.hook';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
+import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 
-import type { ColorPaletteVariant } from '../../../../@generic/type/color-palette-variant.type';
+import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { UserIconNameEnum } from '@budgie/contracts';
 import type { ClassValue } from 'clsx';
 
