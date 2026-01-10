@@ -1,16 +1,14 @@
 import {
-    MccCategoryEntityInterface,
     RuleActionEntityInterface,
     RuleActionTypeEnum,
     RuleConditionMatchTypeEnum,
     RuleWithRelationsEntityInterface,
     TransactionAssociationEnum,
     TransactionCreateInputInterface,
-    TransactionEntityInterface,
     TransactionEntryAssociationEnum,
-    TransactionEntryEntityInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    TransactionWithEntriesMccCategoryEntityInterface
 } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -22,6 +20,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { Transaction } from '../../@generic/type/transaction.type';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertTransactionToTransfer } from '../util/convert-transaction-to-transfer.util';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
@@ -29,15 +28,7 @@ import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 const BATCH_SIZE = 20;
 const BATCH_DELAY_MS = 50;
 
-type TransactionWithEntries = TransactionEntityInterface & {
-    readonly [TransactionAssociationEnum.ENTRIES]: Array<
-        TransactionEntryEntityInterface & {
-            readonly [TransactionEntryAssociationEnum.MCC_CATEGORY]: MccCategoryEntityInterface | null;
-        }
-    >;
-};
-
-const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntries): number => {
+const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMccCategoryEntityInterface): number => {
     const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
     if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
@@ -59,7 +50,9 @@ const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntries): 
     return 0;
 };
 
-const convertTransactionForRuleEvaluation = (transaction: TransactionWithEntries): TransactionCreateInputInterface => {
+const convertTransactionForRuleEvaluation = (
+    transaction: TransactionWithEntriesMccCategoryEntityInterface
+): TransactionCreateInputInterface => {
     const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
     return {
@@ -83,10 +76,8 @@ class RuleEngineService {
             return;
         }
 
-        for (let index = 0; index < transactionIds.length; index += 1) {
-            const transactionId = transactionIds[index];
+        for (const [index, transactionId] of transactionIds.entries()) {
             const input = transactionInputs[index];
-
             // eslint-disable-next-line no-await-in-loop
             await this.applyRulesToTransaction(transactionId, input, rules);
         }
@@ -99,41 +90,30 @@ class RuleEngineService {
             return;
         }
 
-        await this.processMatchingTransactions(rule);
+        await this.processTransactionBatch(rule, 0);
     }
 
-    private async processMatchingTransactions(rule: RuleWithRelationsEntityInterface): Promise<void> {
-        let offset = 0;
+    private async processTransactionBatch(rule: RuleWithRelationsEntityInterface, offset: number): Promise<void> {
+        await new Promise<void>(resolve => {
+            setTimeout(resolve, BATCH_DELAY_MS);
+        });
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        while (true) {
-            // Yield to UI thread before each batch
-            // eslint-disable-next-line no-await-in-loop
-            await new Promise<void>(resolve => {
-                setTimeout(resolve, BATCH_DELAY_MS);
-            });
+        const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
 
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.getAllWithOffset(BATCH_SIZE, offset);
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
 
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
+        await this.applyRuleToTransactionBatch(rule, transactions);
 
-            // eslint-disable-next-line no-await-in-loop
-            await this.applyRuleToTransactionBatch(rule, transactions);
-
-            offset += BATCH_SIZE;
-
-            if (transactions.length < BATCH_SIZE) {
-                break;
-            }
+        if (transactions.length >= BATCH_SIZE) {
+            await this.processTransactionBatch(rule, offset + BATCH_SIZE);
         }
     }
 
     private async applyRuleToTransactionBatch(
         rule: RuleWithRelationsEntityInterface,
-        transactions: TransactionWithEntries[]
+        transactions: TransactionWithEntriesMccCategoryEntityInterface[]
     ): Promise<void> {
         for (const transaction of transactions) {
             const input = convertTransactionForRuleEvaluation(transaction);
@@ -156,10 +136,10 @@ class RuleEngineService {
             return;
         }
 
-        await db.transaction(async tx => {
+        await db.transaction(async transaction => {
             for (const rule of matchingRules) {
                 // eslint-disable-next-line no-await-in-loop
-                await this.applyRuleActions(transactionId, rule.actions, tx);
+                await this.applyRuleActions(transactionId, rule.actions, transaction);
             }
         });
     }
@@ -175,36 +155,32 @@ class RuleEngineService {
     }
 
     private async applyRuleActionsToTransaction(transactionId: number, actions: RuleActionEntityInterface[]): Promise<void> {
-        await db.transaction(async tx => {
-            await this.applyRuleActions(transactionId, actions, tx);
+        await db.transaction(async transaction => {
+            await this.applyRuleActions(transactionId, actions, transaction);
         });
     }
 
-    private async applyRuleActions(
-        transactionId: number,
-        actions: RuleActionEntityInterface[],
-        tx: Parameters<Parameters<typeof db.transaction>[0]>[0]
-    ): Promise<void> {
+    private async applyRuleActions(transactionId: number, actions: RuleActionEntityInterface[], transaction: Transaction): Promise<void> {
         for (const action of actions) {
             switch (action.type) {
                 case RuleActionTypeEnum.SET_CATEGORY:
                     if (isDefined(action.categoryId)) {
                         // eslint-disable-next-line no-await-in-loop
-                        await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, tx);
+                        await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, transaction);
                     }
                     break;
 
                 case RuleActionTypeEnum.ADD_TAG:
                     if (isDefined(action.tagId)) {
                         // eslint-disable-next-line no-await-in-loop
-                        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId }], tx);
+                        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId }], transaction);
                     }
                     break;
 
                 case RuleActionTypeEnum.CONVERT_TO_TRANSFER:
                     if (isDefined(action.accountId)) {
                         // eslint-disable-next-line no-await-in-loop
-                        await convertTransactionToTransfer({ transactionId, targetAccountId: action.accountId, tx });
+                        await convertTransactionToTransfer({ transactionId, targetAccountId: action.accountId, tx: transaction });
                     }
                     break;
 

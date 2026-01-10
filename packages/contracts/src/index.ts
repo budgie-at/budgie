@@ -159,6 +159,7 @@ export { TransactionEntityRelations } from './transaction/relations/transaction-
 export type { TransactionEntityInterface } from './transaction/entity/transaction-entity.interface';
 export type { TransactionWithRelationsEntityInterface } from './transaction/entity/transaction-with-relations-entity.interface';
 export type { TransactionWithEntriesEntityInterface } from './transaction/entity/transaction-with-entries-entity.interface';
+export type { TransactionWithEntriesMccCategoryEntityInterface } from './transaction/entity/transaction-with-entries-mcc-category-entity.interface';
 
 export type { TransactionIncomeWithRelationsEntityInterface } from './transaction/entity/transaction-income-with-relations-entity.interface';
 export type { TransactionExpenseWithRelationsEntityInterface } from './transaction/entity/transaction-expense-with-relations-entity.interface';
@@ -225,6 +226,7 @@ export type { TransactionEntryCreateInputInterface } from './transaction-entry/i
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';
+export type { TransactionEntryWithMccCategoryEntityInterface } from './transaction-entry/entity/transaction-entry-with-mcc-category-entity.interface';
 export type { TransactionEntryCreateEntityInterface } from './transaction-entry/entity/transaction-entry-create-entity.interface';
 
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
@@ -277,6 +279,7 @@ export type { RuleEntityInterface } from './rule/entity/rule-entity.interface';
 export type { RuleCreateEntityInterface } from './rule/entity/rule-create-entity.interface';
 export type { RuleUpdateEntityInterface } from './rule/entity/rule-update-entity.interface';
 export type { RuleWithRelationsEntityInterface } from './rule/entity/rule-with-relations-entity.interface';
+export type { RuleWithActionsRelationsEntityInterface } from './rule/entity/rule-with-actions-relations-entity.interface';
 export type { RuleCreateInputInterface } from './rule/input/rule-create-input.interface';
 export type { RuleUpdateInputInterface } from './rule/input/rule-update-input.interface';
 
@@ -300,6 +303,7 @@ export { RuleActionEntitySchema } from './rule-action/schema/rule-action-entity.
 export { RuleActionCreateEntitySchema } from './rule-action/schema/rule-action-create-entity.schema';
 export { RuleActionCreateInputSchema } from './rule-action/schema/rule-action-create-input.schema';
 export type { RuleActionEntityInterface } from './rule-action/entity/rule-action-entity.interface';
+export type { RuleActionWithRelationsEntityInterface } from './rule-action/entity/rule-action-with-relations-entity.interface';
 export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-action-create-entity.interface';
 export type { RuleActionCreateInputInterface } from './rule-action/input/rule-action-create-input.interface';
 export { RuleActionRepository } from './rule-action/repository/rule-action.repository';
