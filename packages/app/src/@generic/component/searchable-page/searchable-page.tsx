@@ -6,6 +6,7 @@ import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { IdInterface } from '../../interface/id.interface';
 import { FloatingAddButton } from '../floating-add-button/floating-add-button';
+import { MenuSpacer } from '../menu-spacer/menu-spacer';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
@@ -59,6 +60,7 @@ export const SearchablePage = <T extends IdInterface>({
             <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
         )}
 
+        <MenuSpacer />
         <FloatingAddButton renderBottomSheet={renderBottomSheet} />
     </Page>
 );
