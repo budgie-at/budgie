@@ -43,7 +43,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose }: Props) => {
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
 
     const containerStyle = { paddingBottom: bottom };
-    const pointerEvents = isOpen ? 'box-none' : 'none';
 
     const handleClose = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -79,69 +78,66 @@ export const CreateTransactionMenu = ({ isOpen, onClose }: Props) => {
         runOnJS(handleClose)();
     });
 
+    if (!isOpen) {
+        return null;
+    }
+
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents={pointerEvents}>
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             <GestureDetector gesture={tapGesture}>
                 <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
             </GestureDetector>
 
-            {isOpen && (
-                <>
-                    <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
-                        <AiButton onPress={handleAiPress} />
-                    </View>
+            <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
+                <AiButton onPress={handleAiPress} />
+            </View>
 
-                    <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
-                        <View className="items-end" pointerEvents="box-none">
-                            <ActionItem
-                                icon={UserIconNameEnum.TrendingDown}
-                                label={t`Expense`}
-                                variant="destructive"
-                                index={0}
-                                totalItems={TOTAL_ITEMS}
-                                isOpen={isOpen}
-                                onPress={handleCreateExpense}
-                            />
-                            <ActionItem
-                                icon={UserIconNameEnum.TrendingUp}
-                                label={t`Income`}
-                                variant="positive"
-                                index={1}
-                                totalItems={TOTAL_ITEMS}
-                                isOpen={isOpen}
-                                onPress={handleCreateIncome}
-                            />
-                            <ActionItem
-                                icon={UserIconNameEnum.ArrowLeftRight}
-                                label={t`Transfer`}
-                                variant="warning"
-                                index={2}
-                                totalItems={TOTAL_ITEMS}
-                                isOpen={isOpen}
-                                onPress={handleCreateTransfer}
-                            />
-                            <ActionItem
-                                icon={UserIconNameEnum.Wallet}
-                                label={t`Account`}
-                                variant="secondary"
-                                index={3}
-                                totalItems={TOTAL_ITEMS}
-                                isOpen={isOpen}
-                                onPress={handleCreateAccount}
-                            />
+            <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+                <View className="items-end" pointerEvents="box-none">
+                    <ActionItem
+                        icon={UserIconNameEnum.TrendingDown}
+                        label={t`Expense`}
+                        variant="destructive"
+                        index={0}
+                        totalItems={TOTAL_ITEMS}
+                        isOpen={isOpen}
+                        onPress={handleCreateExpense}
+                    />
+                    <ActionItem
+                        icon={UserIconNameEnum.TrendingUp}
+                        label={t`Income`}
+                        variant="positive"
+                        index={1}
+                        totalItems={TOTAL_ITEMS}
+                        isOpen={isOpen}
+                        onPress={handleCreateIncome}
+                    />
+                    <ActionItem
+                        icon={UserIconNameEnum.ArrowLeftRight}
+                        label={t`Transfer`}
+                        variant="warning"
+                        index={2}
+                        totalItems={TOTAL_ITEMS}
+                        isOpen={isOpen}
+                        onPress={handleCreateTransfer}
+                    />
+                    <ActionItem
+                        icon={UserIconNameEnum.Wallet}
+                        label={t`Account`}
+                        variant="secondary"
+                        index={3}
+                        totalItems={TOTAL_ITEMS}
+                        isOpen={isOpen}
+                        onPress={handleCreateAccount}
+                    />
 
-                            <Pressable onPress={handleClose}>
-                                <Animated.View
-                                    className="bg-primary rounded-full items-center justify-center w-18 h-18"
-                                    style={buttonStyle}
-                                >
-                                    <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
-                                </Animated.View>
-                            </Pressable>
-                        </View>
-                    </View>
-                </>
-            )}
+                    <Pressable onPress={handleClose}>
+                        <Animated.View className="bg-primary rounded-full items-center justify-center w-18 h-18" style={buttonStyle}>
+                            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
+                        </Animated.View>
+                    </Pressable>
+                </View>
+            </View>
         </View>
     );
 };
