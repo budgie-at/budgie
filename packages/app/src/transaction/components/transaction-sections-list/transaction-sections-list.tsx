@@ -15,6 +15,7 @@ interface Props {
     readonly listEmptyState: ReactElement;
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
+    readonly footerSpacerMultiplier?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -36,7 +37,14 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
 const getStickyIndices = (sections: (TransactionListItemType | undefined)[]) =>
     sections.reduce<number[]>((headers, item, idx) => (item?.type === 'header' ? [...headers, idx] : headers), []);
 
-export const TransactionSectionsList = ({ sections, onEndReached, listEmptyState, balanceAdjustmentLabel, categoriesLabel }: Props) => {
+export const TransactionSectionsList = ({
+    sections,
+    onEndReached,
+    listEmptyState,
+    balanceAdjustmentLabel,
+    categoriesLabel,
+    footerSpacerMultiplier
+}: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
 
     const flatData: TransactionListItemType[] = sections.flatMap(({ date, transactions }) => [
@@ -55,6 +63,8 @@ export const TransactionSectionsList = ({ sections, onEndReached, listEmptyState
     const isEmpty = flatData.length === 0;
     const contentContainerStyle = { gap: 16, ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const }) };
 
+    const listFooter = <MenuSpacer multiplier={footerSpacerMultiplier} />;
+
     return (
         <LegendList
             data={flatData}
@@ -69,7 +79,7 @@ export const TransactionSectionsList = ({ sections, onEndReached, listEmptyState
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyState}
             getItemType={getItemType}
-            ListFooterComponent={MenuSpacer}
+            ListFooterComponent={listFooter}
         />
     );
 };
