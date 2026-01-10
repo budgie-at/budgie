@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { MenuSpacer } from '../../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
@@ -88,8 +87,6 @@ export default function AccountDetails() {
             </View>
 
             <TransactionList accountId={id} />
-
-            <MenuSpacer />
         </Page>
     );
 }
