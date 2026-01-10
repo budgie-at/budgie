@@ -1,13 +1,15 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import React, { ComponentProps, FC, Ref, useImperativeHandle, useRef } from 'react';
+import React, { FC, Ref, useImperativeHandle, useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
-import { BottomSheetBackdrop } from '../bottom-sheet-backdrop/bottom-sheet-backdrop';
+import { BottomSheetCloseableBackdrop } from '../bottom-sheet-closeable-backdrop/bottom-sheet-closeable-backdrop';
+import { BottomSheetNonCloseableBackdrop } from '../bottom-sheet-non-closeable-backdrop/bottom-sheet-non-closeable-backdrop';
 
 import type { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import type { BottomSheetFooterProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter';
+import type { ComponentProps } from 'react';
 
 interface Props extends Omit<ComponentProps<typeof BottomSheetModal>, 'ref' | 'enablePanDownToClose'> {
     readonly index?: number;
@@ -53,10 +55,7 @@ export const BottomSheet = (props: Props) => {
         })
     );
 
-    const backdropPressBehavior = isCloseable ? 'close' : 'none';
-    const renderBackdrop = (backdropProps: ComponentProps<typeof BottomSheetBackdrop>) => (
-        <BottomSheetBackdrop {...backdropProps} pressBehavior={backdropPressBehavior} />
-    );
+    const backdropComponent = isCloseable ? BottomSheetCloseableBackdrop : BottomSheetNonCloseableBackdrop;
 
     return (
         <Modal
@@ -64,7 +63,7 @@ export const BottomSheet = (props: Props) => {
             handleClassName={cn('bg-primary-reverse rounded-t-3xl', handleClassName)}
             enableDynamicSizing={enableDynamicSizing}
             backgroundClassName="bg-primary-reverse"
-            backdropComponent={renderBackdrop}
+            backdropComponent={backdropComponent}
             handleIndicatorClassName="bg-primary"
             footerComponent={footerComponent}
             enableContentPanningGesture
