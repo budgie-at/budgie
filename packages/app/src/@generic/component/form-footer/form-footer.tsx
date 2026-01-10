@@ -36,7 +36,7 @@ export const FormFooter = ({
     children
 }: Props) => {
     const { t } = useLingui();
-    const { ref, handleConfirm, handleOpen } = useConfirmAction(onDelete ?? emptyFn);
+    const { ref, handleConfirm, handleOpen, isLoading } = useConfirmAction(onDelete ?? emptyFn);
 
     return (
         <>
@@ -68,6 +68,7 @@ export const FormFooter = ({
                 description={t`This action cannot be undone.`}
                 buttonText={deleteConfirmButtonText}
                 onSubmit={handleConfirm}
+                isLoading={isLoading}
                 icon={UserIconNameEnum.Info}
                 title={deleteConfirmTitle}
             />
