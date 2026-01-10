@@ -23,10 +23,11 @@ const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 interface Props {
     readonly isOpen: boolean;
     readonly onClose: () => void;
+    readonly accountId?: number;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
-export const CreateTransactionMenu = ({ isOpen, onClose }: Props) => {
+export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => {
     const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
@@ -51,17 +52,17 @@ export const CreateTransactionMenu = ({ isOpen, onClose }: Props) => {
 
     const handleCreateExpense = () => {
         onClose();
-        router.push('/create-transaction/expense');
+        router.push({ pathname: '/create-transaction/expense', params: { accountId } });
     };
 
     const handleCreateIncome = () => {
         onClose();
-        router.push('/create-transaction/income');
+        router.push({ pathname: '/create-transaction/income', params: { accountId } });
     };
 
     const handleCreateTransfer = () => {
         onClose();
-        router.push('/create-transaction/transfer');
+        router.push({ pathname: '/create-transaction/transfer', params: { accountId } });
     };
 
     const handleCreateAccount = () => {
