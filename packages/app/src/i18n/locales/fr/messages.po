@@ -235,7 +235,7 @@ msgid "Balance"
 msgstr "Solde"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:30
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
@@ -287,7 +287,7 @@ msgstr "Espèces"
 #: src/app/(tabs)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:31
 msgid "Categories"
 msgstr "Catégories"
 
@@ -1069,7 +1069,7 @@ msgid "No languages found"
 msgstr "Aucune langue trouvée"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
 
@@ -1096,7 +1096,7 @@ msgstr "Aucune étiquette ne correspond à votre recherche"
 msgid "No Tags Yet"
 msgstr "Aucune étiquette pour le moment"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
@@ -1406,7 +1406,7 @@ msgstr "Démarrer l'importation"
 msgid "Start Sync"
 msgstr "Démarrer la synchronisation"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:35
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajoutant des transactions manuellement"
 
@@ -1586,7 +1586,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 

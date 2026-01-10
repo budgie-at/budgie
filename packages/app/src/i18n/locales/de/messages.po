@@ -235,7 +235,7 @@ msgid "Balance"
 msgstr "Saldo"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:30
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -287,7 +287,7 @@ msgstr "Bargeld"
 #: src/app/(tabs)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:31
 msgid "Categories"
 msgstr "Kategorien"
 
@@ -1069,7 +1069,7 @@ msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
@@ -1096,7 +1096,7 @@ msgstr "Keine Tags entsprechen Ihrer Suche"
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
@@ -1406,7 +1406,7 @@ msgstr "Import starten"
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:37
+#: src/transaction/components/transaction-list/transaction-list.tsx:35
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
@@ -1586,7 +1586,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:34
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
