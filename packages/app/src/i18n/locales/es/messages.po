@@ -27,7 +27,7 @@ msgstr "{accountTitle} se restaurará en tu vista principal y se incluirá en lo
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} se restaurará en tu vista principal."
 
-#: src/app/(main)/settings/archived.tsx:22
+#: src/app/(tabs)/settings/archived.tsx:22
 msgid "{archivedAccountsCount} account"
 msgstr "{archivedAccountsCount} cuenta"
 
@@ -35,7 +35,7 @@ msgstr "{archivedAccountsCount} cuenta"
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
-#: src/app/(main)/settings/inactive.tsx:21
+#: src/app/(tabs)/settings/inactive.tsx:21
 msgid "{inactiveAccountsCount} account"
 msgstr "{inactiveAccountsCount} cuenta"
 
@@ -53,16 +53,16 @@ msgstr "{percentage}% de ingresos"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(main)/settings/index.tsx:55
+#: src/app/(tabs)/settings/index.tsx:54
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(main)/settings/index.tsx:134
+#: src/app/(tabs)/settings/index.tsx:133
 msgid "About"
 msgstr "Acerca de"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:23
+#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:42
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Cuenta"
@@ -154,7 +154,11 @@ msgstr "Ajuste"
 msgid "AI Assistant"
 msgstr "Asistente IA"
 
-#: src/app/(main)/settings/index.tsx:139
+#: src/@generic/component/animated-action-menu/ai-action-button/ai-action-button.tsx:67
+msgid "AI Voice"
+msgstr ""
+
+#: src/app/(tabs)/settings/index.tsx:138
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -170,7 +174,7 @@ msgstr "Todas las columnas han sido asignadas"
 msgid "All Time"
 msgstr "Todo el tiempo"
 
-#: src/app/(main)/settings/index.tsx:56
+#: src/app/(tabs)/settings/index.tsx:55
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
@@ -182,7 +186,7 @@ msgstr "Asignado"
 msgid "Already syncing"
 msgstr "Ya sincronizando"
 
-#: src/app/(main)/settings/import.tsx:196
+#: src/app/(tabs)/settings/import.tsx:196
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:104
 msgid "Amount"
 msgstr "Cantidad"
@@ -201,7 +205,7 @@ msgstr "Token de API"
 msgid "App Lock"
 msgstr "Bloqueo de aplicación"
 
-#: src/app/(main)/settings/index.tsx:114
+#: src/app/(tabs)/settings/index.tsx:113
 msgid "Appearance"
 msgstr "Apariencia"
 
@@ -221,8 +225,8 @@ msgstr "Archivar"
 msgid "Archive Account?"
 msgstr "¿Archivar cuenta?"
 
-#: src/app/(main)/settings/archived.tsx:21
-#: src/app/(main)/settings/index.tsx:100
+#: src/app/(tabs)/settings/archived.tsx:21
+#: src/app/(tabs)/settings/index.tsx:99
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
@@ -246,7 +250,7 @@ msgstr "Sincronizar automáticamente cuentas y transacciones de Monobank"
 msgid "Available Columns"
 msgstr "Columnas disponibles"
 
-#: src/app/(tabs)/analytics.tsx:66
+#: src/app/(tabs)/analytics.tsx:67
 msgid "Balance"
 msgstr "Saldo"
 
@@ -280,14 +284,14 @@ msgstr "Autenticación biométrica"
 msgid "Borrowed"
 msgstr "Prestado"
 
-#: src/app/(main)/settings/index.tsx:137
+#: src/app/(tabs)/settings/index.tsx:136
 msgid "Budgie"
 msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(main)/settings/import.tsx:255
+#: src/app/(tabs)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
@@ -300,7 +304,7 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(main)/settings/categories.tsx:45
+#: src/app/(tabs)/settings/categories.tsx:45
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:33
@@ -329,7 +333,7 @@ msgstr ""
 "IMPORTANTE: Alimentos (carne, verduras, comestibles) van en la categoría Comestibles/Comida, NO en Acciones/Inversión.\n"
 "Responde solo con el número de categoría."
 
-#: src/app/(main)/settings/import.tsx:180
+#: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
@@ -386,7 +390,7 @@ msgstr "Borrar saldos en caché y recalcular"
 msgid "Close"
 msgstr "Cerrar"
 
-#: src/app/(main)/settings/import.tsx:240
+#: src/app/(tabs)/settings/import.tsx:240
 msgid "Comment"
 msgstr "Comentario"
 
@@ -487,7 +491,7 @@ msgstr "Crear cuentas"
 msgid "Create and copy the personal token"
 msgstr "Crear y copiar el token personal"
 
-#: src/app/(main)/settings/index.tsx:94
+#: src/app/(tabs)/settings/index.tsx:93
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -520,7 +524,7 @@ msgstr "Crear etiqueta"
 msgid "Create Tags"
 msgstr "Crear etiquetas"
 
-#: src/app/(main)/settings/tags.tsx:37
+#: src/app/(tabs)/settings/tags.tsx:37
 msgid "Create tags to organize your transactions"
 msgstr "Crea etiquetas para organizar tus transacciones"
 
@@ -555,7 +559,7 @@ msgstr "Moneda"
 msgid "Current Balance"
 msgstr "Saldo actual"
 
-#: src/app/(main)/settings/categories.tsx:37
+#: src/app/(tabs)/settings/categories.tsx:37
 msgid "Custom categories you create will appear here"
 msgstr "Las categorías personalizadas que crees aparecerán aquí"
 
@@ -563,13 +567,13 @@ msgstr "Las categorías personalizadas que crees aparecerán aquí"
 msgid "Dark Mode"
 msgstr "Modo oscuro"
 
-#: src/app/(main)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:124
 msgid "Data management"
 msgstr "Gestión de datos"
 
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
-#: src/app/(main)/settings/import.tsx:188
+#: src/app/(tabs)/settings/import.tsx:188
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Fecha"
@@ -743,7 +747,7 @@ msgstr "Ingrese su token API de Monobank"
 msgid "Enter your PIN"
 msgstr "Ingresa tu PIN"
 
-#: src/app/(main)/settings/import.tsx:110
+#: src/app/(tabs)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -790,7 +794,7 @@ msgstr "Exportar base de datos"
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
-#: src/app/(main)/settings/import.tsx:212
+#: src/app/(tabs)/settings/import.tsx:212
 msgid "External ID"
 msgstr "ID externo"
 
@@ -835,7 +839,7 @@ msgstr "Obteniendo nuevos..."
 msgid "Fill in the account details"
 msgstr "Completa los detalles de la cuenta"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(tabs)/settings/import.tsx:149
 msgid "Fix Errors"
 msgstr "Corregir errores"
 
@@ -855,19 +859,19 @@ msgstr "de"
 msgid "FROM"
 msgstr "DE"
 
-#: src/app/(main)/settings/import.tsx:219
+#: src/app/(tabs)/settings/import.tsx:219
 msgid "From Account"
 msgstr "Desde cuenta"
 
-#: src/app/(main)/settings/import.tsx:233
+#: src/app/(tabs)/settings/import.tsx:233
 msgid "From Amount"
 msgstr "Monto origen"
 
-#: src/app/(main)/settings/import.tsx:226
+#: src/app/(tabs)/settings/import.tsx:226
 msgid "From Currency"
 msgstr "Moneda origen"
 
-#: src/app/(main)/settings/index.tsx:77
+#: src/app/(tabs)/settings/index.tsx:76
 msgid "General"
 msgstr "General"
 
@@ -883,7 +887,7 @@ msgstr "Alemán (Alemania)"
 msgid "Get API Token"
 msgstr "Obtener token API"
 
-#: src/app/(main)/settings/index.tsx:66
+#: src/app/(tabs)/settings/index.tsx:65
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Ocultar saldos de cuentas y patrimonio neto al tomar capturas de pantalla"
 
@@ -905,7 +909,7 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
-#: src/app/(main)/settings/import.tsx:141
+#: src/app/(tabs)/settings/import.tsx:141
 msgid "Import Failed"
 msgstr "Importación fallida"
 
@@ -917,8 +921,8 @@ msgstr "Importar transacciones desde un archivo CSV"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importar una base de datos reemplazará todos los datos actuales. La aplicación se reiniciará después de la importación. Esta acción no se puede deshacer."
 
-#: src/app/(main)/settings/inactive.tsx:20
-#: src/app/(main)/settings/index.tsx:107
+#: src/app/(tabs)/settings/inactive.tsx:20
+#: src/app/(tabs)/settings/index.tsx:106
 msgid "Inactive Accounts"
 msgstr "Cuentas inactivas"
 
@@ -926,17 +930,17 @@ msgstr "Cuentas inactivas"
 msgid "Include in Net Worth"
 msgstr "Incluir en patrimonio neto"
 
-#: src/app/(tabs)/analytics.tsx:65
+#: src/app/(tabs)/analytics.tsx:66
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Ingreso"
 
-#: src/app/(tabs)/analytics.tsx:73
+#: src/app/(tabs)/analytics.tsx:74
 msgid "Income by category"
 msgstr "Ingresos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:95
+#: src/app/(tabs)/analytics.tsx:96
 msgid "Income by Tag"
 msgstr "Ingresos por etiqueta"
 
@@ -945,7 +949,7 @@ msgstr "Ingresos por etiqueta"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/app/(main)/settings/import.tsx:247
+#: src/app/(tabs)/settings/import.tsx:247
 msgid "Is Planned"
 msgstr "Es planificado"
 
@@ -973,19 +977,19 @@ msgstr "Prestado"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(main)/settings/index.tsx:86
+#: src/app/(tabs)/settings/index.tsx:85
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(main)/settings/index.tsx:93
+#: src/app/(tabs)/settings/index.tsx:92
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
-#: src/app/(main)/settings/import.tsx:156
+#: src/app/(tabs)/settings/import.tsx:156
 msgid "Map CSV Columns"
 msgstr "Asignar columnas CSV"
 
-#: src/app/(main)/settings/import.tsx:157
+#: src/app/(tabs)/settings/import.tsx:157
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
@@ -1055,7 +1059,7 @@ msgstr "No hay cuentas archivadas"
 msgid "No categories found"
 msgstr "No se encontraron categorías"
 
-#: src/app/(main)/settings/categories.tsx:37
+#: src/app/(tabs)/settings/categories.tsx:37
 msgid "No categories match your search"
 msgstr "No hay categorías que coincidan con tu búsqueda"
 
@@ -1079,7 +1083,7 @@ msgstr "Aún no hay contactos"
 msgid "No currencies found"
 msgstr "No se encontraron monedas"
 
-#: src/app/(main)/settings/categories.tsx:36
+#: src/app/(tabs)/settings/categories.tsx:36
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
@@ -1104,8 +1108,8 @@ msgstr "No se encontraron idiomas"
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
-#: src/app/(main)/settings/categories.tsx:36
-#: src/app/(main)/settings/tags.tsx:36
+#: src/app/(tabs)/settings/categories.tsx:36
+#: src/app/(tabs)/settings/tags.tsx:36
 msgid "No Results"
 msgstr "Sin resultados"
 
@@ -1118,11 +1122,11 @@ msgstr "No se detectó voz"
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
 
-#: src/app/(main)/settings/tags.tsx:37
+#: src/app/(tabs)/settings/tags.tsx:37
 msgid "No tags match your search"
 msgstr "No hay etiquetas que coincidan con tu búsqueda"
 
-#: src/app/(main)/settings/tags.tsx:36
+#: src/app/(tabs)/settings/tags.tsx:36
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "Aún no hay etiquetas"
@@ -1147,7 +1151,7 @@ msgstr "Nota (opcional)"
 msgid "Open Monobank to get your token"
 msgstr "Abra Monobank para obtener su token"
 
-#: src/app/(main)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:82
 msgid "Organization"
 msgstr "Organización"
 
@@ -1155,7 +1159,7 @@ msgstr "Organización"
 msgid "Over:"
 msgstr "Exceso:"
 
-#: src/app/(tabs)/analytics.tsx:55
+#: src/app/(tabs)/analytics.tsx:56
 msgid "Overview"
 msgstr "Resumen"
 
@@ -1217,7 +1221,7 @@ msgstr "Portugués (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
 
-#: src/app/(main)/settings/index.tsx:52
+#: src/app/(tabs)/settings/index.tsx:51
 msgid "Privacy"
 msgstr "Privacidad"
 
@@ -1267,7 +1271,7 @@ msgstr "Cuenta de ahorros"
 msgid "Savings accounts"
 msgstr "Cuentas de ahorro"
 
-#: src/app/(main)/settings/index.tsx:65
+#: src/app/(tabs)/settings/index.tsx:64
 msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
 
@@ -1276,7 +1280,7 @@ msgstr "Protección de capturas de pantalla"
 msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
-#: src/app/(main)/settings/categories.tsx:46
+#: src/app/(tabs)/settings/categories.tsx:46
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:98
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1298,7 +1302,7 @@ msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
-#: src/app/(main)/settings/tags.tsx:46
+#: src/app/(tabs)/settings/tags.tsx:46
 #: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
@@ -1308,7 +1312,7 @@ msgstr "Buscar etiquetas..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Protege tu aplicación con PIN y Face ID"
 
-#: src/app/(main)/settings/index.tsx:60
+#: src/app/(tabs)/settings/index.tsx:59
 msgid "Security"
 msgstr "Seguridad"
 
@@ -1316,11 +1320,11 @@ msgstr "Seguridad"
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
 
-#: src/app/(main)/settings/import.tsx:54
-#: src/app/(main)/settings/import.tsx:57
-#: src/app/(main)/settings/import.tsx:58
-#: src/app/(main)/settings/import.tsx:59
-#: src/app/(main)/settings/import.tsx:60
+#: src/app/(tabs)/settings/import.tsx:54
+#: src/app/(tabs)/settings/import.tsx:57
+#: src/app/(tabs)/settings/import.tsx:58
+#: src/app/(tabs)/settings/import.tsx:59
+#: src/app/(tabs)/settings/import.tsx:60
 msgid "Select a valid column"
 msgstr "Selecciona una columna válida"
 
@@ -1373,15 +1377,15 @@ msgstr "Seleccionado"
 msgid "Set Return Date"
 msgstr "Establecer fecha de devolución"
 
-#: src/app/(main)/settings/index.tsx:49
+#: src/app/(tabs)/settings/index.tsx:48
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/app/(main)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:117
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
-#: src/app/(main)/settings/index.tsx:117
+#: src/app/(tabs)/settings/index.tsx:116
 msgid "Show Cents"
 msgstr "Mostrar centavos"
 
@@ -1413,15 +1417,15 @@ msgstr "Español"
 msgid "Spanish (Spain)"
 msgstr "Español (España)"
 
-#: src/app/(tabs)/analytics.tsx:84
+#: src/app/(tabs)/analytics.tsx:85
 msgid "Spending by Category"
 msgstr "Gastos por categoría"
 
-#: src/app/(tabs)/analytics.tsx:106
+#: src/app/(tabs)/analytics.tsx:107
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
-#: src/app/(tabs)/analytics.tsx:61
+#: src/app/(tabs)/analytics.tsx:62
 msgid "Spent"
 msgstr "Gastado"
 
@@ -1429,7 +1433,7 @@ msgstr "Gastado"
 msgid "Split by Category"
 msgstr "Dividir por categoría"
 
-#: src/app/(main)/settings/import.tsx:149
+#: src/app/(tabs)/settings/import.tsx:149
 msgid "Start Import"
 msgstr "Iniciar importación"
 
@@ -1441,7 +1445,7 @@ msgstr "Iniciar sincronización"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
-#: src/app/(tabs)/analytics.tsx:41
+#: src/app/(tabs)/analytics.tsx:42
 msgid "Statistics"
 msgstr "Estadísticas"
 
@@ -1487,7 +1491,7 @@ msgstr "Sincronizando historial..."
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
-#: src/app/(main)/settings/tags.tsx:45
+#: src/app/(tabs)/settings/tags.tsx:45
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1553,11 +1557,11 @@ msgstr "a"
 msgid "TO"
 msgstr "PARA"
 
-#: src/app/(main)/settings/import.tsx:172
+#: src/app/(tabs)/settings/import.tsx:172
 msgid "To Account"
 msgstr "A cuenta"
 
-#: src/app/(main)/settings/import.tsx:204
+#: src/app/(tabs)/settings/import.tsx:204
 msgid "To Currency"
 msgstr "Moneda destino"
 
@@ -1687,15 +1691,15 @@ msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
-#: src/app/(main)/settings/index.tsx:108
+#: src/app/(tabs)/settings/index.tsx:107
 msgid "View and activate hidden accounts"
 msgstr "Ver y activar cuentas ocultas"
 
-#: src/app/(main)/settings/index.tsx:87
+#: src/app/(tabs)/settings/index.tsx:86
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(main)/settings/index.tsx:101
+#: src/app/(tabs)/settings/index.tsx:100
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 

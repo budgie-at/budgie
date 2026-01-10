@@ -2,48 +2,50 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withSequence,
+    withSpring,
+    withTiming
+} from 'react-native-reanimated';
 
 import { useVibration } from '../../../hook/use-vibration.hook';
 import { HapticPressable } from '../../haptic-pressable/haptic-pressable';
 import { Icon } from '../../icon/icon';
 
 interface Props {
-    readonly isOpen: boolean;
     readonly onClose: () => void;
-    readonly totalItems: number;
 }
 
-const BUTTON_SIZE = 52;
-const ICON_SIZE = 24;
-const ITEM_SPACING = 72;
-const SPRING_CONFIG = { damping: 14, stiffness: 160, mass: 0.6 };
-const AI_DELAY = 60;
+const BUTTON_SIZE = 56;
+const ICON_SIZE = 28;
+const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
 
-export const AiActionButton = ({ isOpen, onClose, totalItems }: Props) => {
+export const AiActionButton = ({ onClose }: Props) => {
     const [, hapticImpact] = useVibration();
 
-    const translateY = useSharedValue(0);
     const scale = useSharedValue(0);
     const rotation = useSharedValue(0);
-
-    const targetY = -(ITEM_SPACING * (totalItems + 1));
+    const pulseScale = useSharedValue(1);
 
     useEffect(() => {
-        if (isOpen) {
-            const delay = AI_DELAY;
-            translateY.value = withDelay(delay, withSpring(targetY, SPRING_CONFIG));
-            scale.value = withDelay(delay, withSpring(1, SPRING_CONFIG));
-            rotation.value = withDelay(delay, withSpring(360, { ...SPRING_CONFIG, stiffness: 120 }));
-        } else {
-            translateY.value = withSpring(0, SPRING_CONFIG);
-            scale.value = withSpring(0, SPRING_CONFIG);
-            rotation.value = withSpring(0, SPRING_CONFIG);
-        }
-    }, [isOpen, rotation, scale, targetY, translateY]);
+        scale.value = withSpring(1, SPRING_CONFIG);
+        rotation.value = withSequence(withTiming(-10, { duration: 50 }), withSpring(0, { damping: 8, stiffness: 300 }));
+        pulseScale.value = withRepeat(
+            withSequence(
+                withTiming(1.08, { duration: 800, easing: Easing.inOut(Easing.ease) }),
+                withTiming(1, { duration: 800, easing: Easing.inOut(Easing.ease) })
+            ),
+            -1,
+            true
+        );
+    }, [pulseScale, rotation, scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: translateY.value }, { scale: scale.value }, { rotate: `${rotation.value}deg` }]
+        transform: [{ scale: scale.value * pulseScale.value }, { rotate: `${rotation.value}deg` }]
     }));
 
     const handlePress = () => {
@@ -55,9 +57,9 @@ export const AiActionButton = ({ isOpen, onClose, totalItems }: Props) => {
     const buttonStyle = { width: BUTTON_SIZE, height: BUTTON_SIZE };
 
     return (
-        <Animated.View className="absolute right-0" style={animatedStyle}>
+        <Animated.View style={animatedStyle}>
             <HapticPressable
-                className="bg-tertiary rounded-full items-center justify-center shadow-lg shadow-black/30"
+                className="bg-tertiary rounded-full items-center justify-center shadow-lg shadow-tertiary/50"
                 style={buttonStyle}
                 onPress={handlePress}
             >

@@ -73,10 +73,12 @@ export const AnimatedActionMenu = ({ isOpen, onClose, items, triggerIcon = UserI
                 <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
             </GestureDetector>
 
+            <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
+                <AiActionButton onClose={onClose} />
+            </View>
+
             <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
                 <View className="items-end" pointerEvents="box-none">
-                    <AiActionButton isOpen={isOpen} onClose={onClose} totalItems={items.length} />
-
                     {items.map((item, index) => (
                         <AnimatedActionItem
                             key={item.label}
