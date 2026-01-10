@@ -52,11 +52,7 @@ export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
                 contentContainerStyle={contentContainerStyle}
             >
                 <View className="px-5xl">
-                    <BottomSheetHeader
-                        size="lg"
-                        align="center"
-                        title={t`Create Rule?`}
-                    />
+                    <BottomSheetHeader size="lg" align="center" title={t`Create Rule?`} />
 
                     <SuggestRuleConditionSelector
                         data={data}
@@ -76,8 +72,22 @@ export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
                     </View>
 
                     <View className="gap-y-md mt-3xl">
-                        <Button content={t`Create Rule`} onPress={handleCreateRule} variant="ghost" size="md" leftIcon={UserIconNameEnum.Sparkles} disabled={isSubmitDisabled} />
-                        <Button content={t`Configure Rule`} onPress={handleConfigureRule} variant="secondary" size="md" leftIcon={UserIconNameEnum.Settings} disabled={isSubmitDisabled} />
+                        <Button
+                            content={t`Create Rule`}
+                            onPress={handleCreateRule}
+                            variant="ghost"
+                            size="md"
+                            leftIcon={UserIconNameEnum.Sparkles}
+                            disabled={isSubmitDisabled}
+                        />
+                        <Button
+                            content={t`Configure Rule`}
+                            onPress={handleConfigureRule}
+                            variant="secondary"
+                            size="md"
+                            leftIcon={UserIconNameEnum.Settings}
+                            disabled={isSubmitDisabled}
+                        />
                         <Button content={t`No thanks`} onPress={close} variant="secondary" size="md" disabled={isCreating} />
                     </View>
                 </View>

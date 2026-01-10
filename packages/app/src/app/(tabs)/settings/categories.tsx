@@ -76,7 +76,16 @@ export default function Categories() {
         void bottomSheetRef.current?.open();
     };
 
-    const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
+    const renderCard = (category: CategoryEntityInterface) => (
+        <DeletableRow
+            deleteConfirmTitle={t`Delete Category`}
+            deleteConfirmDescription={t`Are you sure you want to delete this category? This action cannot be undone.`}
+            id={category.id}
+            onDelete={handleDeleteCategory}
+        >
+            <CategoryCard onOpen={handleOpenCategory} category={category} />
+        </DeletableRow>
+    );
 
     return (
         <SearchablePage

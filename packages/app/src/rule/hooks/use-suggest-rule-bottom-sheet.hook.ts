@@ -56,18 +56,21 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
     const [applyToExisting, setApplyToExisting] = useState(true);
     const [isCreating, setIsCreating] = useState(false);
 
-    useImperativeHandle(ref, (): BottomSheetInterface<SuggestRuleDataInterface> => ({
-        open: (openData?: SuggestRuleDataInterface) => {
-            if (isDefined(openData)) {
-                setData(openData);
-                setSelectedFields([RuleConditionFieldEnum.TITLE]);
-                setApplyToExisting(true);
-            }
-            modalRef.current?.open();
-        },
-        close: () => void modalRef.current?.close(),
-        dismiss: () => void modalRef.current?.dismiss()
-    }));
+    useImperativeHandle(
+        ref,
+        (): BottomSheetInterface<SuggestRuleDataInterface> => ({
+            open: (openData?: SuggestRuleDataInterface) => {
+                if (isDefined(openData)) {
+                    setData(openData);
+                    setSelectedFields([RuleConditionFieldEnum.TITLE]);
+                    setApplyToExisting(true);
+                }
+                modalRef.current?.open();
+            },
+            close: () => void modalRef.current?.close(),
+            dismiss: () => void modalRef.current?.dismiss()
+        })
+    );
 
     const toggleField = (field: RuleConditionFieldEnum) => {
         setSelectedFields(current => {
@@ -83,7 +86,10 @@ export const useSuggestRuleBottomSheet = ({ ref, onRuleCreated }: UseSuggestRule
         }
 
         modalRef.current?.close();
-        router.push({ pathname: '/rules/create', params: { prefill: JSON.stringify(buildPrefillData(selectedFields, data, applyToExisting)) } });
+        router.push({
+            pathname: '/rules/create',
+            params: { prefill: JSON.stringify(buildPrefillData(selectedFields, data, applyToExisting)) }
+        });
     };
 
     const handleCreateRule = async () => {

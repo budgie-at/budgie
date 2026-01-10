@@ -28,9 +28,7 @@ export const RuleConditionAccountSelector = ({ index }: Props) => {
 
     const handleOpenSheet = () => void sheetRef.current?.open();
 
-    const renderSelector = ({
-        field: { onChange }
-    }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => {
+    const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => {
         const handleSelect = (newAccountId: number) => {
             onChange(String(newAccountId));
         };

@@ -18,10 +18,7 @@ export class RuleActionRepository {
     }
 
     async create(input: RuleActionCreateEntityInterface, tx?: TX): Promise<RuleActionEntityInterface> {
-        const [action] = await (tx ?? this.db)
-            .insert(RuleActionEntityTable)
-            .values([input])
-            .returning();
+        const [action] = await (tx ?? this.db).insert(RuleActionEntityTable).values([input]).returning();
 
         return action;
     }
@@ -31,10 +28,7 @@ export class RuleActionRepository {
             return [];
         }
 
-        return (tx ?? this.db)
-            .insert(RuleActionEntityTable)
-            .values(inputs)
-            .returning();
+        return (tx ?? this.db).insert(RuleActionEntityTable).values(inputs).returning();
     }
 
     async deleteByRuleId(ruleId: number, tx?: TX): Promise<void> {

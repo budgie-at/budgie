@@ -16,8 +16,7 @@ export const hasCategoryOrTagsChanged = (original: OriginalValues, updated: Upda
     const originalTagsSet = new Set(original.tagIds.filter(isDefined));
     const updatedTagsSet = new Set(updated.tagIds.filter(isDefined));
 
-    const tagsChanged =
-        originalTagsSet.size !== updatedTagsSet.size || [...originalTagsSet].some(tagId => !updatedTagsSet.has(tagId));
+    const tagsChanged = originalTagsSet.size !== updatedTagsSet.size || [...originalTagsSet].some(tagId => !updatedTagsSet.has(tagId));
 
     return categoryChanged || tagsChanged;
 };

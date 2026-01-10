@@ -22,6 +22,7 @@ interface Props {
     readonly description: string;
     readonly isLoading?: boolean;
     readonly buttonText: string;
+    readonly onCancel?: EmptyFn;
     readonly onSubmit: EmptyFn;
     readonly icon: UserIconNameEnum;
     readonly title: string;
@@ -47,12 +48,15 @@ const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
 );
 
 export const ConfirmActionBottomSheet = (props: Props) => {
-    const { ref, icon, isLoading, isDisabled, onSubmit, variant, title, buttonText, description } = props;
+    const { ref, icon, isLoading, isDisabled, onSubmit, variant, title, buttonText, description, onCancel } = props;
 
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
 
-    const handleCancel = () => void ref.current?.close();
+    const handleCancel = () => {
+        void ref.current?.close();
+        onCancel?.();
+    };
 
     const buttonDisabled = isLoading || isDisabled;
     const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : buttonText;

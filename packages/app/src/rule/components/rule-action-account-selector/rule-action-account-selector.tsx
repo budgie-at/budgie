@@ -1,9 +1,4 @@
-import {
-    RuleConditionFieldEnum,
-    RuleConditionOperatorEnum,
-    RuleCreateInputInterface,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { RuleConditionFieldEnum, RuleConditionOperatorEnum, RuleCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 

@@ -1,16 +1,8 @@
-import {
-    AccountTypeEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
-import {
-    accountRepository,
-    transactionEntryRepository,
-    transactionRepository
-} from '../../@generic/drizzle/db/db';
+import { accountRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 

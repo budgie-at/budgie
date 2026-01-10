@@ -52,7 +52,12 @@ export default function RulesPage() {
         const order = index + 1;
 
         return (
-            <DeletableRow id={rule.id} onDelete={handleDeleteRule}>
+            <DeletableRow
+                deleteConfirmTitle={t`Delete Rule`}
+                deleteConfirmDescription={t`Are you sure you want to delete this rule? This action cannot be undone.`}
+                id={rule.id}
+                onDelete={handleDeleteRule}
+            >
                 <RuleCard onOpen={handleOpenRule} order={order} rule={rule} />
             </DeletableRow>
         );

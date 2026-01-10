@@ -12,7 +12,9 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 export const RuleActionEntityTable = sqliteTable(
     'rule_actions',
     withBaseEntityTableColumns({
-        ruleId: int('rule_id', { mode: 'number' }).notNull().references(() => RuleEntityTable.id, { onDelete: 'cascade' }),
+        ruleId: int('rule_id', { mode: 'number' })
+            .notNull()
+            .references(() => RuleEntityTable.id, { onDelete: 'cascade' }),
         type: text('type', { enum: convertEnumToDrizzleEnum(RuleActionTypeEnum) })
             .$type<RuleActionTypeEnum>()
             .notNull(),
@@ -23,9 +25,6 @@ export const RuleActionEntityTable = sqliteTable(
     () => [
         check('rule_action_set_category_requires_category_id', sql`type != 'SET_CATEGORY' OR category_id IS NOT NULL`),
         check('rule_action_add_tag_requires_tag_id', sql`type != 'ADD_TAG' OR tag_id IS NOT NULL`),
-        check(
-            'rule_action_convert_to_transfer_requires_account_id',
-            sql`type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL`
-        )
+        check('rule_action_convert_to_transfer_requires_account_id', sql`type != 'CONVERT_TO_TRANSFER' OR account_id IS NOT NULL`)
     ]
 );

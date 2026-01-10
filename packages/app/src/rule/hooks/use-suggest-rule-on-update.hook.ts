@@ -4,7 +4,7 @@ import { Control, useWatch } from 'react-hook-form';
 
 import { BottomSheetInterface } from '../../@generic/interface/bottom-sheet.interface';
 import { hasCategoryOrTagsChanged } from '../../transaction/utils/has-category-or-tags-changed.util';
-import { isBankSyncTransaction } from '../../transaction/utils/is-bank-sync-transaction.util';
+import { isExternalTransaction } from '../../transaction/utils/is-external-transaction.util';
 import { SuggestRuleDataInterface } from '../interface/suggest-rule-data.interface';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 import { hasMatchingRule } from '../util/has-matching-rule.util';
@@ -26,7 +26,7 @@ export const useSuggestRuleOnUpdate = ({ transaction, transactionInput, control 
 
     const originalCategoryId = transactionInput.entries[0]?.categoryId ?? null;
 
-    const isBankSync = isBankSyncTransaction(transaction);
+    const isExternal = isExternalTransaction(transaction);
     const hasChanges = hasCategoryOrTagsChanged(
         { categoryId: originalCategoryId, tagIds: transactionInput.tagIds },
         { categoryId: watchedCategoryId, tagIds: watchedTagIds }
@@ -41,7 +41,7 @@ export const useSuggestRuleOnUpdate = ({ transaction, transactionInput, control 
     };
 
     const matchingRuleExists = hasMatchingRule(rules, transactionInput, suggestRuleData);
-    const shouldShowAddRule = isBankSync && hasChanges && !ruleCreatedInSession && !matchingRuleExists;
+    const shouldShowAddRule = isExternal && hasChanges && !ruleCreatedInSession && !matchingRuleExists;
 
     const handleRuleCreated = () => void setRuleCreatedInSession(true);
 
