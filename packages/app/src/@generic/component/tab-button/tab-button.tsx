@@ -41,6 +41,10 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     const [, hapticImpact] = useVibration();
 
     const handlePress = (event: GestureResponderEvent) => {
+        if (isFocused) {
+            return;
+        }
+
         hapticImpact(ImpactFeedbackStyle.Light);
 
         if (navigateTo) {

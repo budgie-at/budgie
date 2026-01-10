@@ -11,8 +11,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
+import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { useGetSettingsQuery } from '../../query/use-get-settings.query';
 
 const Gradient = styled(LinearGradient);
 const colors = ['rgba(1, 255, 136, 0.10)', 'rgba(0, 0, 0, 0)'] as const;
@@ -21,10 +21,10 @@ const start = { x: 0, y: 0 };
 const end = { x: 1, y: 1 };
 
 export const PinEnabledCard = () => {
-    const { settings } = useGetSettingsQuery();
+    const { settings } = useSettingsContext();
     const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useAuthContext();
 
-    const isBiometricEnabled = settings?.isBiometricEnabled === true;
+    const { isBiometricEnabled } = settings;
 
     const handleToggleBiometric = async (value: boolean) => {
         await updateSettingsMutation({ isBiometricEnabled: value });

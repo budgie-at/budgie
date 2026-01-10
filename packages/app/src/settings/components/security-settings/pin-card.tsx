@@ -1,12 +1,12 @@
-import { useGetSettingsQuery } from '../../query/use-get-settings.query';
+import { useSettingsContext } from '../../context/settings.context';
 
 import { PinDisabledCard } from './pin-disabled-card';
 import { PinEnabledCard } from './pin-enabled-card';
 
 export const PinCard = () => {
-    const { settings } = useGetSettingsQuery();
+    const { settings } = useSettingsContext();
 
-    const isPinEnabled = settings?.isPinEnabled === true;
+    const { isPinEnabled } = settings;
 
     return isPinEnabled ? <PinEnabledCard /> : <PinDisabledCard />;
 };

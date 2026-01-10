@@ -1,6 +1,6 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -16,8 +16,9 @@ export const useAccountSelector = (args: UseAccountSelectorParams) => {
     const { accountId, excludeAccountTypes } = args;
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
 
-    const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
-    const { balance } = useAccountBalanceQuery(accountId ?? 0);
+    const hasValidAccountId = isPositiveNumber(accountId);
+    const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0, { skip: !hasValidAccountId });
+    const { balance } = useAccountBalanceQuery(accountId ?? 0, { skip: !hasValidAccountId });
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const formattedBalance = formatDigits(balance, selectedAccount?.instrument.symbol ?? defaultInstrument.symbol);
