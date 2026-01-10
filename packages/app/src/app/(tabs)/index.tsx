@@ -3,11 +3,13 @@ import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import { useSQLiteContext } from 'expo-sqlite';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AnimatedSectionList } from '../../@generic/component/animated-section-list/animated-section-list';
 import { CollapsibleHeader } from '../../@generic/component/collapsible-header/collapsible-header';
+import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../@generic/constant/floating-tab-bar.constant';
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
 import { AccountGridItem } from '../../account/component/account-grid-item/account-grid-item';
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
@@ -39,11 +41,14 @@ const pairAccountsIntoRows = (accounts: AccountWithInstrumentEntityInterface[]):
 
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
+    const { bottom } = useSafeAreaInsets();
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
 
     const scrollY = useSharedValue(0);
+
+    const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom, paddingHorizontal: 20 };
 
     const accountEntries = typedObjectEntries(accountsGrouped);
 
@@ -77,7 +82,7 @@ export default function HomePage() {
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
-                    contentContainerClassName="px-5xl pb-24"
+                    contentContainerStyle={contentContainerStyle}
                 />
             ) : (
                 <View className="flex-1 px-5xl">

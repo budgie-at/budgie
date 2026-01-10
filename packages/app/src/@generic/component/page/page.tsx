@@ -29,6 +29,7 @@ export const Page = ({ className, header, footer, children, safeEdges = DEFAULT_
         <View {...rest} className={cn('flex-1', className)} style={style}>
             {header}
             <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
+
             {footer}
         </View>
     );

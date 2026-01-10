@@ -1,23 +1,29 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
+import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
 
 import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
 
+import type { Href } from 'expo-router';
 import type { TabTriggerSlotProps } from 'expo-router/ui';
 import type { GestureResponderEvent } from 'react-native';
 
-interface TabButtonProps extends TabTriggerSlotProps {
+interface TabButtonProps extends Omit<TabTriggerSlotProps, 'href'> {
     readonly icon: UserIconNameEnum;
+    readonly navigateTo?: Href;
 }
 
-const tabVariants = cva('rounded-5xl p-xl', {
+const TAB_SIZE = 52;
+const ICON_SIZE = 24;
+
+const tabVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isFocused: {
-            true: 'bg-ghost-background',
-            false: ''
+            true: 'bg-primary',
+            false: 'bg-secondary-foreground/25'
         }
     }
 });
@@ -25,24 +31,31 @@ const tabVariants = cva('rounded-5xl p-xl', {
 const tabIconVariants = cva('', {
     variants: {
         isFocused: {
-            true: 'stroke-[2.5] text-primary',
-            false: 'stroke-2 text-primary/40'
+            true: 'text-primary-reverse',
+            false: 'text-primary'
         }
     }
 });
 
-export const TabButton = ({ children, isFocused = false, onPress, icon, style: _, ...rest }: TabButtonProps) => {
+export const TabButton = ({ children, isFocused = false, onPress, icon, navigateTo, style: _, ...rest }: TabButtonProps) => {
     const [, hapticImpact] = useVibration();
 
     const handlePress = (event: GestureResponderEvent) => {
         hapticImpact(ImpactFeedbackStyle.Light);
-        onPress?.(event);
+
+        if (navigateTo) {
+            router.push(navigateTo);
+        } else {
+            onPress?.(event);
+        }
     };
+
+    const tabStyle = { width: TAB_SIZE, height: TAB_SIZE };
 
     return (
         <Pressable {...rest} onPress={handlePress}>
-            <View className={tabVariants({ isFocused })}>
-                <Icon className={tabIconVariants({ isFocused })} icon={icon} size={24} />
+            <View className={tabVariants({ isFocused })} style={tabStyle}>
+                <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
         </Pressable>
     );

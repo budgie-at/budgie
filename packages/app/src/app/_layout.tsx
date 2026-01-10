@@ -106,7 +106,6 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/create-account" />
 
                                                     <Stack.Screen name="(main)/account/[id]/update" />
-                                                    <Stack.Screen name="(main)/account/[id]/details" />
 
                                                     <Stack.Screen name="(main)/create-transaction/expense" />
                                                     <Stack.Screen name="(main)/create-transaction/income" />
@@ -115,13 +114,6 @@ export default function RootLayout() {
                                                     <Stack.Screen name="(main)/transactions/[id]/expense" />
                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
-
-                                                    <Stack.Screen name="(main)/settings/index" />
-                                                    <Stack.Screen name="(main)/settings/pin" />
-                                                    <Stack.Screen name="(main)/settings/categories" />
-                                                    <Stack.Screen name="(main)/settings/tags" />
-                                                    <Stack.Screen name="(main)/settings/archived" />
-                                                    <Stack.Screen name="(main)/settings/import" />
 
                                                     <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                 </Stack>

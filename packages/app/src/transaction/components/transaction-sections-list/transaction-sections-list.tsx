@@ -2,6 +2,7 @@ import { LegendList } from '@legendapp/list';
 import { ReactElement } from 'react';
 import { Text, View } from 'react-native';
 
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
@@ -68,6 +69,7 @@ export const TransactionSectionsList = ({ sections, onEndReached, listEmptyState
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyState}
             getItemType={getItemType}
+            ListFooterComponent={MenuSpacer}
         />
     );
 };
