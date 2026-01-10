@@ -39,6 +39,7 @@
         "drizzle-orm": "^0.44.7",
         "expo": "~54.0.30",
         "expo-background-task": "~1.0.10",
+        "expo-blur": "^15.0.8",
         "expo-constants": "~18.0.12",
         "expo-contacts": "~15.0.11",
         "expo-dev-client": "~6.0.20",

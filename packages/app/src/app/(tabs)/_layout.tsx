@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { BlurView } from 'expo-blur';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,27 +25,29 @@ export default function TabsLayout() {
                 <TabTrigger name="settings" href="/settings" />
             </TabList>
 
-            <View className="absolute inset-x-0 bottom-0 flex-row items-center justify-between px-lg pb-lg" style={containerStyle}>
-                <View className="flex-row items-center gap-sm bg-secondary rounded-full px-md py-sm shadow-lg shadow-black/20">
-                    <TabTrigger name="home" asChild>
-                        <TabButton icon={UserIconNameEnum.Home} />
-                    </TabTrigger>
+            <BlurView className="absolute inset-x-0 bottom-0 overflow-hidden" intensity={50} tint="dark">
+                <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
+                    <View className="flex-row items-center gap-sm bg-secondary rounded-full px-md py-sm shadow-lg shadow-black/20">
+                        <TabTrigger name="home" asChild>
+                            <TabButton icon={UserIconNameEnum.Home} />
+                        </TabTrigger>
 
-                    <TabTrigger name="transactions" asChild>
-                        <TabButton icon={UserIconNameEnum.Receipt} />
-                    </TabTrigger>
+                        <TabTrigger name="transactions" asChild>
+                            <TabButton icon={UserIconNameEnum.Receipt} />
+                        </TabTrigger>
 
-                    <TabTrigger name="analytics" asChild>
-                        <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
-                    </TabTrigger>
+                        <TabTrigger name="analytics" asChild>
+                            <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
+                        </TabTrigger>
 
-                    <TabTrigger name="settings" asChild>
-                        <TabButton icon={UserIconNameEnum.Settings} />
-                    </TabTrigger>
+                        <TabTrigger name="settings" asChild>
+                            <TabButton icon={UserIconNameEnum.Settings} />
+                        </TabTrigger>
+                    </View>
+
+                    <CreateTransactionTabButton />
                 </View>
-
-                <CreateTransactionTabButton />
-            </View>
+            </BlurView>
         </Tabs>
     );
 }

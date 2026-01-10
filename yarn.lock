@@ -1166,6 +1166,7 @@ __metadata:
     eas-build-cache-provider: "npm:^16.4.2"
     expo: "npm:~54.0.30"
     expo-background-task: "npm:~1.0.10"
+    expo-blur: "npm:^15.0.8"
     expo-constants: "npm:~18.0.12"
     expo-contacts: "npm:~15.0.11"
     expo-dev-client: "npm:~6.0.20"
@@ -10357,6 +10358,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10/d545dfb5ead250a424d1ad6b54f2c8772b1021f2f9f4dd45e15259cd94ae7c12604f4f71cc06205b086a44e2e7a6a94baf0ca445c6c2f8bf9bc90d894c2a5432
+  languageName: node
+  linkType: hard
+
+"expo-blur@npm:^15.0.8":
+  version: 15.0.8
+  resolution: "expo-blur@npm:15.0.8"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10/1dfe001d5d796e05d2065a5528ee53793e1ec67bca6bf87372fdf43b01dcb622af32253466b9cac94ed7402e9436a021cf82f7e5b0f4d7eff997cf72f867dd92
   languageName: node
   linkType: hard
 
