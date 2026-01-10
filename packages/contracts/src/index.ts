@@ -1,4 +1,4 @@
-
+/* eslint-disable max-lines */
 export { PRECISION } from './@generic/constant/precision.constant';
 
 export { ThemeEnum } from './@generic/enum/theme.enum';

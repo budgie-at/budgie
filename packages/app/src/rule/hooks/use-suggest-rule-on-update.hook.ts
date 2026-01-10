@@ -15,8 +15,7 @@ interface UseSuggestRuleOnUpdateOptions {
     readonly control: Control<TransactionCreateInputInterface>;
 }
 
-export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) => {
-    const { transaction, transactionInput, control } = options;
+export const useSuggestRuleOnUpdate = ({ transaction, transactionInput, control }: UseSuggestRuleOnUpdateOptions) => {
     const bottomSheetRef = useRef<BottomSheetInterface<SuggestRuleDataInterface>>(null);
     const [ruleCreatedInSession, setRuleCreatedInSession] = useState(false);
     const { rules } = useGetEnabledRulesQuery();
@@ -26,20 +25,19 @@ export const useSuggestRuleOnUpdate = (options: UseSuggestRuleOnUpdateOptions) =
     const watchedTagIds = useWatch({ control, name: 'tagIds' });
 
     const originalCategoryId = transactionInput.entries[0]?.categoryId ?? null;
-    const originalTagIds = transactionInput.tagIds;
 
     const isBankSync = isBankSyncTransaction(transaction);
     const hasChanges = hasCategoryOrTagsChanged(
-        { categoryId: originalCategoryId, tagIds: originalTagIds },
+        { categoryId: originalCategoryId, tagIds: transactionInput.tagIds },
         { categoryId: watchedCategoryId, tagIds: watchedTagIds }
     );
 
     const suggestRuleData: SuggestRuleDataInterface = {
+        tagIds: watchedTagIds,
         title: transaction.title,
         comment: transaction.comment,
-        mccCode: transaction.entries[0]?.mccCategory?.mcc ?? null,
-        tagIds: watchedTagIds,
-        categoryId: watchedEntries[0]?.categoryId ?? null
+        categoryId: watchedEntries[0]?.categoryId ?? null,
+        mccCode: transaction.entries[0]?.mccCategory?.mcc ?? null
     };
 
     const matchingRuleExists = hasMatchingRule(rules, transactionInput, suggestRuleData);

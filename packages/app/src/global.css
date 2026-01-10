@@ -4,6 +4,10 @@
 
 @import "nativewind/theme";
 
+:root {
+    --font-sans: FixelDisplay;
+}
+
 @theme {
     --padding-xxs: 0.143rem;  /* 2px  */
     --padding-xs: 0.286rem;   /* 4px  */

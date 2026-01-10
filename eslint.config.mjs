@@ -50,7 +50,6 @@ export default defineConfig(
             'one-var': 'off',
             'new-cap': 'off',
             'lines-between-class-members': 'off',
-            'react/prefer-read-only-props': 'error',
             'no-duplicate-imports': 'off',
             'no-ternary': 'off',
             'no-void': 'off',
@@ -339,6 +338,7 @@ export default defineConfig(
         rules: {
             'max-statements': ['error', 15],
             '@rnw-community/no-complex-jsx-logic': 'error',
+            'react/prefer-read-only-props': 'error',
             'react/jsx-curly-brace-presence': [
                 'error',
                 {
