@@ -6,7 +6,6 @@ import { EmptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 
-
 interface Props {
     readonly isCreating: boolean;
     readonly close: EmptyFn;
