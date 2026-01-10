@@ -4,7 +4,8 @@ import React, { ComponentProps, FC, Ref, useImperativeHandle, useRef } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
-import { BottomSheetBackdrop } from '../bottom-sheet-backdrop/bottom-sheet-backdrop';
+import { BottomSheetCloseableBackdrop } from '../bottom-sheet-closeable-backdrop/bottom-sheet-closeable-backdrop';
+import { BottomSheetNonCloseableBackdrop } from '../bottom-sheet-non-closeable-backdrop/bottom-sheet-non-closeable-backdrop';
 
 import type { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import type { BottomSheetFooterProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter';
@@ -53,27 +54,24 @@ export const BottomSheet = (props: Props) => {
         })
     );
 
-    const backdropPressBehavior = isCloseable ? 'close' : 'none';
-    const renderBackdrop = (backdropProps: ComponentProps<typeof BottomSheetBackdrop>) => (
-        <BottomSheetBackdrop {...backdropProps} pressBehavior={backdropPressBehavior} />
-    );
+    const backdropComponent = isCloseable ? BottomSheetCloseableBackdrop : BottomSheetNonCloseableBackdrop;
 
     return (
         <Modal
+            ref={modalRef}
+            index={index}
+            snapPoints={snapPoints}
+            topInset={top}
             className={cn('shadow-primary shadow-2xl rounded-t-3xl', className)}
             handleClassName={cn('bg-primary-reverse rounded-t-3xl', handleClassName)}
-            enableDynamicSizing={enableDynamicSizing}
             backgroundClassName="bg-primary-reverse"
-            backdropComponent={renderBackdrop}
             handleIndicatorClassName="bg-primary"
-            footerComponent={footerComponent}
-            enableContentPanningGesture
-            snapPoints={snapPoints}
-            stackBehavior="switch"
+            enableDynamicSizing={enableDynamicSizing}
             enablePanDownToClose={isCloseable}
-            ref={modalRef}
-            topInset={top}
-            index={index}
+            enableContentPanningGesture
+            stackBehavior="switch"
+            backdropComponent={backdropComponent}
+            footerComponent={footerComponent}
             {...rest}
         >
             {children}
