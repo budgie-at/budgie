@@ -1,20 +1,17 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
+import { TRANSACTION_TYPE } from '../../../transaction/constant/transaction-type.constant';
 import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-selector/rule-condition-value-enum-selector';
 
 interface Props {
     readonly index: number;
 }
 
-const TRANSACTION_TYPE_OPTIONS = [
-    { value: TransactionTypeEnum.EXPENSE, label: msg`Expense` },
-    { value: TransactionTypeEnum.INCOME, label: msg`Income` },
-    { value: TransactionTypeEnum.TRANSFER, label: msg`Transfer` },
-    { value: TransactionTypeEnum.DEBT, label: msg`Debt` },
-    { value: TransactionTypeEnum.ADJUSTMENT, label: msg`Adjustment` }
-];
+const TRANSACTION_TYPE_OPTIONS = typedObjectEntries(TRANSACTION_TYPE).map(([value, label]) => ({
+    value,
+    label
+}));
 
 export const RuleConditionTransactionTypeSelector = ({ index }: Props) => {
     const { t } = useLingui();

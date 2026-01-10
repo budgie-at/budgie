@@ -38,12 +38,12 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-/* jscpd:ignore-end */
-
 interface UpdateExpenseFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
+
+/* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {

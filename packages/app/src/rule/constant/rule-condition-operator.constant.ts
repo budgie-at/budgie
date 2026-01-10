@@ -1,7 +1,7 @@
 import { RuleConditionOperatorEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
-export const RULE_CONDITION_OPERATOR_LABELS = {
+export const RULE_CONDITION_OPERATOR = {
     [RuleConditionOperatorEnum.EQUALS]: msg`equals`,
     [RuleConditionOperatorEnum.NOT_EQUALS]: msg`not equals`,
     [RuleConditionOperatorEnum.CONTAINS]: msg`contains`,

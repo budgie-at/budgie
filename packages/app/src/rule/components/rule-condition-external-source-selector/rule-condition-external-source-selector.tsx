@@ -1,23 +1,17 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
+import { EXTERNAL_SOURCE } from '../../constant/external-source.constant';
 import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-selector/rule-condition-value-enum-selector';
 
 interface Props {
     readonly index: number;
 }
 
-const EXTERNAL_SOURCE_OPTIONS = [
-    { value: ExternalSourceEnum.MANUAL, label: msg`Manual` },
-    { value: ExternalSourceEnum.MONOBANK, label: msg`Monobank` },
-    { value: ExternalSourceEnum.PRIVATBANK, label: msg`Privatbank` },
-    { value: ExternalSourceEnum.REVOLUT, label: msg`Revolut` },
-    { value: ExternalSourceEnum.BINANCE, label: msg`Binance` },
-    { value: ExternalSourceEnum.COINBASE, label: msg`Coinbase` },
-    { value: ExternalSourceEnum.WISE, label: msg`Wise` },
-    { value: ExternalSourceEnum.CSV, label: msg`CSV` }
-];
+export const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({
+    value,
+    label
+}));
 
 export const RuleConditionExternalSourceSelector = ({ index }: Props) => {
     const { t } = useLingui();

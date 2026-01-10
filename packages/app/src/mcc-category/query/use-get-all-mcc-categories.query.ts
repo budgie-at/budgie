@@ -8,7 +8,7 @@ export const useGetAllMccCategoriesQuery = () => {
     const { data, updatedAt, error } = useLiveQuery(mccCategoryRepository.findAll());
 
     if (!isDefined(data)) {
-        return { isLoading: true, mccCategories: null, updatedAt: null, error };
+        return { isLoading: true, mccCategories: [] as typeof data, updatedAt: null, error };
     }
 
     return { mccCategories: data, isLoading: false, updatedAt, error };
