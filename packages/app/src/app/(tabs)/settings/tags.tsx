@@ -87,6 +87,7 @@ export default function Tags() {
                     ref={reassignRef}
                     selectedTag={null}
                     excludeTagIds={excludeTagIds}
+                    description={t`This tag has transactions. Select another tag to reassign them to.`}
                     onSelect={handleReassignSelect}
                 />
             ) : null}
