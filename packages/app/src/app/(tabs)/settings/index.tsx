@@ -9,7 +9,6 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -36,9 +35,8 @@ export default function SettingsPage() {
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
-    const navigateToTags = () => void router.push('/settings/tags');
+    const handleNavigateToTags = () => void router.push('/settings/tags');
 
-    const handleGoBack = () => void goBackOrReplace('/');
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
     };
@@ -46,7 +44,7 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page header={<PageHeader onGoBack={handleGoBack} className="border-b-0" size="md" title={t`Settings`} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withFloatingTabBar>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
@@ -89,7 +87,7 @@ export default function SettingsPage() {
                             variant="default"
                         />
                         <SettingsCard
-                            onPress={navigateToTags}
+                            onPress={handleNavigateToTags}
                             title={t`Manage Tags`}
                             description={t`Create and organize transaction tags`}
                             icon={UserIconNameEnum.Tag}

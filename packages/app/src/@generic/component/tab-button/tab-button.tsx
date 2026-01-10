@@ -16,13 +16,14 @@ interface TabButtonProps extends Omit<TabTriggerSlotProps, 'href'> {
     readonly navigateTo?: Href;
 }
 
-const TAB_SIZE = 48;
+const TAB_SIZE = 52;
+const ICON_SIZE = 24;
 
 const tabVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isFocused: {
             true: 'bg-primary',
-            false: ''
+            false: 'bg-secondary-foreground/25'
         }
     }
 });
@@ -31,7 +32,7 @@ const tabIconVariants = cva('', {
     variants: {
         isFocused: {
             true: 'text-primary-reverse',
-            false: 'text-muted-foreground'
+            false: 'text-primary'
         }
     }
 });
@@ -54,7 +55,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
     return (
         <Pressable {...rest} onPress={handlePress}>
             <View className={tabVariants({ isFocused })} style={tabStyle}>
-                <Icon className={tabIconVariants({ isFocused })} icon={icon} size={22} />
+                <Icon className={tabIconVariants({ isFocused })} icon={icon} size={ICON_SIZE} />
             </View>
         </Pressable>
     );

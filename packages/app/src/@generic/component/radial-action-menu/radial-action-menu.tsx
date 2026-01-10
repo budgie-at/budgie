@@ -3,6 +3,7 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
@@ -20,25 +21,21 @@ interface Props {
 
 const BACKDROP_OPACITY = 0.85;
 const ANIMATION_DURATION = 200;
-const BUTTON_SIZE = 76;
+const BUTTON_SIZE = 56;
 const ICON_SIZE = 24;
-const BUTTON_SCALE_ACTIVE = 0.9;
 const BUTTON_ROTATION_ACTIVE = 45;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 
 const useRadialMenuAnimations = (isOpen: boolean) => {
     const backdropOpacity = useSharedValue(0);
     const buttonRotation = useSharedValue(0);
-    const buttonScale = useSharedValue(1);
 
     if (isOpen) {
         backdropOpacity.value = withTiming(BACKDROP_OPACITY, { duration: ANIMATION_DURATION });
         buttonRotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
-        buttonScale.value = withSpring(BUTTON_SCALE_ACTIVE, SPRING_CONFIG);
     } else {
         backdropOpacity.value = withTiming(0, { duration: ANIMATION_DURATION });
         buttonRotation.value = withSpring(0, SPRING_CONFIG);
-        buttonScale.value = withSpring(1, SPRING_CONFIG);
     }
 
     const backdropStyle = useAnimatedStyle(() => ({
@@ -48,7 +45,7 @@ const useRadialMenuAnimations = (isOpen: boolean) => {
     const buttonStyle = useAnimatedStyle(() => ({
         width: BUTTON_SIZE,
         height: BUTTON_SIZE,
-        transform: [{ rotate: `${buttonRotation.value}deg` }, { scale: buttonScale.value }]
+        transform: [{ rotate: `${buttonRotation.value}deg` }]
     }));
 
     return { backdropStyle, buttonStyle };
@@ -56,6 +53,7 @@ const useRadialMenuAnimations = (isOpen: boolean) => {
 
 export const RadialActionMenu = ({ isOpen, onClose, items, triggerIcon = UserIconNameEnum.Plus }: Props) => {
     const [, hapticImpact] = useVibration();
+    const { bottom } = useSafeAreaInsets();
     const { backdropStyle, buttonStyle } = useRadialMenuAnimations(isOpen);
 
     const triggerClose = () => {
@@ -71,14 +69,16 @@ export const RadialActionMenu = ({ isOpen, onClose, items, triggerIcon = UserIco
         return null;
     }
 
+    const containerStyle = { paddingBottom: bottom, marginBottom: 4 };
+
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             <GestureDetector gesture={tapGesture}>
                 <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
             </GestureDetector>
 
-            <View className="absolute inset-x-0 bottom-0 items-center pb-4xl" pointerEvents="box-none">
-                <View className="items-center" pointerEvents="box-none">
+            <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+                <View className="items-end" pointerEvents="box-none">
                     {items.map((item, index) => (
                         <RadialActionItem
                             key={item.label}

@@ -38,7 +38,7 @@ export default function StatisticsPage() {
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Statistics`} />} withFloatingTabBar>
             <View className="pb-2xl">
                 <TransactionFilters
                     accountId={null}

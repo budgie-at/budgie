@@ -8,7 +8,7 @@ export default function TransactionsPage() {
     const { t } = useLingui();
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Transactions`} />} withFloatingTabBar>
             <TransactionList accountId={null} />
         </Page>
     );

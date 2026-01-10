@@ -23,8 +23,8 @@ export default function TabsLayout() {
                 <TabTrigger name="analytics" href="/analytics" />
             </TabList>
 
-            <View className="absolute inset-x-0 bottom-0 flex-row items-end justify-between px-lg pb-lg" style={containerStyle}>
-                <View className="flex-row items-center bg-background rounded-full px-sm py-sm shadow-lg shadow-black/20 border border-border">
+            <View className="absolute inset-x-0 bottom-0 flex-row items-center justify-between px-lg pb-lg" style={containerStyle}>
+                <View className="flex-row items-center gap-sm bg-secondary rounded-full px-md py-sm shadow-lg shadow-black/20">
                     <TabTrigger name="home" asChild>
                         <TabButton icon={UserIconNameEnum.Home} />
                     </TabTrigger>

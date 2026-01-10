@@ -20,16 +20,10 @@ export const CreateTransactionTabButton = () => {
     const handleOpen = () => {
         const items: RadialActionItemInterface[] = [
             {
-                icon: UserIconNameEnum.Wallet,
-                label: t`Account`,
-                variant: 'secondary',
-                onPress: () => void router.push('/(main)/create-account')
-            },
-            {
-                icon: TRANSACTION_ICON.TRANSFER,
-                label: t(TRANSACTION_TYPE.TRANSFER),
-                variant: TRANSACTION_COLOR.TRANSFER,
-                onPress: () => void router.push('/create-transaction/transfer')
+                icon: TRANSACTION_ICON.EXPENSE,
+                label: t(TRANSACTION_TYPE.EXPENSE),
+                variant: TRANSACTION_COLOR.EXPENSE,
+                onPress: () => void router.push('/create-transaction/expense')
             },
             {
                 icon: TRANSACTION_ICON.INCOME,
@@ -38,10 +32,16 @@ export const CreateTransactionTabButton = () => {
                 onPress: () => void router.push('/create-transaction/income')
             },
             {
-                icon: TRANSACTION_ICON.EXPENSE,
-                label: t(TRANSACTION_TYPE.EXPENSE),
-                variant: TRANSACTION_COLOR.EXPENSE,
-                onPress: () => void router.push('/create-transaction/expense')
+                icon: TRANSACTION_ICON.TRANSFER,
+                label: t(TRANSACTION_TYPE.TRANSFER),
+                variant: TRANSACTION_COLOR.TRANSFER,
+                onPress: () => void router.push('/create-transaction/transfer')
+            },
+            {
+                icon: UserIconNameEnum.Wallet,
+                label: t`Account`,
+                variant: 'secondary',
+                onPress: () => void router.push('/(main)/create-account')
             }
         ];
 
@@ -51,11 +51,7 @@ export const CreateTransactionTabButton = () => {
     const buttonStyle = { width: BUTTON_SIZE, height: BUTTON_SIZE };
 
     return (
-        <HapticPressable
-            className="bg-primary rounded-full items-center justify-center shadow-lg shadow-primary/30"
-            style={buttonStyle}
-            onPress={handleOpen}
-        >
+        <HapticPressable className="bg-primary rounded-full items-center justify-center" style={buttonStyle} onPress={handleOpen}>
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={24} />
         </HapticPressable>
     );
