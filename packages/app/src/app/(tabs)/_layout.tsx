@@ -7,8 +7,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
-import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
-import { CreateTransactionTabButton } from '../../transaction/components/create-transaction-tab-button/create-transaction-tab-button';
+import { CreateTransactionButton } from '../../transaction/components/create-transaction-button/create-transaction-button';
 
 const BLUR_HEIGHT = 150;
 const GRADIENT_COLORS = ['transparent', 'black'] as const;
@@ -60,11 +59,9 @@ export default function TabsLayout() {
                         </TabTrigger>
                     </View>
 
-                    <CreateTransactionTabButton />
+                    <CreateTransactionButton />
                 </View>
             </View>
-
-            <CreateTransactionMenu />
         </Tabs>
     );
 }

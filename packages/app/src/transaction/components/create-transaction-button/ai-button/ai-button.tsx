@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
-import { router } from 'expo-router';
 import { useEffect } from 'react';
 import Animated, {
     Easing,
@@ -12,17 +11,19 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { useVibration } from '../../../hook/use-vibration.hook';
-import { HapticPressable } from '../../haptic-pressable/haptic-pressable';
-import { Icon } from '../../icon/icon';
-import { useAnimatedActionMenu } from '../animated-action-menu.context';
+import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../../@generic/component/icon/icon';
+import { useVibration } from '../../../../@generic/hook/use-vibration.hook';
+
+interface Props {
+    readonly onPress: () => void;
+}
 
 const ICON_SIZE = 32;
 const PULSE_SCALE = 1.06;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
 
-export const AiActionButton = () => {
-    const { close } = useAnimatedActionMenu();
+export const AiButton = ({ onPress }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const scale = useSharedValue(0.01);
@@ -46,8 +47,7 @@ export const AiActionButton = () => {
 
     const handlePress = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
-        close();
-        router.push('/(main)/ai');
+        onPress();
     };
 
     return (

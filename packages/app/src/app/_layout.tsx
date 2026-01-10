@@ -17,7 +17,6 @@ import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
-import { AnimatedActionMenuProvider } from '../@generic/component/animated-action-menu/animated-action-menu.context';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -100,28 +99,26 @@ export default function RootLayout() {
                                     <AuthProvider>
                                         <AuthGuard>
                                             <AiProviderWrapper>
-                                                <AnimatedActionMenuProvider>
-                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                        <Stack.Screen name="(tabs)" />
+                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                    <Stack.Screen name="(tabs)" />
 
-                                                        <Stack.Screen name="(main)/pin" />
-                                                        <Stack.Screen name="(main)/create-account" />
+                                                    <Stack.Screen name="(main)/pin" />
+                                                    <Stack.Screen name="(main)/create-account" />
 
-                                                        <Stack.Screen name="(main)/account/[id]/update" />
-                                                        <Stack.Screen name="(main)/account/[id]/details" />
+                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                    <Stack.Screen name="(main)/account/[id]/details" />
 
-                                                        <Stack.Screen name="(main)/create-transaction/expense" />
-                                                        <Stack.Screen name="(main)/create-transaction/income" />
-                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                    <Stack.Screen name="(main)/create-transaction/expense" />
+                                                    <Stack.Screen name="(main)/create-transaction/income" />
+                                                    <Stack.Screen name="(main)/create-transaction/transfer" />
 
-                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                    <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                    <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                    <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                                    </Stack>
-                                                    <Toast />
-                                                </AnimatedActionMenuProvider>
+                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                </Stack>
+                                                <Toast />
                                             </AiProviderWrapper>
                                         </AuthGuard>
                                     </AuthProvider>
