@@ -8,7 +8,7 @@ interface Props {
     readonly index: number;
 }
 
-export const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({
+const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({
     value,
     label
 }));

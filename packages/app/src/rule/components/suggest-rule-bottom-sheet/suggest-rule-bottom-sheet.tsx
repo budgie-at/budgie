@@ -12,9 +12,9 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSuggestRuleBottomSheet } from '../../hooks/use-suggest-rule-bottom-sheet.hook';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
+import { SuggestRuleBottomSheetFooter } from '../suggest-rule-bottom-sheet-footer/suggest-rule-bottom-sheet-footer';
 import { SuggestRuleConditionSelector } from '../suggest-rule-condition-selector/suggest-rule-condition-selector';
 import { SuggestRuleDescription } from '../suggest-rule-description/suggest-rule-description';
-import { SuggestRuleBottomSheetFooter } from '../suggest-rule-bottom-sheet-footer/suggest-rule-bottom-sheet-footer';
 
 interface Props {
     readonly ref: Ref<BottomSheetInterface<SuggestRuleDataInterface> | null>;

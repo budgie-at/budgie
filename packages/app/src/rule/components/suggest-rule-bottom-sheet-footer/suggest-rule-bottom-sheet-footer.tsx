@@ -1,8 +1,11 @@
-import { EmptyFn } from '@rnw-community/shared';
-import { useLingui } from '@lingui/react/macro';
-import { Button } from '../../../@generic/component/button/button';
-import { View } from 'react-native';
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
+
+import { EmptyFn } from '@rnw-community/shared';
+
+import { Button } from '../../../@generic/component/button/button';
+
 
 interface Props {
     readonly isCreating: boolean;
