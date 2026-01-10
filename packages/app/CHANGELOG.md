@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/budgie-at/budgie/compare/v2.8.2...v2.9.0) (2026-01-10)
+
+### Features
+
+- **app:** add dynamic action menu with context-based create actions ([#247](https://github.com/budgie-at/budgie/issues/247)) ([107e43d](https://github.com/budgie-at/budgie/commit/107e43d55a5393f72dc5398358848a14de579f7e))
+
 ## [2.8.2](https://github.com/budgie-at/budgie/compare/v2.8.1...v2.8.2) (2026-01-10)
 
 ### Bug Fixes
