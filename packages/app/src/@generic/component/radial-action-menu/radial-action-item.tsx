@@ -21,8 +21,8 @@ interface Props {
     readonly onClose: () => void;
 }
 
-const ITEM_SIZE = 56;
-const ICON_SIZE = 24;
+const ITEM_SIZE = 48;
+const ICON_SIZE = 20;
 const ITEM_SPACING = 72;
 const STAGGER_DELAY = 40;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
@@ -72,14 +72,14 @@ export const RadialActionItem = ({ item, index, totalItems, isOpen, onClose }: P
     const containerStyle = { width: ITEM_SIZE, height: ITEM_SIZE };
 
     return (
-        <Animated.View className="absolute flex-row items-center" style={animatedStyle}>
-            <Text className="text-white text-sm font-medium mr-lg">{item.label}</Text>
-
+        <Animated.View className="absolute right-0 flex-row-reverse items-center" style={animatedStyle}>
             <Pressable onPress={handlePress}>
                 <View className={containerVariants({ variant: item.variant })} style={containerStyle}>
                     <Icon className={iconVariants({ variant: item.variant })} icon={item.icon} size={ICON_SIZE} />
                 </View>
             </Pressable>
+
+            <Text className="text-white text-sm font-medium mr-lg">{item.label}</Text>
         </Animated.View>
     );
 };
