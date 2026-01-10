@@ -1,12 +1,12 @@
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode, RefObject, useRef, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useVibration } from '../../hook/use-vibration.hook';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
+import { MenuSpacer } from '../menu-spacer/menu-spacer';
 
 interface Props<T extends IdInterface> {
     data: T[];
@@ -14,9 +14,6 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
     renderBottomSheet: (item: T | null, ref: RefObject<BottomSheetInterface | null>) => ReactNode;
 }
-
-const safeEdges = ['bottom'] as const;
-const listFooter = <SafeAreaView edges={safeEdges} />;
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 
@@ -49,7 +46,7 @@ export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSh
                 contentContainerClassName="gap-y-5xl pt-5xl"
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
-                ListFooterComponent={listFooter}
+                ListFooterComponent={MenuSpacer}
             />
 
             {renderBottomSheet(selectedItem, ref)}
