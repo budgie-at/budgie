@@ -1,11 +1,11 @@
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { ReactNode } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
+import { MenuSpacer } from '../menu-spacer/menu-spacer';
 
 interface Props<T extends IdInterface> {
     data: T[];
@@ -13,9 +13,6 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T) => ReactNode;
     children?: ReactNode;
 }
-
-const safeEdges = ['bottom'] as const;
-const listFooter = <SafeAreaView edges={safeEdges} />;
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 
@@ -41,7 +38,7 @@ export const SearchablePageList = <T extends IdInterface>({ data, onDelete, rend
                 contentContainerClassName="gap-y-5xl pt-5xl"
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
-                ListFooterComponent={listFooter}
+                ListFooterComponent={MenuSpacer}
             />
 
             {children}

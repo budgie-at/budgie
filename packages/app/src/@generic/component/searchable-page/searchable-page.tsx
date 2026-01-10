@@ -63,7 +63,5 @@ export const SearchablePage = <T extends IdInterface>({
         ) : (
             <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
         )}
-
-        <MenuSpacer />
     </Page>
 );
