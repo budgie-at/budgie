@@ -12,6 +12,7 @@ import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import type { AnimatedActionItemInterface } from '../../../@generic/component/animated-action-menu/animated-action-item.interface';
 
 const BUTTON_SIZE = 56;
+const ICON_SIZE = 24;
 
 export const CreateTransactionTabButton = () => {
     const { t } = useLingui();
@@ -52,7 +53,7 @@ export const CreateTransactionTabButton = () => {
 
     return (
         <HapticPressable className="bg-primary rounded-full items-center justify-center" style={buttonStyle} onPress={handleOpen}>
-            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={24} />
+            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={ICON_SIZE} />
         </HapticPressable>
     );
 };

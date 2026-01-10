@@ -25,6 +25,7 @@ const ANIMATION_DURATION = 200;
 const BUTTON_SIZE = 56;
 const ICON_SIZE = 24;
 const BUTTON_ROTATION_ACTIVE = 45;
+const CONTAINER_MARGIN_BOTTOM = 4;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 
 const useBackdropAnimation = (isOpen: boolean) => {
@@ -65,7 +66,7 @@ export const AnimatedActionMenu = ({ isOpen, onClose, items, triggerIcon = UserI
         return null;
     }
 
-    const containerStyle = { paddingBottom: bottom, marginBottom: 4 };
+    const containerStyle = { paddingBottom: bottom, marginBottom: CONTAINER_MARGIN_BOTTOM };
 
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">

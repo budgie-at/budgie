@@ -118,13 +118,6 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/transactions/[id]/income" />
                                                         <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                        <Stack.Screen name="(main)/settings/index" />
-                                                        <Stack.Screen name="(main)/settings/pin" />
-                                                        <Stack.Screen name="(main)/settings/categories" />
-                                                        <Stack.Screen name="(main)/settings/tags" />
-                                                        <Stack.Screen name="(main)/settings/archived" />
-                                                        <Stack.Screen name="(main)/settings/import" />
-
                                                         <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                     </Stack>
                                                     <Toast />

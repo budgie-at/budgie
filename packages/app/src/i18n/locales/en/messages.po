@@ -64,7 +64,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:42
+#: src/transaction/components/create-transaction-tab-button/create-transaction-tab-button.tsx:43
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
@@ -155,10 +155,6 @@ msgstr "Adjustment"
 #: src/transaction/components/create-transaction-bottom-sheet/create-transaction-bottom-sheet.tsx:87
 msgid "AI Assistant"
 msgstr "AI Assistant"
-
-#: src/@generic/component/animated-action-menu/ai-action-button/ai-action-button.tsx:67
-msgid "AI Voice"
-msgstr "AI Voice"
 
 #: src/app/(tabs)/settings/index.tsx:138
 msgid ""
