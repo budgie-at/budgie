@@ -1,0 +1,17 @@
+import { createContext, use } from 'react';
+
+import { emptyFn } from '@rnw-community/shared';
+
+import { CreateActionInterface } from '../interface/create-action.interface';
+
+interface CreateActionContextInterface {
+    createAction: CreateActionInterface | null;
+    setCreateAction: (action: CreateActionInterface | null) => void;
+}
+
+export const CreateActionContext = createContext<CreateActionContextInterface>({
+    createAction: null,
+    setCreateAction: emptyFn
+});
+
+export const useCreateActionContext = () => use(CreateActionContext);

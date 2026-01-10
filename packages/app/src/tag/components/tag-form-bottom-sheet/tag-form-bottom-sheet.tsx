@@ -45,18 +45,10 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved }: Props
         }
     });
 
-    const title = isEditing ? t`Edit Tag` : t`Create Tag`;
-    const description = isEditing ? t`Update the tag name` : t`Add a new tag to organize your transactions`;
+    const submitLabel = isEditing ? t`Save` : t`Create`;
 
     return (
-        <FormBottomSheet
-            onDismiss={handleCancel}
-            onCancel={handleCancel}
-            onSubmit={onSubmit}
-            title={title}
-            description={description}
-            ref={ref}
-        >
+        <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
             <FormBottomSheetTitleField
                 placeholder={t`e.g., Business, Personal, Vacation`}
                 maxLength={TAG_TITLE_MAX_LENGTH}

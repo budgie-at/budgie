@@ -1,18 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ComponentProps } from 'react';
+import { ReactNode } from 'react';
 import { TextInput } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { IdInterface } from '../../interface/id.interface';
-import { FloatingAddButton } from '../floating-add-button/floating-add-button';
-import { MenuSpacer } from '../menu-spacer/menu-spacer';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
 import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
 
-interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof SearchablePageList<T>>, 'data'> {
+interface Props<T extends IdInterface> {
     title: string;
     search: string;
     data: T[] | null;
@@ -22,6 +20,9 @@ interface Props<T extends IdInterface> extends Omit<ComponentProps<typeof Search
     emptyStateDescription: string;
     emptyStateIcon: UserIconNameEnum;
     onSearchChange: (search: string) => void;
+    onDelete: (id: number) => Promise<void>;
+    renderCard: (item: T) => ReactNode;
+    children?: ReactNode;
 }
 
 export const SearchablePage = <T extends IdInterface>({
@@ -30,13 +31,13 @@ export const SearchablePage = <T extends IdInterface>({
     search,
     title,
     renderCard,
-    renderBottomSheet,
     searchPlaceholder,
     onSearchChange,
     emptyStateTitle,
     emptyStateIcon,
     emptyStateDescription,
-    onGoBack
+    onGoBack,
+    children
 }: Props<T>) => (
     <Page
         header={
@@ -55,12 +56,11 @@ export const SearchablePage = <T extends IdInterface>({
         }
     >
         {isNotEmptyArray(data) ? (
-            <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard} renderBottomSheet={renderBottomSheet} />
+            <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard}>
+                {children}
+            </SearchablePageList>
         ) : (
             <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
         )}
-
-        <MenuSpacer />
-        <FloatingAddButton renderBottomSheet={renderBottomSheet} />
     </Page>
 );

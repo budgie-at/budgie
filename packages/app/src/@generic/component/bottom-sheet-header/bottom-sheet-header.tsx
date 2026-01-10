@@ -13,7 +13,7 @@ interface Props {
     readonly title: string;
     readonly icon?: UserIconNameEnum;
     readonly className?: string;
-    readonly description: string;
+    readonly description?: string;
     readonly titleClassName?: string;
     readonly descriptionClassName?: string;
     readonly align?: BottomSheetHeaderAlign;
@@ -63,7 +63,9 @@ export const BottomSheetHeader = (props: Props) => {
         <View className={cn(headerVariant({ align }), className)}>
             {isNotEmptyString(icon) ? <Icon icon={icon} /> : null}
             <Text className={cn(titleVariants({ size, align }), titleClassName)}>{title}</Text>
-            <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
+            {isNotEmptyString(description) ? (
+                <Text className={cn(descriptionVariants({ size, align }), descriptionClassName)}>{description}</Text>
+            ) : null}
         </View>
     );
 };

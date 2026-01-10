@@ -1,12 +1,12 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
+import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
@@ -15,22 +15,34 @@ import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 
 export default function Tags() {
     const { t } = useLingui();
+
+    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
     const [search, setSearch] = useState('');
+    const [selectedTag, setSelectedTag] = useState<TagEntityInterface | null>(null);
     const { tags } = useSearchTagsQuery(search);
+
+    const handleOpenCreate = () => {
+        setSelectedTag(null);
+        void bottomSheetRef.current?.open();
+    };
+
+    useCreateAction({
+        icon: UserIconNameEnum.Tag,
+        label: t`Tag`,
+        variant: 'primary',
+        onPress: handleOpenCreate
+    });
 
     const handleDeleteTag = async (id: number) => {
         await tagRepository.deleteById(id);
     };
 
-    const renderCard = (tag: TagEntityInterface, onOpen: (tag: TagEntityInterface) => void) => (
-        <DeletableRow id={tag.id} onDelete={handleDeleteTag}>
-            <TagCard onOpen={onOpen} tag={tag} />
-        </DeletableRow>
-    );
+    const handleOpenTag = (tag: TagEntityInterface) => {
+        setSelectedTag(tag);
+        void bottomSheetRef.current?.open();
+    };
 
-    const renderBottomSheet = (tag: TagEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => (
-        <TagFormBottomSheet ref={ref} tag={tag} />
-    );
+    const renderCard = (tag: TagEntityInterface) => <TagCard onOpen={handleOpenTag} tag={tag} />;
 
     const emptyStateIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Tag;
     const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Tags Yet`;
@@ -48,10 +60,11 @@ export default function Tags() {
             emptyStateIcon={emptyStateIcon}
             emptyStateTitle={emptyStateTitle}
             emptyStateDescription={emptyStateDescription}
-            renderBottomSheet={renderBottomSheet}
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
-        />
+        >
+            <TagFormBottomSheet ref={bottomSheetRef} tag={selectedTag} />
+        </SearchablePage>
     );
 }

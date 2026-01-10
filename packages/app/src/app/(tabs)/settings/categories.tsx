@@ -1,12 +1,12 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
+import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
@@ -15,22 +15,34 @@ import { useSearchCategoriesQuery } from '../../../category/query/use-search-cat
 
 export default function Categories() {
     const { t } = useLingui();
+
+    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
     const [search, setSearch] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<CategoryEntityInterface | null>(null);
     const { categories } = useSearchCategoriesQuery(search, false);
+
+    const handleOpenCreate = () => {
+        setSelectedCategory(null);
+        void bottomSheetRef.current?.open();
+    };
+
+    useCreateAction({
+        icon: UserIconNameEnum.Folder,
+        label: t`Category`,
+        variant: 'primary',
+        onPress: handleOpenCreate
+    });
 
     const handleDeleteCategory = async (id: number) => {
         await categoryRepository.deleteById(id);
     };
 
-    const renderCard = (category: CategoryEntityInterface, onOpen: (category: CategoryEntityInterface) => void) => (
-        <DeletableRow id={category.id} onDelete={handleDeleteCategory}>
-            <CategoryCard onOpen={onOpen} category={category} />
-        </DeletableRow>
-    );
+    const handleOpenCategory = (category: CategoryEntityInterface) => {
+        setSelectedCategory(category);
+        void bottomSheetRef.current?.open();
+    };
 
-    const renderBottomSheet = (category: CategoryEntityInterface | null, ref: RefObject<BottomSheetInterface | null>) => (
-        <CategoryFormBottomSheet ref={ref} category={category} />
-    );
+    const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
 
     const icon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Folder;
     const title = isNotEmptyString(search) ? t`No Results` : t`No Custom Categories`;
@@ -45,13 +57,14 @@ export default function Categories() {
             title={t`Categories`}
             searchPlaceholder={t`Search categories...`}
             data={categories}
-            renderBottomSheet={renderBottomSheet}
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
             emptyStateTitle={title}
             emptyStateIcon={icon}
             emptyStateDescription={description}
-        />
+        >
+            <CategoryFormBottomSheet ref={bottomSheetRef} category={selectedCategory} />
+        </SearchablePage>
     );
 }

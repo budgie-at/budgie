@@ -1,35 +1,23 @@
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { ReactNode, useRef, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ReactNode } from 'react';
 
 import { useVibration } from '../../hook/use-vibration.hook';
-import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { IdInterface } from '../../interface/id.interface';
 import { AnimatedFlatList } from '../animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../deletable-row/deletable-row';
-import { FloatingAddButtonProps } from '../floating-add-button/floating-add-button';
+import { MenuSpacer } from '../menu-spacer/menu-spacer';
 
 interface Props<T extends IdInterface> {
     data: T[];
     onDelete: (id: number) => Promise<void>;
-    renderCard: (item: T, onOpen: (item: T) => void) => ReactNode;
-    renderBottomSheet: FloatingAddButtonProps<T>['renderBottomSheet'];
+    renderCard: (item: T) => ReactNode;
+    children?: ReactNode;
 }
-
-const safeEdges = ['bottom'] as const;
-const listFooter = <SafeAreaView edges={safeEdges} />;
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 
-export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSheet, onDelete, renderCard }: Props<T>) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
-    const [selectedItem, setSelectedItem] = useState<T | null>(null);
+export const SearchablePageList = <T extends IdInterface>({ data, onDelete, renderCard, children }: Props<T>) => {
     const [notify] = useVibration();
-
-    const handleOpenItem = (item: T) => {
-        setSelectedItem(item);
-        void ref.current?.open();
-    };
 
     const handleDeleteItem = async (id: number) => {
         await onDelete(id);
@@ -38,7 +26,7 @@ export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSh
 
     const renderItem = (item: T) => (
         <DeletableRow id={item.id} onDelete={handleDeleteItem}>
-            {renderCard(item, handleOpenItem)}
+            {renderCard(item)}
         </DeletableRow>
     );
 
@@ -50,10 +38,10 @@ export const SearchablePageList = <T extends IdInterface>({ data, renderBottomSh
                 contentContainerClassName="gap-y-5xl pt-5xl"
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
-                ListFooterComponent={listFooter}
+                ListFooterComponent={MenuSpacer}
             />
 
-            {renderBottomSheet(selectedItem, ref)}
+            {children}
         </>
     );
 };

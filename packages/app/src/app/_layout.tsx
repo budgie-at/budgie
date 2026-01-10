@@ -23,6 +23,7 @@ import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
+import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { LlmProvider } from '../ai/provider/llm.provider';
@@ -98,27 +99,29 @@ export default function RootLayout() {
                                 <BottomSheetsProvider>
                                     <AuthProvider>
                                         <AuthGuard>
-                                            <AiProviderWrapper>
-                                                <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                    <Stack.Screen name="(tabs)" />
+                                            <CreateActionProvider>
+                                                <AiProviderWrapper>
+                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                        <Stack.Screen name="(tabs)" />
 
-                                                    <Stack.Screen name="(main)/pin" />
-                                                    <Stack.Screen name="(main)/create-account" />
+                                                        <Stack.Screen name="(main)/pin" />
+                                                        <Stack.Screen name="(main)/create-account" />
 
-                                                    <Stack.Screen name="(main)/account/[id]/update" />
+                                                        <Stack.Screen name="(main)/account/[id]/update" />
 
-                                                    <Stack.Screen name="(main)/create-transaction/expense" />
-                                                    <Stack.Screen name="(main)/create-transaction/income" />
-                                                    <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                        <Stack.Screen name="(main)/create-transaction/expense" />
+                                                        <Stack.Screen name="(main)/create-transaction/income" />
+                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
 
-                                                    <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                    <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                    <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                    <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
-                                                </Stack>
-                                                <Toast />
-                                            </AiProviderWrapper>
+                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
+                                                    </Stack>
+                                                    <Toast />
+                                                </AiProviderWrapper>
+                                            </CreateActionProvider>
                                         </AuthGuard>
                                     </AuthProvider>
                                 </BottomSheetsProvider>

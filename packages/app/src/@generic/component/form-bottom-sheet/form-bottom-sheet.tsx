@@ -1,7 +1,7 @@
 import { ReactNode, RefObject } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
@@ -11,8 +11,9 @@ import { BottomSheetScrollView } from '../bottom-sheet-scroll-view/bottom-sheet-
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
-    readonly title: string;
-    readonly description: string;
+    readonly title?: string;
+    readonly description?: string;
+    readonly submitLabel?: string;
     readonly onSubmit: EmptyFn;
     readonly onCancel: EmptyFn;
     readonly onDismiss: EmptyFn;
@@ -20,20 +21,22 @@ interface Props {
 }
 
 export const FormBottomSheet = (props: Props) => {
-    const { ref, title, description, onSubmit, onCancel, onDismiss, children } = props;
+    const { ref, title, description, submitLabel, onSubmit, onCancel, onDismiss, children } = props;
 
     return (
         <BottomSheet enableDynamicSizing onDismiss={onDismiss} ref={ref}>
             <BottomSheetScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <View className="px-7xl py-5xl">
-                    <View className="mb-10">
-                        <BottomSheetHeader size="lg" align="center" title={title} description={description} />
-                    </View>
+                    {isNotEmptyString(title) ? (
+                        <View className="mb-10">
+                            <BottomSheetHeader size="lg" align="center" title={title} description={description} />
+                        </View>
+                    ) : null}
 
                     <View className="gap-y-3xl">{children}</View>
                 </View>
 
-                <BottomSheetFormFooter onCancel={onCancel} onSubmit={onSubmit} />
+                <BottomSheetFormFooter onCancel={onCancel} onSubmit={onSubmit} submitLabel={submitLabel} />
             </BottomSheetScrollView>
         </BottomSheet>
     );

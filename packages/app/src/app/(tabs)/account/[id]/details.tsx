@@ -86,7 +86,7 @@ export default function AccountDetails() {
                 )}
             </View>
 
-            <TransactionList accountId={id} />
+            <TransactionList accountId={id} footerSpacerMultiplier={3} />
         </Page>
     );
 }

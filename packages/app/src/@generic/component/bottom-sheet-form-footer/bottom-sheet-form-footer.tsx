@@ -11,9 +11,10 @@ import { Icon } from '../icon/icon';
 interface Props {
     readonly onSubmit: EmptyFn;
     readonly onCancel: EmptyFn;
+    readonly submitLabel?: string;
 }
 
-export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => (
+export const BottomSheetFormFooter = ({ onSubmit, onCancel, submitLabel }: Props) => (
     <Footer>
         <View className="flex-row gap-x-xl">
             <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
@@ -28,9 +29,7 @@ export const BottomSheetFormFooter = ({ onSubmit, onCancel }: Props) => (
             >
                 <Icon icon={UserIconNameEnum.Check} className="text-primary-reverse" size={16} />
 
-                <Text className="text-primary-reverse text-center">
-                    <Trans>Submit</Trans>
-                </Text>
+                <Text className="text-primary-reverse text-center">{submitLabel ?? <Trans>Submit</Trans>}</Text>
             </HapticPressable>
         </View>
     </Footer>
