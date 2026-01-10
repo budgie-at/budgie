@@ -76,11 +76,9 @@ class RuleEngineService {
             return;
         }
 
-        for (const [index, transactionId] of transactionIds.entries()) {
-            const input = transactionInputs[index];
-            // eslint-disable-next-line no-await-in-loop
-            await this.applyRulesToTransaction(transactionId, input, rules);
-        }
+        await Promise.all(
+            transactionIds.map((transactionId, index) => this.applyRulesToTransaction(transactionId, transactionInputs[index], rules))
+        );
     }
 
     async applyRuleToMatchingTransactions(ruleId: number): Promise<void> {
@@ -115,14 +113,13 @@ class RuleEngineService {
         rule: RuleWithRelationsEntityInterface,
         transactions: TransactionWithEntriesMccCategoryEntityInterface[]
     ): Promise<void> {
-        for (const transaction of transactions) {
+        const matchingTransactions = transactions.filter(transaction => {
             const input = convertTransactionForRuleEvaluation(transaction);
 
-            if (this.evaluateRule(rule, input)) {
-                // eslint-disable-next-line no-await-in-loop
-                await this.applyRuleActionsToTransaction(transaction.id, rule.actions);
-            }
-        }
+            return this.evaluateRule(rule, input);
+        });
+
+        await Promise.all(matchingTransactions.map(transaction => this.applyRuleActionsToTransaction(transaction.id, rule.actions)));
     }
 
     private async applyRulesToTransaction(
