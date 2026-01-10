@@ -15,17 +15,14 @@ import Animated, {
 import { useVibration } from '../../../hook/use-vibration.hook';
 import { HapticPressable } from '../../haptic-pressable/haptic-pressable';
 import { Icon } from '../../icon/icon';
+import { useAnimatedActionMenu } from '../animated-action-menu.context';
 
-interface Props {
-    readonly onClose: () => void;
-}
-
-const BUTTON_SIZE = 72;
 const ICON_SIZE = 32;
 const PULSE_SCALE = 1.06;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
 
-export const AiActionButton = ({ onClose }: Props) => {
+export const AiActionButton = () => {
+    const { close } = useAnimatedActionMenu();
     const [, hapticImpact] = useVibration();
 
     const scale = useSharedValue(0.01);
@@ -49,17 +46,14 @@ export const AiActionButton = ({ onClose }: Props) => {
 
     const handlePress = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
-        onClose();
+        close();
         router.push('/(main)/ai');
     };
-
-    const buttonStyle = { width: BUTTON_SIZE, height: BUTTON_SIZE };
 
     return (
         <Animated.View style={animatedStyle}>
             <HapticPressable
-                className="bg-primary rounded-full items-center justify-center shadow-lg shadow-black/30"
-                style={buttonStyle}
+                className="bg-primary rounded-full items-center justify-center shadow-lg shadow-black/30 w-18 h-18"
                 onPress={handlePress}
             >
                 <Icon className="text-primary-reverse" icon={UserIconNameEnum.Mic} size={ICON_SIZE} />

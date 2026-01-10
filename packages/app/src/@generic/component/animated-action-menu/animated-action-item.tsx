@@ -9,34 +9,41 @@ import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palett
 import { useVibration } from '../../hook/use-vibration.hook';
 import { Icon } from '../icon/icon';
 
-import type { AnimatedActionItemInterface } from './animated-action-item.interface';
+import { useAnimatedActionMenu } from './animated-action-menu.context';
+
 import type { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import type { UserIconNameEnum } from '@budgie/contracts';
 import type { ClassValue } from 'clsx';
 
 interface Props {
-    readonly item: AnimatedActionItemInterface;
+    readonly icon: UserIconNameEnum;
+    readonly label: string;
+    readonly variant: ColorPaletteVariant;
     readonly index: number;
     readonly totalItems: number;
-    readonly isOpen: boolean;
-    readonly onClose: () => void;
+    readonly onPress: () => void;
 }
 
-const ITEM_SIZE = 48;
 const ICON_SIZE = 20;
 const ITEM_SPACING = 72;
 const STAGGER_DELAY = 40;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
 
-const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('rounded-full items-center justify-center border-0', {
-    variants: { variant: BACKGROUND_COLOR_PALETTE }
-});
+const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
+    'w-12 h-12 rounded-full items-center justify-center border-0',
+    {
+        variants: { variant: BACKGROUND_COLOR_PALETTE }
+    }
+);
 
 const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const AnimatedActionItem = ({ item, index, totalItems, isOpen, onClose }: Props) => {
+export const AnimatedActionItem = ({ icon, label, variant, index, totalItems, onPress }: Props) => {
+    const { isOpen, close } = useAnimatedActionMenu();
     const [, hapticImpact] = useVibration();
+
     const translateY = useSharedValue(0);
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
@@ -65,21 +72,19 @@ export const AnimatedActionItem = ({ item, index, totalItems, isOpen, onClose }:
 
     const handlePress = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
-        runOnJS(onClose)();
-        runOnJS(item.onPress)();
+        runOnJS(close)();
+        runOnJS(onPress)();
     };
-
-    const containerStyle = { width: ITEM_SIZE, height: ITEM_SIZE };
 
     return (
         <Animated.View className="absolute right-0 flex-row-reverse items-center" style={animatedStyle}>
             <Pressable onPress={handlePress}>
-                <View className={containerVariants({ variant: item.variant })} style={containerStyle}>
-                    <Icon className={iconVariants({ variant: item.variant })} icon={item.icon} size={ICON_SIZE} />
+                <View className={containerVariants({ variant })}>
+                    <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
                 </View>
             </Pressable>
 
-            <Text className="text-white text-sm font-medium mr-lg">{item.label}</Text>
+            <Text className="text-white text-sm font-medium mr-lg">{label}</Text>
         </Animated.View>
     );
 };
