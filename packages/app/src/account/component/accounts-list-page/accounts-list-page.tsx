@@ -2,10 +2,10 @@ import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@b
 import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
 import { ReactElement, ReactNode } from 'react';
 import { FlatList } from 'react-native';
-import { Edges, SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -19,8 +19,7 @@ interface Props<T extends AccountType> {
     readonly children: ReactNode;
 }
 
-const safeEdges: Edges = ['bottom'];
-const listFooter = <SafeAreaView edges={safeEdges} />;
+const listFooter = <MenuSpacer />;
 
 export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
     const { accounts, title, renderCard, children } = props;

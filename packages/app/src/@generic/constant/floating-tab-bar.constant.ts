@@ -1,0 +1,2 @@
+export const FLOATING_TAB_BAR_HEIGHT = 68;
+export const FLOATING_TAB_BAR_MARGIN = 16;
