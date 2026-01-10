@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { RadialActionMenu } from './radial-action-menu';
 
 import type { RadialActionItemInterface } from './radial-action-item.interface';
@@ -10,7 +12,7 @@ interface RadialActionMenuContextInterface {
     readonly close: () => void;
 }
 
-const RadialActionMenuContext = createContext<RadialActionMenuContextInterface | undefined>(undefined);
+const RadialActionMenuContext = createContext<RadialActionMenuContextInterface | null>(null);
 
 export const RadialActionMenuProvider = ({ children }: PropsWithChildren) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,8 +27,10 @@ export const RadialActionMenuProvider = ({ children }: PropsWithChildren) => {
         setIsOpen(false);
     };
 
+    const value = { open, close };
+
     return (
-        <RadialActionMenuContext value={{ open, close }}>
+        <RadialActionMenuContext value={value}>
             {children}
             <RadialActionMenu isOpen={isOpen} onClose={close} items={items} />
         </RadialActionMenuContext>
@@ -36,7 +40,8 @@ export const RadialActionMenuProvider = ({ children }: PropsWithChildren) => {
 export const useRadialActionMenu = (): RadialActionMenuContextInterface => {
     const context = useContext(RadialActionMenuContext);
 
-    if (context === undefined) {
+    if (!isDefined(context)) {
+        // eslint-disable-next-line lingui/no-unlocalized-strings
         throw new Error('useRadialActionMenu must be used within a RadialActionMenuProvider');
     }
 

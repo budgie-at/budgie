@@ -1,36 +1,47 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import React from 'react';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BottomTabs } from '../../@generic/component/bottom-tabs/bottom-tabs';
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
-import { SettingsTabButton } from '../../settings/component/settings-tab-button/settings-tab-button';
 import { CreateTransactionTabButton } from '../../transaction/components/create-transaction-tab-button/create-transaction-tab-button';
 
+const HIDDEN_STYLE = { display: 'none' } as const;
+
 export default function TabsLayout() {
+    const { bottom } = useSafeAreaInsets();
+
+    const containerStyle = { paddingBottom: bottom };
+
     return (
         <Tabs>
             <TabSlot />
 
-            <TabList asChild>
-                <BottomTabs>
-                    <TabTrigger asChild href="/" name="home">
+            <TabList style={HIDDEN_STYLE}>
+                <TabTrigger name="home" href="/" />
+                <TabTrigger name="transactions" href="/transactions" />
+                <TabTrigger name="analytics" href="/analytics" />
+            </TabList>
+
+            <View className="absolute inset-x-0 bottom-0 flex-row items-end justify-between px-lg pb-lg" style={containerStyle}>
+                <View className="flex-row items-center bg-background rounded-full px-sm py-sm shadow-lg shadow-black/20 border border-border">
+                    <TabTrigger name="home" asChild>
                         <TabButton icon={UserIconNameEnum.Home} />
                     </TabTrigger>
 
-                    <TabTrigger asChild href="/transactions" name="transactions">
+                    <TabTrigger name="transactions" asChild>
                         <TabButton icon={UserIconNameEnum.Receipt} />
                     </TabTrigger>
 
-                    <CreateTransactionTabButton />
-
-                    <TabTrigger asChild href="/analytics" name="analytics">
+                    <TabTrigger name="analytics" asChild>
                         <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
                     </TabTrigger>
 
-                    <SettingsTabButton />
-                </BottomTabs>
-            </TabList>
+                    <TabButton icon={UserIconNameEnum.Settings} navigateTo="/(main)/settings" />
+                </View>
+
+                <CreateTransactionTabButton />
+            </View>
         </Tabs>
     );
 }

@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -11,6 +10,8 @@ import { TRANSACTION_ICON } from '../../constant/transaction-icon.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 
 import type { RadialActionItemInterface } from '../../../@generic/component/radial-action-menu/radial-action-item.interface';
+
+const BUTTON_SIZE = 56;
 
 export const CreateTransactionTabButton = () => {
     const { t } = useLingui();
@@ -47,14 +48,15 @@ export const CreateTransactionTabButton = () => {
         open(items);
     };
 
+    const buttonStyle = { width: BUTTON_SIZE, height: BUTTON_SIZE };
+
     return (
-        <View>
-            <HapticPressable
-                className="bg-primary p-7xl rounded-full mb-sm -translate-y-10 w-19 h-19 items-center justify-center"
-                onPress={handleOpen}
-            >
-                <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={24} />
-            </HapticPressable>
-        </View>
+        <HapticPressable
+            className="bg-primary rounded-full items-center justify-center shadow-lg shadow-primary/30"
+            style={buttonStyle}
+            onPress={handleOpen}
+        >
+            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={24} />
+        </HapticPressable>
     );
 };
