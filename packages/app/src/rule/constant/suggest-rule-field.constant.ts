@@ -1,7 +1,7 @@
 import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
-export const SUGGEST_RULE_FIELD_LABELS = {
+export const SUGGEST_RULE_FIELD = {
     [RuleConditionFieldEnum.TITLE]: msg`title`,
     [RuleConditionFieldEnum.COMMENT]: msg`comment`,
     [RuleConditionFieldEnum.AMOUNT]: msg`amount`,

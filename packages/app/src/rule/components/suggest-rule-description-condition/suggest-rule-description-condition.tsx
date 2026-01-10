@@ -2,7 +2,7 @@ import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { SUGGEST_RULE_FIELD_LABELS } from '../../constant/suggest-rule-field-labels.constant';
+import { SUGGEST_RULE_FIELD } from '../../constant/suggest-rule-field.constant';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
 import { getSuggestRuleFieldValue } from '../../util/get-suggest-rule-field-value.util';
 
@@ -17,7 +17,7 @@ export const SuggestRuleDescriptionCondition = ({ data, field, isLast }: Props) 
 
     return (
         <Text className="text-sm text-secondary-foreground">
-            <Text className="font-semibold text-primary">{t(SUGGEST_RULE_FIELD_LABELS[field])}</Text>
+            <Text className="font-semibold text-primary">{t(SUGGEST_RULE_FIELD[field])}</Text>
             <Trans> contains </Trans>
             <Text className="font-semibold text-primary">&quot;{getSuggestRuleFieldValue(field, data)}&quot;</Text>
             {isLast ? null : <Trans> and </Trans>}

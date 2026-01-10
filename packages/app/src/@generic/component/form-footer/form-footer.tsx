@@ -24,17 +24,10 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-export const FormFooter = ({
-    variant,
-    buttonText,
-    onSubmit,
-    onDelete,
-    onConvert,
-    showConvertButton,
-    deleteConfirmTitle,
-    deleteConfirmButtonText,
-    children
-}: Props) => {
+export const FormFooter = (props: Props) => {
+    const { variant, buttonText, onSubmit, onDelete, onConvert, showConvertButton, deleteConfirmTitle, deleteConfirmButtonText, children } =
+        props;
+
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen, isLoading } = useConfirmAction(onDelete ?? emptyFn);
 

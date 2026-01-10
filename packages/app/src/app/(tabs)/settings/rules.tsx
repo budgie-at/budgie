@@ -40,13 +40,8 @@ export default function RulesPage() {
         notify(NotificationFeedbackType.Success);
     };
 
-    const handleOpenRule = (rule: RuleEntityInterface) => {
-        void router.push(`/rules/${rule.id}/edit`);
-    };
-
-    const handleCreateRule = () => {
-        void router.push('/rules/create');
-    };
+    const handleOpenRule = (rule: RuleEntityInterface) => void router.push(`/rules/${rule.id}/edit`);
+    const handleCreateRule = () => void router.push('/rules/create');
 
     const renderItem = (rule: RuleWithRelationsType, index: number) => {
         const order = index + 1;

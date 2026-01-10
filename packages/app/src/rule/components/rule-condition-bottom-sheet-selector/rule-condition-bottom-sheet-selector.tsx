@@ -1,3 +1,5 @@
+import { MessageDescriptor } from '@lingui/core';
+import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { Text } from 'react-native';
 
@@ -6,8 +8,8 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { RuleSelectorSheet } from '../rule-selector-sheet/rule-selector-sheet';
 
 interface Option<T extends string> {
-    value: T;
-    label: string;
+    readonly value: T;
+    readonly label: MessageDescriptor;
 }
 
 interface Props<T extends string> {
@@ -15,10 +17,11 @@ interface Props<T extends string> {
     readonly onChange: (value: T) => void;
     readonly options: Option<T>[];
     readonly sheetTitle: string;
-    readonly getLabel: (value: T) => string;
+    readonly defaultLabel: string;
 }
 
-export const RuleConditionBottomSheetSelector = <T extends string>({ value, onChange, options, sheetTitle, getLabel }: Props<T>) => {
+export const RuleConditionBottomSheetSelector = <T extends string>({ value, onChange, options, sheetTitle, defaultLabel }: Props<T>) => {
+    const { t } = useLingui();
     const sheetRef = useRef<BottomSheetInterface | null>(null);
 
     const handleOpenSheet = () => void sheetRef.current?.open();
@@ -29,16 +32,25 @@ export const RuleConditionBottomSheetSelector = <T extends string>({ value, onCh
         handleCloseSheet();
     };
 
+    const translatedOptions = options.map(option => ({ value: option.value, label: t(option.label) }));
+    const displayLabel = translatedOptions.find(option => option.value === value)?.label ?? defaultLabel;
+
     return (
         <>
             <HapticPressable
                 onPress={handleOpenSheet}
                 className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
             >
-                <Text className="text-primary text-sm">{getLabel(value)}</Text>
+                <Text className="text-primary text-sm">{displayLabel}</Text>
             </HapticPressable>
 
-            <RuleSelectorSheet ref={sheetRef} title={sheetTitle} options={options} selectedValue={value} onSelect={handleSelect} />
+            <RuleSelectorSheet
+                ref={sheetRef}
+                title={sheetTitle}
+                options={translatedOptions}
+                selectedValue={value}
+                onSelect={handleSelect}
+            />
         </>
     );
 };
