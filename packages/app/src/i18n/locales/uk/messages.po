@@ -102,14 +102,6 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
-msgid "Add a new category to organize your transactions"
-msgstr "Додайте нову категорію для організації ваших транзакцій"
-
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
-msgid "Add a new tag to organize your transactions"
-msgstr "Додайте новий тег для організації ваших транзакцій"
-
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
 msgid "Add a note..."
 msgstr "Додати нотатку..."
@@ -235,7 +227,7 @@ msgid "Balance"
 msgstr "Баланс"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:30
+#: src/transaction/components/transaction-list/transaction-list.tsx:31
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -268,7 +260,7 @@ msgstr "Позичено"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:21
+#: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
@@ -287,7 +279,7 @@ msgstr "Готівка"
 #: src/app/(tabs)/settings/categories.tsx:57
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:31
+#: src/transaction/components/transaction-list/transaction-list.tsx:32
 msgid "Categories"
 msgstr "Категорії"
 
@@ -321,7 +313,7 @@ msgstr ""
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:72
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:65
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -456,6 +448,11 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
 
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
+msgid "Create"
+msgstr "Створити"
+
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
 msgstr "Створити резервну копію всіх ваших даних"
@@ -480,10 +477,6 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
-msgid "Create Category"
-msgstr "Створити категорію"
-
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:71
 msgid "Create custom categories in Settings to label and filter your transactions"
 msgstr "Створіть користувацькі категорії в Налаштуваннях для позначення та фільтрації ваших транзакцій"
@@ -496,10 +489,6 @@ msgstr "Створіть користувацькі теги в Налаштув
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:57
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
-
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
-msgid "Create Tag"
-msgstr "Створити тег"
 
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:72
 msgid "Create Tags"
@@ -626,17 +615,13 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:61
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:53
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:70
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:63
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
-
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
-msgid "Edit Category"
-msgstr "Редагувати категорію"
 
 #: src/app/(main)/transactions/[id]/expense.tsx:79
 msgid "Edit Expense"
@@ -645,10 +630,6 @@ msgstr "Редагувати витрату"
 #: src/app/(main)/transactions/[id]/income.tsx:66
 msgid "Edit Income"
 msgstr "Редагувати дохід"
-
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
-msgid "Edit Tag"
-msgstr "Редагувати тег"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:87
 msgid "Edit Transfer"
@@ -1070,7 +1051,7 @@ msgid "No languages found"
 msgstr "Мов не знайдено"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -1097,7 +1078,7 @@ msgstr "Жодний тег не відповідає вашому пошуку"
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:33
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1220,7 +1201,9 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:48
 msgid "Save"
 msgstr "Зберегти"
 
@@ -1407,7 +1390,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:35
+#: src/transaction/components/transaction-list/transaction-list.tsx:36
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -1455,9 +1438,9 @@ msgstr "Синхронізація історії..."
 
 #: src/app/(tabs)/settings/tags.tsx:31
 msgid "Tag"
-msgstr ""
+msgstr "Тег"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:63
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:55
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1591,7 +1574,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:34
+#: src/transaction/components/transaction-list/transaction-list.tsx:35
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
@@ -1637,17 +1620,9 @@ msgstr "Оновити витрату"
 msgid "Update Income"
 msgstr "Оновити дохід"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
-msgid "Update the tag name"
-msgstr "Оновити назву тегу"
-
 #: src/app/(main)/transactions/[id]/transfer.tsx:97
 msgid "Update Transfer"
 msgstr "Оновити переказ"
-
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
-msgid "Update your category details"
-msgstr "Оновіть дані вашої категорії"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
