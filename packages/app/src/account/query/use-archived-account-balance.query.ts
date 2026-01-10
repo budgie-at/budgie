@@ -1,0 +1,11 @@
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+
+import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+
+export const useArchivedAccountBalanceQuery = (accountId: number) => {
+    const { data } = useLiveQuery(accountBalanceRepository.getArchivedAccountBalance(accountId), [accountId]);
+    const { balance } = data.at(0) ?? { balance: 0 };
+
+    return { balance: convertFromMicroUnits(balance) };
+};

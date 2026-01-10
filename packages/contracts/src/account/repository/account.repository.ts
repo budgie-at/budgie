@@ -84,7 +84,8 @@ export class AccountRepository {
 
     getAllArchived() {
         return this.db.query.AccountEntityTable.findMany({
-            where: and(isNull(AccountEntityTable.parentId), isNotNull(AccountEntityTable.deletedAt))
+            where: and(isNull(AccountEntityTable.parentId), isNotNull(AccountEntityTable.deletedAt)),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
     }
 

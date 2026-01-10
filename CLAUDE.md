@@ -267,6 +267,7 @@ Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jsc
    - **Scopes:** Use monorepo package names WITHOUT prefix: `app`, `contracts`, `landing`, `bank-sync`
    - **Examples:** `feat(app): add dark mode`, `fix(contracts): update schema`, `chore(landing): update deps`
    - **PR titles:** Must follow the same convention as commit messages
+6. **Before finishing a PR:** Review all changes to ensure nothing redundant or illogical was added. Check for unused imports, unnecessary code, and verify the fix is minimal and focused.
 
 ## PR Review
 

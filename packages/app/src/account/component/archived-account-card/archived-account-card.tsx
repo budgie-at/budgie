@@ -1,5 +1,5 @@
 /* jscpd:ignore-start */
-import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -13,18 +13,18 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
-import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 import { accountService } from '../../service/account.service';
 /* jscpd:ignore-end */
 
 interface Props {
-    readonly account: AccountEntityInterface;
+    readonly account: AccountWithInstrumentEntityInterface;
 }
 
 export const ArchivedAccountCard = ({ account }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument, decimalPlaces } = useSettingsContext();
-    const { balance } = useAccountBalanceQuery(account.id);
+    const { decimalPlaces } = useSettingsContext();
+    const { balance } = useArchivedAccountBalanceQuery(account.id);
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const handleRestoreAction = async () => {
@@ -54,7 +54,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                 right={
                     <View className="flex-row items-center gap-x-xl">
                         <ProtectedText className="text-destructive-foreground text-sm font-semibold">
-                            {formatDigits(balance, defaultInstrument.symbol)}
+                            {formatDigits(balance, account.instrument.symbol)}
                         </ProtectedText>
 
                         <HapticPressable onPress={restore.handleOpen}>
