@@ -53,7 +53,7 @@ export default function TabsLayout() {
 
             <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
                 <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
-                    <View className="flex-row items-center gap-sm bg-secondary-background rounded-full px-md py-sm shadow-lg shadow-primary/20">
+                    <View className="flex-row items-center gap-sm">
                         <TabTrigger name="home" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.Home} />
                         </TabTrigger>
