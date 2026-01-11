@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { TextInput } from 'react-native';
 
@@ -8,7 +7,6 @@ import { IdInterface } from '../../interface/id.interface';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
-import { SearchablePageEmptyState } from '../searchagle-page-empty-state/searchagle-page-empty-state';
 
 interface Props<T extends IdInterface> {
     title: string;
@@ -16,9 +14,7 @@ interface Props<T extends IdInterface> {
     data: T[] | null;
     onGoBack: EmptyFn;
     searchPlaceholder: string;
-    emptyStateTitle: string;
-    emptyStateDescription: string;
-    emptyStateIcon: UserIconNameEnum;
+    emptyState: ReactNode;
     onSearchChange: (search: string) => void;
     onDelete: (id: number) => Promise<void>;
     renderCard: (item: T) => ReactNode;
@@ -33,9 +29,7 @@ export const SearchablePage = <T extends IdInterface>({
     renderCard,
     searchPlaceholder,
     onSearchChange,
-    emptyStateTitle,
-    emptyStateIcon,
-    emptyStateDescription,
+    emptyState,
     onGoBack,
     children
 }: Props<T>) => (
@@ -60,7 +54,7 @@ export const SearchablePage = <T extends IdInterface>({
                 {children}
             </SearchablePageList>
         ) : (
-            <SearchablePageEmptyState title={emptyStateTitle} icon={emptyStateIcon} description={emptyStateDescription} />
+            emptyState
         )}
     </Page>
 );

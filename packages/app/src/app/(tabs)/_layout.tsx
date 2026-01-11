@@ -8,19 +8,24 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TabButton } from '../../@generic/component/tab-button/tab-button';
+import { useThemeContext } from '../../theme/context/theme.context';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
 const BLUR_HEIGHT = 150;
-const GRADIENT_COLORS = ['transparent', 'black'] as const;
+const GRADIENT_COLORS_DARK = ['transparent', 'black'] as const;
+const GRADIENT_COLORS_LIGHT = ['transparent', 'white'] as const;
 const GRADIENT_LOCATIONS = [0, 0.6] as const;
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
+    const { isDarkColorSchema } = useThemeContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
     const blurContainerStyle = { height: BLUR_HEIGHT };
+    const gradientColors = isDarkColorSchema ? GRADIENT_COLORS_DARK : GRADIENT_COLORS_LIGHT;
+    const blurTint = isDarkColorSchema ? 'dark' : 'light';
 
     const handleOpenMenu = () => void setIsMenuOpen(true);
     const handleCloseMenu = () => void setIsMenuOpen(false);
@@ -40,15 +45,15 @@ export default function TabsLayout() {
             <View className="absolute inset-x-0 bottom-0" style={blurContainerStyle} pointerEvents="none">
                 <MaskedView
                     style={StyleSheet.absoluteFill}
-                    maskElement={<LinearGradient colors={GRADIENT_COLORS} locations={GRADIENT_LOCATIONS} style={StyleSheet.absoluteFill} />}
+                    maskElement={<LinearGradient colors={gradientColors} locations={GRADIENT_LOCATIONS} style={StyleSheet.absoluteFill} />}
                 >
-                    <BlurView style={StyleSheet.absoluteFill} intensity={50} tint="dark" experimentalBlurMethod="dimezisBlurView" />
+                    <BlurView style={StyleSheet.absoluteFill} intensity={50} tint={blurTint} experimentalBlurMethod="dimezisBlurView" />
                 </MaskedView>
             </View>
 
             <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
                 <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
-                    <View className="flex-row items-center gap-sm bg-secondary rounded-full px-md py-sm shadow-lg shadow-black/20">
+                    <View className="flex-row items-center gap-sm">
                         <TabTrigger name="home" asChild reset="always">
                             <TabButton icon={UserIconNameEnum.Home} />
                         </TabTrigger>
