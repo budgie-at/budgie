@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { Button } from '../../../ui/button';
+import { useSmoothScroll } from '../../hook/use-smooth-scroll.hook';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
 import { Logo } from '../logo/logo';
 import { MobileMenu } from '../mobile-menu/mobile-menu';
@@ -34,6 +35,8 @@ export const Header = ({ lang }: Props) => {
     const handleMenuToggle = () => void setMobileMenuOpen(prev => !prev);
     const handleMobileMenuClose = () => void setMobileMenuOpen(false);
 
+    const { handleScrollToFeatures, handleScrollToTestimonials, handleScrollToWhitelist, handleScrollToFaq } = useSmoothScroll();
+
     return (
         <header
             className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
@@ -51,6 +54,7 @@ export const Header = ({ lang }: Props) => {
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#features`}
+                        onClick={handleScrollToFeatures}
                     >
                         <Trans>Features</Trans>
                     </Link>
@@ -58,6 +62,7 @@ export const Header = ({ lang }: Props) => {
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#testimonials`}
+                        onClick={handleScrollToTestimonials}
                     >
                         <Trans>Testimonials</Trans>
                     </Link>
@@ -72,6 +77,7 @@ export const Header = ({ lang }: Props) => {
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#whitelist`}
+                        onClick={handleScrollToWhitelist}
                     >
                         <Trans>Whitelist</Trans>
                     </Link>
@@ -79,6 +85,7 @@ export const Header = ({ lang }: Props) => {
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}#faq`}
+                        onClick={handleScrollToFaq}
                     >
                         <Trans>FAQ</Trans>
                     </Link>
@@ -88,9 +95,11 @@ export const Header = ({ lang }: Props) => {
                     <LanguageSwitcher />
                     <ThemeSwitcher />
 
-                    <Button className="hidden rounded-full md:flex">
-                        <Trans>Download App</Trans>
-                        <ChevronRight className="ml-1 size-4" />
+                    <Button asChild className="hidden rounded-full md:flex">
+                        <Link href={`/${lang}#whitelist`} onClick={handleScrollToWhitelist}>
+                            <Trans>Join Waitlist</Trans>
+                            <ChevronRight className="ml-1 size-4" />
+                        </Link>
                     </Button>
 
                     <Button className="md:hidden" onClick={handleMenuToggle} size="icon" variant="ghost">
