@@ -1,4 +1,4 @@
-import { count, eq, inArray, like, sql } from 'drizzle-orm';
+import { count, eq, inArray, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -64,12 +64,17 @@ export class TagRepository {
     }
 
     async reassignTransactions(fromTagId: number, toTagId: number): Promise<void> {
-        this.db.run(sql`
-            INSERT OR IGNORE INTO transaction_tags (transaction_id, tag_id)
-            SELECT transaction_id, ${toTagId}
-            FROM transaction_tags
-            WHERE tag_id = ${fromTagId}
-        `);
+        const transactionsWithFromTag = await this.db
+            .select({ transactionId: TransactionTagsEntityTable.transactionId })
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.tagId, fromTagId));
+
+        if (transactionsWithFromTag.length > 0) {
+            await this.db
+                .insert(TransactionTagsEntityTable)
+                .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
+                .onConflictDoNothing();
+        }
 
         await this.db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, fromTagId));
     }

@@ -24,11 +24,6 @@ class CategoryService {
         await categoryRepository.deleteById(fromCategoryId);
     }
 
-    async deleteWithReassignment(categoryId: number, reassignToCategoryId: number): Promise<void> {
-        await categoryRepository.reassignTransactionEntries(categoryId, reassignToCategoryId);
-        await categoryRepository.deleteById(categoryId);
-    }
-
     async deleteById(categoryId: number): Promise<void> {
         await categoryRepository.deleteById(categoryId);
     }

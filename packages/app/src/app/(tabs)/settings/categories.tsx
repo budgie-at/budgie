@@ -2,6 +2,7 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -56,9 +57,17 @@ export default function Categories() {
 
     const handleReassignSelect = async (targetCategoryId: number | null) => {
         if (isDefined(categoryToDelete) && isDefined(targetCategoryId)) {
-            await categoryService.deleteWithReassignment(categoryToDelete.id, targetCategoryId);
-            void reassignRef.current?.close();
-            setCategoryToDelete(null);
+            try {
+                await categoryService.mergeInto(categoryToDelete.id, targetCategoryId);
+                void reassignRef.current?.close();
+                setCategoryToDelete(null);
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: t`Could not reassign category`,
+                    text2: t`Please try again later`
+                });
+            }
         }
     };
 
