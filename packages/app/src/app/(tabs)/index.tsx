@@ -48,7 +48,9 @@ export default function HomePage() {
 
     const scrollY = useSharedValue(0);
 
-    const contentContainerStyle = { paddingBottom: FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom, paddingHorizontal: 20 };
+    const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
+    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
+    const emptyStateStyle = { paddingBottom: bottomPadding };
 
     const accountEntries = typedObjectEntries(accountsGrouped);
 
@@ -85,7 +87,7 @@ export default function HomePage() {
                     contentContainerStyle={contentContainerStyle}
                 />
             ) : (
-                <View className="flex-1 px-5xl">
+                <View className="flex-1 px-5xl" style={emptyStateStyle}>
                     <AccountsEmptyState />
                 </View>
             )}
