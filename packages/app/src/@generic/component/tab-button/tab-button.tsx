@@ -32,7 +32,7 @@ const tabIconVariants = cva('', {
     variants: {
         isFocused: {
             true: 'text-primary-reverse',
-            false: 'text-primary'
+            false: 'text-secondary-foreground'
         }
     }
 });
