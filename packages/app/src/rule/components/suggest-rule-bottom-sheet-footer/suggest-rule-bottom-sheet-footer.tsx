@@ -14,7 +14,7 @@ interface Props {
     readonly handleConfigureRule: EmptyFn;
 }
 
-export const SuggestRuleBottomSheetFooter = ({ isCreating, handleConfigureRule, handleCreateRule, hasSelectedFields }: Props) => {
+export const SuggestRuleBottomSheetFooter = ({ isCreating, close, handleConfigureRule, handleCreateRule, hasSelectedFields }: Props) => {
     const { t } = useLingui();
     const isSubmitDisabled = isCreating || !hasSelectedFields;
 
