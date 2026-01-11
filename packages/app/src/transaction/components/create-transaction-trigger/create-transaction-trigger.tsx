@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
+import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -20,12 +21,10 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
         onPress();
     };
 
-    if (isOpen) {
-        return null;
-    }
+    const className = 'bg-primary rounded-full items-center justify-center w-18 h-18';
 
     return (
-        <HapticPressable className="bg-primary rounded-full items-center justify-center w-18 h-18" onPress={handlePress}>
+        <HapticPressable className={className} {...(!isOpen && { onPress: handlePress })}>
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
         </HapticPressable>
     );

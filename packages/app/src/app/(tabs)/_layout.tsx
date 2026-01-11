@@ -31,51 +31,55 @@ export default function TabsLayout() {
     const handleCloseMenu = () => void setIsMenuOpen(false);
 
     return (
-        <Tabs>
-            <TabSlot />
+        <>
+            <Tabs>
+                <TabSlot />
 
-            <TabList className="hidden">
-                <TabTrigger name="home" href="/" />
-                <TabTrigger name="transactions" href="/transactions" />
-                <TabTrigger name="analytics" href="/analytics" />
-                <TabTrigger name="settings" href="/settings" />
-                <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
-            </TabList>
+                <TabList className="hidden">
+                    <TabTrigger name="home" href="/" />
+                    <TabTrigger name="transactions" href="/transactions" />
+                    <TabTrigger name="analytics" href="/analytics" />
+                    <TabTrigger name="settings" href="/settings" />
+                    <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
+                </TabList>
 
-            <View className="absolute inset-x-0 bottom-0" style={blurContainerStyle} pointerEvents="none">
-                <MaskedView
-                    style={StyleSheet.absoluteFill}
-                    maskElement={<LinearGradient colors={gradientColors} locations={GRADIENT_LOCATIONS} style={StyleSheet.absoluteFill} />}
-                >
-                    <BlurView style={StyleSheet.absoluteFill} intensity={50} tint={blurTint} experimentalBlurMethod="dimezisBlurView" />
-                </MaskedView>
-            </View>
-
-            <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
-                <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
-                    <View className="flex-row items-center gap-sm">
-                        <TabTrigger name="home" asChild reset="always">
-                            <TabButton icon={UserIconNameEnum.Home} />
-                        </TabTrigger>
-
-                        <TabTrigger name="transactions" asChild reset="always">
-                            <TabButton icon={UserIconNameEnum.Receipt} />
-                        </TabTrigger>
-
-                        <TabTrigger name="analytics" asChild reset="always">
-                            <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
-                        </TabTrigger>
-
-                        <TabTrigger name="settings" asChild reset="always">
-                            <TabButton icon={UserIconNameEnum.Settings} />
-                        </TabTrigger>
-                    </View>
-
-                    <CreateTransactionTrigger isOpen={isMenuOpen} onPress={handleOpenMenu} />
+                <View className="absolute inset-x-0 bottom-0" style={blurContainerStyle} pointerEvents="none">
+                    <MaskedView
+                        style={StyleSheet.absoluteFill}
+                        maskElement={
+                            <LinearGradient colors={gradientColors} locations={GRADIENT_LOCATIONS} style={StyleSheet.absoluteFill} />
+                        }
+                    >
+                        <BlurView style={StyleSheet.absoluteFill} intensity={50} tint={blurTint} experimentalBlurMethod="dimezisBlurView" />
+                    </MaskedView>
                 </View>
-            </View>
+
+                <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none">
+                    <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
+                        <View className="flex-row items-center gap-sm">
+                            <TabTrigger name="home" asChild reset="always">
+                                <TabButton icon={UserIconNameEnum.Home} />
+                            </TabTrigger>
+
+                            <TabTrigger name="transactions" asChild reset="always">
+                                <TabButton icon={UserIconNameEnum.Receipt} />
+                            </TabTrigger>
+
+                            <TabTrigger name="analytics" asChild reset="always">
+                                <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
+                            </TabTrigger>
+
+                            <TabTrigger name="settings" asChild reset="always">
+                                <TabButton icon={UserIconNameEnum.Settings} />
+                            </TabTrigger>
+                        </View>
+
+                        <CreateTransactionTrigger isOpen={isMenuOpen} onPress={handleOpenMenu} />
+                    </View>
+                </View>
+            </Tabs>
 
             <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} />
-        </Tabs>
+        </>
     );
 }
