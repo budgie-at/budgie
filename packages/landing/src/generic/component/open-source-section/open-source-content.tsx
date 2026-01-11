@@ -50,7 +50,7 @@ export const OpenSourceContent = () => (
             />
         </div>
 
-        <div className="flex flex-wrap gap-4">
+        <div className="hidden md:flex flex-wrap gap-4">
             <Button className="rounded-full" size="lg">
                 <Github className="mr-2 size-5" />
                 <Trans>View on GitHub</Trans>
