@@ -214,8 +214,30 @@ const MyForm = () => {
   // Bad - object prop
   <BottomSheetSearch rightAction={{ icon: UserIconNameEnum.Plus, onPress: handleCreate }} />
   ```
+- **Props destructuring** - When a component has many props (5+), destructure in the function body instead of the signature:
+  ```typescript
+  // Good - Destructure in body for many props
+  export const MyComponent = (props: Props) => {
+      const { className, header, footer, children, contentClassName, withBlur = false, ...rest } = props;
+      // ...
+  };
+
+  // Good - Destructure in signature for few props
+  export const SimpleComponent = ({ title, onPress }: Props) => { ... };
+
+  // Bad - Long destructuring in signature
+  export const MyComponent = ({
+      className,
+      header,
+      footer,
+      children,
+      contentClassName,
+      withBlur = false,
+      ...rest
+  }: Props) => { ... };
+  ```
 - **Component logic order** - Organize component internals in this order, separated by blank lines:
-  1. Props destructuring (if long)
+  1. Props destructuring (if many props)
   2. Framework hooks (router, i18n: `useRouter`, `useLingui`)
   3. State and refs (`useState`, `useRef`)
   4. External hooks (queries, mutations, custom hooks)
@@ -224,7 +246,9 @@ const MyForm = () => {
   7. Effects (`useEffect`)
   8. Render-related (JSX variables, conditional rendering helpers)
   ```typescript
-  export const MyComponent = ({ variant, onSelect }: Props) => {
+  export const MyComponent = (props: Props) => {
+      const { variant, onSelect, ...rest } = props;
+
       const { t } = useLingui();
 
       const [search, setSearch] = useState('');
