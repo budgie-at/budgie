@@ -3,16 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
 import { ComponentProps } from 'react';
-import { View } from 'react-native';
-import Animated, { ZoomIn } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { AnimatedFlatList } from '../../../@generic/component/animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
@@ -22,6 +18,7 @@ import { IdInterface } from '../../../@generic/interface/id.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleCard } from '../../../rule/components/rule-card/rule-card';
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
+import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 
 type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
 
@@ -42,6 +39,13 @@ export default function RulesPage() {
 
     const handleOpenRule = (rule: RuleEntityInterface) => void router.push(`/rules/${rule.id}/edit`);
     const handleCreateRule = () => void router.push('/rules/create');
+
+    useCreateAction({
+        icon: UserIconNameEnum.Zap,
+        label: t`Rule`,
+        variant: 'primary',
+        onPress: handleCreateRule
+    });
 
     const renderItem = (rule: RuleWithRelationsType, index: number) => {
         const order = index + 1;
@@ -76,17 +80,6 @@ export default function RulesPage() {
                     description={t`Create rules to automatically categorize and tag your bank transactions`}
                 />
             )}
-
-            <View className="absolute bottom-1/10 right-10">
-                <Animated.View entering={ZoomIn.duration(300).delay(350)}>
-                    <HapticPressable
-                        onPress={handleCreateRule}
-                        className="bg-primary rounded-full w-16 h-16 items-center justify-center active:scale-[0.95]"
-                    >
-                        <Icon icon={UserIconNameEnum.Plus} className="text-primary-reverse" size={32} />
-                    </HapticPressable>
-                </Animated.View>
-            </View>
         </Page>
     );
 }
