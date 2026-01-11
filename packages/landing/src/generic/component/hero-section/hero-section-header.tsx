@@ -1,9 +1,10 @@
 import { Trans } from '@lingui/react/macro';
-import { ArrowRight, Code2, Download, Fingerprint, Github, Shield, Star, Users, WifiOff, Zap } from 'lucide-react';
+import { Code2, Fingerprint, Github, Shield, Smartphone, Star, WifiOff, Zap } from 'lucide-react';
 
 import { Badge } from '../../../ui/badge';
 import { Button } from '../../../ui/button';
 import { Motion } from '../motion/motion';
+import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 const initialMotionHeader = { opacity: 0, y: 20 };
 const animatedMotionHeader = { opacity: 1, y: 0 };
@@ -35,32 +36,28 @@ export const HeroSectionHeader = () => (
 
         <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
             <span className="bg-clip-text text-transparent bg-linear-to-r from-red-600 to-orange-500">
-                <Trans>Quit Overspending.</Trans>
+                <Trans>Stop Leaking Money.</Trans>
             </span>
 
             <br />
 
             <span className="bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
-                <Trans>Your Data Stays Yours.</Trans>
+                <Trans>Start Keeping It.</Trans>
             </span>
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             <Trans>
-                The only budgeting app that works 100% offline. Your financial data never leaves your device—encrypted with your biometrics,
-                open source for anyone to audit. Finally, a money app you can actually trust.
+                The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your
+                fingerprint—so you finally see where your money really goes.
             </Trans>
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button className="rounded-full h-14 px-10 text-lg font-semibold bg-linear-to-r from-primary to-primary/80" size="lg">
-                <Download className="mr-2 size-5" />
-                <Trans>Download Free</Trans>
-                <ArrowRight className="ml-2 size-5" />
-            </Button>
+        <div className="flex flex-col items-center gap-6 mb-8">
+            <WaitlistForm initialCount={2847} variant="hero" />
 
-            <Button className="rounded-full h-14 px-10 text-lg bg-transparent" size="lg" variant="outline">
-                <Github className="mr-2 size-5" />
+            <Button className="rounded-full h-12 px-8 text-base bg-transparent hidden md:flex" size="lg" variant="outline">
+                <Github className="mr-2 size-4" />
                 <Trans>View Source Code</Trans>
             </Button>
         </div>
@@ -78,17 +75,17 @@ export const HeroSectionHeader = () => (
                 <span className="font-medium">4.9/5</span>
 
                 <span className="text-muted-foreground/60">
-                    <Trans>(2,400+ reviews)</Trans>
+                    <Trans>(Beta testers)</Trans>
                 </span>
             </div>
 
             <div className="hidden sm:block w-px h-4 bg-border" />
 
             <div className="flex items-center gap-1.5">
-                <Users className="size-4 text-primary" />
+                <Smartphone className="size-4 text-primary" />
 
                 <span>
-                    <Trans>50K+ users</Trans>
+                    <Trans>iOS & Android</Trans>
                 </span>
             </div>
 
@@ -108,7 +105,7 @@ export const HeroSectionHeader = () => (
                 <Zap className="size-4 text-orange-500" />
 
                 <span>
-                    <Trans>Blazing fast</Trans>
+                    <Trans>Works without internet</Trans>
                 </span>
             </div>
         </div>

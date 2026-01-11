@@ -17,17 +17,13 @@ msgstr ""
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "Так! Ви можете синхронізувати свої дані між пристроями, використовуючи власне хмарне сховище (iCloud, Google Drive, Dropbox). Ваші дані залишаються зашифрованими та приватними — ми ніколи не бачимо їх під час синхронізації."
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:44
-msgid "\"Why did I spend so much this month?\""
-msgstr "«Чому я так багато витратив цього місяця?»"
+#: src/generic/component/hero-section/hero-section-header.tsx:78
+msgid "(Beta testers)"
+msgstr "(Бета-тестери)"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:54
-msgid "\"You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy Restaurant on the 15th.\""
-msgstr "«Ви витратили на 40% більше на ресторани ($320 проти $230 в середньому). Найбільша витрата — $85 у Fancy Restaurant 15-го числа.»"
-
-#: src/generic/component/hero-section/hero-section-header.tsx:81
-msgid "(2,400+ reviews)"
-msgstr "(2 400+ відгуків)"
+#: src/generic/component/waitlist-form/waitlist-form.tsx:95
+msgid "{formattedCount}+ people already waiting"
+msgstr "{formattedCount}+ людей вже чекають"
 
 #: src/generic/component/pricing-section/pricing-section-card-trial.tsx:29
 msgid "/14 days"
@@ -75,18 +71,10 @@ msgid "$7,200 of $10,000"
 msgstr "$7 200 з $10 000"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:7
-#: src/generic/component/hero-section/hero-section-header.tsx:22
+#: src/generic/component/hero-section/hero-section-header.tsx:23
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:44
 msgid "100% Offline"
 msgstr "100% офлайн"
-
-#: src/generic/component/ai-section-features/ai-section-features.tsx:21
-msgid "100% On-Device Processing"
-msgstr "100% обробка на пристрої"
-
-#: src/generic/component/cta-section/cta-section.tsx:85
-msgid "100% private"
-msgstr "100% приватність"
 
 #: src/generic/component/features-section/features-section-grid.tsx:94
 msgid "100% Private"
@@ -104,25 +92,17 @@ msgstr "25% знижки на перший рік Budgie Pro"
 msgid "30-day money-back guarantee"
 msgstr "30-денна гарантія повернення коштів"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:91
-msgid "50K+ users"
-msgstr "50 000+ користувачів"
-
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:23
 msgid "72% paid"
 msgstr "72% сплачено"
 
-#: src/generic/component/ai-section/ai-section.tsx:37
-msgid "AI-Powered"
-msgstr "На базі AI"
+#: src/generic/component/ai-section/ai-section.tsx:52
+msgid "AI That Never Leaks Your Secrets"
+msgstr "ШІ, який ніколи не видає ваших секретів"
 
 #: src/generic/component/pricing-section/pricing-section-card-annual.tsx:33
 msgid "AI-powered insights"
 msgstr "AI-аналітика"
-
-#: src/generic/component/ai-section-features/ai-section-features.tsx:50
-msgid "AI:"
-msgstr "AI:"
 
 #: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:19
 msgid "All annual features"
@@ -161,8 +141,8 @@ msgid "As a freelancer with income in 3 currencies, Budgie is the only app that 
 msgstr "Як фрілансер із доходами в 3 валютах, Budgie — єдиний додаток, який правильно з цим справляється. Нарешті я бачу реальну картину своїх фінансів."
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:13
-msgid "Ask questions like \"Why is there so little money?\" and get detailed breakdowns of your spending patterns, unusual transactions, and budget insights."
-msgstr "Ставте питання на кшталт «Чому так мало грошей?» і отримуйте детальний аналіз витрат, незвичайних транзакцій та поради щодо бюджету."
+msgid "Ask \"Where did my money go?\" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone."
+msgstr "Запитайте «Куди зникли мої гроші?» і отримайте миттєвий аналіз. ШІ обробляє все локально — ваші запитання ніколи не залишають телефон."
 
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:40
 msgid "At current pace, you'll be debt-free by August 2025"
@@ -185,8 +165,8 @@ msgid "Automatically sync transactions from your favorite banks, fintech apps, a
 msgstr "Автоматично синхронізуйте транзакції з улюблених банків, фінтех-додатків і криптобірж. Або імпортуйте дані через CSV — ми підтримуємо все."
 
 #: src/generic/component/cta-section/cta-section.tsx:32
-msgid "Average user saves $200/month"
-msgstr "Середній користувач заощаджує $200/місяць"
+msgid "Average user saves $347/month"
+msgstr "Середній користувач заощаджує $347/місяць"
 
 #: src/generic/component/trust-banner/trust-banner.tsx:68
 msgid "Avg. Saved/Year"
@@ -236,7 +216,7 @@ msgstr "Binance"
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:27
+#: src/generic/component/hero-section/hero-section-header.tsx:28
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:60
 msgid "Biometric Encrypted"
 msgstr "Біометричне шифрування"
@@ -244,10 +224,6 @@ msgstr "Біометричне шифрування"
 #: src/generic/component/comparison-section/comparison-table-body.tsx:9
 msgid "Biometric encryption"
 msgstr "Біометричне шифрування"
-
-#: src/generic/component/hero-section/hero-section-header.tsx:111
-msgid "Blazing fast"
-msgstr "Блискавична швидкість"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:52
 msgid "Blazing Fast"
@@ -330,6 +306,10 @@ msgstr "Масовий імпорт"
 msgid "By"
 msgstr "Автор"
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:52
+msgid "Can be hacked or subpoenaed"
+msgstr "Можуть зламати або вилучити за повісткою"
+
 #: src/generic/component/faq-section/faq-section.tsx:74
 msgid "Can I use Budgie across multiple devices?"
 msgstr "Чи можу я використовувати Budgie на кількох пристроях?"
@@ -351,6 +331,18 @@ msgstr "Chase"
 #: src/generic/component/problem-solution-section/problem-items.tsx:24
 msgid "Closed source—trust blindly"
 msgstr "Закритий код — довіряйте сліпо"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:42
+msgid "Cloud AI (Others)"
+msgstr "Хмарний ШІ (інші)"
+
+#: src/generic/component/ai-section/ai-section.tsx:66
+msgid "Cloud AI apps expose: your income, rent, debts, and every purchase you make"
+msgstr "Хмарні ШІ-додатки розкривають: ваш дохід, оренду, борги та кожну вашу покупку"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:33
+msgid "Cloud AI vs On-Device AI"
+msgstr "Хмарний ШІ проти локального ШІ"
 
 #: src/generic/component/comparison-section/comparison-table-header.tsx:17
 msgid "Cloud Apps"
@@ -437,9 +429,17 @@ msgstr "Власні теги"
 msgid "Custom tags reveal trends you never noticed. Discover your real spending triggers."
 msgstr "Власні теги виявляють тренди, яких ви не помічали. Дізнайтеся справжні причини своїх витрат."
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:76
+msgid "Data never leaves your phone"
+msgstr "Дані ніколи не залишають ваш телефон"
+
 #: src/generic/component/comparison-section/comparison-table-body.tsx:8
 msgid "Data on your device only"
 msgstr "Дані лише на вашому пристрої"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:48
+msgid "Data sent to remote servers"
+msgstr "Дані надсилаються на віддалені сервери"
 
 #: src/generic/component/problem-solution-section/solution-items.tsx:10
 msgid "Data stays on YOUR device only"
@@ -485,10 +485,6 @@ msgstr "Завантажте та встановіть"
 msgid "Download App"
 msgstr "Завантажити додаток"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:58
-msgid "Download Free"
-msgstr "Завантажити безкоштовно"
-
 #: src/generic/component/trust-banner/trust-banner.tsx:36
 msgid "Downloads"
 msgstr "Завантаження"
@@ -504,6 +500,14 @@ msgstr "До 30 січня 2025"
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:58
 msgid "Early Access"
 msgstr "Ранній доступ"
+
+#: src/generic/component/waitlist-form/waitlist-success.tsx:55
+msgid "Early access members get 50% off lifetime"
+msgstr "Учасники раннього доступу отримують 50% знижки назавжди"
+
+#: src/generic/component/cta-section/cta-section.tsx:56
+msgid "Early access pricing"
+msgstr "Ціна раннього доступу"
 
 #: src/generic/component/pricing-section/pricing-section-cta.tsx:17
 msgid "Early adopter? Join the whitelist and get 25% off your first year!"
@@ -521,9 +525,13 @@ msgstr "Зашифровано вашою біометрією"
 msgid "End-to-End Encrypted"
 msgstr "Наскрізне шифрування"
 
-#: src/generic/component/cta-section/cta-section.tsx:41
-msgid "Every day you wait is another day of overspending. Start tracking today and see exactly where your money disappears—no account required, no data shared."
-msgstr "Кожен день очікування — ще один день перевитрат. Почніть відстежувати сьогодні й дізнайтеся, куди зникають ваші гроші — без реєстрації, без передачі даних."
+#: src/generic/component/waitlist-form/waitlist-form.tsx:105
+msgid "Enter your email"
+msgstr "Введіть ваш email"
+
+#: src/generic/component/cta-section/cta-section.tsx:37
+msgid "Every Day You Wait Is Another $15 Gone"
+msgstr "Кожен день зволікання — ще $15 втрачено"
 
 #: src/generic/component/features-section/features-section-header.tsx:26
 msgid "Every Dollar. Every Account. One App."
@@ -536,10 +544,6 @@ msgstr "Кожен рядок коду публічний на GitHub. Досл�
 #: src/generic/component/faq-section/faq-section.tsx:35
 msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
 msgstr "Все, що потрібно знати про підхід Budgie до обліку витрат із пріоритетом приватності."
-
-#: src/generic/component/ai-section-features/ai-section-features.tsx:34
-msgid "Example AI Conversations"
-msgstr "Приклади діалогів із AI"
 
 #: src/app/[lang]/layout.tsx:79
 msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
@@ -589,10 +593,6 @@ msgstr "Форки"
 msgid "Found $1,020/year in wasted subscriptions"
 msgstr "Знайшов $1 020/рік на непотрібних підписках"
 
-#: src/generic/component/cta-section/cta-section.tsx:69
-msgid "Free 14-day trial"
-msgstr "Безкоштовний 14-денний пробний період"
-
 #: src/generic/component/faq-section/faq-section.tsx:48
 msgid "Free expense apps make money by selling your financial data or showing ads. Budgie's premium model means we work for you, not advertisers. Your subscription funds ongoing development, security updates, and ensures your data remains completely private—never sold or monetized."
 msgstr "Безкоштовні додатки для обліку витрат заробляють, продаючи ваші фінансові дані або показуючи рекламу. Преміум-модель Budgie означає, що ми працюємо для вас, а не для рекламодавців. Ваша підписка фінансує розвиток, оновлення безпеки і гарантує, що ваші дані залишаються цілком приватними — ніколи не продаються й не монетизуються."
@@ -620,10 +620,6 @@ msgstr "Отримайте Budgie Pro до офіційного запуску"
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:36
 msgid "Get complete control over your finances with just a few simple steps. No accounts, no cloud storage, no compromises."
 msgstr "Отримайте повний контроль над фінансами за кілька простих кроків. Без акаунтів, без хмарного сховища, без компромісів."
-
-#: src/generic/component/ai-section-features/ai-section-features.tsx:25
-msgid "Get personalized recommendations like \"Don't give a girl so much money!\" and other practical insights to help you make better financial decisions."
-msgstr "Отримуйте персоналізовані поради, наприклад «Не давай дівчині так багато грошей!» та інші практичні підказки для кращих фінансових рішень."
 
 #: src/generic/component/pricing-section/pricing-section-card-annual.tsx:22
 #: src/generic/component/pricing-section/pricing-section-card-monthly.tsx:12
@@ -682,6 +678,10 @@ msgstr "Я витрачав $400/місяць на «дрібні покупки
 msgid "Import from any app with flexible column mapping."
 msgstr "Імпортуйте з будь-якого додатку з гнучким налаштуванням полів."
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:80
+msgid "Impossible to breach remotely"
+msgstr "Неможливо зламати віддалено"
+
 #: src/generic/component/analytics-section/analytics-section-chart-stats.tsx:11
 msgid "Income"
 msgstr "Дохід"
@@ -691,8 +691,8 @@ msgid "Independent security experts can verify our claims"
 msgstr "Незалежні експерти з безпеки можуть перевірити наші заяви"
 
 #: src/generic/component/ai-section-features/ai-section-features.tsx:15
-msgid "Instant Financial Analysis"
-msgstr "Миттєвий фінансовий аналіз"
+msgid "Instant Spending Analysis"
+msgstr "Миттєвий аналіз витрат"
 
 #: src/generic/component/hero-section/hero-section-badges.tsx:21
 msgid "Instant Spending Insights"
@@ -706,6 +706,10 @@ msgstr "Інтеграції"
 msgid "Investment Portfolio"
 msgstr "Інвестиційний портфель"
 
+#: src/generic/component/hero-section/hero-section-header.tsx:88
+msgid "iOS & Android"
+msgstr "iOS та Android"
+
 #: src/generic/component/faq-section/faq-section.tsx:86
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Чи є безкоштовний пробний період або гарантія повернення грошей?"
@@ -717,6 +721,10 @@ msgstr "James Wilson"
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx:17
 msgid "January 2025"
 msgstr "Січень 2025"
+
+#: src/generic/component/cta-section/cta-section.tsx:41
+msgid "Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that actually respects your privacy."
+msgstr "Приєднуйтесь до 2 800+ розумних заощаджувачів, які не дозволяють жодній гривні вислизнути. Отримайте ранній доступ до єдиного бюджетного додатку, який справді поважає вашу приватність."
 
 #: src/generic/component/open-source-section/open-source-content.tsx:47
 msgid "Join developers worldwide improving the app"
@@ -730,6 +738,10 @@ msgstr "Приєднуйтесь до списку очікування Budgie �
 msgid "Join the Whitelist & Save 25%"
 msgstr "Приєднуйтесь до білого списку та заощаджуйте 25%"
 
+#: src/generic/component/waitlist-form/waitlist-form.tsx:116
+msgid "Join Waitlist"
+msgstr "Приєднатися до списку очікування"
+
 #: src/app/[lang]/blog/[slug]/page.tsx:175
 #: src/generic/component/mobile-menu/mobile-menu.tsx:53
 msgid "Join Whitelist"
@@ -739,10 +751,6 @@ msgstr "Приєднатися до білого списку"
 msgid "Join Whitelist - Save 25%"
 msgstr "Приєднайтесь до білого списку — заощадьте 25%"
 
-#: src/generic/component/ai-section/ai-section.tsx:47
-msgid "Just Ask: \"Why Am I Always Broke?\""
-msgstr "Просто запитайте: «Чому в мене завжди немає грошей?»"
-
 #: src/generic/component/mobile-menu/mobile-menu.tsx:47
 msgid "Language"
 msgstr "Мова"
@@ -751,6 +759,10 @@ msgstr "Мова"
 msgid "Latest from Our Blog"
 msgstr "Останнє з нашого блогу"
 
+#: src/generic/component/cta-section/cta-section.tsx:72
+msgid "Launching Q1 2026"
+msgstr "Запуск Q1 2026"
+
 #: src/generic/component/footer/footer.tsx:128
 msgid "Legal"
 msgstr "Юридична інформація"
@@ -758,6 +770,10 @@ msgstr "Юридична інформація"
 #: src/generic/component/footer/footer.tsx:153
 msgid "License"
 msgstr "Ліцензія"
+
+#: src/generic/component/cta-section/cta-section.tsx:64
+msgid "Lifetime 50% discount"
+msgstr "50% знижка назавжди"
 
 #: src/generic/component/whitelist-section-offer/whitelist-section-offer.tsx:104
 msgid "Limited time"
@@ -842,10 +858,6 @@ msgstr "Статей не знайдено"
 msgid "No commitment"
 msgstr "Без зобов'язань"
 
-#: src/generic/component/cta-section/cta-section.tsx:77
-msgid "No credit card needed"
-msgstr "Кредитна картка не потрібна"
-
 #: src/generic/component/pricing-section/pricing-section-card-trial.tsx:21
 msgid "No credit card required"
 msgstr "Кредитна картка не потрібна"
@@ -866,6 +878,10 @@ msgstr "Без прихованих платежів, без обмежень ф
 msgid "No server round-trips. Every action is instant. The app works even in airplane mode."
 msgstr "Без звернень до сервера. Кожна дія миттєва. Додаток працює навіть у режимі польоту."
 
+#: src/generic/component/waitlist-form/waitlist-form.tsx:133
+msgid "No spam, ever. Unsubscribe anytime."
+msgstr "Без спаму. Відписатись можна будь-коли."
+
 #: src/generic/component/trust-banner/trust-banner.tsx:46
 msgid "Offline & Private"
 msgstr "Офлайн і приватно"
@@ -878,6 +894,14 @@ msgstr "Офлайн-перший"
 msgid "Offline-first budgeting app"
 msgstr "Бюджетний додаток офлайн-перший"
 
+#: src/generic/component/ai-section/ai-section.tsx:37
+msgid "On-Device AI"
+msgstr "Локальний ШІ"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:70
+msgid "On-Device AI (Budgie)"
+msgstr "Локальний ШІ (Budgie)"
+
 #: src/generic/component/ai-section-details/ai-section-details.tsx:19
 msgid "On-device assistant"
 msgstr "Асистент на пристрої"
@@ -886,7 +910,11 @@ msgstr "Асистент на пристрої"
 msgid "One Plan, Everything Included"
 msgstr "Один план, все включено"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:32
+#: src/generic/component/ai-section-features/ai-section-features.tsx:88
+msgid "Only you see your data"
+msgstr "Лише ви бачите свої дані"
+
+#: src/generic/component/hero-section/hero-section-header.tsx:33
 #: src/generic/component/open-source-section/open-source-content.tsx:19
 #: src/generic/component/trust-banner/trust-banner.tsx:54
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:68
@@ -908,6 +936,10 @@ msgstr "Відкритий код — перевірте наш код"
 #: src/generic/component/analytics-section/analytics-section-chart-bars.tsx:28
 msgid "Other"
 msgstr "Інше"
+
+#: src/generic/component/ai-section/ai-section.tsx:56
+msgid "Other apps send your financial questions to ChatGPT or Google—exposing your salary, debts, and spending habits. Budgie's AI runs 100% on your device. Your conversations never touch the internet."
+msgstr "Інші додатки надсилають ваші фінансові запитання до ChatGPT або Google — розкриваючи вашу зарплату, борги та звички витрачання. ШІ Budgie працює на 100% на вашому пристрої. Ваші розмови ніколи не торкаються інтернету."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:30
 msgid "Paid off $12K in debt"
@@ -942,10 +974,6 @@ msgstr "Політика конфіденційності"
 msgid "PrivatBank"
 msgstr "ПриватБанк"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:38
-msgid "Quit Overspending."
-msgstr "Припиніть перевитрачати."
-
 #: src/app/[lang]/blog/[slug]/page.tsx:164
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Готові взяти під контроль свою фінансову конфіденційність?"
@@ -962,6 +990,7 @@ msgstr "Реальні історії користувачів, які взял�
 msgid "Regular Price"
 msgstr "Звичайна ціна"
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:56
 #: src/generic/component/problem-solution-section/problem-items.tsx:23
 msgid "Requires internet connection"
 msgstr "Потрібне інтернет-з'єднання"
@@ -1067,17 +1096,13 @@ msgstr "Показані результати для: <0>{searchQuery}</0>"
 msgid "Simple Pricing"
 msgstr "Проста ціна"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:27
-msgid "Smart Spending Advice"
-msgstr "Розумні поради щодо витрат"
+#: src/generic/component/waitlist-form/waitlist-form.tsx:81
+msgid "Something went wrong. Please try again."
+msgstr "Щось пішло не так. Спробуйте ще раз."
 
 #: src/generic/component/footer/footer.tsx:120
 msgid "Source Code"
 msgstr "Вихідний код"
-
-#: src/generic/component/ai-section/ai-section.tsx:51
-msgid "Speak or type naturally and get instant answers about your spending. Our on-device AI analyzes your finances privately—no data ever leaves your phone."
-msgstr "Говоріть або пишіть природною мовою й отримуйте миттєві відповіді про свої витрати. Наш AI на пристрої аналізує ваші фінанси приватно — жодні дані не залишають ваш телефон."
 
 #: src/generic/component/analytics-section/analytics-section-chart-stats.tsx:23
 msgid "Spending"
@@ -1107,9 +1132,9 @@ msgstr "Зірки"
 msgid "Start Free Trial"
 msgstr "Почати безкоштовно"
 
-#: src/generic/component/cta-section/cta-section.tsx:50
-msgid "Start Saving Now"
-msgstr "Почніть заощаджувати зараз"
+#: src/generic/component/hero-section/hero-section-header.tsx:45
+msgid "Start Keeping It."
+msgstr "Почніть зберігати."
 
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
@@ -1119,6 +1144,10 @@ msgstr "Почніть облік за кілька хвилин"
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Будьте в курсі фінансової конфіденційності, найкращих практик безпеки та останніх функцій Budgie."
 
+#: src/generic/component/hero-section/hero-section-header.tsx:39
+msgid "Stop Leaking Money."
+msgstr "Припиніть втрачати гроші."
+
 #: src/generic/component/features-section/features-section-header.tsx:30
 msgid "Stop switching between apps. Budgie tracks your bank accounts, credit cards, cash, crypto, and investments together—so you finally see the complete picture of your finances."
 msgstr "Припиніть перемикатися між додатками. Budgie відстежує банківські рахунки, кредитні картки, готівку, криптовалюту та інвестиції разом — щоб ви нарешті побачили повну картину своїх фінансів."
@@ -1126,10 +1155,6 @@ msgstr "Припиніть перемикатися між додатками. B
 #: src/generic/component/analytics-section/analytics-section-content.tsx:18
 msgid "Stop the Leaks"
 msgstr "Зупиніть витоки"
-
-#: src/generic/component/cta-section/cta-section.tsx:37
-msgid "Stop Wondering Where Your Money Goes"
-msgstr "Припиніть гадати, куди зникають ваші гроші"
 
 #: src/generic/component/debt-section/debt-section-loan-card.tsx:18
 msgid "Student Loan"
@@ -1165,13 +1190,13 @@ msgstr "Відгуки"
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "Та щоденна кава? $150/місяць. Забуті підписки? $80/місяць. Budgie виявляє кожен витік грошей, щоб ви нарешті могли їх зупинити й тримати більше грошей у кишені."
 
+#: src/generic/component/hero-section/hero-section-header.tsx:50
+msgid "The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your fingerprint—so you finally see where your money really goes."
+msgstr "Середня людина перевитрачає $400/місяць, не усвідомлюючи цього. Budgie відстежує кожну гривню офлайн, зашифровану вашим відбитком пальця — щоб ви нарешті побачили, куди насправді йдуть ваші гроші."
+
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:28
 msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
 msgstr "Функція обліку боргів допомогла мені погасити студентський кредит на 6 місяців раніше. Спостереження за заповненням шкали прогресу мотивувало мене щодня."
-
-#: src/generic/component/hero-section/hero-section-header.tsx:49
-msgid "The only budgeting app that works 100% offline. Your financial data never leaves your device—encrypted with your biometrics, open source for anyone to audit. Finally, a money app you can actually trust."
-msgstr "Єдиний бюджетний додаток, що працює 100% офлайн. Ваші фінансові дані ніколи не залишають пристрій — зашифровані вашою біометрією, відкритий код для перевірки будь-ким. Нарешті, додаток для грошей, якому можна довіряти."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:49
 msgid "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
@@ -1188,6 +1213,10 @@ msgstr "Приватний підхід"
 #: src/generic/component/problem-solution-section/problem-solution-card.tsx:44
 msgid "The risky approach"
 msgstr "Ризикований підхід"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:60
+msgid "Third parties see your data"
+msgstr "Треті сторони бачать ваші дані"
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx:12
 msgid "This Month's Reality Check"
@@ -1262,6 +1291,10 @@ msgstr "Прозорість, яку можна перевірити"
 msgid "Transportation"
 msgstr "Транспорт"
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:21
+msgid "True Privacy, Not Just Promises"
+msgstr "Справжня приватність, а не лише обіцянки"
+
 #: src/app/[lang]/blog/page.tsx:115
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Спробуйте налаштувати пошуковий запит або перегляньте всі статті."
@@ -1273,6 +1306,10 @@ msgstr "Спробуйте все без ризику"
 #: src/generic/component/footer/footer.tsx:66
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:19
+msgid "Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. No servers see your salary, debts, or spending habits. Ever."
+msgstr "На відміну від ChatGPT або Google Assistant, ШІ Budgie працює повністю на вашому пристрої. Жоден сервер не бачить вашу зарплату, борги чи звички витрачання. Ніколи."
 
 #: src/generic/component/open-source-section/open-source-content.tsx:27
 msgid "Unlike closed-source apps, you don't have to trust our word. Every line of code is public on GitHub. Security researchers, developers, and anyone can audit exactly how we handle your data—spoiler: we never see it."
@@ -1302,11 +1339,7 @@ msgstr "Переглянути всі інтеграції"
 msgid "View on GitHub"
 msgstr "Переглянути на GitHub"
 
-#: src/generic/component/cta-section/cta-section.tsx:60
-msgid "View Source"
-msgstr "Переглянути код"
-
-#: src/generic/component/hero-section/hero-section-header.tsx:64
+#: src/generic/component/hero-section/hero-section-header.tsx:61
 msgid "View Source Code"
 msgstr "Переглянути вихідний код"
 
@@ -1380,11 +1413,24 @@ msgstr "Wise"
 msgid "Works 100% offline—always fast"
 msgstr "Працює 100% офлайн — завжди швидко"
 
+#: src/generic/component/ai-section-features/ai-section-features.tsx:27
+msgid "Works Completely Offline"
+msgstr "Працює повністю офлайн"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:84
+msgid "Works in airplane mode"
+msgstr "Працює в режимі польоту"
+
+#: src/generic/component/ai-section-features/ai-section-features.tsx:25
+msgid "Works in airplane mode. No internet needed. Your financial assistant is always available—even when you're offline."
+msgstr "Працює в режимі польоту. Інтернет не потрібен. Ваш фінансовий асистент завжди доступний — навіть коли ви офлайн."
+
 #: src/generic/component/hero-section/hero-section-badges.tsx:37
 msgid "Works Offline"
 msgstr "Працює офлайн"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:12
+#: src/generic/component/hero-section/hero-section-header.tsx:108
 msgid "Works without internet"
 msgstr "Працює без інтернету"
 
@@ -1400,9 +1446,13 @@ msgstr "Так, покажи деталі"
 msgid "You owe Sarah"
 msgstr "Ви винні Сарі"
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:40
-msgid "You:"
-msgstr "Ви:"
+#: src/generic/component/waitlist-form/waitlist-success.tsx:47
+msgid "You're #{position} on the waitlist. We'll notify you when Budgie launches!"
+msgstr "Ви #{position} у списку очікування. Ми повідомимо вас, коли Budgie запуститься!"
+
+#: src/generic/component/waitlist-form/waitlist-success.tsx:41
+msgid "You're in!"
+msgstr "Ви в списку!"
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:58
 msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
@@ -1421,10 +1471,6 @@ msgstr "Ваші дані залишаються на вашому пристр�
 msgid "Your Data Stays Yours"
 msgstr "Ваші дані залишаються вашими"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:44
-msgid "Your Data Stays Yours."
-msgstr "Ваші дані залишаються вашими."
-
 #: src/generic/component/problem-solution-section/problem-items.tsx:10
 msgid "Your data stored on their servers"
 msgstr "Ваші дані зберігаються на їхніх серверах"
@@ -1433,19 +1479,19 @@ msgstr "Ваші дані зберігаються на їхніх сервер�
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
 msgstr "Ваші фінансові дані ніколи не залишають ваш пристрій. Без серверів, без хмари, без відстеження — лише повна приватність із функціями безпеки корпоративного рівня."
 
-#: src/generic/component/ai-section-features/ai-section-features.tsx:19
-msgid "Your financial data never leaves your device. The AI runs locally, ensuring your spending habits and financial questions remain completely private."
-msgstr "Ваші фінансові дані ніколи не залишають пристрій. AI працює локально, тож ваші витрати й фінансові питання залишаються повністю приватними."
-
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:41
 msgid "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
 msgstr "Ваші фінансові дані ніколи не залишають ваш телефон. Без серверів, без хмари, без ризику витоку даних."
+
+#: src/generic/component/ai-section/ai-section.tsx:47
+msgid "Zero Cloud"
+msgstr "Без хмари"
 
 #: src/generic/component/security-section/security-section-cards.tsx:31
 msgid "Zero Cloud Storage"
 msgstr "Без хмарного сховища"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:101
+#: src/generic/component/hero-section/hero-section-header.tsx:98
 msgid "Zero data collection"
 msgstr "Без збору даних"
 

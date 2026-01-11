@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro';
-import { ArrowRight, Check, Download, Github, TrendingDown } from 'lucide-react';
+import { Check, Clock, TrendingDown } from 'lucide-react';
 
-import { Button } from '../../../ui/button';
 import { Motion } from '../motion/motion';
+import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 const initialMotion = { opacity: 0, y: 20 };
 const transitionMotion = { duration: 0.5 };
@@ -29,36 +29,23 @@ export const CtaSection = () => (
                     <TrendingDown className="size-4" />
 
                     <span className="text-sm font-medium">
-                        <Trans>Average user saves $200/month</Trans>
+                        <Trans>Average user saves $347/month</Trans>
                     </span>
                 </div>
 
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight max-w-3xl">
-                    <Trans>Stop Wondering Where Your Money Goes</Trans>
+                    <Trans>Every Day You Wait Is Another $15 Gone</Trans>
                 </h2>
 
                 <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
                     <Trans>
-                        Every day you wait is another day of overspending. Start tracking today and see exactly where your money
-                        disappears—no account required, no data shared.
+                        Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that
+                        actually respects your privacy.
                     </Trans>
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                    <Button className="rounded-full h-14 px-10 text-lg font-semibold bg-white text-red-600 hover:bg-white/90" size="lg">
-                        <Download className="mr-2 size-5" />
-                        <Trans>Start Saving Now</Trans>
-                        <ArrowRight className="ml-2 size-5" />
-                    </Button>
-
-                    <Button
-                        className="rounded-full h-14 px-10 text-lg bg-transparent border-white text-white hover:bg-white/10"
-                        size="lg"
-                        variant="outline"
-                    >
-                        <Github className="mr-2 size-5" />
-                        <Trans>View Source</Trans>
-                    </Button>
+                <div className="mt-6 w-full max-w-xl">
+                    <WaitlistForm initialCount={2847} showCount={false} variant="cta" />
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-white/80">
@@ -66,7 +53,7 @@ export const CtaSection = () => (
                         <Check className="size-4" />
 
                         <span>
-                            <Trans>Free 14-day trial</Trans>
+                            <Trans>Early access pricing</Trans>
                         </span>
                     </div>
 
@@ -74,15 +61,15 @@ export const CtaSection = () => (
                         <Check className="size-4" />
 
                         <span>
-                            <Trans>No credit card needed</Trans>
+                            <Trans>Lifetime 50% discount</Trans>
                         </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Check className="size-4" />
+                        <Clock className="size-4" />
 
                         <span>
-                            <Trans>100% private</Trans>
+                            <Trans>Launching Q1 2026</Trans>
                         </span>
                     </div>
                 </div>
