@@ -16,6 +16,7 @@ interface Props {
     readonly balanceAdjustmentLabel: string;
     readonly categoriesLabel: string;
     readonly footerSpacerMultiplier?: number;
+    readonly focusKey?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -43,7 +44,8 @@ export const TransactionSectionsList = ({
     listEmptyState,
     balanceAdjustmentLabel,
     categoriesLabel,
-    footerSpacerMultiplier
+    footerSpacerMultiplier,
+    focusKey
 }: Props) => {
     const { formatMonthAndDayWithTime } = useFormatDate();
 
@@ -67,6 +69,7 @@ export const TransactionSectionsList = ({
 
     return (
         <LegendList
+            key={focusKey}
             data={flatData}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
