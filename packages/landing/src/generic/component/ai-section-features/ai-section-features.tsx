@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Shield, Sparkles, TrendingUp } from 'lucide-react';
+import { Cloud, CloudOff, Lock, Sparkles, Zap } from 'lucide-react';
 
 import { AiSectionFeaturesItem } from '../ai-section-features-item/ai-section-features-item';
 
@@ -10,52 +10,84 @@ export const AiSectionFeatures = () => {
         <>
             <div className="space-y-6">
                 <AiSectionFeaturesItem
-                    content={t`Ask questions like "Why is there so little money?" and get detailed breakdowns of your spending patterns, unusual transactions, and budget insights.`}
+                    content={t`Ask "Where did my money go?" and get instant breakdowns. The AI processes everything locally—your questions never leave your phone.`}
                     icon={<Sparkles className="size-5" />}
-                    title={t`Instant Financial Analysis`}
+                    title={t`Instant Spending Analysis`}
                 />
 
                 <AiSectionFeaturesItem
-                    content={t`Your financial data never leaves your device. The AI runs locally, ensuring your spending habits and financial questions remain completely private.`}
-                    icon={<Shield className="size-5" />}
-                    title={t`100% On-Device Processing`}
+                    content={t`Unlike ChatGPT or Google Assistant, Budgie's AI runs entirely on your device. No servers see your salary, debts, or spending habits. Ever.`}
+                    icon={<Lock className="size-5" />}
+                    title={t`True Privacy, Not Just Promises`}
                 />
 
                 <AiSectionFeaturesItem
-                    content={t`Get personalized recommendations like "Don\'t give a girl so much money!" and other practical insights to help you make better financial decisions.`}
-                    icon={<TrendingUp className="size-5" />}
-                    title={t`Smart Spending Advice`}
+                    content={t`Works in airplane mode. No internet needed. Your financial assistant is always available—even when you're offline.`}
+                    icon={<Zap className="size-5" />}
+                    title={t`Works Completely Offline`}
                 />
             </div>
 
-            <div className="p-6 bg-muted/50 rounded-xl border border-border/40">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Sparkles className="size-4 text-primary" />
-                    <Trans>Example AI Conversations</Trans>
+            <div className="p-6 bg-background rounded-xl border border-border/40 shadow-sm">
+                <h4 className="font-semibold mb-4">
+                    <Trans>Cloud AI vs On-Device AI</Trans>
                 </h4>
 
-                <div className="space-y-3 text-sm">
-                    <div className="flex gap-3">
-                        <div className="text-muted-foreground">
-                            <Trans>You:</Trans>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-red-600 dark:text-red-400 font-medium">
+                            <Cloud className="size-4" />
+
+                            <span>
+                                <Trans>Cloud AI (Others)</Trans>
+                            </span>
                         </div>
 
-                        <div>
-                            <Trans>&quot;Why did I spend so much this month?&quot;</Trans>
-                        </div>
+                        <ul className="space-y-2 text-muted-foreground">
+                            <li>
+                                <Trans>Data sent to remote servers</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Can be hacked or subpoenaed</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Requires internet connection</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Third parties see your data</Trans>
+                            </li>
+                        </ul>
                     </div>
 
-                    <div className="flex gap-3">
-                        <div className="text-primary font-medium">
-                            <Trans>AI:</Trans>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-green-600 dark:text-green-400 font-medium">
+                            <CloudOff className="size-4" />
+
+                            <span>
+                                <Trans>On-Device AI (Budgie)</Trans>
+                            </span>
                         </div>
 
-                        <div className="text-muted-foreground">
-                            <Trans>
-                                &quot;You spent 40% more on dining out ($320 vs $230 average). Your largest expense was $85 at Fancy
-                                Restaurant on the 15th.&quot;
-                            </Trans>
-                        </div>
+                        <ul className="space-y-2 text-muted-foreground">
+                            <li>
+                                <Trans>Data never leaves your phone</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Impossible to breach remotely</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Works in airplane mode</Trans>
+                            </li>
+
+                            <li>
+                                <Trans>Only you see your data</Trans>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
