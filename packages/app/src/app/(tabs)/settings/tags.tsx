@@ -1,40 +1,74 @@
+/* jscpd:ignore-start */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
+import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty-state';
 import { TagFormBottomSheet } from '../../../tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet';
+import { TagSelectorBottomSheet } from '../../../tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
+import { tagService } from '../../../tag/service/tag.service';
+
+const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Tags() {
     const { t } = useLingui();
 
     const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
+    const reassignRef = useRef<BottomSheetInterface | null>(null);
     const [search, setSearch] = useState('');
     const [selectedTag, setSelectedTag] = useState<TagEntityInterface | null>(null);
+    const [tagToDelete, setTagToDelete] = useState<TagEntityInterface | null>(null);
     const { tags } = useSearchTagsQuery(search);
 
-    const handleOpenCreate = () => {
-        setSelectedTag(null);
-        void bottomSheetRef.current?.open();
-    };
+    const excludeTagIds = isDefined(tagToDelete) ? [tagToDelete.id] : [];
 
     useCreateAction({
         icon: UserIconNameEnum.Tag,
         label: t`Tag`,
         variant: 'primary',
-        onPress: handleOpenCreate
+        onPress: () => {
+            setSelectedTag(null);
+            void bottomSheetRef.current?.open();
+        }
     });
 
     const handleDeleteTag = async (id: number) => {
-        await tagRepository.deleteById(id);
+        const count = await tagService.countTransactions(id);
+        if (isPositiveNumber(count)) {
+            const foundTag = tags?.find(item => item.id === id);
+            if (isDefined(foundTag)) {
+                setTagToDelete(foundTag);
+                void reassignRef.current?.open();
+            }
+
+            return;
+        }
+        await tagService.deleteById(id);
+    };
+
+    const handleReassignSelect = async (targetTagId: number | null) => {
+        if (isDefined(tagToDelete) && isDefined(targetTagId)) {
+            try {
+                await tagService.mergeInto(tagToDelete.id, targetTagId);
+                void reassignRef.current?.close();
+                setTagToDelete(null);
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: t`Could not reassign tag`,
+                    text2: t`Please try again later`
+                });
+            }
+        }
     };
 
     const handleOpenTag = (tag: TagEntityInterface) => {
@@ -44,12 +78,6 @@ export default function Tags() {
 
     const renderCard = (tag: TagEntityInterface) => <TagCard onOpen={handleOpenTag} tag={tag} />;
 
-    const emptyStateIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Tag;
-    const emptyStateTitle = isNotEmptyString(search) ? t`No Results` : t`No Tags Yet`;
-    const emptyStateDescription = isNotEmptyString(search) ? t`No tags match your search` : t`Create tags to organize your transactions`;
-
-    const handleGoBack = () => void goBackOrReplace('/settings');
-
     return (
         <SearchablePage
             onGoBack={handleGoBack}
@@ -57,14 +85,21 @@ export default function Tags() {
             title={t`Tags`}
             searchPlaceholder={t`Search tags...`}
             data={tags}
-            emptyStateIcon={emptyStateIcon}
-            emptyStateTitle={emptyStateTitle}
-            emptyStateDescription={emptyStateDescription}
+            emptyState={<TagEmptyState search={search} />}
             renderCard={renderCard}
             search={search}
             onSearchChange={setSearch}
         >
             <TagFormBottomSheet ref={bottomSheetRef} tag={selectedTag} />
+
+            <TagSelectorBottomSheet
+                ref={reassignRef}
+                selectedTag={null}
+                excludeTagIds={excludeTagIds}
+                description={t`This tag has transactions. Select another tag to reassign them to.`}
+                onSelect={handleReassignSelect}
+            />
         </SearchablePage>
     );
 }
+/* jscpd:ignore-end */

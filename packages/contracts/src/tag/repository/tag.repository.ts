@@ -3,6 +3,7 @@ import { count, eq, inArray, like } from 'drizzle-orm';
 import { isDefined } from '@rnw-community/shared';
 
 import { TX } from '../../@generic/type/db.type';
+import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
 import { TagEntityTable } from '../table/tag-entity.table';
@@ -51,6 +52,37 @@ export class TagRepository {
 
     async deleteById(id: number): Promise<void> {
         await this.db.delete(TagEntityTable).where(eq(TagEntityTable.id, id));
+    }
+
+    async countTransactions(tagId: number): Promise<number> {
+        const [result] = await this.db
+            .select({ count: count() })
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.tagId, tagId));
+
+        return result.count;
+    }
+
+    async reassignTransactions(fromTagId: number, toTagId: number): Promise<void> {
+        const transactionsWithFromTag = await this.db
+            .select({ transactionId: TransactionTagsEntityTable.transactionId })
+            .from(TransactionTagsEntityTable)
+            .where(eq(TransactionTagsEntityTable.tagId, fromTagId));
+
+        if (transactionsWithFromTag.length > 0) {
+            await this.db
+                .insert(TransactionTagsEntityTable)
+                .values(transactionsWithFromTag.map(row => ({ transactionId: row.transactionId, tagId: toTagId })))
+                .onConflictDoNothing();
+        }
+
+        await this.db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, fromTagId));
+    }
+
+    async findByTitle(title: string): Promise<TagEntityInterface | undefined> {
+        return this.db.query.TagEntityTable.findFirst({
+            where: eq(TagEntityTable.titleSearch, title.toLowerCase())
+        });
     }
 
     async truncate(tx?: TX): Promise<void> {

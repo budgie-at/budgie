@@ -10,7 +10,7 @@ import { ColorSchemaEnum } from '../enum/color-schema.enum';
 
 import type { ReactNode } from 'react';
 
-const light = {
+export const light = {
     '--color-primary': 'rgb(0, 0, 0)',
     '--color-primary-reverse': 'rgb(255, 255, 255)',
     '--color-secondary-foreground': 'rgba(115, 115, 115, 1)',
@@ -44,7 +44,7 @@ const light = {
     '--color-separator': 'linear-gradient(90deg, rgba(0, 0, 0, 0.40) 0%, rgba(255, 255, 255, 0.00) 100%)'
 };
 
-const dark = {
+export const dark = {
     '--color-primary': 'rgb(255, 255, 255)',
     '--color-primary-reverse': 'rgb(0, 0, 0)',
     '--color-secondary-foreground': 'rgba(136, 136, 136, 1)',

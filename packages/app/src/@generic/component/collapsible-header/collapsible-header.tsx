@@ -81,10 +81,7 @@ export const CollapsibleHeader = ({ scrollY }: Props) => {
 
     return (
         <View style={containerStyle}>
-            <Animated.View
-                className="absolute inset-x-0 bottom-0 top-0 border-b border-border bg-background"
-                style={headerBackgroundStyle}
-            />
+            <Animated.View className="absolute inset-x-0 bottom-0 top-0 bg-background" style={headerBackgroundStyle} />
 
             <Animated.View className="relative" style={headerContainerStyle}>
                 <Animated.View

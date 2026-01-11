@@ -76,6 +76,22 @@ export class CategoryRepository {
         await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
     }
 
+    async countTransactionEntries(categoryId: number): Promise<number> {
+        const [result] = await this.db
+            .select({ count: count() })
+            .from(TransactionEntryEntityTable)
+            .where(eq(TransactionEntryEntityTable.categoryId, categoryId));
+
+        return result.count;
+    }
+
+    async reassignTransactionEntries(fromCategoryId: number, toCategoryId: number): Promise<void> {
+        await this.db
+            .update(TransactionEntryEntityTable)
+            .set({ categoryId: toCategoryId })
+            .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId));
+    }
+
     async truncate(includeDefault: boolean, tx?: TX): Promise<void> {
         await (tx ?? this.db)
             .delete(CategoryEntityTable)
