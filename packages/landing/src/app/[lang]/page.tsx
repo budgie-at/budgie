@@ -16,7 +16,6 @@ import { SecuritySection } from '../../generic/component/security-section/securi
 import { TestimonialsSection } from '../../generic/component/testimonials-section/testimonials-section';
 import { TrustBanner } from '../../generic/component/trust-banner/trust-banner';
 import { UspPillarsSection } from '../../generic/component/usp-pillars-section/usp-pillars-section';
-import { WhitelistSection } from '../../generic/component/whitelist-section/whitelist-section';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 
 export default async function LandingPage(props: PageLangParam) {
@@ -60,7 +59,6 @@ export default async function LandingPage(props: PageLangParam) {
             <BlogSection locale={lang} />
 
             {/* Final Conversion */}
-            <WhitelistSection />
             <CtaSection />
         </main>
     );

@@ -156,7 +156,7 @@ msgstr "App Store"
 msgid "Article Not Found"
 msgstr "Article Not Found"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:76
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:42
 msgid "As a freelancer with income in 3 currencies, Budgie is the only app that handles it properly. I can finally see my real financial picture."
 msgstr "As a freelancer with income in 3 currencies, Budgie is the only app that handles it properly. I can finally see my real financial picture."
 
@@ -445,7 +445,7 @@ msgstr "Data on your device only"
 msgid "Data stays on YOUR device only"
 msgstr "Data stays on YOUR device only"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:66
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:34
 msgid "David Park"
 msgstr "David Park"
 
@@ -509,7 +509,7 @@ msgstr "Early Access"
 msgid "Early adopter? Join the whitelist and get 25% off your first year!"
 msgstr "Early adopter? Join the whitelist and get 25% off your first year!"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:58
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:27
 msgid "Emily Johnson"
 msgstr "Emily Johnson"
 
@@ -561,7 +561,7 @@ msgstr "Feature"
 msgid "Features"
 msgstr "Features"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:52
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:21
 msgid "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
 msgstr "Finally seeing my crypto, stocks, and bank accounts in one place changed everything. I can actually see my net worth grow instead of wondering where money went."
 
@@ -585,7 +585,7 @@ msgstr "Food & Dining"
 msgid "Forks"
 msgstr "Forks"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:70
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:37
 msgid "Found $1,020/year in wasted subscriptions"
 msgstr "Found $1,020/year in wasted subscriptions"
 
@@ -670,11 +670,11 @@ msgstr "How much does Budgie cost?"
 msgid "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 msgstr "I analyzed your spending and found you spent $450 more than usual this month. The main culprits: $280 on entertainment and $170 on impulse purchases. Want me to show you the breakdown?"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:68
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:35
 msgid "I cancelled 5 subscriptions I forgot about in the first day. That's $85/month I was literally throwing away. Budgie paid for itself instantly."
 msgstr "I cancelled 5 subscriptions I forgot about in the first day. That's $85/month I was literally throwing away. Budgie paid for itself instantly."
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:44
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:14
 msgid "I was spending $400/month on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. Now I save $300+ every month."
 msgstr "I was spending $400/month on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. Now I save $300+ every month."
 
@@ -710,7 +710,7 @@ msgstr "Investment Portfolio"
 msgid "Is there a free trial or money-back guarantee?"
 msgstr "Is there a free trial or money-back guarantee?"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:82
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:48
 msgid "James Wilson"
 msgstr "James Wilson"
 
@@ -767,15 +767,15 @@ msgstr "Limited time"
 msgid "Link multiple savings accounts. Watch your emergency fund and goals grow."
 msgstr "Link multiple savings accounts. Watch your emergency fund and goals grow."
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:74
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:41
 msgid "Lisa Thompson"
 msgstr "Lisa Thompson"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:78
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:44
 msgid "Manages USD, EUR & GBP"
 msgstr "Manages USD, EUR & GBP"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:50
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:20
 msgid "Marcus Rodriguez"
 msgstr "Marcus Rodriguez"
 
@@ -909,11 +909,11 @@ msgstr "Open source—audit our code"
 msgid "Other"
 msgstr "Other"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:62
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:30
 msgid "Paid off $12K in debt"
 msgstr "Paid off $12K in debt"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:32
+#: src/generic/component/testimonials-section/testimonials-header.tsx:26
 msgid "People Who Stopped Overspending"
 msgstr "People Who Stopped Overspending"
 
@@ -929,7 +929,7 @@ msgstr "Priority support"
 msgid "Priority Support"
 msgstr "Priority Support"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:86
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:51
 msgid "Privacy advocate"
 msgstr "Privacy advocate"
 
@@ -950,11 +950,11 @@ msgstr "Quit Overspending."
 msgid "Ready to Take Control of Your Financial Privacy?"
 msgstr "Ready to Take Control of Your Financial Privacy?"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:28
+#: src/generic/component/testimonials-section/testimonials-header.tsx:22
 msgid "Real Results"
 msgstr "Real Results"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:36
+#: src/generic/component/testimonials-section/testimonials-header.tsx:30
 msgid "Real stories from users who took control of their money and never looked back."
 msgstr "Real stories from users who took control of their money and never looked back."
 
@@ -986,7 +986,7 @@ msgstr "Roadmap"
 msgid "Robinhood"
 msgstr "Robinhood"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:42
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:13
 msgid "Sarah Chen"
 msgstr "Sarah Chen"
 
@@ -994,7 +994,7 @@ msgstr "Sarah Chen"
 msgid "Save Presets"
 msgstr "Save Presets"
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:46
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:16
 msgid "Saved $3,600/year"
 msgstr "Saved $3,600/year"
 
@@ -1165,7 +1165,7 @@ msgstr "Testimonials"
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:60
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:28
 msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
 msgstr "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
 
@@ -1173,7 +1173,7 @@ msgstr "The debt tracking feature helped me pay off my student loans 6 months ea
 msgid "The only budgeting app that works 100% offline. Your financial data never leaves your device—encrypted with your biometrics, open source for anyone to audit. Finally, a money app you can actually trust."
 msgstr "The only budgeting app that works 100% offline. Your financial data never leaves your device—encrypted with your biometrics, open source for anyone to audit. Finally, a money app you can actually trust."
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:84
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:49
 msgid "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
 msgstr "The privacy aspect sold me. My financial data stays on MY phone. No company mining my spending habits. That's how it should be."
 
@@ -1246,7 +1246,7 @@ msgstr "Track Progress Over Time"
 msgid "Track your crypto portfolio across all major exchanges."
 msgstr "Track your crypto portfolio across all major exchanges."
 
-#: src/generic/component/testimonials-section/testimonials-section.tsx:54
+#: src/generic/component/testimonials-section/testimonials-slider.tsx:23
 msgid "Tracks $50K+ across 8 accounts"
 msgstr "Tracks $50K+ across 8 accounts"
 
