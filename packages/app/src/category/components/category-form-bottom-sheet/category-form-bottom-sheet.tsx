@@ -1,29 +1,37 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { RefObject } from 'react';
+/* jscpd:ignore-start */
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { RefObject, useRef } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/form-bottom-sheet';
 import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
+import { categoryService } from '../../service/category.service';
 import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
+import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly category: CategoryEntityInterface | null;
     readonly defaultTitle?: string;
     readonly onCategoryCreated?: (category: CategoryEntityInterface) => void;
+    readonly onCategoryMerged?: () => void;
 }
 
-export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategoryCreated }: Props) => {
+export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategoryCreated, onCategoryMerged }: Props) => {
     const { t } = useLingui();
+
+    const mergeSelectorRef = useRef<BottomSheetInterface | null>(null);
 
     const { handleSubmit, reset, control } = useCategoryForm(category, defaultTitle);
     const isEditing = isDefined(category?.id);
+    const excludeCategoryIds = isDefined(category?.id) ? [category.id] : [];
 
     const handleCancel = () => {
         void ref.current?.close();
@@ -33,17 +41,13 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
     // eslint-disable-next-line react-hooks/refs
     const onSubmit = handleSubmit(async (values: CategoryCreateEntityInterface) => {
         try {
-            if (isEditing) {
-                await categoryRepository.updateById(category.id, values);
-                reset();
-                void ref.current?.close();
-            } else {
-                const newCategory = await categoryRepository.create(values);
-                reset();
-                void ref.current?.close();
-                if (isDefined(onCategoryCreated)) {
-                    onCategoryCreated(newCategory);
-                }
+            const savedCategory = isEditing
+                ? await categoryRepository.updateById(category.id, values)
+                : await categoryRepository.create(values);
+            reset();
+            void ref.current?.close();
+            if (!isEditing) {
+                onCategoryCreated?.(savedCategory);
             }
         } catch {
             Toast.show({
@@ -54,20 +58,65 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
         }
     });
 
+    const handleOpenMerge = () => {
+        void mergeSelectorRef.current?.open();
+    };
+
+    const handleMergeSelect = async (targetCategoryId: number | null) => {
+        if (!isDefined(category?.id) || !isDefined(targetCategoryId)) {
+            return;
+        }
+
+        try {
+            await categoryService.mergeInto(category.id, targetCategoryId);
+            void mergeSelectorRef.current?.close();
+            void ref.current?.close();
+            reset();
+            onCategoryMerged?.();
+        } catch {
+            Toast.show({
+                type: 'error',
+                text1: t`Could not merge category`,
+                text2: t`Please try again later`
+            });
+        }
+    };
+
     const submitLabel = isEditing ? t`Save` : t`Create`;
 
-    /* jscpd:ignore-start */
     return (
-        <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
-            <FormBottomSheetTitleField
-                placeholder={t`e.g., Groceries, Salary, Rent`}
-                maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                label={t`Category Name`}
-                control={control}
-            />
+        <>
+            <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
+                <FormBottomSheetTitleField
+                    placeholder={t`e.g., Groceries, Salary, Rent`}
+                    maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                    label={t`Category Name`}
+                    control={control}
+                />
 
-            <CategoryFormIconField control={control} />
-        </FormBottomSheet>
+                <CategoryFormIconField control={control} />
+
+                {isEditing ? (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={UserIconNameEnum.Merge}
+                        onPress={handleOpenMerge}
+                        content={<Trans>Merge into another category</Trans>}
+                    />
+                ) : null}
+            </FormBottomSheet>
+
+            {isEditing && isDefined(category) ? (
+                <CategorySelectorBottomSheet
+                    ref={mergeSelectorRef}
+                    selectedCategory={null}
+                    excludeCategoryIds={excludeCategoryIds}
+                    variant="primary"
+                    onSelect={handleMergeSelect}
+                />
+            ) : null}
+        </>
     );
-    /* jscpd:ignore-end */
 };
+/* jscpd:ignore-end */
