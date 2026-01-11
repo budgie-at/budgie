@@ -45,8 +45,9 @@ export default function SettingsPage() {
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
 
     return (
-        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />}>
+        <Page header={<PageHeader className="border-b-0" size="md" title={t`Settings`} />} withBlur>
             <ScrollView showsVerticalScrollIndicator={false}>
+                <MenuSpacer multiplier={0.05}></MenuSpacer>
                 <View className="py-5xl gap-y-7xl">
                     <SettingsGroup title={t`Privacy`}>
                         <SimpleHorizontalCell
