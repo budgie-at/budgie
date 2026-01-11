@@ -2,6 +2,7 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -56,9 +57,17 @@ export default function Tags() {
 
     const handleReassignSelect = async (targetTagId: number | null) => {
         if (isDefined(tagToDelete) && isDefined(targetTagId)) {
-            await tagService.deleteWithReassignment(tagToDelete.id, targetTagId);
-            void reassignRef.current?.close();
-            setTagToDelete(null);
+            try {
+                await tagService.mergeInto(tagToDelete.id, targetTagId);
+                void reassignRef.current?.close();
+                setTagToDelete(null);
+            } catch {
+                Toast.show({
+                    type: 'error',
+                    text1: t`Could not reassign tag`,
+                    text2: t`Please try again later`
+                });
+            }
         }
     };
 
