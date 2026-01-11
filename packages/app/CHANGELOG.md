@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.12.0](https://github.com/budgie-at/budgie/compare/v2.11.1...v2.12.0) (2026-01-11)
+
+### Features
+
+- **app:** add blur gradient effect to page headers ([ef735e6](https://github.com/budgie-at/budgie/commit/ef735e63bc7f8dbfe09fa4d4282b7773f026dbfe))
+- **app:** add smooth close animation to transaction menu ([1577bc6](https://github.com/budgie-at/budgie/commit/1577bc69da31e86d6beb3194b7ac6c6c88af2ef2))
+
 ## [2.11.1](https://github.com/budgie-at/budgie/compare/v2.11.0...v2.11.1) (2026-01-11)
 
 ### Bug Fixes
