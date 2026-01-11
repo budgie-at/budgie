@@ -29,8 +29,12 @@ const discountTextVariants = cva('text-sm', {
     }
 });
 
+const WAITLIST_BASE_POSITION = 847;
+
 export const WaitlistSuccess = ({ variant, position }: Props) => {
     const { t } = useLingui();
+
+    const displayPosition = WAITLIST_BASE_POSITION + (position ?? 0);
 
     return (
         <div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
@@ -44,7 +48,7 @@ export const WaitlistSuccess = ({ variant, position }: Props) => {
 
             {isPositiveNumber(position) && (
                 <p className={positionTextVariants({ variant })}>
-                    {t`You're #${position} on the waitlist. We'll notify you when Budgie launches!`}
+                    {t`You're #${displayPosition} on the waitlist. We'll notify you when Budgie launches!`}
                 </p>
             )}
 
