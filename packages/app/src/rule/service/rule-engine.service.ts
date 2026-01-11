@@ -158,7 +158,19 @@ class RuleEngineService {
     }
 
     private async applyRuleActions(transactionId: number, actions: RuleActionEntityInterface[], transaction: Transaction): Promise<void> {
-        for (const action of actions) {
+        const sortedActions = [...actions].sort((actionA, actionB) => {
+            if (actionA.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
+                return 1;
+            }
+
+            if (actionB.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER) {
+                return -1;
+            }
+
+            return 0;
+        });
+
+        for (const action of sortedActions) {
             switch (action.type) {
                 case RuleActionTypeEnum.SET_CATEGORY:
                     if (isDefined(action.categoryId)) {
