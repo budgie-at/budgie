@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2](https://github.com/budgie-at/budgie/compare/v2.9.1...v2.9.2) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** add useFocusKey hook to fix LegendList tab switching render issues ([#251](https://github.com/budgie-at/budgie/issues/251)) ([5004614](https://github.com/budgie-at/budgie/commit/50046142ffea99264415534e6ef453113d241e1b))
+
+## [2.9.1](https://github.com/budgie-at/budgie/compare/v2.9.0...v2.9.1) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** fix light theme styling issues ([#250](https://github.com/budgie-at/budgie/issues/250)) ([9d9a550](https://github.com/budgie-at/budgie/commit/9d9a5509314da8c5b57b2ad1779f7ac07f13c55e))
+
+# [2.9.0](https://github.com/budgie-at/budgie/compare/v2.8.2...v2.9.0) (2026-01-10)
+
+### Features
+
+- **app:** add dynamic action menu with context-based create actions ([#247](https://github.com/budgie-at/budgie/issues/247)) ([107e43d](https://github.com/budgie-at/budgie/commit/107e43d55a5393f72dc5398358848a14de579f7e))
+
 ## [2.8.2](https://github.com/budgie-at/budgie/compare/v2.8.1...v2.8.2) (2026-01-10)
 
 ### Bug Fixes
