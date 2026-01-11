@@ -1,8 +1,8 @@
 import { Trans } from '@lingui/react/macro';
-import { ArrowRight, Github, Smartphone } from 'lucide-react';
+import { Check, Clock, TrendingDown } from 'lucide-react';
 
-import { Button } from '../../../ui/button';
 import { Motion } from '../motion/motion';
+import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 const initialMotion = { opacity: 0, y: 20 };
 const transitionMotion = { duration: 0.5 };
@@ -10,7 +10,7 @@ const viewportMotion = { once: true };
 const whileInViewMotion = { opacity: 1, y: 0 };
 
 export const CtaSection = () => (
-    <section className="w-full py-20 md:py-32 bg-linear-to-br from-primary to-primary/80 text-primary-foreground relative overflow-hidden">
+    <section className="w-full py-20 md:py-32 bg-linear-to-br from-red-600 to-orange-500 text-white relative overflow-hidden">
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-size-[4rem_4rem]" />
 
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -25,37 +25,54 @@ export const CtaSection = () => (
                 viewport={viewportMotion}
                 whileInView={whileInViewMotion}
             >
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                    <Trans>Take Control of Your Financial Privacy</Trans>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm">
+                    <TrendingDown className="size-4" />
+
+                    <span className="text-sm font-medium">
+                        <Trans>Average user saves $347/month</Trans>
+                    </span>
+                </div>
+
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight max-w-3xl">
+                    <Trans>Every Day You Wait Is Another $15 Gone</Trans>
                 </h2>
 
-                <p className="mx-auto max-w-[700px] text-primary-foreground/80 md:text-xl">
+                <p className="mx-auto max-w-[700px] text-white/90 md:text-xl">
                     <Trans>
-                        Join thousands of privacy-conscious users who trust Budgie to track their expenses without compromising their
-                        financial data.
+                        Join 2,800+ smart savers who refuse to let another dollar slip away. Get early access to the only budget app that
+                        actually respects your privacy.
                     </Trans>
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                    <Button className="rounded-full h-12 px-8 text-base" size="lg" variant="secondary">
-                        <Smartphone className="mr-2 size-4" />
-                        <Trans>Join Whitelist</Trans>
-                        <ArrowRight className="ml-2 size-4" />
-                    </Button>
-
-                    <Button
-                        className="rounded-full h-12 px-8 text-base bg-transparent border-white text-white hover:bg-white/10"
-                        size="lg"
-                        variant="outline"
-                    >
-                        <Github className="mr-2 size-4" />
-                        <Trans>View Source Code</Trans>
-                    </Button>
+                <div className="mt-6 w-full max-w-xl">
+                    <WaitlistForm initialCount={2847} showCount={false} variant="cta" />
                 </div>
 
-                <p className="text-sm text-primary-foreground/80 mt-4">
-                    <Trans>100% secure • Open source • Your data stays on your device</Trans>
-                </p>
+                <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-white/80">
+                    <div className="flex items-center gap-2">
+                        <Check className="size-4" />
+
+                        <span>
+                            <Trans>Early access pricing</Trans>
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Check className="size-4" />
+
+                        <span>
+                            <Trans>Lifetime 50% discount</Trans>
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Clock className="size-4" />
+
+                        <span>
+                            <Trans>Launching Q1 2026</Trans>
+                        </span>
+                    </div>
+                </div>
             </Motion>
         </div>
     </section>
