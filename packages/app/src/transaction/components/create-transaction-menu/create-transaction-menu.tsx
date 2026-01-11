@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
@@ -19,9 +19,11 @@ import { AiButton } from '../ai-button/ai-button';
 
 const BACKDROP_OPACITY = 0.85;
 const ANIMATION_DURATION = 200;
+const CLOSE_ANIMATION_DURATION = 250;
 const TRIGGER_ICON_SIZE = 32;
 const BUTTON_ROTATION_ACTIVE = 45;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
+const CLOSE_SPRING_CONFIG = { damping: 20, stiffness: 300, mass: 0.5 };
 
 interface Props {
     readonly isOpen: boolean;
@@ -35,9 +37,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
+    const [isVisible, setIsVisible] = useState(false);
 
     const opacity = useSharedValue(0);
     const rotation = useSharedValue(0);
+    const menuScale = useSharedValue(0);
 
     const handleClose = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -93,12 +97,29 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     }, [createAction, t]);
 
     useEffect(() => {
-        opacity.value = withTiming(isOpen ? BACKDROP_OPACITY : 0, { duration: ANIMATION_DURATION });
-        rotation.value = withSpring(isOpen ? BUTTON_ROTATION_ACTIVE : 0, SPRING_CONFIG);
-    }, [isOpen, opacity, rotation]);
+        if (isOpen) {
+            setIsVisible(true);
+            opacity.value = withTiming(BACKDROP_OPACITY, { duration: ANIMATION_DURATION });
+            rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
+            menuScale.value = withSpring(1, SPRING_CONFIG);
+        } else if (isVisible) {
+            opacity.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION });
+            rotation.value = withSpring(0, CLOSE_SPRING_CONFIG);
+            menuScale.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
+                if (finished) {
+                    runOnJS(setIsVisible)(false);
+                }
+            });
+        }
+    }, [isOpen, isVisible, menuScale, opacity, rotation]);
 
     const backdropStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
+    const aiButtonStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: menuScale.value }],
+        opacity: menuScale.value,
+        paddingBottom: bottom
+    }));
 
     const containerStyle = { paddingBottom: bottom };
 
@@ -106,7 +127,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         runOnJS(handleClose)();
     });
 
-    if (!isOpen) {
+    if (!isVisible) {
         return null;
     }
 
@@ -117,9 +138,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
             </GestureDetector>
 
             {showAiButton && (
-                <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={containerStyle} pointerEvents="box-none">
-                    <AiButton onPress={handleAiPress} />
-                </View>
+                <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
+                    <AiButton onPress={handleAiPress} isAnimating={false} />
+                </Animated.View>
             )}
 
             <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
