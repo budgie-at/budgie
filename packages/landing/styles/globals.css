@@ -17,6 +17,14 @@
     }
 }
 
+@utility scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 @theme {
     --color-border: hsl(var(--border));
     --color-input: hsl(var(--input));
