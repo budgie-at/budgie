@@ -10,11 +10,6 @@ class TagService {
         await tagRepository.deleteById(fromTagId);
     }
 
-    async deleteWithReassignment(tagId: number, reassignToTagId: number): Promise<void> {
-        await tagRepository.reassignTransactions(tagId, reassignToTagId);
-        await tagRepository.deleteById(tagId);
-    }
-
     async deleteById(tagId: number): Promise<void> {
         await tagRepository.deleteById(tagId);
     }
