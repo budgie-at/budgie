@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/budgie-at/budgie/compare/v2.11.0...v2.11.1) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** prevent tab bar jump when opening transaction menu ([7bd90bd](https://github.com/budgie-at/budgie/commit/7bd90bd89d321675cc7415179050de6ee591c15c))
+
 # [2.10.0](https://github.com/budgie-at/budgie/compare/v2.9.3...v2.10.0) (2026-01-11)
 
 ### Bug Fixes
