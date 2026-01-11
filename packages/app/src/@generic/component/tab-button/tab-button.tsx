@@ -23,7 +23,7 @@ const tabVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isFocused: {
             true: 'bg-primary',
-            false: 'bg-secondary-background'
+            false: 'bg-primary/10'
         }
     }
 });
