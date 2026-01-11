@@ -92,15 +92,13 @@ export default function Tags() {
         >
             <TagFormBottomSheet ref={bottomSheetRef} tag={selectedTag} />
 
-            {isDefined(tagToDelete) ? (
-                <TagSelectorBottomSheet
-                    ref={reassignRef}
-                    selectedTag={null}
-                    excludeTagIds={excludeTagIds}
-                    description={t`This tag has transactions. Select another tag to reassign them to.`}
-                    onSelect={handleReassignSelect}
-                />
-            ) : null}
+            <TagSelectorBottomSheet
+                ref={reassignRef}
+                selectedTag={null}
+                excludeTagIds={excludeTagIds}
+                description={t`This tag has transactions. Select another tag to reassign them to.`}
+                onSelect={handleReassignSelect}
+            />
         </SearchablePage>
     );
 }

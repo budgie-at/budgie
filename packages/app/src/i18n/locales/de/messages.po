@@ -108,7 +108,7 @@ msgstr "Notiz hinzufügen..."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
-msgstr ""
+msgstr "Konto hinzufügen"
 
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
@@ -226,12 +226,12 @@ msgstr "Konten und Transaktionen automatisch von Monobank synchronisieren"
 msgid "Available Columns"
 msgstr "Verfügbare Spalten"
 
-#: src/app/(tabs)/analytics.tsx:67
+#: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Saldo"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:31
+#: src/transaction/components/transaction-list/transaction-list.tsx:38
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -283,7 +283,7 @@ msgstr "Bargeld"
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:39
 msgid "Categories"
 msgstr "Kategorien"
 
@@ -434,19 +434,19 @@ msgstr "Transaktion konnte nicht gelöscht werden."
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
 msgid "Could not merge category"
-msgstr ""
+msgstr "Kategorie konnte nicht zusammengeführt werden"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
 msgid "Could not merge tag"
-msgstr ""
+msgstr "Tag konnte nicht zusammengeführt werden"
 
 #: src/app/(tabs)/settings/categories.tsx:67
 msgid "Could not reassign category"
-msgstr ""
+msgstr "Kategorie konnte nicht neu zugewiesen werden"
 
 #: src/app/(tabs)/settings/tags.tsx:67
 msgid "Could not reassign tag"
-msgstr ""
+msgstr "Tag konnte nicht neu zugewiesen werden"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Could not restore account."
@@ -516,7 +516,7 @@ msgstr "Tags erstellen"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "Create tags to organize your transactions"
-msgstr ""
+msgstr "Erstellen Sie Tags, um Ihre Transaktionen zu organisieren"
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
@@ -547,7 +547,7 @@ msgstr "Aktueller Saldo"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "Custom categories you create will appear here"
-msgstr ""
+msgstr "Benutzerdefinierte Kategorien, die Sie erstellen, werden hier angezeigt"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
@@ -909,18 +909,18 @@ msgstr "Inaktive Konten"
 msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
-#: src/app/(tabs)/analytics.tsx:66
+#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:82
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Einnahmen"
 
-#: src/app/(tabs)/analytics.tsx:74
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Einnahmen nach Kategorie"
 
-#: src/app/(tabs)/analytics.tsx:96
+#: src/app/(tabs)/analytics.tsx:94
 msgid "Income by Tag"
 msgstr "Einnahmen nach Tag"
 
@@ -975,11 +975,11 @@ msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:105
 msgid "Merge into another category"
-msgstr ""
+msgstr "In eine andere Kategorie zusammenführen"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:98
 msgid "Merge into another tag"
-msgstr ""
+msgstr "In einen anderen Tag zusammenführen"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1036,7 +1036,7 @@ msgstr "Keine Kategorien gefunden"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "No categories match your search"
-msgstr ""
+msgstr "Keine Kategorien entsprechen Ihrer Suche"
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:68
 msgid "No Categories Yet"
@@ -1060,7 +1060,7 @@ msgstr "Keine Währungen gefunden"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 msgid "No Custom Categories"
-msgstr ""
+msgstr "Keine benutzerdefinierten Kategorien"
 
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
@@ -1079,14 +1079,14 @@ msgid "No languages found"
 msgstr "Keine Sprachen gefunden"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "Keine passenden Transaktionen"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
-msgstr ""
+msgstr "Keine Ergebnisse"
 
 #: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
@@ -1100,14 +1100,14 @@ msgstr "Keine Tags gefunden"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "No tags match your search"
-msgstr ""
+msgstr "Keine Tags entsprechen Ihrer Suche"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "Noch keine Tags"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No transactions yet"
 msgstr "Noch keine Transaktionen"
 
@@ -1135,7 +1135,7 @@ msgstr "Organisation"
 msgid "Over:"
 msgstr "Überschuss:"
 
-#: src/app/(tabs)/analytics.tsx:56
+#: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Übersicht"
 
@@ -1400,15 +1400,15 @@ msgstr "Spanisch"
 msgid "Spanish (Spain)"
 msgstr "Spanisch (Spanien)"
 
-#: src/app/(tabs)/analytics.tsx:85
+#: src/app/(tabs)/analytics.tsx:83
 msgid "Spending by Category"
 msgstr "Ausgaben nach Kategorie"
 
-#: src/app/(tabs)/analytics.tsx:107
+#: src/app/(tabs)/analytics.tsx:105
 msgid "Spending by Tag"
 msgstr "Ausgaben nach Tag"
 
-#: src/app/(tabs)/analytics.tsx:62
+#: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Ausgegeben"
 
@@ -1424,11 +1424,11 @@ msgstr "Import starten"
 msgid "Start Sync"
 msgstr "Synchronisation starten"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:43
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofontaste verwenden oder Transaktionen manuell hinzufügen"
 
-#: src/app/(tabs)/analytics.tsx:42
+#: src/app/(tabs)/analytics.tsx:40
 msgid "Statistics"
 msgstr "Statistiken"
 
@@ -1516,17 +1516,17 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/app/(tabs)/settings/categories.tsx:100
+#: src/app/(tabs)/settings/categories.tsx:99
 msgid "This category has transactions. Select another category to reassign them to."
-msgstr ""
+msgstr "Diese Kategorie hat Transaktionen. Wählen Sie eine andere Kategorie, um sie neu zuzuweisen."
 
 #: src/@generic/constant/date-period.constant.ts:9
 msgid "This Month"
 msgstr "Dieser Monat"
 
-#: src/app/(tabs)/settings/tags.tsx:100
+#: src/app/(tabs)/settings/tags.tsx:99
 msgid "This tag has transactions. Select another tag to reassign them to."
-msgstr ""
+msgstr "Dieser Tag hat Transaktionen. Wählen Sie einen anderen Tag, um sie neu zuzuweisen."
 
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
@@ -1568,8 +1568,8 @@ msgstr "Heute"
 msgid "Token required"
 msgstr "Token erforderlich"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:95
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:102
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:92
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:99
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
 
@@ -1589,7 +1589,7 @@ msgstr "Traditionelle Bankkonten"
 msgid "Transaction Type"
 msgstr "Transaktionstyp"
 
-#: src/app/(tabs)/transactions.tsx:11
+#: src/app/(tabs)/transactions.tsx:13
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
 msgstr "Transaktionen"
@@ -1617,7 +1617,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:35
+#: src/transaction/components/transaction-list/transaction-list.tsx:42
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 

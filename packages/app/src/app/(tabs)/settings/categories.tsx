@@ -92,16 +92,14 @@ export default function Categories() {
         >
             <CategoryFormBottomSheet ref={bottomSheetRef} category={selectedCategory} />
 
-            {isDefined(categoryToDelete) ? (
-                <CategorySelectorBottomSheet
-                    ref={reassignRef}
-                    selectedCategory={null}
-                    excludeCategoryIds={excludeCategoryIds}
-                    description={t`This category has transactions. Select another category to reassign them to.`}
-                    variant="primary"
-                    onSelect={handleReassignSelect}
-                />
-            ) : null}
+            <CategorySelectorBottomSheet
+                ref={reassignRef}
+                selectedCategory={null}
+                excludeCategoryIds={excludeCategoryIds}
+                description={t`This category has transactions. Select another category to reassign them to.`}
+                variant="primary"
+                onSelect={handleReassignSelect}
+            />
         </SearchablePage>
     );
 }

@@ -228,12 +228,12 @@ msgstr "Auto-sync accounts and transactions from Monobank"
 msgid "Available Columns"
 msgstr "Available Columns"
 
-#: src/app/(tabs)/analytics.tsx:67
+#: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Balance"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:31
+#: src/transaction/components/transaction-list/transaction-list.tsx:38
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -285,7 +285,7 @@ msgstr "Cash"
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:39
 msgid "Categories"
 msgstr "Categories"
 
@@ -911,18 +911,18 @@ msgstr "Inactive Accounts"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
-#: src/app/(tabs)/analytics.tsx:66
+#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:82
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Income"
 
-#: src/app/(tabs)/analytics.tsx:74
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Income by category"
 
-#: src/app/(tabs)/analytics.tsx:96
+#: src/app/(tabs)/analytics.tsx:94
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
@@ -1081,7 +1081,7 @@ msgid "No languages found"
 msgstr "No languages found"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -1109,7 +1109,7 @@ msgstr "No tags match your search"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -1137,7 +1137,7 @@ msgstr "Organization"
 msgid "Over:"
 msgstr "Over:"
 
-#: src/app/(tabs)/analytics.tsx:56
+#: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Overview"
 
@@ -1402,15 +1402,15 @@ msgstr "Spanish"
 msgid "Spanish (Spain)"
 msgstr "Spanish (Spain)"
 
-#: src/app/(tabs)/analytics.tsx:85
+#: src/app/(tabs)/analytics.tsx:83
 msgid "Spending by Category"
 msgstr "Spending by Category"
 
-#: src/app/(tabs)/analytics.tsx:107
+#: src/app/(tabs)/analytics.tsx:105
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
-#: src/app/(tabs)/analytics.tsx:62
+#: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Spent"
 
@@ -1426,11 +1426,11 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:43
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
-#: src/app/(tabs)/analytics.tsx:42
+#: src/app/(tabs)/analytics.tsx:40
 msgid "Statistics"
 msgstr "Statistics"
 
@@ -1518,7 +1518,7 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
-#: src/app/(tabs)/settings/categories.tsx:100
+#: src/app/(tabs)/settings/categories.tsx:99
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "This category has transactions. Select another category to reassign them to."
 
@@ -1526,7 +1526,7 @@ msgstr "This category has transactions. Select another category to reassign them
 msgid "This Month"
 msgstr "This Month"
 
-#: src/app/(tabs)/settings/tags.tsx:100
+#: src/app/(tabs)/settings/tags.tsx:99
 msgid "This tag has transactions. Select another tag to reassign them to."
 msgstr "This tag has transactions. Select another tag to reassign them to."
 
@@ -1570,8 +1570,8 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:95
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:102
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:92
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:99
 msgid "Total Balance"
 msgstr "Total Balance"
 
@@ -1591,7 +1591,7 @@ msgstr "Traditional bank accounts"
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
-#: src/app/(tabs)/transactions.tsx:11
+#: src/app/(tabs)/transactions.tsx:13
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
 msgstr "Transactions"
@@ -1619,7 +1619,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:35
+#: src/transaction/components/transaction-list/transaction-list.tsx:42
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
