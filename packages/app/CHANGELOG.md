@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.10.0](https://github.com/budgie-at/budgie/compare/v2.9.3...v2.10.0) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** address PR review - fix tag reassignment, remove duplicate methods, add error handling ([4fd93e6](https://github.com/budgie-at/budgie/commit/4fd93e681f43958f4fac72332d251af111b91d48))
+- **app:** fix reassign bottom sheet not opening on first try ([5722a68](https://github.com/budgie-at/budgie/commit/5722a68e16836ea9a75cfc981e3ad6c77d6103bd))
+
+### Features
+
+- **app:** add category and tag merge/reassignment functionality ([7349abb](https://github.com/budgie-at/budgie/commit/7349abbb445b1e1334cb4244c158c145c614343c))
+- **app:** add description header to category/tag reassignment selectors ([fd4a16a](https://github.com/budgie-at/budgie/commit/fd4a16ac2de7bfee30a823642b8acfc707ddd104))
+
 ## [2.9.3](https://github.com/budgie-at/budgie/compare/v2.9.2...v2.9.3) (2026-01-11)
 
 ### Bug Fixes
