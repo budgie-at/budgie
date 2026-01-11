@@ -1,0 +1,66 @@
+import { Trans } from '@lingui/react/macro';
+import { Camera, Fingerprint, Key, Server } from 'lucide-react';
+
+import { Motion } from '../motion/motion';
+
+import { SecuritySectionCard } from './security-section-card';
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const viewportOnce = { once: true };
+
+export const SecuritySectionCards = () => (
+    <Motion className="space-y-6" initial="hidden" variants={containerVariants} viewport={viewportOnce} whileInView="show">
+        <SecuritySectionCard
+            description={
+                <Trans>
+                    All your data is stored locally on your device. We have no servers storing your information—because we never see it in
+                    the first place.
+                </Trans>
+            }
+            icon={<Server className="size-6 text-green-600 dark:text-green-400" />}
+            iconClassName="bg-green-100 dark:bg-green-900/30"
+            title={<Trans>Zero Cloud Storage</Trans>}
+        />
+
+        <SecuritySectionCard
+            description={
+                <Trans>
+                    Secure your finances with Face ID or Touch ID. Only you can access your data, with the same security used by banking
+                    apps.
+                </Trans>
+            }
+            icon={<Fingerprint className="size-6 text-blue-600 dark:text-blue-400" />}
+            iconClassName="bg-blue-100 dark:bg-blue-900/30"
+            title={<Trans>Biometric Authentication</Trans>}
+        />
+
+        <SecuritySectionCard
+            description={
+                <Trans>Set a custom PIN code with configurable length for an extra layer of security. Perfect for shared devices.</Trans>
+            }
+            icon={<Key className="size-6 text-purple-600 dark:text-purple-400" />}
+            iconClassName="bg-purple-100 dark:bg-purple-900/30"
+            title={<Trans>PIN Protection</Trans>}
+        />
+
+        <SecuritySectionCard
+            description={
+                <Trans>
+                    Automatically hide sensitive balances when taking screenshots. Share your app safely without exposing your finances.
+                </Trans>
+            }
+            icon={<Camera className="size-6 text-orange-600 dark:text-orange-400" />}
+            iconClassName="bg-orange-100 dark:bg-orange-900/30"
+            title={<Trans>Screenshot Protection</Trans>}
+        />
+    </Motion>
+);
