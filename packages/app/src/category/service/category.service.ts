@@ -14,6 +14,19 @@ class CategoryService {
 
         return results.reduce<Record<string, CategoryEntityInterface>>((acc, category) => ({ ...acc, [category.title]: category }), {});
     }
+
+    async countTransactionEntries(categoryId: number): Promise<number> {
+        return categoryRepository.countTransactionEntries(categoryId);
+    }
+
+    async mergeInto(fromCategoryId: number, toCategoryId: number): Promise<void> {
+        await categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
+        await categoryRepository.deleteById(fromCategoryId);
+    }
+
+    async deleteById(categoryId: number): Promise<void> {
+        await categoryRepository.deleteById(categoryId);
+    }
 }
 
 export const categoryService = new CategoryService();
