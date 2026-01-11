@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.2](https://github.com/budgie-at/budgie/compare/v2.9.1...v2.9.2) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** add useFocusKey hook to fix LegendList tab switching render issues ([#251](https://github.com/budgie-at/budgie/issues/251)) ([5004614](https://github.com/budgie-at/budgie/commit/50046142ffea99264415534e6ef453113d241e1b))
+
 ## [2.9.1](https://github.com/budgie-at/budgie/compare/v2.9.0...v2.9.1) (2026-01-11)
 
 ### Bug Fixes
