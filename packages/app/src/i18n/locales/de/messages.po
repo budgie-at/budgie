@@ -280,7 +280,7 @@ msgid "Cash"
 msgstr "Bargeld"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:75
+#: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:32
@@ -309,7 +309,7 @@ msgstr ""
 "WICHTIG: Lebensmittel (Fleisch, Gemüse, Lebensmittel) gehören zur Kategorie Lebensmittel/Essen, NICHT zu Aktien/Investitionen.\n"
 "Antworte nur mit der Kategorienummer."
 
-#: src/app/(tabs)/settings/categories.tsx:34
+#: src/app/(tabs)/settings/categories.tsx:36
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
@@ -411,11 +411,11 @@ msgstr "Konto konnte nicht aktiviert werden."
 msgid "Could not archive account. Please try again later"
 msgstr "Konto konnte nicht archiviert werden. Bitte versuchen Sie es später erneut"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:54
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
@@ -432,23 +432,31 @@ msgstr "Konto konnte nicht gelöscht werden."
 msgid "Could not delete transaction."
 msgstr "Transaktion konnte nicht gelöscht werden."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:78
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
 msgid "Could not merge category"
 msgstr ""
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:73
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
 msgid "Could not merge tag"
+msgstr ""
+
+#: src/app/(tabs)/settings/categories.tsx:67
+msgid "Could not reassign category"
+msgstr ""
+
+#: src/app/(tabs)/settings/tags.tsx:67
+msgid "Could not reassign tag"
 msgstr ""
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Could not restore account."
 msgstr "Konto konnte nicht wiederhergestellt werden."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:54
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Could not update category"
 msgstr "Kategorie konnte nicht aktualisiert werden"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:49
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
 msgid "Could not update tag"
 msgstr "Tag konnte nicht aktualisiert werden"
 
@@ -460,8 +468,8 @@ msgstr "Transaktion konnte nicht aktualisiert werden."
 msgid "Count this account in your net worth calculation"
 msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:84
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:79
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
 msgid "Create"
 msgstr "Erstellen"
 
@@ -627,7 +635,7 @@ msgstr "Niederländisch (Niederlande)"
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:85
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:86
 msgid "e.g., Business, Personal, Vacation"
 msgstr "z. B. Geschäft, Privat, Urlaub"
 
@@ -969,7 +977,7 @@ msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 msgid "Merge into another category"
 msgstr ""
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:97
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:98
 msgid "Merge into another tag"
 msgstr ""
 
@@ -1021,7 +1029,7 @@ msgstr "Noch keine Konten"
 msgid "No archived accounts"
 msgstr "Keine archivierten Konten"
 
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:112
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "Keine Kategorien gefunden"
@@ -1084,8 +1092,8 @@ msgstr ""
 msgid "No speech detected"
 msgstr "Keine Sprache erkannt"
 
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:74
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:98
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Keine Tags gefunden"
@@ -1172,10 +1180,12 @@ msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
+#: src/app/(tabs)/settings/categories.tsx:68
+#: src/app/(tabs)/settings/tags.tsx:68
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:80
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:75
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
 
@@ -1224,9 +1234,9 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:84
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:79
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
 msgid "Save"
 msgstr "Speichern"
 
@@ -1252,8 +1262,8 @@ msgstr "Screenshot-Schutz"
 msgid "Search accounts..."
 msgstr "Konten durchsuchen..."
 
-#: src/app/(tabs)/settings/categories.tsx:76
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:106
+#: src/app/(tabs)/settings/categories.tsx:86
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:107
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Kategorien durchsuchen..."
@@ -1274,9 +1284,9 @@ msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
 msgid "Search languages..."
 msgstr "Sprachen durchsuchen..."
 
-#: src/app/(tabs)/settings/tags.tsx:76
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:92
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:68
+#: src/app/(tabs)/settings/tags.tsx:86
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:93
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Tags durchsuchen..."
@@ -1460,15 +1470,15 @@ msgstr "Synchronisierte Bankkonten"
 msgid "Syncing history..."
 msgstr "Verlauf wird synchronisiert..."
 
-#: src/app/(tabs)/settings/tags.tsx:34
+#: src/app/(tabs)/settings/tags.tsx:36
 msgid "Tag"
 msgstr "Tag"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:87
+#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:88
 msgid "Tag Name"
 msgstr "Tag-Name"
 
-#: src/app/(tabs)/settings/tags.tsx:75
+#: src/app/(tabs)/settings/tags.tsx:85
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1506,7 +1516,7 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/app/(tabs)/settings/categories.tsx:90
+#: src/app/(tabs)/settings/categories.tsx:100
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr ""
 
@@ -1514,7 +1524,7 @@ msgstr ""
 msgid "This Month"
 msgstr "Dieser Monat"
 
-#: src/app/(tabs)/settings/tags.tsx:90
+#: src/app/(tabs)/settings/tags.tsx:100
 msgid "This tag has transactions. Select another tag to reassign them to."
 msgstr ""
 
@@ -1596,13 +1606,13 @@ msgstr "Überweisung"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:110
+#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:96
+#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
 msgid "Try a different search term"
 msgstr "Versuchen Sie einen anderen Suchbegriff"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:72
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
 msgid "Try a different search term or create a new tag"
 msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag"
 
