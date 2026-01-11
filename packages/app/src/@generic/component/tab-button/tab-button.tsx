@@ -23,7 +23,7 @@ const tabVariants = cva('items-center justify-center rounded-full', {
     variants: {
         isFocused: {
             true: 'bg-primary',
-            false: 'bg-secondary-foreground/25'
+            false: 'bg-primary/10'
         }
     }
 });
@@ -32,7 +32,7 @@ const tabIconVariants = cva('', {
     variants: {
         isFocused: {
             true: 'text-primary-reverse',
-            false: 'text-primary'
+            false: 'text-secondary-foreground'
         }
     }
 });
