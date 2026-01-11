@@ -25,15 +25,6 @@ export const buildRuleInputFromPrefill = (prefillData: RulePrefillDataInterface)
         });
     });
 
-    if (actions.length === 0) {
-        actions.push({
-            type: RuleActionTypeEnum.SET_CATEGORY,
-            categoryId: null,
-            tagId: null,
-            accountId: null
-        });
-    }
-
     const conditions: RuleCreateInputInterface['conditions'] = prefillData.conditions.map(condition => ({
         field: condition.field,
         operator: RuleConditionOperatorEnum.CONTAINS,
