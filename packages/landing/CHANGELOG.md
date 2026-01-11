@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/budgie-at/budgie/compare/v2.10.0...v2.11.0) (2026-01-11)
+
+### Features
+
+- **landing:** add privacy-focused sections and fix lint issues ([96a0697](https://github.com/budgie-at/budgie/commit/96a0697119887a27d43ccf0751110ae3c5aa90e6))
+- **landing:** add testimonials slider and improve UX ([02e0339](https://github.com/budgie-at/budgie/commit/02e03396f627e21dc62f8915af22160640e382e9))
+- **landing:** add waitlist system and improve marketing copy ([6a0973b](https://github.com/budgie-at/budgie/commit/6a0973b55978ee218270b5125a8d2c81cddead87))
+- **landing:** improve header CTA and add smooth scroll navigation ([964687b](https://github.com/budgie-at/budgie/commit/964687b76f8b1c2fba18832b4220eedccd7a01c9))
+- **landing:** redesign landing page with new sections and improved messaging ([b733086](https://github.com/budgie-at/budgie/commit/b733086bc37305201d80c0cb56c694bd25d5ea55))
+
 # [2.4.0](https://github.com/budgie-at/budgie/compare/v2.3.1...v2.4.0) (2026-01-06)
 
 ### Bug Fixes
