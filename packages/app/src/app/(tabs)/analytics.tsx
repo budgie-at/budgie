@@ -33,9 +33,7 @@ export default function StatisticsPage() {
     const { incomeByTag } = useGetIncomeByTagQuery(filters);
     const { expenseByTag } = useGetExpenseByTagQuery(filters);
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
-
     const netWorth = useNetWorthQuery();
-
     const hasFiltersSelected = checkIfFiltersSelected(null, filters);
 
     return (
