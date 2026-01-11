@@ -108,7 +108,7 @@ msgstr "Додати нотатку..."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
-msgstr ""
+msgstr "Додати рахунок"
 
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
@@ -226,12 +226,12 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
-#: src/app/(tabs)/analytics.tsx:67
+#: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Баланс"
 
 #: src/app/(main)/analytics/transactions.tsx:59
-#: src/transaction/components/transaction-list/transaction-list.tsx:31
+#: src/transaction/components/transaction-list/transaction-list.tsx:38
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -283,7 +283,7 @@ msgstr "Готівка"
 #: src/app/(tabs)/settings/categories.tsx:85
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
-#: src/transaction/components/transaction-list/transaction-list.tsx:32
+#: src/transaction/components/transaction-list/transaction-list.tsx:39
 msgid "Categories"
 msgstr "Категорії"
 
@@ -434,19 +434,19 @@ msgstr "Не вдалося видалити транзакцію."
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
 msgid "Could not merge category"
-msgstr ""
+msgstr "Не вдалося об'єднати категорію"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
 msgid "Could not merge tag"
-msgstr ""
+msgstr "Не вдалося об'єднати тег"
 
 #: src/app/(tabs)/settings/categories.tsx:67
 msgid "Could not reassign category"
-msgstr ""
+msgstr "Не вдалося перепризначити категорію"
 
 #: src/app/(tabs)/settings/tags.tsx:67
 msgid "Could not reassign tag"
-msgstr ""
+msgstr "Не вдалося перепризначити тег"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Could not restore account."
@@ -516,7 +516,7 @@ msgstr "Створити теги"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "Create tags to organize your transactions"
-msgstr ""
+msgstr "Створюйте теги для організації транзакцій"
 
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
@@ -547,7 +547,7 @@ msgstr "Поточний баланс"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "Custom categories you create will appear here"
-msgstr ""
+msgstr "Власні категорії, які ви створите, з'являться тут"
 
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
@@ -909,18 +909,18 @@ msgstr "Неактивні рахунки"
 msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
-#: src/app/(tabs)/analytics.tsx:66
+#: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:82
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
 msgstr "Дохід"
 
-#: src/app/(tabs)/analytics.tsx:74
+#: src/app/(tabs)/analytics.tsx:72
 msgid "Income by category"
 msgstr "Доходи за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:96
+#: src/app/(tabs)/analytics.tsx:94
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
@@ -975,11 +975,11 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:105
 msgid "Merge into another category"
-msgstr ""
+msgstr "Об'єднати з іншою категорією"
 
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:98
 msgid "Merge into another tag"
-msgstr ""
+msgstr "Об'єднати з іншим тегом"
 
 #: src/app/(main)/create-account/index.tsx:38
 msgid "Money lent or borrowed"
@@ -1036,7 +1036,7 @@ msgstr "Категорій не знайдено"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "No categories match your search"
-msgstr ""
+msgstr "Жодна категорія не відповідає вашому пошуку"
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:68
 msgid "No Categories Yet"
@@ -1060,7 +1060,7 @@ msgstr "Не знайдено жодної валюти"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 msgid "No Custom Categories"
-msgstr ""
+msgstr "Немає власних категорій"
 
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
@@ -1079,14 +1079,14 @@ msgid "No languages found"
 msgstr "Мов не знайдено"
 
 #: src/app/(main)/analytics/transactions.tsx:67
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 msgid "No Results"
-msgstr ""
+msgstr "Немає результатів"
 
 #: src/ai/hook/use-llm-generation.hook.ts:21
 msgid "No speech detected"
@@ -1100,14 +1100,14 @@ msgstr "Тегів не знайдено"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "No tags match your search"
-msgstr ""
+msgstr "Жоден тег не відповідає вашому пошуку"
 
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:17
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:71
 msgid "No Tags Yet"
 msgstr "Ще немає тегів"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:33
+#: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -1135,7 +1135,7 @@ msgstr "Організація"
 msgid "Over:"
 msgstr "Перевищення:"
 
-#: src/app/(tabs)/analytics.tsx:56
+#: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Огляд"
 
@@ -1400,15 +1400,15 @@ msgstr "Іспанська"
 msgid "Spanish (Spain)"
 msgstr "Іспанська (Іспанія)"
 
-#: src/app/(tabs)/analytics.tsx:85
+#: src/app/(tabs)/analytics.tsx:83
 msgid "Spending by Category"
 msgstr "Витрати за категоріями"
 
-#: src/app/(tabs)/analytics.tsx:107
+#: src/app/(tabs)/analytics.tsx:105
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/app/(tabs)/analytics.tsx:62
+#: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1424,11 +1424,11 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx:36
+#: src/transaction/components/transaction-list/transaction-list.tsx:43
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/app/(tabs)/analytics.tsx:42
+#: src/app/(tabs)/analytics.tsx:40
 msgid "Statistics"
 msgstr "Статистика"
 
@@ -1516,17 +1516,17 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
-#: src/app/(tabs)/settings/categories.tsx:100
+#: src/app/(tabs)/settings/categories.tsx:99
 msgid "This category has transactions. Select another category to reassign them to."
-msgstr ""
+msgstr "Ця категорія має транзакції. Виберіть іншу категорію для їх перепризначення."
 
 #: src/@generic/constant/date-period.constant.ts:9
 msgid "This Month"
 msgstr "Цього місяця"
 
-#: src/app/(tabs)/settings/tags.tsx:100
+#: src/app/(tabs)/settings/tags.tsx:99
 msgid "This tag has transactions. Select another tag to reassign them to."
-msgstr ""
+msgstr "Цей тег має транзакції. Виберіть інший тег для їх перепризначення."
 
 #: src/@generic/constant/date-period.constant.ts:8
 msgid "This Week"
@@ -1568,8 +1568,8 @@ msgstr "Сьогодні"
 msgid "Token required"
 msgstr "Потрібен токен"
 
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:95
-#: src/@generic/component/collapsible-header/collapsible-header.tsx:102
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:92
+#: src/@generic/component/collapsible-header/collapsible-header.tsx:99
 msgid "Total Balance"
 msgstr "Загальний баланс"
 
@@ -1589,7 +1589,7 @@ msgstr "Традиційні банківські рахунки"
 msgid "Transaction Type"
 msgstr "Тип транзакції"
 
-#: src/app/(tabs)/transactions.tsx:11
+#: src/app/(tabs)/transactions.tsx:13
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
 msgstr "Транзакції"
@@ -1617,7 +1617,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/app/(main)/analytics/transactions.tsx:69
-#: src/transaction/components/transaction-list/transaction-list.tsx:35
+#: src/transaction/components/transaction-list/transaction-list.tsx:42
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
