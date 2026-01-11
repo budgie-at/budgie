@@ -84,7 +84,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         const defaultItems: CreateActionInterface[] = [
             { icon: UserIconNameEnum.TrendingDown, label: t`Expense`, variant: 'destructive', onPress: handleCreateExpense },
             { icon: UserIconNameEnum.TrendingUp, label: t`Income`, variant: 'positive', onPress: handleCreateIncome },
-            { icon: UserIconNameEnum.ArrowLeftRight, label: t`Transfer`, variant: 'warning', onPress: handleCreateTransfer },
+            { icon: UserIconNameEnum.ArrowLeftRight, label: t`Transfer`, variant: 'default', onPress: handleCreateTransfer },
             { icon: UserIconNameEnum.Wallet, label: t`Account`, variant: 'secondary', onPress: handleCreateAccount }
         ];
 
