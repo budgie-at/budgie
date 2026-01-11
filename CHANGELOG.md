@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.3](https://github.com/budgie-at/budgie/compare/v2.9.2...v2.9.3) (2026-01-11)
+
+### Bug Fixes
+
+- **app:** fix toggle switch colors in dark mode on iOS 26 ([#252](https://github.com/budgie-at/budgie/issues/252)) ([6bfffe1](https://github.com/budgie-at/budgie/commit/6bfffe11adda22fd56ec4dc6477430af4b0285a8))
+
 ## [2.9.2](https://github.com/budgie-at/budgie/compare/v2.9.1...v2.9.2) (2026-01-11)
 
 ### Bug Fixes
