@@ -114,7 +114,7 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/transactions/[id]/income" />
                                                         <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                        <Stack.Screen name="(main)/analytics" />
+                                                        <Stack.Screen name="(main)/analytics/transactions" />
                                                     </Stack>
                                                     <Toast />
                                                 </AiProviderWrapper>
