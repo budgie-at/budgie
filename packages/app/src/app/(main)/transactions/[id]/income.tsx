@@ -1,6 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
@@ -106,6 +107,10 @@ export default function UpdateIncomeTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return <UpdateIncomeForm transaction={transaction} transactionId={Number(id)} />;
+    return (
+        <BottomSheetModalProvider>
+            <UpdateIncomeForm transaction={transaction} transactionId={Number(id)} />
+        </BottomSheetModalProvider>
+    );
 }
 /* jscpd:ignore-end */

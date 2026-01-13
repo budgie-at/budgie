@@ -1,6 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
@@ -125,6 +126,10 @@ export default function UpdateExpenseTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />;
+    return (
+        <BottomSheetModalProvider>
+            <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />
+        </BottomSheetModalProvider>
+    );
 }
 /* jscpd:ignore-end */

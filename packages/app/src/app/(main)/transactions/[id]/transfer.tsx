@@ -1,6 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { AccountTypeEnum, TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -129,6 +130,10 @@ export default function UpdateTransferTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return <UpdateTransferForm transaction={transaction} transactionId={Number(id)} />;
+    return (
+        <BottomSheetModalProvider>
+            <UpdateTransferForm transaction={transaction} transactionId={Number(id)} />
+        </BottomSheetModalProvider>
+    );
 }
 /* jscpd:ignore-end */
