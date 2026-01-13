@@ -14,6 +14,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
@@ -37,7 +38,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
+    const { isAvailable: isAiAvailable, llm, stt } = useLlmContext();
     const [isVisible, setIsVisible] = useState(false);
+
+    const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
+    const aiDownloadProgress = isAiAvailable ? (llm.downloadProgress + stt.downloadProgress) / 2 : 0;
 
     const opacity = useSharedValue(0);
     const rotation = useSharedValue(0);
@@ -78,7 +83,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         createAction?.onPress();
     };
 
-    const showAiButton = !isDefined(createAction);
+    const showAiButton = isAiAvailable && !isDefined(createAction);
 
     const actionItems: CreateActionInterface[] = useMemo(() => {
         const defaultItems: CreateActionInterface[] = [
@@ -139,7 +144,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
             {showAiButton && (
                 <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
-                    <AiButton onPress={handleAiPress} isAnimating={false} />
+                    <AiButton onPress={handleAiPress} isAnimating={false} isLoading={isAiLoading} downloadProgress={aiDownloadProgress} />
                 </Animated.View>
             )}
 
