@@ -69,7 +69,7 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
     return (
         <>
             <BottomSheet
-                className={cardVariants({ variant: 'primary' })}
+                className={cardVariants({ variant: 'default' })}
                 ref={ref}
                 enableDynamicSizing
                 bottomInset={bottom}
@@ -79,7 +79,7 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                 <BottomSheetView className="mx-5 bg-transparent pt-xl pb-5xl">
                     <CircleIcon
                         icon={UserIconNameEnum.ArrowRightLeft}
-                        variant="primary"
+                        variant="default"
                         size={50}
                         iconSize={24}
                         className="mb-4xl self-center rounded-3xl"
@@ -108,7 +108,7 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                             content={submitButtonContent}
                             disabled={isConvertDisabled}
                             onPress={handleConvert}
-                            variant="primary"
+                            variant="default"
                             size="md"
                         />
                         <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
