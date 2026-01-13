@@ -9,7 +9,6 @@ interface Props<T extends FieldValues> {
     readonly placeholder: string;
     readonly name?: Path<T>;
     readonly maxLength: number;
-    readonly autoFocus?: boolean;
 }
 
 export const FormBottomSheetTitleField = <T extends FieldValues>({
