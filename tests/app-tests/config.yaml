@@ -6,8 +6,6 @@ platform:
     disableAnimations: true
 
 executionOrder:
-  continueOnFailure: true
+  continueOnFailure: false
   flowsOrder:
-    - 01.home-screen.flow
-    - 02.game-screen-win.flow
-    - 03.game-screen-loose.flow
+    - 01.smoke-test.flow

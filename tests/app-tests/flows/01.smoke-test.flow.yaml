@@ -1,0 +1,107 @@
+appId: ${APP_ID}
+---
+- startRecording:
+    path: '01.smoke-test'
+    optional: true
+
+- launchApp:
+    clearState: true
+
+- extendedWaitUntil:
+    visible: 'No accounts yet'
+    timeout: 15000
+
+- assertVisible: 'No accounts yet'
+- assertVisible: 'Add your first account to start tracking your finances'
+
+- tapOn: 'Add Account'
+
+- extendedWaitUntil:
+    visible: 'Checking Account'
+    timeout: 5000
+
+- assertVisible: 'Checking Account'
+- assertVisible: 'Savings Account'
+- assertVisible: 'Debt Account'
+
+- tapOn: 'Checking Account'
+
+- extendedWaitUntil:
+    visible: 'Create Checking Account'
+    timeout: 5000
+
+- tapOn:
+    text: 'Account name'
+- inputText: 'My Test Account'
+- hideKeyboard
+
+- tapOn:
+    text: '0'
+- inputText: '1000'
+- hideKeyboard
+
+- tapOn: 'Create'
+
+- extendedWaitUntil:
+    visible: 'My Test Account'
+    timeout: 5000
+
+- assertVisible: 'My Test Account'
+- assertVisible:
+    text: '.*1[,.]?000.*'
+
+- tapOn:
+    text: '.*plus.*'
+    optional: true
+
+- runFlow:
+    when:
+      notVisible:
+        text: 'Expense'
+    commands:
+      - tapOn:
+          point: '50%,95%'
+
+- extendedWaitUntil:
+    visible: 'Expense'
+    timeout: 3000
+
+- tapOn: 'Expense'
+
+- extendedWaitUntil:
+    visible: 'Add Expense'
+    timeout: 5000
+
+- tapOn:
+    text: '0'
+    index: 0
+- inputText: '50'
+- hideKeyboard
+
+- tapOn:
+    text: 'Select account'
+
+- extendedWaitUntil:
+    visible: 'My Test Account'
+    timeout: 3000
+- tapOn: 'My Test Account'
+
+- tapOn:
+    text: 'Select category'
+
+- extendedWaitUntil:
+    visible: 'Food'
+    timeout: 3000
+- tapOn: 'Food'
+
+- tapOn: 'Add Expense'
+
+- extendedWaitUntil:
+    visible: 'My Test Account'
+    timeout: 5000
+
+- assertVisible: 'My Test Account'
+- assertVisible:
+    text: '.*950.*'
+
+- stopApp
