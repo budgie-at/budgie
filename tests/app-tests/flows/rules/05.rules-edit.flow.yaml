@@ -1,0 +1,33 @@
+appId: ${APP_ID}
+---
+# Test 05: Edit an existing rule
+# Modifies the first rule (Netflix) by changing its condition value
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Tap on the first rule to edit it
+- tapOn:
+    id: 'RulesPage.RuleCard.0'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+    timeout: 3000
+
+# Clear and update the condition value
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- eraseText
+- inputText: 'Netflix Updated'
+
+# Submit the changes
+- tapOn:
+    text: 'Save Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Verify the rule was updated
+- assertVisible:
+    text: 'Netflix Updated'

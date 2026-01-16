@@ -12,9 +12,11 @@ interface Props {
     readonly rule: RuleWithActionsRelationsEntityInterface;
     readonly order: number;
     readonly onOpen: (rule: RuleWithActionsRelationsEntityInterface) => void;
+    readonly testID?: string;
+    readonly switchTestID?: string;
 }
 
-export const RuleCard = ({ onOpen, order, rule }: Props) => {
+export const RuleCard = ({ onOpen, order, rule, testID, switchTestID }: Props) => {
     const { t } = useLingui();
 
     const handleOpen = () => void onOpen(rule);
@@ -26,7 +28,7 @@ export const RuleCard = ({ onOpen, order, rule }: Props) => {
     const matchTypeLabel = rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL ? t`If all of:` : t`If any of:`;
 
     return (
-        <Card onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">
+        <Card testID={testID} onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">
             <View className="w-10 h-10 rounded-full bg-secondary-foreground/20 items-center justify-center border border-secondary-foreground">
                 <Text className="text-sm font-semibold text-primary">{order}</Text>
             </View>
@@ -54,7 +56,7 @@ export const RuleCard = ({ onOpen, order, rule }: Props) => {
             </View>
 
             <View className="flex-row items-center justify-end">
-                <ThemedSwitch value={rule.enabled} onValueChange={handleToggle} />
+                <ThemedSwitch testID={switchTestID} value={rule.enabled} onValueChange={handleToggle} />
             </View>
         </Card>
     );

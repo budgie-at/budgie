@@ -2,6 +2,7 @@ import { RuleConditionFieldEnum, RuleConditionOperatorEnum, RuleCreateInputInter
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { useMinimumFieldArray } from '../../hooks/use-minimum-field-array.hook';
 import { RuleConditionMatchTypeSelector } from '../rule-condition-match-type-selector/rule-condition-match-type-selector';
 import { RuleConditionRow } from '../rule-condition-row/rule-condition-row';
@@ -25,7 +26,12 @@ export const RuleConditionsSection = () => {
 
     return (
         <View className="gap-y-lg">
-            <RuleFormSectionHeader title={t`Conditions`} onAdd={add} />
+            <RuleFormSectionHeader
+                title={t`Conditions`}
+                onAdd={add}
+                testID={RuleFormSelectors.ConditionSectionHeader}
+                addButtonTestID={RuleFormSelectors.ConditionAddButton}
+            />
 
             {showMatchTypeSelector && <RuleConditionMatchTypeSelector />}
 

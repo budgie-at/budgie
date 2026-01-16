@@ -7,18 +7,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { RuleCardSelectors, RulesPageSelectors } from '../../../@e2e/selectors/rule-page.selector';
 import { AnimatedFlatList } from '../../../@generic/component/animated-flat-list/animated-flat-list';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
+import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { IdInterface } from '../../../@generic/interface/id.interface';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { RuleCard } from '../../../rule/components/rule-card/rule-card';
 import { useGetAllRulesQuery } from '../../../rule/query/use-get-all-rules.query';
-import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 
 type RuleWithRelationsType = ComponentProps<typeof RuleCard>['rule'];
 
@@ -57,15 +58,22 @@ export default function RulesPage() {
                 id={rule.id}
                 onDelete={handleDeleteRule}
             >
-                <RuleCard onOpen={handleOpenRule} order={order} rule={rule} />
+                <RuleCard
+                    testID={RuleCardSelectors.Card(index)}
+                    switchTestID={RuleCardSelectors.EnabledSwitch(index)}
+                    onOpen={handleOpenRule}
+                    order={order}
+                    rule={rule}
+                />
             </DeletableRow>
         );
     };
 
     return (
-        <Page header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />}>
+        <Page testID={RulesPageSelectors.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />}>
             {isNotEmptyArray(rules) ? (
                 <AnimatedFlatList
+                    testID={RulesPageSelectors.List}
                     className="flex-1"
                     data={rules}
                     contentContainerClassName="gap-y-5xl"
@@ -75,6 +83,7 @@ export default function RulesPage() {
                 />
             ) : (
                 <SearchablePageEmptyState
+                    testID={RulesPageSelectors.EmptyState}
                     title={t`No Rules Yet`}
                     icon={UserIconNameEnum.Zap}
                     description={t`Create rules to automatically categorize and tag your bank transactions`}

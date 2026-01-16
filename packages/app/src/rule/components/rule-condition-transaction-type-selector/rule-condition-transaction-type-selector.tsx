@@ -6,6 +6,7 @@ import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-sel
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
 const TRANSACTION_TYPE_OPTIONS = typedObjectEntries(TRANSACTION_TYPE).map(([value, label]) => ({
@@ -13,7 +14,7 @@ const TRANSACTION_TYPE_OPTIONS = typedObjectEntries(TRANSACTION_TYPE).map(([valu
     label
 }));
 
-export const RuleConditionTransactionTypeSelector = ({ index }: Props) => {
+export const RuleConditionTransactionTypeSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -22,6 +23,7 @@ export const RuleConditionTransactionTypeSelector = ({ index }: Props) => {
             options={TRANSACTION_TYPE_OPTIONS}
             sheetTitle={t`Select Transaction Type`}
             defaultLabel={t`Select type`}
+            testID={testID}
         />
     );
 };

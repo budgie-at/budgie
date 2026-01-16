@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+# Test 01: Verify empty state on Rules page
+# Expected: Empty state shows "No Rules Yet" message
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Verify empty state is shown
+- assertVisible:
+    id: 'RulesPage.EmptyState'
+- assertVisible:
+    text: 'No Rules Yet'
+- assertVisible:
+    text: 'Create rules to automatically categorize and tag your bank transactions'

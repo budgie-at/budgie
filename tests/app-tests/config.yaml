@@ -5,9 +5,37 @@ platform:
   android:
     disableAnimations: true
 
+flows:
+  # Setup flows - create test data
+  - setup/00.setup-account.flow
+  - setup/00.setup-category.flow
+  - setup/00.setup-tag.flow
+  # Rule tests
+  - rules/01.rules-list-empty.flow
+  - rules/02.rules-create-basic.flow
+  - rules/03.rules-create-multiple-conditions.flow
+  - rules/04.rules-create-multiple-actions.flow
+  - rules/05.rules-edit.flow
+  - rules/06.rules-delete.flow
+  - rules/07.rules-toggle-enabled.flow
+  - rules/08.rules-all-field-types.flow
+
+env:
+  APP_ID: com.vitalyiegorov.budgie
+
 executionOrder:
-  continueOnFailure: true
-  flowsOrder:
-    - 01.home-screen.flow
-    - 02.game-screen-win.flow
-    - 03.game-screen-loose.flow
+  continueOnFailure: false
+#  flowsOrder:
+#    # Setup flows - create test data
+#    - setup/00.setup-account.flow
+#    - setup/00.setup-category.flow
+#    - setup/00.setup-tag.flow
+#    # Rule tests
+#    - rules/01.rules-list-empty.flow
+#    - rules/02.rules-create-basic.flow
+#    - rules/03.rules-create-multiple-conditions.flow
+#    - rules/04.rules-create-multiple-actions.flow
+#    - rules/05.rules-edit.flow
+#    - rules/06.rules-delete.flow
+#    - rules/07.rules-toggle-enabled.flow
+#    - rules/08.rules-all-field-types.flow

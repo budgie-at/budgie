@@ -1,0 +1,46 @@
+appId: ${APP_ID}
+---
+# Setup: Create a test category for rule testing
+# This creates a "Test Category" for rule actions
+
+# Navigate to Settings > Categories
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+    timeout: 3000
+
+# Find and tap Manage Categories
+- scrollUntilVisible:
+    element:
+      text: 'Manage Categories'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    text: 'Manage Categories'
+- extendedWaitUntil:
+    visible: 'Categories'
+    timeout: 3000
+
+# Tap the + button to create new category (via Create action)
+- tapOn:
+    text: 'Category'
+- extendedWaitUntil:
+    visible: 'Category Name'
+    timeout: 3000
+
+# Enter category name
+- tapOn:
+    text: 'Category Name'
+- inputText: 'Test Category'
+
+# Submit
+- tapOn:
+    text: 'Create'
+- extendedWaitUntil:
+    visible: 'Test Category'
+    timeout: 5000
+
+# Go back to settings
+- tapOn:
+    id: 'TabBar.Settings'

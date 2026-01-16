@@ -14,6 +14,7 @@ import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
 const keyExtractor = (item: MccCategoryEntityInterface) => item.id.toString();
@@ -42,7 +43,7 @@ const filterCategories = (categories: MccCategoryEntityInterface[], search: stri
 
 const getEmptyIcon = (search: string) => (isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.CreditCard);
 
-export const RuleConditionMccSelectorContent = ({ index }: Props) => {
+export const RuleConditionMccSelectorContent = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange } = useRuleConditionValueField(index);
 
@@ -77,6 +78,7 @@ export const RuleConditionMccSelectorContent = ({ index }: Props) => {
     return (
         <>
             <HapticPressable
+                testID={testID}
                 onPress={handleOpenSheet}
                 className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
             >

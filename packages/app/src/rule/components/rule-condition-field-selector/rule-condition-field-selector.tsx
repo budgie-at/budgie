@@ -6,6 +6,7 @@ import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
 const FIELD_OPTIONS = [
@@ -18,7 +19,7 @@ const FIELD_OPTIONS = [
     { value: RuleConditionFieldEnum.EXTERNAL_SOURCE, label: msg`Source` }
 ];
 
-export const RuleConditionFieldSelector = ({ index }: Props) => {
+export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -29,6 +30,7 @@ export const RuleConditionFieldSelector = ({ index }: Props) => {
             label={t`Field`}
             sheetTitle={t`Select Field`}
             defaultLabel={t`Select Field`}
+            testID={testID}
         />
     );
 };

@@ -5,14 +5,15 @@ import { RuleConditionMccSelectorContent } from '../rule-condition-mcc-selector-
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleConditionMccSelector = ({ index }: Props) => {
+export const RuleConditionMccSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
 
     return (
         <FormItem label={t`Value`}>
-            <RuleConditionMccSelectorContent index={index} />
+            <RuleConditionMccSelectorContent index={index} testID={testID} />
         </FormItem>
     );
 };

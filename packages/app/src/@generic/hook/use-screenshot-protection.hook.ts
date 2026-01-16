@@ -12,6 +12,13 @@ export const useScreenshotProtection = (): boolean => {
         void allowScreenCaptureAsync('setting');
 
         const setupScreenshotProtection = async () => {
+            // HINT: Disable screenshot protection in dev mode for E2E testing with Maestro
+            if (__DEV__) {
+                await allowScreenCaptureAsync('setting');
+
+                return;
+            }
+
             if (!status?.granted) {
                 await requestPermission();
             } else if (isScreenshotProtectionEnabled) {

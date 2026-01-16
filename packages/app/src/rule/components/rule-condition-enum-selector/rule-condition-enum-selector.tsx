@@ -15,10 +15,11 @@ interface Props<T extends RuleConditionFieldType> {
     readonly label: string;
     readonly sheetTitle: string;
     readonly defaultLabel: string;
+    readonly testID?: string;
 }
 
 export const RuleConditionEnumSelector = <T extends RuleConditionFieldType>(props: Props<T>) => {
-    const { index, options, fieldName, label, sheetTitle, defaultLabel } = props;
+    const { index, options, fieldName, label, sheetTitle, defaultLabel, testID } = props;
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.${T}`>) => (
@@ -28,6 +29,7 @@ export const RuleConditionEnumSelector = <T extends RuleConditionFieldType>(prop
             options={options}
             sheetTitle={sheetTitle}
             defaultLabel={defaultLabel}
+            testID={testID}
         />
     );
 

@@ -14,9 +14,10 @@ import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-b
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleConditionAccountSelector = ({ index }: Props) => {
+export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const sheetRef = useRef<BottomSheetInterface | null>(null);
@@ -34,6 +35,7 @@ export const RuleConditionAccountSelector = ({ index }: Props) => {
         return (
             <>
                 <HapticPressable
+                    testID={testID}
                     onPress={handleOpenSheet}
                     className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
                 >

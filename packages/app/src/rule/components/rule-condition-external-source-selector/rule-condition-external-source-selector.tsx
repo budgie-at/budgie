@@ -6,6 +6,7 @@ import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-sel
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
 const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({
@@ -13,7 +14,7 @@ const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value,
     label
 }));
 
-export const RuleConditionExternalSourceSelector = ({ index }: Props) => {
+export const RuleConditionExternalSourceSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -22,6 +23,7 @@ export const RuleConditionExternalSourceSelector = ({ index }: Props) => {
             options={EXTERNAL_SOURCE_OPTIONS}
             sheetTitle={t`Select External Source`}
             defaultLabel={t`Select source`}
+            testID={testID}
         />
     );
 };

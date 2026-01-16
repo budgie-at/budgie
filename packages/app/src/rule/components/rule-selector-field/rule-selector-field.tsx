@@ -9,11 +9,16 @@ interface Props {
     readonly label: string;
     readonly value: string;
     readonly onPress: EmptyFn;
+    readonly testID?: string;
 }
 
-export const RuleSelectorField = ({ label, value, onPress }: Props) => (
+export const RuleSelectorField = ({ label, value, onPress, testID }: Props) => (
     <FormItem label={label}>
-        <HapticPressable onPress={onPress} className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner">
+        <HapticPressable
+            testID={testID}
+            onPress={onPress}
+            className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
+        >
             <Text className="text-primary text-sm">{value}</Text>
         </HapticPressable>
     </FormItem>

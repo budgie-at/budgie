@@ -8,9 +8,10 @@ import { RuleIconSlot } from '../rule-icon-slot/rule-icon-slot';
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleActionTagSelector = ({ index }: Props) => {
+export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
 
@@ -28,6 +29,7 @@ export const RuleActionTagSelector = ({ index }: Props) => {
             label={t`Tag`}
             sheetTitle={t`Select Tag`}
             displayValue={selectedTag?.title ?? t`Select Tag`}
+            testID={testID}
         />
     );
 

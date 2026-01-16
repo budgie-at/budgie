@@ -18,9 +18,17 @@ interface Props<T extends string> {
     readonly options: Option<T>[];
     readonly sheetTitle: string;
     readonly defaultLabel: string;
+    readonly testID?: string;
 }
 
-export const RuleConditionBottomSheetSelector = <T extends string>({ value, onChange, options, sheetTitle, defaultLabel }: Props<T>) => {
+export const RuleConditionBottomSheetSelector = <T extends string>({
+    value,
+    onChange,
+    options,
+    sheetTitle,
+    defaultLabel,
+    testID
+}: Props<T>) => {
     const { t } = useLingui();
     const sheetRef = useRef<BottomSheetInterface | null>(null);
 
@@ -38,6 +46,7 @@ export const RuleConditionBottomSheetSelector = <T extends string>({ value, onCh
     return (
         <>
             <HapticPressable
+                testID={testID}
                 onPress={handleOpenSheet}
                 className="bg-secondary-background rounded-xl px-lg py-md border border-secondary-corner"
             >

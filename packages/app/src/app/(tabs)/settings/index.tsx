@@ -97,6 +97,8 @@ export default function SettingsPage() {
                             variant="pink"
                         />
                         <SettingsCard
+                            // eslint-disable-next-line lingui/no-unlocalized-strings
+                            testID="SettingsPage.ManageRulesCard"
                             onPress={navigateToRules}
                             title={t`Manage Rules`}
                             description={t`Auto-categorize transactions`}

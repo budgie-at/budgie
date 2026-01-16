@@ -1,0 +1,59 @@
+appId: ${APP_ID}
+---
+# Test 08: Test different field types for conditions
+# Creates a rule using Amount field with GREATER_THAN operator
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Tap the create action button
+- tapOn:
+    text: 'Rule'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+    timeout: 3000
+
+# Change field to Amount
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- extendedWaitUntil:
+    visible: 'Select Field'
+    timeout: 3000
+- tapOn:
+    text: 'Amount'
+
+# Change operator to Greater Than
+- tapOn:
+    id: 'RuleForm.Condition.0.OperatorSelector'
+- extendedWaitUntil:
+    visible: 'Select Operator'
+    timeout: 3000
+- tapOn:
+    text: 'Greater Than'
+
+# Enter amount value
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: '100'
+
+# Select category for action
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+- tapOn:
+    text: 'Test Category'
+
+# Submit the rule
+- tapOn:
+    text: 'Create Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Verify rule was created with Amount condition
+- assertVisible:
+    text: 'Amount'

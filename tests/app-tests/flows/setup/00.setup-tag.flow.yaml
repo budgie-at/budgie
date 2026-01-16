@@ -1,0 +1,46 @@
+appId: ${APP_ID}
+---
+# Setup: Create a test tag for rule testing
+# This creates a "Test Tag" for ADD_TAG rule actions
+
+# Navigate to Settings > Tags
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+    timeout: 3000
+
+# Find and tap Manage Tags
+- scrollUntilVisible:
+    element:
+      text: 'Manage Tags'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    text: 'Manage Tags'
+- extendedWaitUntil:
+    visible: 'Tags'
+    timeout: 3000
+
+# Tap the + button to create new tag (via Create action)
+- tapOn:
+    text: 'Tag'
+- extendedWaitUntil:
+    visible: 'Tag Name'
+    timeout: 3000
+
+# Enter tag name
+- tapOn:
+    text: 'Tag Name'
+- inputText: 'Test Tag'
+
+# Submit
+- tapOn:
+    text: 'Create'
+- extendedWaitUntil:
+    visible: 'Test Tag'
+    timeout: 5000
+
+# Go back to settings
+- tapOn:
+    id: 'TabBar.Settings'
