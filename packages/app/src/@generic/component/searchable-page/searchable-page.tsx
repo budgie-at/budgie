@@ -16,7 +16,6 @@ interface Props<T extends IdInterface> {
     readonly searchPlaceholder: string;
     readonly emptyState: ReactNode;
     readonly onSearchChange: (search: string) => void;
-    readonly onDelete: (id: number) => Promise<void>;
     readonly renderCard: (item: T) => ReactNode;
     readonly children?: ReactNode;
 }
