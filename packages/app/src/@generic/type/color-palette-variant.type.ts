@@ -1,6 +1,5 @@
 export type ColorPaletteVariant =
     | 'default'
-    | 'solid-default'
     | 'destructive'
     | 'warning'
     | 'dark-warning'
