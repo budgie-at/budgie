@@ -4,6 +4,7 @@ import { ColorPaletteVariant } from '../type/color-palette-variant.type';
 
 export const FOREGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> = {
     default: 'text-default-foreground',
+    'solid-default': 'text-white',
     destructive: 'text-destructive-foreground',
     positive: 'text-positive-foreground',
     pink: 'text-pink-foreground',

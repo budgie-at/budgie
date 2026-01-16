@@ -64,14 +64,7 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
 
     const isConvertDisabled = !isDefined(selectedAccountId) || isLoading;
-    const buttonClassName = `items-center justify-center rounded-3xl p-3xl bg-default-foreground border border-default-corner ${isConvertDisabled ? 'opacity-50' : ''}`;
-    const buttonContent = isLoading ? (
-        <ActivityIndicator size="small" color="white" />
-    ) : (
-        <Text className="text-white font-semibold text-md">
-            <Trans>Convert to Transfer</Trans>
-        </Text>
-    );
+    const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : t`Convert to Transfer`;
 
     return (
         <>
@@ -107,9 +100,13 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                         </Card>
                     </HapticPressable>
                     <View className="gap-y-md">
-                        <HapticPressable onPress={handleConvert} disabled={isConvertDisabled} className={buttonClassName}>
-                            {buttonContent}
-                        </HapticPressable>
+                        <Button
+                            content={submitButtonContent}
+                            disabled={isConvertDisabled}
+                            onPress={handleConvert}
+                            variant="solid-default"
+                            size="md"
+                        />
                         <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
                     </View>
                 </BottomSheetView>
