@@ -7,5 +7,5 @@ import { TagEntityTable } from '../table/tag-entity.table';
 
 export const TagEntitySchema = createSelectSchema(TagEntityTable, {
     ...BaseEntityFields,
-    title: schema => schema.min(TAG_TITLE_MIN_LENGTH).max(TAG_TITLE_MAX_LENGTH).describe('The tag title.')
+    title: schema => schema.trim().min(TAG_TITLE_MIN_LENGTH).max(TAG_TITLE_MAX_LENGTH).describe('The tag title.')
 });
