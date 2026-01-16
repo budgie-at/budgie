@@ -30,19 +30,27 @@ const flatListProps = {
 };
 
 export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props) => {
-    const [search, setSearch] = useState('');
-    const { tags } = useSearchTagsQuery(search);
     const { t } = useLingui();
+
+    const [search, setSearch] = useState('');
+    const [newTagTitle, setNewTagTitle] = useState('');
     const tagFormRef = useRef<BottomSheetInterface | null>(null);
 
-    const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
-    const data = padFlatListData(sortedTags, 3);
-    const handleCreateTag = () => void tagFormRef.current?.open();
+    const { tags } = useSearchTagsQuery(search);
+
+    const handleCreateTag = () => {
+        setNewTagTitle(search);
+        void tagFormRef.current?.open();
+    };
     const handleClose = () => void ref.current?.close();
     const handleTagCreated = (tag: TagEntityInterface) => {
         setSearch('');
+        setNewTagTitle('');
         onSelect(tag.id);
     };
+
+    const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
+    const data = padFlatListData(sortedTags, 3);
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
@@ -80,7 +88,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
                 footerComponent={footerComponent}
             />
 
-            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={search} onTagSaved={handleTagCreated} />
+            <TagFormBottomSheet ref={tagFormRef} tag={null} defaultTitle={newTagTitle} onTagSaved={handleTagCreated} />
         </>
     );
 };
