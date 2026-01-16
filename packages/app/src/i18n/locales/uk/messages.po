@@ -265,13 +265,13 @@ msgid "Budgie"
 msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
-#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:78
+#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:63
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:128
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:113
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -391,15 +391,15 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:71
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:81
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:72
 msgid "Convert to Transfer"
 msgstr ""
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:103
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:95
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -1172,7 +1172,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:71
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1313,7 +1313,7 @@ msgid "Select account"
 msgstr "Виберіть рахунок"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:79
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:114
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Select Account"
 msgstr "Виберіть рахунок"
 
@@ -1344,7 +1344,7 @@ msgstr "Виберіть стовпець..."
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:107
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:98
 msgid "Select the destination account for this transfer."
 msgstr ""
 
