@@ -18,6 +18,7 @@ import { TagsSelectorFooter } from '../tags-selector-footer/tags-selector-footer
 interface Props {
     readonly selectedTagIds: number[];
     readonly onSelect: (tagId: number) => void;
+    readonly onClear: () => void;
     readonly ref: RefObject<BottomSheetInterface | null>;
 }
 
@@ -29,7 +30,7 @@ const flatListProps = {
     contentContainerClassName: 'gap-y-lg px-3 pt-xl'
 };
 
-export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props) => {
+export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect, onClear }: Props) => {
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);
     const { t } = useLingui();
@@ -58,7 +59,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
         );
 
     const footerComponent: FC<BottomSheetFooterProps> = props => (
-        <TagsSelectorFooter {...props} selectedTagsCount={selectedTagIds.length} onClose={handleClose} />
+        <TagsSelectorFooter {...props} selectedTagsCount={selectedTagIds.length} onClose={handleClose} onClear={onClear} />
     );
 
     return (

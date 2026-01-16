@@ -36,6 +36,8 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
         onChange(isSelected ? tagIds.filter(tagId => tagId !== id) : [...tagIds, id]);
     };
 
+    const handleClear = () => void onChange([]);
+
     const remainingCount = (selectedTags?.length ?? 0) - 1;
 
     return (
@@ -64,7 +66,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 )}
             </HorizontalCell>
 
-            <TagsSelectorBottomSheet onSelect={handleToggleTag} selectedTagIds={tagIds} ref={ref} />
+            <TagsSelectorBottomSheet onSelect={handleToggleTag} onClear={handleClear} selectedTagIds={tagIds} ref={ref} />
         </>
     );
 };
