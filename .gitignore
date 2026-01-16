@@ -52,5 +52,7 @@ build-*.tar.gz
 *.apk
 app*.tar.gz
 
+.worktrees
+
 .env
 nativewind-env.d.ts

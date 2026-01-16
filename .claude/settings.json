@@ -1,5 +1,6 @@
 {
   "enabledPlugins": {
-    "expo-app-design@expo-plugins": true
+    "expo-app-design@expo-plugins": true,
+    "superpowers@superpowers-marketplace": true
   }
 }

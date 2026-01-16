@@ -7,45 +7,66 @@ appId: com.vitalyiegorov.budgie
 - clearState
 - launchApp
 
-# If dev server launcher is shown, connect to localhost:8081
+# Wait for the app to load - could show dev server launcher, developer menu, or home screen
+# Try to handle all possible states by checking what appears first
 - runFlow:
     when:
       visible: 'http://localhost:8081'
     commands:
       - tapOn: 'http://localhost:8081'
-      - extendedWaitUntil:
-          visible: 'No accounts yet'
-          timeout: 60000
 
-# Wait for the app to fully load (splash screen takes a while)
+# Wait a moment for any menus to appear after connecting
+- waitForAnimationToEnd
+
+# Dismiss developer menu welcome if shown - tap the Continue button
+- tapOn:
+    text: 'Continue'
+    optional: true
+
+# Wait a moment for the developer tools menu to potentially appear
+- waitForAnimationToEnd
+
+# Dismiss dev tools menu if shown (tap X button at top-right)
+# Only tap if the dev tools menu is actually visible (check for "TOOLS" section)
+- runFlow:
+    when:
+      visible: 'TOOLS'
+    commands:
+      - tapOn:
+          point: '90%,52%'
+
+# Wait for the app to fully load - either "No accounts yet" or "TOTAL BALANCE"
+# First try to find empty state
+- runFlow:
+    when:
+      visible: 'No accounts yet'
+    commands:
+      # Tap the Add Account button in empty state
+      - tapOn:
+          text: 'Add Account'
+      # Wait for navigation animation to complete
+      - extendedWaitUntil:
+          visible: 'New Account'
+          timeout: 10000
+      # Select Savings Account type (CASH = Savings in the enum)
+      - tapOn:
+          id: 'CreateAccount.CASH'
+      - extendedWaitUntil:
+          visible: 'Account Name & Icon'
+          timeout: 5000
+      # Enter account name - tap on the input placeholder to focus
+      - tapOn:
+          text: 'e.g. Savings Account'
+      - inputText: 'Test Account'
+      # Submit the form
+      - tapOn:
+          text: 'Submit'
+
+# Wait for home screen with account
 - extendedWaitUntil:
-    visible: 'No accounts yet'
+    visible: 'TOTAL BALANCE'
     timeout: 60000
 
-# Tap the Add Account button in empty state
-- tapOn:
-    text: 'Add Account'
-
-# Wait for navigation animation to complete
-- extendedWaitUntil:
-    visible: 'New Account'
-    timeout: 10000
-
-# Select Savings Account type (CASH = Savings in the enum)
-- tapOn:
-    id: 'CreateAccount.CASH'
-- extendedWaitUntil:
-    visible: 'Account Name & Icon'
-    timeout: 5000
-
-# Enter account name - tap on the input placeholder to focus
-- tapOn:
-    text: 'e.g. Savings Account'
-- inputText: 'Test Account'
-
-# Submit the form
-- tapOn:
-    text: 'Submit'
-- extendedWaitUntil:
-    visible: 'Test Account'
-    timeout: 5000
+# Verify account section is visible (CASH section only appears when account exists)
+- assertVisible:
+    text: 'CASH'

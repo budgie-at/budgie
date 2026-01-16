@@ -83,6 +83,7 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Organization`}>
                         <SettingsCard
+                            testID="SettingsPage.ManageCategoriesCard"
                             onPress={handleNavigateToCategories}
                             title={t`Manage Categories`}
                             description={t`View and delete custom categories`}
@@ -90,6 +91,7 @@ export default function SettingsPage() {
                             variant="default"
                         />
                         <SettingsCard
+                            testID="SettingsPage.ManageTagsCard"
                             onPress={handleNavigateToTags}
                             title={t`Manage Tags`}
                             description={t`Create and organize transaction tags`}
