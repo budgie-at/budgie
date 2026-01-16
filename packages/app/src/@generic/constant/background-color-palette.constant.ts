@@ -5,7 +5,6 @@ import { ColorPaletteVariant } from '../type/color-palette-variant.type';
 
 export const BACKGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> = {
     default: 'border-default-corner bg-default-background',
-    'solid-default': 'border-default-corner bg-default-foreground',
     destructive: 'border-destructive-corner bg-destructive-background',
     positive: 'border-positive-corner bg-positive-background',
     pink: 'border-pink-corner bg-pink-background',

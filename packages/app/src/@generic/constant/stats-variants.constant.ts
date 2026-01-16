@@ -13,7 +13,6 @@ export const statsBarVariants = cva<{ variant: Record<ColorPaletteVariant, Class
     variants: {
         variant: {
             'dark-warning': 'bg-dark-warning-foreground',
-            'solid-default': 'bg-default-foreground',
             destructive: 'bg-destructive-foreground',
             secondary: 'bg-secondary-foreground',
             positive: 'bg-positive-foreground',

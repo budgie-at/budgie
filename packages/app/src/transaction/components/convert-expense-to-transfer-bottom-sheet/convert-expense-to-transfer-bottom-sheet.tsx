@@ -104,7 +104,7 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                             content={submitButtonContent}
                             disabled={isConvertDisabled}
                             onPress={handleConvert}
-                            variant="solid-default"
+                            variant="default"
                             size="md"
                         />
                         <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
