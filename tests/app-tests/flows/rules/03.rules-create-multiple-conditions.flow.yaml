@@ -1,0 +1,64 @@
+appId: ${APP_ID}
+---
+# Test 03: Create a rule with multiple conditions
+# Creates a rule: Title CONTAINS "Spotify" AND Comment CONTAINS "Premium"
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Tap the create action button
+- tapOn:
+    text: 'Rule'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+    timeout: 3000
+
+# First condition: Title contains "Spotify"
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Spotify'
+
+# Add second condition
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+# Second condition: Change field to Comment
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+- extendedWaitUntil:
+    visible: 'Select Field'
+    timeout: 3000
+- tapOn:
+    text: 'Comment'
+
+# Enter value for second condition
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: 'Premium'
+
+# Match type selector should now be visible (2 conditions)
+# Verify ALL is default or select it
+- assertVisible:
+    text: 'Match'
+
+# Select category for action
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+- tapOn:
+    text: 'Test Category'
+
+# Submit the rule
+- tapOn:
+    text: 'Create Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Verify rule was created
+- assertVisible:
+    text: 'Spotify'

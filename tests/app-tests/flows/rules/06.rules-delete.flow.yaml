@@ -1,0 +1,37 @@
+appId: ${APP_ID}
+---
+# Test 06: Delete a rule
+# Deletes the first rule using swipe to delete
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Count initial rules - we should have created 3 rules so far
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Swipe left on the first rule to reveal delete
+- swipe:
+    from:
+      id: 'RulesPage.RuleCard.0'
+    direction: LEFT
+    duration: 300
+
+# Tap delete button (confirm dialog should appear)
+- tapOn:
+    text: 'Delete'
+- extendedWaitUntil:
+    visible: 'Delete Rule'
+    timeout: 3000
+
+# Confirm deletion
+- tapOn:
+    text: 'Delete'
+- extendedWaitUntil:
+    timeout: 3000
+    notVisible: 'Netflix Updated'
+
+# Verify rule was deleted
+- assertNotVisible:
+    text: 'Netflix Updated'

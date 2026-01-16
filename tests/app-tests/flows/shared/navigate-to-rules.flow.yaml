@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+# Navigate to Settings tab first
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+    timeout: 3000
+
+# Scroll to Organization section and tap Manage Rules
+- scrollUntilVisible:
+    element:
+      id: 'SettingsPage.ManageRulesCard'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'SettingsPage.ManageRulesCard'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 3000

@@ -26,6 +26,8 @@ export const AccountsEmptyState = () => {
                 </Text>
 
                 <Button
+                    // eslint-disable-next-line lingui/no-unlocalized-strings
+                    testID="Home.AddAccountButton"
                     variant="primary"
                     size="md"
                     leftIcon={UserIconNameEnum.Plus}

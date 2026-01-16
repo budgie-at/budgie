@@ -8,9 +8,10 @@ import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selec
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleActionTypeSelector = ({ index }: Props) => {
+export const RuleActionTypeSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const conditions = useWatch({ control, name: 'conditions' });
@@ -32,6 +33,7 @@ export const RuleActionTypeSelector = ({ index }: Props) => {
             label={t`Action Type`}
             sheetTitle={t`Select Action Type`}
             displayValue={getDisplayValue(value)}
+            testID={testID}
         />
     );
 

@@ -9,9 +9,10 @@ import { RuleIconSlot } from '../rule-icon-slot/rule-icon-slot';
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleActionAccountSelector = ({ index }: Props) => {
+export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
 
@@ -46,6 +47,7 @@ export const RuleActionAccountSelector = ({ index }: Props) => {
             label={label}
             sheetTitle={t`Select Account`}
             displayValue={selectedAccount?.title ?? t`Select Account`}
+            testID={testID}
         />
     );
 

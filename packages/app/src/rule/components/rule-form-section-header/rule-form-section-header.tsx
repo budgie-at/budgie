@@ -9,13 +9,15 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 interface Props {
     readonly title: string;
     readonly onAdd: EmptyFn;
+    readonly testID?: string;
+    readonly addButtonTestID?: string;
 }
 
-export const RuleFormSectionHeader = ({ title, onAdd }: Props) => (
-    <View className="flex-row items-center justify-between">
+export const RuleFormSectionHeader = ({ title, onAdd, testID, addButtonTestID }: Props) => (
+    <View testID={testID} className="flex-row items-center justify-between">
         <Text className="text-primary text-lg font-semibold">{title}</Text>
 
-        <HapticPressable onPress={onAdd}>
+        <HapticPressable testID={addButtonTestID} onPress={onAdd}>
             <CircleIcon icon={UserIconNameEnum.Plus} variant="ghost" size={26} iconSize={14} />
         </HapticPressable>
     </View>

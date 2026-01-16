@@ -7,16 +7,17 @@ import { Input } from '../../../@generic/component/input/input';
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleConditionTextValueInput = ({ index }: Props) => {
+export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
 
     const renderValueInput = ({
         field: { value, onChange }
     }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => (
-        <Input value={value} onChangeText={onChange} placeholder={t`Enter value...`} />
+        <Input testID={testID} value={value} onChangeText={onChange} placeholder={t`Enter value...`} />
     );
 
     return (

@@ -10,9 +10,10 @@ import { OPERATOR_LABELS } from './operator-options.constant';
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleConditionOperatorSelector = ({ index }: Props) => {
+export const RuleConditionOperatorSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<RuleCreateInputInterface>();
 
@@ -36,6 +37,7 @@ export const RuleConditionOperatorSelector = ({ index }: Props) => {
             label={t`Operator`}
             sheetTitle={t`Select Operator`}
             defaultLabel={t`Select Operator`}
+            testID={testID}
         />
     );
 };

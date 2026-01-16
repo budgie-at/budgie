@@ -10,24 +10,25 @@ import { RuleConditionTransactionTypeSelector } from '../rule-condition-transact
 
 interface Props {
     readonly index: number;
+    readonly testID?: string;
 }
 
-export const RuleConditionValueInput = ({ index }: Props) => {
+export const RuleConditionValueInput = ({ index, testID }: Props) => {
     const { control } = useFormContext<RuleCreateInputInterface>();
     const field = useWatch({ control, name: `conditions.${index}.field` });
 
     switch (field) {
         case RuleConditionFieldEnum.ACCOUNT_ID:
-            return <RuleConditionAccountSelector index={index} />;
+            return <RuleConditionAccountSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.TRANSACTION_TYPE:
-            return <RuleConditionTransactionTypeSelector index={index} />;
+            return <RuleConditionTransactionTypeSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.EXTERNAL_SOURCE:
-            return <RuleConditionExternalSourceSelector index={index} />;
+            return <RuleConditionExternalSourceSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.MCC_CODE:
-            return <RuleConditionMccSelector index={index} />;
+            return <RuleConditionMccSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.AMOUNT:
-            return <RuleConditionAmountValueInput index={index} />;
+            return <RuleConditionAmountValueInput index={index} testID={testID} />;
         default:
-            return <RuleConditionTextValueInput index={index} />;
+            return <RuleConditionTextValueInput index={index} testID={testID} />;
     }
 };

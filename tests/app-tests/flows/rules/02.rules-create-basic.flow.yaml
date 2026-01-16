@@ -1,0 +1,45 @@
+appId: ${APP_ID}
+---
+# Test 02: Create a basic rule with 1 condition and 1 action
+# Creates a rule: Title CONTAINS "Netflix" -> SET_CATEGORY
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Tap the create action button
+- tapOn:
+    text: 'Rule'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+    timeout: 3000
+
+# The form should have a default condition (Title Contains)
+# Enter the value for condition
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Netflix'
+
+# Configure action: The default action should be SET_CATEGORY
+# Tap on category selector to select a category
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+
+# Select Test Category (created in setup)
+- tapOn:
+    text: 'Test Category'
+
+# Submit the rule
+- tapOn:
+    text: 'Create Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Verify rule was created
+- assertVisible:
+    text: 'Netflix'

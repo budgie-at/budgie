@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+---
+# Test 07: Toggle rule enabled/disabled
+# Toggles the enabled state of the first rule
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Verify a rule exists
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
+
+# Toggle the switch on the first rule
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+
+# Wait for state change
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCard.0.EnabledSwitch'
+    timeout: 1000
+
+# Toggle back to enabled
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+
+# Verify rule is still visible
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'

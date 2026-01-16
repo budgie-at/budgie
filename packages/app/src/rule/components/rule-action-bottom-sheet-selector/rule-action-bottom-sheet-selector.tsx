@@ -17,10 +17,11 @@ interface Props<T> {
     readonly label: string;
     readonly sheetTitle: string;
     readonly displayValue: string;
+    readonly testID?: string;
 }
 
 export const RuleActionBottomSheetSelector = <T,>(props: Props<T>) => {
-    const { value, onChange, options, label, sheetTitle, displayValue } = props;
+    const { value, onChange, options, label, sheetTitle, displayValue, testID } = props;
     const sheetRef = useRef<BottomSheetInterface | null>(null);
 
     const handleOpen = () => void sheetRef.current?.open();
@@ -33,7 +34,7 @@ export const RuleActionBottomSheetSelector = <T,>(props: Props<T>) => {
 
     return (
         <>
-            <RuleSelectorField label={label} value={displayValue} onPress={handleOpen} />
+            <RuleSelectorField testID={testID} label={label} value={displayValue} onPress={handleOpen} />
             <RuleSelectorSheet ref={sheetRef} title={sheetTitle} options={options} selectedValue={value} onSelect={handleSelect} />
         </>
     );

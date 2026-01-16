@@ -15,9 +15,10 @@ interface Props {
     readonly options: EnumOption[];
     readonly sheetTitle: string;
     readonly defaultLabel: string;
+    readonly testID?: string;
 }
 
-export const RuleConditionValueEnumSelector = ({ index, options, sheetTitle, defaultLabel }: Props) => {
+export const RuleConditionValueEnumSelector = ({ index, options, sheetTitle, defaultLabel, testID }: Props) => {
     const { t } = useLingui();
     const { value, onChange } = useRuleConditionValueField(index);
 
@@ -29,6 +30,7 @@ export const RuleConditionValueEnumSelector = ({ index, options, sheetTitle, def
                 options={options}
                 sheetTitle={sheetTitle}
                 defaultLabel={defaultLabel}
+                testID={testID}
             />
         </FormItem>
     );
