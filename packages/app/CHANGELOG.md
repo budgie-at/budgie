@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.2](https://github.com/budgie-at/budgie/compare/v2.12.1...v2.12.2) (2026-01-16)
+
+### Bug Fixes
+
+- **app:** change bottom sheet stackBehavior to push ([39c1cf0](https://github.com/budgie-at/budgie/commit/39c1cf02e88ba295d4058321b677c183edd361b9)), closes [#257](https://github.com/budgie-at/budgie/issues/257)
+- **app:** prevent crash when creating tag during transaction ([341bee9](https://github.com/budgie-at/budgie/commit/341bee9bd0734271cc479bd195bea136fcd37511)), closes [#257](https://github.com/budgie-at/budgie/issues/257)
+
 ## [2.12.1](https://github.com/budgie-at/budgie/compare/v2.12.0...v2.12.1) (2026-01-16)
 
 **Note:** Version bump only for package @budgie-at/app
