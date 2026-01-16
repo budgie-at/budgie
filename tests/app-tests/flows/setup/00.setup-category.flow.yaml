@@ -3,6 +3,13 @@ appId: ${APP_ID}
 # Setup: Create a test category for rule testing
 # This creates a "Test Category" for rule actions
 
+# Navigate to Home first to reset Settings scroll position
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 3000
+
 # Navigate to Settings > Categories
 - tapOn:
     id: 'TabBar.Settings'
@@ -10,24 +17,37 @@ appId: ${APP_ID}
     visible: 'Settings'
     timeout: 3000
 
-# Find and tap Manage Categories
+# Find and tap Manage Categories (in Organization section)
 - scrollUntilVisible:
     element:
-      text: 'Manage Categories'
+      id: 'SettingsPage.ManageCategoriesCard'
     direction: DOWN
-    timeout: 5000
+    timeout: 15000
+    speed: 20
 - tapOn:
-    text: 'Manage Categories'
+    id: 'SettingsPage.ManageCategoriesCard'
 - extendedWaitUntil:
     visible: 'Categories'
     timeout: 3000
 
-# Tap the + button to create new category (via Create action)
+# Tap the + FAB button to reveal create actions
+- tapOn:
+    id: 'CreateTransactionTrigger'
+# Wait for the staggered menu animation
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+    timeout: 2000
+- waitForAnimationToEnd
+# Tap the Category action item
 - tapOn:
     text: 'Category'
+# Give time for FAB menu to close and bottom sheet to start opening
+- waitForAnimationToEnd
+# Wait for the bottom sheet to open
 - extendedWaitUntil:
     visible: 'Category Name'
-    timeout: 3000
+    timeout: 5000
 
 # Enter category name
 - tapOn:

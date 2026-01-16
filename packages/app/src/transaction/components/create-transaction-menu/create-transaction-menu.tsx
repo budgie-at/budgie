@@ -81,8 +81,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     };
 
     const handleCreateAction = () => {
-        onClose();
         createAction?.onPress();
+        onClose();
     };
 
     const showAiButton = isAiAvailable && !isDefined(createAction);
@@ -145,7 +145,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
             )}
 
             <View className="absolute right-0 bottom-0 items-end px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
-                <View className="items-end" pointerEvents="box-none">
+                <View className="items-end">
                     {actionItems.map((item, index) => (
                         <ActionItem
                             key={item.label}

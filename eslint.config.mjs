@@ -315,6 +315,7 @@ export default defineConfig(
                     ],
                     ignoreNames: [
                         { regex: { pattern: 'className', flags: 'i' } },
+                        { regex: { pattern: 'testID', flags: 'i' } },
                         { regex: { pattern: 'icon', flags: 'i' } },
                         { regex: { pattern: 'sizes', flags: 'i' } }
                     ],
