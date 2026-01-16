@@ -64,7 +64,14 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
     const handleOpenAccountSheet = () => void accountSheetRef.current?.open();
 
     const isConvertDisabled = !isDefined(selectedAccountId) || isLoading;
-    const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : t`Convert to Transfer`;
+    const buttonClassName = `items-center justify-center rounded-3xl p-3xl bg-default-foreground border border-default-corner ${isConvertDisabled ? 'opacity-50' : ''}`;
+    const buttonContent = isLoading ? (
+        <ActivityIndicator size="small" color="white" />
+    ) : (
+        <Text className="text-white font-semibold text-md">
+            <Trans>Convert to Transfer</Trans>
+        </Text>
+    );
 
     return (
         <>
@@ -84,15 +91,12 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                         iconSize={24}
                         className="mb-4xl self-center rounded-3xl"
                     />
-
                     <Text className="text-primary text-xl font-semibold text-center mb-sm">
                         <Trans>Convert to Transfer?</Trans>
                     </Text>
-
                     <Text className="text-secondary-foreground text-center text-sm mb-3xl">
                         <Trans>Select the destination account for this transfer.</Trans>
                     </Text>
-
                     <HapticPressable onPress={handleOpenAccountSheet} className="mb-3xl">
                         <Card className="flex-row items-center gap-x-lg p-lg">
                             <CircleIcon icon={icon} variant="ghost" size={34} iconSize={18} />
@@ -102,15 +106,10 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                             <CircleIcon icon={UserIconNameEnum.ChevronRight} variant="ghost" size={20} iconSize={16} />
                         </Card>
                     </HapticPressable>
-
                     <View className="gap-y-md">
-                        <Button
-                            content={submitButtonContent}
-                            disabled={isConvertDisabled}
-                            onPress={handleConvert}
-                            variant="default"
-                            size="md"
-                        />
+                        <HapticPressable onPress={handleConvert} disabled={isConvertDisabled} className={buttonClassName}>
+                            {buttonContent}
+                        </HapticPressable>
                         <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
                     </View>
                 </BottomSheetView>
