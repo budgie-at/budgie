@@ -9,7 +9,7 @@ import { CategoryEntityTable } from '../table/category-entity.table';
 
 export const CategoryEntitySchema = createSelectSchema(CategoryEntityTable, {
     ...BaseEntityFields,
-    title: schema => schema.min(CATEGORY_TITLE_MIN_LENGTH).max(CATEGORY_TITLE_MAX_LENGTH).describe('The category title.'),
+    title: schema => schema.trim().min(CATEGORY_TITLE_MIN_LENGTH).max(CATEGORY_TITLE_MAX_LENGTH).describe('The category title.'),
     icon: zodEnum(UserIconNameEnum, {
         message: 'Invalid icon selected'
     }).describe('The category icon.'),
