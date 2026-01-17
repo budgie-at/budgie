@@ -1,16 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, {
-    FadeIn,
-    FadeOut,
-    runOnJS,
-    useAnimatedReaction,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -29,7 +20,6 @@ import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';
 
 const FADE_DURATION = 200;
-const OVERLAY_OPACITY = 0.85;
 const CLOSE_ICON_SIZE = 32;
 const MIC_BOTTOM_OFFSET = -16;
 
@@ -48,7 +38,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const [finalPrompt, setFinalPrompt] = useState('');
     const [accountId, setAccountId] = useState<number | null>(null);
     const [userConfirmed, setUserConfirmed] = useState(false);
-    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
 
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
@@ -66,36 +55,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const hasTranscription = isNotEmptyString(finalPrompt);
     const isConfirmPhase = status === 'idle' && hasTranscription && !userConfirmed;
     const showResult = userConfirmed && hasValidTransaction;
-
-    const isOpenShared = useSharedValue(isOpen);
-    const overlayOpacity = useSharedValue(isOpen ? OVERLAY_OPACITY : 0);
-
-    const handleAnimationComplete = () => {
-        setIsAnimatingOut(false);
-    };
-
-    useDerivedValue(() => {
-        isOpenShared.value = isOpen;
-    }, [isOpen]);
-
-    useAnimatedReaction(
-        () => isOpenShared.value,
-        (current, previous) => {
-            if (current && !previous) {
-                overlayOpacity.value = OVERLAY_OPACITY;
-            } else if (!current && previous) {
-                runOnJS(setIsAnimatingOut)(true);
-                overlayOpacity.value = withTiming(0, { duration: FADE_DURATION }, finished => {
-                    if (finished) {
-                        runOnJS(handleAnimationComplete)();
-                    }
-                });
-            }
-        },
-        [isOpen]
-    );
-
-    const isVisible = isOpen || isAnimatingOut;
 
     const handleReset = () => {
         clearError();
@@ -172,9 +131,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         return 'idle';
     };
 
-    const overlayStyle = useAnimatedStyle(() => ({ opacity: overlayOpacity.value }));
-
-    if (!isVisible) {
+    if (!isOpen) {
         return null;
     }
 
@@ -189,8 +146,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
 
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            <Animated.View className="absolute inset-0 bg-black" style={overlayStyle} pointerEvents="none" />
-
             {showTransactionCard && (
                 <Animated.View
                     className="absolute inset-x-4 top-1/4"

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-input-overlay';
@@ -37,6 +38,15 @@ export default function TabsLayout() {
     );
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
+    const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
+
+    const handleBackdropClose = () => {
+        if (isVoiceInputOpen) {
+            handleCloseVoiceInput();
+        } else if (isMenuOpen) {
+            handleCloseMenu();
+        }
+    };
 
     return (
         <VoiceInputContext value={voiceInputContextValue}>
@@ -62,6 +72,7 @@ export default function TabsLayout() {
                 </BlurGradient>
             </Tabs>
 
+            <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
             <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
             <VoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} />
         </VoiceInputContext>
