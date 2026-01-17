@@ -1,9 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
-    FadeIn,
-    FadeOut,
     runOnJS,
     useAnimatedReaction,
     useAnimatedStyle,
@@ -17,8 +16,6 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { AiTransactionPreviewCard } from '../../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
-import { useCreateExpenseTransactionMutation } from '../../../transaction/hook/use-create-expense-transaction.mutation';
 import { useLlmContext } from '../../context/llm.context';
 import { useAiTransaction } from '../../hook/use-ai-transaction.hook';
 import { useLlmGeneration } from '../../hook/use-llm-generation.hook';
@@ -28,7 +25,6 @@ import { AnimatedRecordButton } from '../animated-record-button/animated-record-
 import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';
 
-const FADE_DURATION = 200;
 const EXIT_DURATION = 100;
 const MIC_BOTTOM_OFFSET = -16;
 const CLOSE_BUTTON_ROTATION = 45;
@@ -43,10 +39,8 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const { llm, stt } = useLlmContext();
     const { defaultAccount } = useSettingsContext();
-    const createExpense = useCreateExpenseTransactionMutation();
 
     const [finalPrompt, setFinalPrompt] = useState('');
-    const [accountId, setAccountId] = useState<number | null>(null);
     const [userConfirmed, setUserConfirmed] = useState(false);
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
@@ -81,12 +75,11 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
 
     const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
 
-    const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
+    const [systemPrompt, transactionInfo, resetTransaction] = useAiTransaction(llm, finalPrompt);
     const { generateFromTranscription, error, clearError } = useLlmGeneration(llm, systemPrompt);
 
-    const handleTranscriptionComplete = async (transcribed: string) => {
+    const handleTranscriptionComplete = (transcribed: string) => {
         setFinalPrompt(transcribed);
-        await generateFromTranscription(transcribed);
     };
 
     const { startRecording, stopRecording, status, transcription, audioLevel } = useStreamingTranscribe(handleTranscriptionComplete);
@@ -95,13 +88,11 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const hasValidTransaction = isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount);
     const hasTranscription = isNotEmptyString(finalPrompt);
     const isConfirmPhase = status === 'idle' && hasTranscription && !userConfirmed;
-    const showResult = userConfirmed && hasValidTransaction;
 
     const handleReset = () => {
         clearError();
         setFinalPrompt('');
         resetTransaction();
-        setAccountId(null);
         setUserConfirmed(false);
     };
 
@@ -122,18 +113,45 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         }
     }, [isOpen, isReady, startRecording, clearError]);
 
-    const handleUserConfirm = () => {
-        setUserConfirmed(true);
-    };
-
-    const handleTransactionConfirm = async () => {
-        if (!isPositiveNumber(transactionInfo?.amount)) {
+    useEffect(() => {
+        if (!isOpen) {
             return;
         }
-        const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
-        await createExpense(transactionInfo.amount, transactionInfo.category?.id ?? 0, selectedAccountId, transactionInfo.comment);
-        handleReset();
-        onClose();
+
+        return () => {
+            setFinalPrompt('');
+            resetTransaction();
+            setUserConfirmed(false);
+        };
+    }, [isOpen, resetTransaction]);
+
+    useEffect(() => {
+        if (isNotEmptyString(finalPrompt)) {
+            void generateFromTranscription(finalPrompt);
+        }
+    }, [finalPrompt, generateFromTranscription]);
+
+    useEffect(() => {
+        if (userConfirmed && hasValidTransaction) {
+            const accountId = defaultAccount?.id;
+            const params = new URLSearchParams();
+            params.set('amount', String(transactionInfo.amount));
+            if (isDefined(transactionInfo.category)) {
+                params.set('categoryId', String(transactionInfo.category.id));
+            }
+            if (isDefined(accountId)) {
+                params.set('accountId', String(accountId));
+            }
+            if (isNotEmptyString(transactionInfo.comment)) {
+                params.set('comment', transactionInfo.comment);
+            }
+            onClose();
+            router.push(`/create-transaction/expense?${params.toString()}`);
+        }
+    }, [userConfirmed, hasValidTransaction, transactionInfo, defaultAccount, onClose]);
+
+    const handleUserConfirm = () => {
+        setUserConfirmed(true);
     };
 
     const handleRecord = () => {
@@ -183,9 +201,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     }
 
     const downloadProgress = Math.min(llm.downloadProgress, stt.downloadProgress);
-    const showTransactionCard = showResult;
     const showBubble = status === 'recording' || status === 'processing' || isConfirmPhase;
-    const selectedAccountId = accountId ?? defaultAccount?.id ?? null;
     const buttonState = getButtonState();
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };
     const closeContainerStyle = { paddingBottom: bottom };
@@ -194,25 +210,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
 
     return (
         <Animated.View style={containerStyle} pointerEvents="box-none">
-            {showTransactionCard && (
-                <Animated.View
-                    className="absolute inset-x-4 top-1/4"
-                    entering={FadeIn.duration(FADE_DURATION)}
-                    exiting={FadeOut.duration(FADE_DURATION)}
-                >
-                    <AiTransactionPreviewCard
-                        amount={transactionInfo.amount}
-                        category={transactionInfo.category}
-                        type={transactionInfo.type}
-                        accountId={selectedAccountId}
-                        onConfirm={handleTransactionConfirm}
-                        onCancel={handleCancel}
-                        onCategoryChange={setTransactionCategory}
-                        onAccountChange={setAccountId}
-                    />
-                </Animated.View>
-            )}
-
             {hasError && <VoiceInputError message={error} onDismiss={handleDismissError} />}
 
             <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={micContainerStyle} pointerEvents="box-none">

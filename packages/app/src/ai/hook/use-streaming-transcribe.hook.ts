@@ -36,7 +36,7 @@ interface UseStreamingTranscribeReturn {
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements
-export const useStreamingTranscribe = (onComplete: (transcribed: string) => Promise<void>): UseStreamingTranscribeReturn => {
+export const useStreamingTranscribe = (onComplete: (transcribed: string) => void): UseStreamingTranscribeReturn => {
     const locale = useLocaleInfo();
     const { stt } = useLlmContext();
     const session = useSessionGuard();
@@ -113,13 +113,11 @@ export const useStreamingTranscribe = (onComplete: (transcribed: string) => Prom
                 const streamResult = await streamPromiseRef.current;
                 const finalText = filterTranscriptionTokens(streamResult);
 
-                void onComplete(finalText.trim()).finally(() => {
-                    if (session.isCurrentSession(sessionId)) {
-                        setStatus('idle');
-                    }
-                });
-            } catch {
-                setStatus('idle');
+                onComplete(finalText.trim());
+            } finally {
+                if (session.isCurrentSession(sessionId)) {
+                    setStatus('idle');
+                }
             }
 
             // eslint-disable-next-line require-atomic-updates
