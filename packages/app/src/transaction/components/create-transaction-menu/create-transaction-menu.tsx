@@ -15,6 +15,7 @@ import { useCreateActionContext } from '../../../@generic/context/create-action.
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
 import { useLlmContext } from '../../../ai/context/llm.context';
+import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
@@ -39,6 +40,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
     const { isAvailable: isAiAvailable, llm, stt } = useLlmContext();
+    const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
     const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
@@ -74,8 +76,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     };
 
     const handleAiPress = () => {
-        onClose();
-        router.push('/(main)/ai');
+        openVoiceInput();
     };
 
     const handleCreateAction = () => {

@@ -49,11 +49,12 @@ export const useAiTransaction = (llm: ReturnType<typeof useLLM>, prompt: string)
     const [aiTransaction, setAiTransaction] = useState<AITransactionInterface | null>(null);
 
     const categoriesWithIds = categories.map((category, index) => `${index + 1}. ${category.title}`).join('\n');
+    const categoriesCount = categories.length;
     const systemPrompt = t`Which category number matches this expense? Reply with ONLY the number.
 
 ${categoriesWithIds}
 
-Reply with the number only (1-${categories.length}):`;
+Reply with the number only (1-${categoriesCount}):`;
 
     const reset = () => void setAiTransaction(null);
     const fillCategory = (categoryId: number | null) => {
@@ -67,16 +68,13 @@ Reply with the number only (1-${categories.length}):`;
 
     useEffect(() => {
         if (!llm.isGenerating && isNotEmptyString(llm.response)) {
-            console.log('[LLM] Response:', llm.response);
             const indexFromResponse = extractCategoryIndex(llm.response);
             const categoryByIndex = isDefined(indexFromResponse) ? categories[indexFromResponse - 1] : null;
-            console.log('[LLM] Parsed index:', indexFromResponse, '-> Category:', categoryByIndex?.title ?? 'null');
 
             if (isDefined(categoryByIndex)) {
                 fillCategory(categoryByIndex.id);
             } else {
                 const categoryId = findCategoryByTitle(llm.response, categories);
-                console.log('[LLM] Fallback match:', categoryId, 'Categories:', categories.map(c => c.title).join(', '));
                 fillCategory(categoryId);
             }
         }
