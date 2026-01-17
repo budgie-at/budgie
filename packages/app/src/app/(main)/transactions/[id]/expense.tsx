@@ -7,7 +7,7 @@ import {
     UserIconNameEnum
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -45,7 +45,6 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
-    const router = useRouter();
     const { defaultInstrument } = useSettingsContext();
 
     const convertSheetRef = useRef<BottomSheetInterface | null>(null);
@@ -63,10 +62,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     const handleGoBack = () => void goBackOrReplace('/');
-
-    const handleConvertSuccess = () => {
-        router.replace(`/transactions/${transactionId}/transfer`);
-    };
 
     const handleOpenConvert = () => void convertSheetRef.current?.open();
 
@@ -128,7 +123,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                 ref={convertSheetRef}
                 transactionId={transactionId}
                 fromAccountId={transaction.fromAccountId ?? 0}
-                onSuccess={handleConvertSuccess}
             />
         </>
     );
