@@ -67,16 +67,20 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
         }
     };
 
-    const cleanupRecorder = async () => {
-        clearTimeouts();
-        const wasRecording = isRecordingRef.current;
-        isRecordingRef.current = false;
-
+    const stopRecorder = () => {
         try {
             recorderRef.current?.stop();
         } finally {
             recorderRef.current = null;
         }
+    };
+
+    const cleanupRecorder = async () => {
+        clearTimeouts();
+        const wasRecording = isRecordingRef.current;
+        isRecordingRef.current = false;
+
+        stopRecorder();
 
         if (wasRecording && streamPromiseRef.current) {
             try {
@@ -91,7 +95,7 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
         }
     };
 
-    const resetAll = () => {
+    const resetState = () => {
         setStatus('idle');
         setAudioLevel(0);
         isRecordingRef.current = false;
@@ -107,11 +111,7 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
         setStatus('processing');
         setAudioLevel(0);
 
-        try {
-            recorderRef.current?.stop();
-        } finally {
-            recorderRef.current = null;
-        }
+        stopRecorder();
 
         if (streamPromiseRef.current) {
             try {
@@ -154,7 +154,7 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
         }
     };
 
-    const startInternal = (sessionId: number) => {
+    const initializeRecorder = (sessionId: number) => {
         streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
 
         recorderInitTimeoutRef.current = setTimeout(() => {
@@ -176,9 +176,9 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
     };
 
     const start = () => {
-        const doStart = async () => {
+        void (async () => {
             await cleanupRecorder();
-            resetAll();
+            resetState();
 
             sessionIdRef.current += 1;
             const sessionId = sessionIdRef.current;
@@ -186,10 +186,8 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
             setStatus('recording');
             isRecordingRef.current = true;
 
-            startInternal(sessionId);
-        };
-
-        void doStart();
+            initializeRecorder(sessionId);
+        })();
     };
 
     const stop = () => {
@@ -197,11 +195,10 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
     };
 
     const cancel = () => {
-        const doCancel = async () => {
+        void (async () => {
             await cleanupRecorder();
-            resetAll();
-        };
-        void doCancel();
+            resetState();
+        })();
     };
 
     const transcription = {
