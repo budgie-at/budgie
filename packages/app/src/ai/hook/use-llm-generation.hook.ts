@@ -27,7 +27,6 @@ export const useLlmGeneration = (llm: ReturnType<typeof useLLM>, systemPrompt: s
 
         try {
             const textForCategorization = stripAmountsFromText(transcribed);
-            console.log('[LLM] Input:', transcribed, '-> Stripped:', textForCategorization);
             await llm.generate([
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: textForCategorization }

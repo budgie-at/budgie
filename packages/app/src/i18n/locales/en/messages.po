@@ -56,7 +56,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
@@ -732,7 +732,7 @@ msgstr "Expected return date"
 msgid "Expected Return Date (Optional)"
 msgstr "Expected Return Date (Optional)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:90
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Expense"
@@ -894,7 +894,7 @@ msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
 #: src/app/(tabs)/analytics.tsx:64
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:91
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -936,6 +936,10 @@ msgstr "Last sync"
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
 msgstr "Lent"
+
+#: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:64
+msgid "Listening..."
+msgstr "Listening..."
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
@@ -1072,7 +1076,7 @@ msgstr "No matching transactions"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/ai/hook/use-llm-generation.hook.ts:21
+#: src/ai/hook/use-llm-generation.hook.ts:23
 msgid "No speech detected"
 msgstr "No speech detected"
 
@@ -1582,7 +1586,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Transfer"
@@ -1684,35 +1688,23 @@ msgstr "Waiting"
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
 
+#: src/ai/hook/use-ai-transaction.hook.ts:53
+msgid ""
+"Which category number matches this expense? Reply with ONLY the number.\n"
+"\n"
+"{categoriesWithIds}\n"
+"\n"
+"Reply with the number only (1-{categoriesCount}):"
+msgstr ""
+"Which category number matches this expense? Reply with ONLY the number.\n"
+"\n"
+"{categoriesWithIds}\n"
+"\n"
+"Reply with the number only (1-{categoriesCount}):"
+
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Who owes you?"
-
-#: src/ai/hook/use-ai-transaction.hook.ts:46
-msgid ""
-"You categorize expenses. Output ONLY the category number.\n"
-"\n"
-"{categoriesWithIds}\n"
-"\n"
-"Examples:\n"
-"- \"coffee\" → pick cafe/restaurant/food category\n"
-"- \"uber\" → pick transport category\n"
-"- \"netflix\" → pick entertainment/subscriptions category\n"
-"- \"chicken\" → pick groceries/food category (NOT stocks)\n"
-"\n"
-"Reply with just the number."
-msgstr ""
-"You categorize expenses. Output ONLY the category number.\n"
-"\n"
-"{categoriesWithIds}\n"
-"\n"
-"Examples:\n"
-"- \"coffee\" → pick cafe/restaurant/food category\n"
-"- \"uber\" → pick transport category\n"
-"- \"netflix\" → pick entertainment/subscriptions category\n"
-"- \"chicken\" → pick groceries/food category (NOT stocks)\n"
-"\n"
-"Reply with just the number."
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
@@ -1721,10 +1713,6 @@ msgstr "You gave money"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "You received money"
-
-#: src/app/(main)/ai.tsx:106
-msgid "Your message:"
-msgstr "Your message:"
 
 #: src/sync/component/token-input-step/token-input-step.tsx:29
 msgid "Your token is stored securely in the database. Sync continues in the background."
