@@ -4,7 +4,6 @@ import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,8 +18,6 @@ import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
-const BACKDROP_OPACITY = 0.85;
-const ANIMATION_DURATION = 200;
 const CLOSE_ANIMATION_DURATION = 250;
 const TRIGGER_ICON_SIZE = 32;
 const BUTTON_ROTATION_ACTIVE = 45;
@@ -46,7 +43,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
     const aiDownloadProgress = isAiAvailable ? (llm.downloadProgress + stt.downloadProgress) / 2 : 0;
 
-    const opacity = useSharedValue(0);
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
 
@@ -105,11 +101,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
-            opacity.value = withTiming(BACKDROP_OPACITY, { duration: ANIMATION_DURATION });
             rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
             menuScale.value = withSpring(1, SPRING_CONFIG);
         } else if (isVisible) {
-            opacity.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION });
             rotation.value = withSpring(0, CLOSE_SPRING_CONFIG);
             menuScale.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
                 if (finished) {
@@ -117,9 +111,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                 }
             });
         }
-    }, [isOpen, isVisible, menuScale, opacity, rotation]);
-
-    const backdropStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    }, [isOpen, isVisible, menuScale, rotation]);
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
     const aiButtonStyle = useAnimatedStyle(() => ({
         transform: [{ scale: menuScale.value }],
@@ -129,20 +121,12 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const containerStyle = { paddingBottom: bottom };
 
-    const tapGesture = Gesture.Tap().onEnd(() => {
-        runOnJS(handleClose)();
-    });
-
     if (!isVisible) {
         return null;
     }
 
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            <GestureDetector gesture={tapGesture}>
-                <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
-            </GestureDetector>
-
             {showAiButton && (
                 <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
                     <AiButton onPress={handleAiPress} isAnimating={false} isLoading={isAiLoading} downloadProgress={aiDownloadProgress} />
