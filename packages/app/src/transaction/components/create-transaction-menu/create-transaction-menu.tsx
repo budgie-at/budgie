@@ -3,24 +3,22 @@ import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
+import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
+import { useLlmContext } from '../../../ai/context/llm.context';
+import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
-const BACKDROP_OPACITY = 0.85;
-const ANIMATION_DURATION = 200;
 const CLOSE_ANIMATION_DURATION = 250;
-const TRIGGER_ICON_SIZE = 32;
 const BUTTON_ROTATION_ACTIVE = 45;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 const CLOSE_SPRING_CONFIG = { damping: 20, stiffness: 300, mass: 0.5 };
@@ -37,9 +35,13 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const [, hapticImpact] = useVibration();
     const { bottom } = useSafeAreaInsets();
     const { createAction } = useCreateActionContext();
+    const { isAvailable: isAiAvailable, llm, stt } = useLlmContext();
+    const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
-    const opacity = useSharedValue(0);
+    const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
+    const aiDownloadProgress = isAiAvailable ? (llm.downloadProgress + stt.downloadProgress) / 2 : 0;
+
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
 
@@ -69,8 +71,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     };
 
     const handleAiPress = () => {
-        onClose();
-        router.push('/(main)/ai');
+        openVoiceInput();
     };
 
     const handleCreateAction = () => {
@@ -78,7 +79,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         createAction?.onPress();
     };
 
-    const showAiButton = !isDefined(createAction);
+    const showAiButton = isAiAvailable && !isDefined(createAction);
 
     const actionItems: CreateActionInterface[] = useMemo(() => {
         const defaultItems: CreateActionInterface[] = [
@@ -99,11 +100,9 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
-            opacity.value = withTiming(BACKDROP_OPACITY, { duration: ANIMATION_DURATION });
             rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
             menuScale.value = withSpring(1, SPRING_CONFIG);
         } else if (isVisible) {
-            opacity.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION });
             rotation.value = withSpring(0, CLOSE_SPRING_CONFIG);
             menuScale.value = withTiming(0, { duration: CLOSE_ANIMATION_DURATION }, finished => {
                 if (finished) {
@@ -111,9 +110,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                 }
             });
         }
-    }, [isOpen, isVisible, menuScale, opacity, rotation]);
-
-    const backdropStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    }, [isOpen, isVisible, menuScale, rotation]);
     const buttonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${rotation.value}deg` }] }));
     const aiButtonStyle = useAnimatedStyle(() => ({
         transform: [{ scale: menuScale.value }],
@@ -123,23 +120,15 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const containerStyle = { paddingBottom: bottom };
 
-    const tapGesture = Gesture.Tap().onEnd(() => {
-        runOnJS(handleClose)();
-    });
-
     if (!isVisible) {
         return null;
     }
 
     return (
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-            <GestureDetector gesture={tapGesture}>
-                <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
-            </GestureDetector>
-
             {showAiButton && (
                 <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
-                    <AiButton onPress={handleAiPress} isAnimating={false} />
+                    <AiButton onPress={handleAiPress} isAnimating={false} isLoading={isAiLoading} downloadProgress={aiDownloadProgress} />
                 </Animated.View>
             )}
 
@@ -158,11 +147,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                         />
                     ))}
 
-                    <Pressable onPress={handleClose}>
-                        <Animated.View className="bg-primary rounded-full items-center justify-center w-18 h-18" style={buttonStyle}>
-                            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
-                        </Animated.View>
-                    </Pressable>
+                    <CircularActionButton icon={UserIconNameEnum.Plus} onPress={handleClose} animatedStyle={buttonStyle} />
                 </View>
             </View>
         </View>
