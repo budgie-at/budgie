@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { QWEN3_1_7B_QUANTIZED, WHISPER_BASE, useLLM, useSpeechToText } from 'react-native-executorch';
+import { QWEN3_0_6B_QUANTIZED, WHISPER_BASE, useLLM, useSpeechToText } from 'react-native-executorch';
 
 import { LlmContext } from '../context/llm.context';
 
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const LlmProvider = ({ children }: Props) => {
-    const llm = useLLM({ model: QWEN3_1_7B_QUANTIZED });
+    const llm = useLLM({ model: QWEN3_0_6B_QUANTIZED });
     const stt = useSpeechToText({ model: WHISPER_BASE });
 
     const value = { isAvailable: true, llm, stt };
