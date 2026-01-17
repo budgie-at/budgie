@@ -21,7 +21,7 @@ interface VoiceInputCallbacks {
     onError?: (error: string) => void;
 }
 
-interface UseVoiceInputReturn {
+export interface UseVoiceInputReturn {
     state: VoiceInputState;
     data: VoiceInputData;
     isReady: boolean;
