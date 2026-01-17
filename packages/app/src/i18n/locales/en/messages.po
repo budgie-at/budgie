@@ -1347,7 +1347,7 @@ msgstr "Show this account on the main page"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:25
-#: src/ai/component/voice-input-error/voice-input-error.tsx:31
+#: src/ai/component/voice-input-error/voice-input-error.tsx:29
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
@@ -1563,7 +1563,7 @@ msgstr "Transactions"
 msgid "Transactions synced"
 msgstr "Transactions synced"
 
-#: src/ai/hook/use-streaming-transcribe.hook.ts:117
+#: src/ai/hook/use-stt.hook.ts:104
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
@@ -1590,7 +1590,7 @@ msgstr "Try a different search term or create a new tag"
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 
-#: src/ai/component/voice-input-error/voice-input-error.tsx:17
+#: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Try Again"
 
