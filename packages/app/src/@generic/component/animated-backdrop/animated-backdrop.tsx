@@ -10,7 +10,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const BACKDROP_OPACITY = 0.85;
-const ANIMATION_DURATION = 200;
+const FADE_IN_DURATION = 200;
+const FADE_OUT_DURATION = 100;
 
 interface Props {
     readonly isVisible: boolean;
@@ -39,10 +40,10 @@ export const AnimatedBackdrop = ({ isVisible, onClose }: Props) => {
         () => isVisibleShared.value,
         (current, previous) => {
             if (current && !previous) {
-                opacity.value = withTiming(BACKDROP_OPACITY, { duration: ANIMATION_DURATION });
+                opacity.value = withTiming(BACKDROP_OPACITY, { duration: FADE_IN_DURATION });
             } else if (!current && previous) {
                 runOnJS(handleAnimationStart)();
-                opacity.value = withTiming(0, { duration: ANIMATION_DURATION }, finished => {
+                opacity.value = withTiming(0, { duration: FADE_OUT_DURATION }, finished => {
                     if (finished) {
                         runOnJS(handleAnimationComplete)();
                     }
