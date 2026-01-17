@@ -1,5 +1,6 @@
 {
     "ignore": [
+        ".claude/**",
         "packages/landing/**",
         "packages/app/babel.config.js",
         "packages/app/lingui.config.js",
