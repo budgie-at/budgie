@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
@@ -48,7 +48,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const categorization = useLlmCategorization();
 
     const handleError = (e: unknown) => {
-        const errorMessage = e instanceof Error ? e.message : String(e);
+        const errorMessage = getErrorMessage(e);
         setError(errorMessage);
         setState('error');
         isProcessingRef.current = false;
@@ -79,13 +79,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const handleSilenceDetected = () => {
-        void (async () => {
-            try {
-                await processTranscription();
-            } catch (e: unknown) {
-                handleError(e);
-            }
-        })();
+        processTranscription().catch(handleError);
     };
 
     const recording = useRecording({
@@ -122,13 +116,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
             setState('confirming');
             stt.cancelStream();
         } else {
-            void (async () => {
-                try {
-                    await processTranscription();
-                } catch (e: unknown) {
-                    handleError(e);
-                }
-            })();
+            processTranscription().catch(handleError);
         }
     };
 
@@ -143,15 +131,12 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         } else {
             setState('processing');
 
-            void (async () => {
-                try {
-                    const result = await categorization.categorize(finalTranscription);
-                    setState('done');
-                    onDone?.(result);
-                } catch (e: unknown) {
-                    handleError(e);
-                }
-            })();
+            void categorization.categorize(finalTranscription).then(result => {
+                setState('done');
+                onDone?.(result);
+
+                return result;
+            }, handleError);
         }
     };
 

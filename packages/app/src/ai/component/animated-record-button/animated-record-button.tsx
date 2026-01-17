@@ -13,13 +13,19 @@ import Animated, {
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import {
+    ACCENT_COLOR,
+    BUTTON_SIZE,
+    CONFIRM_COLOR,
+    LOADING_COLOR,
+    RECORDING_COLOR,
+    RING_SIZE
+} from '../../constant/animated-record-button.constant';
 import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { LoadingRing } from '../loading-ring/loading-ring';
 import { PulseRing } from '../pulse-ring/pulse-ring';
 import { SpinnerRing } from '../spinner-ring/spinner-ring';
 import { ThinkingRing } from '../thinking-ring/thinking-ring';
-
-import { ACCENT_COLOR, BUTTON_SIZE, CONFIRM_COLOR, LOADING_COLOR, RECORDING_COLOR, RING_SIZE } from './animated-record-button.constant';
 
 interface Props {
     readonly state: RecordButtonStateType;

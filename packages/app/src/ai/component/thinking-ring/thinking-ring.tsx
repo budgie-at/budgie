@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
 
-import { BUTTON_SIZE, RING_SIZE, STROKE_WIDTH, THINKING_COLOR } from '../animated-record-button/animated-record-button.constant';
+import { BUTTON_SIZE, RING_SIZE, STROKE_WIDTH, THINKING_COLOR } from '../../constant/animated-record-button.constant';
 
 const PULSE_DURATION = 1500;
 const MIN_OPACITY = 0.4;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
-import { ACCENT_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../animated-record-button/animated-record-button.constant';
+import { ACCENT_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
 import { BaseRing } from '../base-ring/base-ring';
 
 const ROTATION_DURATION = 1500;

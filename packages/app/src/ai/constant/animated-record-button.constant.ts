@@ -1,4 +1,4 @@
-import { light } from '../../../theme/provider/theme.provider';
+import { light } from '../../theme/provider/theme.provider';
 
 export const BUTTON_SIZE = 80;
 export const RING_SIZE = 120;
