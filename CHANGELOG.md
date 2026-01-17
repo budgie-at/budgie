@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.3](https://github.com/budgie-at/budgie/compare/v2.12.2...v2.12.3) (2026-01-17)
+
+### Bug Fixes
+
+- ignore worktrees ([f39fcfa](https://github.com/budgie-at/budgie/commit/f39fcfabea0179a3f70dabca7e9d6bb1bffc2ec7))
+
 ## [2.12.2](https://github.com/budgie-at/budgie/compare/v2.12.1...v2.12.2) (2026-01-16)
 
 ### Bug Fixes
