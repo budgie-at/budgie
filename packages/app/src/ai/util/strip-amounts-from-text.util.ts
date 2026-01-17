@@ -4,5 +4,7 @@ const CURRENCY_PATTERN =
 export const stripAmountsFromText = (text: string): string =>
     text
         .replace(CURRENCY_PATTERN, '')
+        .replace(/\s+([.,!?])/gu, '$1')
         .replace(/\s{2,}/gu, ' ')
+        .replace(/^[.,!?\s]+|[.,!?\s]+$/gu, '')
         .trim();
