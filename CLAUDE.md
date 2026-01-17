@@ -53,6 +53,11 @@ packages/
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
 5. **Single const declarations** - Each variable gets its own `const` declaration
 6. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0`
+7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()` 
+8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
+9. **One component per folder** - Each component file lives in its own folder
+10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components
+11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/core/macro` for string props, `<Trans>` for JSX children
 
 ### Naming Conventions
 
