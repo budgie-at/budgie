@@ -11,36 +11,33 @@ interface Props {
     readonly partialText: string;
 }
 
-const SPRING_CONFIG = { damping: 25, stiffness: 200 };
-const FADE_DURATION = 150;
+const ENTER_DURATION = 150;
+const EXIT_DURATION = 100;
 const BUBBLE_MARGIN_BOTTOM = 24;
-const EXIT_SCALE = 0.95;
-const INITIAL_TRANSLATE_Y = 8;
+const ENTER_SCALE = 0.96;
+const SPRING_CONFIG = { damping: 12, stiffness: 180 };
 const MIN_BUBBLE_WIDTH = 200;
 const MAX_BUBBLE_WIDTH = 300;
 
 export const VoiceInputBubble = ({ isVisible, committedText, partialText }: Props) => {
-    const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
-    const translateY = useSharedValue(INITIAL_TRANSLATE_Y);
+    const scale = useSharedValue(ENTER_SCALE);
 
     const hasText = isNotEmptyString(committedText) || isNotEmptyString(partialText);
 
     useEffect(() => {
         if (isVisible) {
+            opacity.set(withTiming(1, { duration: ENTER_DURATION, easing: Easing.out(Easing.ease) }));
             scale.set(withSpring(1, SPRING_CONFIG));
-            opacity.set(withTiming(1, { duration: FADE_DURATION, easing: Easing.out(Easing.ease) }));
-            translateY.set(withSpring(0, SPRING_CONFIG));
         } else {
-            scale.set(withSpring(EXIT_SCALE, { damping: 20, stiffness: 300 }));
-            opacity.set(withTiming(0, { duration: FADE_DURATION, easing: Easing.in(Easing.ease) }));
-            translateY.set(withSpring(INITIAL_TRANSLATE_Y, { damping: 20, stiffness: 300 }));
+            opacity.set(withTiming(0, { duration: EXIT_DURATION, easing: Easing.in(Easing.ease) }));
+            scale.set(withTiming(ENTER_SCALE, { duration: EXIT_DURATION, easing: Easing.in(Easing.ease) }));
         }
-    }, [isVisible, opacity, scale, translateY]);
+    }, [isVisible, opacity, scale]);
 
     const containerAnimatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
-        transform: [{ scale: scale.value }, { translateY: translateY.value }],
+        transform: [{ scale: scale.value }],
         marginBottom: BUBBLE_MARGIN_BOTTOM
     }));
 
@@ -51,12 +48,12 @@ export const VoiceInputBubble = ({ isVisible, committedText, partialText }: Prop
     const bubbleStyle = [containerAnimatedStyle, { minWidth: MIN_BUBBLE_WIDTH, maxWidth: MAX_BUBBLE_WIDTH }];
 
     return (
-        <Animated.View className="bg-primary-reverse border border-secondary-corner rounded-3xl shadow-lg px-5 py-4" style={bubbleStyle}>
+        <Animated.View className="bg-secondary-corner border border-corner rounded-2xl px-5 py-3" style={bubbleStyle}>
             {hasText ? (
                 <View>
-                    <Text className="text-primary text-base leading-6 text-center">
+                    <Text className="text-primary text-base leading-6 text-center font-medium">
                         {committedText}
-                        {isNotEmptyString(partialText) && <Text className="text-secondary-foreground italic"> {partialText}</Text>}
+                        {isNotEmptyString(partialText) && <Text className="text-secondary-foreground"> {partialText}</Text>}
                     </Text>
                 </View>
             ) : (
