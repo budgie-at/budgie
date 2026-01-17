@@ -22,7 +22,8 @@ yarn test                                 # Jest (~4s)
 
 # IMPORTANT: After completing any task, ALWAYS run:
 yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
-yarn workspace @budgie-at/app i18n:sync  # ONLY run if you added/changed translatable strings (t`...`, <Trans>)
+# ONLY run i18n:sync if you added/changed/removed translatable strings (t`...`, <Trans>):
+# yarn workspace @budgie-at/app i18n:sync
 
 # App-specific (cd packages/app)
 yarn start                                # Expo dev server
