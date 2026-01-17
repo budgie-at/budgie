@@ -4,6 +4,8 @@ import { useLLM } from 'react-native-executorch';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { stripAmountsFromText } from '../util/strip-amounts-from-text.util';
+
 interface UseLlmGenerationReturn {
     generateFromTranscription: (transcribed: string) => Promise<void>;
     error: string;
@@ -24,9 +26,10 @@ export const useLlmGeneration = (llm: ReturnType<typeof useLLM>, systemPrompt: s
         }
 
         try {
+            const textForCategorization = stripAmountsFromText(transcribed);
             await llm.generate([
                 { role: 'system', content: systemPrompt },
-                { role: 'user', content: transcribed }
+                { role: 'user', content: textForCategorization }
             ]);
         } catch (e: unknown) {
             if (llm.isGenerating) {
