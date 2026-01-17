@@ -35,6 +35,11 @@ interface VoiceInputData {
     audioLevel: number;
 }
 
+interface VoiceInputCallbacks {
+    onDone?: (transaction: AITransactionInterface) => void;
+    onError?: (error: string) => void;
+}
+
 interface UseVoiceInputReturn {
     state: VoiceInputState;
     data: VoiceInputData;
@@ -80,7 +85,9 @@ const findCategoryByTitle = (response: string, categories: CategoryItem[]): numb
 };
 
 // eslint-disable-next-line max-lines-per-function, max-statements
-export const useVoiceInput = (): UseVoiceInputReturn => {
+export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
+    const { onDone, onError } = callbacks;
+
     const { t } = useLingui();
     const locale = useLocaleInfo();
     const { llm, stt } = useLlmContext();
@@ -188,11 +195,21 @@ Reply with the number only (1-${categoriesCount}):`;
             const result = buildTransaction(prompt, llm.response);
             setTransaction(result);
 
-            setState(current => (current === 'processing' ? 'done' : current));
+            setState(current => {
+                if (current === 'processing') {
+                    onDone?.(result);
+
+                    return 'done';
+                }
+
+                return current;
+            });
         } catch (e: unknown) {
             if (!llm.isGenerating) {
-                setError(e instanceof Error ? e.message : String(e));
+                const errorMessage = e instanceof Error ? e.message : String(e);
+                setError(errorMessage);
                 setState('error');
+                onError?.(errorMessage);
             }
         }
     };
@@ -202,7 +219,8 @@ Reply with the number only (1-${categoriesCount}):`;
         pendingTranscriptionRef.current = finalText;
 
         if (!isNotEmptyString(finalText)) {
-            setError(t`No speech detected`);
+            const errorMessage = t`No speech detected`;
+            setError(errorMessage);
             setState('error');
 
             return;
@@ -236,8 +254,10 @@ Reply with the number only (1-${categoriesCount}):`;
                 const finalText = filterTranscriptionTokens(streamResult);
                 handleTranscriptionComplete(finalText);
             } catch {
-                setError(t`Transcription failed`);
+                const errorMessage = t`Transcription failed`;
+                setError(errorMessage);
                 setState('error');
+                onError?.(errorMessage);
             } finally {
                 // eslint-disable-next-line require-atomic-updates
                 streamPromiseRef.current = null;
@@ -313,8 +333,12 @@ Reply with the number only (1-${categoriesCount}):`;
 
     const confirm = () => {
         if (state === 'confirming') {
-            const nextState = isDefined(transaction) ? 'done' : 'processing';
-            setState(nextState);
+            if (isDefined(transaction)) {
+                setState('done');
+                onDone?.(transaction);
+            } else {
+                setState('processing');
+            }
         }
     };
 
