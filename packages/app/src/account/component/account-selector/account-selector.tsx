@@ -18,11 +18,21 @@ interface Props {
     readonly onSelect: (accountId: number) => void;
     readonly cardVariant?: ColorPaletteVariant;
     readonly description?: string;
+    readonly excludeAccountId?: number | null;
     readonly excludeAccountTypes?: AccountTypeEnum[];
 }
 
 export const AccountSelector = (props: Props) => {
-    const { emptyStateDescription, accountId, onSelect, variant, cardVariant = 'primary', description, excludeAccountTypes } = props;
+    const {
+        emptyStateDescription,
+        accountId,
+        onSelect,
+        variant,
+        cardVariant = 'primary',
+        description,
+        excludeAccountId,
+        excludeAccountTypes
+    } = props;
 
     const { t } = useLingui();
 
@@ -47,6 +57,7 @@ export const AccountSelector = (props: Props) => {
             <AccountSelectorBottomSheet
                 emptyStateDescription={emptyStateDescription}
                 selectedAccount={selectedAccount}
+                excludeAccountId={excludeAccountId}
                 excludeAccountTypes={excludeAccountTypes}
                 onSelect={onSelect}
                 ref={bottomSheetRef}
