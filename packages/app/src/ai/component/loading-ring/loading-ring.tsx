@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { LOADING_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../animated-record-button/animated-record-button.constant';
+import { LOADING_COLOR, RING_CIRCUMFERENCE, RING_SIZE } from '../../constant/animated-record-button.constant';
 import { BaseRing } from '../base-ring/base-ring';
 
 interface Props {
