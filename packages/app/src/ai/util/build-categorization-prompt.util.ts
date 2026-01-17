@@ -1,5 +1,3 @@
-import { stripAmountsFromText } from './strip-amounts-from-text.util';
-
 interface CategoryForPrompt {
     title: string;
 }
@@ -21,14 +19,13 @@ const FEW_SHOT_EXAMPLES: ChatMessage[] = [
     { role: 'assistant', content: '11' }
 ];
 
-export const buildCategorizationPrompt = (text: string, categories: CategoryForPrompt[]): ChatMessage[] => {
+export const getFewShotExamples = (): ChatMessage[] => FEW_SHOT_EXAMPLES;
+
+export const buildSystemPrompt = (categories: CategoryForPrompt[]): string => {
     const limitedCategories = categories.slice(0, MAX_CATEGORIES);
     const categoriesWithIds = limitedCategories.map((category, index) => `${index + 1}=${category.title}`).join(', ');
 
-    const systemPrompt = `You categorize expenses. Categories: ${categoriesWithIds}. Reply ONLY with the category number.`;
-    const textForCategorization = stripAmountsFromText(text);
-
-    return [{ role: 'system', content: systemPrompt }, ...FEW_SHOT_EXAMPLES, { role: 'user', content: textForCategorization }];
+    return `You categorize expenses. Categories: ${categoriesWithIds}. Reply ONLY with the category number.`;
 };
 /* eslint-enable lingui/no-unlocalized-strings */
 
