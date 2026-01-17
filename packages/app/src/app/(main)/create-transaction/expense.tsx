@@ -2,7 +2,6 @@
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -29,7 +28,12 @@ import { transactionService } from '../../../transaction/service/transaction.ser
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount, defaultInstrument } = useSettingsContext();
-    const { accountId, categoryId, amount } = useLocalSearchParams<{ accountId?: string; categoryId?: string; amount?: string }>();
+    const { accountId, categoryId, amount, comment } = useLocalSearchParams<{
+        accountId?: string;
+        categoryId?: string;
+        amount?: string;
+        comment?: string;
+    }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
     const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
@@ -42,24 +46,13 @@ export default function CreateExpenseTransactionPage() {
         type: TransactionTypeEnum.EXPENSE,
         toAccountId: null,
         amount: parsedAmount,
-        categoryId: parsedCategoryId
+        categoryId: parsedCategoryId,
+        comment
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const instrumentSymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
-
-    useEffect(() => {
-        if (isPositiveNumber(parsedAmount)) {
-            form.setValue('amount', parsedAmount);
-        }
-    }, [parsedAmount, form]);
-
-    useEffect(() => {
-        if (isPositiveNumber(parsedCategoryId)) {
-            form.setValue('entries.0.categoryId', parsedCategoryId);
-        }
-    }, [parsedCategoryId, form]);
 
     const handleGoBack = () => void goBackOrReplace('/');
 
