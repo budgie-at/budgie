@@ -1065,7 +1065,7 @@ msgstr "Keine passenden Transaktionen"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/ai/hook/use-voice-input.hook.ts:202
+#: src/ai/hook/use-voice-input.hook.ts:48
 msgid "No speech detected"
 msgstr "Keine Sprache erkannt"
 
@@ -1574,7 +1574,7 @@ msgstr "Transaktionen"
 msgid "Transactions synced"
 msgstr "Transaktionen synchronisiert"
 
-#: src/ai/hook/use-voice-input.hook.ts:237
+#: src/ai/hook/use-streaming-transcribe.hook.ts:125
 msgid "Transcription failed"
 msgstr ""
 
@@ -1680,7 +1680,7 @@ msgstr "Warten"
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
 
-#: src/ai/hook/use-voice-input.hook.ts:111
+#: src/ai/hook/use-categorization.hook.ts:77
 msgid ""
 "Which category number matches this expense? Reply with ONLY the number.\n"
 "\n"

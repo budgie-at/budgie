@@ -1065,7 +1065,7 @@ msgstr "Немає відповідних транзакцій"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/ai/hook/use-voice-input.hook.ts:202
+#: src/ai/hook/use-voice-input.hook.ts:48
 msgid "No speech detected"
 msgstr "Мовлення не виявлено"
 
@@ -1574,7 +1574,7 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/ai/hook/use-voice-input.hook.ts:237
+#: src/ai/hook/use-streaming-transcribe.hook.ts:125
 msgid "Transcription failed"
 msgstr ""
 
@@ -1680,7 +1680,7 @@ msgstr "Очікування"
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
-#: src/ai/hook/use-voice-input.hook.ts:111
+#: src/ai/hook/use-categorization.hook.ts:77
 msgid ""
 "Which category number matches this expense? Reply with ONLY the number.\n"
 "\n"
