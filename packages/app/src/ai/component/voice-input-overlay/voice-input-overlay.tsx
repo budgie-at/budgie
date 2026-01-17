@@ -1,12 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
+import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { AiTransactionPreviewCard } from '../../../transaction/components/ai-transaction-preview-card/ai-transaction-preview-card';
 import { useCreateExpenseTransactionMutation } from '../../../transaction/hook/use-create-expense-transaction.mutation';
@@ -20,8 +20,8 @@ import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';
 
 const FADE_DURATION = 200;
-const CLOSE_ICON_SIZE = 32;
 const MIC_BOTTOM_OFFSET = -16;
+const CLOSE_BUTTON_ROTATION = 45;
 
 interface Props {
     readonly isOpen: boolean;
@@ -131,6 +131,10 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         return 'idle';
     };
 
+    const closeButtonStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }]
+    }));
+
     if (!isOpen) {
         return null;
     }
@@ -178,11 +182,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
             </View>
 
             <View className="absolute right-0 bottom-0 px-lg" style={closeContainerStyle} pointerEvents="box-none">
-                <Pressable onPress={handleCancel}>
-                    <View className="bg-primary rounded-full items-center justify-center w-18 h-18">
-                        <Icon className="text-primary-reverse" icon={UserIconNameEnum.X} size={CLOSE_ICON_SIZE} />
-                    </View>
-                </Pressable>
+                <CircularActionButton icon={UserIconNameEnum.Plus} onPress={handleCancel} animatedStyle={closeButtonStyle} />
             </View>
         </View>
     );
