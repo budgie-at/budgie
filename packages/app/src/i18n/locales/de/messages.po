@@ -1345,7 +1345,7 @@ msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:25
-#: src/ai/component/voice-input-error/voice-input-error.tsx:31
+#: src/ai/component/voice-input-error/voice-input-error.tsx:29
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
 
@@ -1561,7 +1561,7 @@ msgstr "Transaktionen"
 msgid "Transactions synced"
 msgstr "Transaktionen synchronisiert"
 
-#: src/ai/hook/use-streaming-transcribe.hook.ts:117
+#: src/ai/hook/use-stt.hook.ts:104
 msgid "Transcription failed"
 msgstr "Transkription fehlgeschlagen"
 
@@ -1588,7 +1588,7 @@ msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
-#: src/ai/component/voice-input-error/voice-input-error.tsx:17
+#: src/ai/component/voice-input-error/voice-input-error.tsx:33
 msgid "Try Again"
 msgstr "Erneut versuchen"
 
