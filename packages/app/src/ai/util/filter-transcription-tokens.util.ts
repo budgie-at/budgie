@@ -1,4 +1,4 @@
-const BRACKETED_TOKEN_PATTERN = /\[[^\]]*\]/gu;
+const BRACKETED_TOKEN_PATTERN = /\[[^\]]*\]|\([^)]*\)/gu;
 
 export const filterTranscriptionTokens = (text: string): string =>
     text

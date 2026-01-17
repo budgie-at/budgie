@@ -287,7 +287,8 @@ Route files: Wrap JSX only (not logic) in `/* jscpd:ignore-start */` and `/* jsc
 2. **After contracts changes:** `yarn build`
 3. **Before commit:** Husky runs `yarn ts`, `yarn lint-staged`, commitlint
 4. **Before PR:** Run all validation commands (ts, lint, deadcode, cpd, format, test)
-5. **Commit format:** `type(scope): description` (conventional commits)
+5. **NEVER push without explicit user permission** - Always wait for user to approve before running `git push`
+6. **Commit format:** `type(scope): description` (conventional commits)
    - **Scopes:** Use monorepo package names WITHOUT prefix: `app`, `contracts`, `landing`, `bank-sync`
    - **Examples:** `feat(app): add dark mode`, `fix(contracts): update schema`, `chore(landing): update deps`
    - **PR titles:** Must follow the same convention as commit messages
