@@ -2,16 +2,6 @@
 
 End-to-end tests for the Budgie expense tracking app using [Maestro](https://maestro.mobile.dev/).
 
-## Test Flows
-
-### 01.smoke-test.flow.yaml
-Comprehensive smoke test that verifies core functionality:
-1. App launches successfully
-2. Empty state displays "No accounts yet"
-3. User can create a Checking Account with $1,000 balance
-4. User can create a $50 expense in Food category
-5. Account balance updates correctly to $950
-
 ## Running Tests Locally
 
 ### Prerequisites
