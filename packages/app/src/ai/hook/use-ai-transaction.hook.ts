@@ -49,15 +49,11 @@ export const useAiTransaction = (llm: ReturnType<typeof useLLM>, prompt: string)
     const [aiTransaction, setAiTransaction] = useState<AITransactionInterface | null>(null);
 
     const categoriesWithIds = categories.map((category, index) => `${index + 1}. ${category.title}`).join('\n');
-    const systemPrompt = t`Pick ONE category number for this expense.
+    const systemPrompt = t`Which category number matches this expense? Reply with ONLY the number.
 
 ${categoriesWithIds}
 
-Food/pizza/coffee/restaurant = Food category
-Taxi/uber/bus/train = Transport category
-Salary/wages = Income category
-
-Answer with just the number:`;
+Reply with the number only (1-${categories.length}):`;
 
     const reset = () => void setAiTransaction(null);
     const fillCategory = (categoryId: number | null) => {
