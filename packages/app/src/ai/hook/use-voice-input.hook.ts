@@ -1,4 +1,3 @@
-import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -37,14 +36,14 @@ interface UseVoiceInputReturn {
 // eslint-disable-next-line max-lines-per-function, max-statements
 export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
     const { onDone, onError } = callbacks;
-    const { t } = useLingui();
 
     const [state, setState] = useState<VoiceInputState>('idle');
     const [error, setError] = useState('');
     const [pendingText, setPendingText] = useState('');
+
     const stateRef = useRef<VoiceInputState>('idle');
 
-    const setStateWithRef = (newState: VoiceInputState) => {
+    const updateState = (newState: VoiceInputState) => {
         stateRef.current = newState;
         setState(newState);
     };
@@ -52,13 +51,13 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const categorization = useCategorization({
         onDone: (transaction: AITransactionInterface) => {
             if (stateRef.current === 'processing') {
-                setStateWithRef('done');
+                updateState('done');
                 onDone?.(transaction);
             }
         },
         onError: (errorMessage: string) => {
             setError(errorMessage);
-            setStateWithRef('error');
+            updateState('error');
             onError?.(errorMessage);
         }
     });
@@ -66,21 +65,18 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const transcribe = useStreamingTranscribe({
         onComplete: (text: string) => {
             if (!isNotEmptyString(text)) {
-                const errorMessage = t`No speech detected`;
-                setError(errorMessage);
-                setStateWithRef('error');
-                onError?.(errorMessage);
+                updateState('idle');
 
                 return;
             }
 
             setPendingText(text);
-            setStateWithRef('confirming');
+            updateState('confirming');
             categorization.categorize(text);
         },
         onError: (errorMessage: string) => {
             setError(errorMessage);
-            setStateWithRef('error');
+            updateState('error');
             onError?.(errorMessage);
         }
     });
@@ -92,30 +88,41 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         setError('');
         setPendingText('');
         categorization.reset();
-        setStateWithRef('recording');
+        updateState('recording');
         transcribe.start();
     };
 
     const stop = () => {
-        setStateWithRef('transcribing');
-        transcribe.stop();
+        const currentText = transcribe.transcription.committed + transcribe.transcription.partial;
+
+        if (isNotEmptyString(currentText)) {
+            setPendingText(currentText);
+            updateState('confirming');
+            categorization.categorize(currentText);
+            transcribe.cancel();
+        } else {
+            updateState('transcribing');
+            transcribe.stop();
+        }
     };
 
     const confirm = () => {
-        if (stateRef.current === 'confirming') {
-            if (isDefined(categorization.transaction)) {
-                setStateWithRef('done');
-                onDone?.(categorization.transaction);
-            } else {
-                setStateWithRef('processing');
-            }
+        if (stateRef.current !== 'confirming') {
+            return;
+        }
+
+        if (isDefined(categorization.transaction)) {
+            updateState('done');
+            onDone?.(categorization.transaction);
+        } else {
+            updateState('processing');
         }
     };
 
     const cancel = () => {
         transcribe.cancel();
         categorization.reset();
-        setStateWithRef('idle');
+        updateState('idle');
         setError('');
         setPendingText('');
     };
