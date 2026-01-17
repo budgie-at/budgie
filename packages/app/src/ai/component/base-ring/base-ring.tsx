@@ -1,12 +1,6 @@
 import { Circle, Svg } from 'react-native-svg';
 
-import {
-    RING_CENTER,
-    RING_CIRCUMFERENCE,
-    RING_RADIUS,
-    RING_SIZE,
-    STROKE_WIDTH
-} from '../animated-record-button/animated-record-button.constant';
+import { RING_CENTER, RING_CIRCUMFERENCE, RING_RADIUS, RING_SIZE, STROKE_WIDTH } from '../../constant/animated-record-button.constant';
 
 interface Props {
     readonly stroke: string;

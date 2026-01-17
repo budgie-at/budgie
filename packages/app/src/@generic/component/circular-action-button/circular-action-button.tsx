@@ -12,12 +12,10 @@ interface Props {
     readonly animatedStyle?: AnimatedStyle<ViewStyle>;
 }
 
-export const CircularActionButton = ({ icon, onPress, animatedStyle }: Props) => {
-    const content = (
+export const CircularActionButton = ({ icon, onPress, animatedStyle }: Props) => (
+    <Pressable onPress={onPress}>
         <Animated.View className="bg-primary rounded-full items-center justify-center w-18 h-18" style={animatedStyle}>
             <Icon className="text-primary-reverse" icon={icon} size={ICON_SIZE} />
         </Animated.View>
-    );
-
-    return <Pressable onPress={onPress}>{content}</Pressable>;
-};
+    </Pressable>
+);
