@@ -50,7 +50,7 @@ export const ConfirmActionBottomSheet = (props: Props) => {
                 <CircleIcon icon={icon} variant={variant} size={50} iconSize={24} className="mb-4xl self-center rounded-3xl" />
                 <Text className="text-primary text-xl font-semibold text-center mb-sm">{title}</Text>
                 <Text className="text-secondary-foreground text-center text-sm mb-3xl">{description}</Text>
-                {children}
+                {children ? <View className="mb-3xl">{children}</View> : null}
                 <View className="gap-y-md">
                     <Button
                         leftIcon={buttonIcon}
