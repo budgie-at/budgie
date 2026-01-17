@@ -1,6 +1,5 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -27,42 +26,43 @@ interface UseCategorizationReturn {
     reset: () => void;
 }
 
+const MAX_CATEGORIES = 200;
+
+type CategoryItem = { id: number; title: string };
+
 const extractCategoryIndex = (response: string): number | null => {
     const match = /\d+/u.exec(response);
 
     return isDefined(match) ? parseInt(match[0], 10) : null;
 };
 
-type CategoryItem = { id: number; title: string };
-
-const findCategoryByTitle = (response: string, categories: CategoryItem[]): number | null => {
+const findCategoryByTitle = (response: string, categories: CategoryItem[]): CategoryItem | undefined => {
     const normalized = response.trim().toLowerCase();
     const words = normalized.split(/\s+/u);
 
     const exact = categories.find(cat => cat.title.toLowerCase() === normalized);
     if (isDefined(exact)) {
-        return exact.id;
+        return exact;
     }
 
     const contains = categories.find(cat => normalized.includes(cat.title.toLowerCase()) || cat.title.toLowerCase().includes(normalized));
     if (isDefined(contains)) {
-        return contains.id;
+        return contains;
     }
 
     for (const word of words) {
         const match = categories.find(cat => cat.title.toLowerCase().includes(word) || word.includes(cat.title.toLowerCase()));
         if (isDefined(match)) {
-            return match.id;
+            return match;
         }
     }
 
-    return null;
+    return undefined;
 };
 
 export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseCategorizationReturn => {
     const { onDone, onError } = callbacks;
 
-    const { t } = useLingui();
     const { llm } = useLlmContext();
     const { categories } = useAllCategoriesQuery();
 
@@ -70,69 +70,86 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
     const [error, setError] = useState('');
 
-    const isProcessingRef = useRef(false);
+    const pendingTextRef = useRef<string | null>(null);
 
-    const categoriesWithIds = categories.map((category, index) => `${index + 1}. ${category.title}`).join('\n');
-    const categoriesCount = categories.length;
-    const systemPrompt = t`Which category number matches this expense? Reply with ONLY the number.
-
-${categoriesWithIds}
-
-Reply with the number only (1-${categoriesCount}):`;
+    const limitedCategories = categories.slice(0, MAX_CATEGORIES);
+    const categoriesWithIds = limitedCategories.map((category, index) => `${index + 1}=${category.title}`).join(', ');
 
     const buildTransaction = (prompt: string, llmResponse: string): AITransactionInterface => {
         const indexFromResponse = extractCategoryIndex(llmResponse);
-        const categoryByIndex = isDefined(indexFromResponse) ? categories[indexFromResponse - 1] : null;
-        const categoryById = categories.find(cat => cat.id === findCategoryByTitle(llmResponse, categories));
-        const category = categoryByIndex ?? categoryById ?? null;
+        const categoryByIndex = isDefined(indexFromResponse) ? limitedCategories[indexFromResponse - 1] : undefined;
+        const categoryByTitle = findCategoryByTitle(llmResponse, categories);
 
         return {
-            category,
+            category: categoryByIndex ?? categoryByTitle ?? null,
             amount: parseNumberFromMessage(prompt),
             type: TransactionTypeEnum.EXPENSE,
             comment: prompt
         };
     };
 
-    const categorize = (text: string) => {
-        if (isProcessingRef.current) {
+    useEffect(() => {
+        if (llm.isGenerating || !isDefined(pendingTextRef.current)) {
             return;
         }
-        isProcessingRef.current = true;
+
+        const originalText = pendingTextRef.current;
+        pendingTextRef.current = null;
+
+        /* eslint-disable react-hooks/set-state-in-effect -- Responding to external LLM state changes */
+        if (isDefined(llm.error)) {
+            setError(llm.error);
+            setStatus('error');
+            onError?.(llm.error);
+
+            return;
+        }
+
+        const result = buildTransaction(originalText, llm.response);
+        setTransaction(result);
+        setStatus('done');
+        onDone?.(result);
+        /* eslint-enable react-hooks/set-state-in-effect */
+    }, [llm.isGenerating, llm.response, llm.error]);
+
+    const categorize = (text: string) => {
+        if (isDefined(pendingTextRef.current)) {
+            return;
+        }
+
+        pendingTextRef.current = text;
         setStatus('processing');
 
-        const doCategorize = async () => {
-            try {
-                const textForCategorization = stripAmountsFromText(text);
-                await llm.generate([
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: textForCategorization }
-                ]);
+        const textForCategorization = stripAmountsFromText(text);
 
-                const result = buildTransaction(text, llm.response);
-                setTransaction(result);
-                setStatus('done');
-                onDone?.(result);
-            } catch (e: unknown) {
-                if (!llm.isGenerating) {
-                    const errorMessage = e instanceof Error ? e.message : String(e);
-                    setError(errorMessage);
-                    setStatus('error');
-                    onError?.(errorMessage);
-                }
-            } finally {
-                isProcessingRef.current = false;
-            }
-        };
+        /* eslint-disable lingui/no-unlocalized-strings -- LLM prompts and few-shot examples, not user-facing */
+        const systemPrompt = `You categorize expenses. Categories: ${categoriesWithIds}. Reply ONLY with the category number.`;
+        const messages = [
+            { role: 'system' as const, content: systemPrompt },
+            { role: 'user' as const, content: 'Coffee at Starbucks' },
+            { role: 'assistant' as const, content: '12' },
+            { role: 'user' as const, content: 'Uber' },
+            { role: 'assistant' as const, content: '13' },
+            { role: 'user' as const, content: 'Bread and milk' },
+            { role: 'assistant' as const, content: '11' },
+            { role: 'user' as const, content: textForCategorization }
+        ];
+        /* eslint-enable lingui/no-unlocalized-strings */
 
-        void doCategorize();
+        llm.generate(messages).catch((e: unknown) => {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            setError(errorMessage);
+            setStatus('error');
+            onError?.(errorMessage);
+            pendingTextRef.current = null;
+        });
     };
 
     const reset = () => {
         setStatus('idle');
         setTransaction(null);
         setError('');
-        isProcessingRef.current = false;
+        pendingTextRef.current = null;
     };
 
     return {
