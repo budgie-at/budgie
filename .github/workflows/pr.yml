@@ -253,9 +253,12 @@ jobs:
       - name: Build app with xcodebuild
         working-directory: packages/app/ios
         run: |
+          WORKSPACE=$(ls -d *.xcworkspace | head -1)
+          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
+          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
           xcodebuild build \
-            -workspace budgie.xcworkspace \
-            -scheme budgie \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
             -sdk iphonesimulator \
             -configuration Release \
             -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
