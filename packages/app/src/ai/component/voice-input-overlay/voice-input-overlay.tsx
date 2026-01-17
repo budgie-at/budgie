@@ -35,7 +35,7 @@ const stateToButtonState: Record<string, RecordButtonStateType> = {
     error: 'idle'
 };
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const { defaultAccount } = useSettingsContext();
