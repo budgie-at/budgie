@@ -65,8 +65,10 @@ Answer with just the number:`;
 
     useEffect(() => {
         if (!llm.isGenerating && isNotEmptyString(llm.response)) {
+            console.log('[LLM] Response:', llm.response);
             const indexFromResponse = extractCategoryIndex(llm.response);
             const categoryByIndex = isDefined(indexFromResponse) ? categories[indexFromResponse - 1] : null;
+            console.log('[LLM] Parsed index:', indexFromResponse, '-> Category:', categoryByIndex?.title ?? 'null');
 
             if (isDefined(categoryByIndex)) {
                 fillCategory(categoryByIndex.id);
