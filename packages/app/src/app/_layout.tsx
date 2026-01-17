@@ -2,7 +2,6 @@
 import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
-import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
 import { Fragment, useEffect } from 'react';
@@ -47,10 +46,6 @@ const SQLOptions = { enableChangeListener: true };
 // eslint-disable-next-line dot-notation
 const isAiDisabled = process.env['AI_DISABLE'] === 'true';
 const AiProviderWrapper = isAiDisabled ? Fragment : LlmProvider;
-const aiScreenOptions: ExtendedStackNavigationOptions = {
-    ...DEFAULT_STACK_OPTIONS,
-    presentation: 'modal'
-};
 
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
@@ -116,8 +111,6 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/transactions/[id]/expense" />
                                                         <Stack.Screen name="(main)/transactions/[id]/income" />
                                                         <Stack.Screen name="(main)/transactions/[id]/transfer" />
-
-                                                        <Stack.Screen name="(main)/ai" options={aiScreenOptions} />
                                                     </Stack>
                                                     <Toast />
                                                 </AiProviderWrapper>

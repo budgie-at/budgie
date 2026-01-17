@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
-import { BUTTON_SIZE, RECORDING_COLOR } from '../animated-record-button/animated-record-button.constant';
+import { BUTTON_SIZE, RECORDING_COLOR } from '../../constant/animated-record-button.constant';
 
 interface Props {
     readonly index: number;

@@ -24,6 +24,7 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     type: TransactionTypeEnum;
     schema: ZodType<T, T>;
     categoryId?: number;
+    comment?: string;
     amount?: number;
 }
 
@@ -34,7 +35,8 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     fromAccountId,
     toAccountId,
     amount = 0,
-    categoryId = 0
+    categoryId = 0,
+    comment = ''
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
@@ -45,6 +47,8 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
+            comment,
+            amount,
             type,
             entries: [
                 ...(isDefined(fromAccountId)

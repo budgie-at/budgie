@@ -1,0 +1,147 @@
+import { useRef, useState } from 'react';
+import { AudioRecorder } from 'react-native-audio-api';
+
+import {
+    AUDIO_LEVEL_MULTIPLIER,
+    BUFFER_LENGTH,
+    RECORDER_INIT_DELAY_MS,
+    SAMPLE_RATE,
+    SILENCE_THRESHOLD,
+    SILENCE_TIMEOUT_MS
+} from '../constant/audio.constant';
+import { calculateRMS } from '../util/calculate-rms.util';
+
+import { useAudioManager } from './use-audio-manager.hook';
+
+type RecordingStatus = 'idle' | 'recording';
+
+interface RecordingCallbacks {
+    onAudioBuffer?: (samples: Float32Array) => void;
+    onSilenceDetected?: () => void;
+}
+
+interface UseRecordingReturn {
+    status: RecordingStatus;
+    audioLevel: number;
+    start: () => void;
+    stop: () => void;
+    cancel: () => void;
+}
+
+// eslint-disable-next-line max-lines-per-function, max-statements
+export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingReturn => {
+    useAudioManager();
+
+    const [status, setStatus] = useState<RecordingStatus>('idle');
+    const [audioLevel, setAudioLevel] = useState(0);
+
+    const recorderRef = useRef<AudioRecorder | null>(null);
+    const silenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const recorderInitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const sessionIdRef = useRef(0);
+    const callbacksRef = useRef(callbacks);
+    callbacksRef.current = callbacks;
+
+    const clearTimeouts = () => {
+        if (silenceTimeoutRef.current) {
+            clearTimeout(silenceTimeoutRef.current);
+            silenceTimeoutRef.current = null;
+        }
+        if (recorderInitTimeoutRef.current) {
+            clearTimeout(recorderInitTimeoutRef.current);
+            recorderInitTimeoutRef.current = null;
+        }
+    };
+
+    const stopRecorder = () => {
+        try {
+            recorderRef.current?.stop();
+        } finally {
+            recorderRef.current = null;
+        }
+    };
+
+    const resetState = () => {
+        setStatus('idle');
+        setAudioLevel(0);
+    };
+
+    const cleanup = () => {
+        clearTimeouts();
+        stopRecorder();
+        resetState();
+    };
+
+    const resetSilenceTimeout = (sessionId: number) => {
+        if (silenceTimeoutRef.current) {
+            clearTimeout(silenceTimeoutRef.current);
+        }
+        silenceTimeoutRef.current = setTimeout(() => {
+            if (sessionId !== sessionIdRef.current) {
+                return;
+            }
+            cleanup();
+            callbacksRef.current.onSilenceDetected?.();
+        }, SILENCE_TIMEOUT_MS);
+    };
+
+    const handleAudioBuffer = (samples: Float32Array, sessionId: number) => {
+        if (sessionId !== sessionIdRef.current) {
+            return;
+        }
+
+        const rms = calculateRMS(samples);
+        setAudioLevel(Math.min(rms * AUDIO_LEVEL_MULTIPLIER, 1));
+
+        callbacksRef.current.onAudioBuffer?.(samples);
+
+        if (rms > SILENCE_THRESHOLD) {
+            resetSilenceTimeout(sessionId);
+        }
+    };
+
+    const initializeRecorder = (sessionId: number) => {
+        recorderInitTimeoutRef.current = setTimeout(() => {
+            if (sessionId !== sessionIdRef.current) {
+                return;
+            }
+
+            const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
+            recorderRef.current = recorder;
+            recorder.onAudioReady(({ buffer }) => {
+                if (sessionId !== sessionIdRef.current) {
+                    return;
+                }
+                handleAudioBuffer(buffer.getChannelData(0), sessionId);
+            });
+            recorder.start();
+            resetSilenceTimeout(sessionId);
+        }, RECORDER_INIT_DELAY_MS);
+    };
+
+    const start = () => {
+        cleanup();
+
+        sessionIdRef.current += 1;
+        const sessionId = sessionIdRef.current;
+
+        setStatus('recording');
+        initializeRecorder(sessionId);
+    };
+
+    const stop = () => {
+        cleanup();
+    };
+
+    const cancel = () => {
+        cleanup();
+    };
+
+    return {
+        status,
+        audioLevel,
+        start,
+        stop,
+        cancel
+    };
+};
