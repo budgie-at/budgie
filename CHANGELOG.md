@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.13.0](https://github.com/budgie-at/budgie/compare/v2.12.4...v2.13.0) (2026-01-17)
+
+### Bug Fixes
+
+- **app:** add exit animation to VoiceInputOverlay for smooth closing ([1ca8e04](https://github.com/budgie-at/budgie/commit/1ca8e0478ae642679d2e03e5f7a537c1603fc6dc))
+- **app:** add missing i18n translations for voice input and transfer conversion ([7467b5c](https://github.com/budgie-at/budgie/commit/7467b5cd53cd8ac0886026221e0f29ecd83fbc35))
+- **app:** clean trailing punctuation after stripping amounts ([1abae23](https://github.com/budgie-at/budgie/commit/1abae239e1c36f3dd3b7679cf5eaba7b8bf194c9))
+- **app:** expand currency pattern to support more formats ([5596f3d](https://github.com/budgie-at/budgie/commit/5596f3dc3823482b71a21542f2dc3a64d3990c21))
+- **app:** fix LLM hook - configure on mount, simplify interrupt ([8c9616c](https://github.com/budgie-at/budgie/commit/8c9616cf07166875656ef52f37b9973c37c7509a))
+- **app:** fix voice input race condition and real-time transcription ([b9395e1](https://github.com/budgie-at/budgie/commit/b9395e1f9215af2b33a795248efff7a59e03a9d7))
+- **app:** improve category matching from LLM text response ([c2904d5](https://github.com/budgie-at/budgie/commit/c2904d5a465cdf9a4445c69c489d2130883c4fcf))
+- **app:** improve voice input UX and LLM categorization ([19aaf0c](https://github.com/budgie-at/budgie/commit/19aaf0cba2fe0d08a1afa0ffedc6739764511ee7))
+- **app:** reduce backdrop fade-out duration to eliminate closing flicker ([4638403](https://github.com/budgie-at/budgie/commit/463840327d01cac2f93bb22d80c0a6f2380caed9))
+- **app:** remove all bracketed tokens from transcription ([2637f06](https://github.com/budgie-at/budgie/commit/2637f06fa9525387bf4182ab81dd8105d226ac84))
+- **app:** remove voice input backdrop animation and fix lint errors ([6123c9e](https://github.com/budgie-at/budgie/commit/6123c9e8b9e482315229c7a9ab5c0da08cf2f571))
+- **app:** resolve TypeScript errors in animated styles and router navigation ([976c3bc](https://github.com/budgie-at/budgie/commit/976c3bc01f3541dd2aab8665f03c394f941c4fff))
+- **app:** simplify prompt to force number-only response ([4aa10e2](https://github.com/budgie-at/budgie/commit/4aa10e2f55ef606ada107ace8b5b6ec89607a23f))
+- **app:** strip amounts from text before LLM categorization ([4fa3248](https://github.com/budgie-at/budgie/commit/4fa324888dd47b9b14ab61f584bb57fe46cf1caf))
+- **app:** switch back to LLaMA 1B (Qwen3 has error 18 after first use) ([651159d](https://github.com/budgie-at/budgie/commit/651159d4b1ff1219c13e8f70804cfc462174980d))
+- **app:** switch back to LLaMA 1B with improved prompt/amount stripping ([062243c](https://github.com/budgie-at/budgie/commit/062243cb9bc572f319c15ba2379719e6fb760e3a))
+- **app:** switch to Qwen3 0.6B for better accuracy ([0ec6062](https://github.com/budgie-at/budgie/commit/0ec6062b804e0aab637c20641f2403a957cf9bd4))
+- **app:** use smaller Qwen3 0.6B model to prevent OOM crashes ([ce89ac7](https://github.com/budgie-at/budgie/commit/ce89ac707a650013ef8ef086f53a02f826f4e9d9))
+- **app:** use stateRef with setStateWithRef to avoid render issues ([7d443e4](https://github.com/budgie-at/budgie/commit/7d443e4d46481c82882957927bb4236b91095313))
+- remove useless useEffect ([2d195a5](https://github.com/budgie-at/budgie/commit/2d195a5cb9b2f512f149011c18cde04797f01c53))
+
+### Features
+
+- **app:** navigate to expense page after voice input, improve ThinkingRing proximity ([f1d5d92](https://github.com/budgie-at/budgie/commit/f1d5d927f9559ac03ab61ef0c877cb49ec8af612))
+- **app:** show AI model loading state on mic button ([604764b](https://github.com/budgie-at/budgie/commit/604764b0b28d302b185b58fa785e5a4885f3c199))
+- **app:** switch to Qwen3 1.7B model and improve category prompt ([eb034cf](https://github.com/budgie-at/budgie/commit/eb034cf9349f23e739fb4259be9ecc54625de0a6))
+- **app:** upgrade on-device LLM from 1B to 3B model ([1c928d3](https://github.com/budgie-at/budgie/commit/1c928d347c205d55d390ddd0b369d7d71b859207))
+
 ## [2.12.4](https://github.com/budgie-at/budgie/compare/v2.12.3...v2.12.4) (2026-01-17)
 
 **Note:** Version bump only for package @budgie-at/root
