@@ -218,8 +218,8 @@ jobs:
         with:
           xcode-version: '16.4'
 
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
+      - name: Restore CocoaPods cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/Library/Caches/CocoaPods
@@ -230,12 +230,13 @@ jobs:
       - name: Expo Prebuild
         working-directory: packages/app
         env:
+          APP_VARIANT: preview
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
         run: npx expo prebuild -p ios
 
-      - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
+      - name: Restore Xcode DerivedData cache
+        uses: actions/cache/restore@v4
         with:
           path: ~/Library/Developer/Xcode/DerivedData
           key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
@@ -288,6 +289,22 @@ jobs:
           path: |
             tests/app-tests/.maestro/**
             tests/app-tests/*.mp4
+
+      - name: Save CocoaPods cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
+
+      - name: Save Xcode DerivedData cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
 
   e2e-android:
     if: false
