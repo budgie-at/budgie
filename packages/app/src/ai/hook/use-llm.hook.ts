@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import { Message } from 'react-native-executorch';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useLlmContext } from '../context/llm.context';
 
@@ -16,16 +16,17 @@ interface UseLlmReturn {
     isGenerating: boolean;
     downloadProgress: number;
     sendMessage: (message: string) => Promise<string>;
-    interrupt: () => Promise<void>;
+    interrupt: () => void;
 }
-
-const INTERRUPT_POLL_INTERVAL_MS = 50;
 
 export const useLlm = (config: UseLlmConfig): UseLlmReturn => {
     const { llm } = useLlmContext();
 
     const resolveRef = useRef<((response: string) => void) | null>(null);
     const rejectRef = useRef<((error: Error) => void) | null>(null);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => void llm.configure({ chatConfig: config }), []);
 
     useEffect(() => {
         if (!resolveRef.current) {
@@ -55,10 +56,6 @@ export const useLlm = (config: UseLlmConfig): UseLlmReturn => {
         resolveRef.current = null;
         rejectRef.current = null;
 
-        if (!llm.isReady || !llm.isGenerating) {
-            return Promise.resolve();
-        }
-
         llm.interrupt();
     };
 
@@ -67,16 +64,12 @@ export const useLlm = (config: UseLlmConfig): UseLlmReturn => {
             throw new Error('Model not ready');
         }
 
-        await interrupt();
-
-        llm.configure({ chatConfig: config });
-
         return new Promise((resolve, reject) => {
             resolveRef.current = resolve;
             rejectRef.current = reject;
 
             llm.sendMessage(message).catch((e: unknown) => {
-                rejectRef.current?.(e instanceof Error ? e : new Error(String(e)));
+                rejectRef.current?.(e instanceof Error ? e : new Error(getErrorMessage(e)));
                 resolveRef.current = null;
                 rejectRef.current = null;
             });

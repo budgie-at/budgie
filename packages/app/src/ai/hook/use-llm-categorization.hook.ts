@@ -64,7 +64,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
     };
 
     const reset = () => {
-        void llm.interrupt();
+        llm.interrupt();
         setStatus('idle');
         setTransaction(null);
         setError(null);
