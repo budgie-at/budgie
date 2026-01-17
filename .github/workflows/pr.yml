@@ -218,7 +218,7 @@ jobs:
         with:
           xcode-version: '16.4'
 
-      - name: Calculate Expo Fingerprint
+      - name: Calculate Native Fingerprint
         id: fingerprint
         working-directory: packages/app
         run: |
@@ -227,14 +227,14 @@ jobs:
             fingerprint=$(echo "${{ hashFiles('packages/app/package.json', 'packages/app/app.json', 'packages/app/eas.json') }}" | sha256sum | cut -d' ' -f1)
           fi
           echo "hash=$fingerprint" >> $GITHUB_OUTPUT
-          echo "Fingerprint: $fingerprint"
+          echo "Native Fingerprint: $fingerprint"
 
       - name: Cache iOS build
         id: cache-ios-build
         uses: actions/cache@v4
         with:
           path: packages/app/app.ios.tar.gz
-          key: ios-build-${{ steps.fingerprint.outputs.hash }}
+          key: ios-build-${{ steps.fingerprint.outputs.hash }}-${{ hashFiles('packages/app/src/**', 'packages/contracts/src/**') }}
 
       - name: Cache CocoaPods
         if: steps.cache-ios-build.outputs.cache-hit != 'true'
