@@ -54,7 +54,6 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
     const recorderInitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const streamPromiseRef = useRef<Promise<string> | null>(null);
     const sessionIdRef = useRef(0);
-    const isRecordingRef = useRef(false);
 
     const clearTimeouts = () => {
         if (silenceTimeoutRef.current) {
@@ -77,12 +76,9 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
 
     const cleanupRecorder = async () => {
         clearTimeouts();
-        const wasRecording = isRecordingRef.current;
-        isRecordingRef.current = false;
-
         stopRecorder();
 
-        if (wasRecording && streamPromiseRef.current) {
+        if (streamPromiseRef.current) {
             try {
                 stt.streamStop();
                 await streamPromiseRef.current;
@@ -90,15 +86,12 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
                 // eslint-disable-next-line require-atomic-updates
                 streamPromiseRef.current = null;
             }
-        } else {
-            streamPromiseRef.current = null;
         }
     };
 
     const resetState = () => {
         setStatus('idle');
         setAudioLevel(0);
-        isRecordingRef.current = false;
     };
 
     // eslint-disable-next-line max-statements
@@ -107,7 +100,6 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
             return;
         }
 
-        isRecordingRef.current = false;
         setStatus('processing');
         setAudioLevel(0);
 
@@ -140,7 +132,7 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
     };
 
     const handleAudioBuffer = (samples: Float32Array, sessionId: number) => {
-        if (sessionId !== sessionIdRef.current || !isRecordingRef.current) {
+        if (sessionId !== sessionIdRef.current) {
             return;
         }
 
@@ -158,14 +150,14 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
         streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
 
         recorderInitTimeoutRef.current = setTimeout(() => {
-            if (sessionId !== sessionIdRef.current || !isRecordingRef.current) {
+            if (sessionId !== sessionIdRef.current) {
                 return;
             }
 
             const recorder = new AudioRecorder({ sampleRate: SAMPLE_RATE, bufferLengthInSamples: BUFFER_LENGTH });
             recorderRef.current = recorder;
             recorder.onAudioReady(({ buffer }) => {
-                if (sessionId !== sessionIdRef.current || !isRecordingRef.current) {
+                if (sessionId !== sessionIdRef.current) {
                     return;
                 }
                 handleAudioBuffer(buffer.getChannelData(0), sessionId);
@@ -184,8 +176,6 @@ export const useStreamingTranscribe = (callbacks: TranscribeCallbacks = {}): Use
             const sessionId = sessionIdRef.current;
 
             setStatus('recording');
-            isRecordingRef.current = true;
-
             initializeRecorder(sessionId);
         })();
     };

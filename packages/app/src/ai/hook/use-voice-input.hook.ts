@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -33,7 +33,7 @@ interface UseVoiceInputReturn {
     retry: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-lines-per-function
 export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
     const { onDone, onError } = callbacks;
 
@@ -41,23 +41,16 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const [error, setError] = useState('');
     const [pendingText, setPendingText] = useState('');
 
-    const stateRef = useRef<VoiceInputState>('idle');
-
-    const updateState = (newState: VoiceInputState) => {
-        stateRef.current = newState;
-        setState(newState);
-    };
-
     const categorization = useCategorization({
         onDone: (transaction: AITransactionInterface) => {
-            if (stateRef.current === 'processing') {
-                updateState('done');
+            if (state === 'processing') {
+                setState('done');
                 onDone?.(transaction);
             }
         },
         onError: (errorMessage: string) => {
             setError(errorMessage);
-            updateState('error');
+            setState('error');
             onError?.(errorMessage);
         }
     });
@@ -65,18 +58,18 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     const transcribe = useStreamingTranscribe({
         onComplete: (text: string) => {
             if (!isNotEmptyString(text)) {
-                updateState('idle');
+                setState('idle');
 
                 return;
             }
 
             setPendingText(text);
-            updateState('confirming');
+            setState('confirming');
             categorization.categorize(text);
         },
         onError: (errorMessage: string) => {
             setError(errorMessage);
-            updateState('error');
+            setState('error');
             onError?.(errorMessage);
         }
     });
@@ -88,7 +81,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         setError('');
         setPendingText('');
         categorization.reset();
-        updateState('recording');
+        setState('recording');
         transcribe.start();
     };
 
@@ -97,32 +90,32 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
         if (isNotEmptyString(currentText)) {
             setPendingText(currentText);
-            updateState('confirming');
+            setState('confirming');
             categorization.categorize(currentText);
             transcribe.cancel();
         } else {
-            updateState('transcribing');
+            setState('transcribing');
             transcribe.stop();
         }
     };
 
     const confirm = () => {
-        if (stateRef.current !== 'confirming') {
+        if (state !== 'confirming') {
             return;
         }
 
         if (isDefined(categorization.transaction)) {
-            updateState('done');
+            setState('done');
             onDone?.(categorization.transaction);
         } else {
-            updateState('processing');
+            setState('processing');
         }
     };
 
     const cancel = () => {
         transcribe.cancel();
         categorization.reset();
-        updateState('idle');
+        setState('idle');
         setError('');
         setPendingText('');
     };
