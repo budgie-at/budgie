@@ -242,39 +242,16 @@ jobs:
           key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
           restore-keys: deriveddata-${{ runner.os }}-
 
-      - name: Install xcbeautify
-        run: brew install xcbeautify
-
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 16 Pro'
 
-      - name: Build app with xcodebuild
-        working-directory: packages/app/ios
-        run: |
-          WORKSPACE=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
-          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
-          xcodebuild build \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -sdk iphonesimulator \
-            -configuration Release \
-            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-            -jobs $(sysctl -n hw.ncpu) \
-            CODE_SIGNING_ALLOWED=NO \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            | xcbeautify --quiet
-
-      - name: Install app on Simulator
-        run: |
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
-          echo "Installing app from: $APP_PATH"
-          xcrun simctl install booted "$APP_PATH"
-          echo "Verifying installation..."
-          xcrun simctl listapps booted | grep -A5 "com.vitalyiegorov.budgie"
+      - name: Build and install app
+        working-directory: packages/app
+        env:
+          APP_VARIANT: preview
+        run: npx expo run:ios --configuration Release --device "iPhone 16 Pro"
 
       - name: Install Maestro
         run: |
