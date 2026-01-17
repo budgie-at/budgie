@@ -256,15 +256,17 @@ jobs:
             -workspace budgie.xcworkspace \
             -scheme budgie \
             -sdk iphonesimulator \
-            -configuration Release \
+            -configuration Debug \
             -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -jobs $(sysctl -n hw.ncpu) \
             CODE_SIGNING_ALLOWED=NO \
-            | xcbeautify
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            | xcbeautify --quiet
 
       - name: Install app on Simulator
         run: |
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Debug-iphonesimulator*" | head -1)
           xcrun simctl install booted "$APP_PATH"
 
       - name: Install Maestro
