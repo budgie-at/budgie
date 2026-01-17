@@ -1,7 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, {
+    FadeIn,
+    FadeOut,
+    runOnJS,
+    useAnimatedReaction,
+    useAnimatedStyle,
+    useDerivedValue,
+    useSharedValue,
+    withTiming
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -20,6 +29,7 @@ import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
 import { VoiceInputError } from '../voice-input-error/voice-input-error';
 
 const FADE_DURATION = 200;
+const EXIT_DURATION = 100;
 const MIC_BOTTOM_OFFSET = -16;
 const CLOSE_BUTTON_ROTATION = 45;
 
@@ -38,7 +48,38 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const [finalPrompt, setFinalPrompt] = useState('');
     const [accountId, setAccountId] = useState<number | null>(null);
     const [userConfirmed, setUserConfirmed] = useState(false);
+    const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
+
+    const isOpenShared = useSharedValue(isOpen);
+    const contentOpacity = useSharedValue(isOpen ? 1 : 0);
+
+    const handleExitComplete = () => {
+        setIsAnimatingOut(false);
+    };
+
+    useDerivedValue(() => {
+        isOpenShared.value = isOpen;
+    }, [isOpen]);
+
+    useAnimatedReaction(
+        () => isOpenShared.value,
+        (current, previous) => {
+            if (current && !previous) {
+                contentOpacity.value = 1;
+            } else if (!current && previous) {
+                runOnJS(setIsAnimatingOut)(true);
+                contentOpacity.value = withTiming(0, { duration: EXIT_DURATION }, finished => {
+                    if (finished) {
+                        runOnJS(handleExitComplete)();
+                    }
+                });
+            }
+        },
+        [isOpen]
+    );
+
+    const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
 
     const [systemPrompt, transactionInfo, resetTransaction, setTransactionCategory] = useAiTransaction(llm, finalPrompt);
     const { generateFromTranscription, error, clearError } = useLlmGeneration(llm, systemPrompt);
@@ -135,7 +176,9 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }]
     }));
 
-    if (!isOpen) {
+    const isVisible = isOpen || isAnimatingOut;
+
+    if (!isVisible) {
         return null;
     }
 
@@ -147,9 +190,10 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };
     const closeContainerStyle = { paddingBottom: bottom };
     const hasError = isNotEmptyString(error);
+    const containerStyle = [StyleSheet.absoluteFill, contentAnimatedStyle];
 
     return (
-        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+        <Animated.View style={containerStyle} pointerEvents="box-none">
             {showTransactionCard && (
                 <Animated.View
                     className="absolute inset-x-4 top-1/4"
@@ -184,6 +228,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
             <View className="absolute right-0 bottom-0 px-lg" style={closeContainerStyle} pointerEvents="box-none">
                 <CircularActionButton icon={UserIconNameEnum.Plus} onPress={handleCancel} animatedStyle={closeButtonStyle} />
             </View>
-        </View>
+        </Animated.View>
     );
 };
