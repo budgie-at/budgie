@@ -241,18 +241,31 @@ jobs:
           key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
           restore-keys: deriveddata-${{ runner.os }}-
 
-      - name: Build app
-        working-directory: packages/app
-        run: eas build --profile=e2e --platform ios --non-interactive --local --output app.ios.tar.gz
+      - name: Install xcbeautify
+        run: brew install xcbeautify
 
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 16 Pro'
 
+      - name: Build app with xcodebuild
+        working-directory: packages/app/ios
+        run: |
+          xcodebuild build \
+            -workspace budgie.xcworkspace \
+            -scheme budgie \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcbeautify
+
       - name: Install app on Simulator
-        working-directory: packages/app
-        run: eas build:run --profile=e2e --platform ios --path app.ios.tar.gz
+        run: |
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          xcrun simctl install booted "$APP_PATH"
 
       - name: Install Maestro
         run: |
