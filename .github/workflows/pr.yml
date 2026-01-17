@@ -271,7 +271,10 @@ jobs:
       - name: Install app on Simulator
         run: |
           APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          echo "Installing app from: $APP_PATH"
           xcrun simctl install booted "$APP_PATH"
+          echo "Verifying installation..."
+          xcrun simctl listapps booted | grep -A5 "com.vitalyiegorov.budgie"
 
       - name: Install Maestro
         run: |
