@@ -80,6 +80,7 @@ Answer with just the number:`;
                 fillCategory(categoryByIndex.id);
             } else {
                 const categoryId = findCategoryByTitle(llm.response, categories);
+                console.log('[LLM] Fallback match:', categoryId, 'Categories:', categories.map(c => c.title).join(', '));
                 fillCategory(categoryId);
             }
         }
