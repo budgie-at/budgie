@@ -61,7 +61,6 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                 title={t`Convert to Transfer?`}
                 description={t`Select the destination account for this transfer.`}
                 buttonText={t`Convert to Transfer`}
-                buttonIcon={UserIconNameEnum.CircleCheck}
                 isDisabled={!isDefined(selectedAccountId)}
                 isLoading={isLoading}
                 onSubmit={handleConvert}
