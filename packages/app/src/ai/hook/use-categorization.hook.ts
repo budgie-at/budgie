@@ -1,7 +1,7 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useLlmContext } from '../context/llm.context';
@@ -28,15 +28,13 @@ interface UseCategorizationReturn {
 
 const MAX_CATEGORIES = 200;
 
-type CategoryItem = { id: number; title: string };
-
 const extractCategoryIndex = (response: string): number | null => {
     const match = /\d+/u.exec(response);
 
     return isDefined(match) ? parseInt(match[0], 10) : null;
 };
 
-const findCategoryByTitle = (response: string, categories: CategoryItem[]): CategoryItem | undefined => {
+const findCategoryByTitle = <T extends { title: string }>(response: string, categories: T[]): T | undefined => {
     const normalized = response.trim().toLowerCase();
     const words = normalized.split(/\s+/u);
 
@@ -57,6 +55,7 @@ const findCategoryByTitle = (response: string, categories: CategoryItem[]): Cate
         }
     }
 
+    // eslint-disable-next-line no-undefined
     return undefined;
 };
 
@@ -69,14 +68,14 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
     const [error, setError] = useState('');
-
-    const pendingTextRef = useRef<string | null>(null);
+    const [pendingText, setPendingText] = useState('');
 
     const limitedCategories = categories.slice(0, MAX_CATEGORIES);
     const categoriesWithIds = limitedCategories.map((category, index) => `${index + 1}=${category.title}`).join(', ');
 
     const buildTransaction = (prompt: string, llmResponse: string): AITransactionInterface => {
         const indexFromResponse = extractCategoryIndex(llmResponse);
+        // eslint-disable-next-line no-undefined
         const categoryByIndex = isDefined(indexFromResponse) ? limitedCategories[indexFromResponse - 1] : undefined;
         const categoryByTitle = findCategoryByTitle(llmResponse, categories);
 
@@ -88,15 +87,15 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
         };
     };
 
+    /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps -- Responding to external LLM state changes */
     useEffect(() => {
-        if (llm.isGenerating || !isDefined(pendingTextRef.current)) {
+        if (llm.isGenerating || !isNotEmptyString(pendingText)) {
             return;
         }
 
-        const originalText = pendingTextRef.current;
-        pendingTextRef.current = null;
+        const originalText = pendingText;
+        setPendingText('');
 
-        /* eslint-disable react-hooks/set-state-in-effect -- Responding to external LLM state changes */
         if (isDefined(llm.error)) {
             setError(llm.error);
             setStatus('error');
@@ -109,15 +108,15 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
         setTransaction(result);
         setStatus('done');
         onDone?.(result);
-        /* eslint-enable react-hooks/set-state-in-effect */
-    }, [llm.isGenerating, llm.response, llm.error]);
+    }, [llm.isGenerating, llm.response, llm.error, pendingText, onDone, onError]);
+    /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
     const categorize = (text: string) => {
-        if (isDefined(pendingTextRef.current)) {
+        if (isNotEmptyString(pendingText)) {
             return;
         }
 
-        pendingTextRef.current = text;
+        setPendingText(text);
         setStatus('processing');
 
         const textForCategorization = stripAmountsFromText(text);
@@ -141,7 +140,7 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
             setError(errorMessage);
             setStatus('error');
             onError?.(errorMessage);
-            pendingTextRef.current = null;
+            setPendingText('');
         });
     };
 
@@ -149,7 +148,7 @@ export const useCategorization = (callbacks: CategorizationCallbacks = {}): UseC
         setStatus('idle');
         setTransaction(null);
         setError('');
-        pendingTextRef.current = null;
+        setPendingText('');
     };
 
     return {
