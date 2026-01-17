@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
-import { useCategorization } from './use-categorization.hook';
-import { useStreamingTranscribe } from './use-streaming-transcribe.hook';
+import { useLlmCategorization } from './use-llm-categorization.hook';
+import { useRecording } from './use-recording.hook';
+import { useStt } from './use-stt.hook';
 
 type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'processing' | 'done' | 'error';
 
 interface VoiceInputData {
     transcription: { committed: string; partial: string };
     transaction: AITransactionInterface | null;
-    error: string;
+    error: string | null;
     audioLevel: number;
 }
 
@@ -33,69 +34,114 @@ export interface UseVoiceInputReturn {
     retry: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements
 export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInputReturn => {
     const { onDone, onError } = callbacks;
 
     const [state, setState] = useState<VoiceInputState>('idle');
-    const [error, setError] = useState('');
-    const [pendingText, setPendingText] = useState('');
+    const [error, setError] = useState<string | null>(null);
+    const [finalTranscription, setFinalTranscription] = useState('');
 
-    const categorization = useCategorization({
-        onDone: (transaction: AITransactionInterface) => {
-            if (state === 'processing') {
-                setState('done');
-                onDone?.(transaction);
-            }
-        },
-        onError: (errorMessage: string) => {
-            setError(errorMessage);
-            setState('error');
-            onError?.(errorMessage);
+    const isProcessingRef = useRef(false);
+
+    const stt = useStt();
+    const categorization = useLlmCategorization();
+
+    const handleError = (e: unknown) => {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        setError(errorMessage);
+        setState('error');
+        isProcessingRef.current = false;
+        onError?.(errorMessage);
+    };
+
+    const processTranscription = async (): Promise<void> => {
+        if (isProcessingRef.current) {
+            return;
         }
+
+        isProcessingRef.current = true;
+        setState('transcribing');
+
+        const text = await stt.stopStream();
+
+        if (!isNotEmptyString(text)) {
+            setState('idle');
+            // eslint-disable-next-line require-atomic-updates
+            isProcessingRef.current = false;
+
+            return;
+        }
+
+        setFinalTranscription(text);
+        setState('confirming');
+
+        await categorization.categorize(text);
+        // eslint-disable-next-line require-atomic-updates
+        isProcessingRef.current = false;
+    };
+
+    const handleSilenceDetected = () => {
+        void (async () => {
+            try {
+                await processTranscription();
+            } catch (e: unknown) {
+                handleError(e);
+            }
+        })();
+    };
+
+    const recording = useRecording({
+        onAudioBuffer: (samples: Float32Array) => {
+            stt.insertAudio(samples);
+        },
+        onSilenceDetected: handleSilenceDetected
     });
 
-    const transcribe = useStreamingTranscribe({
-        onComplete: (text: string) => {
-            if (!isNotEmptyString(text)) {
-                setState('idle');
-
-                return;
-            }
-
-            setPendingText(text);
-            setState('confirming');
-            categorization.categorize(text);
-        },
-        onError: (errorMessage: string) => {
-            setError(errorMessage);
-            setState('error');
-            onError?.(errorMessage);
-        }
-    });
-
-    const isReady = transcribe.isReady && categorization.isReady;
-    const downloadProgress = Math.min(transcribe.downloadProgress, categorization.downloadProgress);
+    const isReady = stt.isReady && categorization.isReady;
+    const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
 
     const start = () => {
-        setError('');
-        setPendingText('');
+        setError(null);
+        setFinalTranscription('');
+        isProcessingRef.current = false;
         categorization.reset();
+        stt.startStream();
+        recording.start();
         setState('recording');
-        transcribe.start();
     };
 
     const stop = () => {
-        const currentText = transcribe.transcription.committed + transcribe.transcription.partial;
+        recording.stop();
+
+        if (isProcessingRef.current) {
+            return;
+        }
+
+        const currentText = stt.transcription + stt.partialTranscription;
 
         if (isNotEmptyString(currentText)) {
-            setPendingText(currentText);
+            isProcessingRef.current = true;
+            setFinalTranscription(currentText);
             setState('confirming');
-            categorization.categorize(currentText);
-            transcribe.cancel();
+            stt.cancelStream();
+
+            void (async () => {
+                try {
+                    await categorization.categorize(currentText);
+                    isProcessingRef.current = false;
+                } catch (e: unknown) {
+                    handleError(e);
+                }
+            })();
         } else {
-            setState('transcribing');
-            transcribe.stop();
+            void (async () => {
+                try {
+                    await processTranscription();
+                } catch (e: unknown) {
+                    handleError(e);
+                }
+            })();
         }
     };
 
@@ -113,17 +159,18 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
     };
 
     const cancel = () => {
-        transcribe.cancel();
+        recording.cancel();
+        stt.cancelStream();
         categorization.reset();
         setState('idle');
-        setError('');
-        setPendingText('');
+        setError(null);
+        setFinalTranscription('');
     };
 
     const transcription =
         state === 'confirming' || state === 'processing' || state === 'done'
-            ? { committed: pendingText, partial: '' }
-            : transcribe.transcription;
+            ? { committed: finalTranscription, partial: '' }
+            : { committed: stt.transcription, partial: stt.partialTranscription };
 
     return {
         state,
@@ -131,7 +178,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
             transcription,
             transaction: categorization.transaction,
             error,
-            audioLevel: transcribe.audioLevel
+            audioLevel: recording.audioLevel
         },
         isReady,
         downloadProgress,
