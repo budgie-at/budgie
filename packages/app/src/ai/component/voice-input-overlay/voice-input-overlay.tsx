@@ -2,24 +2,14 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, {
-    runOnJS,
-    useAnimatedReaction,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useLlmContext } from '../../context/llm.context';
-import { useAiTransaction } from '../../hook/use-ai-transaction.hook';
-import { useLlmGeneration } from '../../hook/use-llm-generation.hook';
-import { useStreamingTranscribe } from '../../hook/use-streaming-transcribe.hook';
+import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { AnimatedRecordButton } from '../animated-record-button/animated-record-button';
 import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
@@ -34,30 +24,28 @@ interface Props {
     readonly onClose: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function,max-statements
+const stateToButtonState: Record<string, RecordButtonStateType> = {
+    idle: 'idle',
+    recording: 'recording',
+    transcribing: 'transcribing',
+    confirming: 'confirm',
+    processing: 'thinking',
+    done: 'idle',
+    error: 'idle'
+};
+
+// eslint-disable-next-line max-lines-per-function, max-statements
 export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const { bottom } = useSafeAreaInsets();
-    const { llm, stt } = useLlmContext();
     const { defaultAccount } = useSettingsContext();
+    const voiceInput = useVoiceInput();
 
-    const [finalPrompt, setFinalPrompt] = useState('');
-    const [userConfirmed, setUserConfirmed] = useState(false);
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
-
-    const isOpenShared = useSharedValue(isOpen);
     const contentOpacity = useSharedValue(isOpen ? 1 : 0);
 
-    const handleExitComplete = () => {
-        setIsAnimatingOut(false);
-    };
-
-    useDerivedValue(() => {
-        isOpenShared.value = isOpen;
-    }, [isOpen]);
-
     useAnimatedReaction(
-        () => isOpenShared.value,
+        () => isOpen,
         (current, previous) => {
             if (current && !previous) {
                 contentOpacity.value = 1;
@@ -65,7 +53,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
                 runOnJS(setIsAnimatingOut)(true);
                 contentOpacity.value = withTiming(0, { duration: EXIT_DURATION }, finished => {
                     if (finished) {
-                        runOnJS(handleExitComplete)();
+                        runOnJS(setIsAnimatingOut)(false);
                     }
                 });
             }
@@ -73,151 +61,109 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         [isOpen]
     );
 
-    const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
-
-    const [systemPrompt, transactionInfo, resetTransaction] = useAiTransaction(llm, finalPrompt);
-    const { generateFromTranscription, error, clearError } = useLlmGeneration(llm, systemPrompt);
-
-    const handleTranscriptionComplete = (transcribed: string) => {
-        setFinalPrompt(transcribed);
-    };
-
-    const { startRecording, stopRecording, status, transcription, audioLevel } = useStreamingTranscribe(handleTranscriptionComplete);
-
-    const isReady = llm.isReady && stt.isReady;
-    const hasValidTransaction = isDefined(transactionInfo) && isPositiveNumber(transactionInfo.amount);
-    const hasTranscription = isNotEmptyString(finalPrompt);
-    const isConfirmPhase = status === 'idle' && hasTranscription && !userConfirmed;
-
-    const handleReset = () => {
-        clearError();
-        setFinalPrompt('');
-        resetTransaction();
-        setUserConfirmed(false);
-    };
-
-    const handleCancel = () => {
-        handleReset();
-        onClose();
-    };
+    useEffect(() => {
+        if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
+            hasAutoStartedRef.current = true;
+            voiceInput.start();
+        }
+        if (!isOpen) {
+            hasAutoStartedRef.current = false;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen, voiceInput.isReady]);
 
     useEffect(() => {
         if (isOpen) {
-            clearError();
-            if (isReady && !hasAutoStartedRef.current) {
-                hasAutoStartedRef.current = true;
-                startRecording();
-            }
-        } else {
-            hasAutoStartedRef.current = false;
-        }
-    }, [isOpen, isReady, startRecording, clearError]);
-
-    useEffect(() => {
-        if (!isOpen) {
-            return;
+            return () => {
+                voiceInput.cancel();
+            };
         }
 
-        return () => {
-            setFinalPrompt('');
-            resetTransaction();
-            setUserConfirmed(false);
-        };
-    }, [isOpen, resetTransaction]);
+        return () => void 0;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isOpen]);
 
     useEffect(() => {
-        if (isNotEmptyString(finalPrompt)) {
-            void generateFromTranscription(finalPrompt);
-        }
-    }, [finalPrompt, generateFromTranscription]);
-
-    useEffect(() => {
-        if (userConfirmed && hasValidTransaction) {
+        if (voiceInput.state === 'done' && voiceInput.data.transaction !== null) {
+            const { transaction } = voiceInput.data;
             const accountId = defaultAccount?.id;
+
             const params = new URLSearchParams();
-            params.set('amount', String(transactionInfo.amount));
-            if (isDefined(transactionInfo.category)) {
-                params.set('categoryId', String(transactionInfo.category.id));
+            if (isPositiveNumber(transaction.amount)) {
+                params.set('amount', String(transaction.amount));
+            }
+            if (isDefined(transaction.category)) {
+                params.set('categoryId', String(transaction.category.id));
             }
             if (isDefined(accountId)) {
                 params.set('accountId', String(accountId));
             }
-            if (isNotEmptyString(transactionInfo.comment)) {
-                params.set('comment', transactionInfo.comment);
+            if (isNotEmptyString(transaction.comment)) {
+                params.set('comment', transaction.comment);
             }
+
             onClose();
             router.push(`/create-transaction/expense?${params.toString()}`);
         }
-    }, [userConfirmed, hasValidTransaction, transactionInfo, defaultAccount, onClose]);
-
-    const handleUserConfirm = () => {
-        setUserConfirmed(true);
-    };
+    }, [voiceInput.state, voiceInput.data, defaultAccount, onClose]);
 
     const handleRecord = () => {
-        if (status === 'recording') {
-            stopRecording();
-        } else if (isConfirmPhase) {
-            handleUserConfirm();
-        } else {
-            handleReset();
-            startRecording();
+        switch (voiceInput.state) {
+            case 'recording':
+                voiceInput.stop();
+                break;
+            case 'confirming':
+                voiceInput.confirm();
+                break;
+            case 'idle':
+            case 'error':
+                voiceInput.start();
+                break;
+            default:
+                break;
         }
+    };
+
+    const handleCancel = () => {
+        voiceInput.cancel();
+        onClose();
     };
 
     const handleDismissError = () => {
-        clearError();
-        startRecording();
+        voiceInput.retry();
     };
 
-    const getButtonState = (): RecordButtonStateType => {
-        if (!isReady) {
-            return 'loading';
-        }
-        if (status === 'recording') {
-            return 'recording';
-        }
-        if (status === 'processing') {
-            return 'transcribing';
-        }
-        if (isConfirmPhase) {
-            return 'confirm';
-        }
-        if (userConfirmed && !hasValidTransaction) {
-            return 'thinking';
-        }
-
-        return 'idle';
-    };
-
-    const closeButtonStyle = useAnimatedStyle(() => ({
-        transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }]
-    }));
+    const contentAnimatedStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
+    const closeButtonStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${CLOSE_BUTTON_ROTATION}deg` }] }));
 
     const isVisible = isOpen || isAnimatingOut;
-
     if (!isVisible) {
         return null;
     }
 
-    const downloadProgress = Math.min(llm.downloadProgress, stt.downloadProgress);
-    const showBubble = status === 'recording' || status === 'processing' || isConfirmPhase;
-    const buttonState = getButtonState();
+    const buttonState: RecordButtonStateType = voiceInput.isReady ? (stateToButtonState[voiceInput.state] ?? 'idle') : 'loading';
+
+    const showBubble = voiceInput.state === 'recording' || voiceInput.state === 'transcribing' || voiceInput.state === 'confirming';
+    const hasError = voiceInput.state === 'error' && isNotEmptyString(voiceInput.data.error);
+
     const micContainerStyle = { paddingBottom: bottom + MIC_BOTTOM_OFFSET };
     const closeContainerStyle = { paddingBottom: bottom };
-    const hasError = isNotEmptyString(error);
     const containerStyle = [StyleSheet.absoluteFill, contentAnimatedStyle];
 
     return (
         <Animated.View style={containerStyle} pointerEvents="box-none">
-            {hasError && <VoiceInputError message={error} onDismiss={handleDismissError} />}
+            {hasError && <VoiceInputError message={voiceInput.data.error} onDismiss={handleDismissError} />}
 
             <View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={micContainerStyle} pointerEvents="box-none">
-                <VoiceInputBubble isVisible={showBubble} committedText={transcription.committed} partialText={transcription.partial} />
+                <VoiceInputBubble
+                    isVisible={showBubble}
+                    committedText={voiceInput.data.transcription.committed}
+                    partialText={voiceInput.data.transcription.partial}
+                />
                 <AnimatedRecordButton
                     state={buttonState}
-                    audioLevel={audioLevel}
-                    downloadProgress={downloadProgress}
+                    audioLevel={voiceInput.data.audioLevel}
+                    downloadProgress={voiceInput.downloadProgress}
                     onPress={handleRecord}
                 />
             </View>
