@@ -65,20 +65,17 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
 
         const text = await stt.stopStream();
 
+        // eslint-disable-next-line require-atomic-updates
+        isProcessingRef.current = false;
+
         if (!isNotEmptyString(text)) {
             setState('idle');
-            // eslint-disable-next-line require-atomic-updates
-            isProcessingRef.current = false;
 
             return;
         }
 
         setFinalTranscription(text);
         setState('confirming');
-
-        await categorization.categorize(text);
-        // eslint-disable-next-line require-atomic-updates
-        isProcessingRef.current = false;
     };
 
     const handleSilenceDetected = () => {
@@ -121,19 +118,9 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         const currentText = stt.transcription + stt.partialTranscription;
 
         if (isNotEmptyString(currentText)) {
-            isProcessingRef.current = true;
             setFinalTranscription(currentText);
             setState('confirming');
             stt.cancelStream();
-
-            void (async () => {
-                try {
-                    await categorization.categorize(currentText);
-                    isProcessingRef.current = false;
-                } catch (e: unknown) {
-                    handleError(e);
-                }
-            })();
         } else {
             void (async () => {
                 try {
@@ -155,6 +142,16 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
             onDone?.(categorization.transaction);
         } else {
             setState('processing');
+
+            void (async () => {
+                try {
+                    const result = await categorization.categorize(finalTranscription);
+                    setState('done');
+                    onDone?.(result);
+                } catch (e: unknown) {
+                    handleError(e);
+                }
+            })();
         }
     };
 
@@ -165,6 +162,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         setState('idle');
         setError(null);
         setFinalTranscription('');
+        isProcessingRef.current = false;
     };
 
     const transcription =
