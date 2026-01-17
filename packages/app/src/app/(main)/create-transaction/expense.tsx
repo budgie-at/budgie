@@ -29,7 +29,12 @@ import { transactionService } from '../../../transaction/service/transaction.ser
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount, defaultInstrument } = useSettingsContext();
-    const { accountId, categoryId, amount } = useLocalSearchParams<{ accountId?: string; categoryId?: string; amount?: string }>();
+    const { accountId, categoryId, amount, comment } = useLocalSearchParams<{
+        accountId?: string;
+        categoryId?: string;
+        amount?: string;
+        comment?: string;
+    }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
     const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
@@ -60,6 +65,12 @@ export default function CreateExpenseTransactionPage() {
             form.setValue('entries.0.categoryId', parsedCategoryId);
         }
     }, [parsedCategoryId, form]);
+
+    useEffect(() => {
+        if (isDefined(comment)) {
+            form.setValue('comment', comment);
+        }
+    }, [comment, form]);
 
     const handleGoBack = () => void goBackOrReplace('/');
 
