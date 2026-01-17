@@ -53,8 +53,7 @@ msgstr "100% Offline & Privat"
 msgid "About"
 msgstr "Über"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:89
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Konto"
@@ -110,7 +109,7 @@ msgstr "Notiz hinzufügen..."
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
-#: src/app/(main)/create-transaction/expense.tsx:78
+#: src/app/(main)/create-transaction/expense.tsx:89
 msgid "Add Expense"
 msgstr "Ausgabe hinzufügen"
 
@@ -163,7 +162,6 @@ msgid "Already syncing"
 msgstr "Synchronisiert bereits"
 
 #: src/app/(tabs)/settings/import.tsx:196
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:104
 msgid "Amount"
 msgstr "Betrag"
 
@@ -270,7 +268,6 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -294,7 +291,6 @@ msgstr "Kategorien ({selectedCategoriesCount})"
 #: src/app/(tabs)/settings/categories.tsx:36
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
 msgid "Category"
 msgstr "Kategorie"
@@ -353,10 +349,6 @@ msgstr "Schließen"
 msgid "Comment"
 msgstr "Kommentar"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:126
-msgid "Confirm"
-msgstr "Bestätigen"
-
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "PIN bestätigen"
@@ -401,7 +393,6 @@ msgstr "Kategorie konnte nicht erstellt werden"
 msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:41
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Transaktion konnte nicht erstellt werden. Bitte versuchen Sie es später erneut."
@@ -730,7 +721,7 @@ msgstr "Erwartetes Rückgabedatum"
 msgid "Expected Return Date (Optional)"
 msgstr "Erwartetes Rückgabedatum (Optional)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Ausgabe"
@@ -892,7 +883,7 @@ msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
 #: src/app/(tabs)/analytics.tsx:64
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:87
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -935,7 +926,7 @@ msgstr "Letzte Synchronisation"
 msgid "Lent"
 msgstr "Verliehen"
 
-#: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:64
+#: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:61
 msgid "Listening..."
 msgstr ""
 
@@ -988,7 +979,7 @@ msgstr "Geld übertragen"
 msgid "New Account"
 msgstr "Neues Konto"
 
-#: src/app/(main)/create-transaction/expense.tsx:71
+#: src/app/(main)/create-transaction/expense.tsx:82
 msgid "New Expense"
 msgstr "Neue Ausgabe"
 
@@ -1074,7 +1065,7 @@ msgstr "Keine passenden Transaktionen"
 msgid "No Results"
 msgstr "Keine Ergebnisse"
 
-#: src/ai/hook/use-llm-generation.hook.ts:23
+#: src/ai/hook/use-voice-input.hook.ts:202
 msgid "No speech detected"
 msgstr "Keine Sprache erkannt"
 
@@ -1302,7 +1293,6 @@ msgstr "Wählen Sie eine gültige Spalte"
 msgid "Select account"
 msgstr "Konto auswählen"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:79
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:96
 msgid "Select Account"
 msgstr "Konto auswählen"
@@ -1319,7 +1309,7 @@ msgstr "Alle auswählen"
 msgid "Select category"
 msgstr "Kategorie auswählen"
 
-#: src/app/(main)/create-transaction/expense.tsx:72
+#: src/app/(main)/create-transaction/expense.tsx:83
 #: src/app/(main)/create-transaction/income.tsx:55
 #: src/app/(main)/transactions/[id]/expense.tsx:80
 #: src/app/(main)/transactions/[id]/income.tsx:67
@@ -1364,10 +1354,10 @@ msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:25
+#: src/ai/component/voice-input-error/voice-input-error.tsx:31
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
 msgid "Something went wrong."
 msgstr "Etwas ist schief gelaufen."
@@ -1584,7 +1574,11 @@ msgstr "Transaktionen"
 msgid "Transactions synced"
 msgstr "Transaktionen synchronisiert"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
+#: src/ai/hook/use-voice-input.hook.ts:237
+msgid "Transcription failed"
+msgstr ""
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:88
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Überweisung"
@@ -1607,6 +1601,10 @@ msgstr "Versuchen Sie einen anderen Suchbegriff oder erstellen Sie ein neues Tag
 msgid "Try adjusting your filters to see more results"
 msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 
+#: src/ai/component/voice-input-error/voice-input-error.tsx:17
+msgid "Try Again"
+msgstr ""
+
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
 msgstr "Typ"
@@ -1628,10 +1626,6 @@ msgstr "Nicht kategorisiert"
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Unbekannt"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:78
-msgid "Unknown Category"
-msgstr "Unbekannte Kategorie"
 
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
@@ -1686,7 +1680,7 @@ msgstr "Warten"
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
 
-#: src/ai/hook/use-ai-transaction.hook.ts:53
+#: src/ai/hook/use-voice-input.hook.ts:111
 msgid ""
 "Which category number matches this expense? Reply with ONLY the number.\n"
 "\n"
