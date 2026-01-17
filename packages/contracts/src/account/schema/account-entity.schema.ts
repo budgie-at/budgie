@@ -14,7 +14,7 @@ import { AccountEntityTable } from '../table/account-entity.table';
 export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     ...BaseEntityFields,
     includeInNetWorth: schema => schema.default(true).describe('Determines whether the account should be included in net worth.'),
-    title: schema => schema.min(ACCOUNT_TITLE_MIN_LENGTH).max(ACCOUNT_TITLE_MAX_LENGTH).describe('The account title.'),
+    title: schema => schema.trim().min(ACCOUNT_TITLE_MIN_LENGTH).max(ACCOUNT_TITLE_MAX_LENGTH).describe('The account title.'),
     type: zodEnum(AccountTypeEnum).describe('The account type.'),
     debtType: zodEnum(AccountDebtTypeEnum).describe('The account debt type.'),
     order: schema => schema.nonnegative().default(0).describe('The account order.'),

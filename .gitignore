@@ -53,4 +53,5 @@ build-*.tar.gz
 app*.tar.gz
 
 .env
+.worktrees
 nativewind-env.d.ts
