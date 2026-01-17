@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -72,9 +72,6 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
         (current, previous) => {
             if (current && !previous) {
                 contentOpacity.value = 1;
-                if (voiceInput.isReady) {
-                    runOnJS(voiceInput.start)();
-                }
             } else if (!current && previous) {
                 runOnJS(setIsAnimatingOut)(true);
                 runOnJS(voiceInput.cancel)();
@@ -85,16 +82,18 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
                 });
             }
         },
-        [isOpen, voiceInput.isReady]
+        [isOpen]
     );
 
-    if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
-        hasAutoStartedRef.current = true;
-        voiceInput.start();
-    }
-    if (!isOpen) {
-        hasAutoStartedRef.current = false;
-    }
+    useEffect(() => {
+        if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
+            hasAutoStartedRef.current = true;
+            voiceInput.start();
+        }
+        if (!isOpen) {
+            hasAutoStartedRef.current = false;
+        }
+    }, [isOpen, voiceInput.isReady, voiceInput.start]);
 
     const handleRecord = () => {
         switch (voiceInput.state) {
