@@ -1,0 +1,23 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Pressable } from 'react-native';
+import Animated, { AnimatedStyle } from 'react-native-reanimated';
+
+import { Icon } from '../icon/icon';
+
+const ICON_SIZE = 32;
+
+interface Props {
+    readonly icon: UserIconNameEnum;
+    readonly onPress: () => void;
+    readonly animatedStyle?: AnimatedStyle;
+}
+
+export const CircularActionButton = ({ icon, onPress, animatedStyle }: Props) => {
+    const content = (
+        <Animated.View className="bg-primary rounded-full items-center justify-center w-18 h-18" style={animatedStyle}>
+            <Icon className="text-primary-reverse" icon={icon} size={ICON_SIZE} />
+        </Animated.View>
+    );
+
+    return <Pressable onPress={onPress}>{content}</Pressable>;
+};

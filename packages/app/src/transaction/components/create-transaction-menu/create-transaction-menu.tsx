@@ -3,13 +3,13 @@ import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
+import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
@@ -19,7 +19,6 @@ import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
 const CLOSE_ANIMATION_DURATION = 250;
-const TRIGGER_ICON_SIZE = 32;
 const BUTTON_ROTATION_ACTIVE = 45;
 const SPRING_CONFIG = { damping: 15, stiffness: 200, mass: 0.8 };
 const CLOSE_SPRING_CONFIG = { damping: 20, stiffness: 300, mass: 0.5 };
@@ -148,11 +147,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                         />
                     ))}
 
-                    <Pressable onPress={handleClose}>
-                        <Animated.View className="bg-primary rounded-full items-center justify-center w-18 h-18" style={buttonStyle}>
-                            <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />
-                        </Animated.View>
-                    </Pressable>
+                    <CircularActionButton icon={UserIconNameEnum.Plus} onPress={handleClose} animatedStyle={buttonStyle} />
                 </View>
             </View>
         </View>
