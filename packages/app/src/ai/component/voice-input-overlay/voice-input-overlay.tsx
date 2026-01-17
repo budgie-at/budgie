@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
+import { AITransactionInterface } from '../../interface/ai-transaction.interface';
 import { RecordButtonStateType } from '../../type/record-button-state.type';
 import { AnimatedRecordButton } from '../animated-record-button/animated-record-button';
 import { VoiceInputBubble } from '../voice-input-bubble/voice-input-bubble';
@@ -34,23 +35,49 @@ const stateToButtonState: Record<string, RecordButtonStateType> = {
     error: 'idle'
 };
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-lines-per-function
 export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const { defaultAccount } = useSettingsContext();
-    const voiceInput = useVoiceInput();
 
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
     const contentOpacity = useSharedValue(isOpen ? 1 : 0);
+
+    const handleDone = (transaction: AITransactionInterface) => {
+        const accountId = defaultAccount?.id;
+
+        const params = new URLSearchParams();
+        if (isPositiveNumber(transaction.amount)) {
+            params.set('amount', String(transaction.amount));
+        }
+        if (isDefined(transaction.category)) {
+            params.set('categoryId', String(transaction.category.id));
+        }
+        if (isDefined(accountId)) {
+            params.set('accountId', String(accountId));
+        }
+        if (isNotEmptyString(transaction.comment)) {
+            params.set('comment', transaction.comment);
+        }
+
+        onClose();
+        router.push(`/create-transaction/expense?${params.toString()}`);
+    };
+
+    const voiceInput = useVoiceInput({ onDone: handleDone });
 
     useAnimatedReaction(
         () => isOpen,
         (current, previous) => {
             if (current && !previous) {
                 contentOpacity.value = 1;
+                if (voiceInput.isReady) {
+                    runOnJS(voiceInput.start)();
+                }
             } else if (!current && previous) {
                 runOnJS(setIsAnimatingOut)(true);
+                runOnJS(voiceInput.cancel)();
                 contentOpacity.value = withTiming(0, { duration: EXIT_DURATION }, finished => {
                     if (finished) {
                         runOnJS(setIsAnimatingOut)(false);
@@ -58,54 +85,16 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
                 });
             }
         },
-        [isOpen]
+        [isOpen, voiceInput.isReady]
     );
 
-    useEffect(() => {
-        if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
-            hasAutoStartedRef.current = true;
-            voiceInput.start();
-        }
-        if (!isOpen) {
-            hasAutoStartedRef.current = false;
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, voiceInput.isReady]);
-
-    useEffect(() => {
-        if (isOpen) {
-            return () => {
-                voiceInput.cancel();
-            };
-        }
-
-        return () => void 0;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen]);
-
-    useEffect(() => {
-        if (voiceInput.state === 'done' && voiceInput.data.transaction !== null) {
-            const { transaction } = voiceInput.data;
-            const accountId = defaultAccount?.id;
-
-            const params = new URLSearchParams();
-            if (isPositiveNumber(transaction.amount)) {
-                params.set('amount', String(transaction.amount));
-            }
-            if (isDefined(transaction.category)) {
-                params.set('categoryId', String(transaction.category.id));
-            }
-            if (isDefined(accountId)) {
-                params.set('accountId', String(accountId));
-            }
-            if (isNotEmptyString(transaction.comment)) {
-                params.set('comment', transaction.comment);
-            }
-
-            onClose();
-            router.push(`/create-transaction/expense?${params.toString()}`);
-        }
-    }, [voiceInput.state, voiceInput.data, defaultAccount, onClose]);
+    if (isOpen && voiceInput.isReady && !hasAutoStartedRef.current) {
+        hasAutoStartedRef.current = true;
+        voiceInput.start();
+    }
+    if (!isOpen) {
+        hasAutoStartedRef.current = false;
+    }
 
     const handleRecord = () => {
         switch (voiceInput.state) {
