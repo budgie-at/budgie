@@ -53,8 +53,7 @@ msgstr "100% офлайн і приватно"
 msgid "About"
 msgstr "Про застосунок"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:94
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:88
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:89
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Рахунок"
@@ -110,7 +109,7 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:78
+#: src/app/(main)/create-transaction/expense.tsx:89
 msgid "Add Expense"
 msgstr "Додати витрату"
 
@@ -163,7 +162,6 @@ msgid "Already syncing"
 msgstr "Вже синхронізується"
 
 #: src/app/(tabs)/settings/import.tsx:196
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:104
 msgid "Amount"
 msgstr "Сума"
 
@@ -265,13 +263,11 @@ msgid "Budgie"
 msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
-#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:63
+#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:117
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:110
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -291,28 +287,9 @@ msgstr "Категорії"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
-#: src/ai/hook/use-ai-transaction.hook.ts:47
-msgid ""
-"Categorize this expense. Reply with ONLY a number (1-{categoryCount}).\n"
-"\n"
-"Categories:\n"
-"{categoriesWithIds}\n"
-"\n"
-"IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
-"Reply with the category number only."
-msgstr ""
-"Класифікуйте цю витрату. Відповідайте ЛИШЕ номером (1-{categoryCount}).\n"
-"\n"
-"Категорії:\n"
-"{categoriesWithIds}\n"
-"\n"
-"ВАЖЛИВО: Продукти харчування (м'ясо, овочі, бакалія) належать до категорії Бакалія/Їжа, а НЕ до Акції/Інвестиції.\n"
-"Відповідайте лише номером категорії."
-
 #: src/app/(tabs)/settings/categories.tsx:36
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:86
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
 msgid "Category"
 msgstr "Категорія"
@@ -371,10 +348,6 @@ msgstr "Закрити"
 msgid "Comment"
 msgstr "Коментар"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:126
-msgid "Confirm"
-msgstr "Підтвердити"
-
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
@@ -391,15 +364,15 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:45
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:67
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:60
 msgid "Convert to Transfer"
-msgstr ""
+msgstr "Перетворити на переказ"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:88
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:58
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -419,7 +392,6 @@ msgstr "Не вдалося створити категорію"
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:41
 #: src/transaction/hook/use-create-transaction-form.hook.ts:96
 msgid "Could not create transaction. Please try again later."
 msgstr "Не вдалося створити транзакцію. Будь ласка, спробуйте пізніше."
@@ -639,7 +611,7 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:79
+#: src/app/(main)/transactions/[id]/expense.tsx:74
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
@@ -744,7 +716,7 @@ msgstr "Очікувана дата повернення"
 msgid "Expected Return Date (Optional)"
 msgstr "Очікувана дата повернення (Необов'язково)"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:85
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Витрата"
@@ -906,7 +878,7 @@ msgid "Include in Net Worth"
 msgstr "Включити в чисту вартість"
 
 #: src/app/(tabs)/analytics.tsx:64
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:87
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -948,6 +920,10 @@ msgstr "Остання синхронізація"
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
 msgstr "Позичено"
+
+#: src/ai/component/voice-input-bubble/voice-input-bubble.tsx:61
+msgid "Listening..."
+msgstr "Слухаю..."
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
@@ -998,7 +974,7 @@ msgstr "Переказати гроші"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:71
+#: src/app/(main)/create-transaction/expense.tsx:82
 msgid "New Expense"
 msgstr "Нова витрата"
 
@@ -1084,12 +1060,8 @@ msgstr "Немає відповідних транзакцій"
 msgid "No Results"
 msgstr "Немає результатів"
 
-#: src/ai/hook/use-llm-generation.hook.ts:21
-msgid "No speech detected"
-msgstr "Мовлення не виявлено"
-
 #: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:98
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:75
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:83
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -1172,7 +1144,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:57
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:45
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1282,7 +1254,7 @@ msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:86
 #: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:93
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:69
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:77
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Пошук тегів..."
@@ -1308,13 +1280,8 @@ msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:53
-#: src/account/component/account-selector/account-selector.tsx:41
+#: src/account/component/account-selector/account-selector.tsx:51
 msgid "Select account"
-msgstr "Виберіть рахунок"
-
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:79
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:97
-msgid "Select Account"
 msgstr "Виберіть рахунок"
 
 #: src/sync/component/account-selection-step/account-selection-step.tsx:23
@@ -1329,9 +1296,9 @@ msgstr "Вибрати все"
 msgid "Select category"
 msgstr "Виберіть категорію"
 
-#: src/app/(main)/create-transaction/expense.tsx:72
+#: src/app/(main)/create-transaction/expense.tsx:83
 #: src/app/(main)/create-transaction/income.tsx:55
-#: src/app/(main)/transactions/[id]/expense.tsx:80
+#: src/app/(main)/transactions/[id]/expense.tsx:75
 #: src/app/(main)/transactions/[id]/income.tsx:67
 msgid "Select Category"
 msgstr "Виберіть категорію"
@@ -1344,9 +1311,9 @@ msgstr "Виберіть стовпець..."
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:91
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
 msgid "Select the destination account for this transfer."
-msgstr ""
+msgstr "Оберіть рахунок призначення для цього переказу."
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1378,10 +1345,10 @@ msgstr "Показати цей рахунок на головній сторі�
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:25
+#: src/ai/component/voice-input-error/voice-input-error.tsx:31
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/transaction/hook/use-create-expense-transaction.mutation.ts:40
 #: src/transaction/hook/use-create-transaction-form.hook.ts:95
 msgid "Something went wrong."
 msgstr "Щось пішло не так."
@@ -1594,7 +1561,11 @@ msgstr "Транзакції"
 msgid "Transactions synced"
 msgstr "Транзакції синхронізовано"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:87
+#: src/ai/hook/use-streaming-transcribe.hook.ts:117
+msgid "Transcription failed"
+msgstr "Помилка транскрипції"
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:88
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Переказ"
@@ -1608,7 +1579,7 @@ msgstr "Переказ"
 msgid "Try a different search term"
 msgstr "Спробуйте інший пошуковий запит"
 
-#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:73
+#: src/tag/components/tags-selector-bottom-sheet/tags-selector-bottom-sheet.tsx:81
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
@@ -1616,6 +1587,10 @@ msgstr "Спробуйте інший пошуковий запит або ст�
 #: src/transaction/components/transaction-list/transaction-list.tsx:42
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
+
+#: src/ai/component/voice-input-error/voice-input-error.tsx:17
+msgid "Try Again"
+msgstr "Спробувати знову"
 
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
 msgid "Type"
@@ -1639,10 +1614,6 @@ msgstr "Без категорії"
 msgid "Unknown"
 msgstr "Невідомо"
 
-#: src/transaction/components/ai-transaction-preview-card/ai-transaction-preview-card.tsx:78
-msgid "Unknown Category"
-msgstr "Невідома категорія"
-
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Актуальний"
@@ -1651,7 +1622,7 @@ msgstr "Актуальний"
 msgid "Update Account"
 msgstr "Оновити рахунок"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:89
+#: src/app/(main)/transactions/[id]/expense.tsx:84
 msgid "Update Expense"
 msgstr "Оновити витрату"
 
@@ -1707,10 +1678,6 @@ msgstr "Ви дали гроші"
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
 msgstr "Ви отримали гроші"
-
-#: src/app/(main)/ai.tsx:106
-msgid "Your message:"
-msgstr "Ваше повідомлення:"
 
 #: src/sync/component/token-input-step/token-input-step.tsx:29
 msgid "Your token is stored securely in the database. Sync continues in the background."
