@@ -101,11 +101,11 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                     </HapticPressable>
                     <View className="gap-y-md">
                         <Button
+                            leftIcon={UserIconNameEnum.CircleCheck}
                             content={submitButtonContent}
                             disabled={isConvertDisabled}
                             onPress={handleConvert}
                             variant="default"
-                            size="md"
                         />
                         <Button onPress={handleCancel} content={t`Cancel`} variant="ghost" disabled={isLoading} />
                     </View>
