@@ -1,8 +1,10 @@
+import { Href } from 'expo-router';
+
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
-export const buildExpenseUrl = (transaction: AITransactionInterface, accountId: number | undefined): string => {
+export const buildExpenseUrl = (transaction: AITransactionInterface, accountId: number | undefined): Href => {
     const params = new URLSearchParams();
 
     if (isPositiveNumber(transaction.amount)) {
