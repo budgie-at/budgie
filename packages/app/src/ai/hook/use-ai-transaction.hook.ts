@@ -19,6 +19,7 @@ const extractCategoryIndex = (response: string): number | null => {
 
 const findCategoryByTitle = (response: string, categories: CategoryItem[]): number | null => {
     const normalized = response.trim().toLowerCase();
+    const words = normalized.split(/\s+/u);
 
     const exact = categories.find(cat => cat.title.toLowerCase() === normalized);
     if (isDefined(exact)) {
@@ -30,9 +31,14 @@ const findCategoryByTitle = (response: string, categories: CategoryItem[]): numb
         return contains.id;
     }
 
-    const [firstWord] = normalized.split(/\s+/u);
+    for (const word of words) {
+        const match = categories.find(cat => cat.title.toLowerCase().includes(word) || word.includes(cat.title.toLowerCase()));
+        if (isDefined(match)) {
+            return match.id;
+        }
+    }
 
-    return categories.find(cat => cat.title.toLowerCase().startsWith(firstWord))?.id ?? null;
+    return null;
 };
 
 export const useAiTransaction = (llm: ReturnType<typeof useLLM>, prompt: string) => {
