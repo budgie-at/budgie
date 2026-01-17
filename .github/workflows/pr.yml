@@ -229,14 +229,10 @@ jobs:
 
       - name: Expo Prebuild
         working-directory: packages/app
-        run: npx expo prebuild -p ios --no-install
-
-      - name: Install Pods with precompiled React Native
-        working-directory: packages/app/ios
         env:
           RCT_USE_PREBUILT_RNCORE: "1"
           RCT_USE_RN_DEP: "1"
-        run: pod install
+        run: npx expo prebuild -p ios
 
       - name: Cache Xcode DerivedData
         uses: actions/cache@v4
