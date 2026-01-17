@@ -21,15 +21,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          use_sticky_comment: "true"
           prompt: |
-            Review PR #${{ github.event.pull_request.number }} in ${{ github.repository }}.
-            Use CLAUDE.md for style guidance. Be brief and actionable.
-
-            Post ONE comment using: gh pr comment ${{ github.event.pull_request.number }} --body "..." --edit-last || gh pr comment ${{ github.event.pull_request.number }} --body "..."
-
-            Format:
-            ## 🤖 Claude Review
-            **Summary:** (1 sentence)
-            **Issues:** (bullet list or "None")
-            **Suggestions:** (bullet list or "None")
-          claude_args: '--allowed-tools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"'
+            Review this PR. Use CLAUDE.md for style guidance. Be brief and actionable.
+            Format: Summary (1 sentence), Issues (bullets or "None"), Suggestions (bullets or "None")
