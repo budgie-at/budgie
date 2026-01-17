@@ -1,12 +1,13 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
-import { useLlmContext } from '../context/llm.context';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { buildCategorizationPrompt, getLimitedCategories } from '../util/build-categorization-prompt.util';
+import { buildSystemPrompt, getFewShotExamples, getLimitedCategories } from '../util/build-categorization-prompt.util';
 import { extractCategoryFromResponse } from '../util/extract-category-from-response.util';
 import { parseNumberFromMessage } from '../util/parse-number-words.util';
+
+import { useLlm } from './use-llm.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -21,8 +22,12 @@ interface UseLlmCategorizationReturn {
 }
 
 export const useLlmCategorization = (): UseLlmCategorizationReturn => {
-    const { llm } = useLlmContext();
     const { categories } = useAllCategoriesQuery();
+
+    const systemPrompt = useMemo(() => buildSystemPrompt(categories), [categories]);
+    const initialMessageHistory = useMemo(() => getFewShotExamples(), []);
+
+    const llm = useLlm({ systemPrompt, initialMessageHistory });
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
@@ -37,22 +42,15 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
         comment: prompt
     });
 
-    // eslint-disable-next-line max-statements
     const categorize = async (text: string): Promise<AITransactionInterface> => {
-        if (llm.isGenerating) {
-            llm.interrupt();
-        }
-
         setStatus('processing');
         setError(null);
         setTransaction(null);
 
-        const messages = buildCategorizationPrompt(text, categories);
-
         try {
-            await llm.generate(messages);
+            const response = await llm.sendMessage(text);
+            const result = buildTransaction(text, response);
 
-            const result = buildTransaction(text, llm.response);
             setTransaction(result);
             setStatus('done');
 
@@ -66,9 +64,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
     };
 
     const reset = () => {
-        if (llm.isGenerating) {
-            llm.interrupt();
-        }
+        void llm.interrupt();
         setStatus('idle');
         setTransaction(null);
         setError(null);
