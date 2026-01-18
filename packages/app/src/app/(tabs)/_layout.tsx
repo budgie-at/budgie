@@ -1,12 +1,11 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
-import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-input-overlay';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
@@ -15,20 +14,21 @@ import { CreateTransactionTrigger } from '../../transaction/components/create-tr
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
-    const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isAvailable: isAiAvailable } = useLlmContext();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
 
     const containerStyle = { paddingBottom: bottom };
 
-    const handleCloseMenu = useCallback(() => void setIsMenuOpen(false), [setIsMenuOpen]);
+    const handleOpenMenu = () => void setIsMenuOpen(true);
+    const handleCloseMenu = () => void setIsMenuOpen(false);
 
-    const handleOpenVoiceInput = useCallback(() => {
+    const handleOpenVoiceInput = () => {
         setIsMenuOpen(false);
         setIsVoiceInputOpen(true);
-    }, [setIsMenuOpen]);
+    };
 
-    const handleCloseVoiceInput = useCallback(() => void setIsVoiceInputOpen(false), []);
+    const handleCloseVoiceInput = () => void setIsVoiceInputOpen(false);
 
     const voiceInputContextValue = useMemo(
         () => ({
@@ -36,7 +36,7 @@ export default function TabsLayout() {
             open: handleOpenVoiceInput,
             close: handleCloseVoiceInput
         }),
-        [isVoiceInputOpen, handleOpenVoiceInput, handleCloseVoiceInput]
+        [isVoiceInputOpen]
     );
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
@@ -60,6 +60,7 @@ export default function TabsLayout() {
                     <TabTrigger name="transactions" href="/transactions" />
                     <TabTrigger name="analytics" href="/analytics" />
                     <TabTrigger name="settings" href="/settings" />
+                    <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
                 </TabList>
 
                 <BlurGradient position="bottom">
@@ -67,7 +68,7 @@ export default function TabsLayout() {
                         <View className="flex-row items-center justify-between px-lg pb-lg pt-md" style={containerStyle}>
                             <TabButtons />
 
-                            <CreateTransactionTrigger isOpen={isMenuOpen} onPress={openMenu} />
+                            <CreateTransactionTrigger isOpen={isMenuOpen} onPress={handleOpenMenu} />
                         </View>
                     </View>
                 </BlurGradient>

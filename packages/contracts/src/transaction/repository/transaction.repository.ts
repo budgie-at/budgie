@@ -210,6 +210,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
     }
 
+    async unconsolidateTransfersByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        for (const accountId of accountIds) {
+            await this.convertTransfersFromAccountToIncome(accountId, tx);
+            await this.convertTransfersToAccountToExpense(accountId, tx);
+        }
+    }
+
     protected override buildAccountCondition(accountIds: number[] | null) {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(

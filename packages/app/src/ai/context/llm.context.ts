@@ -1,25 +1,11 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
-import type { useSpeechToText } from 'react-native-executorch';
-
-export interface GenerateOptionsInterface {
-    maxNewTokens?: number;
-}
-
-export interface LlmInterface {
-    isReady: boolean;
-    isInitializing: boolean;
-    isGenerating: boolean;
-    downloadProgress: number;
-    error: string | null;
-    generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
-    interrupt: () => void;
-}
+import type { useLLM, useSpeechToText } from 'react-native-executorch';
 
 export interface LlmContextInterface {
     isAvailable: boolean;
-    llm: LlmInterface;
+    llm: ReturnType<typeof useLLM>;
     stt: ReturnType<typeof useSpeechToText>;
 }
 
