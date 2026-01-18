@@ -123,9 +123,9 @@ export class TransferPairRepository {
                         (expense_account.instrument_id = income_account.instrument_id
                          AND tf.expense_entry_amount = tf.income_entry_amount)
                         OR
-                        -- Different currency: within 5% after exchange rate conversion
+                        -- Different currency: within 5% after exchange rate conversion (divide by rate to get base currency)
                         (expense_account.instrument_id != income_account.instrument_id
-                         AND ABS(tf.expense_entry_amount * tf.expense_entry_exchange_rate - tf.income_entry_amount * tf.income_entry_exchange_rate) < (tf.expense_entry_amount * tf.expense_entry_exchange_rate * 0.05))
+                         AND ABS(tf.expense_entry_amount / tf.expense_entry_exchange_rate - tf.income_entry_amount / tf.income_entry_exchange_rate) < (tf.expense_entry_amount / tf.expense_entry_exchange_rate * 0.05))
                     )
             ),
             ranked_pairs AS (
