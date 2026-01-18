@@ -16,7 +16,8 @@
         "**/node_modules/**",
         "**/ios/**",
         "**/landing/**",
-        "**/android/**"
+        "**/android/**",
+        "**/.worktrees/**"
     ],
     "absolute": false,
     "gitignore": true,

@@ -4,7 +4,7 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
@@ -25,6 +25,7 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
@@ -44,8 +45,8 @@ void SplashScreen.preventAutoHideAsync();
 
 const SQLOptions = { enableChangeListener: true };
 // eslint-disable-next-line dot-notation
-const isAiDisabled = process.env['AI_DISABLE'] === 'true';
-const AiProviderWrapper = isAiDisabled ? Fragment : LlmProvider;
+const isAiDisabled = process.env['EXPO_PUBLIC_AI_DISABLE'] === 'true';
+const AiProviderWrapper = isAiDisabled ? LlmDisabledProvider : LlmProvider;
 
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
