@@ -1,18 +1,13 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    IncomeTransactionCreateInputSchema,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -21,6 +16,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
+import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -62,28 +58,12 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         <FormProvider {...form}>
             <Page
                 header={
-                    <PageHeader
-                        title={t`Edit Income`}
-                        description={t`Select Category`}
-                        icon={UserIconNameEnum.TrendingUp}
-                        iconVariant="positive"
-                        onGoBack={handleGoBack}
-                    />
+                    <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
                 }
-                footer={
-                    <TransactionFormFooter
-                        variant="positive"
-                        buttonText={t`Update Income`}
-                        onSubmit={handleSubmit}
-                        onDelete={handleDelete}
-                    />
-                }
+                footer={<TransactionFormFooter variant="positive" buttonText={t`Update Income`} onSubmit={handleSubmit} />}
+                withBlur
             >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
+                <BlurScrollView>
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" />
 
                     {isDefined(transaction.entries[0]?.mccCategory) ? (
@@ -106,7 +86,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </KeyboardAwareScrollView>
+                </BlurScrollView>
             </Page>
         </FormProvider>
     );

@@ -1,13 +1,13 @@
 /* jscpd:ignore-start */
-import { AccountTypeEnum, TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -72,22 +72,11 @@ export default function CreateTransferTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page
-                header={
-                    <PageHeader
-                        title={t`New Transfer`}
-                        description={t`Move Money`}
-                        icon={UserIconNameEnum.ArrowRightLeft}
-                        iconVariant="default"
-                        onGoBack={handleGoBack}
-                    />
-                }
+                header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />}
                 footer={<TransactionFormFooter variant="default" buttonText={t`Add Transfer`} onSubmit={handleSubmit} />}
+                withBlur
             >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
+                <BlurScrollView>
                     <TransferTransactionFormAccounts variant="default" />
 
                     <TransactionFormAmountBase
@@ -105,7 +94,7 @@ export default function CreateTransferTransactionPage() {
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </KeyboardAwareScrollView>
+                </BlurScrollView>
             </Page>
         </FormProvider>
     );
