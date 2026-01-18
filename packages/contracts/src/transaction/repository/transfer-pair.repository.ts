@@ -8,7 +8,8 @@ export class TransferPairRepository {
     // eslint-disable-next-line max-lines-per-function
     async findCandidates(): Promise<TransferPairCandidateInterface[]> {
         const sql = `
-            WITH iban_matched_entries AS (
+            WITH forward_matched AS (
+                -- Forward matching: expense.to_iban -> income account IBAN
                 SELECT
                     expense_entry.id as expense_entry_id,
                     expense_entry.transaction_id as expense_transaction_id,
@@ -21,7 +22,8 @@ export class TransferPairRepository {
                     income_entry.account_id as income_account_id,
                     income_entry.amount as income_entry_amount,
                     income_entry.exchange_rate as income_entry_exchange_rate,
-                    income_entry.to_iban as income_entry_to_iban
+                    income_entry.to_iban as income_entry_to_iban,
+                    'forward' as match_type
                 FROM transaction_entries expense_entry
                 INNER JOIN mcc_categories expense_mcc ON
                     expense_entry.mcc_category_id = expense_mcc.id
@@ -39,6 +41,52 @@ export class TransferPairRepository {
                     AND income_mcc.mcc_group_id = 10
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.account_id != income_account.id
+            ),
+            reverse_matched AS (
+                -- Reverse matching: income.to_iban -> expense account IBAN
+                -- Used for cross-currency FOP transfers where expense.to_iban points to final destination
+                SELECT
+                    expense_entry.id as expense_entry_id,
+                    expense_entry.transaction_id as expense_transaction_id,
+                    expense_entry.account_id as expense_account_id,
+                    expense_entry.amount as expense_entry_amount,
+                    expense_entry.exchange_rate as expense_entry_exchange_rate,
+                    expense_entry.to_iban as expense_entry_to_iban,
+                    income_entry.id as income_entry_id,
+                    income_entry.transaction_id as income_transaction_id,
+                    income_entry.account_id as income_account_id,
+                    income_entry.amount as income_entry_amount,
+                    income_entry.exchange_rate as income_entry_exchange_rate,
+                    income_entry.to_iban as income_entry_to_iban,
+                    'reverse' as match_type
+                FROM transaction_entries income_entry
+                INNER JOIN mcc_categories income_mcc ON
+                    income_entry.mcc_category_id = income_mcc.id
+                    AND income_mcc.mcc_group_id = 10
+                INNER JOIN accounts expense_account ON
+                    income_entry.to_iban IS NOT NULL
+                    AND expense_account.iban IS NOT NULL
+                    AND income_entry.to_iban = expense_account.iban
+                INNER JOIN transaction_entries expense_entry ON
+                    expense_entry.account_id = expense_account.id
+                    AND expense_entry.deleted_at IS NULL
+                    AND expense_entry.id != income_entry.id
+                INNER JOIN mcc_categories expense_mcc ON
+                    expense_entry.mcc_category_id = expense_mcc.id
+                    AND expense_mcc.mcc_group_id = 10
+                WHERE income_entry.deleted_at IS NULL
+                    AND income_entry.account_id != expense_account.id
+            ),
+            iban_matched_entries AS (
+                -- Combine forward and reverse matches, prefer forward matches
+                SELECT * FROM forward_matched
+                UNION
+                SELECT * FROM reverse_matched
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM forward_matched fm
+                    WHERE fm.expense_entry_id = reverse_matched.expense_entry_id
+                    AND fm.income_entry_id = reverse_matched.income_entry_id
+                )
             ),
             transaction_filtered AS (
                 SELECT
@@ -67,13 +115,18 @@ export class TransferPairRepository {
                 FROM transaction_filtered tf
                 INNER JOIN accounts expense_account ON tf.expense_account_id = expense_account.id
                 INNER JOIN accounts income_account ON tf.income_account_id = income_account.id
-                WHERE (
-                    (expense_account.instrument_id = income_account.instrument_id
-                     AND tf.expense_entry_amount = tf.income_entry_amount)
-                    OR
-                    (expense_account.instrument_id != income_account.instrument_id
-                     AND ABS(tf.expense_entry_amount * tf.expense_entry_exchange_rate - tf.income_entry_amount * tf.income_entry_exchange_rate) < (tf.expense_entry_amount * tf.expense_entry_exchange_rate * 0.05))
-                )
+                WHERE
+                    -- Time constraint: within 12 hours (43200 seconds)
+                    ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER)) <= 43200
+                    AND (
+                        -- Same currency: exact amount match
+                        (expense_account.instrument_id = income_account.instrument_id
+                         AND tf.expense_entry_amount = tf.income_entry_amount)
+                        OR
+                        -- Different currency: within 5% after exchange rate conversion
+                        (expense_account.instrument_id != income_account.instrument_id
+                         AND ABS(tf.expense_entry_amount * tf.expense_entry_exchange_rate - tf.income_entry_amount * tf.income_entry_exchange_rate) < (tf.expense_entry_amount * tf.expense_entry_exchange_rate * 0.05))
+                    )
             ),
             ranked_pairs AS (
                 SELECT
@@ -103,7 +156,8 @@ export class TransferPairRepository {
                 income_account_id as income_entry_account_id,
                 income_entry_amount,
                 income_entry_exchange_rate,
-                income_entry_to_iban
+                income_entry_to_iban,
+                match_type
             FROM ranked_pairs
             WHERE expense_rank = 1 AND income_rank = 1
         `;
