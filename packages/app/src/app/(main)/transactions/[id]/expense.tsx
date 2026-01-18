@@ -24,6 +24,7 @@ import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.u
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { ConvertExpenseToTransferBottomSheet } from '../../../../transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet';
+import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -76,18 +77,12 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                             icon={UserIconNameEnum.TrendingDown}
                             iconVariant="destructive"
                             onGoBack={handleGoBack}
+                            right={
+                                <TransactionActionsMenu onDelete={handleDelete} onChangeType={handleOpenConvert} currentType="expense" />
+                            }
                         />
                     }
-                    footer={
-                        <TransactionFormFooter
-                            variant="destructive"
-                            buttonText={t`Update Expense`}
-                            onSubmit={handleSubmit}
-                            onDelete={handleDelete}
-                            showConvertButton
-                            onConvert={handleOpenConvert}
-                        />
-                    }
+                    footer={<TransactionFormFooter variant="destructive" buttonText={t`Update Expense`} onSubmit={handleSubmit} />}
                 >
                     <KeyboardAwareScrollView
                         keyboardShouldPersistTaps="handled"
