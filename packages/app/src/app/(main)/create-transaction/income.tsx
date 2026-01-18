@@ -1,12 +1,12 @@
 /* jscpd:ignore-start */
-import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -49,22 +49,11 @@ export default function CreateIncomeTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page
-                header={
-                    <PageHeader
-                        title={t`New Income`}
-                        description={t`Select Category`}
-                        icon={UserIconNameEnum.TrendingUp}
-                        iconVariant="positive"
-                        onGoBack={handleGoBack}
-                    />
-                }
+                header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}
                 footer={<TransactionFormFooter variant="positive" buttonText={t`Add Income`} onSubmit={handleSubmit} />}
+                withBlur
             >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
+                <BlurScrollView>
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="positive" autoFocus />
 
                     <FormLayoutGroup>
@@ -83,7 +72,7 @@ export default function CreateIncomeTransactionPage() {
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </KeyboardAwareScrollView>
+                </BlurScrollView>
             </Page>
         </FormProvider>
     );
