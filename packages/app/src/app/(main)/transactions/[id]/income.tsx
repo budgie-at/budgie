@@ -69,7 +69,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                         icon={UserIconNameEnum.TrendingUp}
                         iconVariant="positive"
                         onGoBack={handleGoBack}
-                        right={<TransactionActionsMenu onDelete={handleDelete} currentType="income" />}
+                        right={<TransactionActionsMenu onDelete={handleDelete} />}
                     />
                 }
                 footer={<TransactionFormFooter variant="positive" buttonText={t`Update Income`} onSubmit={handleSubmit} />}
