@@ -6,8 +6,6 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_TITLE: ${{ github.event.pull_request.title }}
   MAESTRO_CLI_NO_ANALYTICS: false
-  RCT_USE_PREBUILT_RNCORE: 1
-  RCT_USE_RN_DEP: 1
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
@@ -213,65 +211,29 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Select Xcode 16.4
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.4'
-
-      - name: Restore CocoaPods cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
-          restore-keys: pods-${{ runner.os }}-
-
-      - name: Expo Prebuild
+      - name: Build app with EAS
+        id: eas-build
         working-directory: packages/app
-        env:
-          APP_VARIANT: preview
-          RCT_USE_PREBUILT_RNCORE: "1"
-          RCT_USE_RN_DEP: "1"
-        run: npx expo prebuild -p ios
+        run: |
+          BUILD_JSON=$(eas build --profile e2e --platform ios --non-interactive --json)
+          echo "$BUILD_JSON"
+          BUILD_URL=$(echo "$BUILD_JSON" | jq -r '.[0].artifacts.buildUrl')
+          echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
 
-      - name: Restore Xcode DerivedData cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
-          restore-keys: deriveddata-${{ runner.os }}-
+      - name: Download and extract build
+        run: |
+          curl -L -o app.tar.gz "${{ steps.eas-build.outputs.build_url }}"
+          tar -xzf app.tar.gz
+          APP_PATH=$(find . -name "*.app" -type d | head -1)
+          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
 
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 16 Pro'
 
-      - name: Build app
-        working-directory: packages/app
-        env:
-          APP_VARIANT: preview
-        run: |
-          cd ios
-          WORKSPACE=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
-          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
-          xcodebuild build \
-            -workspace "$WORKSPACE" \
-            -scheme "$SCHEME" \
-            -sdk iphonesimulator \
-            -configuration Release \
-            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-            -jobs $(sysctl -n hw.ncpu) \
-            CODE_SIGN_IDENTITY="-" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            COMPILER_INDEX_STORE_ENABLE=NO
-
       - name: Install app on Simulator
         run: |
-          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
           echo "Installing app from: $APP_PATH"
           xcrun simctl install booted "$APP_PATH"
 
@@ -294,22 +256,6 @@ jobs:
           path: |
             tests/app-tests/.maestro/**
             tests/app-tests/*.mp4
-
-      - name: Save CocoaPods cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
-
-      - name: Save Xcode DerivedData cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
 
   e2e-android:
     if: false
