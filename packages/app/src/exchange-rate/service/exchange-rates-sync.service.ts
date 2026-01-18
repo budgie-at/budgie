@@ -22,7 +22,6 @@ class ExchangeRatesSyncService {
 
         for (const instrument of await instrumentRepository.getAll()) {
             if (instrument.code !== baseInstrument.code) {
-                 
                 await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
             }
         }
