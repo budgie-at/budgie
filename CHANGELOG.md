@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/budgie-at/budgie/compare/v2.13.2...v2.14.0) (2026-01-18)
+
+### Bug Fixes
+
+- **app:** address critical issues in popover animation ([d4613a0](https://github.com/budgie-at/budgie/commit/d4613a0b422cdd54be2dbff45d14f4a1cac6ef51))
+- **app:** improve popover menu accessibility and fix race conditions ([800feb7](https://github.com/budgie-at/budgie/commit/800feb7b157ead38fc361d505011a5d11d32fad4))
+- **app:** remove redundant accessibilityLabel from PopoverMenuItem ([d5088a0](https://github.com/budgie-at/budgie/commit/d5088a09468ce0e5551d64e0b35fbb249e1bedcd))
+- **app:** render ConvertExpenseToTransferBottomSheet outside menu ([87a4476](https://github.com/budgie-at/budgie/commit/87a4476b97e115f2e18071c9cac5028d7b33c4d9))
+- **ci:** use eas build:run to install app on simulator ([9a9504e](https://github.com/budgie-at/budgie/commit/9a9504edae7957adf4004388d9884ff89c1c8ba4))
+
+### Features
+
+- **app:** add blur header/footer to transaction pages ([8b7ef4d](https://github.com/budgie-at/budgie/commit/8b7ef4d987d6820d62198086fcfc6d4c5eada8fa))
+- **app:** add transaction actions menu with animated popover ([9ee3db7](https://github.com/budgie-at/budgie/commit/9ee3db7dbbd6a765c4aa79f8bbd3a784c3cab75b))
+
+### Reverts
+
+- remove EAS Build changes, keep only Claude Code Review ([829fcca](https://github.com/budgie-at/budgie/commit/829fcca8d5af75e7e8f2233c9a1f88e6382c771a))
+
 ## [2.13.2](https://github.com/budgie-at/budgie/compare/v2.13.1...v2.13.2) (2026-01-18)
 
 ### Bug Fixes
