@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View, ViewStyle, useWindowDimensions } from 'react-native';
 import Animated, { Easing, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -82,6 +83,7 @@ const usePopoverAnimation = (isOpen: boolean) => {
 };
 
 export const PopoverMenu = ({ isOpen, onClose, children, anchor }: Props) => {
+    const { t } = useLingui();
     const { width: screenWidth } = useWindowDimensions();
     const { isAnimatingOut, backdropStyle, menuStyle } = usePopoverAnimation(isOpen);
 
@@ -98,12 +100,12 @@ export const PopoverMenu = ({ isOpen, onClose, children, anchor }: Props) => {
 
     return (
         <Modal transparent visible={shouldRender} animationType="none" onRequestClose={onClose}>
-            <View className="flex-1">
-                <Pressable onPress={onClose} style={StyleSheet.absoluteFill}>
+            <View className="flex-1" accessibilityViewIsModal>
+                <Pressable onPress={onClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
                     <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
                 </Pressable>
 
-                <View style={menuContainerStyle}>
+                <View style={menuContainerStyle} accessibilityRole="menu">
                     <Animated.View
                         className="min-w-[220px] overflow-hidden rounded-2xl border border-secondary-corner bg-primary-reverse shadow-lg"
                         style={menuStyle}
