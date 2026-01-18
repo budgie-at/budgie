@@ -192,10 +192,9 @@ jobs:
 
 
   e2e-ios:
-    if: false
-    needs: [code-quality, eas-deploy]
+    needs: [code-quality]
     name: E2E Tests on iOS
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
@@ -206,8 +205,7 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-        run: |
-          yarn install
+        run: yarn install
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
@@ -215,42 +213,67 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Expo Prebuild
-        working-directory: packages/app
-        run: npx expo prebuild -p ios --clean
-
       - name: Select Xcode 16.4
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '16.4'
 
-      - name: Cache Xcode DerivedData
-        uses: actions/cache@v4
-        with:
-          path: ~/Library/Developer/Xcode/DerivedData
-          key: xcode-deriveddata-${{ runner.os }}-${{ github.sha }}
-          restore-keys: xcode-deriveddata-${{ runner.os }}-
-
-      - name: Cache iOS dependencies
-        uses: actions/cache@v4
+      - name: Restore CocoaPods cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/Library/Caches/CocoaPods
             ~/.cocoapods
-            /packages/app/ios/Pods
-          key: pods-${{ runner.os }}-${{ github.sha }}
+          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
           restore-keys: pods-${{ runner.os }}-
+
+      - name: Expo Prebuild
+        working-directory: packages/app
+        env:
+          APP_VARIANT: preview
+          RCT_USE_PREBUILT_RNCORE: "1"
+          RCT_USE_RN_DEP: "1"
+        run: npx expo prebuild -p ios
+
+      - name: Restore Xcode DerivedData cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
+          restore-keys: deriveddata-${{ runner.os }}-
 
       - name: Start iOS Simulator
         uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 16 Pro'
 
-      - name: Build and install app
+      - name: Build app
         working-directory: packages/app
+        env:
+          APP_VARIANT: preview
         run: |
-          eas build --profile=e2e --platform ios --non-interactive --local --output app.ios.tar.gz
-          eas build:run --profile=e2e --platform ios --path app.ios.tar.gz
+          cd ios
+          WORKSPACE=$(ls -d *.xcworkspace | head -1)
+          SCHEME=$(echo "$WORKSPACE" | sed 's/.xcworkspace//')
+          echo "Building workspace: $WORKSPACE, scheme: $SCHEME"
+          xcodebuild build \
+            -workspace "$WORKSPACE" \
+            -scheme "$SCHEME" \
+            -sdk iphonesimulator \
+            -configuration Release \
+            -derivedDataPath ~/Library/Developer/Xcode/DerivedData \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -jobs $(sysctl -n hw.ncpu) \
+            CODE_SIGN_IDENTITY="-" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Install app on Simulator
+        run: |
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "*.app" -path "*Release-iphonesimulator*" | head -1)
+          echo "Installing app from: $APP_PATH"
+          xcrun simctl install booted "$APP_PATH"
 
       - name: Install Maestro
         run: |
@@ -260,7 +283,7 @@ jobs:
       - name: Run Maestro UI tests
         working-directory: tests/app-tests
         run: |
-          maestro test flows -e APP_ID=com.vitalyiegorov.suuudokuuu.preview --format junit  --config config.yaml --debug-output ./
+          maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --format junit --config config.yaml --debug-output ./
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()
@@ -272,9 +295,25 @@ jobs:
             tests/app-tests/.maestro/**
             tests/app-tests/*.mp4
 
+      - name: Save CocoaPods cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: pods-${{ runner.os }}-${{ hashFiles('packages/app/package.json') }}
+
+      - name: Save Xcode DerivedData cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles('packages/app/ios/Podfile.lock') }}
+
   e2e-android:
     if: false
-    needs: [ code-quality, eas-deploy ]
+    needs: [code-quality, eas-deploy]
     name: E2E Tests on Android
     runs-on: ubuntu-latest
     steps:
@@ -360,7 +399,7 @@ jobs:
           working-directory: tests/app-tests
           script: |
             cd ../../packages/app && eas build:run --platform android --path app.android.apk
-            maestro test flows -e APP_ID=com.vitaliiyehorov.suuudokuuu.preview --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
+            maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml --format junit --output ./report.xml --debug-output ./ && killall -INT crashpad_handler
 
       - name: Upload Maestro artifacts (report, logs, videos, screenshots)
         if: always()

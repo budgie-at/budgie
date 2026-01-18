@@ -1,7 +1,8 @@
-import { and, asc, eq, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankSyncCreateEntityInterface } from '../entity/bank-sync-create-entity.interface';
 import { BankSyncUpdateEntityInterface } from '../entity/bank-sync-update-entity.interface';
 import { BankSyncModeEnum } from '../enum/bank-sync-mode.enum';
@@ -54,39 +55,43 @@ export class BankSyncRepository {
     }
 
     async getEnabledByProvider(provider: ExternalSourceEnum): Promise<BankSyncEntityInterface[]> {
-        return await this.db.query.BankSyncEntityTable.findMany({
-            where: and(
+        return await this.selectWithActiveAccount().where(
+            and(
                 eq(BankSyncEntityTable.provider, provider),
                 eq(BankSyncEntityTable.enabled, true),
-                isNull(BankSyncEntityTable.deletedAt)
+                isNull(BankSyncEntityTable.deletedAt),
+                isNull(AccountEntityTable.deletedAt)
             )
-        });
+        );
     }
 
     async getPendingBackwardSync(provider: ExternalSourceEnum): Promise<BankSyncEntityInterface[]> {
-        return await this.db.query.BankSyncEntityTable.findMany({
-            where: and(
+        return await this.selectWithActiveAccount().where(
+            and(
                 eq(BankSyncEntityTable.provider, provider),
                 eq(BankSyncEntityTable.enabled, true),
                 eq(BankSyncEntityTable.mode, BankSyncModeEnum.BACKWARD),
-                isNull(BankSyncEntityTable.deletedAt)
+                isNull(BankSyncEntityTable.deletedAt),
+                isNull(AccountEntityTable.deletedAt)
             )
-        });
+        );
     }
 
     async getPendingForwardSync(provider: ExternalSourceEnum, staleThresholdMs: number): Promise<BankSyncEntityInterface[]> {
         const staleTime = new Date(Date.now() - staleThresholdMs);
 
-        return await this.db.query.BankSyncEntityTable.findMany({
-            where: and(
-                eq(BankSyncEntityTable.provider, provider),
-                eq(BankSyncEntityTable.enabled, true),
-                eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
-                isNull(BankSyncEntityTable.deletedAt),
-                or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
-            ),
-            orderBy: [asc(BankSyncEntityTable.forwardSyncedAt)]
-        });
+        return await this.selectWithActiveAccount()
+            .where(
+                and(
+                    eq(BankSyncEntityTable.provider, provider),
+                    eq(BankSyncEntityTable.enabled, true),
+                    eq(BankSyncEntityTable.mode, BankSyncModeEnum.FORWARD),
+                    isNull(BankSyncEntityTable.deletedAt),
+                    isNull(AccountEntityTable.deletedAt),
+                    or(isNull(BankSyncEntityTable.forwardSyncedAt), lt(BankSyncEntityTable.forwardSyncedAt, staleTime))
+                )
+            )
+            .orderBy(asc(BankSyncEntityTable.forwardSyncedAt));
     }
 
     async setStatus(id: number, status: BankSyncStatusEnum, tx?: TX): Promise<void> {
@@ -130,5 +135,13 @@ export class BankSyncRepository {
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BankSyncEntityTable);
+    }
+
+    private selectWithActiveAccount() {
+        return this.db
+            .select(getTableColumns(BankSyncEntityTable))
+            .from(BankSyncEntityTable)
+            .innerJoin(AccountEntityTable, eq(BankSyncEntityTable.accountId, AccountEntityTable.id))
+            .$dynamic();
     }
 }

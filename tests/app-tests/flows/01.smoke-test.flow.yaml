@@ -1,0 +1,14 @@
+appId: ${APP_ID}
+---
+- startRecording:
+    path: '01.smoke-test'
+    optional: true
+
+- launchApp:
+    clearState: true
+
+- extendedWaitUntil:
+    visible: 'Total Balance'
+    timeout: 15000
+
+- assertVisible: 'Total Balance'
