@@ -41,7 +41,7 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
 });
 
 export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel }: Props) => (
-    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" accessibilityLabel={label}>
+    <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem">
         <Icon icon={icon} size={20} className={iconVariants({ variant })} />
         <Text className={textVariants({ variant })}>{label}</Text>
         {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
