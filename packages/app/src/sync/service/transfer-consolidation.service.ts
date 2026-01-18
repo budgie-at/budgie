@@ -16,6 +16,11 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
 
+interface ConsolidationResultInterface {
+    found: number;
+    consolidated: number;
+}
+
 class TransferConsolidationService {
     private isRunning = false;
 
@@ -30,31 +35,46 @@ class TransferConsolidationService {
         });
     }
 
-    async consolidate(): Promise<BackgroundTask.BackgroundTaskResult> {
+    async consolidate(): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
-            return BackgroundTask.BackgroundTaskResult.Success;
+            return { found: 0, consolidated: 0 };
         }
 
         this.isRunning = true;
 
         try {
             const pairCandidates = await transferPairRepository.findCandidates();
+            const consolidated = await this.processCandidates(pairCandidates);
 
-            for (const candidate of pairCandidates) {
-                try {
-                    await this.consolidatePair(candidate);
-                } catch {
-                    // Consolidation failed, skip this pair
-                } finally {
-                    await accountBalanceIncrementalService.updateAllBalances(true);
-                }
-            }
-
-            return BackgroundTask.BackgroundTaskResult.Success;
+            return { found: pairCandidates.length, consolidated };
         } catch {
-            return BackgroundTask.BackgroundTaskResult.Failed;
+            return { found: 0, consolidated: 0 };
         } finally {
             this.isRunning = false;
+        }
+    }
+
+    private async processCandidates(candidates: TransferPairCandidateInterface[]): Promise<number> {
+        let consolidated = 0;
+
+        for (const candidate of candidates) {
+            const success = await this.tryConsolidatePair(candidate);
+            if (success) {
+                consolidated += 1;
+            }
+            await accountBalanceIncrementalService.updateAllBalances(true);
+        }
+
+        return consolidated;
+    }
+
+    private async tryConsolidatePair(candidate: TransferPairCandidateInterface): Promise<boolean> {
+        try {
+            await this.consolidatePair(candidate);
+
+            return true;
+        } catch {
+            return false;
         }
     }
 
