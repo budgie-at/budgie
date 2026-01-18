@@ -102,8 +102,9 @@ ios
 google-service-account.json
 asc_api_key.p8
 
-# other packages not needed for EAS build
-packages/landing
+# packages/landing must exist for yarn workspaces, but ignore its build artifacts
+packages/landing/.next
+packages/landing/.vercel
 
 # git worktrees and large git objects
 .worktrees
