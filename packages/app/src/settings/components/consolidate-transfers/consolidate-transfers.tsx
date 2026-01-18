@@ -14,9 +14,19 @@ export const ConsolidateTransfers = () => {
 
     const handleConsolidate = async () => {
         try {
-            await transferConsolidationService.consolidate();
+            const result = await transferConsolidationService.consolidate();
 
-            Toast.show({ type: 'success', text1: t`Success`, text2: t`Transfer consolidation completed` });
+            if (result.found === 0) {
+                Toast.show({ type: 'info', text1: t`No matches`, text2: t`No transfer pairs found to consolidate` });
+            } else {
+                const { consolidated } = result;
+                const { found } = result;
+                Toast.show({
+                    type: 'success',
+                    text1: t`Success`,
+                    text2: t`Consolidated ${consolidated} of ${found} transfer pairs`
+                });
+            }
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
         }
