@@ -90,7 +90,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         icon={UserIconNameEnum.ArrowRightLeft}
                         iconVariant="default"
                         onGoBack={handleGoBack}
-                        right={<TransactionActionsMenu onDelete={handleDelete} currentType="transfer" />}
+                        right={<TransactionActionsMenu onDelete={handleDelete} />}
                     />
                 }
                 footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
