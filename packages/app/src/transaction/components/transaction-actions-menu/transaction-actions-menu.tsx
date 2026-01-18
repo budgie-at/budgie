@@ -1,10 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { MacroMessageDescriptor, msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { ReactNode, createContext, useContext, useRef, useState } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
+import { EmptyFn, emptyFn } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
@@ -13,21 +12,16 @@ import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popo
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 
-type TransactionType = 'expense' | 'income' | 'transfer';
+const TransactionActionsMenuContext = createContext<EmptyFn>(emptyFn);
+
+export const useTransactionActionsMenu = () => useContext(TransactionActionsMenuContext);
 
 interface Props {
     readonly onDelete: EmptyFn;
-    readonly onChangeType?: EmptyFn;
-    readonly currentType: TransactionType;
+    readonly children?: ReactNode;
 }
 
-const TYPE_LABELS: Record<TransactionType, MacroMessageDescriptor> = {
-    expense: msg`Expense`,
-    income: msg`Income`,
-    transfer: msg`Transfer`
-};
-
-export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: Props) => {
+export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
@@ -51,23 +45,9 @@ export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: 
         setIsMenuOpen(false);
     };
 
-    const handleChangeType = () => {
-        handleCloseMenu();
-        onChangeType?.();
-    };
-
     const handleDeletePress = () => {
         handleCloseMenu();
         handleOpen();
-    };
-
-    const getChangeTypeLabels = () => {
-        const isExpense = currentType === 'expense';
-
-        return {
-            label: isExpense ? t`Convert to Transfer` : t`Change Type`,
-            rightLabel: isExpense ? null : t(TYPE_LABELS[currentType])
-        };
     };
 
     return (
@@ -79,23 +59,18 @@ export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: 
             </View>
 
             <PopoverMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchor={anchor}>
-                <View className="py-sm">
-                    {isDefined(onChangeType) ? (
-                        <PopoverMenuItem
-                            icon={UserIconNameEnum.ArrowRightLeft}
-                            label={getChangeTypeLabels().label}
-                            onPress={handleChangeType}
-                            rightLabel={getChangeTypeLabels().rightLabel}
-                        />
-                    ) : null}
+                <TransactionActionsMenuContext.Provider value={handleCloseMenu}>
+                    <View className="py-sm">
+                        {children}
 
-                    <PopoverMenuItem
-                        icon={UserIconNameEnum.Trash2}
-                        label={t`Delete Transaction`}
-                        onPress={handleDeletePress}
-                        variant="destructive"
-                    />
-                </View>
+                        <PopoverMenuItem
+                            icon={UserIconNameEnum.Trash2}
+                            label={t`Delete Transaction`}
+                            onPress={handleDeletePress}
+                            variant="destructive"
+                        />
+                    </View>
+                </TransactionActionsMenuContext.Provider>
             </PopoverMenu>
 
             <ConfirmActionBottomSheet
