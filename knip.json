@@ -30,7 +30,8 @@
         "babel-plugin-inline-import",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
-        "@types/react-dom"
+        "@types/react-dom",
+        "expo-mcp"
     ],
     "ignoreBinaries": ["run"]
 }
