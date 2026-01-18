@@ -15,16 +15,23 @@ export const ConsolidateTransfers = () => {
     const handleConsolidate = async () => {
         try {
             const result = await transferConsolidationService.consolidate();
+            const totalFound = result.found + result.transitiveFound;
+            const totalProcessed = result.consolidated + result.transitiveAttached;
 
-            if (result.found === 0) {
+            if (totalFound === 0) {
                 Toast.show({ type: 'info', text1: t`No matches`, text2: t`No transfer pairs found to consolidate` });
             } else {
-                const { consolidated } = result;
-                const { found } = result;
+                const consolidatedCount = result.consolidated;
+                const transitiveCount = result.transitiveAttached;
+                const pairsText = consolidatedCount > 0 ? t`${consolidatedCount} pairs consolidated` : '';
+                const transitiveText = transitiveCount > 0 ? t`${transitiveCount} multi-leg entries attached` : '';
+                const separator = pairsText && transitiveText ? ', ' : '';
+                const detailText = `${pairsText}${separator}${transitiveText}`;
+
                 Toast.show({
                     type: 'success',
                     text1: t`Success`,
-                    text2: t`Consolidated ${consolidated} of ${found} transfer pairs`
+                    text2: t`Processed ${totalProcessed} of ${totalFound}: ${detailText}`
                 });
             }
         } catch (error) {
