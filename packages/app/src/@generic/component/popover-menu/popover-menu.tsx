@@ -1,14 +1,6 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View, ViewStyle, useWindowDimensions } from 'react-native';
-import Animated, {
-    Easing,
-    runOnJS,
-    useAnimatedReaction,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue,
-    withTiming
-} from 'react-native-reanimated';
+import Animated, { Easing, runOnJS, useAnimatedReaction, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -37,15 +29,30 @@ interface Props {
 
 const usePopoverAnimation = (isOpen: boolean) => {
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
+    const isMountedRef = useRef(true);
 
     const isOpenShared = useSharedValue(isOpen);
     const backdropOpacity = useSharedValue(isOpen ? BACKDROP_OPACITY : 0);
     const menuScale = useSharedValue(isOpen ? 1 : MENU_SCALE_CLOSED);
     const menuOpacity = useSharedValue(isOpen ? 1 : 0);
 
-    useDerivedValue(() => {
+    useEffect(() => {
+        isMountedRef.current = true;
+
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
+
+    useEffect(() => {
         isOpenShared.value = isOpen;
-    }, [isOpen]);
+    }, [isOpen, isOpenShared]);
+
+    const safeSetIsAnimatingOut = (value: boolean) => {
+        if (isMountedRef.current) {
+            setIsAnimatingOut(value);
+        }
+    };
 
     useAnimatedReaction(
         () => isOpenShared.value,
@@ -55,12 +62,12 @@ const usePopoverAnimation = (isOpen: boolean) => {
                 menuScale.value = withTiming(1, TIMING_CONFIG);
                 menuOpacity.value = withTiming(1, TIMING_CONFIG);
             } else if (!current && previous) {
-                runOnJS(setIsAnimatingOut)(true);
+                runOnJS(safeSetIsAnimatingOut)(true);
                 backdropOpacity.value = withTiming(0, TIMING_CONFIG);
                 menuScale.value = withTiming(MENU_SCALE_CLOSED, TIMING_CONFIG);
                 menuOpacity.value = withTiming(0, TIMING_CONFIG, finished => {
                     if (finished) {
-                        runOnJS(setIsAnimatingOut)(false);
+                        runOnJS(safeSetIsAnimatingOut)(false);
                     }
                 });
             }
@@ -81,7 +88,7 @@ export const PopoverMenu = ({ isOpen, onClose, children, anchor }: Props) => {
     const menuTop = anchor ? anchor.y + anchor.height + ANCHOR_OFFSET : DEFAULT_MENU_TOP;
     const menuRight = anchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
 
-    const menuContainerStyle = useMemo<ViewStyle>(() => ({ position: 'absolute', top: menuTop, right: menuRight }), [menuTop, menuRight]);
+    const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, right: menuRight };
 
     const shouldRender = isOpen || isAnimatingOut;
 
