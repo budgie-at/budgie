@@ -1,8 +1,9 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
-import { useLLM, useSpeechToText } from 'react-native-executorch';
 
-interface LlmContextInterface {
+import type { useLLM, useSpeechToText } from 'react-native-executorch';
+
+export interface LlmContextInterface {
     isAvailable: boolean;
     llm: ReturnType<typeof useLLM>;
     stt: ReturnType<typeof useSpeechToText>;
