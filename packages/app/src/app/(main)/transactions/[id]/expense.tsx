@@ -1,11 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    ExpenseTransactionCreateInputSchema,
-    TransactionTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
@@ -18,17 +13,14 @@ import { FormLayoutGroup } from '../../../../@generic/component/form-layout-grou
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { PopoverMenuItem } from '../../../../@generic/component/popover-menu-item/popover-menu-item';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { ConvertExpenseToTransferBottomSheet } from '../../../../transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet';
-import {
-    TransactionActionsMenu,
-    useTransactionActionsMenu
-} from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
+import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
+import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -45,22 +37,6 @@ interface UpdateExpenseFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
-
-interface ConvertToTransferMenuItemProps {
-    readonly onConvert: () => void;
-}
-
-const ConvertToTransferMenuItem = ({ onConvert }: ConvertToTransferMenuItemProps) => {
-    const { t } = useLingui();
-    const closeMenu = useTransactionActionsMenu();
-
-    const handlePress = () => {
-        closeMenu();
-        onConvert();
-    };
-
-    return <PopoverMenuItem icon={UserIconNameEnum.ArrowRightLeft} label={t`Convert to Transfer`} onPress={handlePress} />;
-};
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
