@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.2](https://github.com/budgie-at/budgie/compare/v2.13.1...v2.13.2) (2026-01-18)
+
+### Bug Fixes
+
+- **contracts:** exclude archived accounts from bank sync queries ([7c44453](https://github.com/budgie-at/budgie/commit/7c4445352a4acb0749852460c5a8681d83182eff)), closes [#171](https://github.com/budgie-at/budgie/issues/171)
+
+## [2.13.1](https://github.com/budgie-at/budgie/compare/v2.13.0...v2.13.1) (2026-01-18)
+
+### Bug Fixes
+
+- **app:** dynamically find xcworkspace name ([046e6f7](https://github.com/budgie-at/budgie/commit/046e6f7ce4700a0d5f8c59ab122a900dfdf48e60))
+- **app:** include source hash in iOS build cache key ([fcecba9](https://github.com/budgie-at/budgie/commit/fcecba91b89d03b76dc2788faf79ead3bd905a5d))
+- **app:** launch app after installation for Maestro ([99a5c54](https://github.com/budgie-at/budgie/commit/99a5c542ea5e733ea3137b97e7df700f6ce1233a))
+- **app:** pass precompiled RN env vars to pod install ([e73c65a](https://github.com/budgie-at/budgie/commit/e73c65ae6f064da42baeb9cfc7e360cdbb4bc2ae))
+- **app:** revert to Release build configuration ([e0ef1d6](https://github.com/budgie-at/budgie/commit/e0ef1d6a668ddf2bdb6d5a396caf1daf9304e4a4))
+- **app:** save cache on failure + set APP_VARIANT for correct bundle ID ([d45bb91](https://github.com/budgie-at/budgie/commit/d45bb9165bc2c27a4dab1e373f03f18ee5e266e7))
+- **app:** use ad-hoc signing for simulator to preserve entitlements ([39d9bd9](https://github.com/budgie-at/budgie/commit/39d9bd96131af5c7e35a39acd62131ecab7c42c1))
+- **app:** use expo run:ios to fix missing JS bundle ([c144279](https://github.com/budgie-at/budgie/commit/c144279caad6557f464481e6664e857addace332))
+- **app:** use xcodebuild with CODE_SIGNING_ALLOWED=NO ([08a86cf](https://github.com/budgie-at/budgie/commit/08a86cfe0e44ccb923abc5815b786392e1738220))
+- use sticky comment for Claude code review ([bf8e5f9](https://github.com/budgie-at/budgie/commit/bf8e5f93071382d8cb776f2d243b483bd77ff8d1))
+
+### Features
+
+- add concise Claude code review workflow ([2af80f8](https://github.com/budgie-at/budgie/commit/2af80f8f9db58fea86a2a1ea0d7382aec147fcbd))
+- **app:** implement Maestro smoke test and enable E2E CI ([d23adea](https://github.com/budgie-at/budgie/commit/d23adeac74b0fa7cf4ad52bacbb85f9f89e29c06)), closes [#198](https://github.com/budgie-at/budgie/issues/198)
+
+### Performance Improvements
+
+- **app:** cache iOS build using Expo Fingerprint ([8537492](https://github.com/budgie-at/budgie/commit/85374920fe895d33dbfd79c0f90b7513c96849c1))
+- **app:** optimize iOS E2E workflow for faster builds ([8765116](https://github.com/budgie-at/budgie/commit/8765116790627797e4961703606fb55c6614a95d))
+- **app:** optimize xcodebuild for faster E2E builds ([2be9aef](https://github.com/budgie-at/budgie/commit/2be9aef356d81bf981c1dc86109255d4521716cd))
+- **app:** simplify iOS E2E caching strategy ([76ae460](https://github.com/budgie-at/budgie/commit/76ae460a1a4a7ecb94ac8b41d2dd29e4d4d8a3d4))
+- **app:** use xcodebuild directly instead of EAS local ([b6ade94](https://github.com/budgie-at/budgie/commit/b6ade94fed242ced388b0f1a67ee8f8c73a8d5f8))
+
+### Reverts
+
+- Revert "fix(app): launch app after installation for Maestro" ([7340f0f](https://github.com/budgie-at/budgie/commit/7340f0f3db6130a45f75898a59b07c7e56bd7483))
+
 # [2.13.0](https://github.com/budgie-at/budgie/compare/v2.12.4...v2.13.0) (2026-01-17)
 
 ### Bug Fixes
