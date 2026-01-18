@@ -14,5 +14,5 @@ export interface TransferPairCandidateInterface {
     income_entry_amount: number;
     income_entry_exchange_rate: number;
     income_entry_to_iban: string | null;
-    match_type: 'forward' | 'reverse';
+    match_type: 'forward' | 'reverse' | 'amount';
 }
