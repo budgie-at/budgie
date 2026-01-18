@@ -21,6 +21,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
+import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAccountSelector } from '../../../../transaction/components/transaction-form-account-selector/transaction-form-account-selector';
 import { TransactionFormAmount } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount';
 import { TransactionFormCategory } from '../../../../transaction/components/transaction-form-category/transaction-form-category';
@@ -68,16 +69,10 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                         icon={UserIconNameEnum.TrendingUp}
                         iconVariant="positive"
                         onGoBack={handleGoBack}
+                        right={<TransactionActionsMenu onDelete={handleDelete} currentType="income" />}
                     />
                 }
-                footer={
-                    <TransactionFormFooter
-                        variant="positive"
-                        buttonText={t`Update Income`}
-                        onSubmit={handleSubmit}
-                        onDelete={handleDelete}
-                    />
-                }
+                footer={<TransactionFormFooter variant="positive" buttonText={t`Update Income`} onSubmit={handleSubmit} />}
             >
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps="handled"

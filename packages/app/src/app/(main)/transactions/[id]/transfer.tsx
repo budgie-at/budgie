@@ -23,6 +23,7 @@ import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.u
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
+import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransactionFormAmountBase } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormComment } from '../../../../transaction/components/transaction-form-comment/transaction-form-comment';
 import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
@@ -89,16 +90,10 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         icon={UserIconNameEnum.ArrowRightLeft}
                         iconVariant="default"
                         onGoBack={handleGoBack}
+                        right={<TransactionActionsMenu onDelete={handleDelete} currentType="transfer" />}
                     />
                 }
-                footer={
-                    <TransactionFormFooter
-                        variant="default"
-                        buttonText={t`Update Transfer`}
-                        onSubmit={handleSubmit}
-                        onDelete={handleDelete}
-                    />
-                }
+                footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
             >
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps="handled"
