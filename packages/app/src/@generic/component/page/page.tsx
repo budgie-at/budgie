@@ -29,6 +29,8 @@ export const Page = (props: Props) => {
         ...(safeEdges.includes('bottom') ? { paddingBottom: bottom } : {})
     };
 
+    const bottomStyle = { paddingBottom: bottom };
+
     return (
         <>
             <View {...rest} className={cn('relative flex-1', className)} style={style}>
@@ -36,13 +38,21 @@ export const Page = (props: Props) => {
 
                 <View className={cn('px-5xl flex-1', contentClassName)}>{children}</View>
 
-                {footer}
+                {withBlur ? null : footer}
             </View>
 
             {withBlur ? (
                 <BlurGradient position="top">
                     <View className="absolute top-0 right-0 left-0" style={style}>
                         {header}
+                    </View>
+                </BlurGradient>
+            ) : null}
+
+            {withBlur ? (
+                <BlurGradient position="bottom">
+                    <View className="absolute bottom-0 right-0 left-0" style={bottomStyle}>
+                        {footer}
                     </View>
                 </BlurGradient>
             ) : null}

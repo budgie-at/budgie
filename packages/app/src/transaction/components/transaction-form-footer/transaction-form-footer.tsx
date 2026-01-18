@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { EmptyFn } from '@rnw-community/shared';
 
@@ -14,9 +13,7 @@ interface Props {
 }
 
 export const TransactionFormFooter = ({ variant, buttonText, onSubmit }: Props) => (
-    <KeyboardStickyView>
-        <Footer>
-            <Button leftIcon={UserIconNameEnum.CircleCheck} onPress={onSubmit} variant={variant} className="w-full" content={buttonText} />
-        </Footer>
-    </KeyboardStickyView>
+    <Footer withBlur>
+        <Button leftIcon={UserIconNameEnum.CircleCheck} onPress={onSubmit} variant={variant} className="w-full" content={buttonText} />
+    </Footer>
 );
