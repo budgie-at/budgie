@@ -1,19 +1,14 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import {
-    AccountTypeEnum,
-    TransactionWithRelationsEntityInterface,
-    TransferTransactionCreateInputSchema,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -86,20 +81,14 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                 header={
                     <PageHeader
                         title={t`Edit Transfer`}
-                        description={t`Move Money`}
-                        icon={UserIconNameEnum.ArrowRightLeft}
-                        iconVariant="default"
                         onGoBack={handleGoBack}
                         right={<TransactionActionsMenu onDelete={handleDelete} />}
                     />
                 }
                 footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
+                withBlur
             >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
+                <BlurScrollView>
                     <TransferTransactionFormAccounts variant="default" />
 
                     <TransactionFormAmountBase
@@ -120,7 +109,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </KeyboardAwareScrollView>
+                </BlurScrollView>
             </Page>
         </FormProvider>
     );
