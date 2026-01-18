@@ -35,7 +35,8 @@
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf"
+        "rimraf",
+        "expo-mcp"
     ],
     "ignoreBinaries": ["run"]
 }
