@@ -211,6 +211,11 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: Start iOS Simulator
+        uses: futureware-tech/simulator-action@v4
+        with:
+          model: 'iPhone 16 Pro'
+
       - name: Build app with EAS
         id: eas-build
         working-directory: packages/app
@@ -220,22 +225,11 @@ jobs:
           BUILD_URL=$(echo "$BUILD_JSON" | jq -r '.[0].artifacts.buildUrl')
           echo "build_url=$BUILD_URL" >> $GITHUB_OUTPUT
 
-      - name: Download and extract build
+      - name: Download and install app
+        working-directory: packages/app
         run: |
           curl -L -o app.tar.gz "${{ steps.eas-build.outputs.build_url }}"
-          tar -xzf app.tar.gz
-          APP_PATH=$(find . -name "*.app" -type d | head -1)
-          echo "APP_PATH=$APP_PATH" >> $GITHUB_ENV
-
-      - name: Start iOS Simulator
-        uses: futureware-tech/simulator-action@v4
-        with:
-          model: 'iPhone 16 Pro'
-
-      - name: Install app on Simulator
-        run: |
-          echo "Installing app from: $APP_PATH"
-          xcrun simctl install booted "$APP_PATH"
+          eas build:run --platform ios --path app.tar.gz
 
       - name: Install Maestro
         run: |
