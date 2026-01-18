@@ -28,6 +28,7 @@ import { TransactionFormComment } from '../../../../transaction/components/trans
 import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
 import { TransactionFormFooter } from '../../../../transaction/components/transaction-form-footer/transaction-form-footer';
 import { TransactionFormTagsField } from '../../../../transaction/components/transaction-form-tags-field/transaction-form-tags-field';
+import { TransactionIbanInfoField } from '../../../../transaction/components/transaction-iban-info-field/transaction-iban-info-field';
 import { TransactionMccInfoField } from '../../../../transaction/components/transaction-mcc-info-field/transaction-mcc-info-field';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
@@ -89,6 +90,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     {isDefined(transaction.entries[0]?.mccCategory) ? (
                         <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
                     ) : null}
+
+                    <TransactionIbanInfoField toIban={transaction.entries[0]?.toIban} />
 
                     <FormLayoutGroup>
                         <TransactionFormAccountSelector variant="positive" fieldName="toAccountId" />
