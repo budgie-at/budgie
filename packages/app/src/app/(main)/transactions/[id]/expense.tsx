@@ -10,10 +10,10 @@ import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
@@ -93,9 +93,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     header={
                         <PageHeader
                             title={t`Edit Expense`}
-                            description={t`Select Category`}
-                            icon={UserIconNameEnum.TrendingDown}
-                            iconVariant="destructive"
                             onGoBack={handleGoBack}
                             right={
                                 <TransactionActionsMenu onDelete={handleDelete}>
@@ -105,12 +102,9 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                         />
                     }
                     footer={<TransactionFormFooter variant="destructive" buttonText={t`Update Expense`} onSubmit={handleSubmit} />}
+                    withBlur
                 >
-                    <KeyboardAwareScrollView
-                        keyboardShouldPersistTaps="handled"
-                        contentContainerClassName="pb-7xl"
-                        showsVerticalScrollIndicator={false}
-                    >
+                    <BlurScrollView>
                         <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
                         {isDefined(transaction.entries[0]?.mccCategory) ? (
@@ -133,7 +127,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
 
                             <TransactionFormComment />
                         </FormLayoutGroup>
-                    </KeyboardAwareScrollView>
+                    </BlurScrollView>
                 </Page>
             </FormProvider>
             <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />

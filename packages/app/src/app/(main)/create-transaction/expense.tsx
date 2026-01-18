@@ -1,12 +1,12 @@
 /* jscpd:ignore-start */
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { BlurScrollView } from '../../../@generic/component/blur-scroll-view/blur-scroll-view';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -59,22 +59,11 @@ export default function CreateExpenseTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page
-                header={
-                    <PageHeader
-                        title={t`New Expense`}
-                        description={t`Select Category`}
-                        icon={UserIconNameEnum.TrendingDown}
-                        iconVariant="destructive"
-                        onGoBack={handleGoBack}
-                    />
-                }
+                header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}
                 footer={<TransactionFormFooter variant="destructive" buttonText={t`Add Expense`} onSubmit={handleSubmit} />}
+                withBlur
             >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
+                <BlurScrollView>
                     <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" autoFocus />
 
                     <FormLayoutGroup>
@@ -93,7 +82,7 @@ export default function CreateExpenseTransactionPage() {
 
                         <TransactionFormComment />
                     </FormLayoutGroup>
-                </KeyboardAwareScrollView>
+                </BlurScrollView>
             </Page>
         </FormProvider>
     );
