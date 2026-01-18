@@ -23,6 +23,7 @@ import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.u
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
+import { MultiLegTransferInfo } from '../../../../transaction/components/multi-leg-transfer-info/multi-leg-transfer-info';
 import { TransactionFormAmountBase } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount-base';
 import { TransactionFormComment } from '../../../../transaction/components/transaction-form-comment/transaction-form-comment';
 import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
@@ -105,7 +106,11 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     contentContainerClassName="pb-7xl"
                     showsVerticalScrollIndicator={false}
                 >
-                    <TransferTransactionFormAccounts variant="default" />
+                    {transaction.entries.length > 2 ? (
+                        <MultiLegTransferInfo entries={transaction.entries} />
+                    ) : (
+                        <TransferTransactionFormAccounts variant="default" />
+                    )}
 
                     <TransactionFormAmountBase
                         variant="default"
