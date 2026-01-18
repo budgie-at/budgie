@@ -1,28 +1,37 @@
-# Suuudokuuu App Tests
+# Budgie App Tests
 
-Maestro tests package
+End-to-end tests for the Budgie expense tracking app using [Maestro](https://maestro.mobile.dev/).
 
-## TODO
+## Running Tests Locally
 
-- [ ] Create separate flows for described items
-- [ ] Pass selectors from `typescript selector files`
-- [ ] Cannot select value if not empty cell selected
-- [ ] Deselect cell if value is completed
-- [ ] Leave cell selection if value is not completed
-- [ ] Animations:
-    - [ ] Select cell animation
-    - [ ] Complete row animation
-    - [ ] Complete col animation
-    - [ ] Complete group animation
-    - [ ] Complete value animation
-    - [ ] Win animation
-- [ ] Win scenario:
-    - [ ] Win score and time
-- [ ] Loose scenario:
-    - [ ] Win score and time
-- [ ] Pause scenario:
-    - [ ] Return to game after pause
-    - [ ] No pause on other screens(win, loose, home)
-    - [ ] Reset app after pause
-- [ ] Score calculation
-- [ ] Best game on home page
+### Prerequisites
+- Install Maestro CLI: `curl -fsSL "https://get.maestro.mobile.dev" | bash`
+- iOS Simulator or Android Emulator running
+- App installed on the simulator/emulator
+
+### Commands
+
+iOS:
+```bash
+maestro test flows -e APP_ID=com.vitalyiegorov.budgie.preview --config config.yaml
+```
+
+Android:
+```bash
+maestro test flows -e APP_ID=com.vitaliiyehorov.budgie.preview --config config.yaml
+```
+
+## CI/CD
+
+E2E tests run automatically on pull requests via the GitHub Actions workflow (`.github/workflows/pr.yml`).
+Tests execute on both iOS (macos-latest) and Android (ubuntu-latest) after code quality checks pass.
+
+## Future Test Coverage
+
+- [ ] Multiple account types (Savings, Debt)
+- [ ] Income transactions
+- [ ] Transfer transactions
+- [ ] Transaction editing and deletion
+- [ ] Category and tag management
+- [ ] Analytics screen verification
+- [ ] Settings and preferences
