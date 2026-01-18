@@ -2,7 +2,6 @@
 /* jscpd:ignore-start */
 import {
     ExpenseTransactionCreateInputSchema,
-    TransactionCreateInputInterface,
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum
@@ -10,7 +9,7 @@ import {
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
-import { FormProvider, useFormContext, useWatch } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined } from '@rnw-community/shared';
@@ -47,26 +46,20 @@ interface UpdateExpenseFormProps {
     readonly transactionId: number;
 }
 
-const ConvertToTransferMenuItem = () => {
-    const { t } = useLingui();
-    const { id } = useLocalSearchParams<IdParamInterface>();
-    const { control } = useFormContext<TransactionCreateInputInterface>();
-    const closeMenu = useTransactionActionsMenu();
-    const sheetRef = useRef<BottomSheetInterface | null>(null);
+interface ConvertToTransferMenuItemProps {
+    readonly onConvert: () => void;
+}
 
-    const fromAccountId = useWatch({ control, name: 'fromAccountId' });
+const ConvertToTransferMenuItem = ({ onConvert }: ConvertToTransferMenuItemProps) => {
+    const { t } = useLingui();
+    const closeMenu = useTransactionActionsMenu();
 
     const handlePress = () => {
         closeMenu();
-        sheetRef.current?.open();
+        onConvert();
     };
 
-    return (
-        <>
-            <PopoverMenuItem icon={UserIconNameEnum.ArrowRightLeft} label={t`Convert to Transfer`} onPress={handlePress} />
-            <ConvertExpenseToTransferBottomSheet ref={sheetRef} transactionId={Number(id)} fromAccountId={fromAccountId ?? 0} />
-        </>
-    );
+    return <PopoverMenuItem icon={UserIconNameEnum.ArrowRightLeft} label={t`Convert to Transfer`} onPress={handlePress} />;
 };
 /* jscpd:ignore-end */
 
@@ -74,6 +67,8 @@ const ConvertToTransferMenuItem = () => {
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
+
+    const convertSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -89,55 +84,60 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
 
     const handleGoBack = () => void goBackOrReplace('/');
 
+    const handleOpenConvert = () => void convertSheetRef.current?.open();
+
     return (
-        <FormProvider {...form}>
-            <Page
-                header={
-                    <PageHeader
-                        title={t`Edit Expense`}
-                        description={t`Select Category`}
-                        icon={UserIconNameEnum.TrendingDown}
-                        iconVariant="destructive"
-                        onGoBack={handleGoBack}
-                        right={
-                            <TransactionActionsMenu onDelete={handleDelete}>
-                                <ConvertToTransferMenuItem />
-                            </TransactionActionsMenu>
-                        }
-                    />
-                }
-                footer={<TransactionFormFooter variant="destructive" buttonText={t`Update Expense`} onSubmit={handleSubmit} />}
-            >
-                <KeyboardAwareScrollView
-                    keyboardShouldPersistTaps="handled"
-                    contentContainerClassName="pb-7xl"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
-
-                    {isDefined(transaction.entries[0]?.mccCategory) ? (
-                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                    ) : null}
-
-                    <FormLayoutGroup>
-                        <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
-
-                        <TransactionFormCategory
-                            transactionType={TransactionTypeEnum.EXPENSE}
-                            accountId={fromAccountId ?? 0}
-                            variant="destructive"
+        <>
+            <FormProvider {...form}>
+                <Page
+                    header={
+                        <PageHeader
+                            title={t`Edit Expense`}
+                            description={t`Select Category`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            iconVariant="destructive"
+                            onGoBack={handleGoBack}
+                            right={
+                                <TransactionActionsMenu onDelete={handleDelete}>
+                                    <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
+                                </TransactionActionsMenu>
+                            }
                         />
+                    }
+                    footer={<TransactionFormFooter variant="destructive" buttonText={t`Update Expense`} onSubmit={handleSubmit} />}
+                >
+                    <KeyboardAwareScrollView
+                        keyboardShouldPersistTaps="handled"
+                        contentContainerClassName="pb-7xl"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <TransactionFormAmount instrumentSymbol={instrumentSymbol} variant="destructive" />
 
-                        <FormLayoutGroup variant="horizontal">
-                            <TransactionFormDateField variant="destructive" />
-                            <TransactionFormTagsField variant="destructive" />
+                        {isDefined(transaction.entries[0]?.mccCategory) ? (
+                            <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
+                        ) : null}
+
+                        <FormLayoutGroup>
+                            <TransactionFormAccountSelector variant="destructive" fieldName="fromAccountId" />
+
+                            <TransactionFormCategory
+                                transactionType={TransactionTypeEnum.EXPENSE}
+                                accountId={fromAccountId ?? 0}
+                                variant="destructive"
+                            />
+
+                            <FormLayoutGroup variant="horizontal">
+                                <TransactionFormDateField variant="destructive" />
+                                <TransactionFormTagsField variant="destructive" />
+                            </FormLayoutGroup>
+
+                            <TransactionFormComment />
                         </FormLayoutGroup>
-
-                        <TransactionFormComment />
-                    </FormLayoutGroup>
-                </KeyboardAwareScrollView>
-            </Page>
-        </FormProvider>
+                    </KeyboardAwareScrollView>
+                </Page>
+            </FormProvider>
+            <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />
+        </>
     );
 };
 /* jscpd:ignore-end */
