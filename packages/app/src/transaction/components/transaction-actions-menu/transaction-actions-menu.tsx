@@ -35,9 +35,15 @@ export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: 
     const { ref, isLoading, handleConfirm, handleOpen } = useConfirmAction(onDelete);
 
     const handleToggleMenu = () => {
+        if (isMenuOpen) {
+            setIsMenuOpen(false);
+
+            return;
+        }
+
         triggerRef.current?.measureInWindow((x, y, width, height) => {
             setAnchor({ x, y, width, height });
-            setIsMenuOpen(prev => !prev);
+            setIsMenuOpen(true);
         });
     };
 
@@ -55,9 +61,14 @@ export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: 
         handleOpen();
     };
 
-    const isExpense = currentType === 'expense';
-    const changeTypeLabel = isExpense ? t`Convert to Transfer` : t`Change Type`;
-    const changeTypeRightLabel = isExpense ? null : t(TYPE_LABELS[currentType]);
+    const getChangeTypeLabels = () => {
+        const isExpense = currentType === 'expense';
+
+        return {
+            label: isExpense ? t`Convert to Transfer` : t`Change Type`,
+            rightLabel: isExpense ? null : t(TYPE_LABELS[currentType])
+        };
+    };
 
     return (
         <View>
@@ -72,9 +83,9 @@ export const TransactionActionsMenu = ({ onDelete, onChangeType, currentType }: 
                     {isDefined(onChangeType) ? (
                         <PopoverMenuItem
                             icon={UserIconNameEnum.ArrowRightLeft}
-                            label={changeTypeLabel}
+                            label={getChangeTypeLabels().label}
                             onPress={handleChangeType}
-                            rightLabel={changeTypeRightLabel}
+                            rightLabel={getChangeTypeLabels().rightLabel}
                         />
                     ) : null}
 

@@ -208,7 +208,7 @@ msgstr "Cuentas archivadas"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se puede deshacer."
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:94
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:109
 msgid "Are you sure you want to delete this transaction?"
 msgstr "¿Está seguro de que desea eliminar esta transacción?"
 
@@ -310,7 +310,7 @@ msgstr "Cambiar tipo de cuenta"
 msgid "Change PIN"
 msgstr "Cambiar PIN"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:71
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:68
 msgid "Change Type"
 msgstr ""
 
@@ -348,6 +348,10 @@ msgstr "Borrar saldos en caché y recalcular"
 msgid "Close"
 msgstr "Cerrar"
 
+#: src/@generic/component/popover-menu/popover-menu.tsx:104
+msgid "Close menu"
+msgstr ""
+
 #: src/app/(tabs)/settings/import.tsx:240
 msgid "Comment"
 msgstr "Comentario"
@@ -373,7 +377,7 @@ msgid "Conversion failed"
 msgstr "Error en la conversión"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:60
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:71
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:68
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
@@ -579,11 +583,11 @@ msgstr "Eliminar datos"
 msgid "Delete Permanently"
 msgstr "Eliminar permanentemente"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:91
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:106
 msgid "Delete transaction"
 msgstr "Eliminar transacción"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:79
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:94
 msgid "Delete Transaction"
 msgstr ""
 
@@ -1490,7 +1494,7 @@ msgstr ""
 " 💡 Puedes restaurarla en cualquier momento desde Configuración → Cuentas archivadas"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:90
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:105
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
