@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
 
 interface Props {
@@ -14,12 +15,19 @@ export const SuggestRuleSection = ({ onPress }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="flex-row items-center justify-between py-xl">
+        <View className="flex-row items-center justify-between py-xl" testID={SuggestRuleSelectors.Section}>
             <Text className="text-sm text-secondary-foreground">
                 <Trans>Create automation rule?</Trans>
             </Text>
 
-            <Button content={t`Add Rule`} onPress={onPress} variant="ghost" size="sm" leftIcon={UserIconNameEnum.Sparkles} />
+            <Button
+                content={t`Add Rule`}
+                onPress={onPress}
+                variant="ghost"
+                size="sm"
+                leftIcon={UserIconNameEnum.Sparkles}
+                testID={SuggestRuleSelectors.AddRuleButton}
+            />
         </View>
     );
 };

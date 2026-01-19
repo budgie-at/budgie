@@ -2,6 +2,7 @@ import { RuleConditionFieldEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { MultiSelectChip } from '../../../@generic/component/multi-select-chip/multi-select-chip';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
@@ -26,6 +27,7 @@ export const SuggestRuleConditionSelector = ({ data, selectedFields, onToggleFie
                     isSelected={selectedFields.includes(RuleConditionFieldEnum.TITLE)}
                     label={t`Title`}
                     value={data?.title}
+                    testID={SuggestRuleSelectors.ConditionChip(RuleConditionFieldEnum.TITLE)}
                 />
 
                 {hasComment ? (
@@ -35,6 +37,7 @@ export const SuggestRuleConditionSelector = ({ data, selectedFields, onToggleFie
                         isSelected={selectedFields.includes(RuleConditionFieldEnum.COMMENT)}
                         label={t`Comment`}
                         value={data?.comment ?? ''}
+                        testID={SuggestRuleSelectors.ConditionChip(RuleConditionFieldEnum.COMMENT)}
                     />
                 ) : null}
 
@@ -45,6 +48,7 @@ export const SuggestRuleConditionSelector = ({ data, selectedFields, onToggleFie
                         isSelected={selectedFields.includes(RuleConditionFieldEnum.MCC_CODE)}
                         label={t`MCC Code`}
                         value={data?.mccCode ?? ''}
+                        testID={SuggestRuleSelectors.ConditionChip(RuleConditionFieldEnum.MCC_CODE)}
                     />
                 ) : null}
             </View>

@@ -14,9 +14,10 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onSelect: (categoryId: number | null) => void;
     readonly cardVariant?: ColorPaletteVariant;
+    readonly testID?: string;
 }
 
-export const CategorySelector = ({ variant, categoryId, onSelect, cardVariant = 'primary' }: Props) => {
+export const CategorySelector = ({ variant, categoryId, onSelect, cardVariant = 'primary', testID }: Props) => {
     const { t } = useLingui();
 
     const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
@@ -32,6 +33,7 @@ export const CategorySelector = ({ variant, categoryId, onSelect, cardVariant = 
                 title={selectedCategory?.title ?? t`Select category`}
                 left={<CircleIcon icon={selectedCategory?.icon ?? UserIconNameEnum.Home} variant={variant} />}
                 onPress={handleOpen}
+                testID={testID}
             />
 
             <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={bottomSheetRef} />

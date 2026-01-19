@@ -13,13 +13,14 @@ import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly testID?: string;
 }
 
 type TransactionTagWithTag = TransactionTagsEntityInterface & {
     [TransactionTagsAssociationEnum.TAG]: TagEntityInterface;
 };
 
-export const TransactionCardTag = ({ transaction }: Props) => {
+export const TransactionCardTag = ({ transaction, testID }: Props) => {
     const firstTransactionTag = transaction.transactionTags[0] as TransactionTagWithTag | undefined;
     const firstTag = isDefined(firstTransactionTag) ? firstTransactionTag.tag : null;
 
@@ -28,7 +29,7 @@ export const TransactionCardTag = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center gap-x-xs">
+        <View className="flex-row items-center gap-x-xs" testID={testID}>
             <Icon icon={UserIconNameEnum.Tag} size={12} className="text-secondary-foreground" />
             <Text className="text-secondary-foreground text-xs" numberOfLines={1} ellipsizeMode="tail">
                 {firstTag.title}

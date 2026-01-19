@@ -1,0 +1,128 @@
+appId: ${APP_ID}
+---
+# Test 15: Suggested rule flow applies category to matching imported transactions
+#
+# IMPORTANT: This test requires CSV import which needs manual setup:
+# 1. Push test-transactions.csv to simulator before running:
+#    xcrun simctl addmedia booted tests/app-tests/fixtures/test-transactions.csv
+# 2. The app must have access to the file via Files app/DocumentPicker
+#
+# The suggested rule feature ONLY appears for external/imported transactions
+# (externalSource !== MANUAL), so this test uses CSV import.
+#
+# Alternatively, run this test manually or skip if CSV import automation is not set up.
+
+# Launch app fresh to ensure clean state
+- launchApp
+
+# Navigate to Settings to import CSV
+- tapOn:
+    id: 'TabBar.Settings'
+- extendedWaitUntil:
+    visible: 'Settings'
+    timeout: 5000
+
+# Scroll to Import CSV and tap
+- scrollUntilVisible:
+    element:
+      id: 'Settings.ImportCsvCard'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'Settings.ImportCsvCard'
+
+# Wait for file picker - tap on test CSV file
+- extendedWaitUntil:
+    visible: 'test-transactions'
+    timeout: 10000
+- tapOn:
+    text: 'test-transactions'
+
+# Wait for import screen, select Budgie preset
+- extendedWaitUntil:
+    visible:
+      id: 'ImportScreen.Page'
+    timeout: 5000
+- tapOn:
+    id: 'ImportScreen.PresetChip.Budgie'
+
+# Start import
+- tapOn:
+    id: 'ImportScreen.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Settings'
+    timeout: 30000
+
+# Navigate to Transactions
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+# Open first imported transaction (most recent)
+- tapOn:
+    id: 'TransactionList.Card.1'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.Page'
+    timeout: 3000
+
+# Change category to Food
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+- tapOn:
+    text: 'Food'
+
+# "Add Rule" button should appear for imported transaction
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.AddRuleButton'
+    timeout: 3000
+- tapOn:
+    id: 'SuggestRule.AddRuleButton'
+
+# Wait for suggested rule bottom sheet
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.BottomSheet'
+    timeout: 3000
+
+# Select "Comment" condition (matches "Grocery Store" in comment)
+- tapOn:
+    id: 'SuggestRule.ConditionChip.COMMENT'
+
+# Enable "Apply to existing transactions"
+- tapOn:
+    id: 'SuggestRule.ApplyToExistingToggle'
+
+# Create the rule
+- tapOn:
+    id: 'SuggestRule.CreateRuleButton'
+
+# Wait for rule creation
+- extendedWaitUntil:
+    notVisible:
+      id: 'SuggestRule.BottomSheet'
+    timeout: 5000
+
+# Save the transaction
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+# Verify other matching transaction has Food category
+# Open another Grocery Store transaction to verify rule was applied
+- tapOn:
+    id: 'TransactionList.Card.3'
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.Page'
+    timeout: 3000
+- assertVisible:
+    text: 'Food'

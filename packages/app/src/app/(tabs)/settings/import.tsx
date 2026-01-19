@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -163,6 +164,7 @@ export default function ImportScreen() {
                     />
                 }
                 safeEdges={SAFE_EDGES}
+                testID={ImportSelectors.Page}
             >
                 <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerClassName="gap-y-xl pb-5xl pt-3xl">
                     <ImportPresetSelector selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
@@ -263,6 +265,7 @@ export default function ImportScreen() {
                                 variant="positive"
                                 onPress={handleSubmit(handleStartImport)}
                                 leftIcon={UserIconNameEnum.Database}
+                                testID={ImportSelectors.SubmitButton}
                             />
                         )}
                     </View>

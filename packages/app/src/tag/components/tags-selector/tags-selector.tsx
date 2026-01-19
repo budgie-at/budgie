@@ -18,13 +18,14 @@ interface Props {
     readonly tagIds: number[];
     readonly variant: ColorPaletteVariant;
     readonly onChange: (tagIds: number[]) => void;
+    readonly testID?: string;
 }
 
 const iconVariants = cva('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
+export const TagsSelector = ({ variant, tagIds, onChange, testID }: Props) => {
     const ref = useRef<BottomSheetInterface | null>(null);
 
     const { tags: selectedTags } = useGetTagByIdsQuery(tagIds);
@@ -44,6 +45,7 @@ export const TagsSelector = ({ variant, tagIds, onChange }: Props) => {
                 onPress={handleOpen}
                 left={<Icon size={16} icon={UserIconNameEnum.Tag} className={iconVariants({ variant })} />}
                 size="md"
+                testID={testID}
             >
                 {isNotEmptyArray(selectedTags) ? (
                     <View className="flex-row items-center flex-1 min-w-0">

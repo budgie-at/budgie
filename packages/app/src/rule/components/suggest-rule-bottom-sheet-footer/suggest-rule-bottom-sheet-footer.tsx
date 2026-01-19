@@ -4,6 +4,7 @@ import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { Button } from '../../../@generic/component/button/button';
 
 interface Props {
@@ -27,6 +28,7 @@ export const SuggestRuleBottomSheetFooter = ({ isCreating, close, handleConfigur
                 size="md"
                 leftIcon={UserIconNameEnum.Sparkles}
                 disabled={isSubmitDisabled}
+                testID={SuggestRuleSelectors.CreateRuleButton}
             />
             <Button
                 content={t`Configure Rule`}
@@ -35,8 +37,16 @@ export const SuggestRuleBottomSheetFooter = ({ isCreating, close, handleConfigur
                 size="md"
                 leftIcon={UserIconNameEnum.Settings}
                 disabled={isSubmitDisabled}
+                testID={SuggestRuleSelectors.ConfigureRuleButton}
             />
-            <Button content={t`No thanks`} onPress={close} variant="secondary" size="md" disabled={isCreating} />
+            <Button
+                content={t`No thanks`}
+                onPress={close}
+                variant="secondary"
+                size="md"
+                disabled={isCreating}
+                testID={SuggestRuleSelectors.NoThanksButton}
+            />
         </View>
     );
 };

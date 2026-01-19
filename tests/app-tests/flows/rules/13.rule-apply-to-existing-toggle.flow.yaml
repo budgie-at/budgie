@@ -1,0 +1,99 @@
+appId: ${APP_ID}
+---
+# Test 13: Apply to existing toggle behavior
+# Creates a rule WITHOUT "Apply to existing", verifies transaction unchanged
+# Then edits rule to enable toggle, verifies transaction is updated
+
+# First, create an expense transaction with title "Spotify"
+- runFlow:
+    file: ../shared/create-expense-transaction.flow.yaml
+    env:
+      TITLE: 'Spotify Premium'
+      AMOUNT: '10'
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Create a new rule WITHOUT "Apply to existing"
+- tapOn:
+    text: 'Rule'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+    timeout: 3000
+
+# Configure condition: Title CONTAINS "Spotify"
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Spotify'
+
+# Configure action: SET_CATEGORY
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+- tapOn:
+    text: 'Test Category'
+
+# Submit the rule WITHOUT enabling "Apply to existing"
+- tapOn:
+    text: 'Create Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Navigate to Transactions to verify the transaction is UNCHANGED
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+# Verify the transaction still shows Unknown (no category applied)
+- assertVisible:
+    text: 'Spotify Premium'
+- assertVisible:
+    text: 'Unknown'
+
+# Now edit the rule and enable "Apply to existing"
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Tap on the rule to edit it
+- tapOn:
+    text: 'Spotify'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+    timeout: 3000
+
+# Enable "Apply to existing transactions"
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ApplyToExistingToggle'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'RuleForm.ApplyToExistingToggle'
+
+# Submit the rule
+- tapOn:
+    text: 'Save Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Navigate to Transactions to verify the category is NOW applied
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+# Verify the transaction now shows "Test Category"
+- assertVisible:
+    text: 'Spotify Premium'
+- assertVisible:
+    text: 'Test Category'

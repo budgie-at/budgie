@@ -1,0 +1,90 @@
+appId: ${APP_ID}
+---
+# Test 12: Disabled rules are not applied to existing transactions
+# Creates a rule, disables it, enables "Apply to existing", and verifies nothing changes
+
+# First, create an expense transaction with title "Uber"
+- runFlow:
+    file: ../shared/create-expense-transaction.flow.yaml
+    env:
+      TITLE: 'Uber Ride'
+      AMOUNT: '25'
+
+# Navigate to Rules page
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+# Create a new rule
+- tapOn:
+    text: 'Rule'
+- extendedWaitUntil:
+    visible: 'Create Rule'
+    timeout: 3000
+
+# Configure condition: Title CONTAINS "Uber"
+- tapOn:
+    id: 'RuleForm.Condition.0.ValueInput'
+- inputText: 'Uber'
+
+# Configure action: SET_CATEGORY
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+- extendedWaitUntil:
+    visible: 'Select Category'
+    timeout: 3000
+- tapOn:
+    text: 'Test Category'
+
+# Submit the rule (without "Apply to existing" initially)
+- tapOn:
+    text: 'Create Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Verify rule was created
+- assertVisible:
+    text: 'Uber'
+
+# Disable the rule by tapping the switch
+- tapOn:
+    id: 'RulesPage.RuleCard.0.EnabledSwitch'
+- waitForAnimationToEnd
+
+# Edit the rule to enable "Apply to existing"
+- tapOn:
+    text: 'Uber'
+- extendedWaitUntil:
+    visible: 'Edit Rule'
+    timeout: 3000
+
+# Enable "Apply to existing transactions"
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ApplyToExistingToggle'
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: 'RuleForm.ApplyToExistingToggle'
+
+# Submit the rule
+- tapOn:
+    text: 'Save Rule'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.Page'
+    timeout: 5000
+
+# Navigate to Transactions to verify the category was NOT applied (rule is disabled)
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+# Verify the transaction does NOT show "Test Category" (should show Unknown)
+- assertVisible:
+    text: 'Uber Ride'
+- assertVisible:
+    text: 'Unknown'

@@ -22,11 +22,22 @@ interface Props {
     readonly showConvertButton?: boolean;
     readonly deleteConfirmButtonText: string;
     readonly children?: ReactNode;
+    readonly submitTestID?: string;
 }
 
 export const FormFooter = (props: Props) => {
-    const { variant, buttonText, onSubmit, onDelete, onConvert, showConvertButton, deleteConfirmTitle, deleteConfirmButtonText, children } =
-        props;
+    const {
+        variant,
+        buttonText,
+        onSubmit,
+        onDelete,
+        onConvert,
+        showConvertButton,
+        deleteConfirmTitle,
+        deleteConfirmButtonText,
+        children,
+        submitTestID
+    } = props;
 
     const { t } = useLingui();
     const { ref, handleConfirm, handleOpen, isLoading } = useConfirmAction(onDelete ?? emptyFn);
@@ -50,6 +61,7 @@ export const FormFooter = (props: Props) => {
                             variant={variant}
                             className="flex-1"
                             content={buttonText}
+                            testID={submitTestID}
                         />
                     </View>
                 </Footer>

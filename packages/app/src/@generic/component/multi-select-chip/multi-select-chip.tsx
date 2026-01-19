@@ -13,6 +13,7 @@ interface Props<T> {
     readonly onToggle: (identifier: T) => void;
     readonly label: string;
     readonly value?: string;
+    readonly testID?: string;
 }
 
 const chipVariants = cva('flex-row items-center gap-x-sm px-lg py-md rounded-2xl border', {
@@ -51,11 +52,11 @@ const labelVariants = cva('text-sm font-medium', {
     }
 });
 
-export const MultiSelectChip = <T,>({ identifier, isSelected, onToggle, label, value }: Props<T>) => {
+export const MultiSelectChip = <T,>({ identifier, isSelected, onToggle, label, value, testID }: Props<T>) => {
     const handleToggle = () => void onToggle(identifier);
 
     return (
-        <HapticPressable onPress={handleToggle} className={chipVariants({ isSelected })}>
+        <HapticPressable onPress={handleToggle} className={chipVariants({ isSelected })} testID={testID}>
             <View className={checkContainerVariants({ isSelected })}>
                 <Icon className={checkIconVariants({ isSelected })} icon={UserIconNameEnum.Check} size={10} />
             </View>

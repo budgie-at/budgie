@@ -2,6 +2,7 @@ import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/co
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { CategorySelector } from '../../../category/components/category-selector/category-selector';
@@ -27,7 +28,13 @@ export const TransactionFormCategory = ({ variant, accountId, transactionType }:
 
         return (
             <FormItem error={error?.message}>
-                <CategorySelector cardVariant={cardVariant} categoryId={value} onSelect={onChange} variant={variant} />
+                <CategorySelector
+                    cardVariant={cardVariant}
+                    categoryId={value}
+                    onSelect={onChange}
+                    variant={variant}
+                    testID={TransactionFormSelectors.CategorySelector}
+                />
             </FormItem>
         );
     };

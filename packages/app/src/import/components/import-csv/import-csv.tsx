@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { ImportSelectors } from '../../../@e2e/selectors/import.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 
 export const ImportCsv = () => {
@@ -41,6 +42,7 @@ export const ImportCsv = () => {
             icon={UserIconNameEnum.Upload}
             variant="warning"
             isLoading={isLoading}
+            testID={ImportSelectors.CsvCard}
         />
     );
 };

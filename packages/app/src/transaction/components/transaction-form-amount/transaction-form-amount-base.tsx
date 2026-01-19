@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
@@ -27,6 +28,7 @@ export const TransactionFormAmountBase = ({ variant, instrumentSymbol, onAmountC
                 value={value}
                 onChange={onAmountChange}
                 autoFocus={autoFocus}
+                testID={TransactionFormSelectors.AmountInput}
             />
 
             {isNotEmptyString(error?.message) ? (

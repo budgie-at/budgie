@@ -2,6 +2,7 @@ import { LegendList } from '@legendapp/list';
 import { ReactElement } from 'react';
 import { Text, View } from 'react-native';
 
+import { TransactionCardSelectors } from '../../../@e2e/selectors/transaction-card.selector';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.interface';
@@ -22,7 +23,7 @@ interface Props {
 const keyExtractor = (item: TransactionListItemType) => item.id;
 const getItemType = (item: TransactionListItemType | undefined) => item?.type ?? '';
 
-const renderItem = ({ item }: { item: TransactionListItemType }) =>
+const renderItem = ({ item, index }: { item: TransactionListItemType; index: number }) =>
     item.type === 'header' ? (
         <View className="bg-primary-reverse py-sm">
             <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
@@ -32,6 +33,10 @@ const renderItem = ({ item }: { item: TransactionListItemType }) =>
             transaction={item.data.transaction}
             formattedDate={item.data.formattedDate}
             categoryLabel={item.data.categoryLabel}
+            testID={TransactionCardSelectors.Card(index)}
+            titleTestID={TransactionCardSelectors.Title(index)}
+            categoryBadgeTestID={TransactionCardSelectors.CategoryBadge(index)}
+            tagTestID={TransactionCardSelectors.Tag(index)}
         />
     );
 

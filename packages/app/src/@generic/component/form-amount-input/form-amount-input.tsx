@@ -18,6 +18,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly autoFocus?: boolean;
     readonly onChange: (value: number) => void;
+    readonly testID?: string;
 }
 
 const textVariants = cva('', {
@@ -26,7 +27,7 @@ const textVariants = cva('', {
     }
 });
 
-export const FormAmountInput = ({ value, onChange, variant, textClassName, instrumentSymbol, autoFocus }: Props) => {
+export const FormAmountInput = ({ value, onChange, variant, textClassName, instrumentSymbol, autoFocus, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const displayedText = value === 0 ? '' : formatDigits(value.toString());
@@ -49,6 +50,7 @@ export const FormAmountInput = ({ value, onChange, variant, textClassName, instr
                 placeholder={formatDigits(0)}
                 autoFocus={autoFocus}
                 style={fontSizeStyle}
+                testID={testID}
             />
         </View>
     );

@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { SuggestRuleSelectors } from '../../../@e2e/selectors/suggest-rule.selector';
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
 import { BottomSheetHeader } from '../../../@generic/component/bottom-sheet-header/bottom-sheet-header';
 import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
@@ -48,7 +49,7 @@ export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={contentContainerStyle}
             >
-                <View className="px-5xl">
+                <View className="px-5xl" testID={SuggestRuleSelectors.BottomSheet}>
                     <BottomSheetHeader size="lg" align="center" title={t`Create Rule?`} />
 
                     <SuggestRuleConditionSelector
@@ -65,7 +66,11 @@ export const SuggestRuleBottomSheet = ({ ref, onRuleCreated }: Props) => {
                         <Text className="text-base text-primary">
                             <Trans>Apply to existing transactions</Trans>
                         </Text>
-                        <ThemedSwitch value={applyToExisting} onValueChange={setApplyToExisting} />
+                        <ThemedSwitch
+                            value={applyToExisting}
+                            onValueChange={setApplyToExisting}
+                            testID={SuggestRuleSelectors.ApplyToExistingToggle}
+                        />
                     </View>
 
                     <SuggestRuleBottomSheetFooter
