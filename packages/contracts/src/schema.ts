@@ -43,3 +43,5 @@ export { BudgetAlertSettingsEntityTable } from './budget-alert-settings/table/bu
 export { BudgetAlertSettingsEntityRelations } from './budget-alert-settings/relations/budget-alert-settings-entity.relations';
 export { BudgetPeriodSnapshotEntityTable } from './budget-period-snapshot/table/budget-period-snapshot-entity.table';
 export { BudgetPeriodSnapshotEntityRelations } from './budget-period-snapshot/relations/budget-period-snapshot-entity.relations';
+export { BudgetTemplateEntityTable } from './budget-template/table/budget-template-entity.table';
+export { BudgetTemplateEntityRelations } from './budget-template/relations/budget-template-entity.relations';

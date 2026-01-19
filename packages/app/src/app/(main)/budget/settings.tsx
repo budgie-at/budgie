@@ -18,6 +18,8 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetLimitAmountBottomSheet } from '../../../budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet';
 import { BudgetPeriodSelectorBottomSheet } from '../../../budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet';
+import { BudgetPeriodStartDaySelectorBottomSheet } from '../../../budget/components/budget-period-start-day-selector-bottom-sheet/budget-period-start-day-selector-bottom-sheet';
+import { BudgetSaveTemplateBottomSheet } from '../../../budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { budgetService } from '../../../budget/service/budget.service';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -36,7 +38,9 @@ export default function BudgetSettingsPage() {
     const { i18n, t } = useLingui();
 
     const periodSelectorRef = useRef<BottomSheetInterface | null>(null);
+    const periodStartDayRef = useRef<BottomSheetInterface | null>(null);
     const overallLimitRef = useRef<BottomSheetInterface | null>(null);
+    const saveTemplateRef = useRef<BottomSheetInterface | null>(null);
 
     const { budget, isLoading } = useGetActiveBudgetQuery();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
@@ -47,6 +51,7 @@ export default function BudgetSettingsPage() {
 
     const handleGoBack = () => void goBackOrReplace('/budget');
     const handleOpenPeriodSelector = () => void periodSelectorRef.current?.open();
+    const handleOpenPeriodStartDay = () => void periodStartDayRef.current?.open();
     const handleOpenOverallLimit = () => void overallLimitRef.current?.open();
     const handleNavigateToExcludedAccounts = () => void router.push('/budget/excluded-accounts');
     const handleNavigateToCategoryLimits = () => void router.push('/budget/category-limits');
@@ -54,6 +59,8 @@ export default function BudgetSettingsPage() {
     const handleNavigateToAlerts = () => void router.push('/budget/alerts');
     const handleNavigateToAlertSettings = () => void router.push('/budget/alert-settings');
     const handleNavigateToBudgetHistory = () => void router.push('/budget/history');
+    const handleNavigateToTemplates = () => void router.push('/budget/templates');
+    const handleOpenSaveTemplate = () => void saveTemplateRef.current?.open();
 
     const handleSelectPeriod = async (period: BudgetPeriodEnum) => {
         if (!isDefined(budget)) {
@@ -62,6 +69,18 @@ export default function BudgetSettingsPage() {
 
         try {
             await budgetService.update(budget.id, { ...budgetService.getBudgetUpdatePayload(budget), period });
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
+    const handleSelectPeriodStartDay = async (periodStartDay: number) => {
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        try {
+            await budgetService.update(budget.id, { ...budgetService.getBudgetUpdatePayload(budget), periodStartDay });
         } catch (error: unknown) {
             showError(error);
         }
@@ -87,18 +106,6 @@ export default function BudgetSettingsPage() {
         try {
             await budgetRepository.deleteById(budget.id);
             router.replace('/');
-        } catch (error: unknown) {
-            showError(error);
-        }
-    };
-
-    const handleSimulatePeriodEnd = async () => {
-        if (!isDefined(budget)) {
-            return;
-        }
-
-        try {
-            await budgetService.simulatePeriodEnd(budget);
         } catch (error: unknown) {
             showError(error);
         }
@@ -185,6 +192,7 @@ export default function BudgetSettingsPage() {
                                 variant="ghost"
                                 title={t`Period Start Day`}
                                 description={String(budget.periodStartDay)}
+                                onPress={handleOpenPeriodStartDay}
                             />
                             <SettingsCard
                                 icon={UserIconNameEnum.Wallet}
@@ -262,6 +270,23 @@ export default function BudgetSettingsPage() {
                             />
                         </SettingsGroup>
 
+                        <SettingsGroup title={t`Templates`}>
+                            <SettingsCard
+                                icon={UserIconNameEnum.Save}
+                                variant="primary"
+                                title={t`Save as Template`}
+                                description={t`Save current budget configuration for reuse`}
+                                onPress={handleOpenSaveTemplate}
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.Files}
+                                variant="default"
+                                title={t`Manage Templates`}
+                                description={t`View, load, or delete saved templates`}
+                                onPress={handleNavigateToTemplates}
+                            />
+                        </SettingsGroup>
+
                         <SettingsGroup title={t`Danger Zone`}>
                             <Button
                                 content={<Trans>Delete Budget</Trans>}
@@ -270,20 +295,17 @@ export default function BudgetSettingsPage() {
                                 leftIcon={UserIconNameEnum.Trash2}
                             />
                         </SettingsGroup>
-
-                        <SettingsGroup title={t`Debug (Remove Later)`}>
-                            <Button
-                                content={<Trans>Simulate Period End</Trans>}
-                                variant="secondary"
-                                onPress={handleSimulatePeriodEnd}
-                                leftIcon={UserIconNameEnum.FastForward}
-                            />
-                        </SettingsGroup>
                     </View>
                 </ScrollView>
             </Page>
 
             <BudgetPeriodSelectorBottomSheet ref={periodSelectorRef} selectedPeriod={budget.period} onSelect={handleSelectPeriod} />
+
+            <BudgetPeriodStartDaySelectorBottomSheet
+                ref={periodStartDayRef}
+                selectedDay={budget.periodStartDay}
+                onSelect={handleSelectPeriodStartDay}
+            />
 
             <BudgetLimitAmountBottomSheet
                 ref={overallLimitRef}
@@ -291,6 +313,8 @@ export default function BudgetSettingsPage() {
                 value={convertFromMicroUnits(budget.overallLimit)}
                 onSave={handleSaveOverallLimit}
             />
+
+            <BudgetSaveTemplateBottomSheet ref={saveTemplateRef} budget={budget} />
         </>
     );
     /* jscpd:ignore-end */

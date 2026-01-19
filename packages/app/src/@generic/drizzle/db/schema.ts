@@ -43,5 +43,7 @@ export {
     BudgetAlertSettingsEntityTable,
     BudgetAlertSettingsEntityRelations,
     BudgetPeriodSnapshotEntityTable,
-    BudgetPeriodSnapshotEntityRelations
+    BudgetPeriodSnapshotEntityRelations,
+    BudgetTemplateEntityTable,
+    BudgetTemplateEntityRelations
 } from '@budgie/contracts';

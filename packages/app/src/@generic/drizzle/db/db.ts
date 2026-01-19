@@ -11,6 +11,7 @@ import {
     BudgetIncomeExpectationRepository,
     BudgetPeriodSnapshotRepository,
     BudgetRepository,
+    BudgetTemplateRepository,
     CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
@@ -84,3 +85,4 @@ export const accountBudgetExclusionRepository = new AccountBudgetExclusionReposi
 export const budgetAlertRepository = new BudgetAlertRepository(db);
 export const budgetAlertSettingsRepository = new BudgetAlertSettingsRepository(db);
 export const budgetPeriodSnapshotRepository = new BudgetPeriodSnapshotRepository(db);
+export const budgetTemplateRepository = new BudgetTemplateRepository(db);

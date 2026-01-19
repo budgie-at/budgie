@@ -129,6 +129,23 @@ export type { BudgetPeriodSnapshotCreateEntityInterface } from './budget-period-
 
 export { BudgetPeriodSnapshotRepository } from './budget-period-snapshot/repository/budget-period-snapshot.repository';
 
+export { BUDGET_TEMPLATE_NAME_MAX_LENGTH } from './budget-template/constant/budget-template-name-max-length.constant';
+
+export { BudgetTemplateEntityTable } from './budget-template/table/budget-template-entity.table';
+export { BudgetTemplateEntityRelations } from './budget-template/relations/budget-template-entity.relations';
+
+export { BudgetTemplateEntitySchema } from './budget-template/schema/budget-template-entity.schema';
+export { BudgetTemplateCreateEntitySchema } from './budget-template/schema/budget-template-create-entity.schema';
+export { BudgetTemplateCreateInputSchema } from './budget-template/schema/budget-template-create-input.schema';
+
+export type { BudgetTemplateEntityInterface } from './budget-template/entity/budget-template-entity.interface';
+export type { BudgetTemplateCreateEntityInterface } from './budget-template/entity/budget-template-create-entity.interface';
+export type { BudgetTemplateCreateInputInterface } from './budget-template/input/budget-template-create-input.interface';
+export type { BudgetTemplateCategoryLimitInterface } from './budget-template/interface/budget-template-category-limit.interface';
+export type { BudgetTemplateIncomeExpectationInterface } from './budget-template/interface/budget-template-income-expectation.interface';
+
+export { BudgetTemplateRepository } from './budget-template/repository/budget-template.repository';
+
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
 export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';

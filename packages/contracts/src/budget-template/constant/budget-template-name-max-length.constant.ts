@@ -1,0 +1,1 @@
+export const BUDGET_TEMPLATE_NAME_MAX_LENGTH = 50;
