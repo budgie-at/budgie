@@ -2,6 +2,7 @@ import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,6 +10,8 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { budgetRepository } from '../../../@generic/drizzle/db/db';
+import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -28,12 +31,23 @@ export default function BudgetSettingsPage() {
     const { budget, isLoading } = useGetActiveBudgetQuery();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
 
+    const showError = useShowError();
+
     const formatMoney = useFormatDigits(decimalPlaces);
 
     const handleGoBack = () => void goBackOrReplace('/budget');
 
-    const handleDeleteBudget = () => {
-        // TODO: Implement delete budget functionality
+    const handleDeleteBudget = async () => {
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        try {
+            await budgetRepository.deleteById(budget.id);
+            router.replace('/');
+        } catch (error: unknown) {
+            showError(error);
+        }
     };
 
     if (isLoading) {
