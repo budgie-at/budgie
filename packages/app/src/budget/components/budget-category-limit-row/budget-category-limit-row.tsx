@@ -39,17 +39,12 @@ export const BudgetCategoryLimitRow = ({ category, limit, onEdit, onRemove }: Pr
 
     const { isLoading, handleOpen, handleConfirm, ref: confirmRef } = useConfirmAction(onRemove);
 
-    const handleEditPress = () => {
-        swipeableRef.current?.close();
-        onEdit();
-    };
-
     const formattedLimit = formatMoney(limit, defaultInstrument.symbol);
     const categoryTitle = category.title;
     const confirmDescription = t`This will remove the budget limit for "${categoryTitle}". The category itself will not be deleted.`;
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
-        <BudgetRowSwipeActions drag={drag} onEditPress={handleEditPress} onDeletePress={handleOpen} />
+        <BudgetRowSwipeActions drag={drag} onDeletePress={handleOpen} />
     );
 
     return (
@@ -62,6 +57,7 @@ export const BudgetCategoryLimitRow = ({ category, limit, onEdit, onRemove }: Pr
                 renderRightActions={renderRightActions}
             >
                 <HorizontalCell
+                    onPress={onEdit}
                     left={<CircleIcon icon={category.icon} variant="default" size={42} iconSize={20} />}
                     right={
                         <View className="ml-auto flex-row items-center gap-x-sm">

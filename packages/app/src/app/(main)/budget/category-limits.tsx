@@ -10,56 +10,83 @@ import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetCategoryLimitRow } from '../../../budget/components/budget-category-limit-row/budget-category-limit-row';
 import { BudgetLimitAmountBottomSheet } from '../../../budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { budgetService } from '../../../budget/service/budget.service';
 import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
+import { useAllCategoriesQuery } from '../../../category/query/use-all-categories.query';
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function BudgetCategoryLimitsPage() {
     const { t } = useLingui();
 
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
 
     const limitAmountRef = useRef<BottomSheetInterface | null>(null);
     const categorySelectorRef = useRef<BottomSheetInterface | null>(null);
 
     const { budget, isLoading } = useGetActiveBudgetQuery();
+    const { categories } = useAllCategoriesQuery();
 
     const handleGoBack = () => void goBackOrReplace('/budget/settings');
 
     const handleOpenCategorySelector = () => {
+        setSelectedCategoryId(null);
+        setEditingIndex(null);
         void categorySelectorRef.current?.open();
     };
 
     const handleEditLimit = (index: number) => {
+        setSelectedCategoryId(null);
         setEditingIndex(index);
         void limitAmountRef.current?.open();
     };
 
+    // eslint-disable-next-line max-statements
     const handleSaveLimit = async (newLimit: number) => {
-        if (!isDefined(budget) || !isDefined(editingIndex)) {
+        if (!isDefined(budget)) {
             return;
         }
 
-        const updatedCategoryLimits = budget.categoryLimits.map((categoryLimit, index) =>
-            index === editingIndex
-                ? { categoryId: categoryLimit.categoryId, limit: newLimit }
-                : { categoryId: categoryLimit.categoryId, limit: categoryLimit.limit }
-        );
+        const budgetPayload = budgetService.getBudgetUpdatePayload(budget);
 
-        try {
-            await budgetService.update(budget.id, {
-                ...budgetService.getBudgetUpdatePayload(budget),
-                categoryLimits: updatedCategoryLimits
-            });
-        } catch {
-            Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to update category limit` });
+        if (isDefined(selectedCategoryId)) {
+            const updatedCategoryLimits = [...budgetPayload.categoryLimits, { categoryId: selectedCategoryId, limit: newLimit }];
+
+            try {
+                await budgetService.update(budget.id, {
+                    ...budgetPayload,
+                    categoryLimits: updatedCategoryLimits
+                });
+            } catch {
+                Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to add category limit` });
+            }
+
+            setSelectedCategoryId(null);
+
+            return;
         }
 
-        setEditingIndex(null);
+        if (isDefined(editingIndex)) {
+            const updatedCategoryLimits = budgetPayload.categoryLimits.map((categoryLimit, index) =>
+                index === editingIndex ? { categoryId: categoryLimit.categoryId, limit: newLimit } : categoryLimit
+            );
+
+            try {
+                await budgetService.update(budget.id, {
+                    ...budgetPayload,
+                    categoryLimits: updatedCategoryLimits
+                });
+            } catch {
+                Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to update category limit` });
+            }
+
+            setEditingIndex(null);
+        }
     };
 
     const handleRemoveLimit = async (index: number) => {
@@ -67,13 +94,12 @@ export default function BudgetCategoryLimitsPage() {
             return;
         }
 
-        const updatedCategoryLimits = budget.categoryLimits
-            .filter((_, categoryLimitIndex) => categoryLimitIndex !== index)
-            .map(categoryLimit => ({ categoryId: categoryLimit.categoryId, limit: categoryLimit.limit }));
+        const budgetPayload = budgetService.getBudgetUpdatePayload(budget);
+        const updatedCategoryLimits = budgetPayload.categoryLimits.filter((_, categoryLimitIndex) => categoryLimitIndex !== index);
 
         try {
             await budgetService.update(budget.id, {
-                ...budgetService.getBudgetUpdatePayload(budget),
+                ...budgetPayload,
                 categoryLimits: updatedCategoryLimits
             });
         } catch {
@@ -81,23 +107,10 @@ export default function BudgetCategoryLimitsPage() {
         }
     };
 
-    const handleSelectCategory = async (categoryId: number | null) => {
-        if (!isDefined(budget) || !isDefined(categoryId)) {
-            return;
-        }
-
-        const updatedCategoryLimits = [
-            ...budget.categoryLimits.map(categoryLimit => ({ categoryId: categoryLimit.categoryId, limit: categoryLimit.limit })),
-            { categoryId, limit: 0 }
-        ];
-
-        try {
-            await budgetService.update(budget.id, {
-                ...budgetService.getBudgetUpdatePayload(budget),
-                categoryLimits: updatedCategoryLimits
-            });
-        } catch {
-            Toast.show({ type: 'error', text1: t`Error`, text2: t`Failed to add category limit` });
+    const handleSelectCategory = (categoryId: number | null) => {
+        if (isDefined(categoryId)) {
+            setSelectedCategoryId(categoryId);
+            void limitAmountRef.current?.open();
         }
     };
 
@@ -116,6 +129,15 @@ export default function BudgetCategoryLimitsPage() {
     const editingCategoryLimit = isDefined(editingIndex) ? budget.categoryLimits[editingIndex] : null;
     const existingCategoryIds = budget.categoryLimits.map(categoryLimit => categoryLimit.categoryId);
 
+    const selectedCategory = isDefined(selectedCategoryId)
+        ? (categories.find(category => category.id === selectedCategoryId) ?? null)
+        : null;
+
+    const amountBottomSheetTitle = isDefined(editingCategoryLimit)
+        ? editingCategoryLimit.category.title
+        : (selectedCategory?.title ?? t`Set Category Limit`);
+    const amountBottomSheetValue = isDefined(editingCategoryLimit) ? convertFromMicroUnits(editingCategoryLimit.limit) : 0;
+
     /* jscpd:ignore-start */
     return (
         <>
@@ -130,7 +152,7 @@ export default function BudgetCategoryLimitsPage() {
                                   <BudgetCategoryLimitRow
                                       key={categoryLimit.id}
                                       category={categoryLimit.category}
-                                      limit={categoryLimit.limit}
+                                      limit={convertFromMicroUnits(categoryLimit.limit)}
                                       onEdit={handleEdit}
                                       onRemove={handleRemove}
                                   />
@@ -147,14 +169,12 @@ export default function BudgetCategoryLimitsPage() {
                 </ScrollView>
             </Page>
 
-            {isDefined(editingCategoryLimit) ? (
-                <BudgetLimitAmountBottomSheet
-                    ref={limitAmountRef}
-                    title={editingCategoryLimit.category.title}
-                    value={editingCategoryLimit.limit}
-                    onSave={handleSaveLimit}
-                />
-            ) : null}
+            <BudgetLimitAmountBottomSheet
+                ref={limitAmountRef}
+                title={amountBottomSheetTitle}
+                value={amountBottomSheetValue}
+                onSave={handleSaveLimit}
+            />
 
             <CategorySelectorBottomSheet
                 ref={categorySelectorRef}

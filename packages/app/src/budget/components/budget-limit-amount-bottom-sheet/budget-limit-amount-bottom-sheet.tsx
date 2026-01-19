@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { RefObject, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
@@ -20,6 +20,10 @@ export const BudgetLimitAmountBottomSheet = ({ ref, title, value, onSave }: Prop
     const { t } = useLingui();
 
     const [amount, setAmount] = useState(value);
+
+    useEffect(() => {
+        setAmount(value);
+    }, [value]);
 
     const handleCancel = () => {
         setAmount(value);
