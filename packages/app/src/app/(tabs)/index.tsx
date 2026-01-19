@@ -93,13 +93,23 @@ export default function HomePage() {
                     contentContainerStyle={listContentContainerStyle}
                     ListHeaderComponent={
                         <View className="mb-xl">
-                            <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
+                            <BudgetWidget
+                                calculation={calculation}
+                                isLoading={isBudgetLoading}
+                                startDate={budget?.startDate}
+                                endDate={budget?.endDate}
+                            />
                         </View>
                     }
                 />
             ) : (
                 <View className="flex-1 px-5xl" style={emptyStateStyle}>
-                    <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
+                    <BudgetWidget
+                        calculation={calculation}
+                        isLoading={isBudgetLoading}
+                        startDate={budget?.startDate}
+                        endDate={budget?.endDate}
+                    />
                     <AccountsEmptyState />
                 </View>
             )}

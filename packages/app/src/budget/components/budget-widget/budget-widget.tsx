@@ -2,22 +2,28 @@ import { Trans } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { BudgetStatusEnum } from '../../enum/budget-status.enum';
 import { BudgetCalculationResultInterface } from '../../interface/budget-calculation-result.interface';
+import { BudgetAlertBadge } from '../budget-alert-badge/budget-alert-badge';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 interface Props {
     readonly calculation: BudgetCalculationResultInterface | null;
     readonly isLoading: boolean;
+    readonly startDate?: Date;
+    readonly endDate?: Date;
 }
 
-export const BudgetWidget = ({ calculation, isLoading }: Props) => {
+export const BudgetWidget = ({ calculation, isLoading, startDate, endDate }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
 
+    const { formatMonthAndDay } = useFormatDate();
     const formatMoney = useFormatDigits(decimalPlaces);
 
     if (isLoading) {
@@ -47,33 +53,39 @@ export const BudgetWidget = ({ calculation, isLoading }: Props) => {
 
     const spentText = formatMoney(calculation.totalSpent, defaultInstrument.symbol);
     const limitText = formatMoney(calculation.overallLimit, defaultInstrument.symbol);
-    const overPaceAmount = formatMoney(Math.abs(calculation.paceVariance), defaultInstrument.symbol);
+    const remainingText = formatMoney(Math.abs(calculation.overallRemaining), defaultInstrument.symbol);
+    const isOverBudget = calculation.overallRemaining < 0;
 
     return (
         <Link href="/budget" asChild>
             <Card>
                 <View className="flex-row items-center justify-between mb-md">
-                    <Text className="text-primary font-medium">
-                        <Trans>Budget</Trans>
-                    </Text>
-                    {isPositiveNumber(calculation.warningCount) ? (
-                        <View className="bg-warning-corner rounded-full px-sm py-xs">
-                            <Text className="text-warning-foreground text-xs">{calculation.warningCount}</Text>
-                        </View>
-                    ) : null}
+                    <View>
+                        <Text className="text-primary font-medium">
+                            <Trans>Budget</Trans>
+                        </Text>
+                        {isDefined(startDate) && isDefined(endDate) ? (
+                            <Text className="text-secondary-foreground text-sm">
+                                {formatMonthAndDay(startDate)} - {formatMonthAndDay(endDate)}
+                            </Text>
+                        ) : null}
+                    </View>
+                    <BudgetAlertBadge count={calculation.warningCount} hasExceeded={calculation.overallStatus === BudgetStatusEnum.OVER} />
                 </View>
                 <BudgetProgressBar percentage={calculation.overallPercentage} status={calculation.overallStatus} />
                 <View className="flex-row items-center justify-between mt-md">
                     <Text className="text-secondary-foreground text-sm">
-                        {spentText} / {limitText}
+                        <Trans>
+                            Spent {spentText} of {limitText}
+                        </Trans>
                     </Text>
-                    {calculation.isOnPace ? (
-                        <Text className="text-positive-foreground text-sm">
-                            <Trans>On track</Trans>
+                    {isOverBudget ? (
+                        <Text className="text-destructive-foreground text-sm">
+                            <Trans>{remainingText} over</Trans>
                         </Text>
                     ) : (
-                        <Text className="text-destructive-foreground text-sm">
-                            <Trans>{overPaceAmount} over pace</Trans>
+                        <Text className="text-positive-foreground text-sm">
+                            <Trans>{remainingText} left</Trans>
                         </Text>
                     )}
                 </View>
