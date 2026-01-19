@@ -15,6 +15,9 @@ import { AccountGridItem } from '../../account/component/account-grid-item/accou
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { useSearchAccountsGroupedQuery } from '../../account/query/use-search-accounts-grouped.query';
+import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
+import { useGetActiveBudgetQuery } from '../../budget/query/use-get-active-budget.query';
+import { useGetBudgetCalculationQuery } from '../../budget/query/use-get-budget-calculation.query';
 
 interface AccountRowInterface {
     readonly left: AccountWithInstrumentEntityInterface;
@@ -42,6 +45,8 @@ const pairAccountsIntoRows = (accounts: AccountWithInstrumentEntityInterface[]):
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
     const { bottom } = useSafeAreaInsets();
+    const { budget } = useGetActiveBudgetQuery();
+    const { calculation, isLoading: isBudgetLoading } = useGetBudgetCalculationQuery(budget);
 
     const db = useSQLiteContext();
     useDrizzleStudio(db);
@@ -72,6 +77,12 @@ export default function HomePage() {
 
     const keyExtractor = (item: AccountRowInterface) => String(item.left.id);
 
+    const listHeader = (
+        <View className="mb-xl">
+            <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
+        </View>
+    );
+
     return (
         <View className="flex-1 bg-background">
             <CollapsibleHeader scrollY={scrollY} />
@@ -85,9 +96,11 @@ export default function HomePage() {
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={listHeader}
                 />
             ) : (
                 <View className="flex-1 px-5xl" style={emptyStateStyle}>
+                    <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
                     <AccountsEmptyState />
                 </View>
             )}
