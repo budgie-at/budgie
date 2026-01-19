@@ -169,7 +169,7 @@ msgstr "Agregar una nota..."
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
-#: src/app/(main)/budget/category-limits.tsx:142
+#: src/app/(main)/budget/category-limits.tsx:166
 #: src/app/(main)/budget/setup/category-limits.tsx:175
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:137
 msgid "Add Category"
@@ -238,7 +238,7 @@ msgstr "Todo el tiempo"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "Todos tus datos financieros se almacenan localmente en tu dispositivo. Sin sincronización en la nube, sin seguimiento, sin compartir datos."
 
-#: src/app/(main)/budget/setup/category-limits.tsx:136
+#: src/app/(main)/budget/setup/category-limits.tsx:138
 #: src/budget/components/budget-overview-card/budget-overview-card.tsx:35
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
@@ -498,14 +498,14 @@ msgid "Category"
 msgstr "Categoría"
 
 #: src/app/(main)/budget/setup/confirm.tsx:103
-#: src/budget/components/budget-categories-card/budget-categories-card.tsx:20
+#: src/budget/components/budget-categories-card/budget-categories-card.tsx:29
 msgid "Category Budgets"
 msgstr ""
 
-#: src/app/(main)/budget/category-limits.tsx:106
-#: src/app/(main)/budget/category-limits.tsx:122
+#: src/app/(main)/budget/category-limits.tsx:121
+#: src/app/(main)/budget/category-limits.tsx:146
 #: src/app/(main)/budget/settings.tsx:162
-#: src/app/(main)/budget/setup/category-limits.tsx:116
+#: src/app/(main)/budget/setup/category-limits.tsx:118
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:117
 msgid "Category Limits"
 msgstr ""
@@ -620,7 +620,7 @@ msgid "Contains"
 msgstr ""
 
 #: src/app/(main)/budget/setup/amount.tsx:35
-#: src/app/(main)/budget/setup/category-limits.tsx:121
+#: src/app/(main)/budget/setup/category-limits.tsx:123
 #: src/app/(main)/budget/setup/income-expectations.tsx:112
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
@@ -1057,9 +1057,9 @@ msgstr ""
 msgid "Equals"
 msgstr ""
 
-#: src/app/(main)/budget/category-limits.tsx:59
-#: src/app/(main)/budget/category-limits.tsx:80
-#: src/app/(main)/budget/category-limits.tsx:100
+#: src/app/(main)/budget/category-limits.tsx:65
+#: src/app/(main)/budget/category-limits.tsx:86
+#: src/app/(main)/budget/category-limits.tsx:108
 #: src/app/(tabs)/settings/import.tsx:110
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
@@ -1130,7 +1130,7 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
-#: src/app/(main)/budget/category-limits.tsx:100
+#: src/app/(main)/budget/category-limits.tsx:65
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:108
 msgid "Failed to add category limit"
 msgstr ""
@@ -1143,7 +1143,7 @@ msgstr "No se pudieron obtener las cuentas"
 msgid "Failed to load contacts."
 msgstr "Error al cargar los contactos."
 
-#: src/app/(main)/budget/category-limits.tsx:80
+#: src/app/(main)/budget/category-limits.tsx:108
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
 msgid "Failed to remove category limit"
 msgstr ""
@@ -1160,7 +1160,7 @@ msgstr "No se pudo configurar la sincronización"
 msgid "Failed to update account exclusion"
 msgstr ""
 
-#: src/app/(main)/budget/category-limits.tsx:59
+#: src/app/(main)/budget/category-limits.tsx:86
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 msgid "Failed to update category limit"
 msgstr ""
@@ -1301,7 +1301,7 @@ msgid "Include in Net Worth"
 msgstr "Incluir en patrimonio neto"
 
 #: src/app/(tabs)/analytics.tsx:64
-#: src/budget/components/budget-income-card/budget-income-card.tsx:23
+#: src/budget/components/budget-income-card/budget-income-card.tsx:31
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1354,7 +1354,7 @@ msgstr "Última sincronización"
 msgid "left"
 msgstr ""
 
-#: src/app/(main)/budget/setup/category-limits.tsx:142
+#: src/app/(main)/budget/setup/category-limits.tsx:144
 msgid "Left to Allocate"
 msgstr ""
 
@@ -1370,7 +1370,7 @@ msgstr ""
 msgid "Loading budget..."
 msgstr ""
 
-#: src/app/(main)/budget/category-limits.tsx:109
+#: src/app/(main)/budget/category-limits.tsx:124
 #: src/app/(main)/budget/income-expectations.tsx:133
 #: src/app/(main)/budget/index.tsx:48
 #: src/app/(main)/budget/settings.tsx:103
@@ -1526,7 +1526,7 @@ msgstr "Ninguna categoría coincide con tu búsqueda"
 msgid "No Categories Yet"
 msgstr "Aún no hay categorías"
 
-#: src/budget/components/budget-categories-card/budget-categories-card.tsx:30
+#: src/budget/components/budget-categories-card/budget-categories-card.tsx:43
 msgid "No category budgets set. Track your overall spending limit above."
 msgstr ""
 
@@ -2019,6 +2019,7 @@ msgstr "Seleccionado"
 msgid "Set Category"
 msgstr ""
 
+#: src/app/(main)/budget/category-limits.tsx:140
 #: src/app/(main)/budget/setup/category-limits.tsx:110
 msgid "Set Category Limit"
 msgstr ""
@@ -2059,7 +2060,7 @@ msgstr "Mostrar centavos"
 msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:120
+#: src/app/(main)/budget/setup/category-limits.tsx:122
 #: src/app/(main)/budget/setup/income-expectations.tsx:111
 msgid "Skip"
 msgstr ""
@@ -2289,7 +2290,7 @@ msgstr "Hoy"
 msgid "Token required"
 msgstr "Token requerido"
 
-#: src/budget/components/budget-income-card/budget-income-card.tsx:35
+#: src/budget/components/budget-income-card/budget-income-card.tsx:47
 #: src/budget/components/budget-unbudgeted-card/budget-unbudgeted-card.tsx:32
 msgid "Total"
 msgstr ""
@@ -2299,7 +2300,7 @@ msgstr ""
 msgid "Total Balance"
 msgstr "Saldo total"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:130
+#: src/app/(main)/budget/setup/category-limits.tsx:132
 msgid "Total Budget"
 msgstr ""
 
