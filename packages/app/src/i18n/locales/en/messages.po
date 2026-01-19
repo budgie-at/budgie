@@ -219,6 +219,7 @@ msgstr "All Time"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
+#: src/app/(main)/budget/index.tsx:77
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Allocated"
@@ -356,6 +357,10 @@ msgstr "between"
 msgid "Between"
 msgstr "Between"
 
+#: src/app/(main)/budget/setup/period.tsx:32
+msgid "Bi-weekly"
+msgstr "Bi-weekly"
+
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Binance"
 msgstr "Binance"
@@ -368,13 +373,34 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
+#: src/app/(main)/budget/index.tsx:42
+#: src/app/(main)/budget/index.tsx:59
 #: src/budget/components/budget-widget/budget-widget.tsx:57
 msgid "Budget"
 msgstr "Budget"
 
+#: src/app/(main)/budget/settings.tsx:74
+msgid "Budget Configuration"
+msgstr "Budget Configuration"
+
+#: src/app/(main)/budget/settings.tsx:78
+#: src/app/(main)/budget/setup/period.tsx:29
+msgid "Budget Period"
+msgstr "Budget Period"
+
+#: src/app/(main)/budget/settings.tsx:44
+#: src/app/(main)/budget/settings.tsx:56
+#: src/app/(main)/budget/settings.tsx:71
+msgid "Budget Settings"
+msgstr "Budget Settings"
+
 #: src/app/(tabs)/settings/index.tsx:148
 msgid "Budgie"
 msgstr "Budgie"
+
+#: src/app/(main)/budget/index.tsx:83
+msgid "Buffer"
+msgstr "Buffer"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:82
@@ -428,6 +454,10 @@ msgstr ""
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
 msgid "Category"
 msgstr "Category"
+
+#: src/app/(main)/budget/index.tsx:115
+msgid "Category Budgets"
+msgstr "Category Budgets"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
 msgid "Category Name"
@@ -657,6 +687,10 @@ msgstr "Create and organize transaction tags"
 msgid "Create automation rule?"
 msgstr "Create automation rule?"
 
+#: src/app/(main)/budget/setup/amount.tsx:41
+msgid "Create Budget"
+msgstr "Create Budget"
+
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
 msgid "Create Categories"
 msgstr "Create Categories"
@@ -731,6 +765,10 @@ msgstr "Current Balance"
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
+#: src/app/(main)/budget/settings.tsx:95
+msgid "Danger Zone"
+msgstr "Danger Zone"
+
 #: src/settings/components/theme-switch/theme-switch.tsx:15
 msgid "Dark Mode"
 msgstr "Dark Mode"
@@ -780,6 +818,10 @@ msgstr "Delete Account Permanently?"
 #: src/settings/components/truncate-data/truncate-data.tsx:25
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
+
+#: src/app/(main)/budget/settings.tsx:97
+msgid "Delete Budget"
+msgstr "Delete Budget"
 
 #: src/app/(tabs)/settings/categories.tsx:82
 msgid "Delete Category"
@@ -1161,6 +1203,7 @@ msgstr "Inactive Accounts"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
+#: src/app/(main)/budget/index.tsx:92
 #: src/app/(tabs)/analytics.tsx:64
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
@@ -1217,6 +1260,8 @@ msgstr "Less Than"
 msgid "Loading budget..."
 msgstr "Loading budget..."
 
+#: src/app/(main)/budget/index.tsx:45
+#: src/app/(main)/budget/settings.tsx:47
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1304,6 +1349,14 @@ msgstr "Money you owe or are owed"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/app/(main)/budget/setup/period.tsx:33
+msgid "Monthly"
+msgstr "Monthly"
+
+#: src/app/(main)/budget/setup/amount.tsx:38
+msgid "Monthly Budget"
+msgstr "Monthly Budget"
+
 #: src/app/(main)/create-transaction/transfer.tsx:78
 #: src/app/(main)/transactions/[id]/transfer.tsx:71
 msgid "Move Money"
@@ -1335,6 +1388,10 @@ msgstr "No accounts found"
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
 msgid "No accounts yet"
 msgstr "No accounts yet"
+
+#: src/app/(main)/budget/settings.tsx:59
+msgid "No active budget found"
+msgstr "No active budget found"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx:9
 msgid "No archived accounts"
@@ -1490,6 +1547,14 @@ msgstr "over"
 msgid "Over:"
 msgstr "Over:"
 
+#: src/app/(main)/budget/index.tsx:64
+msgid "Overall Budget"
+msgstr "Overall Budget"
+
+#: src/app/(main)/budget/settings.tsx:84
+msgid "Overall Limit"
+msgstr "Overall Limit"
+
 #: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
 msgstr "Overview"
@@ -1509,6 +1574,10 @@ msgstr "Paste your API token below:"
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:45
 msgid "Payment Progress"
 msgstr "Payment Progress"
+
+#: src/app/(main)/budget/settings.tsx:90
+msgid "Period Start Day"
+msgstr "Period Start Day"
 
 #: src/@generic/hook/use-contacts.hook.ts:50
 msgid "Permission to access contacts was denied."
@@ -1866,6 +1935,7 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
+#: src/app/(main)/budget/index.tsx:69
 #: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Spent"
@@ -2040,6 +2110,10 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/app/(main)/budget/index.tsx:104
+msgid "Total"
+msgstr "Total"
+
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:92
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:99
 msgid "Total Balance"
@@ -2194,6 +2268,10 @@ msgstr "View and restore archived accounts"
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:53
 msgid "Waiting"
 msgstr "Waiting"
+
+#: src/app/(main)/budget/setup/period.tsx:31
+msgid "Weekly"
+msgstr "Weekly"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
 msgid "When should it be returned?"
