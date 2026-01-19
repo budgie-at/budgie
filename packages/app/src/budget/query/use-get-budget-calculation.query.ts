@@ -6,7 +6,15 @@ import { isDefined } from '@rnw-community/shared';
 import { BudgetCalculationResultInterface } from '../interface/budget-calculation-result.interface';
 import { budgetCalculationService } from '../service/budget-calculation.service';
 
-export const useGetBudgetCalculationQuery = (budget: BudgetEntityInterface | null | undefined) => {
+interface DateRangeOverrideInterface {
+    readonly startDate: Date;
+    readonly endDate: Date;
+}
+
+export const useGetBudgetCalculationQuery = (
+    budget: BudgetEntityInterface | null | undefined,
+    dateRangeOverride?: DateRangeOverrideInterface
+) => {
     const [calculation, setCalculation] = useState<BudgetCalculationResultInterface | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -19,11 +27,11 @@ export const useGetBudgetCalculationQuery = (budget: BudgetEntityInterface | nul
 
         setIsLoading(true);
         void budgetCalculationService
-            .calculate(budget)
+            .calculate(budget, dateRangeOverride)
             .then(setCalculation)
             .catch(() => void setCalculation(null))
             .finally(() => void setIsLoading(false));
-    }, [budget]);
+    }, [budget, dateRangeOverride?.startDate, dateRangeOverride?.endDate]);
 
     return { calculation, isLoading };
 };

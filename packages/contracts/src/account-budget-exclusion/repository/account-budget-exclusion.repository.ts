@@ -13,6 +13,10 @@ export class AccountBudgetExclusionRepository {
         return this.db.query.AccountBudgetExclusionEntityTable.findMany();
     }
 
+    findAll() {
+        return this.db.query.AccountBudgetExclusionEntityTable.findMany();
+    }
+
     async getExcludedAccountIds(): Promise<number[]> {
         const exclusions = await this.getAll();
 

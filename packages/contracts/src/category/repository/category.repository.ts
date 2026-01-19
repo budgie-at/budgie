@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, like, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, inArray, like, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -69,6 +69,12 @@ export class CategoryRepository {
     findById(id: number) {
         return this.db.query.CategoryEntityTable.findFirst({
             where: eq(CategoryEntityTable.id, id)
+        });
+    }
+
+    findByIds(ids: number[]) {
+        return this.db.query.CategoryEntityTable.findMany({
+            where: inArray(CategoryEntityTable.id, ids)
         });
     }
 

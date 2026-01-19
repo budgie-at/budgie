@@ -2,7 +2,7 @@ import { BudgetEntityInterface } from '@budgie/contracts';
 
 import { BudgetStatusEnum } from '../enum/budget-status.enum';
 
-import { BudgetCategoryStatusInterface } from './budget-category-status.interface';
+import { BudgetCategoryStatusInterface, BudgetUnbudgetedCategorySpendingInterface } from './budget-category-status.interface';
 
 export interface BudgetIncomeStatusInterface {
     readonly categoryId: number;
@@ -33,4 +33,6 @@ export interface BudgetCalculationResultInterface {
     readonly isOnPace: boolean;
     readonly paceVariance: number;
     readonly warningCount: number;
+    readonly unbudgetedSpending: BudgetUnbudgetedCategorySpendingInterface[];
+    readonly totalUnbudgetedSpent: number;
 }

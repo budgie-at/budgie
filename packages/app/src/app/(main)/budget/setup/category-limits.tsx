@@ -109,7 +109,8 @@ export default function BudgetSetupCategoryLimitsPage() {
     const editingCategoryTitle = editingCategory?.title ?? '';
     const amountBottomSheetTitle = isDefined(editingCategory) ? t`Edit Limit for ${editingCategoryTitle}` : t`Set Category Limit`;
     const amountBottomSheetValue = isDefined(editingField) ? editingField.limit : 0;
-    const leftToAllocateClassName = leftToAllocate >= 0 ? 'text-positive-foreground font-medium' : 'text-destructive-foreground font-medium';
+    const leftToAllocateClassName =
+        leftToAllocate >= 0 ? 'text-positive-foreground font-medium' : 'text-destructive-foreground font-medium';
 
     /* jscpd:ignore-start */
     return (
@@ -142,9 +143,7 @@ export default function BudgetSetupCategoryLimitsPage() {
                         <Text className="text-secondary-foreground">
                             <Trans>Left to Allocate</Trans>
                         </Text>
-                        <Text className={leftToAllocateClassName}>
-                            {formatMoney(leftToAllocate, defaultInstrument.symbol)}
-                        </Text>
+                        <Text className={leftToAllocateClassName}>{formatMoney(leftToAllocate, defaultInstrument.symbol)}</Text>
                     </View>
                 </Card>
 

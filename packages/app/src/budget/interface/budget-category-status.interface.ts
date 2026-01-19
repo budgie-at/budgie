@@ -10,3 +10,8 @@ export interface BudgetCategoryStatusInterface {
     readonly percentage: number;
     readonly status: BudgetStatusEnum;
 }
+
+export interface BudgetUnbudgetedCategorySpendingInterface {
+    readonly category: CategoryEntityInterface;
+    readonly spent: number;
+}

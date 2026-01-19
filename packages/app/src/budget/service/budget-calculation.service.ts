@@ -8,13 +8,13 @@ import {
 } from '@budgie/contracts';
 import { differenceInDays } from 'date-fns';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBudgetExclusionRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { accountBudgetExclusionRepository, categoryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { BudgetStatusEnum } from '../enum/budget-status.enum';
 import { BudgetCalculationResultInterface, BudgetIncomeStatusInterface } from '../interface/budget-calculation-result.interface';
-import { BudgetCategoryStatusInterface } from '../interface/budget-category-status.interface';
+import { BudgetCategoryStatusInterface, BudgetUnbudgetedCategorySpendingInterface } from '../interface/budget-category-status.interface';
 
 interface BudgetCategoryLimitWithCategoryInterface extends BudgetCategoryLimitEntityInterface {
     readonly category: CategoryEntityInterface;
@@ -61,15 +61,31 @@ interface TransactionsByTypeInterface {
     readonly incomeTransactions: TransactionWithEntriesEntityInterface[];
 }
 
+interface UnbudgetedSpendingStatsInterface {
+    readonly unbudgetedSpending: BudgetUnbudgetedCategorySpendingInterface[];
+    readonly totalUnbudgetedSpent: number;
+}
+
+interface DateRangeOverrideInterface {
+    readonly startDate: Date;
+    readonly endDate: Date;
+}
+
 class BudgetCalculationService {
-    async calculate(budget: BudgetEntityInterface): Promise<BudgetCalculationResultInterface> {
+    async calculate(
+        budget: BudgetEntityInterface,
+        dateRangeOverride?: DateRangeOverrideInterface
+    ): Promise<BudgetCalculationResultInterface> {
         const budgetWithRelations = budget as BudgetWithRelationsInterface;
-        const { expenseTransactions, incomeTransactions } = await this.getTransactionsByType(budget);
+        const effectiveStartDate = dateRangeOverride?.startDate ?? budget.startDate;
+        const effectiveEndDate = dateRangeOverride?.endDate ?? budget.endDate;
+        const { expenseTransactions, incomeTransactions } = await this.getTransactionsByType(effectiveStartDate, effectiveEndDate);
 
         const categoryStatuses = this.calculateCategoryStatuses(budgetWithRelations.categoryLimits, expenseTransactions);
         const incomeStatuses = this.calculateIncomeStatuses(budgetWithRelations.incomeExpectations, incomeTransactions);
         const overallStats = this.calculateOverallStats(budget, expenseTransactions);
-        const paceStats = this.calculatePaceStats(budget, overallStats.totalSpent);
+        const paceStats = this.calculatePaceStats(effectiveStartDate, effectiveEndDate, budget.overallLimit, overallStats.totalSpent);
+        const unbudgetedStats = await this.calculateUnbudgetedSpending(budgetWithRelations.categoryLimits, expenseTransactions);
 
         return {
             budget,
@@ -80,13 +96,14 @@ class BudgetCalculationService {
             incomeStatuses,
             ...this.calculateIncomeStats(incomeStatuses),
             ...paceStats,
-            warningCount: categoryStatuses.filter(status => status.status !== BudgetStatusEnum.ON_TRACK).length
+            warningCount: categoryStatuses.filter(status => status.status !== BudgetStatusEnum.ON_TRACK).length,
+            ...unbudgetedStats
         };
     }
 
-    private async getTransactionsByType(budget: BudgetEntityInterface): Promise<TransactionsByTypeInterface> {
+    private async getTransactionsByType(startDate: Date, endDate: Date): Promise<TransactionsByTypeInterface> {
         const excludedAccountIds = await accountBudgetExclusionRepository.getExcludedAccountIds();
-        const transactions = await this.getTransactionsForBudget(budget, excludedAccountIds);
+        const transactions = await this.getTransactionsForDateRange(startDate, endDate, excludedAccountIds);
 
         return {
             expenseTransactions: transactions.filter(transaction => transaction.type === TransactionTypeEnum.EXPENSE),
@@ -141,10 +158,10 @@ class BudgetCalculationService {
         return { totalExpectedIncome, totalActualIncome, incomeVariance };
     }
 
-    private calculatePaceStats(budget: BudgetEntityInterface, totalSpent: number): PaceStatsInterface {
-        const daysInPeriod = differenceInDays(budget.endDate, budget.startDate) + 1;
-        const daysElapsed = Math.min(differenceInDays(new Date(), budget.startDate) + 1, daysInPeriod);
-        const overallLimitDisplay = convertFromMicroUnits(budget.overallLimit);
+    private calculatePaceStats(startDate: Date, endDate: Date, overallLimit: number, totalSpent: number): PaceStatsInterface {
+        const daysInPeriod = differenceInDays(endDate, startDate) + 1;
+        const daysElapsed = Math.min(differenceInDays(new Date(), startDate) + 1, daysInPeriod);
+        const overallLimitDisplay = convertFromMicroUnits(overallLimit);
         const dailyBudget = daysInPeriod > 0 ? overallLimitDisplay / daysInPeriod : 0;
         const expectedSpentByNow = dailyBudget * daysElapsed;
         const isOnPace = totalSpent <= expectedSpentByNow;
@@ -153,13 +170,14 @@ class BudgetCalculationService {
         return { daysInPeriod, daysElapsed, dailyBudget, expectedSpentByNow, isOnPace, paceVariance };
     }
 
-    private async getTransactionsForBudget(
-        budget: BudgetEntityInterface,
+    private async getTransactionsForDateRange(
+        startDate: Date,
+        endDate: Date,
         excludedAccountIds: number[]
     ): Promise<TransactionWithEntriesEntityInterface[]> {
         const transactions = await transactionRepository.getAll(10000, {
             types: [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME],
-            date: { from: budget.startDate, to: budget.endDate },
+            date: { from: startDate, to: endDate },
             categoryIds: null,
             accountIds: null,
             tagIds: null
@@ -231,6 +249,42 @@ class BudgetCalculationService {
                 variance: convertFromMicroUnits(varianceMicro)
             };
         });
+    }
+
+    private async calculateUnbudgetedSpending(
+        categoryLimits: BudgetCategoryLimitWithCategoryInterface[],
+        expenseTransactions: TransactionWithEntriesEntityInterface[]
+    ): Promise<UnbudgetedSpendingStatsInterface> {
+        const budgetedCategoryIds = new Set(categoryLimits.map(limit => limit.categoryId));
+
+        const spendingByCategoryId = expenseTransactions.reduce<Map<number, number>>((accumulator, transaction) => {
+            transaction.entries.forEach(entry => {
+                if (isPositiveNumber(entry.categoryId) && !budgetedCategoryIds.has(entry.categoryId)) {
+                    const currentAmount = accumulator.get(entry.categoryId) ?? 0;
+                    accumulator.set(entry.categoryId, currentAmount + entry.amount);
+                }
+            });
+
+            return accumulator;
+        }, new Map());
+
+        const unbudgetedCategoryIds = Array.from(spendingByCategoryId.keys());
+
+        if (!isNotEmptyArray(unbudgetedCategoryIds)) {
+            return { unbudgetedSpending: [], totalUnbudgetedSpent: 0 };
+        }
+
+        const categories = await categoryRepository.findByIds(unbudgetedCategoryIds);
+        const unbudgetedSpending = categories
+            .map(category => ({
+                category,
+                spent: convertFromMicroUnits(spendingByCategoryId.get(category.id) ?? 0)
+            }))
+            .sort((spendingA, spendingB) => spendingB.spent - spendingA.spent);
+
+        const totalUnbudgetedSpent = unbudgetedSpending.reduce((total, spending) => total + spending.spent, 0);
+
+        return { unbudgetedSpending, totalUnbudgetedSpent };
     }
 }
 
