@@ -2,7 +2,7 @@ import { BudgetCreateInputInterface, BudgetIncomeExpectationCreateInputInterface
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -31,11 +31,10 @@ export default function BudgetSetupIncomeExpectationsPage() {
     const amountBottomSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const { form } = useBudgetSetupContext();
-    const { control } = useFormContext<BudgetCreateInputInterface>();
     const showError = useShowError();
 
-    const { fields, append, remove, update } = useFieldArray({
-        control,
+    const { fields, append, remove, update } = useFieldArray<BudgetCreateInputInterface, 'incomeExpectations'>({
+        control: form.control,
         name: 'incomeExpectations'
     });
 
