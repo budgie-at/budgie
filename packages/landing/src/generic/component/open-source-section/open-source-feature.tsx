@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    title: ReactNode;
-    description: ReactNode;
+    readonly icon: ReactNode;
+    readonly title: ReactNode;
+    readonly description: ReactNode;
 }
 
 export const OpenSourceFeature = ({ icon, title, description }: Props) => (

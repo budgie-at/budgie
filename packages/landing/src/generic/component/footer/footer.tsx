@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import { Logo } from '../logo/logo';
 
 interface Props {
-    lang: string;
+    readonly lang: string;
 }
 
 // eslint-disable-next-line max-lines-per-function

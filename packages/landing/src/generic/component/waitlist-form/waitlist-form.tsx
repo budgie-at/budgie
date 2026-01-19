@@ -13,9 +13,9 @@ import { joinWaitlist } from '../../action/waitlist.action';
 import { WaitlistSuccess } from './waitlist-success';
 
 interface Props {
-    variant?: 'hero' | 'cta';
-    showCount?: boolean;
-    initialCount?: number;
+    readonly variant?: 'hero' | 'cta';
+    readonly showCount?: boolean;
+    readonly initialCount?: number;
 }
 
 const inputVariants = cva(

@@ -5,13 +5,13 @@ import { Motion } from '../motion/motion';
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    iconClassName: string;
-    cardClassName: string;
-    title: ReactNode;
-    description: ReactNode;
-    badges: ReactNode;
-    delay?: number;
+    readonly icon: ReactNode;
+    readonly iconClassName: string;
+    readonly cardClassName: string;
+    readonly title: ReactNode;
+    readonly description: ReactNode;
+    readonly badges: ReactNode;
+    readonly delay?: number;
 }
 
 const viewportOnce = { once: true };

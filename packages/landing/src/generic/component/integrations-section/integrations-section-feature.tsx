@@ -3,8 +3,8 @@ import { Motion } from '../motion/motion';
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    label: ReactNode;
+    readonly icon: ReactNode;
+    readonly label: ReactNode;
 }
 
 const itemVariants = {

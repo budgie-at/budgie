@@ -4,9 +4,9 @@ import { AccordionTrigger } from '../../../ui/accordion/accordion-trigger';
 import { Motion } from '../motion/motion';
 
 interface Props {
-    question: string;
-    answer: string;
-    index: number;
+    readonly question: string;
+    readonly answer: string;
+    readonly index: number;
 }
 
 const itemInitialMotion = { opacity: 0, y: 10 };

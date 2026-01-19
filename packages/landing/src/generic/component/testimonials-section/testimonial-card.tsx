@@ -4,10 +4,10 @@ import { Card } from '../../../ui/card/card';
 import { CardContent } from '../../../ui/card/card-content';
 
 interface Props {
-    quote: string;
-    author: string;
-    role: string;
-    rating: number;
+    readonly quote: string;
+    readonly author: string;
+    readonly role: string;
+    readonly rating: number;
 }
 
 export const TestimonialCard = ({ quote, author, role, rating }: Props) => (

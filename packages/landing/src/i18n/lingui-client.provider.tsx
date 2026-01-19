@@ -5,9 +5,9 @@ import { I18nProvider } from '@lingui/react';
 import { ReactNode, useState } from 'react';
 
 interface Props {
-    children: ReactNode;
-    initialLocale: string;
-    initialMessages: Messages;
+    readonly children: ReactNode;
+    readonly initialLocale: string;
+    readonly initialMessages: Messages;
 }
 
 export const LinguiClientProvider = ({ children, initialLocale, initialMessages }: Props) => {

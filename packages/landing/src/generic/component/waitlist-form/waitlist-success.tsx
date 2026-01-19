@@ -7,8 +7,8 @@ import { CheckCircle2, Sparkles } from 'lucide-react';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 interface Props {
-    variant: 'hero' | 'cta';
-    position?: number;
+    readonly variant: 'hero' | 'cta';
+    readonly position?: number;
 }
 
 const positionTextVariants = cva('', {

@@ -4,9 +4,9 @@ import { ComparisonX } from './comparison-x';
 import type { ReactNode } from 'react';
 
 interface Props {
-    feature: ReactNode;
-    budgie: boolean;
-    others: boolean;
+    readonly feature: ReactNode;
+    readonly budgie: boolean;
+    readonly others: boolean;
 }
 
 export const ComparisonRow = ({ feature, budgie, others }: Props) => (

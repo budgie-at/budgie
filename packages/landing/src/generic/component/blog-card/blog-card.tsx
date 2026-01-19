@@ -10,14 +10,14 @@ import { CardContent } from '../../../ui/card/card-content';
 import { Motion } from '../motion/motion';
 
 interface Props {
-    slug: string;
-    title: string;
-    description: string;
-    date: string;
-    tags: string[];
-    image?: string;
-    locale: string;
-    index?: number;
+    readonly slug: string;
+    readonly title: string;
+    readonly description: string;
+    readonly date: string;
+    readonly tags: string[];
+    readonly image?: string;
+    readonly locale: string;
+    readonly index?: number;
 }
 
 const whileInView = { opacity: 1, y: 0 };

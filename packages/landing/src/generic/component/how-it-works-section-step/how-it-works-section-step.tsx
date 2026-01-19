@@ -1,10 +1,10 @@
 import { Motion } from '../motion/motion';
 
 interface Props {
-    step: string;
-    title: string;
-    description: string;
-    index: number;
+    readonly step: string;
+    readonly title: string;
+    readonly description: string;
+    readonly index: number;
 }
 
 const initialMotion = { opacity: 0, y: 20 };

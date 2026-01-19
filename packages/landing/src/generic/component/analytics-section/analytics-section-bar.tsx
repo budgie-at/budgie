@@ -1,12 +1,12 @@
 import { AlertTriangle } from 'lucide-react';
 
 interface Props {
-    label: string;
-    value: string;
-    width: string;
-    color: string;
-    hasWarning?: boolean;
-    warningColor?: string;
+    readonly label: string;
+    readonly value: string;
+    readonly width: string;
+    readonly color: string;
+    readonly hasWarning?: boolean;
+    readonly warningColor?: string;
 }
 
 export const AnalyticsSectionBar = ({ label, value, width, color, hasWarning, warningColor }: Props) => {

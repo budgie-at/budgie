@@ -23,11 +23,11 @@ const iconContainerVariants = cva('size-16 rounded-2xl bg-linear-to-br flex item
 type IconVariant = VariantProps<typeof iconContainerVariants>['variant'];
 
 interface Props {
-    icon: ReactNode;
-    title: ReactNode;
-    description: ReactNode;
-    variant: IconVariant;
-    delay: number;
+    readonly icon: ReactNode;
+    readonly title: ReactNode;
+    readonly description: ReactNode;
+    readonly variant: IconVariant;
+    readonly delay: number;
 }
 
 export const UspPillar = ({ icon, title, description, variant, delay }: Props) => {

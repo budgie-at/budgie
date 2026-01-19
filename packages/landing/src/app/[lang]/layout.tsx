@@ -58,7 +58,7 @@ const fixelDisplay = localFont({
 });
 
 interface Props extends PageLangParam {
-    children: ReactNode;
+    readonly children: ReactNode;
 }
 
 // eslint-disable-next-line func-style

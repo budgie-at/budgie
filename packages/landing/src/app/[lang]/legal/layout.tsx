@@ -4,7 +4,7 @@ import { Motion } from '../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 interface LegalLayoutProps extends PageLangParam {
-    children: ReactNode;
+    readonly children: ReactNode;
 }
 
 export default async function LegalLayout(props: LegalLayoutProps) {

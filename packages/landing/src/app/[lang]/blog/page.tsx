@@ -9,7 +9,7 @@ import { Motion } from '../../../generic/component/motion/motion';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
 
 interface Props extends PageLangParam {
-    searchParams: Promise<{ query?: string; page?: string }>;
+    readonly searchParams: Promise<{ query?: string; page?: string }>;
 }
 
 // eslint-disable-next-line max-lines-per-function
