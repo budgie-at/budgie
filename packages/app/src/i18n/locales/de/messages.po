@@ -169,6 +169,7 @@ msgstr "Notiz hinzufügen..."
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
+#: src/app/(main)/budget/category-limits.tsx:142
 #: src/app/(main)/budget/setup/category-limits.tsx:175
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:137
 msgid "Add Category"
@@ -178,6 +179,7 @@ msgstr ""
 msgid "Add Expense"
 msgstr "Ausgabe hinzufügen"
 
+#: src/app/(main)/budget/income-expectations.tsx:185
 #: src/app/(main)/budget/setup/income-expectations.tsx:147
 #: src/app/(main)/create-transaction/income.tsx:61
 #: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:176
@@ -384,7 +386,7 @@ msgstr ""
 msgid "Bi-weekly"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:31
+#: src/app/(main)/budget/settings.tsx:29
 #: src/app/(main)/budget/setup/confirm.tsx:24
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:16
 msgid "Bi-Weekly"
@@ -412,19 +414,19 @@ msgstr "Geliehen"
 msgid "Budget"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:133
+#: src/app/(main)/budget/settings.tsx:131
 msgid "Budget Configuration"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:137
+#: src/app/(main)/budget/settings.tsx:135
 #: src/app/(main)/budget/setup/period.tsx:29
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:37
 msgid "Budget Period"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:102
-#: src/app/(main)/budget/settings.tsx:114
-#: src/app/(main)/budget/settings.tsx:130
+#: src/app/(main)/budget/settings.tsx:100
+#: src/app/(main)/budget/settings.tsx:112
+#: src/app/(main)/budget/settings.tsx:128
 msgid "Budget Settings"
 msgstr ""
 
@@ -500,6 +502,9 @@ msgstr "Kategorie"
 msgid "Category Budgets"
 msgstr ""
 
+#: src/app/(main)/budget/category-limits.tsx:106
+#: src/app/(main)/budget/category-limits.tsx:122
+#: src/app/(main)/budget/settings.tsx:162
 #: src/app/(main)/budget/setup/category-limits.tsx:116
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:117
 msgid "Category Limits"
@@ -534,7 +539,7 @@ msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnu
 msgid "Choose the type of account you want to add"
 msgstr "Wählen Sie den Kontotyp aus, den Sie hinzufügen möchten"
 
-#: src/app/(main)/budget/settings.tsx:158
+#: src/app/(main)/budget/settings.tsx:156
 msgid "Choose which accounts to exclude from budget"
 msgstr ""
 
@@ -822,7 +827,7 @@ msgstr "Aktueller Saldo"
 msgid "Custom categories you create will appear here"
 msgstr "Benutzerdefinierte Kategorien, die Sie erstellen, werden hier angezeigt"
 
-#: src/app/(main)/budget/settings.tsx:179
+#: src/app/(main)/budget/settings.tsx:175
 msgid "Danger Zone"
 msgstr ""
 
@@ -876,7 +881,7 @@ msgstr "Konto dauerhaft löschen?"
 msgid "Delete all transactions and settings"
 msgstr "Alle Transaktionen und Einstellungen löschen"
 
-#: src/app/(main)/budget/settings.tsx:181
+#: src/app/(main)/budget/settings.tsx:177
 msgid "Delete Budget"
 msgstr ""
 
@@ -1052,6 +1057,9 @@ msgstr ""
 msgid "Equals"
 msgstr ""
 
+#: src/app/(main)/budget/category-limits.tsx:59
+#: src/app/(main)/budget/category-limits.tsx:80
+#: src/app/(main)/budget/category-limits.tsx:100
 #: src/app/(tabs)/settings/import.tsx:110
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
@@ -1072,7 +1080,7 @@ msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
 
 #: src/app/(main)/budget/excluded-accounts.tsx:31
-#: src/app/(main)/budget/settings.tsx:157
+#: src/app/(main)/budget/settings.tsx:155
 msgid "Excluded Accounts"
 msgstr ""
 
@@ -1122,6 +1130,7 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
+#: src/app/(main)/budget/category-limits.tsx:100
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:108
 msgid "Failed to add category limit"
 msgstr ""
@@ -1134,6 +1143,7 @@ msgstr "Konten konnten nicht abgerufen werden"
 msgid "Failed to load contacts."
 msgstr "Kontakte konnten nicht geladen werden."
 
+#: src/app/(main)/budget/category-limits.tsx:80
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
 msgid "Failed to remove category limit"
 msgstr ""
@@ -1150,6 +1160,7 @@ msgstr "Synchronisation konnte nicht eingerichtet werden"
 msgid "Failed to update account exclusion"
 msgstr ""
 
+#: src/app/(main)/budget/category-limits.tsx:59
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 msgid "Failed to update category limit"
 msgstr ""
@@ -1305,6 +1316,9 @@ msgstr "Einnahmen nach Kategorie"
 msgid "Income by Tag"
 msgstr "Einnahmen nach Tag"
 
+#: src/app/(main)/budget/income-expectations.tsx:130
+#: src/app/(main)/budget/income-expectations.tsx:157
+#: src/app/(main)/budget/settings.tsx:169
 #: src/app/(main)/budget/setup/confirm.tsx:111
 #: src/app/(main)/budget/setup/income-expectations.tsx:107
 #: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:146
@@ -1356,8 +1370,10 @@ msgstr ""
 msgid "Loading budget..."
 msgstr ""
 
+#: src/app/(main)/budget/category-limits.tsx:109
+#: src/app/(main)/budget/income-expectations.tsx:133
 #: src/app/(main)/budget/index.tsx:48
-#: src/app/(main)/budget/settings.tsx:105
+#: src/app/(main)/budget/settings.tsx:103
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr ""
@@ -1445,7 +1461,7 @@ msgstr "Geld, das Sie schulden oder das Ihnen geschuldet wird"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/app/(main)/budget/settings.tsx:32
+#: src/app/(main)/budget/settings.tsx:30
 #: src/app/(main)/budget/setup/confirm.tsx:25
 #: src/app/(main)/budget/setup/period.tsx:33
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:17
@@ -1489,7 +1505,7 @@ msgstr "Keine Konten gefunden"
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
-#: src/app/(main)/budget/settings.tsx:117
+#: src/app/(main)/budget/settings.tsx:115
 msgid "No active budget found"
 msgstr ""
 
@@ -1664,8 +1680,8 @@ msgstr "Überschuss:"
 msgid "Overall Budget"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:144
-#: src/app/(main)/budget/settings.tsx:195
+#: src/app/(main)/budget/settings.tsx:142
+#: src/app/(main)/budget/settings.tsx:191
 #: src/app/(main)/budget/setup/confirm.tsx:97
 msgid "Overall Limit"
 msgstr ""
@@ -1694,7 +1710,7 @@ msgstr "Zahlungsfortschritt"
 msgid "Period"
 msgstr ""
 
-#: src/app/(main)/budget/settings.tsx:151
+#: src/app/(main)/budget/settings.tsx:149
 msgid "Period Start Day"
 msgstr ""
 
@@ -2011,9 +2027,17 @@ msgstr ""
 msgid "set category to <0>{categoryTitle}</0>"
 msgstr ""
 
+#: src/app/(main)/budget/settings.tsx:170
+msgid "Set expected income by category"
+msgstr ""
+
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
 msgid "Set Return Date"
 msgstr "Rückgabedatum festlegen"
+
+#: src/app/(main)/budget/settings.tsx:163
+msgid "Set spending limits for categories"
+msgstr ""
 
 #: src/budget/components/budget-widget/budget-widget.tsx:38
 msgid "Set up your budget"
@@ -2434,7 +2458,7 @@ msgstr "Archivierte Konten anzeigen und wiederherstellen"
 msgid "Waiting"
 msgstr "Warten"
 
-#: src/app/(main)/budget/settings.tsx:30
+#: src/app/(main)/budget/settings.tsx:28
 #: src/app/(main)/budget/setup/confirm.tsx:23
 #: src/app/(main)/budget/setup/period.tsx:31
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:15

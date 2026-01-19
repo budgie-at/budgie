@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { useRef } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
@@ -17,8 +17,6 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetLimitAmountBottomSheet } from '../../../budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet';
 import { BudgetPeriodSelectorBottomSheet } from '../../../budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet';
-import { BudgetSettingsCategoryLimits } from '../../../budget/components/budget-settings-category-limits/budget-settings-category-limits';
-import { BudgetSettingsIncomeExpectations } from '../../../budget/components/budget-settings-income-expectations/budget-settings-income-expectations';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { budgetService } from '../../../budget/service/budget.service';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -56,6 +54,10 @@ export default function BudgetSettingsPage() {
         void overallLimitRef.current?.open();
     };
 
+    const handleNavigateToExcludedAccounts = () => void router.push('/budget/excluded-accounts');
+    const handleNavigateToCategoryLimits = () => void router.push('/budget/category-limits');
+    const handleNavigateToIncomeExpectations = () => void router.push('/budget/income-expectations');
+
     const handleSelectPeriod = async (period: BudgetPeriodEnum) => {
         if (!isDefined(budget)) {
             return;
@@ -92,8 +94,6 @@ export default function BudgetSettingsPage() {
             showError(error);
         }
     };
-
-    const handleBudgetUpdate = emptyFn;
 
     if (isLoading) {
         return (
@@ -149,23 +149,28 @@ export default function BudgetSettingsPage() {
                                 title={t`Period Start Day`}
                                 description={String(budget.periodStartDay)}
                             />
+                            <SettingsCard
+                                icon={UserIconNameEnum.Wallet}
+                                variant="pink"
+                                title={t`Excluded Accounts`}
+                                description={t`Choose which accounts to exclude from budget`}
+                                onPress={handleNavigateToExcludedAccounts}
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.ChartPie}
+                                variant="primary"
+                                title={t`Category Limits`}
+                                description={t`Set spending limits for categories`}
+                                onPress={handleNavigateToCategoryLimits}
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.TrendingUp}
+                                variant="positive"
+                                title={t`Income Expectations`}
+                                description={t`Set expected income by category`}
+                                onPress={handleNavigateToIncomeExpectations}
+                            />
                         </SettingsGroup>
-
-                        {isNotEmptyArray(budget.categoryLimits) ? (
-                            <BudgetSettingsCategoryLimits
-                                budgetId={budget.id}
-                                categoryLimits={budget.categoryLimits}
-                                onUpdate={handleBudgetUpdate}
-                            />
-                        ) : null}
-
-                        {isNotEmptyArray(budget.incomeExpectations) ? (
-                            <BudgetSettingsIncomeExpectations
-                                budgetId={budget.id}
-                                incomeExpectations={budget.incomeExpectations}
-                                onUpdate={handleBudgetUpdate}
-                            />
-                        ) : null}
 
                         <SettingsGroup title={t`Danger Zone`}>
                             <Button
