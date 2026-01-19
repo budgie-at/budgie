@@ -37,5 +37,11 @@ export {
     BudgetCategoryLimitEntityRelations,
     BudgetIncomeExpectationEntityTable,
     BudgetIncomeExpectationEntityRelations,
-    AccountBudgetExclusionEntityTable
+    AccountBudgetExclusionEntityTable,
+    BudgetAlertEntityTable,
+    BudgetAlertEntityRelations,
+    BudgetAlertSettingsEntityTable,
+    BudgetAlertSettingsEntityRelations,
+    BudgetPeriodSnapshotEntityTable,
+    BudgetPeriodSnapshotEntityRelations
 } from '@budgie/contracts';

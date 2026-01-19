@@ -11,12 +11,19 @@ import {
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
+import {
+    budgetRepository,
+    db,
+    transactionEntryRepository,
+    transactionRepository,
+    transactionTagsRepository
+} from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
+import { budgetAlertService } from '../../budget/service/budget-alert.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
@@ -40,6 +47,8 @@ class TransactionService {
 
     async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input]);
+
+        void this.triggerBudgetAlertsIfNeeded(transaction);
 
         return transaction;
     }
@@ -240,6 +249,21 @@ class TransactionService {
                 tx
             );
         }
+    }
+
+    private async triggerBudgetAlertsIfNeeded(transaction: TransactionEntityInterface): Promise<void> {
+        if (transaction.type !== TransactionTypeEnum.EXPENSE) {
+            return;
+        }
+
+        const budget = await budgetRepository.findActive();
+
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        void budgetAlertService.checkLargeExpenseAlert(transaction.id);
+        void budgetAlertService.checkThresholdAlerts(budget.id);
     }
 }
 

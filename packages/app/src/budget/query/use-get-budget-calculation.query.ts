@@ -31,7 +31,7 @@ export const useGetBudgetCalculationQuery = (
             .then(setCalculation)
             .catch(() => void setCalculation(null))
             .finally(() => void setIsLoading(false));
-    }, [budget, dateRangeOverride?.startDate, dateRangeOverride?.endDate]);
+    }, [budget, budget?.startDate.getTime(), budget?.endDate.getTime(), dateRangeOverride?.startDate, dateRangeOverride?.endDate]);
 
     return { calculation, isLoading };
 };

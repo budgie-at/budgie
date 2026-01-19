@@ -15,6 +15,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
+import '../budget/task/budget-alert-check.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
@@ -29,6 +30,7 @@ import { accountBalanceIncrementalService } from '../account/service/account-bal
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { budgetAlertService } from '../budget/service/budget-alert.service';
 import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
@@ -70,6 +72,8 @@ export default function RootLayout() {
 
                     void monobankSyncService.sync();
                     void monobankSyncService.registerBackgroundTask();
+
+                    void budgetAlertService.registerBackgroundTask();
                 } catch (e: unknown) {
                     // eslint-disable-next-line no-console
                     console.log(getErrorMessage(e));

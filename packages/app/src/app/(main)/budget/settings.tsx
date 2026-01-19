@@ -14,6 +14,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { budgetRepository } from '../../../@generic/drizzle/db/db';
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BudgetLimitAmountBottomSheet } from '../../../budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet';
 import { BudgetPeriodSelectorBottomSheet } from '../../../budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet';
@@ -57,6 +58,9 @@ export default function BudgetSettingsPage() {
     const handleNavigateToExcludedAccounts = () => void router.push('/budget/excluded-accounts');
     const handleNavigateToCategoryLimits = () => void router.push('/budget/category-limits');
     const handleNavigateToIncomeExpectations = () => void router.push('/budget/income-expectations');
+    const handleNavigateToAlerts = () => void router.push('/budget/alerts');
+    const handleNavigateToAlertSettings = () => void router.push('/budget/alert-settings');
+    const handleNavigateToBudgetHistory = () => void router.push('/budget/history');
 
     const handleSelectPeriod = async (period: BudgetPeriodEnum) => {
         if (!isDefined(budget)) {
@@ -95,6 +99,18 @@ export default function BudgetSettingsPage() {
         }
     };
 
+    const handleSimulatePeriodEnd = async () => {
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        try {
+            await budgetService.simulatePeriodEnd(budget);
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
     if (isLoading) {
         return (
             <Page header={<PageHeader title={t`Budget Settings`} onGoBack={handleGoBack} />}>
@@ -120,7 +136,7 @@ export default function BudgetSettingsPage() {
     }
 
     const periodLabel = i18n.t(BUDGET_PERIOD_LABELS[budget.period]);
-    const overallLimitFormatted = formatMoney(budget.overallLimit, defaultInstrument.symbol);
+    const overallLimitFormatted = formatMoney(convertFromMicroUnits(budget.overallLimit), defaultInstrument.symbol);
 
     /* jscpd:ignore-start */
     return (
@@ -172,12 +188,48 @@ export default function BudgetSettingsPage() {
                             />
                         </SettingsGroup>
 
+                        <SettingsGroup title={t`Alerts`}>
+                            <SettingsCard
+                                icon={UserIconNameEnum.Bell}
+                                variant="warning"
+                                title={t`Budget Alerts`}
+                                description={t`View and manage alerts`}
+                                onPress={handleNavigateToAlerts}
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.Settings}
+                                variant="default"
+                                title={t`Alert Settings`}
+                                description={t`Configure thresholds and notifications`}
+                                onPress={handleNavigateToAlertSettings}
+                            />
+                        </SettingsGroup>
+
+                        <SettingsGroup title={t`History`}>
+                            <SettingsCard
+                                icon={UserIconNameEnum.Clock}
+                                variant="default"
+                                title={t`Budget History`}
+                                description={t`View past periods and trends`}
+                                onPress={handleNavigateToBudgetHistory}
+                            />
+                        </SettingsGroup>
+
                         <SettingsGroup title={t`Danger Zone`}>
                             <Button
                                 content={<Trans>Delete Budget</Trans>}
                                 variant="destructive"
                                 onPress={handleDeleteBudget}
                                 leftIcon={UserIconNameEnum.Trash2}
+                            />
+                        </SettingsGroup>
+
+                        <SettingsGroup title={t`Debug (Remove Later)`}>
+                            <Button
+                                content={<Trans>Simulate Period End</Trans>}
+                                variant="secondary"
+                                onPress={handleSimulatePeriodEnd}
+                                leftIcon={UserIconNameEnum.FastForward}
                             />
                         </SettingsGroup>
                     </View>
@@ -189,7 +241,7 @@ export default function BudgetSettingsPage() {
             <BudgetLimitAmountBottomSheet
                 ref={overallLimitRef}
                 title={t`Overall Limit`}
-                value={budget.overallLimit}
+                value={convertFromMicroUnits(budget.overallLimit)}
                 onSave={handleSaveOverallLimit}
             />
         </>

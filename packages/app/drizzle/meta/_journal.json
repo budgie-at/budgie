@@ -64,6 +64,20 @@
       "when": 1768779798567,
       "tag": "0008_aromatic_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1768824733593,
+      "tag": "0009_fancy_dagger",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1768829725038,
+      "tag": "0010_unique_stardust",
+      "breakpoints": true
     }
   ]
 }

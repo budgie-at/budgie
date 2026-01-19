@@ -37,3 +37,9 @@ export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/rela
 export { BudgetIncomeExpectationEntityTable } from './budget-income-expectation/table/budget-income-expectation-entity.table';
 export { BudgetIncomeExpectationEntityRelations } from './budget-income-expectation/relations/budget-income-expectation-entity.relations';
 export { AccountBudgetExclusionEntityTable } from './account-budget-exclusion/table/account-budget-exclusion-entity.table';
+export { BudgetAlertEntityTable } from './budget-alert/table/budget-alert-entity.table';
+export { BudgetAlertEntityRelations } from './budget-alert/relations/budget-alert-entity.relations';
+export { BudgetAlertSettingsEntityTable } from './budget-alert-settings/table/budget-alert-settings-entity.table';
+export { BudgetAlertSettingsEntityRelations } from './budget-alert-settings/relations/budget-alert-settings-entity.relations';
+export { BudgetPeriodSnapshotEntityTable } from './budget-period-snapshot/table/budget-period-snapshot-entity.table';
+export { BudgetPeriodSnapshotEntityRelations } from './budget-period-snapshot/relations/budget-period-snapshot-entity.relations';

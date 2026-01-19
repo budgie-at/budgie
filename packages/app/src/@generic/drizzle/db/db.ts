@@ -5,8 +5,11 @@ import {
     AccountBudgetExclusionRepository,
     AccountRepository,
     BankSyncRepository,
+    BudgetAlertRepository,
+    BudgetAlertSettingsRepository,
     BudgetCategoryLimitRepository,
     BudgetIncomeExpectationRepository,
+    BudgetPeriodSnapshotRepository,
     BudgetRepository,
     CategoryRepository,
     ExchangeRateRepository,
@@ -78,3 +81,6 @@ export const budgetRepository = new BudgetRepository(db);
 export const budgetCategoryLimitRepository = new BudgetCategoryLimitRepository(db);
 export const budgetIncomeExpectationRepository = new BudgetIncomeExpectationRepository(db);
 export const accountBudgetExclusionRepository = new AccountBudgetExclusionRepository(db);
+export const budgetAlertRepository = new BudgetAlertRepository(db);
+export const budgetAlertSettingsRepository = new BudgetAlertSettingsRepository(db);
+export const budgetPeriodSnapshotRepository = new BudgetPeriodSnapshotRepository(db);

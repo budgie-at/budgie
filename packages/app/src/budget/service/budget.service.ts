@@ -9,9 +9,17 @@ import { addDays, addMonths, addWeeks, startOfDay } from 'date-fns';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { budgetCategoryLimitRepository, budgetIncomeExpectationRepository, budgetRepository, db } from '../../@generic/drizzle/db/db';
+import {
+    budgetCategoryLimitRepository,
+    budgetIncomeExpectationRepository,
+    budgetPeriodSnapshotRepository,
+    budgetRepository,
+    db
+} from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+
+import { budgetCalculationService } from './budget-calculation.service';
 
 interface PeriodDatesInterface {
     readonly startDate: Date;
@@ -97,6 +105,10 @@ class BudgetService {
         };
     }
 
+    async simulatePeriodEnd(budget: BudgetEntityInterface): Promise<BudgetEntityInterface> {
+        return this.rolloverToNewPeriod(budget);
+    }
+
     async update(id: number, input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {
         return db.transaction(async transaction => {
             const { startDate, endDate } = this.calculatePeriodDates(input.period, input.periodStartDay);
@@ -149,9 +161,53 @@ class BudgetService {
     }
 
     private async rolloverToNewPeriod(budget: BudgetEntityInterface): Promise<BudgetEntityInterface> {
-        const { startDate, endDate } = this.calculatePeriodDates(budget.period, budget.periodStartDay);
+        await this.createPeriodSnapshot(budget);
+
+        const { startDate, endDate } = this.calculateNextPeriodDates(budget.endDate, budget.period);
 
         return budgetRepository.updateById(budget.id, { startDate, endDate });
+    }
+
+    private calculateNextPeriodDates(currentEndDate: Date, period: BudgetPeriodEnum): PeriodDatesInterface {
+        const nextStartDate = startOfDay(addDays(currentEndDate, 1));
+        const nextEndDate = this.calculateEndDate(period, nextStartDate);
+
+        return { startDate: nextStartDate, endDate: nextEndDate };
+    }
+
+    private async createPeriodSnapshot(budget: BudgetEntityInterface): Promise<void> {
+        const calculation = await budgetCalculationService.calculate(budget);
+        const budgetWithRelations = budget as BudgetWithRelationsInterface;
+
+        const categoryLimitsJson = JSON.stringify(
+            budgetWithRelations.categoryLimits.map(limit => ({
+                categoryId: limit.categoryId,
+                limit: limit.limit,
+                spent: convertToMicroUnits(calculation.categoryStatuses.find(status => status.category.id === limit.categoryId)?.spent ?? 0)
+            }))
+        );
+
+        const incomeExpectationsJson = JSON.stringify(
+            budgetWithRelations.incomeExpectations.map(expectation => ({
+                categoryId: expectation.categoryId,
+                expected: expectation.expectedAmount,
+                actual: convertToMicroUnits(
+                    calculation.incomeStatuses.find(status => status.categoryId === expectation.categoryId)?.actual ?? 0
+                )
+            }))
+        );
+
+        await budgetPeriodSnapshotRepository.create({
+            budgetId: budget.id,
+            periodStart: budget.startDate,
+            periodEnd: budget.endDate,
+            overallLimit: budget.overallLimit,
+            totalSpent: convertToMicroUnits(calculation.totalSpent),
+            totalExpectedIncome: convertToMicroUnits(calculation.totalExpectedIncome),
+            totalActualIncome: convertToMicroUnits(calculation.totalActualIncome),
+            categoryLimitsJson,
+            incomeExpectationsJson
+        });
     }
 
     private calculatePeriodDates(period: BudgetPeriodEnum, startDay: number): PeriodDatesInterface {
