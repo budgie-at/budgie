@@ -7,6 +7,7 @@ import { BudgetCategoryLimitEntityInterface } from '../entity/budget-category-li
 import { BudgetCategoryLimitCreateInputInterface } from '../input/budget-category-limit-create-input.interface';
 import { BudgetCategoryLimitEntityTable } from '../table/budget-category-limit-entity.table';
 
+/* jscpd:ignore-start */
 export class BudgetCategoryLimitRepository {
     constructor(private db: DB) {}
 
@@ -39,3 +40,4 @@ export class BudgetCategoryLimitRepository {
         await database.delete(BudgetCategoryLimitEntityTable).where(eq(BudgetCategoryLimitEntityTable.budgetId, budgetId));
     }
 }
+/* jscpd:ignore-end */

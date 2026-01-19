@@ -7,6 +7,7 @@ import { BudgetIncomeExpectationEntityInterface } from '../entity/budget-income-
 import { BudgetIncomeExpectationCreateInputInterface } from '../input/budget-income-expectation-create-input.interface';
 import { BudgetIncomeExpectationEntityTable } from '../table/budget-income-expectation-entity.table';
 
+/* jscpd:ignore-start */
 export class BudgetIncomeExpectationRepository {
     constructor(private db: DB) {}
 
@@ -39,3 +40,4 @@ export class BudgetIncomeExpectationRepository {
         await database.delete(BudgetIncomeExpectationEntityTable).where(eq(BudgetIncomeExpectationEntityTable.budgetId, budgetId));
     }
 }
+/* jscpd:ignore-end */

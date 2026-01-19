@@ -4,6 +4,7 @@ import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 
+/* jscpd:ignore-start */
 export const BudgetCategoryLimitEntityTable = sqliteTable(
     'budget_category_limits',
     withBaseEntityTableColumns({
@@ -16,3 +17,4 @@ export const BudgetCategoryLimitEntityTable = sqliteTable(
         limit: int('limit').notNull()
     })
 );
+/* jscpd:ignore-end */

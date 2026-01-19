@@ -4,6 +4,7 @@ import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 
+/* jscpd:ignore-start */
 export const BudgetIncomeExpectationEntityTable = sqliteTable(
     'budget_income_expectations',
     withBaseEntityTableColumns({
@@ -16,3 +17,4 @@ export const BudgetIncomeExpectationEntityTable = sqliteTable(
         expectedAmount: int('expected_amount').notNull()
     })
 );
+/* jscpd:ignore-end */
