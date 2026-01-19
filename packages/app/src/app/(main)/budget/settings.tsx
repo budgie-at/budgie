@@ -1,4 +1,6 @@
 import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
+import { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -14,19 +16,14 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 
-const getPeriodLabel = (period: BudgetPeriodEnum): string => {
-    switch (period) {
-        case BudgetPeriodEnum.WEEKLY:
-            return 'Weekly';
-        case BudgetPeriodEnum.BI_WEEKLY:
-            return 'Bi-Weekly';
-        case BudgetPeriodEnum.MONTHLY:
-            return 'Monthly';
-    }
+const BUDGET_PERIOD_LABELS: Record<BudgetPeriodEnum, MessageDescriptor> = {
+    [BudgetPeriodEnum.WEEKLY]: msg`Weekly`,
+    [BudgetPeriodEnum.BI_WEEKLY]: msg`Bi-Weekly`,
+    [BudgetPeriodEnum.MONTHLY]: msg`Monthly`
 };
 
 export default function BudgetSettingsPage() {
-    const { t } = useLingui();
+    const { i18n, t } = useLingui();
 
     const { budget, isLoading } = useGetActiveBudgetQuery();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
@@ -63,7 +60,7 @@ export default function BudgetSettingsPage() {
         );
     }
 
-    const periodLabel = getPeriodLabel(budget.period);
+    const periodLabel = i18n.t(BUDGET_PERIOD_LABELS[budget.period]);
     const overallLimitFormatted = formatMoney(budget.overallLimit, defaultInstrument.symbol);
 
     /* jscpd:ignore-start */

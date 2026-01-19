@@ -219,7 +219,7 @@ msgstr "All Time"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
-#: src/app/(main)/budget/index.tsx:77
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:35
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Allocated"
@@ -361,6 +361,10 @@ msgstr "Between"
 msgid "Bi-weekly"
 msgstr "Bi-weekly"
 
+#: src/app/(main)/budget/settings.tsx:21
+msgid "Bi-Weekly"
+msgstr "Bi-Weekly"
+
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Binance"
 msgstr "Binance"
@@ -373,24 +377,24 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/budget/index.tsx:42
-#: src/app/(main)/budget/index.tsx:59
+#: src/app/(main)/budget/index.tsx:27
+#: src/app/(main)/budget/index.tsx:38
 #: src/budget/components/budget-widget/budget-widget.tsx:57
 msgid "Budget"
 msgstr "Budget"
 
-#: src/app/(main)/budget/settings.tsx:74
+#: src/app/(main)/budget/settings.tsx:71
 msgid "Budget Configuration"
 msgstr "Budget Configuration"
 
-#: src/app/(main)/budget/settings.tsx:78
+#: src/app/(main)/budget/settings.tsx:75
 #: src/app/(main)/budget/setup/period.tsx:29
 msgid "Budget Period"
 msgstr "Budget Period"
 
-#: src/app/(main)/budget/settings.tsx:44
-#: src/app/(main)/budget/settings.tsx:56
-#: src/app/(main)/budget/settings.tsx:71
+#: src/app/(main)/budget/settings.tsx:41
+#: src/app/(main)/budget/settings.tsx:53
+#: src/app/(main)/budget/settings.tsx:68
 msgid "Budget Settings"
 msgstr "Budget Settings"
 
@@ -398,7 +402,7 @@ msgstr "Budget Settings"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/app/(main)/budget/index.tsx:83
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:41
 msgid "Buffer"
 msgstr "Buffer"
 
@@ -455,7 +459,7 @@ msgstr ""
 msgid "Category"
 msgstr "Category"
 
-#: src/app/(main)/budget/index.tsx:115
+#: src/budget/components/budget-categories-card/budget-categories-card.tsx:20
 msgid "Category Budgets"
 msgstr "Category Budgets"
 
@@ -765,7 +769,7 @@ msgstr "Current Balance"
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
-#: src/app/(main)/budget/settings.tsx:95
+#: src/app/(main)/budget/settings.tsx:92
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -819,7 +823,7 @@ msgstr "Delete Account Permanently?"
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/app/(main)/budget/settings.tsx:97
+#: src/app/(main)/budget/settings.tsx:94
 msgid "Delete Budget"
 msgstr "Delete Budget"
 
@@ -1203,8 +1207,8 @@ msgstr "Inactive Accounts"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
-#: src/app/(main)/budget/index.tsx:92
 #: src/app/(tabs)/analytics.tsx:64
+#: src/budget/components/budget-income-card/budget-income-card.tsx:23
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1260,8 +1264,8 @@ msgstr "Less Than"
 msgid "Loading budget..."
 msgstr "Loading budget..."
 
-#: src/app/(main)/budget/index.tsx:45
-#: src/app/(main)/budget/settings.tsx:47
+#: src/app/(main)/budget/index.tsx:30
+#: src/app/(main)/budget/settings.tsx:44
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1349,6 +1353,7 @@ msgstr "Money you owe or are owed"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/app/(main)/budget/settings.tsx:22
 #: src/app/(main)/budget/setup/period.tsx:33
 msgid "Monthly"
 msgstr "Monthly"
@@ -1389,7 +1394,7 @@ msgstr "No accounts found"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/(main)/budget/settings.tsx:59
+#: src/app/(main)/budget/settings.tsx:56
 msgid "No active budget found"
 msgstr "No active budget found"
 
@@ -1409,6 +1414,10 @@ msgstr "No categories match your search"
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:68
 msgid "No Categories Yet"
 msgstr "No Categories Yet"
+
+#: src/budget/components/budget-categories-card/budget-categories-card.tsx:30
+msgid "No category budgets set. Track your overall spending limit above."
+msgstr "No category budgets set. Track your overall spending limit above."
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:63
 msgid "No contacts found"
@@ -1547,11 +1556,11 @@ msgstr "over"
 msgid "Over:"
 msgstr "Over:"
 
-#: src/app/(main)/budget/index.tsx:64
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:22
 msgid "Overall Budget"
 msgstr "Overall Budget"
 
-#: src/app/(main)/budget/settings.tsx:84
+#: src/app/(main)/budget/settings.tsx:81
 msgid "Overall Limit"
 msgstr "Overall Limit"
 
@@ -1575,7 +1584,7 @@ msgstr "Paste your API token below:"
 msgid "Payment Progress"
 msgstr "Payment Progress"
 
-#: src/app/(main)/budget/settings.tsx:90
+#: src/app/(main)/budget/settings.tsx:87
 msgid "Period Start Day"
 msgstr "Period Start Day"
 
@@ -1935,8 +1944,8 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
-#: src/app/(main)/budget/index.tsx:69
 #: src/app/(tabs)/analytics.tsx:60
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:27
 msgid "Spent"
 msgstr "Spent"
 
@@ -2110,7 +2119,7 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
-#: src/app/(main)/budget/index.tsx:104
+#: src/budget/components/budget-income-card/budget-income-card.tsx:35
 msgid "Total"
 msgstr "Total"
 
@@ -2269,6 +2278,7 @@ msgstr "View and restore archived accounts"
 msgid "Waiting"
 msgstr "Waiting"
 
+#: src/app/(main)/budget/settings.tsx:20
 #: src/app/(main)/budget/setup/period.tsx:31
 msgid "Weekly"
 msgstr "Weekly"
