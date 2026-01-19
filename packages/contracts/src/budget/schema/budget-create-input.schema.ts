@@ -5,7 +5,7 @@ import { BudgetIncomeExpectationCreateInputSchema } from '../../budget-income-ex
 
 import { BudgetCreateEntitySchema } from './budget-create-entity.schema';
 
-export const BudgetCreateInputSchema = BudgetCreateEntitySchema.extend({
+export const BudgetCreateInputSchema = BudgetCreateEntitySchema.omit({ rolloverAmount: true }).extend({
     categoryLimits: array(BudgetCategoryLimitCreateInputSchema),
     incomeExpectations: array(BudgetIncomeExpectationCreateInputSchema)
 });

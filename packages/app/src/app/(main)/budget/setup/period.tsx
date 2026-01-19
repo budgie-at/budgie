@@ -17,7 +17,7 @@ export default function BudgetSetupPeriodPage() {
 
     const handleSelectPeriod = (period: BudgetPeriodEnum) => {
         form.setValue('period', period);
-        router.push('/budget/setup/amount');
+        router.push('/budget/setup/rollover');
     };
 
     const handleSelectWeekly = () => void handleSelectPeriod(BudgetPeriodEnum.WEEKLY);

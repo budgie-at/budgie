@@ -52,9 +52,12 @@ export const BudgetWidget = ({ calculation, isLoading, startDate, endDate }: Pro
     }
 
     const spentText = formatMoney(calculation.totalSpent, defaultInstrument.symbol);
-    const limitText = formatMoney(calculation.overallLimit, defaultInstrument.symbol);
+    const limitText = formatMoney(calculation.effectiveLimit, defaultInstrument.symbol);
     const remainingText = formatMoney(Math.abs(calculation.overallRemaining), defaultInstrument.symbol);
     const isOverBudget = calculation.overallRemaining < 0;
+    const hasRollover = calculation.rolloverAmount !== 0;
+    const rolloverText = formatMoney(calculation.rolloverAmount, defaultInstrument.symbol);
+    const rolloverColorClass = calculation.rolloverAmount > 0 ? 'text-positive-foreground' : 'text-destructive-foreground';
 
     return (
         <Link href="/budget" asChild>
@@ -74,11 +77,19 @@ export const BudgetWidget = ({ calculation, isLoading, startDate, endDate }: Pro
                 </View>
                 <BudgetProgressBar percentage={calculation.overallPercentage} status={calculation.overallStatus} />
                 <View className="flex-row items-center justify-between mt-md">
-                    <Text className="text-secondary-foreground text-sm">
-                        <Trans>
-                            Spent {spentText} of {limitText}
-                        </Trans>
-                    </Text>
+                    <View className="flex-row items-center gap-sm">
+                        <Text className="text-secondary-foreground text-sm">
+                            <Trans>
+                                Spent {spentText} of {limitText}
+                            </Trans>
+                        </Text>
+                        {hasRollover ? (
+                            <Text className={`text-sm ${rolloverColorClass}`}>
+                                ({calculation.rolloverAmount > 0 ? '+' : ''}
+                                {rolloverText})
+                            </Text>
+                        ) : null}
+                    </View>
                     {isOverBudget ? (
                         <Text className="text-destructive-foreground text-sm">
                             <Trans>{remainingText} over</Trans>

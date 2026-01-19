@@ -51,7 +51,7 @@ class BudgetAlertNotificationService {
 
     private getNotificationContent(alert: BudgetAlertEntityInterface, categoryName?: string): NotificationContentInterface {
         const target = isDefined(categoryName) ? categoryName : i18n.t(msg`overall budget`);
-        const {percentage} = alert;
+        const { percentage } = alert;
 
         if (alert.type === BudgetAlertTypeEnum.THRESHOLD) {
             if (alert.severity === BudgetAlertSeverityEnum.EXCEEDED) {

@@ -24,7 +24,9 @@ export const BudgetSetupProvider = ({ children }: Props) => {
             startDate: new Date(),
             endDate: new Date(),
             categoryLimits: [],
-            incomeExpectations: []
+            incomeExpectations: [],
+            rolloverEnabled: false,
+            rolloverDeficitEnabled: false
         }
     });
 

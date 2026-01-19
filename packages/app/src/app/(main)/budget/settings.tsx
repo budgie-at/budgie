@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { useRef } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Page } from '../../../@generic/component/page/page';
@@ -46,15 +46,8 @@ export default function BudgetSettingsPage() {
     const formatMoney = useFormatDigits(decimalPlaces);
 
     const handleGoBack = () => void goBackOrReplace('/budget');
-
-    const handleOpenPeriodSelector = () => {
-        void periodSelectorRef.current?.open();
-    };
-
-    const handleOpenOverallLimit = () => {
-        void overallLimitRef.current?.open();
-    };
-
+    const handleOpenPeriodSelector = () => void periodSelectorRef.current?.open();
+    const handleOpenOverallLimit = () => void overallLimitRef.current?.open();
     const handleNavigateToExcludedAccounts = () => void router.push('/budget/excluded-accounts');
     const handleNavigateToCategoryLimits = () => void router.push('/budget/category-limits');
     const handleNavigateToIncomeExpectations = () => void router.push('/budget/income-expectations');
@@ -111,6 +104,30 @@ export default function BudgetSettingsPage() {
         }
     };
 
+    const handleToggleRollover = async () => {
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        try {
+            await budgetRepository.updateById(budget.id, { rolloverEnabled: !budget.rolloverEnabled });
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
+    const handleToggleDeficitRollover = async () => {
+        if (!isDefined(budget)) {
+            return;
+        }
+
+        try {
+            await budgetRepository.updateById(budget.id, { rolloverDeficitEnabled: !budget.rolloverDeficitEnabled });
+        } catch (error: unknown) {
+            showError(error);
+        }
+    };
+
     if (isLoading) {
         return (
             <Page header={<PageHeader title={t`Budget Settings`} onGoBack={handleGoBack} />}>
@@ -137,6 +154,10 @@ export default function BudgetSettingsPage() {
 
     const periodLabel = i18n.t(BUDGET_PERIOD_LABELS[budget.period]);
     const overallLimitFormatted = formatMoney(convertFromMicroUnits(budget.overallLimit), defaultInstrument.symbol);
+    const rolloverEnabledDescription = budget.rolloverEnabled ? t`Enabled` : t`Disabled`;
+    const rolloverDeficitDescription = budget.rolloverDeficitEnabled ? t`Enabled` : t`Disabled`;
+    const rolloverDeficitVariant = budget.rolloverDeficitEnabled ? 'warning' : 'ghost';
+    const rolloverAmountVariant = budget.rolloverAmount >= 0 ? 'positive' : 'destructive';
 
     /* jscpd:ignore-start */
     return (
@@ -186,6 +207,32 @@ export default function BudgetSettingsPage() {
                                 description={t`Set expected income by category`}
                                 onPress={handleNavigateToIncomeExpectations}
                             />
+                        </SettingsGroup>
+
+                        <SettingsGroup title={t`Rollover`}>
+                            <SettingsCard
+                                icon={UserIconNameEnum.RefreshCw}
+                                variant="primary"
+                                title={t`Carry Over Unspent Budget`}
+                                description={rolloverEnabledDescription}
+                                onPress={handleToggleRollover}
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.TrendingDown}
+                                variant={rolloverDeficitVariant}
+                                title={t`Include Deficit in Rollover`}
+                                description={rolloverDeficitDescription}
+                                onPress={handleToggleDeficitRollover}
+                                disabled={!budget.rolloverEnabled}
+                            />
+                            {isNumber(budget.rolloverAmount) && budget.rolloverAmount !== 0 ? (
+                                <SettingsCard
+                                    icon={UserIconNameEnum.Wallet}
+                                    variant={rolloverAmountVariant}
+                                    title={t`Current Rollover`}
+                                    description={formatMoney(convertFromMicroUnits(budget.rolloverAmount), defaultInstrument.symbol)}
+                                />
+                            ) : null}
                         </SettingsGroup>
 
                         <SettingsGroup title={t`Alerts`}>

@@ -18,6 +18,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { BudgetCalculationResultInterface } from '../interface/budget-calculation-result.interface';
 
 import { budgetCalculationService } from './budget-calculation.service';
 
@@ -56,6 +57,9 @@ class BudgetService {
                     period: input.period,
                     periodStartDay: input.periodStartDay,
                     overallLimit: convertToMicroUnits(input.overallLimit),
+                    rolloverEnabled: input.rolloverEnabled,
+                    rolloverDeficitEnabled: input.rolloverDeficitEnabled,
+                    rolloverAmount: 0,
                     startDate,
                     endDate
                 },
@@ -92,6 +96,8 @@ class BudgetService {
             period: budget.period,
             periodStartDay: budget.periodStartDay,
             overallLimit: convertFromMicroUnits(budget.overallLimit),
+            rolloverEnabled: budget.rolloverEnabled,
+            rolloverDeficitEnabled: budget.rolloverDeficitEnabled,
             startDate: budget.startDate,
             endDate: budget.endDate,
             categoryLimits: budget.categoryLimits.map(categoryLimit => ({
@@ -120,6 +126,8 @@ class BudgetService {
                     period: input.period,
                     periodStartDay: input.periodStartDay,
                     overallLimit: convertToMicroUnits(input.overallLimit),
+                    rolloverEnabled: input.rolloverEnabled,
+                    rolloverDeficitEnabled: input.rolloverDeficitEnabled,
                     startDate,
                     endDate
                 },
@@ -161,11 +169,32 @@ class BudgetService {
     }
 
     private async rolloverToNewPeriod(budget: BudgetEntityInterface): Promise<BudgetEntityInterface> {
-        await this.createPeriodSnapshot(budget);
+        const calculation = await budgetCalculationService.calculate(budget);
+        await this.createPeriodSnapshot(budget, calculation);
 
         const { startDate, endDate } = this.calculateNextPeriodDates(budget.endDate, budget.period);
+        const newRolloverAmount = this.calculateNewRolloverAmount(budget, convertToMicroUnits(calculation.totalSpent));
 
-        return budgetRepository.updateById(budget.id, { startDate, endDate });
+        return budgetRepository.updateById(budget.id, { startDate, endDate, rolloverAmount: newRolloverAmount });
+    }
+
+    private calculateNewRolloverAmount(budget: BudgetEntityInterface, totalSpentMicro: number): number {
+        if (!budget.rolloverEnabled) {
+            return 0;
+        }
+
+        const surplusMicro = budget.overallLimit - totalSpentMicro;
+        const isSurplus = surplusMicro >= 0;
+
+        if (isSurplus) {
+            return budget.rolloverAmount + surplusMicro;
+        }
+
+        if (budget.rolloverDeficitEnabled) {
+            return budget.rolloverAmount + surplusMicro;
+        }
+
+        return budget.rolloverAmount;
     }
 
     private calculateNextPeriodDates(currentEndDate: Date, period: BudgetPeriodEnum): PeriodDatesInterface {
@@ -175,8 +204,7 @@ class BudgetService {
         return { startDate: nextStartDate, endDate: nextEndDate };
     }
 
-    private async createPeriodSnapshot(budget: BudgetEntityInterface): Promise<void> {
-        const calculation = await budgetCalculationService.calculate(budget);
+    private async createPeriodSnapshot(budget: BudgetEntityInterface, calculation: BudgetCalculationResultInterface): Promise<void> {
         const budgetWithRelations = budget as BudgetWithRelationsInterface;
 
         const categoryLimitsJson = JSON.stringify(

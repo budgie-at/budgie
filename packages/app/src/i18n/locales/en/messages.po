@@ -50,7 +50,7 @@ msgstr "{availableCount} columns available"
 msgid "{categoryLimitsCount} categories, {categoryLimitsTotalFormatted} allocated"
 msgstr "{categoryLimitsCount} categories, {categoryLimitsTotalFormatted} allocated"
 
-#: src/app/(main)/budget/alert-settings.tsx:147
+#: src/app/(main)/budget/alert-settings.tsx:148
 msgid "{exceededThresholdValue}% of budget"
 msgstr "{exceededThresholdValue}% of budget"
 
@@ -58,7 +58,7 @@ msgstr "{exceededThresholdValue}% of budget"
 msgid "{incomeExpectationsCount} sources, {incomeExpectationsTotalFormatted} expected"
 msgstr "{incomeExpectationsCount} sources, {incomeExpectationsTotalFormatted} expected"
 
-#: src/app/(main)/budget/alert-settings.tsx:157
+#: src/app/(main)/budget/alert-settings.tsx:158
 msgid "{largeExpenseThresholdValue}% of overall budget"
 msgstr "{largeExpenseThresholdValue}% of overall budget"
 
@@ -80,15 +80,15 @@ msgstr "{percentage}% of income"
 msgid "{periodLabel} starting on day {periodStartDay}"
 msgstr "{periodLabel} starting on day {periodStartDay}"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:88
+#: src/budget/components/budget-widget/budget-widget.tsx:99
 msgid "{remainingText} left"
 msgstr "{remainingText} left"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:84
+#: src/budget/components/budget-widget/budget-widget.tsx:95
 msgid "{remainingText} over"
 msgstr "{remainingText} over"
 
-#: src/app/(main)/budget/alert-settings.tsx:140
+#: src/app/(main)/budget/alert-settings.tsx:141
 msgid "{warningThresholdValue}% of budget"
 msgstr "{warningThresholdValue}% of budget"
 
@@ -246,26 +246,26 @@ msgstr ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
 
-#: src/app/(main)/budget/alert-settings.tsx:101
-#: src/app/(main)/budget/alert-settings.tsx:113
-#: src/app/(main)/budget/alert-settings.tsx:132
-#: src/app/(main)/budget/settings.tsx:202
+#: src/app/(main)/budget/alert-settings.tsx:102
+#: src/app/(main)/budget/alert-settings.tsx:114
+#: src/app/(main)/budget/alert-settings.tsx:133
+#: src/app/(main)/budget/settings.tsx:249
 msgid "Alert Settings"
 msgstr "Alert Settings"
 
-#: src/app/(main)/budget/alert-settings.tsx:162
+#: src/app/(main)/budget/alert-settings.tsx:163
 msgid "Alert Types"
 msgstr "Alert Types"
 
-#: src/app/(main)/budget/alert-settings.tsx:174
+#: src/app/(main)/budget/alert-settings.tsx:175
 msgid "Alert when projected to exceed budget"
 msgstr "Alert when projected to exceed budget"
 
-#: src/app/(main)/budget/alert-settings.tsx:167
+#: src/app/(main)/budget/alert-settings.tsx:168
 msgid "Alert when spending faster than planned"
 msgstr "Alert when spending faster than planned"
 
-#: src/app/(main)/budget/settings.tsx:191
+#: src/app/(main)/budget/settings.tsx:238
 msgid "Alerts"
 msgstr "Alerts"
 
@@ -282,7 +282,7 @@ msgid "All your financial data is stored locally on your device. No cloud sync, 
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
 #: src/app/(main)/budget/setup/category-limits.tsx:138
-#: src/budget/components/budget-overview-card/budget-overview-card.tsx:35
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:51
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
 msgstr "Allocated"
@@ -453,7 +453,7 @@ msgstr "Borrowed"
 
 #: src/app/(main)/budget/index.tsx:48
 #: src/app/(main)/budget/index.tsx:68
-#: src/budget/components/budget-widget/budget-widget.tsx:65
+#: src/budget/components/budget-widget/budget-widget.tsx:68
 msgid "Budget"
 msgstr "Budget"
 
@@ -462,11 +462,11 @@ msgid "Budget alert"
 msgstr "Budget alert"
 
 #: src/app/(main)/budget/alerts.tsx:85
-#: src/app/(main)/budget/settings.tsx:195
+#: src/app/(main)/budget/settings.tsx:242
 msgid "Budget Alerts"
 msgstr "Budget Alerts"
 
-#: src/app/(main)/budget/settings.tsx:147
+#: src/app/(main)/budget/settings.tsx:168
 msgid "Budget Configuration"
 msgstr "Budget Configuration"
 
@@ -480,19 +480,23 @@ msgstr "Budget forecast"
 
 #: src/app/(main)/budget/history.tsx:59
 #: src/app/(main)/budget/history.tsx:70
-#: src/app/(main)/budget/settings.tsx:212
+#: src/app/(main)/budget/settings.tsx:259
 msgid "Budget History"
 msgstr "Budget History"
 
-#: src/app/(main)/budget/settings.tsx:151
+#: src/app/(main)/budget/settings.tsx:172
 #: src/app/(main)/budget/setup/period.tsx:29
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:37
 msgid "Budget Period"
 msgstr "Budget Period"
 
-#: src/app/(main)/budget/settings.tsx:116
-#: src/app/(main)/budget/settings.tsx:128
-#: src/app/(main)/budget/settings.tsx:144
+#: src/app/(main)/budget/setup/rollover.tsx:52
+msgid "Budget Rollover"
+msgstr "Budget Rollover"
+
+#: src/app/(main)/budget/settings.tsx:133
+#: src/app/(main)/budget/settings.tsx:145
+#: src/app/(main)/budget/settings.tsx:165
 msgid "Budget Settings"
 msgstr "Budget Settings"
 
@@ -512,7 +516,7 @@ msgstr "Budget warning"
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/budget/components/budget-overview-card/budget-overview-card.tsx:41
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:57
 msgid "Buffer"
 msgstr "Buffer"
 
@@ -525,6 +529,14 @@ msgstr "Buffer"
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
 msgid "Cancel"
 msgstr "Cancel"
+
+#: src/app/(main)/budget/setup/rollover.tsx:31
+msgid "Carry over unspent budget"
+msgstr "Carry over unspent budget"
+
+#: src/app/(main)/budget/settings.tsx:216
+msgid "Carry Over Unspent Budget"
+msgstr "Carry Over Unspent Budget"
 
 #: src/account/constant/account-type.constant.ts:7
 msgid "Cash"
@@ -583,7 +595,7 @@ msgstr "Category Budgets"
 
 #: src/app/(main)/budget/category-limits.tsx:119
 #: src/app/(main)/budget/category-limits.tsx:144
-#: src/app/(main)/budget/settings.tsx:178
+#: src/app/(main)/budget/settings.tsx:199
 #: src/app/(main)/budget/setup/category-limits.tsx:118
 msgid "Category Limits"
 msgstr "Category Limits"
@@ -617,7 +629,7 @@ msgstr "Choose a preset to auto-fill column mappings"
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
 
-#: src/app/(main)/budget/settings.tsx:172
+#: src/app/(main)/budget/settings.tsx:193
 msgid "Choose which accounts to exclude from budget"
 msgstr "Choose which accounts to exclude from budget"
 
@@ -669,7 +681,7 @@ msgstr "Conditions"
 msgid "Configure Rule"
 msgstr "Configure Rule"
 
-#: src/app/(main)/budget/settings.tsx:203
+#: src/app/(main)/budget/settings.tsx:250
 msgid "Configure thresholds and notifications"
 msgstr "Configure thresholds and notifications"
 
@@ -704,6 +716,7 @@ msgstr "Contains"
 #: src/app/(main)/budget/setup/amount.tsx:35
 #: src/app/(main)/budget/setup/category-limits.tsx:123
 #: src/app/(main)/budget/setup/income-expectations.tsx:112
+#: src/app/(main)/budget/setup/rollover.tsx:75
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
 msgstr "Continue"
@@ -910,11 +923,15 @@ msgstr "Current"
 msgid "Current Balance"
 msgstr "Current Balance"
 
+#: src/app/(main)/budget/settings.tsx:232
+msgid "Current Rollover"
+msgstr "Current Rollover"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx:18
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
-#: src/app/(main)/budget/settings.tsx:218
+#: src/app/(main)/budget/settings.tsx:265
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -947,7 +964,7 @@ msgstr "Debt"
 msgid "Debt Account"
 msgstr "Debt Account"
 
-#: src/app/(main)/budget/settings.tsx:227
+#: src/app/(main)/budget/settings.tsx:274
 msgid "Debug (Remove Later)"
 msgstr "Debug (Remove Later)"
 
@@ -972,7 +989,7 @@ msgstr "Delete Account Permanently?"
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/app/(main)/budget/settings.tsx:220
+#: src/app/(main)/budget/settings.tsx:267
 msgid "Delete Budget"
 msgstr "Delete Budget"
 
@@ -1019,6 +1036,11 @@ msgstr "Difference"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:90
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
+
+#: src/app/(main)/budget/settings.tsx:157
+#: src/app/(main)/budget/settings.tsx:158
+msgid "Disabled"
+msgstr "Disabled"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:20
@@ -1085,6 +1107,11 @@ msgstr "Enable Face ID unlock?"
 #: src/auth/util/get-pin-setup-meta.util.ts:17
 msgid "Enable Touch ID unlock?"
 msgstr "Enable Touch ID unlock?"
+
+#: src/app/(main)/budget/settings.tsx:157
+#: src/app/(main)/budget/settings.tsx:158
+msgid "Enabled"
+msgstr "Enabled"
 
 #: src/i18n/constant/languages.constant.ts:8
 msgid "English"
@@ -1171,16 +1198,16 @@ msgstr "Errors"
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
 
-#: src/app/(main)/budget/alert-settings.tsx:146
+#: src/app/(main)/budget/alert-settings.tsx:147
 msgid "Exceeded Threshold"
 msgstr "Exceeded Threshold"
 
-#: src/app/(main)/budget/alert-settings.tsx:211
+#: src/app/(main)/budget/alert-settings.tsx:212
 msgid "Exceeded Threshold %"
 msgstr "Exceeded Threshold %"
 
 #: src/app/(main)/budget/excluded-accounts.tsx:31
-#: src/app/(main)/budget/settings.tsx:171
+#: src/app/(main)/budget/settings.tsx:192
 msgid "Excluded Accounts"
 msgstr "Excluded Accounts"
 
@@ -1338,7 +1365,7 @@ msgstr "Greater Than"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
-#: src/app/(main)/budget/settings.tsx:208
+#: src/app/(main)/budget/settings.tsx:255
 msgid "History"
 msgstr "History"
 
@@ -1397,6 +1424,14 @@ msgstr "In List"
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
+#: src/app/(main)/budget/setup/rollover.tsx:41
+msgid "Include deficit in rollover"
+msgstr "Include deficit in rollover"
+
+#: src/app/(main)/budget/settings.tsx:223
+msgid "Include Deficit in Rollover"
+msgstr "Include Deficit in Rollover"
+
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:22
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
@@ -1419,7 +1454,7 @@ msgstr "Income by Tag"
 
 #: src/app/(main)/budget/income-expectations.tsx:130
 #: src/app/(main)/budget/income-expectations.tsx:157
-#: src/app/(main)/budget/settings.tsx:185
+#: src/app/(main)/budget/settings.tsx:206
 #: src/app/(main)/budget/setup/confirm.tsx:111
 #: src/app/(main)/budget/setup/income-expectations.tsx:107
 msgid "Income Expectations"
@@ -1450,7 +1485,7 @@ msgstr "Large expense"
 msgid "Large expense ({percentage}% of budget)"
 msgstr "Large expense ({percentage}% of budget)"
 
-#: src/app/(main)/budget/alert-settings.tsx:152
+#: src/app/(main)/budget/alert-settings.tsx:153
 msgid "Large Expense Alerts"
 msgstr "Large Expense Alerts"
 
@@ -1458,11 +1493,11 @@ msgstr "Large Expense Alerts"
 msgid "Large expense detected ({percentage}% of budget)"
 msgstr "Large expense detected ({percentage}% of budget)"
 
-#: src/app/(main)/budget/alert-settings.tsx:156
+#: src/app/(main)/budget/alert-settings.tsx:157
 msgid "Large Expense Threshold"
 msgstr "Large Expense Threshold"
 
-#: src/app/(main)/budget/alert-settings.tsx:218
+#: src/app/(main)/budget/alert-settings.tsx:219
 msgid "Large Expense Threshold %"
 msgstr "Large Expense Threshold %"
 
@@ -1498,13 +1533,13 @@ msgstr "Limit"
 msgid "Loading budget..."
 msgstr "Loading budget..."
 
-#: src/app/(main)/budget/alert-settings.tsx:104
+#: src/app/(main)/budget/alert-settings.tsx:105
 #: src/app/(main)/budget/category-limits.tsx:122
 #: src/app/(main)/budget/history.tsx:62
 #: src/app/(main)/budget/history/[periodStart].tsx:62
 #: src/app/(main)/budget/income-expectations.tsx:133
 #: src/app/(main)/budget/index.tsx:60
-#: src/app/(main)/budget/settings.tsx:119
+#: src/app/(main)/budget/settings.tsx:136
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1636,8 +1671,8 @@ msgstr "No accounts found"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/(main)/budget/alert-settings.tsx:116
-#: src/app/(main)/budget/settings.tsx:131
+#: src/app/(main)/budget/alert-settings.tsx:117
+#: src/app/(main)/budget/settings.tsx:148
 msgid "No active budget found"
 msgstr "No active budget found"
 
@@ -1799,7 +1834,7 @@ msgstr "Not Equals"
 msgid "Note (optional)"
 msgstr "Note (optional)"
 
-#: src/app/(main)/budget/alert-settings.tsx:184
+#: src/app/(main)/budget/alert-settings.tsx:185
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -1829,15 +1864,19 @@ msgid "overall budget"
 msgstr "overall budget"
 
 #: src/budget/components/budget-alert-row/budget-alert-row.tsx:51
-#: src/budget/components/budget-overview-card/budget-overview-card.tsx:22
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:27
 msgid "Overall Budget"
 msgstr "Overall Budget"
 
-#: src/app/(main)/budget/settings.tsx:158
-#: src/app/(main)/budget/settings.tsx:243
+#: src/app/(main)/budget/settings.tsx:179
+#: src/app/(main)/budget/settings.tsx:290
 #: src/app/(main)/budget/setup/confirm.tsx:97
 msgid "Overall Limit"
 msgstr "Overall Limit"
+
+#: src/app/(main)/budget/setup/rollover.tsx:42
+msgid "Overspending reduces next period's budget"
+msgstr "Overspending reduces next period's budget"
 
 #: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
@@ -1847,7 +1886,7 @@ msgstr "Overview"
 msgid "Owes you"
 msgstr "Owes you"
 
-#: src/app/(main)/budget/alert-settings.tsx:166
+#: src/app/(main)/budget/alert-settings.tsx:167
 msgid "Pace Alerts"
 msgstr "Pace Alerts"
 
@@ -1880,7 +1919,7 @@ msgstr "Period Details"
 msgid "Period not found"
 msgstr "Period not found"
 
-#: src/app/(main)/budget/settings.tsx:165
+#: src/app/(main)/budget/settings.tsx:186
 msgid "Period Start Day"
 msgstr "Period Start Day"
 
@@ -1928,7 +1967,7 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
-#: src/app/(main)/budget/alert-settings.tsx:173
+#: src/app/(main)/budget/alert-settings.tsx:174
 msgid "Predictive Alerts"
 msgstr "Predictive Alerts"
 
@@ -1952,7 +1991,7 @@ msgstr "Privatbank"
 msgid "Projected to exceed budget"
 msgstr "Projected to exceed budget"
 
-#: src/app/(main)/budget/alert-settings.tsx:188
+#: src/app/(main)/budget/alert-settings.tsx:189
 msgid "Push Notifications"
 msgstr "Push Notifications"
 
@@ -1969,7 +2008,7 @@ msgstr "Recalculate"
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
-#: src/app/(main)/budget/alert-settings.tsx:189
+#: src/app/(main)/budget/alert-settings.tsx:190
 msgid "Receive push notifications for alerts"
 msgstr "Receive push notifications for alerts"
 
@@ -2009,6 +2048,19 @@ msgstr "Restore from a backup file"
 #: src/rule/constant/external-source.constant.ts:9
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/app/(main)/budget/settings.tsx:212
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:41
+msgid "Rollover"
+msgstr "Rollover"
+
+#: src/app/(main)/budget/setup/rollover.tsx:61
+msgid "Rollover allows unused budget to carry forward. If enabled, any unspent amount at the end of a budget period will be added to your next period."
+msgstr "Rollover allows unused budget to carry forward. If enabled, any unspent amount at the end of a budget period will be added to your next period."
+
+#: src/app/(main)/budget/setup/rollover.tsx:49
+msgid "Rollover Settings"
+msgstr "Rollover Settings"
 
 #: src/app/(tabs)/settings/rules.tsx:46
 msgid "Rule"
@@ -2219,7 +2271,7 @@ msgstr "Set Category Limit"
 msgid "set category to <0>{categoryTitle}</0>"
 msgstr "set category to <0>{categoryTitle}</0>"
 
-#: src/app/(main)/budget/settings.tsx:186
+#: src/app/(main)/budget/settings.tsx:207
 msgid "Set expected income by category"
 msgstr "Set expected income by category"
 
@@ -2227,7 +2279,7 @@ msgstr "Set expected income by category"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(main)/budget/settings.tsx:179
+#: src/app/(main)/budget/settings.tsx:200
 msgid "Set spending limits for categories"
 msgstr "Set spending limits for categories"
 
@@ -2251,7 +2303,7 @@ msgstr "Show Cents"
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
-#: src/app/(main)/budget/settings.tsx:229
+#: src/app/(main)/budget/settings.tsx:276
 msgid "Simulate Period End"
 msgstr "Simulate Period End"
 
@@ -2317,12 +2369,12 @@ msgstr "Spending Trend"
 #: src/app/(main)/budget/category/[categoryId].tsx:86
 #: src/app/(tabs)/analytics.tsx:60
 #: src/budget/components/budget-comparison-card/budget-comparison-card.tsx:49
-#: src/budget/components/budget-overview-card/budget-overview-card.tsx:27
+#: src/budget/components/budget-overview-card/budget-overview-card.tsx:32
 #: src/budget/components/budget-spending-trend-chart/budget-spending-trend-chart.tsx:107
 msgid "Spent"
 msgstr "Spent"
 
-#: src/budget/components/budget-widget/budget-widget.tsx:78
+#: src/budget/components/budget-widget/budget-widget.tsx:82
 msgid "Spent {spentText} of {limitText}"
 msgstr "Spent {spentText} of {limitText}"
 
@@ -2470,7 +2522,7 @@ msgstr "This will remove the expected income for \"{categoryTitle}\". The catego
 msgid "This Year"
 msgstr "This Year"
 
-#: src/app/(main)/budget/alert-settings.tsx:135
+#: src/app/(main)/budget/alert-settings.tsx:136
 msgid "Threshold Alerts"
 msgstr "Threshold Alerts"
 
@@ -2621,6 +2673,10 @@ msgstr "Unknown"
 msgid "Unknown Category"
 msgstr "Unknown Category"
 
+#: src/app/(main)/budget/setup/rollover.tsx:32
+msgid "Unspent money rolls over to next period"
+msgstr "Unspent money rolls over to next period"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Up to date"
@@ -2670,7 +2726,7 @@ msgstr "View and activate hidden accounts"
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(main)/budget/settings.tsx:196
+#: src/app/(main)/budget/settings.tsx:243
 msgid "View and manage alerts"
 msgstr "View and manage alerts"
 
@@ -2678,7 +2734,7 @@ msgstr "View and manage alerts"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
-#: src/app/(main)/budget/settings.tsx:213
+#: src/app/(main)/budget/settings.tsx:260
 msgid "View past periods and trends"
 msgstr "View past periods and trends"
 
@@ -2691,11 +2747,11 @@ msgstr "vs"
 msgid "Waiting"
 msgstr "Waiting"
 
-#: src/app/(main)/budget/alert-settings.tsx:139
+#: src/app/(main)/budget/alert-settings.tsx:140
 msgid "Warning Threshold"
 msgstr "Warning Threshold"
 
-#: src/app/(main)/budget/alert-settings.tsx:204
+#: src/app/(main)/budget/alert-settings.tsx:205
 msgid "Warning Threshold %"
 msgstr "Warning Threshold %"
 
@@ -2709,6 +2765,10 @@ msgstr "Weekly"
 #: src/budget/constant/budget-period-title.constant.ts:6
 msgid "Weekly Budget"
 msgstr "Weekly Budget"
+
+#: src/app/(main)/budget/setup/rollover.tsx:68
+msgid "When deficit rollover is enabled, overspending will reduce your available budget in the next period."
+msgstr "When deficit rollover is enabled, overspending will reduce your available budget in the next period."
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
 msgid "When should it be returned?"

@@ -16,6 +16,11 @@ export const BudgetOverviewCard = ({ calculation }: Props) => {
     const formatMoney = useFormatDigits(decimalPlaces);
     const { symbol } = defaultInstrument;
 
+    const hasRollover = calculation.rolloverAmount !== 0;
+    const displayLimit = hasRollover ? calculation.effectiveLimit : calculation.overallLimit;
+    const rolloverColorClass = calculation.rolloverAmount > 0 ? 'text-positive-foreground' : 'text-destructive-foreground';
+    const rolloverPrefix = calculation.rolloverAmount > 0 ? '+' : '';
+
     return (
         <Card>
             <Text className="text-primary font-medium mb-md">
@@ -27,9 +32,20 @@ export const BudgetOverviewCard = ({ calculation }: Props) => {
                     <Trans>Spent</Trans>
                 </Text>
                 <Text className="text-primary">
-                    {formatMoney(calculation.totalSpent, symbol)} / {formatMoney(calculation.overallLimit, symbol)}
+                    {formatMoney(calculation.totalSpent, symbol)} / {formatMoney(displayLimit, symbol)}
                 </Text>
             </View>
+            {hasRollover ? (
+                <View className="flex-row justify-between mt-sm">
+                    <Text className="text-secondary-foreground">
+                        <Trans>Rollover</Trans>
+                    </Text>
+                    <Text className={rolloverColorClass}>
+                        {rolloverPrefix}
+                        {formatMoney(calculation.rolloverAmount, symbol)}
+                    </Text>
+                </View>
+            ) : null}
             <View className="flex-row justify-between mt-sm">
                 <Text className="text-secondary-foreground">
                     <Trans>Allocated</Trans>

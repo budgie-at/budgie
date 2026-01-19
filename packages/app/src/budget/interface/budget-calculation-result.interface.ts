@@ -15,6 +15,8 @@ export interface BudgetIncomeStatusInterface {
 export interface BudgetCalculationResultInterface {
     readonly budget: BudgetEntityInterface;
     readonly overallLimit: number;
+    readonly effectiveLimit: number;
+    readonly rolloverAmount: number;
     readonly totalSpent: number;
     readonly overallRemaining: number;
     readonly overallPercentage: number;

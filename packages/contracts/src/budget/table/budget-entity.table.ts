@@ -14,6 +14,9 @@ export const BudgetEntityTable = sqliteTable(
         periodStartDay: int('period_start_day').notNull().default(1),
         overallLimit: int('overall_limit').notNull(),
         startDate: int('start_date', { mode: 'timestamp' }).notNull(),
-        endDate: int('end_date', { mode: 'timestamp' }).notNull()
+        endDate: int('end_date', { mode: 'timestamp' }).notNull(),
+        rolloverEnabled: int('rollover_enabled', { mode: 'boolean' }).notNull().default(false),
+        rolloverDeficitEnabled: int('rollover_deficit_enabled', { mode: 'boolean' }).notNull().default(false),
+        rolloverAmount: int('rollover_amount').notNull().default(0)
     })
 );

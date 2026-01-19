@@ -127,7 +127,7 @@ export default function AlertSettingsPage() {
     const largeExpenseThresholdValue = currentSettings.largeExpenseThreshold;
 
     /* jscpd:ignore-start */
-     
+
     return (
         <>
             <Page header={<PageHeader title={t`Alert Settings`} onGoBack={handleGoBack} />}>
@@ -222,6 +222,6 @@ export default function AlertSettingsPage() {
             />
         </>
     );
-     
+
     /* jscpd:ignore-end */
 }

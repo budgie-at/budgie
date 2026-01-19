@@ -22,8 +22,6 @@ import { budgetAlertNotificationService } from './budget-alert-notification.serv
 import { budgetCalculationService } from './budget-calculation.service';
 import { budgetService } from './budget.service';
 
-/* eslint-disable max-lines */
-
 interface DefaultSettingsInterface {
     readonly warningThreshold: number;
     readonly exceededThreshold: number;

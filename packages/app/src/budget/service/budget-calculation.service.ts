@@ -84,12 +84,15 @@ class BudgetCalculationService {
         const categoryStatuses = this.calculateCategoryStatuses(budgetWithRelations.categoryLimits, expenseTransactions);
         const incomeStatuses = this.calculateIncomeStatuses(budgetWithRelations.incomeExpectations, incomeTransactions);
         const overallStats = this.calculateOverallStats(budget, expenseTransactions);
-        const paceStats = this.calculatePaceStats(effectiveStartDate, effectiveEndDate, budget.overallLimit, overallStats.totalSpent);
+        const effectiveLimitMicro = budget.overallLimit + budget.rolloverAmount;
+        const paceStats = this.calculatePaceStats(effectiveStartDate, effectiveEndDate, effectiveLimitMicro, overallStats.totalSpent);
         const unbudgetedStats = await this.calculateUnbudgetedSpending(budgetWithRelations.categoryLimits, expenseTransactions);
 
         return {
             budget,
             overallLimit: convertFromMicroUnits(budget.overallLimit),
+            rolloverAmount: convertFromMicroUnits(budget.rolloverAmount),
+            effectiveLimit: convertFromMicroUnits(effectiveLimitMicro),
             ...overallStats,
             ...this.calculateAllocationStats(budget, categoryStatuses),
             categoryStatuses,
@@ -128,8 +131,9 @@ class BudgetCalculationService {
         expenseTransactions: TransactionWithEntriesEntityInterface[]
     ): OverallStatsInterface {
         const totalSpentMicro = this.calculateTotalSpent(expenseTransactions);
-        const overallRemainingMicro = budget.overallLimit - totalSpentMicro;
-        const overallPercentage = budget.overallLimit > 0 ? (totalSpentMicro / budget.overallLimit) * 100 : 0;
+        const effectiveLimitMicro = budget.overallLimit + budget.rolloverAmount;
+        const overallRemainingMicro = effectiveLimitMicro - totalSpentMicro;
+        const overallPercentage = effectiveLimitMicro > 0 ? (totalSpentMicro / effectiveLimitMicro) * 100 : 0;
         const overallStatus = this.getStatus(overallPercentage);
 
         return {
@@ -158,11 +162,11 @@ class BudgetCalculationService {
         return { totalExpectedIncome, totalActualIncome, incomeVariance };
     }
 
-    private calculatePaceStats(startDate: Date, endDate: Date, overallLimit: number, totalSpent: number): PaceStatsInterface {
+    private calculatePaceStats(startDate: Date, endDate: Date, effectiveLimitMicro: number, totalSpent: number): PaceStatsInterface {
         const daysInPeriod = differenceInDays(endDate, startDate) + 1;
         const daysElapsed = Math.min(differenceInDays(new Date(), startDate) + 1, daysInPeriod);
-        const overallLimitDisplay = convertFromMicroUnits(overallLimit);
-        const dailyBudget = daysInPeriod > 0 ? overallLimitDisplay / daysInPeriod : 0;
+        const effectiveLimitDisplay = convertFromMicroUnits(effectiveLimitMicro);
+        const dailyBudget = daysInPeriod > 0 ? effectiveLimitDisplay / daysInPeriod : 0;
         const expectedSpentByNow = dailyBudget * daysElapsed;
         const isOnPace = totalSpent <= expectedSpentByNow;
         const paceVariance = expectedSpentByNow - totalSpent;

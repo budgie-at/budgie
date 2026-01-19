@@ -78,6 +78,13 @@
       "when": 1768829725038,
       "tag": "0010_unique_stardust",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1768849703678,
+      "tag": "0011_flaky_weapon_omega",
+      "breakpoints": true
     }
   ]
 }
