@@ -42,6 +42,16 @@ const pairAccountsIntoRows = (accounts: AccountWithInstrumentEntityInterface[]):
     return rows;
 };
 
+const buildSections = (
+    accountsGrouped: Partial<Record<AccountTypeEnum, AccountWithInstrumentEntityInterface[]>>
+): AccountSectionInterface[] =>
+    typedObjectEntries(accountsGrouped)
+        .filter((entry): entry is [AccountTypeEnum, AccountWithInstrumentEntityInterface[]] => isNotEmptyArray(entry[1]))
+        .map(([type, accounts]) => ({
+            type,
+            data: pairAccountsIntoRows(accounts)
+        }));
+
 export default function HomePage() {
     const { accountsGrouped } = useSearchAccountsGroupedQuery('', true);
     const { bottom } = useSafeAreaInsets();
@@ -52,19 +62,10 @@ export default function HomePage() {
     useDrizzleStudio(db);
 
     const scrollY = useSharedValue(0);
-
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom;
-    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
+    const sections = buildSections(accountsGrouped);
+    const listContentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20 };
     const emptyStateStyle = { paddingBottom: bottomPadding };
-
-    const accountEntries = typedObjectEntries(accountsGrouped);
-
-    const sections: AccountSectionInterface[] = accountEntries
-        .filter(([, accounts]) => isNotEmptyArray(accounts))
-        .map(([type, accounts]) => ({
-            type,
-            data: pairAccountsIntoRows(accounts ?? [])
-        }));
 
     const renderSectionHeader = ({ section }: { section: AccountSectionInterface }) => <AccountSectionHeader type={section.type} />;
 
@@ -76,12 +77,6 @@ export default function HomePage() {
     );
 
     const keyExtractor = (item: AccountRowInterface) => String(item.left.id);
-
-    const listHeader = (
-        <View className="mb-xl">
-            <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
-        </View>
-    );
 
     return (
         <View className="flex-1 bg-background">
@@ -95,8 +90,12 @@ export default function HomePage() {
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={listHeader}
+                    contentContainerStyle={listContentContainerStyle}
+                    ListHeaderComponent={
+                        <View className="mb-xl">
+                            <BudgetWidget calculation={calculation} isLoading={isBudgetLoading} />
+                        </View>
+                    }
                 />
             ) : (
                 <View className="flex-1 px-5xl" style={emptyStateStyle}>

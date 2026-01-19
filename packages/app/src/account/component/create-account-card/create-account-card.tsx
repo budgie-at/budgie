@@ -17,7 +17,6 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
 
     return (
         <SimpleHorizontalCell
-            // eslint-disable-next-line lingui/no-unlocalized-strings
             testID={`CreateAccount.${type}`}
             size="lg"
             left={<CircleIcon icon={icon} variant={ACCOUNT_COLOR[type]} radius={20} border={false} size={52} iconSize={24} />}
