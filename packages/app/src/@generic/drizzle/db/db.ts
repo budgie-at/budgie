@@ -2,8 +2,12 @@ import * as SQLite from 'expo-sqlite';
 import { drizzle, ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 import {
     AccountBalanceRepository,
+    AccountBudgetExclusionRepository,
     AccountRepository,
     BankSyncRepository,
+    BudgetCategoryLimitRepository,
+    BudgetIncomeExpectationRepository,
+    BudgetRepository,
     CategoryRepository,
     ExchangeRateRepository,
     InstrumentRepository,
@@ -70,3 +74,7 @@ export const statisticsRepository = new StatisticsRepository(db);
 export const ruleRepository = new RuleRepository(db);
 export const ruleConditionRepository = new RuleConditionRepository(db);
 export const ruleActionRepository = new RuleActionRepository(db);
+export const budgetRepository = new BudgetRepository(db);
+export const budgetCategoryLimitRepository = new BudgetCategoryLimitRepository(db);
+export const budgetIncomeExpectationRepository = new BudgetIncomeExpectationRepository(db);
+export const accountBudgetExclusionRepository = new AccountBudgetExclusionRepository(db);

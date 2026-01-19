@@ -57,6 +57,13 @@
       "when": 1767557538561,
       "tag": "0007_demonic_butterfly",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1768779798567,
+      "tag": "0008_aromatic_tyger_tiger",
+      "breakpoints": true
     }
   ]
 }
