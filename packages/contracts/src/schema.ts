@@ -30,3 +30,10 @@ export { RuleConditionEntityTable } from './rule-condition/table/rule-condition-
 export { RuleConditionEntityRelations } from './rule-condition/relations/rule-condition-entity.relations';
 export { RuleActionEntityTable } from './rule-action/table/rule-action-entity.table';
 export { RuleActionEntityRelations } from './rule-action/relations/rule-action-entity.relations';
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+export { BudgetIncomeExpectationEntityTable } from './budget-income-expectation/table/budget-income-expectation-entity.table';
+export { BudgetIncomeExpectationEntityRelations } from './budget-income-expectation/relations/budget-income-expectation-entity.relations';
+export { AccountBudgetExclusionEntityTable } from './account-budget-exclusion/table/account-budget-exclusion-entity.table';

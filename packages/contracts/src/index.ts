@@ -49,6 +49,50 @@ export type { AccountBalanceUpdateEntityInterface } from './account-balance/enti
 
 export { AccountBalanceRepository } from './account-balance/repository/account-balance.repository';
 
+export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
+
+export { BudgetEntityTable } from './budget/table/budget-entity.table';
+export { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
+
+export { BudgetEntitySchema } from './budget/schema/budget-entity.schema';
+export { BudgetCreateEntitySchema } from './budget/schema/budget-create-entity.schema';
+export { BudgetCreateInputSchema } from './budget/schema/budget-create-input.schema';
+
+export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
+export type { BudgetCreateInputInterface } from './budget/input/budget-create-input.interface';
+
+export { BudgetRepository } from './budget/repository/budget.repository';
+
+export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
+export { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+
+export { BudgetCategoryLimitEntitySchema } from './budget-category-limit/schema/budget-category-limit-entity.schema';
+export { BudgetCategoryLimitCreateInputSchema } from './budget-category-limit/schema/budget-category-limit-create-input.schema';
+
+export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit/entity/budget-category-limit-entity.interface';
+export type { BudgetCategoryLimitCreateInputInterface } from './budget-category-limit/input/budget-category-limit-create-input.interface';
+
+export { BudgetCategoryLimitRepository } from './budget-category-limit/repository/budget-category-limit.repository';
+
+export { BudgetIncomeExpectationEntityTable } from './budget-income-expectation/table/budget-income-expectation-entity.table';
+export { BudgetIncomeExpectationEntityRelations } from './budget-income-expectation/relations/budget-income-expectation-entity.relations';
+
+export { BudgetIncomeExpectationEntitySchema } from './budget-income-expectation/schema/budget-income-expectation-entity.schema';
+export { BudgetIncomeExpectationCreateInputSchema } from './budget-income-expectation/schema/budget-income-expectation-create-input.schema';
+
+export type { BudgetIncomeExpectationEntityInterface } from './budget-income-expectation/entity/budget-income-expectation-entity.interface';
+export type { BudgetIncomeExpectationCreateInputInterface } from './budget-income-expectation/input/budget-income-expectation-create-input.interface';
+
+export { BudgetIncomeExpectationRepository } from './budget-income-expectation/repository/budget-income-expectation.repository';
+
+export { AccountBudgetExclusionEntityTable } from './account-budget-exclusion/table/account-budget-exclusion-entity.table';
+
+export { AccountBudgetExclusionEntitySchema } from './account-budget-exclusion/schema/account-budget-exclusion-entity.schema';
+
+export type { AccountBudgetExclusionEntityInterface } from './account-budget-exclusion/entity/account-budget-exclusion-entity.interface';
+
+export { AccountBudgetExclusionRepository } from './account-budget-exclusion/repository/account-budget-exclusion.repository';
+
 export { BankSyncModeEnum } from './bank-sync/enum/bank-sync-mode.enum';
 export { BankSyncStatusEnum } from './bank-sync/enum/bank-sync-status.enum';
 export { BankSyncAssociationEnum } from './bank-sync/enum/bank-sync-association.enum';
