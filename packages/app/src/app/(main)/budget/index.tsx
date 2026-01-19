@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -28,7 +28,11 @@ export default function BudgetDetailScreen() {
 
     const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
     const periodNavigation = useBudgetPeriodNavigation(budget);
-    const { calculation, isLoading: isCalculationLoading } = useGetBudgetCalculationQuery(budget, {
+    const {
+        calculation,
+        isLoading: isCalculationLoading,
+        error
+    } = useGetBudgetCalculationQuery(budget, {
         startDate: periodNavigation.startDate,
         endDate: periodNavigation.endDate
     });
@@ -42,10 +46,34 @@ export default function BudgetDetailScreen() {
     const bannerSeverity = isOverBudget ? 'destructive' : 'warning';
     const shouldShowBanner = !isLoading && !isBannerDismissed && calculation.overallStatus !== BudgetStatusEnum.ON_TRACK;
 
+    const errorMessage = isNotEmptyString(error?.message) ? error.message : t`An error occurred`;
+
     /* jscpd:ignore-start */
+    if (isDefined(error)) {
+        return (
+            <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
+                {isDefined(budget) ? (
+                    <BudgetPeriodNavigator
+                        startDate={periodNavigation.startDate}
+                        endDate={periodNavigation.endDate}
+                        isCurrentPeriod={periodNavigation.isCurrentPeriod}
+                        onPrevious={periodNavigation.handlePrevious}
+                        onNext={periodNavigation.handleNext}
+                    />
+                ) : null}
+                <View className="flex-1 items-center justify-center gap-y-md">
+                    <Text className="text-destructive-foreground font-medium">
+                        <Trans>Failed to load budget</Trans>
+                    </Text>
+                    <Text className="text-secondary-foreground text-sm">{errorMessage}</Text>
+                </View>
+            </Page>
+        );
+    }
+
     if (isLoading) {
         return (
-            <Page header={<PageHeader title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />}>
+            <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
                 {isDefined(budget) ? (
                     <BudgetPeriodNavigator
                         startDate={periodNavigation.startDate}
@@ -65,8 +93,8 @@ export default function BudgetDetailScreen() {
     }
 
     return (
-        <Page header={<PageHeader title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />}>
-            <ScrollView className="flex-1" contentContainerStyle={SCROLL_VIEW_CONTENT_STYLE}>
+        <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
+            <ScrollView className="flex-1" contentContainerStyle={SCROLL_VIEW_CONTENT_STYLE} showsVerticalScrollIndicator={false}>
                 <View className="gap-y-xl">
                     <BudgetPeriodNavigator
                         startDate={periodNavigation.startDate}
