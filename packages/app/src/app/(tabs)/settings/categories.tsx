@@ -45,7 +45,7 @@ export default function Categories() {
     const handleDeleteCategory = async (id: number) => {
         const count = await categoryService.countTransactionEntries(id);
         if (isPositiveNumber(count)) {
-            const category = categories?.find(cat => cat.id === id);
+            const category = categories.find(cat => cat.id === id);
             if (isDefined(category)) {
                 setCategoryToDelete(category);
                 void reassignRef.current?.open();
