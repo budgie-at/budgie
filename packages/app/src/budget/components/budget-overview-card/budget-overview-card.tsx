@@ -27,7 +27,7 @@ export const BudgetOverviewCard = ({ calculation }: Props) => {
                     <Trans>Spent</Trans>
                 </Text>
                 <Text className="text-primary">
-                    {formatMoney(calculation.totalSpent, symbol)} / {formatMoney(calculation.budget.overallLimit, symbol)}
+                    {formatMoney(calculation.totalSpent, symbol)} / {formatMoney(calculation.overallLimit, symbol)}
                 </Text>
             </View>
             <View className="flex-row justify-between mt-sm">

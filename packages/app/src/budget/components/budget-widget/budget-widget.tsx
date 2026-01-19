@@ -46,7 +46,7 @@ export const BudgetWidget = ({ calculation, isLoading }: Props) => {
     }
 
     const spentText = formatMoney(calculation.totalSpent, defaultInstrument.symbol);
-    const limitText = formatMoney(calculation.budget.overallLimit, defaultInstrument.symbol);
+    const limitText = formatMoney(calculation.overallLimit, defaultInstrument.symbol);
     const overPaceAmount = formatMoney(Math.abs(calculation.paceVariance), defaultInstrument.symbol);
 
     return (

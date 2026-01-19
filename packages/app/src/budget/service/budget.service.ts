@@ -10,6 +10,8 @@ import { addDays, addMonths, addWeeks, startOfDay } from 'date-fns';
 import { isDefined } from '@rnw-community/shared';
 
 import { budgetCategoryLimitRepository, budgetIncomeExpectationRepository, budgetRepository, db } from '../../@generic/drizzle/db/db';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 
 interface PeriodDatesInterface {
     readonly startDate: Date;
@@ -45,15 +47,25 @@ class BudgetService {
                     name: input.name,
                     period: input.period,
                     periodStartDay: input.periodStartDay,
-                    overallLimit: input.overallLimit,
+                    overallLimit: convertToMicroUnits(input.overallLimit),
                     startDate,
                     endDate
                 },
                 transaction
             );
 
-            await budgetCategoryLimitRepository.bulkCreate(budget.id, input.categoryLimits, transaction);
-            await budgetIncomeExpectationRepository.bulkCreate(budget.id, input.incomeExpectations, transaction);
+            const categoryLimitsInMicroUnits = input.categoryLimits.map(categoryLimit => ({
+                categoryId: categoryLimit.categoryId,
+                limit: convertToMicroUnits(categoryLimit.limit)
+            }));
+
+            const incomeExpectationsInMicroUnits = input.incomeExpectations.map(incomeExpectation => ({
+                categoryId: incomeExpectation.categoryId,
+                expectedAmount: convertToMicroUnits(incomeExpectation.expectedAmount)
+            }));
+
+            await budgetCategoryLimitRepository.bulkCreate(budget.id, categoryLimitsInMicroUnits, transaction);
+            await budgetIncomeExpectationRepository.bulkCreate(budget.id, incomeExpectationsInMicroUnits, transaction);
 
             const createdBudget = await budgetRepository.getById(budget.id, transaction);
 
@@ -71,16 +83,16 @@ class BudgetService {
             name: budget.name,
             period: budget.period,
             periodStartDay: budget.periodStartDay,
-            overallLimit: budget.overallLimit,
+            overallLimit: convertFromMicroUnits(budget.overallLimit),
             startDate: budget.startDate,
             endDate: budget.endDate,
             categoryLimits: budget.categoryLimits.map(categoryLimit => ({
                 categoryId: categoryLimit.categoryId,
-                limit: categoryLimit.limit
+                limit: convertFromMicroUnits(categoryLimit.limit)
             })),
             incomeExpectations: budget.incomeExpectations.map(incomeExpectation => ({
                 categoryId: incomeExpectation.categoryId,
-                expectedAmount: incomeExpectation.expectedAmount
+                expectedAmount: convertFromMicroUnits(incomeExpectation.expectedAmount)
             }))
         };
     }
@@ -95,7 +107,7 @@ class BudgetService {
                     name: input.name,
                     period: input.period,
                     periodStartDay: input.periodStartDay,
-                    overallLimit: input.overallLimit,
+                    overallLimit: convertToMicroUnits(input.overallLimit),
                     startDate,
                     endDate
                 },
@@ -105,8 +117,18 @@ class BudgetService {
             await budgetCategoryLimitRepository.deleteByBudgetId(id, transaction);
             await budgetIncomeExpectationRepository.deleteByBudgetId(id, transaction);
 
-            await budgetCategoryLimitRepository.bulkCreate(id, input.categoryLimits, transaction);
-            await budgetIncomeExpectationRepository.bulkCreate(id, input.incomeExpectations, transaction);
+            const categoryLimitsInMicroUnits = input.categoryLimits.map(categoryLimit => ({
+                categoryId: categoryLimit.categoryId,
+                limit: convertToMicroUnits(categoryLimit.limit)
+            }));
+
+            const incomeExpectationsInMicroUnits = input.incomeExpectations.map(incomeExpectation => ({
+                categoryId: incomeExpectation.categoryId,
+                expectedAmount: convertToMicroUnits(incomeExpectation.expectedAmount)
+            }));
+
+            await budgetCategoryLimitRepository.bulkCreate(id, categoryLimitsInMicroUnits, transaction);
+            await budgetIncomeExpectationRepository.bulkCreate(id, incomeExpectationsInMicroUnits, transaction);
 
             const updatedBudget = await budgetRepository.getById(id, transaction);
 
