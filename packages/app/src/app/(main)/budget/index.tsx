@@ -19,7 +19,7 @@ import { useBudgetPeriodNavigation } from '../../../budget/hook/use-budget-perio
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useGetBudgetCalculationQuery } from '../../../budget/query/use-get-budget-calculation.query';
 
-const SCROLL_VIEW_CONTENT_STYLE = { paddingBottom: 100 };
+const SCROLL_VIEW_CONTENT_STYLE = { paddingTop: 60, paddingBottom: 100 };
 
 export default function BudgetDetailScreen() {
     const { t } = useLingui();
