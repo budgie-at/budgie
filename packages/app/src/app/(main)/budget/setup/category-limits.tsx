@@ -3,11 +3,12 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../../@generic/component/button/button';
+import { Card } from '../../../../@generic/component/card/card';
 import { Footer } from '../../../../@generic/component/footer/footer';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -17,10 +18,14 @@ import { BudgetLimitAmountBottomSheet } from '../../../../budget/components/budg
 import { useBudgetSetupContext } from '../../../../budget/context/budget-setup.context';
 import { CategorySelectorBottomSheet } from '../../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
 import { useAllCategoriesQuery } from '../../../../category/query/use-all-categories.query';
+import { useFormatDigits } from '../../../../i18n/hook/use-format-digits.hook';
+import { useSettingsContext } from '../../../../settings/context/settings.context';
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function BudgetSetupCategoryLimitsPage() {
     const { t } = useLingui();
+    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const formatMoney = useFormatDigits(decimalPlaces);
 
     const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -36,6 +41,9 @@ export default function BudgetSetupCategoryLimitsPage() {
 
     const { categories } = useAllCategoriesQuery();
 
+    const overallLimit = form.watch('overallLimit');
+    const allocatedAmount = fields.reduce((sum, field) => sum + field.limit, 0);
+    const leftToAllocate = overallLimit - allocatedAmount;
     const existingCategoryIds = fields.map(field => field.categoryId);
 
     const handleGoBack = () => void router.back();
@@ -116,6 +124,29 @@ export default function BudgetSetupCategoryLimitsPage() {
             }
         >
             <ScrollView className="flex-1" contentContainerClassName="py-5xl gap-y-md">
+                <Card className="mb-md">
+                    <View className="flex-row justify-between items-center">
+                        <Text className="text-secondary-foreground">
+                            <Trans>Total Budget</Trans>
+                        </Text>
+                        <Text className="text-primary font-medium">{formatMoney(overallLimit, defaultInstrument.symbol)}</Text>
+                    </View>
+                    <View className="flex-row justify-between items-center mt-sm">
+                        <Text className="text-secondary-foreground">
+                            <Trans>Allocated</Trans>
+                        </Text>
+                        <Text className="text-primary">{formatMoney(allocatedAmount, defaultInstrument.symbol)}</Text>
+                    </View>
+                    <View className="flex-row justify-between items-center mt-sm">
+                        <Text className="text-secondary-foreground">
+                            <Trans>Left to Allocate</Trans>
+                        </Text>
+                        <Text className={leftToAllocate >= 0 ? 'text-positive-foreground font-medium' : 'text-destructive-foreground font-medium'}>
+                            {formatMoney(leftToAllocate, defaultInstrument.symbol)}
+                        </Text>
+                    </View>
+                </Card>
+
                 {isNotEmptyArray(fields)
                     ? fields.map((field, index) => {
                           const category = categories.find(category => category.id === field.categoryId);

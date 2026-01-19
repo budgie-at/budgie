@@ -46,6 +46,14 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
+#: src/app/(main)/budget/setup/confirm.tsx:59
+msgid "{categoryLimitsCount} categories, {categoryLimitsTotalFormatted} allocated"
+msgstr "{categoryLimitsCount} categories, {categoryLimitsTotalFormatted} allocated"
+
+#: src/app/(main)/budget/setup/confirm.tsx:64
+msgid "{incomeExpectationsCount} sources, {incomeExpectationsTotalFormatted} expected"
+msgstr "{incomeExpectationsCount} sources, {incomeExpectationsTotalFormatted} expected"
+
 #: src/budget/components/budget-widget/budget-widget.tsx:76
 msgid "{overPaceAmount} over pace"
 msgstr "{overPaceAmount} over pace"
@@ -59,6 +67,10 @@ msgstr "{percentage}% of expenses"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
+
+#: src/app/(main)/budget/setup/confirm.tsx:53
+msgid "{periodLabel} starting on day {periodStartDay}"
+msgstr "{periodLabel} starting on day {periodStartDay}"
 
 #: src/rule/constant/rule-condition-operator.constant.ts:11
 msgid "<"
@@ -159,7 +171,7 @@ msgstr "Add a note..."
 msgid "Add Account"
 msgstr "Add Account"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:144
+#: src/app/(main)/budget/setup/category-limits.tsx:175
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:137
 msgid "Add Category"
 msgstr "Add Category"
@@ -168,7 +180,7 @@ msgstr "Add Category"
 msgid "Add Expense"
 msgstr "Add Expense"
 
-#: src/app/(main)/budget/setup/income-expectations.tsx:163
+#: src/app/(main)/budget/setup/income-expectations.tsx:147
 #: src/app/(main)/create-transaction/income.tsx:61
 #: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:176
 msgid "Add Income"
@@ -226,6 +238,7 @@ msgstr "All Time"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
+#: src/app/(main)/budget/setup/category-limits.tsx:136
 #: src/budget/components/budget-overview-card/budget-overview-card.tsx:35
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
 msgid "Allocated"
@@ -330,11 +343,16 @@ msgstr "Auto-sync accounts and transactions from Monobank"
 msgid "Available Columns"
 msgstr "Available Columns"
 
+#: src/app/(main)/budget/setup/confirm.tsx:73
+msgid "Back"
+msgstr "Back"
+
 #: src/app/(tabs)/analytics.tsx:65
 msgid "Balance"
 msgstr "Balance"
 
 #: src/app/(main)/analytics/transactions.tsx:59
+#: src/app/(main)/budget/category/[categoryId].tsx:47
 #: src/transaction/components/transaction-list/transaction-list.tsx:38
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
@@ -369,9 +387,14 @@ msgid "Bi-weekly"
 msgstr "Bi-weekly"
 
 #: src/app/(main)/budget/settings.tsx:31
+#: src/app/(main)/budget/setup/confirm.tsx:24
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:16
 msgid "Bi-Weekly"
 msgstr "Bi-Weekly"
+
+#: src/budget/constant/budget-period-title.constant.ts:7
+msgid "Bi-Weekly Budget"
+msgstr "Bi-Weekly Budget"
 
 #: src/rule/constant/external-source.constant.ts:10
 msgid "Binance"
@@ -385,27 +408,31 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/budget/index.tsx:27
-#: src/app/(main)/budget/index.tsx:38
+#: src/app/(main)/budget/index.tsx:36
+#: src/app/(main)/budget/index.tsx:56
 #: src/budget/components/budget-widget/budget-widget.tsx:57
 msgid "Budget"
 msgstr "Budget"
 
-#: src/app/(main)/budget/settings.tsx:131
+#: src/app/(main)/budget/settings.tsx:133
 msgid "Budget Configuration"
 msgstr "Budget Configuration"
 
-#: src/app/(main)/budget/settings.tsx:135
+#: src/app/(main)/budget/settings.tsx:137
 #: src/app/(main)/budget/setup/period.tsx:29
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:37
 msgid "Budget Period"
 msgstr "Budget Period"
 
-#: src/app/(main)/budget/settings.tsx:100
-#: src/app/(main)/budget/settings.tsx:112
-#: src/app/(main)/budget/settings.tsx:128
+#: src/app/(main)/budget/settings.tsx:102
+#: src/app/(main)/budget/settings.tsx:114
+#: src/app/(main)/budget/settings.tsx:130
 msgid "Budget Settings"
 msgstr "Budget Settings"
+
+#: src/app/(main)/budget/setup/confirm.tsx:87
+msgid "Budget Summary"
+msgstr "Budget Summary"
 
 #: src/app/(tabs)/settings/index.tsx:148
 msgid "Budgie"
@@ -430,6 +457,7 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/app/(main)/analytics/transactions.tsx:60
+#: src/app/(main)/budget/category/[categoryId].tsx:48
 #: src/app/(tabs)/settings/categories.tsx:94
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
@@ -459,6 +487,7 @@ msgstr ""
 "IMPORTANT: Food items (meat, vegetables, groceries) go to Groceries/Food category, NOT Stock/Investment.\n"
 "Reply with the category number only."
 
+#: src/app/(main)/budget/category/[categoryId].tsx:52
 #: src/app/(tabs)/settings/categories.tsx:37
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
@@ -468,11 +497,12 @@ msgstr ""
 msgid "Category"
 msgstr "Category"
 
+#: src/app/(main)/budget/setup/confirm.tsx:103
 #: src/budget/components/budget-categories-card/budget-categories-card.tsx:20
 msgid "Category Budgets"
 msgstr "Category Budgets"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:108
+#: src/app/(main)/budget/setup/category-limits.tsx:116
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:117
 msgid "Category Limits"
 msgstr "Category Limits"
@@ -505,6 +535,10 @@ msgstr "Choose a preset to auto-fill column mappings"
 #: src/app/(main)/create-account/index.tsx:21
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
+
+#: src/app/(main)/budget/settings.tsx:158
+msgid "Choose which accounts to exclude from budget"
+msgstr "Choose which accounts to exclude from budget"
 
 #: src/transaction/components/transaction-filter-header/transaction-filter-header.tsx:26
 msgid "Clear"
@@ -558,6 +592,10 @@ msgstr "Configure Rule"
 msgid "Confirm"
 msgstr "Confirm"
 
+#: src/app/(main)/budget/setup/confirm.tsx:69
+msgid "Confirm Budget"
+msgstr "Confirm Budget"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
@@ -578,8 +616,9 @@ msgstr "contains"
 msgid "Contains"
 msgstr "Contains"
 
-#: src/app/(main)/budget/setup/amount.tsx:32
-#: src/app/(main)/budget/setup/category-limits.tsx:113
+#: src/app/(main)/budget/setup/amount.tsx:35
+#: src/app/(main)/budget/setup/category-limits.tsx:121
+#: src/app/(main)/budget/setup/income-expectations.tsx:112
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
 msgstr "Continue"
@@ -707,7 +746,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create automation rule?"
 msgstr "Create automation rule?"
 
-#: src/app/(main)/budget/setup/income-expectations.tsx:126
+#: src/app/(main)/budget/setup/confirm.tsx:78
 msgid "Create Budget"
 msgstr "Create Budget"
 
@@ -785,7 +824,7 @@ msgstr "Current Balance"
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
-#: src/app/(main)/budget/settings.tsx:170
+#: src/app/(main)/budget/settings.tsx:179
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -839,7 +878,7 @@ msgstr "Delete Account Permanently?"
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/app/(main)/budget/settings.tsx:172
+#: src/app/(main)/budget/settings.tsx:181
 msgid "Delete Budget"
 msgstr "Delete Budget"
 
@@ -916,7 +955,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:102
+#: src/app/(main)/budget/setup/category-limits.tsx:110
 msgid "Edit Limit for {editingCategoryTitle}"
 msgstr "Edit Limit for {editingCategoryTitle}"
 
@@ -1019,6 +1058,7 @@ msgstr "Equals"
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:108
+#: src/budget/components/excluded-account-card/excluded-account-card.tsx:37
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -1032,6 +1072,11 @@ msgstr "Errors"
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
+
+#: src/app/(main)/budget/excluded-accounts.tsx:31
+#: src/app/(main)/budget/settings.tsx:157
+msgid "Excluded Accounts"
+msgstr "Excluded Accounts"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
 msgid "Expected return date"
@@ -1102,6 +1147,10 @@ msgstr "Failed to save PIN. Please try again."
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:72
 msgid "Failed to setup sync"
 msgstr "Failed to setup sync"
+
+#: src/budget/components/excluded-account-card/excluded-account-card.tsx:37
+msgid "Failed to update account exclusion"
+msgstr "Failed to update account exclusion"
 
 #: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
 msgid "Failed to update category limit"
@@ -1258,7 +1307,8 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
-#: src/app/(main)/budget/setup/income-expectations.tsx:117
+#: src/app/(main)/budget/setup/confirm.tsx:111
+#: src/app/(main)/budget/setup/income-expectations.tsx:107
 #: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:146
 msgid "Income Expectations"
 msgstr "Income Expectations"
@@ -1288,9 +1338,13 @@ msgstr "Last error"
 msgid "Last sync"
 msgstr "Last sync"
 
-#: src/budget/components/budget-category-row/budget-category-row.tsx:40
+#: src/budget/components/budget-category-row/budget-category-row.tsx:45
 msgid "left"
 msgstr "left"
+
+#: src/app/(main)/budget/setup/category-limits.tsx:142
+msgid "Left to Allocate"
+msgstr "Left to Allocate"
 
 #: src/account/constant/account-debt-type.constant.ts:6
 msgid "Lent"
@@ -1304,8 +1358,8 @@ msgstr "Less Than"
 msgid "Loading budget..."
 msgstr "Loading budget..."
 
-#: src/app/(main)/budget/index.tsx:30
-#: src/app/(main)/budget/settings.tsx:103
+#: src/app/(main)/budget/index.tsx:48
+#: src/app/(main)/budget/settings.tsx:105
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1394,12 +1448,13 @@ msgid "Monobank"
 msgstr "Monobank"
 
 #: src/app/(main)/budget/settings.tsx:32
+#: src/app/(main)/budget/setup/confirm.tsx:25
 #: src/app/(main)/budget/setup/period.tsx:33
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:17
 msgid "Monthly"
 msgstr "Monthly"
 
-#: src/app/(main)/budget/setup/amount.tsx:29
+#: src/budget/constant/budget-period-title.constant.ts:8
 msgid "Monthly Budget"
 msgstr "Monthly Budget"
 
@@ -1425,6 +1480,7 @@ msgid "New Transfer"
 msgstr "New Transfer"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
+#: src/app/(main)/budget/excluded-accounts.tsx:43
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts found"
 msgstr "No accounts found"
@@ -1435,7 +1491,7 @@ msgstr "No accounts found"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/(main)/budget/settings.tsx:115
+#: src/app/(main)/budget/settings.tsx:117
 msgid "No active budget found"
 msgstr "No active budget found"
 
@@ -1479,6 +1535,10 @@ msgstr "No currencies found"
 #: src/category/components/category-empty-state/category-empty-state.tsx:17
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
+
+#: src/app/(main)/budget/category/[categoryId].tsx:73
+msgid "No expenses in this category for this period"
+msgstr "No expenses in this category for this period"
 
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
 msgid "No icons"
@@ -1541,6 +1601,10 @@ msgstr "No Tags Yet"
 msgid "No thanks"
 msgstr "No thanks"
 
+#: src/app/(main)/budget/category/[categoryId].tsx:71
+msgid "No transactions"
+msgstr "No transactions"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx:40
 msgid "No transactions yet"
 msgstr "No transactions yet"
@@ -1589,7 +1653,8 @@ msgstr "Operator"
 msgid "Organization"
 msgstr "Organization"
 
-#: src/budget/components/budget-category-row/budget-category-row.tsx:36
+#: src/app/(main)/budget/category/[categoryId].tsx:99
+#: src/budget/components/budget-category-row/budget-category-row.tsx:41
 msgid "over"
 msgstr "over"
 
@@ -1601,8 +1666,9 @@ msgstr "Over:"
 msgid "Overall Budget"
 msgstr "Overall Budget"
 
-#: src/app/(main)/budget/settings.tsx:142
-#: src/app/(main)/budget/settings.tsx:186
+#: src/app/(main)/budget/settings.tsx:144
+#: src/app/(main)/budget/settings.tsx:195
+#: src/app/(main)/budget/setup/confirm.tsx:97
 msgid "Overall Limit"
 msgstr "Overall Limit"
 
@@ -1626,7 +1692,11 @@ msgstr "Paste your API token below:"
 msgid "Payment Progress"
 msgstr "Payment Progress"
 
-#: src/app/(main)/budget/settings.tsx:149
+#: src/app/(main)/budget/setup/confirm.tsx:91
+msgid "Period"
+msgstr "Period"
+
+#: src/app/(main)/budget/settings.tsx:151
 msgid "Period Start Day"
 msgstr "Period Start Day"
 
@@ -1698,6 +1768,10 @@ msgstr "Recalculate"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
+
+#: src/app/(main)/budget/category/[categoryId].tsx:103
+msgid "remaining"
+msgstr "remaining"
 
 #: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
 msgid "Remaining:"
@@ -1931,7 +2005,7 @@ msgstr "Selected"
 msgid "Set Category"
 msgstr "Set Category"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:102
+#: src/app/(main)/budget/setup/category-limits.tsx:110
 msgid "Set Category Limit"
 msgstr "Set Category Limit"
 
@@ -1963,8 +2037,8 @@ msgstr "Show Cents"
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
-#: src/app/(main)/budget/setup/category-limits.tsx:112
-#: src/app/(main)/budget/setup/income-expectations.tsx:121
+#: src/app/(main)/budget/setup/category-limits.tsx:120
+#: src/app/(main)/budget/setup/income-expectations.tsx:111
 msgid "Skip"
 msgstr "Skip"
 
@@ -2009,6 +2083,7 @@ msgstr "Spending by Category"
 msgid "Spending by Tag"
 msgstr "Spending by Tag"
 
+#: src/app/(main)/budget/category/[categoryId].tsx:86
 #: src/app/(tabs)/analytics.tsx:60
 #: src/budget/components/budget-overview-card/budget-overview-card.tsx:27
 msgid "Spent"
@@ -2193,6 +2268,7 @@ msgid "Token required"
 msgstr "Token required"
 
 #: src/budget/components/budget-income-card/budget-income-card.tsx:35
+#: src/budget/components/budget-unbudgeted-card/budget-unbudgeted-card.tsx:32
 msgid "Total"
 msgstr "Total"
 
@@ -2200,6 +2276,10 @@ msgstr "Total"
 #: src/@generic/component/collapsible-header/collapsible-header.tsx:99
 msgid "Total Balance"
 msgstr "Total Balance"
+
+#: src/app/(main)/budget/setup/category-limits.tsx:130
+msgid "Total Budget"
+msgstr "Total Budget"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx:60
 msgid "Total: {formattedAmountToReturn}"
@@ -2221,6 +2301,7 @@ msgstr "Traditional bank accounts"
 msgid "Transaction Type"
 msgstr "Transaction Type"
 
+#: src/app/(main)/budget/category/[categoryId].tsx:112
 #: src/app/(tabs)/transactions.tsx:13
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:40
 msgid "Transactions"
@@ -2280,6 +2361,10 @@ msgstr "Type ({selectedTypesCount})"
 #: src/i18n/constant/locales.constant.ts:52
 msgid "Ukrainian"
 msgstr "Ukrainian"
+
+#: src/budget/components/budget-unbudgeted-card/budget-unbudgeted-card.tsx:22
+msgid "Unbudgeted Spending"
+msgstr "Unbudgeted Spending"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx:28
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:24
@@ -2352,10 +2437,15 @@ msgid "Waiting"
 msgstr "Waiting"
 
 #: src/app/(main)/budget/settings.tsx:30
+#: src/app/(main)/budget/setup/confirm.tsx:23
 #: src/app/(main)/budget/setup/period.tsx:31
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:15
 msgid "Weekly"
 msgstr "Weekly"
+
+#: src/budget/constant/budget-period-title.constant.ts:6
+msgid "Weekly Budget"
+msgstr "Weekly Budget"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
 msgid "When should it be returned?"

@@ -11,12 +11,10 @@ import { Button } from '../../../../@generic/component/button/button';
 import { Footer } from '../../../../@generic/component/footer/footer';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { useShowError } from '../../../../@generic/hook/use-show-error.hook';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { BudgetIncomeExpectationRow } from '../../../../budget/components/budget-income-expectation-row/budget-income-expectation-row';
 import { BudgetLimitAmountBottomSheet } from '../../../../budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet';
 import { useBudgetSetupContext } from '../../../../budget/context/budget-setup.context';
-import { budgetService } from '../../../../budget/service/budget.service';
 import { CategorySelectorBottomSheet } from '../../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
 import { useSearchCategoriesQuery } from '../../../../category/query/use-search-categories.query';
 
@@ -31,7 +29,6 @@ export default function BudgetSetupIncomeExpectationsPage() {
     const amountBottomSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const { form } = useBudgetSetupContext();
-    const showError = useShowError();
 
     const { fields, append, remove, update } = useFieldArray<BudgetCreateInputInterface, 'incomeExpectations'>({
         control: form.control,
@@ -96,14 +93,8 @@ export default function BudgetSetupIncomeExpectationsPage() {
         remove(index);
     };
 
-    const handleSubmit = async () => {
-        try {
-            const values = form.getValues();
-            await budgetService.create(values);
-            router.replace('/budget');
-        } catch (error: unknown) {
-            showError(error);
-        }
+    const handleContinue = () => {
+        router.push('/budget/setup/confirm');
     };
 
     const amountBottomSheetTitle = isDefined(editingCategory) ? editingCategory.title : (selectedCategory?.title ?? '');
@@ -117,14 +108,8 @@ export default function BudgetSetupIncomeExpectationsPage() {
             footer={
                 <Footer>
                     <View className="flex-row gap-x-md">
-                        <Button className="flex-1" variant="ghost" content={<Trans>Skip</Trans>} onPress={handleSubmit} />
-                        <Button
-                            className="flex-1"
-                            variant="primary"
-                            leftIcon={UserIconNameEnum.CircleCheck}
-                            content={<Trans>Create Budget</Trans>}
-                            onPress={handleSubmit}
-                        />
+                        <Button className="flex-1" variant="ghost" content={<Trans>Skip</Trans>} onPress={handleContinue} />
+                        <Button className="flex-1" variant="primary" content={<Trans>Continue</Trans>} onPress={handleContinue} />
                     </View>
                 </Footer>
             }
@@ -155,7 +140,7 @@ export default function BudgetSetupIncomeExpectationsPage() {
                     </View>
                 ) : null}
 
-                <View className="px-7xl">
+                <View>
                     <Button
                         variant="ghost"
                         leftIcon={UserIconNameEnum.Plus}

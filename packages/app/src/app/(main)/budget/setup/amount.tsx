@@ -6,13 +6,16 @@ import { AmountInput } from '../../../../@generic/component/amount-input/amount-
 import { Button } from '../../../../@generic/component/button/button';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
+import { BUDGET_PERIOD_TITLE } from '../../../../budget/constant/budget-period-title.constant';
 import { useBudgetSetupContext } from '../../../../budget/context/budget-setup.context';
 
 export default function BudgetSetupAmountPage() {
-    const { t } = useLingui();
+    const { i18n } = useLingui();
     const { form } = useBudgetSetupContext();
 
+    const period = form.watch('period');
     const overallLimit = form.watch('overallLimit');
+    const title = i18n.t(BUDGET_PERIOD_TITLE[period]);
 
     const handleGoBack = () => void router.back();
 
@@ -26,7 +29,7 @@ export default function BudgetSetupAmountPage() {
 
     /* jscpd:ignore-start */
     return (
-        <Page header={<PageHeader title={t`Monthly Budget`} onGoBack={handleGoBack} />}>
+        <Page header={<PageHeader title={title} onGoBack={handleGoBack} />}>
             <View className="gap-y-lg py-7xl">
                 <AmountInput value={overallLimit} onChangeValue={handleChangeValue} />
                 <Button variant="primary" content={<Trans>Continue</Trans>} onPress={handleContinue} />

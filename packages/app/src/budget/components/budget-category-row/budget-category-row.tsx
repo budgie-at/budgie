@@ -1,6 +1,8 @@
 import { Trans } from '@lingui/react/macro';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { BudgetCategoryStatusInterface } from '../../interface/budget-category-status.interface';
@@ -11,6 +13,7 @@ interface Props {
 }
 
 export const BudgetCategoryRow = ({ categoryStatus }: Props) => {
+    const router = useRouter();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
 
@@ -20,8 +23,10 @@ export const BudgetCategoryRow = ({ categoryStatus }: Props) => {
     const formattedRemaining = formatMoney(Math.abs(remaining), defaultInstrument.symbol);
     const isOverBudget = remaining < 0;
 
+    const handlePress = () => void router.push(`/budget/category/${category.id}`);
+
     return (
-        <View className="gap-y-sm">
+        <HapticPressable onPress={handlePress} className="gap-y-sm">
             <View className="flex-row justify-between items-center">
                 <Text className="text-primary font-medium">{category.title}</Text>
                 <Text className="text-secondary-foreground">
@@ -30,7 +35,7 @@ export const BudgetCategoryRow = ({ categoryStatus }: Props) => {
             </View>
             <BudgetProgressBar percentage={percentage} status={status} size="sm" />
             <View className="flex-row justify-between items-center">
-                <Text className="text-secondary-foreground text-sm">{percentage}%</Text>
+                <Text className="text-secondary-foreground text-sm">{percentage.toFixed(2)}%</Text>
                 {isOverBudget ? (
                     <Text className="text-destructive-foreground text-sm">
                         {formattedRemaining} <Trans>over</Trans>
@@ -41,6 +46,6 @@ export const BudgetCategoryRow = ({ categoryStatus }: Props) => {
                     </Text>
                 )}
             </View>
-        </View>
+        </HapticPressable>
     );
 };
