@@ -1,7 +1,10 @@
+import { usePathname } from 'expo-router';
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
@@ -12,7 +15,19 @@ import { VoiceInputContext } from '../../ai/context/voice-input.context';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
+const ACCOUNT_DETAILS_PATTERN = /^\/account\/(\d+)\/details$/u;
+
+const parseAccountIdFromPath = (pathname: string): number | undefined => {
+    const match = ACCOUNT_DETAILS_PATTERN.exec(pathname);
+    if (isDefined(match?.[1]) && isPositiveNumber(Number(match[1]))) {
+        return Number(match[1]);
+    }
+
+    return void 0;
+};
+
 export default function TabsLayout() {
+    const pathname = usePathname();
     const { bottom } = useSafeAreaInsets();
     const { isAvailable: isAiAvailable } = useLlmContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,7 +90,7 @@ export default function TabsLayout() {
             </Tabs>
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
-            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
+            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} accountId={parseAccountIdFromPath(pathname)} />
             {isAiAvailable ? <VoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} /> : null}
         </VoiceInputContext>
     );
