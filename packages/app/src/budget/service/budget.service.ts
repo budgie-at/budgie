@@ -1,4 +1,10 @@
-import { BudgetCreateInputInterface, BudgetEntityInterface, BudgetPeriodEnum } from '@budgie/contracts';
+import {
+    BudgetCategoryLimitEntityInterface,
+    BudgetCreateInputInterface,
+    BudgetEntityInterface,
+    BudgetIncomeExpectationEntityInterface,
+    BudgetPeriodEnum
+} from '@budgie/contracts';
 import { addDays, addMonths, addWeeks, startOfDay } from 'date-fns';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,6 +14,11 @@ import { budgetCategoryLimitRepository, budgetIncomeExpectationRepository, budge
 interface PeriodDatesInterface {
     readonly startDate: Date;
     readonly endDate: Date;
+}
+
+interface BudgetWithRelationsInterface extends BudgetEntityInterface {
+    readonly categoryLimits: BudgetCategoryLimitEntityInterface[];
+    readonly incomeExpectations: BudgetIncomeExpectationEntityInterface[];
 }
 
 class BudgetService {
@@ -53,6 +64,25 @@ class BudgetService {
 
             return createdBudget;
         });
+    }
+
+    getBudgetUpdatePayload(budget: BudgetWithRelationsInterface): BudgetCreateInputInterface {
+        return {
+            name: budget.name,
+            period: budget.period,
+            periodStartDay: budget.periodStartDay,
+            overallLimit: budget.overallLimit,
+            startDate: budget.startDate,
+            endDate: budget.endDate,
+            categoryLimits: budget.categoryLimits.map(categoryLimit => ({
+                categoryId: categoryLimit.categoryId,
+                limit: categoryLimit.limit
+            })),
+            incomeExpectations: budget.incomeExpectations.map(incomeExpectation => ({
+                categoryId: incomeExpectation.categoryId,
+                expectedAmount: incomeExpectation.expectedAmount
+            }))
+        };
     }
 
     async update(id: number, input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {

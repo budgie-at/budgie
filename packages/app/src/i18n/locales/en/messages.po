@@ -159,11 +159,18 @@ msgstr "Add a note..."
 msgid "Add Account"
 msgstr "Add Account"
 
+#: src/app/(main)/budget/setup/category-limits.tsx:144
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:137
+msgid "Add Category"
+msgstr "Add Category"
+
 #: src/app/(main)/create-transaction/expense.tsx:78
 msgid "Add Expense"
 msgstr "Add Expense"
 
+#: src/app/(main)/budget/setup/income-expectations.tsx:163
 #: src/app/(main)/create-transaction/income.tsx:61
+#: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:176
 msgid "Add Income"
 msgstr "Add Income"
 
@@ -361,7 +368,8 @@ msgstr "Between"
 msgid "Bi-weekly"
 msgstr "Bi-weekly"
 
-#: src/app/(main)/budget/settings.tsx:21
+#: src/app/(main)/budget/settings.tsx:31
+#: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:16
 msgid "Bi-Weekly"
 msgstr "Bi-Weekly"
 
@@ -383,18 +391,19 @@ msgstr "Borrowed"
 msgid "Budget"
 msgstr "Budget"
 
-#: src/app/(main)/budget/settings.tsx:71
+#: src/app/(main)/budget/settings.tsx:131
 msgid "Budget Configuration"
 msgstr "Budget Configuration"
 
-#: src/app/(main)/budget/settings.tsx:75
+#: src/app/(main)/budget/settings.tsx:135
 #: src/app/(main)/budget/setup/period.tsx:29
+#: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:37
 msgid "Budget Period"
 msgstr "Budget Period"
 
-#: src/app/(main)/budget/settings.tsx:41
-#: src/app/(main)/budget/settings.tsx:53
-#: src/app/(main)/budget/settings.tsx:68
+#: src/app/(main)/budget/settings.tsx:100
+#: src/app/(main)/budget/settings.tsx:112
+#: src/app/(main)/budget/settings.tsx:128
 msgid "Budget Settings"
 msgstr "Budget Settings"
 
@@ -462,6 +471,11 @@ msgstr "Category"
 #: src/budget/components/budget-categories-card/budget-categories-card.tsx:20
 msgid "Category Budgets"
 msgstr "Category Budgets"
+
+#: src/app/(main)/budget/setup/category-limits.tsx:108
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:117
+msgid "Category Limits"
+msgstr "Category Limits"
 
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
 msgid "Category Name"
@@ -564,6 +578,8 @@ msgstr "contains"
 msgid "Contains"
 msgstr "Contains"
 
+#: src/app/(main)/budget/setup/amount.tsx:32
+#: src/app/(main)/budget/setup/category-limits.tsx:113
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:45
 msgid "Continue"
 msgstr "Continue"
@@ -691,7 +707,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create automation rule?"
 msgstr "Create automation rule?"
 
-#: src/app/(main)/budget/setup/amount.tsx:41
+#: src/app/(main)/budget/setup/income-expectations.tsx:126
 msgid "Create Budget"
 msgstr "Create Budget"
 
@@ -769,7 +785,7 @@ msgstr "Current Balance"
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
-#: src/app/(main)/budget/settings.tsx:92
+#: src/app/(main)/budget/settings.tsx:170
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -823,7 +839,7 @@ msgstr "Delete Account Permanently?"
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/app/(main)/budget/settings.tsx:94
+#: src/app/(main)/budget/settings.tsx:172
 msgid "Delete Budget"
 msgstr "Delete Budget"
 
@@ -899,6 +915,10 @@ msgstr "Edit Expense"
 #: src/app/(main)/transactions/[id]/income.tsx:71
 msgid "Edit Income"
 msgstr "Edit Income"
+
+#: src/app/(main)/budget/setup/category-limits.tsx:102
+msgid "Edit Limit for {editingCategoryTitle}"
+msgstr "Edit Limit for {editingCategoryTitle}"
 
 #: src/app/(main)/rules/[id]/edit.tsx:58
 msgid "Edit Rule"
@@ -996,6 +1016,9 @@ msgid "Equals"
 msgstr "Equals"
 
 #: src/app/(tabs)/settings/import.tsx:110
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:108
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
@@ -1056,6 +1079,10 @@ msgstr "Face ID"
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:108
+msgid "Failed to add category limit"
+msgstr "Failed to add category limit"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
 msgstr "Failed to fetch accounts"
@@ -1064,6 +1091,10 @@ msgstr "Failed to fetch accounts"
 msgid "Failed to load contacts."
 msgstr "Failed to load contacts."
 
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:87
+msgid "Failed to remove category limit"
+msgstr "Failed to remove category limit"
+
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
@@ -1071,6 +1102,10 @@ msgstr "Failed to save PIN. Please try again."
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:72
 msgid "Failed to setup sync"
 msgstr "Failed to setup sync"
+
+#: src/budget/components/budget-settings-category-limits/budget-settings-category-limits.tsx:65
+msgid "Failed to update category limit"
+msgstr "Failed to update category limit"
 
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:54
 msgid "Failed to update token"
@@ -1223,6 +1258,11 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
+#: src/app/(main)/budget/setup/income-expectations.tsx:117
+#: src/budget/components/budget-settings-income-expectations/budget-settings-income-expectations.tsx:146
+msgid "Income Expectations"
+msgstr "Income Expectations"
+
 #: src/app/(main)/pin.tsx:69
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
@@ -1265,7 +1305,7 @@ msgid "Loading budget..."
 msgstr "Loading budget..."
 
 #: src/app/(main)/budget/index.tsx:30
-#: src/app/(main)/budget/settings.tsx:44
+#: src/app/(main)/budget/settings.tsx:103
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1353,12 +1393,13 @@ msgstr "Money you owe or are owed"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/app/(main)/budget/settings.tsx:22
+#: src/app/(main)/budget/settings.tsx:32
 #: src/app/(main)/budget/setup/period.tsx:33
+#: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:17
 msgid "Monthly"
 msgstr "Monthly"
 
-#: src/app/(main)/budget/setup/amount.tsx:38
+#: src/app/(main)/budget/setup/amount.tsx:29
 msgid "Monthly Budget"
 msgstr "Monthly Budget"
 
@@ -1394,7 +1435,7 @@ msgstr "No accounts found"
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
-#: src/app/(main)/budget/settings.tsx:56
+#: src/app/(main)/budget/settings.tsx:115
 msgid "No active budget found"
 msgstr "No active budget found"
 
@@ -1560,7 +1601,8 @@ msgstr "Over:"
 msgid "Overall Budget"
 msgstr "Overall Budget"
 
-#: src/app/(main)/budget/settings.tsx:81
+#: src/app/(main)/budget/settings.tsx:142
+#: src/app/(main)/budget/settings.tsx:186
 msgid "Overall Limit"
 msgstr "Overall Limit"
 
@@ -1584,7 +1626,7 @@ msgstr "Paste your API token below:"
 msgid "Payment Progress"
 msgstr "Payment Progress"
 
-#: src/app/(main)/budget/settings.tsx:87
+#: src/app/(main)/budget/settings.tsx:149
 msgid "Period Start Day"
 msgstr "Period Start Day"
 
@@ -1661,6 +1703,19 @@ msgstr "Recalculate Balances"
 msgid "Remaining:"
 msgstr "Remaining:"
 
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx:83
+#: src/budget/components/budget-income-expectation-row/budget-income-expectation-row.tsx:84
+msgid "Remove"
+msgstr "Remove"
+
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx:86
+msgid "Remove Budget Limit"
+msgstr "Remove Budget Limit"
+
+#: src/budget/components/budget-income-expectation-row/budget-income-expectation-row.tsx:87
+msgid "Remove Expected Income"
+msgstr "Remove Expected Income"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:78
 msgid "Restore"
 msgstr "Restore"
@@ -1685,6 +1740,7 @@ msgstr "Rule"
 msgid "Rules"
 msgstr "Rules"
 
+#: src/budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet.tsx:49
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
@@ -1875,6 +1931,10 @@ msgstr "Selected"
 msgid "Set Category"
 msgstr "Set Category"
 
+#: src/app/(main)/budget/setup/category-limits.tsx:102
+msgid "Set Category Limit"
+msgstr "Set Category Limit"
+
 #: src/rule/components/rule-card-action/rule-card-action.tsx:17
 msgid "set category to <0>{categoryTitle}</0>"
 msgstr "set category to <0>{categoryTitle}</0>"
@@ -1902,6 +1962,11 @@ msgstr "Show Cents"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx:21
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
+
+#: src/app/(main)/budget/setup/category-limits.tsx:112
+#: src/app/(main)/budget/setup/income-expectations.tsx:121
+msgid "Skip"
+msgstr "Skip"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
 #: src/account/component/archive-account/archive-account.tsx:25
@@ -2080,6 +2145,14 @@ msgstr "This will change the transaction type. The category will be replaced wit
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:38
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
+
+#: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx:49
+msgid "This will remove the budget limit for \"{categoryTitle}\". The category itself will not be deleted."
+msgstr "This will remove the budget limit for \"{categoryTitle}\". The category itself will not be deleted."
+
+#: src/budget/components/budget-income-expectation-row/budget-income-expectation-row.tsx:50
+msgid "This will remove the expected income for \"{categoryTitle}\". The category itself will not be deleted."
+msgstr "This will remove the expected income for \"{categoryTitle}\". The category itself will not be deleted."
 
 #: src/@generic/constant/date-period.constant.ts:10
 msgid "This Year"
@@ -2278,8 +2351,9 @@ msgstr "View and restore archived accounts"
 msgid "Waiting"
 msgstr "Waiting"
 
-#: src/app/(main)/budget/settings.tsx:20
+#: src/app/(main)/budget/settings.tsx:30
 #: src/app/(main)/budget/setup/period.tsx:31
+#: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:15
 msgid "Weekly"
 msgstr "Weekly"
 
