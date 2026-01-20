@@ -1,7 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
@@ -14,6 +13,7 @@ import { LoadingScreen } from '../../../../@generic/component/loading-screen/loa
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { BottomSheetsProvider } from '../../../../@generic/providers/bottom-sheets.provider';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
@@ -108,9 +108,9 @@ export default function UpdateIncomeTransactionPage() {
     }
 
     return (
-        <BottomSheetModalProvider>
+        <BottomSheetsProvider>
             <UpdateIncomeForm transaction={transaction} transactionId={Number(id)} />
-        </BottomSheetModalProvider>
+        </BottomSheetsProvider>
     );
 }
 /* jscpd:ignore-end */

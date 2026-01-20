@@ -1,7 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
@@ -16,6 +15,7 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { BottomSheetsProvider } from '../../../../@generic/providers/bottom-sheets.provider';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
@@ -127,9 +127,9 @@ export default function UpdateExpenseTransactionPage() {
     }
 
     return (
-        <BottomSheetModalProvider>
+        <BottomSheetsProvider>
             <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />
-        </BottomSheetModalProvider>
+        </BottomSheetsProvider>
     );
 }
 /* jscpd:ignore-end */

@@ -1,7 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
 import { AccountTypeEnum, TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -15,6 +14,7 @@ import { LoadingScreen } from '../../../../@generic/component/loading-screen/loa
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { BottomSheetsProvider } from '../../../../@generic/providers/bottom-sheets.provider';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
@@ -131,9 +131,9 @@ export default function UpdateTransferTransactionPage() {
     }
 
     return (
-        <BottomSheetModalProvider>
+        <BottomSheetsProvider>
             <UpdateTransferForm transaction={transaction} transactionId={Number(id)} />
-        </BottomSheetModalProvider>
+        </BottomSheetsProvider>
     );
 }
 /* jscpd:ignore-end */
