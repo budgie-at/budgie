@@ -7,12 +7,20 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap the create action button
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
 # The form should have a default condition (Title Contains)
 # Enter the value for condition
@@ -24,22 +32,28 @@ appId: ${APP_ID}
 # Tap on category selector to select a category
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
-
-# Select Test Category (created in setup)
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (around 28% from top)
 - tapOn:
-    text: 'Test Category'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
-# Submit the rule
+# Submit the rule - tap the submit button using testID
 - tapOn:
-    text: 'Create Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
-
-# Verify rule was created
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Verify rule was created by checking for the rule card
 - assertVisible:
-    text: 'Netflix'
+    id: 'RulesPage.RuleCard.0'

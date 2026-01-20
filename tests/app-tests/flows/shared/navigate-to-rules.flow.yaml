@@ -1,6 +1,13 @@
 appId: ${APP_ID}
 ---
-# Navigate to Settings tab first
+# Navigate to Home first to ensure consistent state
+- tapOn:
+    id: 'TabBar.Home'
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 3000
+
+# Navigate to Settings tab
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
