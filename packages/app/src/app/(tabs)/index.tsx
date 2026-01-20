@@ -98,6 +98,8 @@ export default function HomePage() {
                                 isLoading={isBudgetLoading}
                                 startDate={budget?.startDate}
                                 endDate={budget?.endDate}
+                                variant={budget?.widgetVariant}
+                                budgetId={budget?.id}
                             />
                         </View>
                     }
@@ -109,6 +111,8 @@ export default function HomePage() {
                         isLoading={isBudgetLoading}
                         startDate={budget?.startDate}
                         endDate={budget?.endDate}
+                        variant={budget?.widgetVariant}
+                        budgetId={budget?.id}
                     />
                     <AccountsEmptyState />
                 </View>
