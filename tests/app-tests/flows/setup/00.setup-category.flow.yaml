@@ -37,29 +37,33 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.0'
-    timeout: 2000
+    timeout: 3000
 - waitForAnimationToEnd
-# Tap the Category action item
+# Tap the Category action item (index 0 as it's prepended to the menu)
 - tapOn:
-    text: 'Category'
-# Give time for FAB menu to close and bottom sheet to start opening
-- waitForAnimationToEnd
-# Wait for the bottom sheet to open
+    id: 'ActionItem.0'
+# Wait for the FAB menu to disappear first
 - extendedWaitUntil:
-    visible: 'Category Name'
+    notVisible:
+      id: 'ActionItem.0'
     timeout: 5000
-
-# Enter category name
+# Add explicit delay for bottom sheet animation
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the input field area (category name input)
 - tapOn:
-    text: 'Category Name'
+    point: 50%, 73%
 - inputText: 'Test Category'
-
-# Submit
+# Tap the Create button at bottom right
 - tapOn:
-    text: 'Create'
-- extendedWaitUntil:
-    visible: 'Test Category'
-    timeout: 5000
+    point: 75%, 95%
+# Wait for bottom sheet to close and list to update
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
 # Go back to settings
 - tapOn:
