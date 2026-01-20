@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 import { BUDGET_TEMPLATE_NAME_MAX_LENGTH, BudgetEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useState } from 'react';
@@ -79,6 +80,7 @@ export const BudgetSaveTemplateBottomSheet = (props: Props) => {
     };
 
     const inputStatus = isNotEmptyString(errorMessage) ? 'error' : 'default';
+    const isSaveDisabled = !isNotEmptyString(name.trim()) || isSubmitting;
 
     return (
         <BottomSheet enableDynamicSizing onDismiss={handleDismiss} ref={ref}>
@@ -107,7 +109,7 @@ export const BudgetSaveTemplateBottomSheet = (props: Props) => {
                     onCancel={handleCancel}
                     onSubmit={handleSave}
                     submitLabel={t`Save`}
-                    submitDisabled={isSubmitting || !isNotEmptyString(name.trim())}
+                    submitDisabled={isSaveDisabled}
                 />
             </BottomSheetScrollView>
         </BottomSheet>

@@ -1,4 +1,4 @@
-/* eslint-disable lingui/no-unlocalized-strings,max-lines */
+/* eslint-disable lingui/no-unlocalized-strings, max-lines */
 import {
     AccountEntityInterface,
     AccountTypeEnum,

@@ -62,11 +62,11 @@ msgstr "{incomeExpectationsCount} sources, {incomeExpectationsTotalFormatted} ex
 msgid "{largeExpenseThresholdValue}% of overall budget"
 msgstr "{largeExpenseThresholdValue}% of overall budget"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:114
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:118
 msgid "{missingCount} categories from this template no longer exist in your app."
 msgstr "{missingCount} categories from this template no longer exist in your app."
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:153
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:157
 msgid "{missingCount} categories no longer exist"
 msgstr "{missingCount} categories no longer exist"
 
@@ -83,10 +83,6 @@ msgstr "{percentage}% of expenses"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
-
-#: src/budget/components/budget-template-row/budget-template-row.tsx:62
-msgid "{periodLabel} • {overallLimit} • {categoryCount} categories"
-msgstr "{periodLabel} • {overallLimit} • {categoryCount} categories"
 
 #: src/app/(main)/budget/setup/confirm.tsx:53
 msgid "{periodLabel} starting on day {periodStartDay}"
@@ -120,7 +116,7 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:64
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:65
 msgid "A template with this name already exists"
 msgstr "A template with this name already exists"
 
@@ -265,7 +261,7 @@ msgstr ""
 #: src/app/(main)/budget/alert-settings.tsx:102
 #: src/app/(main)/budget/alert-settings.tsx:114
 #: src/app/(main)/budget/alert-settings.tsx:133
-#: src/app/(main)/budget/settings.tsx:257
+#: src/app/(main)/budget/settings.tsx:258
 msgid "Alert Settings"
 msgstr "Alert Settings"
 
@@ -281,7 +277,7 @@ msgstr "Alert when projected to exceed budget"
 msgid "Alert when spending faster than planned"
 msgstr "Alert when spending faster than planned"
 
-#: src/app/(main)/budget/settings.tsx:246
+#: src/app/(main)/budget/settings.tsx:247
 msgid "Alerts"
 msgstr "Alerts"
 
@@ -323,7 +319,7 @@ msgstr "Amount"
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
-#: src/app/(main)/budget/index.tsx:49
+#: src/app/(main)/budget/index.tsx:50
 msgid "An error occurred"
 msgstr "An error occurred"
 
@@ -340,7 +336,7 @@ msgstr "App Lock"
 msgid "Appearance"
 msgstr "Appearance"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:125
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:129
 msgid "Apply Anyway"
 msgstr "Apply Anyway"
 
@@ -352,7 +348,7 @@ msgstr "Apply Filter"
 msgid "Apply Filter ({selected})"
 msgstr "Apply Filter ({selected})"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:168
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:172
 msgid "Apply Template"
 msgstr "Apply Template"
 
@@ -361,7 +357,7 @@ msgstr "Apply Template"
 msgid "Apply to existing transactions"
 msgstr "Apply to existing transactions"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:118
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:122
 msgid "Applying this template will skip the missing categories and only apply the ones that still exist."
 msgstr "Applying this template will skip the missing categories and only apply the ones that still exist."
 
@@ -461,7 +457,7 @@ msgstr "Between"
 msgid "Bi-weekly"
 msgstr "Bi-weekly"
 
-#: src/app/(main)/budget/settings.tsx:32
+#: src/app/(main)/budget/settings.tsx:33
 #: src/app/(main)/budget/setup/confirm.tsx:24
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:16
 #: src/budget/components/budget-template-row/budget-template-row.tsx:31
@@ -484,9 +480,9 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(main)/budget/index.tsx:54
-#: src/app/(main)/budget/index.tsx:76
-#: src/app/(main)/budget/index.tsx:96
+#: src/app/(main)/budget/index.tsx:56
+#: src/app/(main)/budget/index.tsx:81
+#: src/app/(main)/budget/index.tsx:104
 #: src/budget/components/budget-widget/budget-widget.tsx:68
 msgid "Budget"
 msgstr "Budget"
@@ -496,11 +492,11 @@ msgid "Budget alert"
 msgstr "Budget alert"
 
 #: src/app/(main)/budget/alerts.tsx:85
-#: src/app/(main)/budget/settings.tsx:250
+#: src/app/(main)/budget/settings.tsx:251
 msgid "Budget Alerts"
 msgstr "Budget Alerts"
 
-#: src/app/(main)/budget/settings.tsx:175
+#: src/app/(main)/budget/settings.tsx:176
 msgid "Budget Configuration"
 msgstr "Budget Configuration"
 
@@ -514,11 +510,11 @@ msgstr "Budget forecast"
 
 #: src/app/(main)/budget/history.tsx:59
 #: src/app/(main)/budget/history.tsx:70
-#: src/app/(main)/budget/settings.tsx:267
+#: src/app/(main)/budget/settings.tsx:268
 msgid "Budget History"
 msgstr "Budget History"
 
-#: src/app/(main)/budget/settings.tsx:179
+#: src/app/(main)/budget/settings.tsx:180
 #: src/app/(main)/budget/setup/period.tsx:29
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:37
 msgid "Budget Period"
@@ -528,9 +524,9 @@ msgstr "Budget Period"
 msgid "Budget Rollover"
 msgstr "Budget Rollover"
 
-#: src/app/(main)/budget/settings.tsx:140
-#: src/app/(main)/budget/settings.tsx:152
-#: src/app/(main)/budget/settings.tsx:172
+#: src/app/(main)/budget/settings.tsx:141
+#: src/app/(main)/budget/settings.tsx:153
+#: src/app/(main)/budget/settings.tsx:173
 msgid "Budget Settings"
 msgstr "Budget Settings"
 
@@ -538,8 +534,8 @@ msgstr "Budget Settings"
 msgid "Budget Summary"
 msgstr "Budget Summary"
 
-#: src/app/(main)/budget/templates.tsx:67
-#: src/app/(main)/budget/templates.tsx:79
+#: src/app/(main)/budget/templates.tsx:69
+#: src/app/(main)/budget/templates.tsx:81
 msgid "Budget Templates"
 msgstr "Budget Templates"
 
@@ -573,13 +569,17 @@ msgstr "Cancel"
 msgid "Carry over unspent budget"
 msgstr "Carry over unspent budget"
 
-#: src/app/(main)/budget/settings.tsx:224
+#: src/app/(main)/budget/settings.tsx:225
 msgid "Carry Over Unspent Budget"
 msgstr "Carry Over Unspent Budget"
 
 #: src/account/constant/account-type.constant.ts:7
 msgid "Cash"
 msgstr "Cash"
+
+#: src/budget/components/budget-template-row/budget-template-row.tsx:62
+msgid "categories"
+msgstr "categories"
 
 #: src/app/(main)/analytics/transactions.tsx:60
 #: src/app/(main)/budget/category/[categoryId].tsx:49
@@ -635,7 +635,7 @@ msgstr "Category Budgets"
 
 #: src/app/(main)/budget/category-limits.tsx:119
 #: src/app/(main)/budget/category-limits.tsx:145
-#: src/app/(main)/budget/settings.tsx:207
+#: src/app/(main)/budget/settings.tsx:208
 #: src/app/(main)/budget/setup/category-limits.tsx:118
 msgid "Category Limits"
 msgstr "Category Limits"
@@ -669,7 +669,7 @@ msgstr "Choose a preset to auto-fill column mappings"
 msgid "Choose the type of account you want to add"
 msgstr "Choose the type of account you want to add"
 
-#: src/app/(main)/budget/settings.tsx:201
+#: src/app/(main)/budget/settings.tsx:202
 msgid "Choose which accounts to exclude from budget"
 msgstr "Choose which accounts to exclude from budget"
 
@@ -721,7 +721,7 @@ msgstr "Conditions"
 msgid "Configure Rule"
 msgstr "Configure Rule"
 
-#: src/app/(main)/budget/settings.tsx:258
+#: src/app/(main)/budget/settings.tsx:259
 msgid "Configure thresholds and notifications"
 msgstr "Configure thresholds and notifications"
 
@@ -963,7 +963,7 @@ msgstr "Current"
 msgid "Current Balance"
 msgstr "Current Balance"
 
-#: src/app/(main)/budget/settings.tsx:240
+#: src/app/(main)/budget/settings.tsx:241
 msgid "Current Rollover"
 msgstr "Current Rollover"
 
@@ -971,7 +971,7 @@ msgstr "Current Rollover"
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
 
-#: src/app/(main)/budget/settings.tsx:290
+#: src/app/(main)/budget/settings.tsx:291
 msgid "Danger Zone"
 msgstr "Danger Zone"
 
@@ -1014,7 +1014,7 @@ msgid "Define conditions and actions for your rule"
 msgstr "Define conditions and actions for your rule"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:47
-#: src/budget/components/budget-template-row/budget-template-row.tsx:95
+#: src/budget/components/budget-template-row/budget-template-row.tsx:96
 msgid "Delete"
 msgstr "Delete"
 
@@ -1026,7 +1026,7 @@ msgstr "Delete Account Permanently?"
 msgid "Delete all transactions and settings"
 msgstr "Delete all transactions and settings"
 
-#: src/app/(main)/budget/settings.tsx:292
+#: src/app/(main)/budget/settings.tsx:293
 msgid "Delete Budget"
 msgstr "Delete Budget"
 
@@ -1054,7 +1054,7 @@ msgstr "Delete Rule"
 msgid "Delete Tag"
 msgstr "Delete Tag"
 
-#: src/budget/components/budget-template-row/budget-template-row.tsx:98
+#: src/budget/components/budget-template-row/budget-template-row.tsx:99
 msgid "Delete Template"
 msgstr "Delete Template"
 
@@ -1063,7 +1063,7 @@ msgid "Delete transaction"
 msgstr "Delete transaction"
 
 #: src/budget/components/budget-deleted-income-expectation-row/budget-deleted-income-expectation-row.tsx:35
-#: src/budget/components/budget-income-card/budget-income-card.tsx:42
+#: src/budget/components/budget-income-card/budget-income-card.tsx:49
 msgid "Deleted category"
 msgstr "Deleted category"
 
@@ -1083,8 +1083,8 @@ msgstr "Difference"
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
-#: src/app/(main)/budget/settings.tsx:164
 #: src/app/(main)/budget/settings.tsx:165
+#: src/app/(main)/budget/settings.tsx:166
 msgid "Disabled"
 msgstr "Disabled"
 
@@ -1154,8 +1154,8 @@ msgstr "Enable Face ID unlock?"
 msgid "Enable Touch ID unlock?"
 msgstr "Enable Touch ID unlock?"
 
-#: src/app/(main)/budget/settings.tsx:164
 #: src/app/(main)/budget/settings.tsx:165
+#: src/app/(main)/budget/settings.tsx:166
 msgid "Enabled"
 msgstr "Enabled"
 
@@ -1197,7 +1197,7 @@ msgstr "Enter new PIN"
 msgid "Enter new token"
 msgstr "Enter new token"
 
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:94
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:96
 msgid "Enter template name"
 msgstr "Enter template name"
 
@@ -1232,10 +1232,10 @@ msgstr "Equals"
 #: src/app/(main)/budget/category-limits.tsx:66
 #: src/app/(main)/budget/category-limits.tsx:85
 #: src/app/(main)/budget/category-limits.tsx:106
-#: src/app/(main)/budget/templates.tsx:41
+#: src/app/(main)/budget/templates.tsx:43
 #: src/app/(tabs)/settings/import.tsx:110
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:78
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:75
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:81
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:76
 #: src/budget/components/excluded-account-card/excluded-account-card.tsx:37
 #: src/import/components/import-csv/import-csv.tsx:30
 #: src/import/components/import-database/import-database.tsx:47
@@ -1260,7 +1260,7 @@ msgid "Exceeded Threshold %"
 msgstr "Exceeded Threshold %"
 
 #: src/app/(main)/budget/excluded-accounts.tsx:31
-#: src/app/(main)/budget/settings.tsx:200
+#: src/app/(main)/budget/settings.tsx:201
 msgid "Excluded Accounts"
 msgstr "Excluded Accounts"
 
@@ -1314,11 +1314,11 @@ msgstr "Face ID / Touch ID"
 msgid "Failed to add category limit"
 msgstr "Failed to add category limit"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:78
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:81
 msgid "Failed to apply template"
 msgstr "Failed to apply template"
 
-#: src/app/(main)/budget/templates.tsx:41
+#: src/app/(main)/budget/templates.tsx:43
 msgid "Failed to delete template"
 msgstr "Failed to delete template"
 
@@ -1326,7 +1326,7 @@ msgstr "Failed to delete template"
 msgid "Failed to fetch accounts"
 msgstr "Failed to fetch accounts"
 
-#: src/app/(main)/budget/index.tsx:66
+#: src/app/(main)/budget/index.tsx:70
 msgid "Failed to load budget"
 msgstr "Failed to load budget"
 
@@ -1342,7 +1342,7 @@ msgstr "Failed to remove category limit"
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:75
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:76
 msgid "Failed to save template"
 msgstr "Failed to save template"
 
@@ -1434,7 +1434,7 @@ msgstr "Greater Than"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
-#: src/app/(main)/budget/settings.tsx:263
+#: src/app/(main)/budget/settings.tsx:264
 msgid "History"
 msgstr "History"
 
@@ -1497,7 +1497,7 @@ msgstr "Inactive Accounts"
 msgid "Include deficit in rollover"
 msgstr "Include deficit in rollover"
 
-#: src/app/(main)/budget/settings.tsx:231
+#: src/app/(main)/budget/settings.tsx:232
 msgid "Include Deficit in Rollover"
 msgstr "Include Deficit in Rollover"
 
@@ -1506,7 +1506,7 @@ msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
 #: src/app/(tabs)/analytics.tsx:64
-#: src/budget/components/budget-income-card/budget-income-card.tsx:34
+#: src/budget/components/budget-income-card/budget-income-card.tsx:42
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
@@ -1523,7 +1523,7 @@ msgstr "Income by Tag"
 
 #: src/app/(main)/budget/income-expectations.tsx:131
 #: src/app/(main)/budget/income-expectations.tsx:158
-#: src/app/(main)/budget/settings.tsx:214
+#: src/app/(main)/budget/settings.tsx:215
 #: src/app/(main)/budget/setup/confirm.tsx:111
 #: src/app/(main)/budget/setup/income-expectations.tsx:107
 msgid "Income Expectations"
@@ -1606,7 +1606,7 @@ msgstr "Limit"
 msgid "Limit cannot exceed overall budget ({formattedMaxValue})"
 msgstr "Limit cannot exceed overall budget ({formattedMaxValue})"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:138
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:142
 msgid "Load Template"
 msgstr "Load Template"
 
@@ -1619,9 +1619,9 @@ msgstr "Loading budget..."
 #: src/app/(main)/budget/history.tsx:62
 #: src/app/(main)/budget/history/[periodStart].tsx:62
 #: src/app/(main)/budget/income-expectations.tsx:134
-#: src/app/(main)/budget/index.tsx:88
-#: src/app/(main)/budget/settings.tsx:143
-#: src/app/(main)/budget/templates.tsx:70
+#: src/app/(main)/budget/index.tsx:95
+#: src/app/(main)/budget/settings.tsx:144
+#: src/app/(main)/budget/templates.tsx:72
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx:86
 msgid "Loading..."
 msgstr "Loading..."
@@ -1642,7 +1642,7 @@ msgstr "Manage Rules"
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
-#: src/app/(main)/budget/settings.tsx:284
+#: src/app/(main)/budget/settings.tsx:285
 msgid "Manage Templates"
 msgstr "Manage Templates"
 
@@ -1700,7 +1700,7 @@ msgstr "Merge into another category"
 msgid "Merge into another tag"
 msgstr "Merge into another tag"
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:110
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:114
 msgid "Missing Categories"
 msgstr "Missing Categories"
 
@@ -1717,7 +1717,7 @@ msgstr "Money you owe or are owed"
 msgid "Monobank"
 msgstr "Monobank"
 
-#: src/app/(main)/budget/settings.tsx:33
+#: src/app/(main)/budget/settings.tsx:34
 #: src/app/(main)/budget/setup/confirm.tsx:25
 #: src/app/(main)/budget/setup/period.tsx:33
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:17
@@ -1763,7 +1763,7 @@ msgid "No accounts yet"
 msgstr "No accounts yet"
 
 #: src/app/(main)/budget/alert-settings.tsx:117
-#: src/app/(main)/budget/settings.tsx:155
+#: src/app/(main)/budget/settings.tsx:156
 msgid "No active budget found"
 msgstr "No active budget found"
 
@@ -1885,7 +1885,7 @@ msgstr "No tags match your search"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/app/(main)/budget/templates.tsx:59
+#: src/app/(main)/budget/templates.tsx:61
 msgid "No templates saved yet. Save your current budget as a template to reuse it later."
 msgstr "No templates saved yet. Save your current budget as a template to reuse it later."
 
@@ -1963,8 +1963,8 @@ msgstr "overall budget"
 msgid "Overall Budget"
 msgstr "Overall Budget"
 
-#: src/app/(main)/budget/settings.tsx:186
-#: src/app/(main)/budget/settings.tsx:312
+#: src/app/(main)/budget/settings.tsx:187
+#: src/app/(main)/budget/settings.tsx:313
 #: src/app/(main)/budget/setup/confirm.tsx:97
 msgid "Overall Limit"
 msgstr "Overall Limit"
@@ -2014,8 +2014,8 @@ msgstr "Period Details"
 msgid "Period not found"
 msgstr "Period not found"
 
-#: src/app/(main)/budget/settings.tsx:193
-#: src/budget/components/budget-period-start-day-selector-bottom-sheet/budget-period-start-day-selector-bottom-sheet.tsx:30
+#: src/app/(main)/budget/settings.tsx:194
+#: src/budget/components/budget-period-start-day-selector-bottom-sheet/budget-period-start-day-selector-bottom-sheet.tsx:31
 msgid "Period Start Day"
 msgstr "Period Start Day"
 
@@ -2146,7 +2146,7 @@ msgstr "Restore from a backup file"
 msgid "Revolut"
 msgstr "Revolut"
 
-#: src/app/(main)/budget/settings.tsx:220
+#: src/app/(main)/budget/settings.tsx:221
 #: src/budget/components/budget-overview-card/budget-overview-card.tsx:41
 msgid "Rollover"
 msgstr "Rollover"
@@ -2168,7 +2168,7 @@ msgid "Rules"
 msgstr "Rules"
 
 #: src/budget/components/budget-limit-amount-bottom-sheet/budget-limit-amount-bottom-sheet.tsx:75
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:109
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:111
 #: src/budget/components/budget-threshold-bottom-sheet/budget-threshold-bottom-sheet.tsx:75
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
@@ -2176,8 +2176,8 @@ msgstr "Rules"
 msgid "Save"
 msgstr "Save"
 
-#: src/app/(main)/budget/settings.tsx:277
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:88
+#: src/app/(main)/budget/settings.tsx:278
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:90
 msgid "Save as Template"
 msgstr "Save as Template"
 
@@ -2185,7 +2185,7 @@ msgstr "Save as Template"
 msgid "Save Changes"
 msgstr "Save Changes"
 
-#: src/app/(main)/budget/settings.tsx:278
+#: src/app/(main)/budget/settings.tsx:279
 msgid "Save current budget configuration for reuse"
 msgstr "Save current budget configuration for reuse"
 
@@ -2378,7 +2378,7 @@ msgstr "Set Category Limit"
 msgid "set category to <0>{categoryTitle}</0>"
 msgstr "set category to <0>{categoryTitle}</0>"
 
-#: src/app/(main)/budget/settings.tsx:215
+#: src/app/(main)/budget/settings.tsx:216
 msgid "Set expected income by category"
 msgstr "Set expected income by category"
 
@@ -2386,7 +2386,7 @@ msgstr "Set expected income by category"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(main)/budget/settings.tsx:208
+#: src/app/(main)/budget/settings.tsx:209
 msgid "Set spending limits for categories"
 msgstr "Set spending limits for categories"
 
@@ -2571,15 +2571,15 @@ msgstr "Tap to clear"
 msgid "Target balance"
 msgstr "Target balance"
 
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:46
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:47
 msgid "Template name is required"
 msgstr "Template name is required"
 
-#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:52
+#: src/budget/components/budget-save-template-bottom-sheet/budget-save-template-bottom-sheet.tsx:53
 msgid "Template name must be {BUDGET_TEMPLATE_NAME_MAX_LENGTH} characters or less"
 msgstr "Template name must be {BUDGET_TEMPLATE_NAME_MAX_LENGTH} characters or less"
 
-#: src/app/(main)/budget/settings.tsx:273
+#: src/app/(main)/budget/settings.tsx:274
 msgid "Templates"
 msgstr "Templates"
 
@@ -2629,10 +2629,9 @@ msgstr "This will change the transaction type. The category will be replaced wit
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 
-#. placeholder {0}: template.name
-#: src/budget/components/budget-template-row/budget-template-row.tsx:92
-msgid "This will permanently delete the template \"{0}\". This cannot be undone."
-msgstr "This will permanently delete the template \"{0}\". This cannot be undone."
+#: src/budget/components/budget-template-row/budget-template-row.tsx:93
+msgid "This will permanently delete the template. This cannot be undone."
+msgstr "This will permanently delete the template. This cannot be undone."
 
 #: src/budget/components/budget-category-limit-row/budget-category-limit-row.tsx:44
 msgid "This will remove the budget limit for \"{categoryTitle}\". The category itself will not be deleted."
@@ -2642,7 +2641,7 @@ msgstr "This will remove the budget limit for \"{categoryTitle}\". The category 
 msgid "This will remove the expected income for \"{categoryTitle}\". The category itself will not be deleted."
 msgstr "This will remove the expected income for \"{categoryTitle}\". The category itself will not be deleted."
 
-#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:159
+#: src/budget/components/budget-load-template-bottom-sheet/budget-load-template-bottom-sheet.tsx:163
 msgid "This will replace your current budget settings with the template configuration."
 msgstr "This will replace your current budget settings with the template configuration."
 
@@ -2688,7 +2687,7 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
-#: src/budget/components/budget-income-card/budget-income-card.tsx:59
+#: src/budget/components/budget-income-card/budget-income-card.tsx:63
 #: src/budget/components/budget-unbudgeted-card/budget-unbudgeted-card.tsx:40
 msgid "Total"
 msgstr "Total"
@@ -2793,7 +2792,7 @@ msgstr "Unbudgeted Spending"
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
-#: src/budget/components/budget-income-card/budget-income-card.tsx:45
+#: src/budget/components/budget-income-card/budget-income-card.tsx:49
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
 msgid "Unknown"
 msgstr "Unknown"
@@ -2856,7 +2855,7 @@ msgstr "View and activate hidden accounts"
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(main)/budget/settings.tsx:251
+#: src/app/(main)/budget/settings.tsx:252
 msgid "View and manage alerts"
 msgstr "View and manage alerts"
 
@@ -2864,11 +2863,11 @@ msgstr "View and manage alerts"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
-#: src/app/(main)/budget/settings.tsx:268
+#: src/app/(main)/budget/settings.tsx:269
 msgid "View past periods and trends"
 msgstr "View past periods and trends"
 
-#: src/app/(main)/budget/settings.tsx:285
+#: src/app/(main)/budget/settings.tsx:286
 msgid "View, load, or delete saved templates"
 msgstr "View, load, or delete saved templates"
 
@@ -2889,7 +2888,7 @@ msgstr "Warning Threshold"
 msgid "Warning Threshold %"
 msgstr "Warning Threshold %"
 
-#: src/app/(main)/budget/settings.tsx:31
+#: src/app/(main)/budget/settings.tsx:32
 #: src/app/(main)/budget/setup/confirm.tsx:23
 #: src/app/(main)/budget/setup/period.tsx:31
 #: src/budget/components/budget-period-selector-bottom-sheet/budget-period-selector-bottom-sheet.tsx:15
@@ -2925,7 +2924,7 @@ msgstr "You gave money"
 msgid "You received money"
 msgstr "You received money"
 
-#: src/app/(main)/budget/index.tsx:45
+#: src/app/(main)/budget/index.tsx:46
 msgid "You're approaching your budget limit"
 msgstr "You're approaching your budget limit"
 
@@ -2941,7 +2940,7 @@ msgstr "You're spending faster than planned - {percentage}% spent"
 msgid "You've exceeded your {target} budget"
 msgstr "You've exceeded your {target} budget"
 
-#: src/app/(main)/budget/index.tsx:45
+#: src/app/(main)/budget/index.tsx:46
 msgid "You've exceeded your budget limit"
 msgstr "You've exceeded your budget limit"
 

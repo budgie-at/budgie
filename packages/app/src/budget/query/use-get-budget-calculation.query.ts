@@ -17,21 +17,27 @@ export const useGetBudgetCalculationQuery = (
 ) => {
     const [calculation, setCalculation] = useState<BudgetCalculationResultInterface | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
         if (!isDefined(budget)) {
             setCalculation(null);
+            setError(null);
 
             return;
         }
 
         setIsLoading(true);
+        setError(null);
         void budgetCalculationService
             .calculate(budget, dateRangeOverride)
             .then(setCalculation)
-            .catch(() => void setCalculation(null))
+            .catch((calculationError: unknown) => {
+                setCalculation(null);
+                setError(calculationError);
+            })
             .finally(() => void setIsLoading(false));
     }, [budget, budget?.startDate.getTime(), budget?.endDate.getTime(), dateRangeOverride?.startDate, dateRangeOverride?.endDate]);
 
-    return { calculation, isLoading };
+    return { calculation, isLoading, error };
 };

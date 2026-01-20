@@ -1,7 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -16,7 +18,16 @@ interface Props {
     readonly totalExpected: number;
 }
 
+const getIncomeDisplayName = (income: BudgetIncomeStatusInterface, deletedLabel: string, unknownLabel: string): string => {
+    if (income.isCategoryDeleted) {
+        return deletedLabel;
+    }
+
+    return isNotEmptyString(income.categoryName) ? income.categoryName : unknownLabel;
+};
+
 export const BudgetIncomeCard = ({ incomeStatuses, totalActual, totalExpected }: Props) => {
+    const { t } = useLingui();
     const router = useRouter();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatMoney = useFormatDigits(decimalPlaces);
@@ -34,14 +45,19 @@ export const BudgetIncomeCard = ({ incomeStatuses, totalActual, totalExpected }:
                     <Icon icon={UserIconNameEnum.Plus} size={20} className="text-secondary-foreground" />
                 </HapticPressable>
             </View>
-            {incomeStatuses.map(income => (
-                <View key={income.categoryId} className="flex-row justify-between py-sm">
-                    <Text className="text-primary">{income.categoryName}</Text>
-                    <Text className="text-secondary-foreground">
-                        {formatMoney(income.actual, symbol)} / {formatMoney(income.expected, symbol)}
-                    </Text>
-                </View>
-            ))}
+            {incomeStatuses.map(income => {
+                const displayName = getIncomeDisplayName(income, t`Deleted category`, t`Unknown`);
+                const nameClassName = income.isCategoryDeleted ? 'text-destructive-foreground italic' : 'text-primary';
+
+                return (
+                    <View key={income.categoryId} className="flex-row justify-between py-sm">
+                        <Text className={nameClassName}>{displayName}</Text>
+                        <Text className="text-secondary-foreground">
+                            {formatMoney(income.actual, symbol)} / {formatMoney(income.expected, symbol)}
+                        </Text>
+                    </View>
+                );
+            })}
             <View className="flex-row justify-between pt-md mt-md border-t border-secondary-corner">
                 <Text className="text-primary font-medium">
                     <Trans>Total</Trans>

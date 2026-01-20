@@ -22,6 +22,7 @@ interface Props {
     readonly onSuccess?: () => void;
 }
 
+// eslint-disable-next-line max-lines-per-function, max-statements
 export const BudgetLoadTemplateBottomSheet = (props: Props) => {
     const { ref, template, budget, onSuccess } = props;
 
@@ -41,6 +42,8 @@ export const BudgetLoadTemplateBottomSheet = (props: Props) => {
 
         void budgetTemplateService.validateTemplate(template).then(result => {
             setMissingCategoryIds(result.missingCategoryIds);
+
+            return null;
         });
     }, [template]);
 
@@ -97,6 +100,7 @@ export const BudgetLoadTemplateBottomSheet = (props: Props) => {
 
     const hasMissingCategories = isNotEmptyArray(missingCategoryIds);
     const missingCount = missingCategoryIds.length;
+    const isApplyDisabled = !isDefined(template) || isSubmitting;
 
     if (showMissingWarning) {
         return (
@@ -166,7 +170,7 @@ export const BudgetLoadTemplateBottomSheet = (props: Props) => {
                     onCancel={handleCancel}
                     onSubmit={handleInitialApply}
                     submitLabel={t`Apply Template`}
-                    submitDisabled={isSubmitting || !isDefined(template)}
+                    submitDisabled={isApplyDisabled}
                 />
             </BottomSheetScrollView>
         </BottomSheet>

@@ -39,7 +39,7 @@ const getCategoryCount = (categoryLimitsJson: string | null): number => {
         return 0;
     }
 
-    const parsed = JSON.parse(categoryLimitsJson);
+    const parsed: unknown = JSON.parse(categoryLimitsJson);
 
     return Array.isArray(parsed) ? parsed.length : 0;
 };
@@ -57,9 +57,10 @@ export const BudgetTemplateRow = ({ template, onPress, onDelete }: Props) => {
     const { isLoading, handleOpen, handleConfirm, ref: confirmRef } = useConfirmAction(onDelete);
 
     const periodLabel = i18n.t(BUDGET_PERIOD_LABELS[template.period]);
-    const overallLimit = formatMoney(convertFromMicroUnits(template.overallLimit), defaultInstrument.symbol);
+    const overallLimitFormatted = formatMoney(convertFromMicroUnits(template.overallLimit), defaultInstrument.symbol);
     const categoryCount = getCategoryCount(template.categoryLimitsJson);
-    const description = t`${periodLabel} • ${overallLimit} • ${categoryCount} categories`;
+    const categoriesLabel = t`categories`;
+    const description = `${periodLabel} • ${overallLimitFormatted} • ${categoryCount} ${categoriesLabel}`;
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
         <BudgetRowSwipeActions drag={drag} onDeletePress={handleOpen} />
@@ -89,7 +90,7 @@ export const BudgetTemplateRow = ({ template, onPress, onDelete }: Props) => {
             <ConfirmActionBottomSheet
                 ref={confirmRef}
                 variant="destructive"
-                description={t`This will permanently delete the template "${template.name}". This cannot be undone.`}
+                description={t`This will permanently delete the template. This cannot be undone.`}
                 isLoading={isLoading}
                 onCancel={handleCancel}
                 buttonText={t`Delete`}

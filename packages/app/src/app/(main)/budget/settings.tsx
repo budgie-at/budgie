@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';

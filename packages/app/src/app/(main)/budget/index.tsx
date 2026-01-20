@@ -2,7 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
@@ -21,6 +21,7 @@ import { useGetBudgetCalculationQuery } from '../../../budget/query/use-get-budg
 
 const SCROLL_VIEW_CONTENT_STYLE = { paddingTop: 60, paddingBottom: 100 };
 
+// eslint-disable-next-line max-lines-per-function, max-statements
 export default function BudgetDetailScreen() {
     const { t } = useLingui();
 
@@ -46,12 +47,15 @@ export default function BudgetDetailScreen() {
     const bannerSeverity = isOverBudget ? 'destructive' : 'warning';
     const shouldShowBanner = !isLoading && !isBannerDismissed && calculation.overallStatus !== BudgetStatusEnum.ON_TRACK;
 
-    const errorMessage = isNotEmptyString(error?.message) ? error.message : t`An error occurred`;
+    const errorMessage = isDefined(error) ? getErrorMessage(error) : t`An error occurred`;
 
     /* jscpd:ignore-start */
     if (isDefined(error)) {
         return (
-            <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
+            <Page
+                header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />}
+                withBlur
+            >
                 {isDefined(budget) ? (
                     <BudgetPeriodNavigator
                         startDate={periodNavigation.startDate}
@@ -73,7 +77,10 @@ export default function BudgetDetailScreen() {
 
     if (isLoading) {
         return (
-            <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
+            <Page
+                header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />}
+                withBlur
+            >
                 {isDefined(budget) ? (
                     <BudgetPeriodNavigator
                         startDate={periodNavigation.startDate}
@@ -93,7 +100,10 @@ export default function BudgetDetailScreen() {
     }
 
     return (
-        <Page header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />} withBlur>
+        <Page
+            header={<PageHeader className="border-b-0" title={t`Budget`} onGoBack={handleGoBack} right={<BudgetSettingsButton />} />}
+            withBlur
+        >
             <ScrollView className="flex-1" contentContainerStyle={SCROLL_VIEW_CONTENT_STYLE} showsVerticalScrollIndicator={false}>
                 <View className="gap-y-xl">
                     <BudgetPeriodNavigator
