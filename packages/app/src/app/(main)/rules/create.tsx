@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
+import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
@@ -21,14 +22,23 @@ export default function CreateRulePage() {
     return (
         <FormProvider {...form}>
             <Page
+                testID={RuleFormSelectors.Page}
                 header={
                     <PageHeader
+                        testID={RuleFormSelectors.Header}
                         title={t`Create Rule`}
                         onGoBack={handleGoBack}
                         description={t`Define conditions and actions for your rule`}
                     />
                 }
-                footer={<RuleFormFooter onSubmit={handleSubmit} variant="ghost" buttonText={t`Create Rule`} />}
+                footer={
+                    <RuleFormFooter
+                        submitTestID={RuleFormSelectors.SubmitButton}
+                        onSubmit={handleSubmit}
+                        variant="ghost"
+                        buttonText={t`Create Rule`}
+                    />
+                }
             >
                 <RuleFormContent />
             </Page>

@@ -4,6 +4,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { RuleFormSelectors } from '../../../../@e2e/selectors/rule-form.selector';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
@@ -54,10 +55,25 @@ export default function EditRulePage() {
     return (
         <FormProvider {...form}>
             <Page
+                testID={RuleFormSelectors.Page}
                 header={
-                    <PageHeader title={t`Edit Rule`} onGoBack={handleGoBack} description={t`Define conditions and actions for your rule`} />
+                    <PageHeader
+                        testID={RuleFormSelectors.Header}
+                        title={t`Edit Rule`}
+                        onGoBack={handleGoBack}
+                        description={t`Define conditions and actions for your rule`}
+                    />
                 }
-                footer={<RuleFormFooter onDelete={handleDelete} onSubmit={handleSubmit} variant="ghost" buttonText={t`Save Changes`} />}
+                footer={
+                    <RuleFormFooter
+                        submitTestID={RuleFormSelectors.SubmitButton}
+                        deleteTestID={RuleFormSelectors.DeleteButton}
+                        onDelete={handleDelete}
+                        onSubmit={handleSubmit}
+                        variant="ghost"
+                        buttonText={t`Save Changes`}
+                    />
+                }
             >
                 <RuleFormContent />
             </Page>

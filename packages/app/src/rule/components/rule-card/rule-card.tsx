@@ -14,9 +14,12 @@ interface Props {
     readonly onOpen: (rule: RuleWithActionsRelationsEntityInterface) => void;
     readonly testID?: string;
     readonly switchTestID?: string;
+    readonly orderBadgeTestID?: string;
+    readonly conditionsTestID?: string;
+    readonly actionsTestID?: string;
 }
 
-export const RuleCard = ({ onOpen, order, rule, testID, switchTestID }: Props) => {
+export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadgeTestID, conditionsTestID, actionsTestID }: Props) => {
     const { t } = useLingui();
 
     const handleOpen = () => void onOpen(rule);
@@ -29,12 +32,15 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID }: Props) =
 
     return (
         <Card testID={testID} onPress={handleOpen} size="md" className="flex-row items-start gap-x-lg">
-            <View className="w-10 h-10 rounded-full bg-secondary-foreground/20 items-center justify-center border border-secondary-foreground">
+            <View
+                testID={orderBadgeTestID}
+                className="w-10 h-10 rounded-full bg-secondary-foreground/20 items-center justify-center border border-secondary-foreground"
+            >
                 <Text className="text-sm font-semibold text-primary">{order}</Text>
             </View>
 
             <View className="flex-1 gap-y-lg">
-                <View className="gap-y-xs">
+                <View testID={conditionsTestID} className="gap-y-xs">
                     <Text className="text-xs font-medium text-secondary-foreground">{matchTypeLabel}</Text>
                     <View className="pl-lg gap-y-xs">
                         {rule.conditions.map(condition => (
@@ -43,7 +49,7 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID }: Props) =
                     </View>
                 </View>
 
-                <View className="gap-y-xs">
+                <View testID={actionsTestID} className="gap-y-xs">
                     <Text className="text-xs font-medium text-secondary-foreground">
                         <Trans>Then:</Trans>
                     </Text>

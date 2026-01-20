@@ -45,7 +45,8 @@ export default function RulesPage() {
         icon: UserIconNameEnum.Zap,
         label: t`Rule`,
         variant: 'primary',
-        onPress: handleCreateRule
+        onPress: handleCreateRule,
+        testID: RulesPageSelectors.CreateButton
     });
 
     const renderItem = (rule: RuleWithRelationsType, index: number) => {
@@ -61,6 +62,9 @@ export default function RulesPage() {
                 <RuleCard
                     testID={RuleCardSelectors.Card(index)}
                     switchTestID={RuleCardSelectors.EnabledSwitch(index)}
+                    orderBadgeTestID={RuleCardSelectors.OrderBadge(index)}
+                    conditionsTestID={RuleCardSelectors.ConditionsText(index)}
+                    actionsTestID={RuleCardSelectors.ActionsText(index)}
                     onOpen={handleOpenRule}
                     order={order}
                     rule={rule}
@@ -70,7 +74,17 @@ export default function RulesPage() {
     };
 
     return (
-        <Page testID={RulesPageSelectors.Page} header={<PageHeader onGoBack={handleGoBack} title={t`Rules`} />}>
+        <Page
+            testID={RulesPageSelectors.Page}
+            header={
+                <PageHeader
+                    testID={RulesPageSelectors.Header}
+                    titleTestID={RulesPageSelectors.HeaderTitle}
+                    onGoBack={handleGoBack}
+                    title={t`Rules`}
+                />
+            }
+        >
             {isNotEmptyArray(rules) ? (
                 <AnimatedFlatList
                     testID={RulesPageSelectors.List}

@@ -10,9 +10,11 @@ interface Props {
     readonly buttonText: string;
     readonly onSubmit: EmptyFn;
     readonly onDelete?: EmptyFn;
+    readonly submitTestID?: string;
+    readonly deleteTestID?: string;
 }
 
-export const RuleFormFooter = ({ variant, buttonText, onSubmit, onDelete }: Props) => {
+export const RuleFormFooter = ({ variant, buttonText, onSubmit, onDelete, submitTestID, deleteTestID }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -23,6 +25,8 @@ export const RuleFormFooter = ({ variant, buttonText, onSubmit, onDelete }: Prop
             onDelete={onDelete}
             deleteConfirmTitle={t`Are you sure you want to delete this rule?`}
             deleteConfirmButtonText={t`Delete rule`}
+            submitTestID={submitTestID}
+            deleteTestID={deleteTestID}
         />
     );
 };

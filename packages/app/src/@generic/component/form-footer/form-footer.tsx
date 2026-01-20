@@ -23,6 +23,7 @@ interface Props {
     readonly deleteConfirmButtonText: string;
     readonly children?: ReactNode;
     readonly submitTestID?: string;
+    readonly deleteTestID?: string;
 }
 
 export const FormFooter = (props: Props) => {
@@ -36,7 +37,8 @@ export const FormFooter = (props: Props) => {
         deleteConfirmTitle,
         deleteConfirmButtonText,
         children,
-        submitTestID
+        submitTestID,
+        deleteTestID
     } = props;
 
     const { t } = useLingui();
@@ -50,7 +52,7 @@ export const FormFooter = (props: Props) => {
 
                     <View className="flex-row gap-2">
                         {isDefined(onDelete) ? (
-                            <Button leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
+                            <Button testID={deleteTestID} leftIcon={UserIconNameEnum.Trash2} onPress={handleOpen} variant="destructive" />
                         ) : null}
                         {showConvertButton && isDefined(onConvert) ? (
                             <Button leftIcon={UserIconNameEnum.ArrowRightLeft} onPress={onConvert} variant="default" />
