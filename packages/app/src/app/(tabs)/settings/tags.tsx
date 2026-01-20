@@ -78,12 +78,7 @@ export default function Tags() {
     };
 
     const renderCard = (tag: TagEntityInterface) => (
-        <DeletableRow
-            id={tag.id}
-            onDelete={handleDeleteTag}
-            deleteConfirmTitle={t`Delete Tag`}
-            deleteConfirmDescription={t`Are you sure you want to delete this tag? This action cannot be undone.`}
-        >
+        <DeletableRow id={tag.id} onDelete={handleDeleteTag}>
             <TagCard onOpen={handleOpenTag} tag={tag} />
         </DeletableRow>
     );

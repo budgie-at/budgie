@@ -78,12 +78,7 @@ export default function Categories() {
     };
 
     const renderCard = (category: CategoryEntityInterface) => (
-        <DeletableRow
-            deleteConfirmTitle={t`Delete Category`}
-            deleteConfirmDescription={t`Are you sure you want to delete this category? This action cannot be undone.`}
-            id={category.id}
-            onDelete={handleDeleteCategory}
-        >
+        <DeletableRow id={category.id} onDelete={handleDeleteCategory}>
             <CategoryCard onOpen={handleOpenCategory} category={category} />
         </DeletableRow>
     );

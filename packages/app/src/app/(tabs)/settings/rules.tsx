@@ -53,12 +53,7 @@ export default function RulesPage() {
         const order = index + 1;
 
         return (
-            <DeletableRow
-                deleteConfirmTitle={t`Delete Rule`}
-                deleteConfirmDescription={t`Are you sure you want to delete this rule? This action cannot be undone.`}
-                id={rule.id}
-                onDelete={handleDeleteRule}
-            >
+            <DeletableRow id={rule.id} onDelete={handleDeleteRule}>
                 <RuleCard
                     testID={RuleCardSelectors.Card(index)}
                     switchTestID={RuleCardSelectors.EnabledSwitch(index)}
