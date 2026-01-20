@@ -84,16 +84,18 @@ export default function Tags() {
     );
 
     return (
-        <SearchablePage
-            onGoBack={handleGoBack}
-            title={t`Tags`}
-            searchPlaceholder={t`Search tags...`}
-            data={tags}
-            emptyState={<TagEmptyState search={search} />}
-            renderCard={renderCard}
-            search={search}
-            onSearchChange={setSearch}
-        >
+        <>
+            <SearchablePage
+                onGoBack={handleGoBack}
+                title={t`Tags`}
+                searchPlaceholder={t`Search tags...`}
+                data={tags}
+                emptyState={<TagEmptyState search={search} />}
+                renderCard={renderCard}
+                search={search}
+                onSearchChange={setSearch}
+            />
+
             <TagFormBottomSheet ref={bottomSheetRef} tag={selectedTag} />
 
             <TagSelectorBottomSheet
@@ -103,7 +105,7 @@ export default function Tags() {
                 description={t`This tag has transactions. Select another tag to reassign them to.`}
                 onSelect={handleReassignSelect}
             />
-        </SearchablePage>
+        </>
     );
 }
 /* jscpd:ignore-end */

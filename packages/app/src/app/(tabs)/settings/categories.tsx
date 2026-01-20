@@ -84,16 +84,18 @@ export default function Categories() {
     );
 
     return (
-        <SearchablePage
-            onGoBack={handleGoBack}
-            title={t`Categories`}
-            searchPlaceholder={t`Search categories...`}
-            data={categories}
-            renderCard={renderCard}
-            search={search}
-            onSearchChange={setSearch}
-            emptyState={<CategoryEmptyState search={search} />}
-        >
+        <>
+            <SearchablePage
+                onGoBack={handleGoBack}
+                title={t`Categories`}
+                searchPlaceholder={t`Search categories...`}
+                data={categories}
+                renderCard={renderCard}
+                search={search}
+                onSearchChange={setSearch}
+                emptyState={<CategoryEmptyState search={search} />}
+            />
+
             <CategoryFormBottomSheet ref={bottomSheetRef} category={selectedCategory} />
 
             <CategorySelectorBottomSheet
@@ -104,7 +106,7 @@ export default function Categories() {
                 variant="primary"
                 onSelect={handleReassignSelect}
             />
-        </SearchablePage>
+        </>
     );
 }
 /* jscpd:ignore-end */
