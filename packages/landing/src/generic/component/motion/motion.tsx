@@ -6,10 +6,10 @@ import React, { JSX } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 interface CustomMotionProps<Tag extends keyof JSX.IntrinsicElements> extends MotionProps {
-    type?: Tag;
-    children: React.ReactNode;
-    className?: string;
-    index?: number;
+    readonly type?: Tag;
+    readonly children: React.ReactNode;
+    readonly className?: string;
+    readonly index?: number;
 }
 
 export const Motion = <Tag extends keyof JSX.IntrinsicElements = 'div'>(props: CustomMotionProps<Tag>) => {

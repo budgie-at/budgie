@@ -22,7 +22,6 @@ const Swipable = styled(ReanimatedSwipeable, { containerClassName: 'containerSty
 
 export const DeletableRow = ({ children, onDelete, id, deleteConfirmTitle, deleteConfirmDescription }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
-    const handleCancel = () => void ref.current?.close();
     const onConfirm = () => void onDelete(id);
 
     const { isLoading, handleOpen, handleConfirm, ref: confirmRef } = useConfirmAction(onConfirm);
@@ -43,7 +42,6 @@ export const DeletableRow = ({ children, onDelete, id, deleteConfirmTitle, delet
                 variant="destructive"
                 description={deleteConfirmDescription}
                 isLoading={isLoading}
-                onCancel={handleCancel}
                 buttonText={t`Delete`}
                 onSubmit={handleConfirm}
                 icon={UserIconNameEnum.Info}

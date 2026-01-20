@@ -5,11 +5,11 @@ import { CardContent } from '../../../ui/card/card-content';
 import { Motion } from '../motion/motion';
 
 interface Props {
-    quote: string;
-    author: string;
-    role: string;
-    rating: number;
-    index: number;
+    readonly quote: string;
+    readonly author: string;
+    readonly role: string;
+    readonly rating: number;
+    readonly index: number;
 }
 
 const initialMotion = { opacity: 0, y: 20 };

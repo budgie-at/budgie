@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    text: ReactNode;
-    variant: 'problem' | 'solution';
+    readonly icon: ReactNode;
+    readonly text: ReactNode;
+    readonly variant: 'problem' | 'solution';
 }
 
 export const ProblemSolutionItem = ({ icon, text, variant }: Props) => {

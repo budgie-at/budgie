@@ -1,5 +1,5 @@
 interface Props {
-    name: string;
+    readonly name: string;
 }
 
 export const BanksSectionItem = ({ name }: Props) => (

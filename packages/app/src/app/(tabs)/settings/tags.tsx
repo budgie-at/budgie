@@ -45,7 +45,7 @@ export default function Tags() {
     const handleDeleteTag = async (id: number) => {
         const count = await tagService.countTransactions(id);
         if (isPositiveNumber(count)) {
-            const foundTag = tags?.find(item => item.id === id);
+            const foundTag = tags.find(item => item.id === id);
             if (isDefined(foundTag)) {
                 setTagToDelete(foundTag);
                 void reassignRef.current?.open();

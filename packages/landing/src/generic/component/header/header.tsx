@@ -13,7 +13,7 @@ import { MobileMenu } from '../mobile-menu/mobile-menu';
 import { ThemeSwitcher } from '../theme-switcher/theme-switcher';
 
 interface Props {
-    lang: string;
+    readonly lang: string;
 }
 
 export const Header = ({ lang }: Props) => {

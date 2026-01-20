@@ -49,7 +49,7 @@ export const TagsSelectorBottomSheet = ({ ref, selectedTagIds, onSelect }: Props
         onSelect(tag.id);
     };
 
-    const sortedTags = sortSelectedFirst(tags ?? [], selectedTagIds);
+    const sortedTags = sortSelectedFirst(tags, selectedTagIds);
     const data = padFlatListData(sortedTags, 3);
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>

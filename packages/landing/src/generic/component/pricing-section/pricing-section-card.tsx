@@ -5,16 +5,16 @@ import { Motion } from '../motion/motion';
 import type { ReactNode } from 'react';
 
 interface Props {
-    title: ReactNode;
-    subtitle: ReactNode;
-    price: string;
-    priceSuffix: ReactNode;
-    priceNote?: ReactNode;
-    button: ReactNode;
-    features: ReactNode;
-    delay?: number;
-    highlight?: boolean;
-    badge?: ReactNode;
+    readonly title: ReactNode;
+    readonly subtitle: ReactNode;
+    readonly price: string;
+    readonly priceSuffix: ReactNode;
+    readonly priceNote?: ReactNode;
+    readonly button: ReactNode;
+    readonly features: ReactNode;
+    readonly delay?: number;
+    readonly highlight?: boolean;
+    readonly badge?: ReactNode;
 }
 
 const viewportOnce = { once: true };

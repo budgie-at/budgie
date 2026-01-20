@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    value: string;
-    label: ReactNode;
+    readonly icon: ReactNode;
+    readonly value: string;
+    readonly label: ReactNode;
 }
 
 export const OpenSourceVisualStat = ({ icon, value, label }: Props) => (

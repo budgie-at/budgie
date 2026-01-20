@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    iconClassName: string;
-    title: ReactNode;
-    description: ReactNode;
+    readonly icon: ReactNode;
+    readonly iconClassName: string;
+    readonly title: ReactNode;
+    readonly description: ReactNode;
 }
 
 export const AnalyticsSectionFeature = ({ icon, iconClassName, title, description }: Props) => (

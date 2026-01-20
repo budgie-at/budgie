@@ -5,9 +5,9 @@ import { Motion } from '../motion/motion';
 import type { ReactNode } from 'react';
 
 interface Props {
-    title: string;
-    description: string;
-    icon: ReactNode;
+    readonly title: string;
+    readonly description: string;
+    readonly icon: ReactNode;
 }
 
 const itemVariants = {

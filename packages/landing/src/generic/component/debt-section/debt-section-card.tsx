@@ -6,12 +6,12 @@ import { CardContent } from '../../../ui/card/card-content';
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    iconClassName: string;
-    label: string;
-    amount: string;
-    amountClassName: string;
-    dueDate: string;
+    readonly icon: ReactNode;
+    readonly iconClassName: string;
+    readonly label: string;
+    readonly amount: string;
+    readonly amountClassName: string;
+    readonly dueDate: string;
 }
 
 export const DebtSectionCard = ({ icon, iconClassName, label, amount, amountClassName, dueDate }: Props) => (

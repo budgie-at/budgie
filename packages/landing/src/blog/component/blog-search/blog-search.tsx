@@ -10,9 +10,9 @@ import { useState, useTransition } from 'react';
 import { Button } from '../../../ui/button';
 
 interface Props {
-    locale: string;
-    searchQuery: string;
-    currentPage: number;
+    readonly locale: string;
+    readonly searchQuery: string;
+    readonly currentPage: number;
 }
 
 export const BlogSearch = ({ locale, searchQuery }: Props) => {

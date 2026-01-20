@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface Props {
-    children: ReactNode;
+    readonly children: ReactNode;
 }
 
 export const PricingSectionFeature = ({ children }: Props) => (

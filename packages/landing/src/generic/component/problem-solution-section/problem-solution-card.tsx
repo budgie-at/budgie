@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
 const viewportOnce = { once: true };
 
 interface Props {
-    variant: 'problem' | 'solution';
+    readonly variant: 'problem' | 'solution';
 }
 
 export const ProblemSolutionCard = ({ variant }: Props) => {

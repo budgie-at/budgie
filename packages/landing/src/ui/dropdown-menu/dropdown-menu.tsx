@@ -25,7 +25,7 @@ export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 export const DropdownMenuSubTrigger = forwardRef<
     ElementRef<typeof DropdownMenuPrimitive.SubTrigger>,
     ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
-        inset?: boolean;
+        readonly inset?: boolean;
     }
 >(({ className, inset, children, ...props }, ref) => (
     <DropdownMenuPrimitive.SubTrigger
@@ -76,7 +76,7 @@ export const DropdownMenuContent = forwardRef<
 export const DropdownMenuItem = forwardRef<
     ElementRef<typeof DropdownMenuPrimitive.Item>,
     ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
-        inset?: boolean;
+        readonly inset?: boolean;
     }
 >(({ className, inset, ...props }, ref) => (
     <DropdownMenuPrimitive.Item
@@ -136,7 +136,7 @@ export const DropdownMenuRadioItem = forwardRef<
 export const DropdownMenuLabel = forwardRef<
     ElementRef<typeof DropdownMenuPrimitive.Label>,
     ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
-        inset?: boolean;
+        readonly inset?: boolean;
     }
 >(({ className, inset, ...props }, ref) => (
     <DropdownMenuPrimitive.Label className={cn('px-2 py-1.5 text-sm font-semibold', inset && 'pl-8', className)} ref={ref} {...props} />

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    title: string;
-    content: string;
+    readonly icon: ReactNode;
+    readonly title: string;
+    readonly content: string;
 }
 
 export const AiSectionFeaturesItem = ({ icon, title, content }: Props) => (

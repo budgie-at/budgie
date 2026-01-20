@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
 interface Props {
-    icon: ReactNode;
-    title: string;
-    description: string;
+    readonly icon: ReactNode;
+    readonly title: string;
+    readonly description: string;
 }
 
 export const WhitelistSectionOfferBenefit = ({ icon, title, description }: Props) => (

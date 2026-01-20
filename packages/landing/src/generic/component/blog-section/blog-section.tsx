@@ -8,7 +8,7 @@ import { BlogCard } from '../blog-card/blog-card';
 import { Motion } from '../motion/motion';
 
 interface Props {
-    locale: string;
+    readonly locale: string;
 }
 
 export const BlogSection = ({ locale }: Props) => {

@@ -19,7 +19,7 @@ import { Button } from '../../../../ui/button';
 import type { Metadata } from 'next';
 
 interface Props extends PageLangParam {
-    params: Promise<{ lang: string; slug: string }>;
+    readonly params: Promise<{ lang: string; slug: string }>;
 }
 
 // eslint-disable-next-line func-style
