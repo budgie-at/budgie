@@ -1,116 +1,94 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, lingui/no-unlocalized-strings */
 import { AutoTokenizer, PreTrainedTokenizer } from '@huggingface/transformers';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { LFM25_CHAT_MARKERS, LFM25_MODEL_ID, LFM25_SPECIAL_TOKENS } from '../constant/onnx-llm.constant';
+import { ChatMessageInterface } from '../interface/chat-message.interface';
+
 type TokenizerInstance = PreTrainedTokenizer;
 
-const MODEL_ID = 'LiquidAI/LFM2.5-1.2B-Instruct';
+class Lfm25TokenizerService {
+    private tokenizer: TokenizerInstance | null = null;
+    private loadingPromise: Promise<void> | null = null;
+    private loadError: string | null = null;
 
-const IM_START = '<|im_start|>';
-const IM_END = '<|im_end|>';
-
-interface ChatMessage {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-}
-
-interface Lfm25TokenizerInterface {
-    tokenizer: TokenizerInstance | null;
-    isLoaded: boolean;
-    error: string | null;
-    load: () => Promise<void>;
-    encode: (text: string) => Promise<number[]>;
-    decode: (tokens: number[]) => Promise<string>;
-    buildChatPrompt: (messages: ChatMessage[]) => string;
-    getSpecialTokens: () => { bosToken: number; eosToken: number; padToken: number };
-}
-
-let cachedTokenizer: TokenizerInstance | null = null;
-let loadingPromise: Promise<void> | null = null;
-let loadError: string | null = null;
-
-const load = async (): Promise<void> => {
-    if (isDefined(cachedTokenizer)) {
-        return;
+    get isLoaded(): boolean {
+        return isDefined(this.tokenizer);
     }
 
-    if (isDefined(loadingPromise)) {
-        return loadingPromise;
+    get error(): string | null {
+        return this.loadError;
     }
 
-    loadingPromise = (async () => {
-        try {
-            cachedTokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {
-                progress_callback: (progress: { status: string; progress?: number }) => {
-                    if (progress.status === 'progress' && isDefined(progress.progress)) {
-                        console.log(`Tokenizer loading: ${Math.round(progress.progress)}%`);
-                    }
-                }
-            });
-            loadError = null;
-        } catch (e: unknown) {
-            loadError = getErrorMessage(e);
-            throw e;
-        } finally {
-            loadingPromise = null;
+    buildChatPrompt(messages: ChatMessageInterface[]): string {
+        const { imStart, imEnd } = LFM25_CHAT_MARKERS;
+        const parts = messages.map(msg => `${imStart}${msg.role}\n${msg.content}${imEnd}`);
+
+        return `${parts.join('\n')}\n${imStart}assistant\n`;
+    }
+
+    getSpecialTokens(): typeof LFM25_SPECIAL_TOKENS {
+        return LFM25_SPECIAL_TOKENS;
+    }
+
+    async load(): Promise<void> {
+        if (isDefined(this.tokenizer)) {
+            return;
         }
-    })();
 
-    return loadingPromise;
-};
+        if (isDefined(this.loadingPromise)) {
+            await this.loadingPromise;
 
-const encode = async (text: string): Promise<number[]> => {
-    if (!isDefined(cachedTokenizer)) {
-        await load();
+            return;
+        }
+
+        this.loadingPromise = this.loadTokenizer();
+
+        await this.loadingPromise;
     }
 
-    if (!isDefined(cachedTokenizer)) {
-        throw new Error('Tokenizer not loaded');
+    async encode(text: string): Promise<number[]> {
+        const tokenizer = await this.getTokenizer();
+        const result = tokenizer(text, { add_special_tokens: false });
+        const inputIds = result.input_ids as { data: BigInt64Array };
+
+        return Array.from(inputIds.data).map(Number);
     }
 
-    const result = cachedTokenizer(text, { add_special_tokens: false });
-    const inputIds = result.input_ids;
+    async decode(tokens: number[]): Promise<string> {
+        const tokenizer = await this.getTokenizer();
 
-    return Array.from(inputIds.data as BigInt64Array).map(Number);
-};
-
-const decode = async (tokens: number[]): Promise<string> => {
-    if (!isDefined(cachedTokenizer)) {
-        await load();
+        return tokenizer.decode(tokens, { skip_special_tokens: true });
     }
 
-    if (!isDefined(cachedTokenizer)) {
-        throw new Error('Tokenizer not loaded');
+    private async getTokenizer(): Promise<TokenizerInstance> {
+        await this.ensureLoaded();
+
+        if (!isDefined(this.tokenizer)) {
+            throw new Error('Tokenizer not loaded');
+        }
+
+        return this.tokenizer;
     }
 
-    return cachedTokenizer.decode(tokens, { skip_special_tokens: true });
-};
+    private async loadTokenizer(): Promise<void> {
+        try {
+            this.tokenizer = await AutoTokenizer.from_pretrained(LFM25_MODEL_ID);
+            this.loadError = null;
+        } catch (err: unknown) {
+            this.loadError = getErrorMessage(err);
+            throw err;
+        } finally {
+            this.loadingPromise = null;
+        }
+    }
 
-const buildChatPrompt = (messages: ChatMessage[]): string => {
-    const parts = messages.map(msg => `${IM_START}${msg.role}\n${msg.content}${IM_END}`);
+    private async ensureLoaded(): Promise<void> {
+        if (!isDefined(this.tokenizer)) {
+            await this.load();
+        }
+    }
+}
 
-    return `${parts.join('\n')}\n${IM_START}assistant\n`;
-};
-
-const getSpecialTokens = (): { bosToken: number; eosToken: number; padToken: number } => ({
-    bosToken: 0,
-    eosToken: 2,
-    padToken: 1
-});
-
-export const lfm25TokenizerService: Lfm25TokenizerInterface = {
-    get tokenizer() {
-        return cachedTokenizer;
-    },
-    get isLoaded() {
-        return isDefined(cachedTokenizer);
-    },
-    get error() {
-        return loadError;
-    },
-    load,
-    encode,
-    decode,
-    buildChatPrompt,
-    getSpecialTokens
-};
+export const lfm25TokenizerService = new Lfm25TokenizerService();
