@@ -1,11 +1,13 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
 import React, { FC, Ref, useImperativeHandle, useRef } from 'react';
+import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
 import { BottomSheetCloseableBackdrop } from '../bottom-sheet-closeable-backdrop/bottom-sheet-closeable-backdrop';
 import { BottomSheetNonCloseableBackdrop } from '../bottom-sheet-non-closeable-backdrop/bottom-sheet-non-closeable-backdrop';
+import { FullWindowOverlayContainer } from '../full-window-overlay-container/full-window-overlay-container';
 
 import type { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import type { BottomSheetFooterProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter';
@@ -28,6 +30,8 @@ const Modal = styled(BottomSheetModal, {
     backgroundClassName: 'backgroundStyle',
     handleIndicatorClassName: 'handleIndicatorStyle'
 });
+
+const isIOS = Platform.OS === 'ios';
 
 export const BottomSheet = (props: Props) => {
     const {
@@ -73,6 +77,7 @@ export const BottomSheet = (props: Props) => {
             ref={modalRef}
             topInset={top}
             index={index}
+            {...(isIOS && { containerComponent: FullWindowOverlayContainer })}
             {...rest}
         >
             {children}

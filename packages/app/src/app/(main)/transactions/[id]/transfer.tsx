@@ -14,7 +14,6 @@ import { LoadingScreen } from '../../../../@generic/component/loading-screen/loa
 import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
-import { BottomSheetsProvider } from '../../../../@generic/providers/bottom-sheets.provider';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
@@ -130,10 +129,6 @@ export default function UpdateTransferTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return (
-        <BottomSheetsProvider>
-            <UpdateTransferForm transaction={transaction} transactionId={Number(id)} />
-        </BottomSheetsProvider>
-    );
+    return <UpdateTransferForm transaction={transaction} transactionId={Number(id)} />;
 }
 /* jscpd:ignore-end */

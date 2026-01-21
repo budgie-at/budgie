@@ -15,7 +15,6 @@ import { Page } from '../../../../@generic/component/page/page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
-import { BottomSheetsProvider } from '../../../../@generic/providers/bottom-sheets.provider';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../../settings/context/settings.context';
@@ -126,10 +125,6 @@ export default function UpdateExpenseTransactionPage() {
         return <Redirect href="/" />;
     }
 
-    return (
-        <BottomSheetsProvider>
-            <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />
-        </BottomSheetsProvider>
-    );
+    return <UpdateExpenseForm transaction={transaction} transactionId={Number(id)} />;
 }
 /* jscpd:ignore-end */
