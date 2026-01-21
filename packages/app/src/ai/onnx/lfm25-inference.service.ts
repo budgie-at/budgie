@@ -53,40 +53,32 @@ class Lfm25InferenceService {
         }
 
         this.isInterrupted = false;
-        const generatedTokens: number[] = [];
-        let currentIds = [...inputIds];
+        const allTokens = [...inputIds];
 
         for (let idx = 0; idx < config.maxNewTokens; idx++) {
             if (this.isInterrupted) {
                 break;
             }
 
-            const allTokens = [...inputIds, ...generatedTokens];
-            const nextToken = await this.generateNextToken(this.session, currentIds, allTokens, config);
+            const nextToken = await this.generateNextToken(this.session, allTokens, config);
 
             if (nextToken === config.eosTokenId) {
                 break;
             }
 
-            generatedTokens.push(nextToken);
-            currentIds = [...allTokens, nextToken];
+            allTokens.push(nextToken);
         }
 
-        return generatedTokens;
+        return allTokens.slice(inputIds.length);
     }
 
     interrupt(): void {
         this.isInterrupted = true;
     }
 
-    private async generateNextToken(
-        session: OnnxSession,
-        currentIds: number[],
-        allTokens: number[],
-        config: GenerationConfigInterface
-    ): Promise<number> {
-        const inputTensor = new Tensor('int64', BigInt64Array.from(currentIds.map(BigInt)), [1, currentIds.length]);
-        const attentionMask = new Tensor('int64', BigInt64Array.from(currentIds.map(() => BigInt(1))), [1, currentIds.length]);
+    private async generateNextToken(session: OnnxSession, allTokens: number[], config: GenerationConfigInterface): Promise<number> {
+        const inputTensor = new Tensor('int64', BigInt64Array.from(allTokens.map(BigInt)), [1, allTokens.length]);
+        const attentionMask = new Tensor('int64', BigInt64Array.from(allTokens.map(() => BigInt(1))), [1, allTokens.length]);
 
         const feeds: Record<string, Tensor> = {
             input_ids: inputTensor,
@@ -105,7 +97,7 @@ class Lfm25InferenceService {
         const [vocabSize] = [logitsOutput.dims[2]];
         const lastTokenLogits = new Float32Array(vocabSize);
 
-        const offset = (currentIds.length - 1) * vocabSize;
+        const offset = (allTokens.length - 1) * vocabSize;
         for (let jdx = 0; jdx < vocabSize; jdx++) {
             lastTokenLogits[jdx] = logitsData[offset + jdx];
         }

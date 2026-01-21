@@ -12,3 +12,10 @@ export const LFM25_CHAT_MARKERS = {
     imStart: '<|im_start|>',
     imEnd: '<|im_end|>'
 } as const;
+
+export const LFM25_GENERATION_CONFIG = {
+    maxNewTokens: 256,
+    temperature: 0.05,
+    topK: 50,
+    repetitionPenalty: 1.05
+} as const;
