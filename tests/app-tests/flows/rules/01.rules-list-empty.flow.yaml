@@ -1,9 +1,11 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 01: Verify empty state on Rules page
 # Expected: Empty state shows "No Rules Yet" message
 
 # Navigate to Rules page
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 

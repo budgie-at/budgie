@@ -9,5 +9,6 @@ export const RuleFormSelectors = {
     ConditionAddButton: 'RuleForm.ConditionSection.AddButton',
     ActionSectionHeader: 'RuleForm.ActionSection.Header',
     ActionAddButton: 'RuleForm.ActionSection.AddButton',
-    MatchTypeSelector: 'RuleForm.ConditionMatchType'
+    MatchTypeSelector: 'RuleForm.ConditionMatchType',
+    SelectorCard: (identifier: string) => `RuleForm.SelectorCard.${identifier}`
 } as const;

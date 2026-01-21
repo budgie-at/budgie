@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 04: Create a rule with multiple actions
 # Creates a rule: Title CONTAINS "Amazon" -> SET_CATEGORY + ADD_TAG
@@ -7,57 +7,51 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap the create action button
 - tapOn:
-    text: 'Rule'
-- extendedWaitUntil:
-    visible: 'Create Rule'
-    timeout: 3000
-
-# First condition: Title contains "Amazon"
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Amazon'
-
-# First action: Select category
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
-- tapOn:
-    text: 'Test Category'
-
-# Add second action
-- tapOn:
-    id: 'RuleForm.ActionSection.AddButton'
-
-# Second action: Change type to ADD_TAG
-- tapOn:
-    id: 'RuleForm.Action.1.TypeSelector'
-- extendedWaitUntil:
-    visible: 'Select Action Type'
-    timeout: 3000
-- tapOn:
-    text: 'Add Tag'
-
-# Select tag for second action
-- tapOn:
-    id: 'RuleForm.Action.1.TagSelector'
-- extendedWaitUntil:
-    visible: 'Select Tag'
-    timeout: 3000
-- tapOn:
-    text: 'Test Tag'
-
-# Submit the rule
-- tapOn:
-    text: 'Create Rule'
+    id: "CreateTransactionTrigger"
 - extendedWaitUntil:
     visible:
-      id: 'RulesPage.Page'
+      id: "RulesPage.CreateButton"
+    timeout: 3000
+- "waitForAnimationToEnd"
+- tapOn:
+    id: "RulesPage.CreateButton"
+- extendedWaitUntil:
+    visible: "Create Rule"
     timeout: 5000
-
-# Verify rule was created
+- tapOn:
+    id: "RuleForm.Condition.0.ValueInput"
+- inputText: "Amazon"
+- tapOn:
+    id: "RuleForm.Action.0.CategorySelector"
+- tapOn:
+    point: "17%,72%"
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: "RuleForm.ActionSection.AddButton"
+    direction: "DOWN"
+    timeout: 5000
+- tapOn:
+    id: "RuleForm.ActionSection.AddButton"
+- scrollUntilVisible:
+    element:
+      id: "RuleForm.Action.1.TypeSelector"
+    direction: "DOWN"
+    timeout: 5000
+    centerElement: true
+- tapOn:
+    id: "RuleForm.Action.1.TypeSelector"
+- tapOn:
+    id: "RuleForm.SelectorCard.ADD_TAG"
+- waitForAnimationToEnd
+- tapOn:
+    id: "RuleForm.Action.1.TagSelector"
+- tapOn:
+    id: "RuleForm.SelectorCard.1"
+- waitForAnimationToEnd
+- tapOn:
+    id: "RuleForm.Footer.SubmitButton"
+- waitForAnimationToEnd
 - assertVisible:
-    text: 'Amazon'
+    id: "RulesPage.RuleCard.0"

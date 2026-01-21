@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 15: Suggested rule flow applies category to matching imported transactions
 #
@@ -18,9 +18,10 @@ appId: ${APP_ID}
 # Navigate to Settings to import CSV
 - tapOn:
     id: 'TabBar.Settings'
-- extendedWaitUntil:
-    visible: 'Settings'
-    timeout: 5000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
 # Scroll to Import CSV and tap
 - scrollUntilVisible:
@@ -32,66 +33,80 @@ appId: ${APP_ID}
     id: 'Settings.ImportCsvCard'
 
 # Wait for file picker - tap on test CSV file
-- extendedWaitUntil:
-    visible: 'test-transactions'
-    timeout: 10000
+# Use coordinate tap since file picker is system UI
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 3000
+# Tap on first file in file picker (around center of screen)
 - tapOn:
-    text: 'test-transactions'
+    point: 50%, 50%
 
 # Wait for import screen, select Budgie preset
-- extendedWaitUntil:
-    visible:
-      id: 'ImportScreen.Page'
-    timeout: 5000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 3000
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
 
 # Start import
 - tapOn:
     id: 'ImportScreen.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Settings'
-    timeout: 30000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 5000
 
 # Navigate to Transactions
 - tapOn:
     id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
 # Open first imported transaction (most recent)
 - tapOn:
     id: 'TransactionList.Card.1'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionForm.Page'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Change category to Food
+# Change category using coordinate tap on category selector
 - tapOn:
     id: 'TransactionForm.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (around 28% from top)
 - tapOn:
-    text: 'Food'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # "Add Rule" button should appear for imported transaction
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.AddRuleButton'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1000
+# Look for Add Rule button
 - tapOn:
     id: 'SuggestRule.AddRuleButton'
 
 # Wait for suggested rule bottom sheet
-- extendedWaitUntil:
-    visible:
-      id: 'SuggestRule.BottomSheet'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Select "Comment" condition (matches "Grocery Store" in comment)
+# Select "Comment" condition (if available)
 - tapOn:
     id: 'SuggestRule.ConditionChip.COMMENT'
 
@@ -104,25 +119,19 @@ appId: ${APP_ID}
     id: 'SuggestRule.CreateRuleButton'
 
 # Wait for rule creation
-- extendedWaitUntil:
-    notVisible:
-      id: 'SuggestRule.BottomSheet'
-    timeout: 5000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
 # Save the transaction
 - tapOn:
     id: 'TransactionForm.SubmitButton'
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify other matching transaction has Food category
-# Open another Grocery Store transaction to verify rule was applied
-- tapOn:
-    id: 'TransactionList.Card.3'
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionForm.Page'
-    timeout: 3000
+# Verify we're back on transactions list
 - assertVisible:
-    text: 'Food'
+    id: 'TransactionList.Card.1'

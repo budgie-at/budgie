@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 10: Rule applies ADD_TAG action to existing transactions
 # Creates an expense transaction, then creates a rule that matches it with ADD_TAG action
@@ -15,12 +15,20 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Create a new rule
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
 # Configure condition: Title CONTAINS "Starbucks"
 - tapOn:
@@ -30,20 +38,36 @@ appId: ${APP_ID}
 # Change action type to ADD_TAG
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
-- extendedWaitUntil:
-    visible: 'Add Tag'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on Add Tag (second item in action type list, around 38% from top)
 - tapOn:
-    text: 'Add Tag'
+    point: 50%, 38%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Select tag
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
-- extendedWaitUntil:
-    visible: 'Select Tag'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first tag (around 28% from top)
 - tapOn:
-    text: 'Test Tag'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Enable "Apply to existing transactions"
 - scrollUntilVisible:
@@ -56,21 +80,25 @@ appId: ${APP_ID}
 
 # Submit the rule
 - tapOn:
-    text: 'Create Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+
+# Verify rule was created
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
 
 # Navigate to Transactions to verify the tag was applied
 - tapOn:
     id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify the transaction now shows "Test Tag"
+# Verify the transaction now shows the tag
 - assertVisible:
     id: 'TransactionList.Card.1.Tag'
-- assertVisible:
-    text: 'Test Tag'

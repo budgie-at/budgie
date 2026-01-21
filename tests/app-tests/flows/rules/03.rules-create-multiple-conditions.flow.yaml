@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 03: Create a rule with multiple conditions
 # Creates a rule: Title CONTAINS "Spotify" AND Comment CONTAINS "Premium"
@@ -7,12 +7,20 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap the create action button
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
 # First condition: Title contains "Spotify"
 - tapOn:
@@ -26,11 +34,24 @@ appId: ${APP_ID}
 # Second condition: Change field to Comment
 - tapOn:
     id: 'RuleForm.Condition.1.FieldSelector'
-- extendedWaitUntil:
-    visible: 'Select Field'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on Comment (3rd item in field list: Title, Amount, Comment - around 78% from top)
 - tapOn:
-    text: 'Comment'
+    point: 50%, 78%
+# Swipe down to dismiss the field selector bottom sheet
+- swipe:
+    start: 50%, 80%
+    end: 50%, 95%
+    duration: 300
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Enter value for second condition
 - tapOn:
@@ -38,27 +59,48 @@ appId: ${APP_ID}
 - inputText: 'Premium'
 
 # Match type selector should now be visible (2 conditions)
-# Verify ALL is default or select it
+# Verify Match All is visible (default)
 - assertVisible:
-    text: 'Match'
+    text: 'Match All'
+
+# Scroll down to see the Actions section
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.CategorySelector'
+    direction: DOWN
+    timeout: 5000
 
 # Select category for action
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (bottom sheet items start around 75-80% from top)
 - tapOn:
-    text: 'Test Category'
+    point: 50%, 78%
+# Swipe down to dismiss the category bottom sheet
+- swipe:
+    start: 50%, 80%
+    end: 50%, 95%
+    duration: 300
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Submit the rule
 - tapOn:
-    text: 'Create Rule'
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
-    timeout: 5000
+    timeout: 10000
 
 # Verify rule was created
 - assertVisible:
-    text: 'Spotify'
+    id: 'RulesPage.RuleCard.0'

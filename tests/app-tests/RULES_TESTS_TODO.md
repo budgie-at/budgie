@@ -2,7 +2,7 @@
 
 ## Overview
 
-15 Maestro E2E tests for the Rules feature. Setup flows work, rules tests need updates for iOS bottom sheet accessibility issues.
+15 Maestro E2E tests for the Rules feature. All tests updated to use coordinate-based taps for iOS bottom sheet accessibility issues.
 
 ## Current State
 
@@ -14,24 +14,20 @@
 - [x] `flows/setup/00.setup-tag.flow.yaml` - PASSING (coordinate-based taps)
 - [x] `flows/shared/navigate-to-rules.flow.yaml` - Updated to go Home first
 - [x] `flows/rules/01.rules-list-empty.flow.yaml` - PASSING
-- [x] `flows/rules/02.rules-create-basic.flow.yaml` - PARTIALLY FIXED (needs more work)
-
-### Remaining Work
-
-#### Tests needing coordinate-based bottom sheet fixes:
-- [ ] `03.rules-create-multiple-conditions.flow.yaml`
-- [ ] `04.rules-create-multiple-actions.flow.yaml`
-- [ ] `05.rules-edit.flow.yaml`
-- [ ] `06.rules-delete.flow.yaml`
-- [ ] `07.rules-toggle-enabled.flow.yaml`
-- [ ] `08.rules-all-field-types.flow.yaml`
-- [ ] `09.rule-applies-category.flow.yaml`
-- [ ] `10.rule-applies-tag.flow.yaml`
-- [ ] `11.rule-applies-multiple-actions.flow.yaml`
-- [ ] `12.disabled-rule-not-applied.flow.yaml`
-- [ ] `13.rule-apply-to-existing-toggle.flow.yaml`
-- [ ] `14.rule-not-applied-when-condition-not-match.flow.yaml`
-- [ ] `15.suggested-rule-applies-category.flow.yaml`
+- [x] `flows/rules/02.rules-create-basic.flow.yaml` - FIXED (coordinate-based taps)
+- [x] `flows/rules/03.rules-create-multiple-conditions.flow.yaml` - FIXED
+- [x] `flows/rules/04.rules-create-multiple-actions.flow.yaml` - FIXED
+- [x] `flows/rules/05.rules-edit.flow.yaml` - FIXED
+- [x] `flows/rules/06.rules-delete.flow.yaml` - FIXED
+- [x] `flows/rules/07.rules-toggle-enabled.flow.yaml` - FIXED
+- [x] `flows/rules/08.rules-all-field-types.flow.yaml` - FIXED
+- [x] `flows/rules/09.rule-applies-category.flow.yaml` - FIXED
+- [x] `flows/rules/10.rule-applies-tag.flow.yaml` - FIXED
+- [x] `flows/rules/11.rule-applies-multiple-actions.flow.yaml` - FIXED
+- [x] `flows/rules/12.disabled-rule-not-applied.flow.yaml` - FIXED
+- [x] `flows/rules/13.rule-apply-to-existing-toggle.flow.yaml` - FIXED
+- [x] `flows/rules/14.rule-not-applied-when-condition-not-match.flow.yaml` - FIXED
+- [x] `flows/rules/15.suggested-rule-applies-category.flow.yaml` - FIXED (requires CSV file setup)
 
 ## Key Issue: Maestro iOS Bottom Sheet Detection
 
@@ -42,8 +38,9 @@
 - Tag selector bottom sheet
 - Field selector bottom sheets
 - Operator selector bottom sheets
+- Action type selector bottom sheets
 
-**Workaround pattern:**
+**Workaround pattern (applied to all tests):**
 ```yaml
 # Instead of:
 - tapOn:
@@ -70,12 +67,21 @@
 - `RuleForm.Page` - Form container
 - `RuleForm.Footer.SubmitButton` - Create/Save button
 - `RuleForm.Condition.{index}.ValueInput` - Condition value input
+- `RuleForm.Condition.{index}.FieldSelector` - Field selector
+- `RuleForm.Condition.{index}.OperatorSelector` - Operator selector
+- `RuleForm.ConditionSection.AddButton` - Add condition button
 - `RuleForm.Action.{index}.CategorySelector` - Category selector
 - `RuleForm.Action.{index}.TagSelector` - Tag selector
+- `RuleForm.Action.{index}.TypeSelector` - Action type selector
+- `RuleForm.ActionSection.AddButton` - Add action button
+- `RuleForm.ApplyToExistingToggle` - Apply to existing toggle
 
 ### Suggest Rule
 - `SuggestRule.BottomSheet` - Suggestion modal
+- `SuggestRule.AddRuleButton` - Add rule button on transaction form
 - `SuggestRule.CreateRuleButton` - Quick create button
+- `SuggestRule.ConditionChip.COMMENT` - Comment condition chip
+- `SuggestRule.ApplyToExistingToggle` - Apply to existing toggle
 
 ## Commands
 
@@ -86,25 +92,13 @@ APP_ID=com.vitalyiegorov.budgie maestro test flows/setup/
 # Run single test
 APP_ID=com.vitalyiegorov.budgie maestro test flows/rules/01.rules-list-empty.flow.yaml
 
-# Run all rules tests (will fail until fixed)
+# Run all rules tests
 APP_ID=com.vitalyiegorov.budgie maestro test flows/rules/
 ```
 
-## Fix Strategy for Remaining Tests
+## Fix Patterns Applied
 
-1. **For each test file:**
-   - Replace `tapOn: text: 'X'` in bottom sheets with coordinate taps
-   - Replace `assertVisible: text: 'X'` with `assertVisible: id: 'X'` where possible
-   - Add delay swipes before bottom sheet interactions
-   - Use `RulesPage.CreateButton` testID instead of `ActionItem.0`
-
-2. **Coordinate positions (approximate):**
-   - First list item in bottom sheet: `50%, 28%`
-   - Second list item: `50%, 38%`
-   - Submit/Create button: `75%, 95%`
-   - Input field in simple bottom sheet: `50%, 73%` (category) or `50%, 82%` (tag)
-
-3. **Pattern for opening FAB and creating rule:**
+1. **FAB menu pattern:**
 ```yaml
 - tapOn:
     id: 'CreateTransactionTrigger'
@@ -117,8 +111,35 @@ APP_ID=com.vitalyiegorov.budgie maestro test flows/rules/
     id: 'RulesPage.CreateButton'
 ```
 
+2. **Bottom sheet selection:**
+```yaml
+- tapOn:
+    id: 'RuleForm.Action.0.CategorySelector'
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first item (around 28% from top)
+- tapOn:
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
+```
+
+3. **Coordinate positions:**
+   - First list item in bottom sheet: `50%, 28%`
+   - Second list item: `50%, 38%`
+   - Submit button: Use testID `RuleForm.Footer.SubmitButton`
+
 ## Notes
 
 - Tests run in parallel by default with `maestro test flows/rules/` - this can cause interference
 - Always navigate to Home first to ensure consistent state
-- Test 15 requires CSV file pre-loaded in simulator for suggested rules
+- Test 15 requires CSV file pre-loaded in simulator for suggested rules:
+  ```bash
+  xcrun simctl addmedia booted tests/app-tests/fixtures/test-transactions.csv
+  ```

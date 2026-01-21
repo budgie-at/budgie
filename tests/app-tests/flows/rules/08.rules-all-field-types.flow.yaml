@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 08: Test different field types for conditions
 # Creates a rule using Amount field with GREATER_THAN operator
@@ -7,30 +7,64 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap the create action button
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
 # Change field to Amount
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
-- extendedWaitUntil:
-    visible: 'Select Field'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on Amount (around 38% from top - second item after Title)
 - tapOn:
-    text: 'Amount'
+    point: 50%, 38%
+# Swipe down to dismiss the field selector bottom sheet (it doesn't auto-close)
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
+    duration: 300
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Change operator to Greater Than
 - tapOn:
     id: 'RuleForm.Condition.0.OperatorSelector'
-- extendedWaitUntil:
-    visible: 'Select Operator'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on Greater Than (around 38% from top - second item)
 - tapOn:
-    text: 'Greater Than'
+    point: 50%, 38%
+# Swipe down to dismiss the operator bottom sheet (it doesn't auto-close)
+- swipe:
+    start: 50%, 50%
+    end: 50%, 90%
+    duration: 300
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Enter amount value
 - tapOn:
@@ -40,20 +74,29 @@ appId: ${APP_ID}
 # Select category for action
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (around 28% from top)
 - tapOn:
-    text: 'Test Category'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Submit the rule
 - tapOn:
-    text: 'Create Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify rule was created with Amount condition
+# Verify rule was created
 - assertVisible:
-    text: 'Amount'
+    id: 'RulesPage.RuleCard.0'

@@ -19,12 +19,13 @@ interface SearchableListBottomSheetProps<T> {
     readonly index?: number;
 
     readonly search: string;
+    readonly inputTestID?: string;
     readonly onSearchChange: (value: string) => void;
     readonly searchPlaceholder: string;
 
     readonly data: T[];
     readonly keyExtractor: (item: T, index: number) => string;
-    readonly renderItem: ({ item }: { item: T }) => JSX.Element;
+    readonly renderItem: ({ item }: { item: T; index: number }) => JSX.Element;
 
     readonly emptyTitle: string;
     readonly emptyIcon?: UserIconNameEnum;
@@ -71,6 +72,7 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
         rightActionIcon,
         rightActionOnPress,
         footerComponent,
+        inputTestID,
         children
     } = props;
 
@@ -83,6 +85,7 @@ export const SearchableListBottomSheet = <T,>(props: SearchableListBottomSheetPr
                 onChangeText={onSearchChange}
                 placeholder={searchPlaceholder}
                 value={search}
+                testID={inputTestID}
                 rightActionIcon={rightActionIcon}
                 rightActionOnPress={rightActionOnPress}
             />

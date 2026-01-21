@@ -10,12 +10,13 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 interface Props extends ComponentProps<typeof BottomSheetTextInput> {
+    readonly inputTestID?: string;
     readonly inputClassName?: string;
     readonly rightActionIcon?: UserIconNameEnum;
     readonly rightActionOnPress?: () => void;
 }
 
-export const BottomSheetSearch = ({ className, inputClassName, rightActionIcon, rightActionOnPress, ...rest }: Props) => (
+export const BottomSheetSearch = ({ className, inputClassName, inputTestID, rightActionIcon, rightActionOnPress, ...rest }: Props) => (
     <View className={cn('py-3xl px-xl border-b border-b-secondary-corner', className)}>
         <View className="flex-row items-center gap-x-md">
             <BottomSheetTextInput
@@ -23,6 +24,7 @@ export const BottomSheetSearch = ({ className, inputClassName, rightActionIcon, 
                     'flex-1 rounded-5xl bg-secondary-background h-[44px] px-xl border border-secondary-corner placeholder-secondary-reverse-foreground text-primary',
                     inputClassName
                 )}
+                testID={inputTestID}
                 {...rest}
             />
             {isDefined(rightActionIcon) && isDefined(rightActionOnPress) && (

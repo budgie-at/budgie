@@ -5,6 +5,7 @@ import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-she
 import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 
 interface RuleSelectorOption<T> {
     value: T;
@@ -36,6 +37,7 @@ export const RuleSelectorSheet = <T,>({ ref, title, options, selectedValue, onSe
                         title={option.label}
                         subtitle={option.subtitle}
                         iconSlot={option.iconSlot}
+                        testID={RuleFormSelectors.SelectorCard(String(option.value))}
                     />
                 ))}
             </View>

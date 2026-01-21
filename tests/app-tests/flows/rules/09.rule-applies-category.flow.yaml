@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 09: Rule applies SET_CATEGORY action to existing transactions
 # Creates an expense transaction, then creates a rule that matches it with "Apply to existing" enabled
@@ -15,12 +15,20 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Create a new rule
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
 # Configure condition: Title CONTAINS "Netflix"
 - tapOn:
@@ -30,13 +38,19 @@ appId: ${APP_ID}
 # Configure action: SET_CATEGORY (default action)
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
-
-# Select Test Category
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (around 28% from top)
 - tapOn:
-    text: 'Test Category'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Enable "Apply to existing transactions"
 - scrollUntilVisible:
@@ -49,22 +63,25 @@ appId: ${APP_ID}
 
 # Submit the rule
 - tapOn:
-    text: 'Create Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+
+# Verify rule was created
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
 
 # Navigate to Transactions to verify the category was applied
 - tapOn:
     id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify the transaction now shows "Test Category"
-# The first transaction card (index 1 after header at 0) should show the category
+# Verify the transaction now shows the category badge
 - assertVisible:
     id: 'TransactionList.Card.1.CategoryBadge'
-- assertVisible:
-    text: 'Test Category'

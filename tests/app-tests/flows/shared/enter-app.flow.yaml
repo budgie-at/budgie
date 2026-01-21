@@ -1,0 +1,36 @@
+appId: com.vitalyiegorov.budgie
+---
+# Setup: Create a test account for rule testing
+# This creates a "Test Account" (Savings/Cash type)
+
+# Clear app data and relaunch for a clean state
+- clearState
+- launchApp
+
+# Wait for the app to load - could show dev server launcher, developer menu, or home screen
+# Try to handle all possible states by checking what appears first
+- runFlow:
+    when:
+      visible: 'http://localhost:8081'
+    commands:
+      - tapOn: 'http://localhost:8081'
+
+# Wait a moment for any menus to appear after connecting
+- waitForAnimationToEnd
+
+# Dismiss developer menu welcome if shown - tap the Continue button
+- tapOn:
+    text: 'Continue'
+    optional: true
+
+# Wait a moment for the developer tools menu to potentially appear
+- waitForAnimationToEnd
+
+# Dismiss dev tools menu if shown (tap X button at top-right)
+# Only tap if the dev tools menu is actually visible (check for "TOOLS" section)
+- runFlow:
+    when:
+      visible: 'TOOLS'
+    commands:
+      - tapOn:
+          point: '90%,52%'

@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 07: Toggle rule enabled/disabled
 # Toggles the enabled state of the first rule
@@ -16,14 +16,20 @@ appId: ${APP_ID}
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 
 # Wait for state change
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.RuleCard.0.EnabledSwitch'
-    timeout: 1000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1000
 
 # Toggle back to enabled
 - tapOn:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
+
+# Wait for state change
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1000
 
 # Verify rule is still visible
 - assertVisible:

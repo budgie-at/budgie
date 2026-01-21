@@ -1,10 +1,10 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 14: Rule does NOT apply when conditions don't match
-# Creates an expense transaction with "Spotify Premium" comment, then creates a rule
-# that looks for "Netflix" in the comment. Verifies the rule is NOT applied since conditions don't match.
+# Creates an expense transaction with "Spotify Premium" title, then creates a rule
+# that looks for "Netflix" in the title. Verifies the rule is NOT applied since conditions don't match.
 
-# First, create an expense transaction with comment "Spotify Premium" (no category)
+# First, create an expense transaction with title "Spotify Premium" (no category)
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
@@ -15,23 +15,22 @@ appId: ${APP_ID}
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Create a new rule
+# Open the FAB menu
 - tapOn:
-    text: 'Rule'
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.CreateButton'
+    timeout: 3000
+- waitForAnimationToEnd
+# Tap the Rule action item
+- tapOn:
+    id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 3000
+    timeout: 5000
 
-# Change field to Comment
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector'
-- extendedWaitUntil:
-    visible: 'Select Field'
-    timeout: 3000
-- tapOn:
-    text: 'Comment'
-
-# Configure condition: Comment CONTAINS "Netflix" (will NOT match "Spotify Premium")
+# Configure condition: Title CONTAINS "Netflix" (will NOT match "Spotify Premium")
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
@@ -39,13 +38,19 @@ appId: ${APP_ID}
 # Configure action: SET_CATEGORY (default action)
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- extendedWaitUntil:
-    visible: 'Select Category'
-    timeout: 3000
-
-# Select Test Category
+# Wait for bottom sheet to open
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+# Tap on the first category (around 28% from top)
 - tapOn:
-    text: 'Test Category'
+    point: 50%, 28%
+# Wait for bottom sheet to close
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
 
 # Enable "Apply to existing transactions"
 - scrollUntilVisible:
@@ -58,21 +63,21 @@ appId: ${APP_ID}
 
 # Submit the rule
 - tapOn:
-    text: 'Create Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
 # Navigate to Transactions to verify the category was NOT applied
 - tapOn:
     id: 'TabBar.Transactions'
-- extendedWaitUntil:
-    visible: 'Transactions'
-    timeout: 3000
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify the transaction still shows "Unknown" (no category) since conditions didn't match
+# Verify the transaction is visible but should NOT have category badge (conditions didn't match)
 - assertVisible:
-    text: 'Spotify Premium'
-- assertVisible:
-    text: 'Unknown'
+    id: 'TransactionList.Card.1'

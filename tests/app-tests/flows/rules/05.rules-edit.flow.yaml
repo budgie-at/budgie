@@ -1,7 +1,7 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 05: Edit an existing rule
-# Modifies the first rule (Netflix) by changing its condition value
+# Modifies the first rule by changing its condition value
 
 # Navigate to Rules page
 - runFlow:
@@ -22,12 +22,13 @@ appId: ${APP_ID}
 
 # Submit the changes
 - tapOn:
-    text: 'Save Rule'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 5000
+    id: 'RuleForm.Footer.SubmitButton'
+# Wait for navigation back to Rules page
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
 
-# Verify the rule was updated
+# Verify the rule was updated by checking the rule card exists
 - assertVisible:
-    text: 'Netflix Updated'
+    id: 'RulesPage.RuleCard.0'

@@ -1,10 +1,14 @@
 import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useRef } from 'react';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
-import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
-import { RuleActionBottomSheetSelector } from '../rule-action-bottom-sheet-selector/rule-action-bottom-sheet-selector';
-import { RuleIconSlot } from '../rule-icon-slot/rule-icon-slot';
+import { isDefined } from '@rnw-community/shared';
+
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
+import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
 
 interface Props {
     readonly index: number;
@@ -15,29 +19,38 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
 
+    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
+
     const categoryId = useWatch({ control, name: `actions.${index}.categoryId` });
-    const { categories } = useSearchCategoriesQuery('', true);
+    const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
 
-    const selectedCategory = categories.find(category => category.id === categoryId);
-    const options = categories.map(category => ({
-        value: category.id,
-        label: category.title,
-        iconSlot: <RuleIconSlot icon={category.icon} />
-    }));
+    const handleOpen = () => bottomSheetRef.current?.open();
 
-    const renderSelector = ({
-        field: { value, onChange }
-    }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.categoryId`>) => (
-        <RuleActionBottomSheetSelector
-            value={value}
-            onChange={onChange}
-            options={options}
-            label={t`Category`}
-            sheetTitle={t`Select Category`}
-            displayValue={selectedCategory?.title ?? t`Select Category`}
-            testID={testID}
-        />
-    );
+    const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.categoryId`>) => {
+        const handleSelect = (id: number | null) => {
+            if (isDefined(id)) {
+                onChange(id);
+                void bottomSheetRef.current?.dismiss();
+            }
+        };
+
+        return (
+            <>
+                <RuleSelectorField
+                    label={t`Category`}
+                    value={selectedCategory?.title ?? t`Select Category`}
+                    onPress={handleOpen}
+                    testID={testID}
+                />
+                <CategorySelectorBottomSheet
+                    ref={bottomSheetRef}
+                    variant="primary"
+                    selectedCategory={selectedCategory ?? null}
+                    onSelect={handleSelect}
+                />
+            </>
+        );
+    };
 
     return <Controller control={control} name={`actions.${index}.categoryId`} render={renderSelector} />;
 };

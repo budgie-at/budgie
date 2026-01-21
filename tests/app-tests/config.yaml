@@ -10,6 +10,7 @@ executionOrder:
   flowsOrder:
     - 01.smoke-test.flow
     # Setup flows
+    - setup/00.enter-app.flow
     - setup/00.setup-account.flow
     - setup/00.setup-category.flow
     - setup/00.setup-tag.flow

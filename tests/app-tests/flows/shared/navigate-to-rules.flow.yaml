@@ -1,5 +1,8 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
+# Launch app to ensure it's running
+- launchApp
+
 # Navigate to Home first to ensure consistent state
 - tapOn:
     id: 'TabBar.Home'
@@ -25,4 +28,4 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
-    timeout: 3000
+    timeout: 10000

@@ -14,6 +14,7 @@ import { sortSelectedFirst } from '../../../@generic/utils/sort-selected-first.u
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
+import { CategoryPickerBottomSheetSelectors } from '../../../@e2e/selectors/category-picker-bottom-sheet.selector';
 
 interface Props {
     readonly description?: string;
@@ -76,7 +77,7 @@ export const CategorySelectorBottomSheet = ({ ref, description, excludeCategoryI
     ) : null;
 
     const handleEmptySelect = emptyFn;
-    const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
+    const renderItem = ({ item, index }: { item: FlatListDataItem<CategoryEntityInterface>; index: number }) =>
         item.isEmpty ? (
             <CategorySelectorCard
                 className="opacity-0"
@@ -86,9 +87,11 @@ export const CategorySelectorBottomSheet = ({ ref, description, excludeCategoryI
                 variant={variant}
                 icon={UserIconNameEnum.Circle}
                 id={0}
+                testID={CategoryPickerBottomSheetSelectors.Card(index)}
             />
         ) : (
             <CategorySelectorCard
+                testID={CategoryPickerBottomSheetSelectors.Card(index)}
                 isSelected={item.id === selectedCategory?.id}
                 onSelect={handleSelect}
                 title={item.title}
@@ -111,6 +114,7 @@ export const CategorySelectorBottomSheet = ({ ref, description, excludeCategoryI
                 emptyDescription={t`Try a different search term`}
                 emptyTitle={t`No categories found`}
                 data={data}
+                inputTestID={CategoryPickerBottomSheetSelectors.Input}
                 flatListProps={flatListProps}
                 headerContent={headerContent}
                 rightActionIcon={UserIconNameEnum.Plus}

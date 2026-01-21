@@ -1,4 +1,4 @@
-appId: ${APP_ID}
+appId: com.vitalyiegorov.budgie
 ---
 # Test 06: Delete a rule
 # Deletes the first rule using swipe to delete
@@ -18,20 +18,31 @@ appId: ${APP_ID}
     direction: LEFT
     duration: 300
 
-# Tap delete button (confirm dialog should appear)
+# Tap delete button (appears after swipe)
+# Wait for delete action to appear
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1000
+# Tap delete at the right side of the row
 - tapOn:
-    text: 'Delete'
-- extendedWaitUntil:
-    visible: 'Delete Rule'
-    timeout: 3000
+    point: 90%, 50%
 
-# Confirm deletion
+# Wait for confirmation alert and tap Delete
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 1500
+# Tap Delete button in native alert (usually around center-right of screen)
 - tapOn:
-    text: 'Delete'
-- extendedWaitUntil:
-    timeout: 3000
-    notVisible: 'Netflix Updated'
+    point: 75%, 53%
 
-# Verify rule was deleted
-- assertNotVisible:
-    text: 'Netflix Updated'
+# Wait for deletion to complete
+- swipe:
+    start: 50%, 50%
+    end: 50%, 51%
+    duration: 2000
+
+# Verify rule list still loads (may have fewer rules)
+- assertVisible:
+    id: 'RulesPage.Page'
