@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.15.0](https://github.com/budgie-at/budgie/compare/v2.14.0...v2.15.0) (2026-01-21)
+
+### Bug Fixes
+
+- **app:** add account layout for proper focus event handling ([1765d72](https://github.com/budgie-at/budgie/commit/1765d72971becf6903f9ebee6692f469788e98b8))
+- **app:** improve FAB animation speed and align with menu position ([b60b881](https://github.com/budgie-at/budgie/commit/b60b8812a7cfa4ea0700b900aad298d0996721a4))
+- **app:** make FAB animation subtler and 2x faster ([d9d7d22](https://github.com/budgie-at/budgie/commit/d9d7d22114722d45229e1f5e0367e1949d3f5cee))
+- **app:** move account details to main stack for reliable account preselection ([76521e7](https://github.com/budgie-at/budgie/commit/76521e7ed5e51ee3008631a3ad5230a86eebd002))
+- **app:** preselect account when creating transaction from account screen ([0b3e224](https://github.com/budgie-at/budgie/commit/0b3e224d1554722afdd74253d8fd1acc68a52c04)), closes [#271](https://github.com/budgie-at/budgie/issues/271)
+- **app:** remove redundant FAB component ([90f94f8](https://github.com/budgie-at/budgie/commit/90f94f8282a26e544037263fe22a1a51cf204bb7))
+
+### Features
+
+- **app:** add animated FAB to account details page ([8cc0047](https://github.com/budgie-at/budgie/commit/8cc00477075a98a395cc285d5901c2a0c534c0ae))
+- **app:** add FAB with create actions menu to account details ([e1fc0ef](https://github.com/budgie-at/budgie/commit/e1fc0efb28d78b35b417bd02845dd89a7c2dc79f)), closes [#271](https://github.com/budgie-at/budgie/issues/271)
+
 # [2.14.0](https://github.com/budgie-at/budgie/compare/v2.13.2...v2.14.0) (2026-01-18)
 
 ### Bug Fixes
