@@ -1,19 +1,12 @@
 import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CreateTransactionTrigger } from '../../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
-const FAB_ANIMATION_DELAY = 300;
-const FAB_SPRING_CONFIG = { damping: 12, stiffness: 180 };
-
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        right: 16
-    }
-});
+const FAB_ANIMATION_DELAY = 150;
+const FAB_SPRING_CONFIG = { damping: 18, stiffness: 280 };
 
 interface Props {
     readonly isMenuOpen: boolean;
@@ -29,11 +22,13 @@ export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
     }, [scale]);
 
     const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-    const containerStyle = [styles.container, { bottom: bottom + 16 }, animatedStyle];
+    const containerStyle = { paddingBottom: bottom };
 
     return (
-        <Animated.View style={containerStyle} pointerEvents="box-none">
-            <CreateTransactionTrigger isOpen={isMenuOpen} onPress={onPress} />
-        </Animated.View>
+        <View className="absolute right-0 bottom-0 px-lg pb-lg" style={containerStyle} pointerEvents="box-none">
+            <Animated.View style={animatedStyle}>
+                <CreateTransactionTrigger isOpen={isMenuOpen} onPress={onPress} />
+            </Animated.View>
+        </View>
     );
 };
