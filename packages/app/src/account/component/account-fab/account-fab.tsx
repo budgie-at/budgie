@@ -5,8 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CreateTransactionTrigger } from '../../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
-const FAB_ANIMATION_DELAY = 150;
-const FAB_SPRING_CONFIG = { damping: 18, stiffness: 280 };
+const FAB_ANIMATION_DELAY = 75;
+const FAB_INITIAL_SCALE = 0.85;
+const FAB_SPRING_CONFIG = { damping: 20, stiffness: 400 };
 
 interface Props {
     readonly isMenuOpen: boolean;
@@ -15,7 +16,7 @@ interface Props {
 
 export const AccountFab = ({ isMenuOpen, onPress }: Props) => {
     const { bottom } = useSafeAreaInsets();
-    const scale = useSharedValue(0);
+    const scale = useSharedValue(FAB_INITIAL_SCALE);
 
     useEffect(() => {
         scale.value = withDelay(FAB_ANIMATION_DELAY, withSpring(1, FAB_SPRING_CONFIG));
