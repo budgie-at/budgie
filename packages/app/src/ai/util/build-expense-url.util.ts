@@ -4,8 +4,9 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
-export const buildExpenseUrl = (transaction: AITransactionInterface, accountId: number | undefined): Href => {
+export const buildExpenseUrl = (transaction: AITransactionInterface, defaultAccountId: number | undefined): Href => {
     const params = new URLSearchParams();
+    const accountId = transaction.account?.id ?? defaultAccountId;
 
     if (isPositiveNumber(transaction.amount)) {
         params.set('amount', String(transaction.amount));
@@ -15,6 +16,9 @@ export const buildExpenseUrl = (transaction: AITransactionInterface, accountId: 
     }
     if (isDefined(accountId)) {
         params.set('accountId', String(accountId));
+    }
+    if (isDefined(transaction.currency)) {
+        params.set('currency', transaction.currency);
     }
     if (isNotEmptyString(transaction.comment)) {
         params.set('comment', transaction.comment);
