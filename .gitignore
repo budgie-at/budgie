@@ -55,3 +55,4 @@ app*.tar.gz
 .env
 .worktrees
 nativewind-env.d.ts
+docs/plans
