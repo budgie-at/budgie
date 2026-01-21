@@ -9,9 +9,8 @@ interface Props {
 
 export const CreateActionProvider = ({ children }: Props) => {
     const [createAction, setCreateAction] = useState<CreateActionInterface | null>(null);
-    const [accountId, setAccountId] = useState<number | null>(null);
 
-    const value = useMemo(() => ({ createAction, setCreateAction, accountId, setAccountId }), [createAction, accountId]);
+    const value = useMemo(() => ({ createAction, setCreateAction }), [createAction]);
 
     return <CreateActionContext value={value}>{children}</CreateActionContext>;
 };
