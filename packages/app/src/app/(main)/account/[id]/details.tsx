@@ -17,6 +17,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
+import { AccountDetailsFab } from '../../../../account/component/account-details-fab/account-details-fab';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
 import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
@@ -119,6 +120,8 @@ export default function AccountDetails() {
             </View>
 
             <TransactionList accountId={id} footerSpacerMultiplier={3} />
+
+            <AccountDetailsFab />
         </Page>
     );
 }
