@@ -9,8 +9,11 @@ interface Props {
 
 export const CreateActionProvider = ({ children }: Props) => {
     const [createAction, setCreateAction] = useState<CreateActionInterface | null>(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const value = { createAction, setCreateAction };
+    const openMenu = () => void setIsMenuOpen(true);
 
-    return <CreateActionContext.Provider value={value}>{children}</CreateActionContext.Provider>;
+    const value = { createAction, setCreateAction, isMenuOpen, openMenu, setIsMenuOpen };
+
+    return <CreateActionContext value={value}>{children}</CreateActionContext>;
 };
