@@ -4,6 +4,7 @@ import { WHISPER_BASE, useSpeechToText } from 'react-native-executorch';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { LFM25_GENERATION_CONFIG } from '../constant/onnx-llm.constant';
 import { LlmContext, LlmInterface } from '../context/llm.context';
 import { lfm25InferenceService } from '../onnx/lfm25-inference.service';
 import { lfm25ModelDownloadService } from '../onnx/lfm25-model-download.service';
@@ -78,10 +79,7 @@ const useOnnxLlm = (): LlmInterface => {
             const { eosToken } = lfm25TokenizerService.getSpecialTokens();
 
             const generatedTokens = await lfm25InferenceService.generate(inputIds, {
-                maxNewTokens: 256,
-                temperature: 0.05,
-                topK: 50,
-                repetitionPenalty: 1.05,
+                ...LFM25_GENERATION_CONFIG,
                 eosTokenId: eosToken
             });
 

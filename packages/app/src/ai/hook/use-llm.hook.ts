@@ -1,5 +1,4 @@
- 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useLlmContext } from '../context/llm.context';
 
@@ -18,6 +17,10 @@ interface UseLlmReturn {
 export const useLlm = (config: UseLlmConfig): UseLlmReturn => {
     const { llm } = useLlmContext();
     const systemPromptRef = useRef(config.systemPrompt);
+
+    useEffect(() => {
+        systemPromptRef.current = config.systemPrompt;
+    }, [config.systemPrompt]);
 
     const sendMessage = async (message: string): Promise<string> => llm.generate(systemPromptRef.current, message);
 
