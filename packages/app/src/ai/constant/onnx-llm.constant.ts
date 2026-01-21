@@ -1,6 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-export const LFM25_MODEL_ID = 'LiquidAI/LFM2.5-1.2B-Instruct';
-export const LFM25_MODEL_PATH = 'lfm25-1.2b-q4.onnx';
+export const LFM25_MODEL_ID = 'LiquidAI/LFM2.5-1.2B-Instruct-ONNX';
+export const LFM25_MODEL_PATH = 'model_q4.onnx';
 
 export const LFM25_SPECIAL_TOKENS = {
     bosToken: 0,
