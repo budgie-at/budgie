@@ -15,7 +15,7 @@ import { CreateTransactionTrigger } from '../../transaction/components/create-tr
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
-    const { accountId, isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
+    const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isAvailable: isAiAvailable } = useLlmContext();
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
 
@@ -60,7 +60,6 @@ export default function TabsLayout() {
                     <TabTrigger name="transactions" href="/transactions" />
                     <TabTrigger name="analytics" href="/analytics" />
                     <TabTrigger name="settings" href="/settings" />
-                    <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
                 </TabList>
 
                 <BlurGradient position="bottom">
@@ -75,7 +74,7 @@ export default function TabsLayout() {
             </Tabs>
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
-            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} accountId={accountId ?? void 0} />
+            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
             {isAiAvailable ? <VoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} /> : null}
         </VoiceInputContext>
     );
