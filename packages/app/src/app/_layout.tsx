@@ -103,6 +103,7 @@ export default function RootLayout() {
                                                         <Stack.Screen name="(main)/pin" />
                                                         <Stack.Screen name="(main)/create-account" />
 
+                                                        <Stack.Screen name="(main)/account/[id]/details" />
                                                         <Stack.Screen name="(main)/account/[id]/update" />
 
                                                         <Stack.Screen name="(main)/create-transaction/expense" />
