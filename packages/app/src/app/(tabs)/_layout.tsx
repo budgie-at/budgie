@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
 import { BlurGradient } from '../../@generic/component/blur-gradient/blur-gradient';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
-import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-input-overlay';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
@@ -15,7 +14,6 @@ import { CreateTransactionTrigger } from '../../transaction/components/create-tr
 
 export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
-    const { accountId } = useCreateActionContext();
     const { isAvailable: isAiAvailable } = useLlmContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
@@ -62,7 +60,6 @@ export default function TabsLayout() {
                     <TabTrigger name="transactions" href="/transactions" />
                     <TabTrigger name="analytics" href="/analytics" />
                     <TabTrigger name="settings" href="/settings" />
-                    <TabTrigger name="account/[id]/details" href="/account/[id]/details" />
                 </TabList>
 
                 <BlurGradient position="bottom">
@@ -77,7 +74,7 @@ export default function TabsLayout() {
             </Tabs>
 
             <AnimatedBackdrop isVisible={isBackdropVisible} onClose={handleBackdropClose} />
-            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} accountId={accountId ?? void 0} />
+            <CreateTransactionMenu isOpen={isTransactionMenuOpen} onClose={handleCloseMenu} />
             {isAiAvailable ? <VoiceInputOverlay isOpen={isVoiceInputOpen} onClose={handleCloseVoiceInput} /> : null}
         </VoiceInputContext>
     );
