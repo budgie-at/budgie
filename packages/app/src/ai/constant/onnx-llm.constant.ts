@@ -17,5 +17,6 @@ export const LFM25_GENERATION_CONFIG = {
     maxNewTokens: 256,
     temperature: 0.05,
     topK: 50,
+    topP: 0.9,
     repetitionPenalty: 1.05
 } as const;
