@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { buildSystemPrompt, getFewShotExamples, getLimitedCategories } from '../util/build-categorization-prompt.util';
+import { buildSystemPrompt, getLimitedCategories } from '../util/build-categorization-prompt.util';
 import { extractCategoryFromResponse } from '../util/extract-category-from-response.util';
 import { parseNumberFromMessage } from '../util/parse-number-words.util';
 
@@ -25,9 +25,8 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
     const { categories } = useAllCategoriesQuery();
 
     const systemPrompt = useMemo(() => buildSystemPrompt(categories), [categories]);
-    const initialMessageHistory = useMemo(() => getFewShotExamples(), []);
 
-    const llm = useLlm({ systemPrompt, initialMessageHistory });
+    const llm = useLlm({ systemPrompt });
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
