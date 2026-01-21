@@ -1,127 +1,91 @@
+/* eslint-disable no-await-in-loop, max-statements, no-plusplus, @typescript-eslint/no-unnecessary-condition, lingui/no-unlocalized-strings */
 import { InferenceSession, Tensor } from 'onnxruntime-react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { GenerationConfigInterface } from '../interface/generation-config.interface';
+
 type OnnxSession = InferenceSession;
 
-interface GenerationConfig {
-    maxNewTokens: number;
-    temperature: number;
-    topK: number;
-    repetitionPenalty: number;
-    eosTokenId: number;
-}
+class Lfm25InferenceService {
+    private session: OnnxSession | null = null;
+    private loadProgress = 0;
+    private loadError: string | null = null;
+    private isInterrupted = false;
 
-interface Lfm25InferenceInterface {
-    session: OnnxSession | null;
-    isLoaded: boolean;
-    loadProgress: number;
-    error: string | null;
-    load: (modelPath: string) => Promise<void>;
-    generate: (inputIds: number[], config: GenerationConfig) => Promise<number[]>;
-    interrupt: () => void;
-}
-
-let cachedSession: OnnxSession | null = null;
-let loadingProgress = 0;
-let loadError: string | null = null;
-let isInterrupted = false;
-
-const load = async (modelPath: string): Promise<void> => {
-    if (isDefined(cachedSession)) {
-        return;
+    get isLoaded(): boolean {
+        return isDefined(this.session);
     }
 
-    try {
-        loadingProgress = 0;
-        loadError = null;
-
-        cachedSession = await InferenceSession.create(modelPath, {
-            executionProviders: ['cpu'],
-            graphOptimizationLevel: 'all'
-        });
-
-        loadingProgress = 100;
-    } catch (e: unknown) {
-        loadError = getErrorMessage(e);
-        loadingProgress = 0;
-        throw e;
+    get progress(): number {
+        return this.loadProgress;
     }
-};
 
-const softmax = (logits: Float32Array, temperature: number): Float32Array => {
-    const scaled = new Float32Array(logits.length);
-    let maxVal = -Infinity;
+    get error(): string | null {
+        return this.loadError;
+    }
 
-    for (let i = 0; i < logits.length; i++) {
-        scaled[i] = logits[i] / temperature;
-        if (scaled[i] > maxVal) {
-            maxVal = scaled[i];
+    async load(modelPath: string): Promise<void> {
+        if (isDefined(this.session)) {
+            return;
+        }
+
+        try {
+            this.loadProgress = 0;
+            this.loadError = null;
+
+            this.session = await InferenceSession.create(modelPath, {
+                executionProviders: ['cpu'],
+                graphOptimizationLevel: 'all'
+            });
+
+            this.loadProgress = 100;
+        } catch (err: unknown) {
+            this.loadError = getErrorMessage(err);
+            this.loadProgress = 0;
+            throw err;
         }
     }
 
-    let sumExp = 0;
-    for (let i = 0; i < scaled.length; i++) {
-        scaled[i] = Math.exp(scaled[i] - maxVal);
-        sumExp += scaled[i];
-    }
+    async generate(inputIds: number[], config: GenerationConfigInterface): Promise<number[]> {
+        if (!isDefined(this.session)) {
+            throw new Error('Model not loaded');
+        }
 
-    for (let i = 0; i < scaled.length; i++) {
-        scaled[i] /= sumExp;
-    }
+        this.isInterrupted = false;
+        const generatedTokens: number[] = [];
+        let currentIds = [...inputIds];
 
-    return scaled;
-};
-
-const applyRepetitionPenalty = (logits: Float32Array, generatedTokens: number[], penalty: number): void => {
-    const seen = new Set(generatedTokens);
-    for (const tokenId of seen) {
-        if (tokenId < logits.length) {
-            if (logits[tokenId] > 0) {
-                logits[tokenId] /= penalty;
-            } else {
-                logits[tokenId] *= penalty;
+        for (let idx = 0; idx < config.maxNewTokens; idx++) {
+            if (this.isInterrupted) {
+                break;
             }
-        }
-    }
-};
 
-const sampleTopK = (probs: Float32Array, topK: number): number => {
-    const indexed = Array.from(probs).map((p, i) => ({ prob: p, idx: i }));
-    indexed.sort((a, b) => b.prob - a.prob);
+            const allTokens = [...inputIds, ...generatedTokens];
+            const nextToken = await this.generateNextToken(this.session, currentIds, allTokens, config);
 
-    const topKItems = indexed.slice(0, topK);
-    const topKSum = topKItems.reduce((sum, item) => sum + item.prob, 0);
+            if (nextToken === config.eosTokenId) {
+                break;
+            }
 
-    const random = Math.random() * topKSum;
-    let cumSum = 0;
-
-    for (const item of topKItems) {
-        cumSum += item.prob;
-        if (random <= cumSum) {
-            return item.idx;
-        }
-    }
-
-    return topKItems[0].idx;
-};
-
-const generate = async (inputIds: number[], config: GenerationConfig): Promise<number[]> => {
-    if (!isDefined(cachedSession)) {
-        throw new Error('Model not loaded');
-    }
-
-    isInterrupted = false;
-    const generatedTokens: number[] = [];
-    let currentIds = [...inputIds];
-
-    for (let i = 0; i < config.maxNewTokens; i++) {
-        if (isInterrupted) {
-            break;
+            generatedTokens.push(nextToken);
+            currentIds = [...allTokens, nextToken];
         }
 
+        return generatedTokens;
+    }
+
+    interrupt(): void {
+        this.isInterrupted = true;
+    }
+
+    private async generateNextToken(
+        session: OnnxSession,
+        currentIds: number[],
+        allTokens: number[],
+        config: GenerationConfigInterface
+    ): Promise<number> {
         const inputTensor = new Tensor('int64', BigInt64Array.from(currentIds.map(BigInt)), [1, currentIds.length]);
-
         const attentionMask = new Tensor('int64', BigInt64Array.from(currentIds.map(() => BigInt(1))), [1, currentIds.length]);
 
         const feeds: Record<string, Tensor> = {
@@ -129,56 +93,86 @@ const generate = async (inputIds: number[], config: GenerationConfig): Promise<n
             attention_mask: attentionMask
         };
 
-        const results = await cachedSession.run(feeds);
-        const logitsOutput = results.logits;
+        const results = await session.run(feeds);
+        const logitsKey = 'logits';
+        const logitsOutput = results[logitsKey];
 
         if (!isDefined(logitsOutput)) {
             throw new Error('No logits output from model');
         }
 
         const logitsData = logitsOutput.data as Float32Array;
-        const vocabSize = logitsOutput.dims[2];
+        const [vocabSize] = [logitsOutput.dims[2]];
         const lastTokenLogits = new Float32Array(vocabSize);
 
         const offset = (currentIds.length - 1) * vocabSize;
-        for (let j = 0; j < vocabSize; j++) {
-            lastTokenLogits[j] = logitsData[offset + j];
+        for (let jdx = 0; jdx < vocabSize; jdx++) {
+            lastTokenLogits[jdx] = logitsData[offset + jdx];
         }
 
-        applyRepetitionPenalty(lastTokenLogits, [...inputIds, ...generatedTokens], config.repetitionPenalty);
+        this.applyRepetitionPenalty(lastTokenLogits, allTokens, config.repetitionPenalty);
 
-        const probs = softmax(lastTokenLogits, config.temperature);
-        const nextToken = sampleTopK(probs, config.topK);
+        const probs = this.softmax(lastTokenLogits, config.temperature);
 
-        if (nextToken === config.eosTokenId) {
-            break;
-        }
-
-        generatedTokens.push(nextToken);
-        currentIds = [...inputIds, ...generatedTokens];
+        return this.sampleTopK(probs, config.topK);
     }
 
-    return generatedTokens;
-};
+    private softmax(logits: Float32Array, temperature: number): Float32Array {
+        const scaled = new Float32Array(logits.length);
+        let maxVal = -Infinity;
 
-const interrupt = (): void => {
-    isInterrupted = true;
-};
+        for (let idx = 0; idx < logits.length; idx++) {
+            scaled[idx] = logits[idx] / temperature;
+            if (scaled[idx] > maxVal) {
+                maxVal = scaled[idx];
+            }
+        }
 
-export const lfm25InferenceService: Lfm25InferenceInterface = {
-    get session() {
-        return cachedSession;
-    },
-    get isLoaded() {
-        return isDefined(cachedSession);
-    },
-    get loadProgress() {
-        return loadingProgress;
-    },
-    get error() {
-        return loadError;
-    },
-    load,
-    generate,
-    interrupt
-};
+        let sumExp = 0;
+        for (let idx = 0; idx < scaled.length; idx++) {
+            scaled[idx] = Math.exp(scaled[idx] - maxVal);
+            sumExp += scaled[idx];
+        }
+
+        for (let idx = 0; idx < scaled.length; idx++) {
+            scaled[idx] /= sumExp;
+        }
+
+        return scaled;
+    }
+
+    private applyRepetitionPenalty(logits: Float32Array, generatedTokens: number[], penalty: number): void {
+        const seen = new Set(generatedTokens);
+        for (const tokenId of seen) {
+            if (tokenId < logits.length) {
+                if (logits[tokenId] > 0) {
+                    logits[tokenId] /= penalty;
+                } else {
+                    logits[tokenId] *= penalty;
+                }
+            }
+        }
+    }
+
+    private sampleTopK(probs: Float32Array, topK: number): number {
+        const indexed = Array.from(probs).map((prob, idx) => ({ prob, idx }));
+        indexed.sort((first, second) => second.prob - first.prob);
+
+        const topKItems = indexed.slice(0, topK);
+        const topKSum = topKItems.reduce((sum, item) => sum + item.prob, 0);
+
+        const random = Math.random() * topKSum;
+        let cumSum = 0;
+
+        for (const item of topKItems) {
+            cumSum += item.prob;
+            if (random <= cumSum) {
+                return item.idx;
+            }
+        }
+
+        return topKItems[0].idx;
+    }
+}
+
+export const lfm25InferenceService = new Lfm25InferenceService();
