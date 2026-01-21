@@ -106,7 +106,7 @@ class Lfm25InferenceService {
 
         const probs = this.softmax(lastTokenLogits, config.temperature);
 
-        return this.sampleTopK(probs, config.topK);
+        return this.sampleTopKTopP(probs, config.topK, config.topP);
     }
 
     private softmax(logits: Float32Array, temperature: number): Float32Array {
@@ -146,24 +146,41 @@ class Lfm25InferenceService {
         }
     }
 
-    private sampleTopK(probs: Float32Array, topK: number): number {
+    private sampleTopKTopP(probs: Float32Array, topK: number, topP: number): number {
         const indexed = Array.from(probs).map((prob, idx) => ({ prob, idx }));
         indexed.sort((first, second) => second.prob - first.prob);
 
         const topKItems = indexed.slice(0, topK);
-        const topKSum = topKItems.reduce((sum, item) => sum + item.prob, 0);
+        const filteredItems = this.applyTopP(topKItems, topP);
 
-        const random = Math.random() * topKSum;
+        const totalProb = filteredItems.reduce((sum, item) => sum + item.prob, 0);
+        const random = Math.random() * totalProb;
         let cumSum = 0;
 
-        for (const item of topKItems) {
+        for (const item of filteredItems) {
             cumSum += item.prob;
             if (random <= cumSum) {
                 return item.idx;
             }
         }
 
-        return topKItems[0].idx;
+        return filteredItems[0].idx;
+    }
+
+    private applyTopP(items: Array<{ prob: number; idx: number }>, topP: number): Array<{ prob: number; idx: number }> {
+        let cumProb = 0;
+        const result: Array<{ prob: number; idx: number }> = [];
+
+        for (const item of items) {
+            result.push(item);
+            cumProb += item.prob;
+
+            if (cumProb >= topP) {
+                break;
+            }
+        }
+
+        return result;
     }
 }
 

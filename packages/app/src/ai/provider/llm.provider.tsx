@@ -4,7 +4,7 @@ import { WHISPER_BASE, useSpeechToText } from 'react-native-executorch';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { LFM25_GENERATION_CONFIG } from '../constant/onnx-llm.constant';
+import { LFM25_CHAT_MARKERS, LFM25_GENERATION_CONFIG } from '../constant/onnx-llm.constant';
 import { LlmContext, LlmInterface } from '../context/llm.context';
 import { lfm25InferenceService } from '../onnx/lfm25-inference.service';
 import { lfm25ModelDownloadService } from '../onnx/lfm25-model-download.service';
@@ -85,7 +85,7 @@ const useOnnxLlm = (): LlmInterface => {
 
             const decoded = await lfm25TokenizerService.decode(generatedTokens);
 
-            return decoded.replace(/<\|im_end\|>/gu, '').trim();
+            return decoded.replace(LFM25_CHAT_MARKERS.imEnd, '').trim();
         } catch (err: unknown) {
             setError(getErrorMessage(err));
             throw err;
