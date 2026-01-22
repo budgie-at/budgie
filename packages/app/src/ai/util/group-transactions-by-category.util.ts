@@ -42,17 +42,19 @@ export const groupTransactionsByCategory = (transactions: AITransactionInterface
     const [[mainCategoryId, mainData]] = sorted;
     const [mainTransaction] = mainData.transactions;
 
-    const entries: TransactionEntryInputInterface[] = sorted.slice(1).map(([categoryId, data]) => ({
+    const allEntries: TransactionEntryInputInterface[] = sorted.map(([categoryId, data]) => ({
         categoryId,
         amount: data.amount
     }));
 
+    const totalAmount = allEntries.reduce((sum, entry) => sum + entry.amount, 0);
+
     return {
         categoryId: mainCategoryId,
-        amount: mainData.amount,
+        amount: totalAmount,
         currency: mainTransaction.currency,
         account: mainTransaction.account,
         comment: mainTransaction.comment,
-        entries
+        entries: allEntries
     };
 };
