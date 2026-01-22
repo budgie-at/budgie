@@ -24,23 +24,30 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 import { transactionService } from '../../../transaction/service/transaction.service';
 /* jscpd:ignore-end */
 
-const parseEntriesParam = (entries: string): Array<{ categoryId: number; amount: number }> | undefined => {
+interface EntryParamInterface {
+    categoryId: number;
+    amount: number;
+}
+
+const isValidEntry = (item: unknown): item is EntryParamInterface =>
+    typeof item === 'object' &&
+    item !== null &&
+    'categoryId' in item &&
+    'amount' in item &&
+    typeof item.categoryId === 'number' &&
+    typeof item.amount === 'number';
+
+const parseEntriesParam = (entriesParam: string): EntryParamInterface[] | null => {
     try {
-        const parsed = JSON.parse(entries) as unknown;
+        const parsed = JSON.parse(entriesParam) as unknown;
         if (Array.isArray(parsed)) {
-            return parsed.filter(
-                (item): item is { categoryId: number; amount: number } =>
-                    typeof item === 'object' &&
-                    item !== null &&
-                    typeof item.categoryId === 'number' &&
-                    typeof item.amount === 'number'
-            );
+            return parsed.filter(isValidEntry);
         }
     } catch {
-        return undefined;
+        return null;
     }
 
-    return undefined;
+    return null;
 };
 
 /* jscpd:ignore-start */
@@ -58,7 +65,7 @@ export default function CreateExpenseTransactionPage() {
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
     const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
     const parsedAmount = isDefined(amount) && isPositiveNumber(Number(amount)) ? Number(amount) : void 0;
-    const parsedEntries = isDefined(entries) ? parseEntriesParam(entries) : undefined;
+    const parsedEntries = isDefined(entries) ? parseEntriesParam(entries) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
