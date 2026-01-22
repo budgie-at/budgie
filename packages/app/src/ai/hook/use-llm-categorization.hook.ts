@@ -1,21 +1,21 @@
-import { AccountWithInstrumentEntityInterface, CurrencyEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useMemo, useState } from 'react';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { LlmTransactionResponseInterface } from '../interface/llm-transaction-response.interface';
-import { buildSystemPrompt, getLimitedCategories } from '../util/build-categorization-prompt.util';
+import { buildCategorizationPrompt, extractAndMapResponse } from '../util/build-categorization-prompt.util';
 import { findAccountByCurrency } from '../util/find-account-by-currency.util';
-import { parseLlmTransactionResponse } from '../util/parse-llm-transaction-response.util';
 
+import { useCategoryMapping } from './use-category-mapping.hook';
 import { useLlm } from './use-llm.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
-/* eslint-disable lingui/no-unlocalized-strings -- Error messages are not user-facing */
+/* eslint-disable lingui/no-unlocalized-strings */
 class LlmParseError extends Error {
     constructor() {
         super('LLM parse error');
@@ -24,7 +24,7 @@ class LlmParseError extends Error {
 }
 /* eslint-enable lingui/no-unlocalized-strings */
 
-interface UseLlmCategorizationReturn {
+interface UseLlmCategorizationReturnInterface {
     status: CategorizationStatus;
     transaction: AITransactionInterface | null;
     error: string | null;
@@ -34,40 +34,32 @@ interface UseLlmCategorizationReturn {
     reset: () => void;
 }
 
-const parseCurrency = (currencyStr: string | undefined): CurrencyEnum | null => {
-    if (!isDefined(currencyStr)) {
-        return null;
-    }
-
-    const upperCurrency = currencyStr.toUpperCase();
-
-    return Object.values(CurrencyEnum).includes(upperCurrency as CurrencyEnum) ? (upperCurrency as CurrencyEnum) : null;
-};
-
-export const useLlmCategorization = (): UseLlmCategorizationReturn => {
+export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { categories } = useAllCategoriesQuery();
     const { accounts } = useSearchAccountsSortedQuery();
-    const systemPrompt = useMemo(() => buildSystemPrompt(categories), [categories]);
+    const language = useSetting('language');
+
+    const { mapping, isLoading: isMappingLoading } = useCategoryMapping(categories, language);
+    const systemPrompt = useMemo(() => buildCategorizationPrompt(mapping), [mapping]);
     const llm = useLlm({ systemPrompt });
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const limitedCategories = getLimitedCategories(categories);
-
     const buildTransaction = (
         prompt: string,
-        parsed: LlmTransactionResponseInterface,
+        categoryId: number,
+        amount: number,
         accountsList: AccountWithInstrumentEntityInterface[]
     ): AITransactionInterface => {
-        const currency = parseCurrency(parsed.currency);
+        const category = categories.find(cat => cat.id === categoryId) ?? null;
 
         return {
-            category: limitedCategories[parsed.categoryId - 1] ?? null,
-            amount: parsed.amount,
-            currency,
-            account: findAccountByCurrency(accountsList, currency),
+            category,
+            amount,
+            currency: null,
+            account: findAccountByCurrency(accountsList, null),
             type: TransactionTypeEnum.EXPENSE,
             comment: prompt
         };
@@ -79,14 +71,14 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
         setTransaction(null);
 
         try {
-            const response = await llm.sendMessage(text);
-            const parsed = parseLlmTransactionResponse(response, text);
+            const rawResponse = await llm.sendMessage(text);
+            const mapped = extractAndMapResponse(rawResponse, mapping);
 
-            if (!isDefined(parsed)) {
+            if (!isDefined(mapped)) {
                 throw new LlmParseError();
             }
 
-            const result = buildTransaction(text, parsed, accounts);
+            const result = buildTransaction(text, mapped.categoryId, mapped.amount, accounts);
             setTransaction(result);
             setStatus('done');
 
@@ -109,7 +101,7 @@ export const useLlmCategorization = (): UseLlmCategorizationReturn => {
         status,
         transaction,
         error,
-        isReady: llm.isReady,
+        isReady: llm.isReady && !isMappingLoading,
         downloadProgress: llm.downloadProgress,
         categorize,
         reset

@@ -67,6 +67,10 @@ const useOnnxLlm = (): LlmInterface => {
     }, []);
 
     const generate = async (systemPrompt: string, userMessage: string): Promise<string> => {
+        console.log(`[DEBUG] LlmProvider.generate called, isReady: ${isReady}`);
+        console.log(`[DEBUG] systemPrompt: ${systemPrompt.substring(0, 100)}...`);
+        console.log(`[DEBUG] userMessage: ${userMessage}`);
+
         if (!isReady) {
             throw new Error('Model not ready');
         }
@@ -75,22 +79,34 @@ const useOnnxLlm = (): LlmInterface => {
         setError(null);
 
         try {
+            console.log('[DEBUG] Building chat prompt...');
             const prompt = lfm25TokenizerService.buildChatPrompt([
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: userMessage }
             ]);
-            const inputIds = await lfm25TokenizerService.encode(prompt);
-            const { eosToken } = lfm25TokenizerService.getSpecialTokens();
+            console.log(`[DEBUG] Prompt built, length: ${prompt.length}`);
 
+            console.log('[DEBUG] Encoding prompt...');
+            const inputIds = await lfm25TokenizerService.encode(prompt);
+            console.log(`[DEBUG] Encoded, inputIds length: ${inputIds.length}`);
+
+            const { eosToken } = lfm25TokenizerService.getSpecialTokens();
+            console.log(`[DEBUG] EOS token: ${eosToken}`);
+
+            console.log('[DEBUG] Starting inference...');
             const generatedTokens = await lfm25InferenceService.generate(inputIds, {
                 ...LFM25_GENERATION_CONFIG,
                 eosTokenId: eosToken
             });
+            console.log(`[DEBUG] Inference complete, generated ${generatedTokens.length} tokens`);
 
+            console.log('[DEBUG] Decoding tokens...');
             const decoded = await lfm25TokenizerService.decode(generatedTokens);
+            console.log(`[DEBUG] Decoded: ${decoded}`);
 
             return decoded.replace(LFM25_CHAT_MARKERS.imEnd, '').trim();
         } catch (err: unknown) {
+            console.log(`[DEBUG] LlmProvider.generate error: ${getErrorMessage(err)}`);
             setError(getErrorMessage(err));
             throw err;
         } finally {

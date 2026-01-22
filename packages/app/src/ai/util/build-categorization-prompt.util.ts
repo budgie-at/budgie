@@ -4,11 +4,6 @@ import { ExpenseTypeMappingInterface } from '../interface/expense-type-mapping.i
 
 const FALLBACK_CATEGORY_ID = 1;
 const LEGACY_FALLBACK_CATEGORY_ID = 39;
-const MAX_CATEGORIES = 39;
-
-interface CategoryForPromptInterface {
-    title: string;
-}
 
 interface ParsedExpenseInterface {
     type: string;
@@ -98,22 +93,6 @@ Types: ${types}
 
 Output ONLY valid JSON: {"type":"X","amount":N}`;
 };
-
-export const buildSystemPrompt = (
-    _categories: CategoryForPromptInterface[]
-): string => `Parse expense. Output JSON with "type" and "amount".
-
-Types: food, restaurant, groceries, transport, fuel, car, entertainment, shopping, health, bills, subscription, travel, education, gifts, pets, sports, beauty, home, clothing, electronics, other
-
-Examples:
-"pizza 10" → {"type":"restaurant","amount":10}
-"uber 25" → {"type":"transport","amount":25}
-"gas 50" → {"type":"fuel","amount":50}
-"coffee 5" → {"type":"food","amount":5}
-"netflix 15" → {"type":"subscription","amount":15}
-"groceries 80" → {"type":"groceries","amount":80}
-
-Output ONLY valid JSON: {"type":"X","amount":N}`;
 /* eslint-enable lingui/no-unlocalized-strings */
 
 export const extractAndMapResponse = (
@@ -140,5 +119,3 @@ export const extractAndMapResponse = (
 
     return null;
 };
-
-export const getLimitedCategories = <T>(categories: T[]): T[] => categories.slice(0, MAX_CATEGORIES);

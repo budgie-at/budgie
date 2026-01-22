@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop, max-statements, no-plusplus, @typescript-eslint/no-unnecessary-condition, lingui/no-unlocalized-strings */
+/* eslint-disable no-console, no-await-in-loop, max-statements, no-plusplus, @typescript-eslint/no-unnecessary-condition, lingui/no-unlocalized-strings */
 import { InferenceSession, Tensor } from 'onnxruntime-react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -7,11 +7,42 @@ import { GenerationConfigInterface } from '../interface/generation-config.interf
 
 type OnnxSession = InferenceSession;
 
+const MODEL_CONFIG = {
+    hiddenSize: 2048,
+    numKvHeads: 8,
+    convCacheLength: 3,
+    layerTypes: [
+        'conv',
+        'conv',
+        'full_attention',
+        'conv',
+        'conv',
+        'full_attention',
+        'conv',
+        'conv',
+        'full_attention',
+        'conv',
+        'full_attention',
+        'conv',
+        'full_attention',
+        'conv',
+        'full_attention',
+        'conv'
+    ] as const
+} as const;
+
+interface KvCacheInterface {
+    convStates: Map<string, Tensor>;
+    kvStates: Map<string, Tensor>;
+}
+
 class Lfm25InferenceService {
     private session: OnnxSession | null = null;
     private loadProgress = 0;
     private loadError: string | null = null;
     private isInterrupted = false;
+    private kvCache: KvCacheInterface | null = null;
+    private pastSeqLength = 0;
 
     get isLoaded(): boolean {
         return isDefined(this.session);
@@ -39,6 +70,9 @@ class Lfm25InferenceService {
                 graphOptimizationLevel: 'all'
             });
 
+            console.log('[DEBUG] Model loaded. Input names:', this.session.inputNames);
+            console.log('[DEBUG] Model loaded. Output names:', this.session.outputNames);
+
             this.loadProgress = 100;
         } catch (err: unknown) {
             this.loadError = getErrorMessage(err);
@@ -48,44 +82,125 @@ class Lfm25InferenceService {
     }
 
     async generate(inputIds: number[], config: GenerationConfigInterface): Promise<number[]> {
+        console.log(`[DEBUG] InferenceService.generate called, inputIds length: ${inputIds.length}`);
+
         if (!isDefined(this.session)) {
+            console.log('[DEBUG] InferenceService: Session not loaded!');
             throw new Error('Model not loaded');
         }
 
         this.isInterrupted = false;
-        const allTokens = [...inputIds];
+        this.resetCache();
+
+        const generatedTokens: number[] = [];
+        let currentInputIds = inputIds;
+
+        console.log(`[DEBUG] InferenceService: Starting generation loop, maxNewTokens: ${config.maxNewTokens}`);
 
         for (let idx = 0; idx < config.maxNewTokens; idx++) {
             if (this.isInterrupted) {
+                console.log('[DEBUG] InferenceService: Interrupted');
                 break;
             }
 
-            const nextToken = await this.generateNextToken(this.session, allTokens, config);
+            try {
+                const nextToken = await this.generateNextToken(this.session, currentInputIds, config);
+                console.log(`[DEBUG] InferenceService: Generated token ${idx}: ${nextToken}`);
 
-            if (nextToken === config.eosTokenId) {
-                break;
+                if (nextToken === config.eosTokenId) {
+                    console.log('[DEBUG] InferenceService: EOS token reached');
+                    break;
+                }
+
+                generatedTokens.push(nextToken);
+                currentInputIds = [nextToken];
+            } catch (err: unknown) {
+                console.log(`[DEBUG] InferenceService: Error generating token ${idx}: ${getErrorMessage(err)}`);
+                throw err;
             }
-
-            allTokens.push(nextToken);
         }
 
-        return allTokens.slice(inputIds.length);
+        console.log(`[DEBUG] InferenceService: Generation complete, generated ${generatedTokens.length} tokens`);
+
+        return generatedTokens;
     }
 
     interrupt(): void {
         this.isInterrupted = true;
     }
 
-    private async generateNextToken(session: OnnxSession, allTokens: number[], config: GenerationConfigInterface): Promise<number> {
-        const inputTensor = new Tensor('int64', BigInt64Array.from(allTokens.map(BigInt)), [1, allTokens.length]);
-        const attentionMask = new Tensor('int64', BigInt64Array.from(allTokens.map(() => BigInt(1))), [1, allTokens.length]);
+    private resetCache(): void {
+        this.kvCache = this.initializeEmptyCache();
+        this.pastSeqLength = 0;
+    }
+
+    private initializeEmptyCache(): KvCacheInterface {
+        const convStates = new Map<string, Tensor>();
+        const kvStates = new Map<string, Tensor>();
+
+        const { hiddenSize, numKvHeads, convCacheLength } = MODEL_CONFIG;
+        const headDim = hiddenSize / 32;
+
+        const convIndices = [0, 1, 3, 4, 6, 7, 9, 11, 13, 15];
+        const attnIndices = [2, 5, 8, 10, 12, 14];
+
+        for (const convIdx of convIndices) {
+            const convTensor = new Tensor('float32', new Float32Array(1 * hiddenSize * convCacheLength).fill(0), [
+                1,
+                hiddenSize,
+                convCacheLength
+            ]);
+            convStates.set(`past_conv.${convIdx}`, convTensor);
+        }
+
+        for (const attnIdx of attnIndices) {
+            const keyTensor = new Tensor('float32', new Float32Array(0), [1, numKvHeads, 0, headDim]);
+            const valueTensor = new Tensor('float32', new Float32Array(0), [1, numKvHeads, 0, headDim]);
+            kvStates.set(`past_key_values.${attnIdx}.key`, keyTensor);
+            kvStates.set(`past_key_values.${attnIdx}.value`, valueTensor);
+        }
+
+        return { convStates, kvStates };
+    }
+
+    private async generateNextToken(session: OnnxSession, inputTokens: number[], config: GenerationConfigInterface): Promise<number> {
+        const seqLength = inputTokens.length;
+        const inputTensor = new Tensor('int64', BigInt64Array.from(inputTokens.map(BigInt)), [1, seqLength]);
+        const attentionMask = new Tensor('int64', BigInt64Array.from(Array(this.pastSeqLength + seqLength).fill(BigInt(1))), [
+            1,
+            this.pastSeqLength + seqLength
+        ]);
+        const positionIds = new Tensor('int64', BigInt64Array.from(inputTokens.map((_, idx) => BigInt(this.pastSeqLength + idx))), [
+            1,
+            seqLength
+        ]);
 
         const feeds: Record<string, Tensor> = {
             input_ids: inputTensor,
-            attention_mask: attentionMask
+            attention_mask: attentionMask,
+            position_ids: positionIds
         };
 
-        const results = await session.run(feeds);
+        if (isDefined(this.kvCache)) {
+            for (const [key, tensor] of this.kvCache.convStates) {
+                feeds[key] = tensor;
+            }
+            for (const [key, tensor] of this.kvCache.kvStates) {
+                feeds[key] = tensor;
+            }
+        }
+
+        let results: InferenceSession.OnnxValueMapType;
+        try {
+            results = await session.run(feeds);
+        } catch (err: unknown) {
+            console.log(`[DEBUG] session.run failed: ${getErrorMessage(err)}`);
+            throw err;
+        }
+
+        this.updateCache(results);
+        this.pastSeqLength += seqLength;
+
         const logitsKey = 'logits';
         const logitsOutput = results[logitsKey];
 
@@ -94,19 +209,49 @@ class Lfm25InferenceService {
         }
 
         const logitsData = logitsOutput.data as Float32Array;
-        const [vocabSize] = [logitsOutput.dims[2]];
+        const vocabSize = logitsOutput.dims[2];
         const lastTokenLogits = new Float32Array(vocabSize);
 
-        const offset = (allTokens.length - 1) * vocabSize;
+        const offset = (seqLength - 1) * vocabSize;
         for (let jdx = 0; jdx < vocabSize; jdx++) {
             lastTokenLogits[jdx] = logitsData[offset + jdx];
         }
 
-        this.applyRepetitionPenalty(lastTokenLogits, allTokens, config.repetitionPenalty);
+        this.applyRepetitionPenalty(lastTokenLogits, inputTokens, config.repetitionPenalty);
 
         const probs = this.softmax(lastTokenLogits, config.temperature);
 
         return this.sampleTopKTopP(probs, config.topK, config.topP);
+    }
+
+    private updateCache(results: InferenceSession.OnnxValueMapType): void {
+        if (!isDefined(this.kvCache)) {
+            return;
+        }
+
+        for (const [key] of this.kvCache.convStates) {
+            const presentKey = key.replace('past_conv', 'present_conv');
+            const presentTensor = results[presentKey] as Tensor | undefined;
+
+            if (isDefined(presentTensor)) {
+                this.kvCache.convStates.set(key, presentTensor);
+            }
+        }
+
+        for (const [key] of this.kvCache.kvStates) {
+            const match = key.match(/past_key_values\.(\d+)\.(key|value)/);
+
+            if (isDefined(match)) {
+                const layerIdx = match[1];
+                const kvType = match[2];
+                const presentKey = `present.${layerIdx}.${kvType}`;
+                const presentTensor = results[presentKey] as Tensor | undefined;
+
+                if (isDefined(presentTensor)) {
+                    this.kvCache.kvStates.set(key, presentTensor);
+                }
+            }
+        }
     }
 
     private softmax(logits: Float32Array, temperature: number): Float32Array {
