@@ -4,6 +4,7 @@ import * as Updates from 'expo-updates';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
+import { categoryMappingStorageService } from '../../ai/service/category-mapping-storage.service';
 
 class DatabaseImportService {
     async importFromUri(sourceUri: string): Promise<void> {
@@ -45,6 +46,8 @@ class DatabaseImportService {
         sourceFile.copy(tempFile);
 
         tempFile.move(destinationFile);
+
+        await categoryMappingStorageService.clearCache();
 
         await Updates.reloadAsync();
     }
