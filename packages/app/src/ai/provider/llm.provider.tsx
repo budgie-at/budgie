@@ -14,14 +14,9 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const PROGRESS_TOKENIZER_START = 5;
-const PROGRESS_TOKENIZER_DONE = 10;
-const PROGRESS_DOWNLOAD_WEIGHT = 0.8;
-const PROGRESS_MODEL_LOADED = 90;
-const PROGRESS_COMPLETE = 100;
-
 const useOnnxLlm = (): LlmInterface => {
     const [isReady, setIsReady] = useState(false);
+    const [isInitializing, setIsInitializing] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
@@ -37,23 +32,32 @@ const useOnnxLlm = (): LlmInterface => {
 
         const loadModels = async (): Promise<void> => {
             try {
-                setDownloadProgress(PROGRESS_TOKENIZER_START);
-                await lfm25TokenizerService.load();
-                setDownloadProgress(PROGRESS_TOKENIZER_DONE);
+                const isAlreadyDownloaded = lfm25ModelDownloadService.isModelDownloaded();
 
-                const modelPath = await lfm25ModelDownloadService.downloadModel(progress => {
-                    setDownloadProgress(PROGRESS_TOKENIZER_DONE + Math.round(progress * PROGRESS_DOWNLOAD_WEIGHT));
+                if (isAlreadyDownloaded) {
+                    setIsInitializing(true);
+                    setDownloadProgress(1);
+                } else {
+                    setDownloadProgress(0);
+                }
+
+                await lfm25TokenizerService.load();
+
+                const modelPath = await lfm25ModelDownloadService.getModelPath(progress => {
+                    if (!isAlreadyDownloaded) {
+                        setDownloadProgress(progress);
+                    }
                 });
 
-                setDownloadProgress(PROGRESS_MODEL_LOADED);
                 await lfm25InferenceService.load(modelPath);
-                setDownloadProgress(PROGRESS_COMPLETE);
 
                 setIsReady(true);
+                setIsInitializing(false);
                 setError(null);
             } catch (err: unknown) {
                 setError(getErrorMessage(err));
                 setIsReady(false);
+                setIsInitializing(false);
             } finally {
                 isLoadingRef.current = false;
             }
@@ -101,6 +105,7 @@ const useOnnxLlm = (): LlmInterface => {
 
     return {
         isReady,
+        isInitializing,
         isGenerating,
         downloadProgress,
         error,
