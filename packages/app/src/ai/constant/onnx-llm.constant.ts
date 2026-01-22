@@ -13,11 +13,11 @@ export const LFM25_CHAT_MARKERS = {
 } as const;
 
 export const LFM25_GENERATION_CONFIG = {
-    maxNewTokens: 256,
-    temperature: 0.05,
-    topK: 50,
-    topP: 0.9,
-    repetitionPenalty: 1.05
+    maxNewTokens: 100,
+    temperature: 0.1,
+    topK: 40,
+    topP: 0.95,
+    repetitionPenalty: 1.1
 } as const;
 
 export const LFM25_DOWNLOAD_CONFIG = {
