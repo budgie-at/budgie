@@ -58,6 +58,7 @@ packages/
 9. **One component per folder** - Each component file lives in its own folder
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components
 11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/core/macro` for string props, `<Trans>` for JSX children
+12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 
 ### Naming Conventions
 

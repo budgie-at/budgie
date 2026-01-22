@@ -2,6 +2,8 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { isNotEmptyArray } from '@rnw-community/shared';
+
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { AITransactionInterface } from '../../interface/ai-transaction.interface';
@@ -22,8 +24,14 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const hasAutoStartedRef = useRef(false);
     const contentOpacity = useSharedValue(isOpen ? 1 : 0);
 
-    const handleDone = (transaction: AITransactionInterface) => {
-        const url = buildExpenseUrl(transaction, defaultAccount?.id);
+    const handleDone = (transactions: AITransactionInterface[]) => {
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
+
+        // TODO: Handle multiple transactions - for now use first one
+        const [firstTransaction] = transactions;
+        const url = buildExpenseUrl(firstTransaction, defaultAccount?.id);
         onClose();
         router.push(url);
     };
