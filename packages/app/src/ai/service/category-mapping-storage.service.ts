@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,7 +8,7 @@ const STORAGE_KEY = 'category_mapping_v1';
 
 class CategoryMappingStorageService {
     async getCache(): Promise<CategoryMappingCacheInterface | null> {
-        const data = await SecureStore.getItemAsync(STORAGE_KEY);
+        const data = await AsyncStorage.getItem(STORAGE_KEY);
 
         if (!isDefined(data)) {
             return null;
@@ -18,11 +18,11 @@ class CategoryMappingStorageService {
     }
 
     async setCache(cache: CategoryMappingCacheInterface): Promise<void> {
-        await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(cache));
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
     }
 
     async clearCache(): Promise<void> {
-        await SecureStore.deleteItemAsync(STORAGE_KEY);
+        await AsyncStorage.removeItem(STORAGE_KEY);
     }
 }
 
