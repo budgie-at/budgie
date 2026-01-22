@@ -138,17 +138,21 @@ class Lfm25ModelDownloadService {
         };
 
         if (isResumingThisFile && isDefined(savedState.resumeData)) {
-            console.log(`Resuming download for: ${url}`);
             this.currentDownload = new FileSystemLegacy.DownloadResumable(
                 savedState.url,
                 savedState.fileUri,
-                {},
+                { sessionType: FileSystemLegacy.FileSystemSessionType.BACKGROUND },
                 progressCallback,
                 savedState.resumeData
             );
             await this.currentDownload.resumeAsync();
         } else {
-            this.currentDownload = FileSystemLegacy.createDownloadResumable(url, cacheUri, {}, progressCallback);
+            this.currentDownload = FileSystemLegacy.createDownloadResumable(
+                url,
+                cacheUri,
+                { sessionType: FileSystemLegacy.FileSystemSessionType.BACKGROUND },
+                progressCallback
+            );
             await this.currentDownload.downloadAsync();
         }
 
