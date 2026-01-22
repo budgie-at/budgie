@@ -5,7 +5,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { FALLBACK_CATEGORY_ID } from '../constant/llm-categorization.constant';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
-export interface TransactionEntryInputInterface {
+interface TransactionEntryInputInterface {
     categoryId: number;
     amount: number;
 }

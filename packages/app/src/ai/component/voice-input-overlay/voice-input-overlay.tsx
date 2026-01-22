@@ -2,12 +2,13 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { AITransactionInterface } from '../../interface/ai-transaction.interface';
 import { buildExpenseUrl } from '../../util/build-expense-url.util';
+import { groupTransactionsByCategory } from '../../util/group-transactions-by-category.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 const EXIT_DURATION = 100;
@@ -29,9 +30,12 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
             return;
         }
 
-        // TODO: Handle multiple transactions - for now use first one
-        const [firstTransaction] = transactions;
-        const url = buildExpenseUrl(firstTransaction, defaultAccount?.id);
+        const groupedTransaction = groupTransactionsByCategory(transactions);
+        if (!isDefined(groupedTransaction)) {
+            return;
+        }
+
+        const url = buildExpenseUrl(groupedTransaction, defaultAccount?.id);
         onClose();
         router.push(url);
     };
