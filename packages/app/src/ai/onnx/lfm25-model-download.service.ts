@@ -213,7 +213,7 @@ class Lfm25ModelDownloadService {
     }
 
     private getCacheUri(filename: string): string {
-        return `${Paths.cache}${LFM25_DOWNLOAD_CONFIG.directory}/${filename}.partial`;
+        return `${FileSystemLegacy.cacheDirectory}${LFM25_DOWNLOAD_CONFIG.directory}/${filename}.partial`;
     }
 
     private getModelUrl(): string {
