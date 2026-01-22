@@ -118,3 +118,7 @@ Conventional commits: `type(scope): description`
 - After table changes in contracts: `cd packages/app && yarn db:generate`
 - Never modify `.jscpd.json` - fix duplication in source code
 - Each package has its own CLAUDE.md with package-specific rules
+
+## Local Documentation
+
+The `docs/plans/` folder contains design documents and implementation plans. This folder is gitignored for local-only usage - plans are working documents that don't need version control.
