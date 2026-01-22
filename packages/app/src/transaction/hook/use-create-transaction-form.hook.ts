@@ -1,6 +1,7 @@
 import {
     TransactionCreateInputInterface,
     TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -26,7 +27,69 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     categoryId?: number;
     comment?: string;
     amount?: number;
+    entries?: Array<{ categoryId: number; amount: number }>;
 }
+
+interface BuildFormEntriesParamsInterface {
+    fromAccountId: number | null;
+    toAccountId: number | null;
+    amount: number;
+    categoryId: number;
+    entries?: Array<{ categoryId: number; amount: number }>;
+}
+
+const buildMainEntry = ({
+    fromAccountId,
+    toAccountId,
+    amount,
+    categoryId
+}: Omit<BuildFormEntriesParamsInterface, 'entries'>): Omit<TransactionEntryCreateEntityInterface, 'transactionId'> => {
+    if (isDefined(fromAccountId)) {
+        return createTransactionEntryInput({
+            accountId: fromAccountId,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount,
+            categoryId
+        });
+    }
+
+    if (isDefined(toAccountId)) {
+        return createTransactionEntryInput({
+            accountId: toAccountId,
+            type: TransactionEntryTypeEnum.DEBIT,
+            amount,
+            categoryId
+        });
+    }
+
+    return createTransactionEntryInput({
+        categoryId,
+        accountId: 0,
+        type: TransactionEntryTypeEnum.CREDIT
+    });
+};
+
+const buildFormEntries = ({
+    fromAccountId,
+    toAccountId,
+    amount,
+    categoryId,
+    entries
+}: BuildFormEntriesParamsInterface): Array<Omit<TransactionEntryCreateEntityInterface, 'transactionId'>> => {
+    const mainEntry = buildMainEntry({ fromAccountId, toAccountId, amount, categoryId });
+
+    const additionalEntries =
+        entries?.map(entry =>
+            createTransactionEntryInput({
+                accountId: fromAccountId ?? toAccountId ?? 0,
+                type: isDefined(fromAccountId) ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+                amount: entry.amount,
+                categoryId: entry.categoryId
+            })
+        ) ?? [];
+
+    return [mainEntry, ...additionalEntries];
+};
 
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
     type,
@@ -36,7 +99,8 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     toAccountId,
     amount = 0,
     categoryId = 0,
-    comment = ''
+    comment = '',
+    entries
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
@@ -50,42 +114,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             comment,
             amount,
             type,
-            entries: [
-                ...(isDefined(fromAccountId)
-                    ? [
-                          createTransactionEntryInput({
-                              accountId: fromAccountId,
-                              type: TransactionEntryTypeEnum.CREDIT,
-                              amount,
-                              categoryId
-                          })
-                      ]
-                    : []),
-                ...(isDefined(toAccountId)
-                    ? [
-                          createTransactionEntryInput({
-                              accountId: toAccountId,
-                              type: TransactionEntryTypeEnum.DEBIT,
-                              amount,
-                              categoryId
-                          })
-                      ]
-                    : []),
-                ...(!isDefined(fromAccountId) && !isDefined(toAccountId)
-                    ? [
-                          createTransactionEntryInput({
-                              categoryId,
-                              accountId: 0,
-                              type: TransactionEntryTypeEnum.CREDIT
-                          }),
-                          createTransactionEntryInput({
-                              categoryId,
-                              accountId: 0,
-                              type: TransactionEntryTypeEnum.DEBIT
-                          })
-                      ]
-                    : [])
-            ]
+            entries: buildFormEntries({ fromAccountId, toAccountId, amount, categoryId, entries })
         })
     });
 
