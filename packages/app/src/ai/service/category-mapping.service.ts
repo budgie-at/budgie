@@ -1,6 +1,6 @@
 import { LanguageEnum } from '@budgie/contracts';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CategoryMappingCacheInterface } from '../interface/category-mapping-cache.interface';
 import { ExpenseTypeMappingInterface } from '../interface/expense-type-mapping.interface';
@@ -20,7 +20,7 @@ interface LlmProviderInterface {
 
 const FALLBACK_CATEGORY_ID = 1;
 
-/* eslint-disable no-console, lingui/no-unlocalized-strings */
+/* eslint-disable lingui/no-unlocalized-strings */
 class CategoryMappingService {
     async getMapping(
         categories: CategoryForMappingInterface[],
@@ -31,12 +31,8 @@ class CategoryMappingService {
         const cache = await categoryMappingStorageService.getCache();
 
         if (this.isCacheValid(cache, language, currentHash)) {
-            console.log('[CategoryMapping] Using cached mapping');
-
             return cache.mapping;
         }
-
-        console.log('[CategoryMapping] Generating new mapping');
 
         return this.generateAndCacheMapping(categories, language, currentHash, llm);
     }
@@ -94,9 +90,7 @@ class CategoryMappingService {
             await categoryMappingStorageService.setCache(cache);
 
             return mapping;
-        } catch (err: unknown) {
-            console.log('[CategoryMapping] Analysis failed:', getErrorMessage(err));
-
+        } catch {
             return this.createFallbackMapping(categories);
         }
     }
@@ -119,8 +113,6 @@ class CategoryMappingService {
                 item => typeof item.type === 'string' && typeof item.categoryId === 'number' && Array.isArray(item.keywords)
             );
         } catch {
-            console.log('[CategoryMapping] Parse failed, using fallback');
-
             return this.createFallbackMapping(categories);
         }
     }
@@ -133,6 +125,6 @@ class CategoryMappingService {
         }));
     }
 }
-/* eslint-enable no-console, lingui/no-unlocalized-strings */
+/* eslint-enable lingui/no-unlocalized-strings */
 
 export const categoryMappingService = new CategoryMappingService();
