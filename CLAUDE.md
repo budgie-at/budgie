@@ -70,12 +70,35 @@ packages/
 | Class | PascalCase | `AccountRepository` |
 | File | kebab-case + type suffix | `account.service.ts` |
 
-### Type Guards
+### Type Guards and Validation
 
-Use `@rnw-community/shared` for type checks:
-- `isDefined()`, `isEmptyArray()`
-- `isNotEmptyArray()`, `isNotEmptyString()`
-- `isPositiveNumber()`, `isNumber()`
+**Prefer `@rnw-community/shared` type guards over manual checks:**
+- `isDefined(x)` instead of `x !== null && x !== undefined`
+- `isNumber(x)` instead of `typeof x === 'number'`
+- `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
+- `isNotEmptyString(x)` instead of `typeof x === 'string' && x.length > 0`
+- `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0`
+
+**Prefer `.filter(isDefined)` over manual type guard filters:**
+```typescript
+// Good
+items.map(transform).filter(isDefined)
+
+// Bad
+items.map(transform).filter((item): item is ItemType => item !== null)
+```
+
+**Prefer Zod for complex object validation:**
+```typescript
+// Good - Zod schema
+const ItemSchema = z.object({ id: z.number(), name: z.string() });
+const result = ItemSchema.safeParse(data);
+if (result.success) { /* use result.data */ }
+
+// Bad - manual type guard
+const isItem = (x: unknown): x is Item =>
+    typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
+```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
 
