@@ -3,6 +3,7 @@ import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { z } from 'zod';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -24,30 +25,23 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 import { transactionService } from '../../../transaction/service/transaction.service';
 /* jscpd:ignore-end */
 
-interface EntryParamInterface {
-    categoryId: number;
-    amount: number;
-}
+const EntryParamSchema = z.object({
+    categoryId: z.number(),
+    amount: z.number()
+});
 
-const isValidEntry = (item: unknown): item is EntryParamInterface =>
-    typeof item === 'object' &&
-    item !== null &&
-    'categoryId' in item &&
-    'amount' in item &&
-    typeof item.categoryId === 'number' &&
-    typeof item.amount === 'number';
+type EntryParamInterface = z.infer<typeof EntryParamSchema>;
+
+const EntriesParamSchema = z.array(EntryParamSchema);
 
 const parseEntriesParam = (entriesParam: string): EntryParamInterface[] | null => {
     try {
-        const parsed = JSON.parse(entriesParam) as unknown;
-        if (Array.isArray(parsed)) {
-            return parsed.filter(isValidEntry);
-        }
+        const parsed = EntriesParamSchema.safeParse(JSON.parse(entriesParam));
+
+        return parsed.success ? parsed.data : null;
     } catch {
         return null;
     }
-
-    return null;
 };
 
 /* jscpd:ignore-start */
