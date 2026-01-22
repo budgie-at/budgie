@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-await-in-loop, max-statements, no-plusplus, @typescript-eslint/no-unnecessary-condition, lingui/no-unlocalized-strings */
+/* eslint-disable no-await-in-loop, max-statements, no-plusplus, @typescript-eslint/no-unnecessary-condition, lingui/no-unlocalized-strings, no-implicit-coercion, prefer-destructuring, require-unicode-regexp, max-lines */
 import { InferenceSession, Tensor } from 'onnxruntime-react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -70,9 +70,6 @@ class Lfm25InferenceService {
                 graphOptimizationLevel: 'all'
             });
 
-            console.log('[DEBUG] Model loaded. Input names:', this.session.inputNames);
-            console.log('[DEBUG] Model loaded. Output names:', this.session.outputNames);
-
             this.loadProgress = 100;
         } catch (err: unknown) {
             this.loadError = getErrorMessage(err);
@@ -82,10 +79,7 @@ class Lfm25InferenceService {
     }
 
     async generate(inputIds: number[], config: GenerationConfigInterface): Promise<number[]> {
-        console.log(`[DEBUG] InferenceService.generate called, inputIds length: ${inputIds.length}`);
-
         if (!isDefined(this.session)) {
-            console.log('[DEBUG] InferenceService: Session not loaded!');
             throw new Error('Model not loaded');
         }
 
@@ -95,32 +89,20 @@ class Lfm25InferenceService {
         const generatedTokens: number[] = [];
         let currentInputIds = inputIds;
 
-        console.log(`[DEBUG] InferenceService: Starting generation loop, maxNewTokens: ${config.maxNewTokens}`);
-
         for (let idx = 0; idx < config.maxNewTokens; idx++) {
             if (this.isInterrupted) {
-                console.log('[DEBUG] InferenceService: Interrupted');
                 break;
             }
 
-            try {
-                const nextToken = await this.generateNextToken(this.session, currentInputIds, config);
-                console.log(`[DEBUG] InferenceService: Generated token ${idx}: ${nextToken}`);
+            const nextToken = await this.generateNextToken(this.session, currentInputIds, config);
 
-                if (nextToken === config.eosTokenId) {
-                    console.log('[DEBUG] InferenceService: EOS token reached');
-                    break;
-                }
-
-                generatedTokens.push(nextToken);
-                currentInputIds = [nextToken];
-            } catch (err: unknown) {
-                console.log(`[DEBUG] InferenceService: Error generating token ${idx}: ${getErrorMessage(err)}`);
-                throw err;
+            if (nextToken === config.eosTokenId) {
+                break;
             }
-        }
 
-        console.log(`[DEBUG] InferenceService: Generation complete, generated ${generatedTokens.length} tokens`);
+            generatedTokens.push(nextToken);
+            currentInputIds = [nextToken];
+        }
 
         return generatedTokens;
     }
@@ -190,13 +172,7 @@ class Lfm25InferenceService {
             }
         }
 
-        let results: InferenceSession.OnnxValueMapType;
-        try {
-            results = await session.run(feeds);
-        } catch (err: unknown) {
-            console.log(`[DEBUG] session.run failed: ${getErrorMessage(err)}`);
-            throw err;
-        }
+        const results = await session.run(feeds);
 
         this.updateCache(results);
         this.pastSeqLength += seqLength;
