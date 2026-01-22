@@ -9,7 +9,7 @@ import { computeCategoriesHash } from '../util/compute-categories-hash.util';
 
 import { categoryMappingStorageService } from './category-mapping-storage.service';
 
-interface CategoryForMappingInterface {
+export interface CategoryForMappingInterface {
     id: number;
     title: string;
 }
