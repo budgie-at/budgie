@@ -1,4 +1,4 @@
-import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useMemo, useState } from 'react';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -15,14 +15,26 @@ import { useLlm } from './use-llm.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
-/* eslint-disable lingui/no-unlocalized-strings */
-class LlmParseError extends Error {
-    constructor() {
-        super('LLM parse error');
-        this.name = 'LlmParseError';
-    }
+interface BuildTransactionParamsInterface {
+    prompt: string;
+    categoryId: number;
+    amount: number;
+    accounts: AccountWithInstrumentEntityInterface[];
+    categories: CategoryEntityInterface[];
 }
-/* eslint-enable lingui/no-unlocalized-strings */
+
+const buildTransaction = (params: BuildTransactionParamsInterface): AITransactionInterface => {
+    const category = params.categories.find(cat => cat.id === params.categoryId) ?? null;
+
+    return {
+        category,
+        amount: params.amount,
+        currency: null,
+        account: findAccountByCurrency(params.accounts, null),
+        type: TransactionTypeEnum.EXPENSE,
+        comment: params.prompt
+    };
+};
 
 interface UseLlmCategorizationReturnInterface {
     status: CategorizationStatus;
@@ -38,7 +50,6 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { categories } = useAllCategoriesQuery();
     const { accounts } = useSearchAccountsSortedQuery();
     const language = useSetting('language');
-
     const { mapping, isLoading: isMappingLoading } = useCategoryMapping(categories, language);
     const systemPrompt = useMemo(() => buildCategorizationPrompt(mapping), [mapping]);
     const llm = useLlm({ systemPrompt });
@@ -46,24 +57,6 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transaction, setTransaction] = useState<AITransactionInterface | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-    const buildTransaction = (
-        prompt: string,
-        categoryId: number,
-        amount: number,
-        accountsList: AccountWithInstrumentEntityInterface[]
-    ): AITransactionInterface => {
-        const category = categories.find(cat => cat.id === categoryId) ?? null;
-
-        return {
-            category,
-            amount,
-            currency: null,
-            account: findAccountByCurrency(accountsList, null),
-            type: TransactionTypeEnum.EXPENSE,
-            comment: prompt
-        };
-    };
 
     const categorize = async (text: string): Promise<AITransactionInterface> => {
         setStatus('processing');
@@ -75,22 +68,23 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             const mapped = extractAndMapResponse(rawResponse, mapping);
 
             if (!isDefined(mapped)) {
-                throw new LlmParseError();
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
+                throw new Error('Failed to parse LLM response');
             }
 
-            const result = buildTransaction(text, mapped.categoryId, mapped.amount, accounts);
+            const result = buildTransaction({ prompt: text, categoryId: mapped.categoryId, amount: mapped.amount, accounts, categories });
             setTransaction(result);
             setStatus('done');
 
             return result;
-        } catch (e: unknown) {
-            setError(getErrorMessage(e));
+        } catch (err: unknown) {
+            setError(getErrorMessage(err));
             setStatus('error');
-            throw e;
+            throw err;
         }
     };
 
-    const reset = () => {
+    const reset = (): void => {
         llm.interrupt();
         setStatus('idle');
         setTransaction(null);
