@@ -11,7 +11,7 @@ import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { createTransactionEntryInput } from '../utils/create-transaction-entry-input.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
@@ -69,6 +69,20 @@ const buildMainEntry = ({
     });
 };
 
+const buildEntriesFromInput = (
+    entries: Array<{ categoryId: number; amount: number }>,
+    fromAccountId: number | null,
+    toAccountId: number | null
+): Array<Omit<TransactionEntryCreateEntityInterface, 'transactionId'>> =>
+    entries.map(entry =>
+        createTransactionEntryInput({
+            accountId: fromAccountId ?? toAccountId ?? 0,
+            type: isDefined(fromAccountId) ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+            amount: entry.amount,
+            categoryId: entry.categoryId
+        })
+    );
+
 const buildFormEntries = ({
     fromAccountId,
     toAccountId,
@@ -76,19 +90,11 @@ const buildFormEntries = ({
     categoryId,
     entries
 }: BuildFormEntriesParamsInterface): Array<Omit<TransactionEntryCreateEntityInterface, 'transactionId'>> => {
-    const mainEntry = buildMainEntry({ fromAccountId, toAccountId, amount, categoryId });
+    if (isNotEmptyArray(entries)) {
+        return buildEntriesFromInput(entries, fromAccountId, toAccountId);
+    }
 
-    const additionalEntries =
-        entries?.map(entry =>
-            createTransactionEntryInput({
-                accountId: fromAccountId ?? toAccountId ?? 0,
-                type: isDefined(fromAccountId) ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
-                amount: entry.amount,
-                categoryId: entry.categoryId
-            })
-        ) ?? [];
-
-    return [mainEntry, ...additionalEntries];
+    return [buildMainEntry({ fromAccountId, toAccountId, amount, categoryId })];
 };
 
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
