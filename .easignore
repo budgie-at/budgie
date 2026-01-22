@@ -96,6 +96,8 @@ junit.xml
 
 # expo
 .expo
+ios
+android
 *.apk
 *.aab
 google-service-account.json
@@ -103,10 +105,10 @@ asc_api_key.p8
 
 # EAS build optimization - exclude unnecessary packages
 packages/landing
-packages/bank-sync
 
 # Git worktrees (isolated workspaces)
 .worktrees
+.git
 
 
 # Claude/AI files
@@ -128,5 +130,8 @@ docs
 
 # Build artifacts that shouldn't be uploaded
 **/.turbo
+**/.expo
+**/ios
+**/android
 **/dist
 **/build
