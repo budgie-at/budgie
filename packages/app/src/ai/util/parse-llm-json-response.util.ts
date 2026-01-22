@@ -74,7 +74,7 @@ const extractWithRegex = (response: string): ParsedCategorizationItemInterface[]
                 return null;
             }
         })
-        .filter((item): item is ParsedCategorizationItemInterface => item !== null);
+        .filter(isDefined);
 };
 
 export const parseLlmJsonResponse = (response: string): ParsedCategorizationItemInterface[] => {
@@ -90,7 +90,7 @@ export const parseLlmJsonResponse = (response: string): ParsedCategorizationItem
 
                     return result.success ? mapToInterface(result.data) : null;
                 })
-                .filter((item): item is ParsedCategorizationItemInterface => item !== null);
+                .filter(isDefined);
         }
 
         const singleResult = ParsedItemSchema.safeParse(parsed);

@@ -1,7 +1,7 @@
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, CurrencyEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNumber } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
@@ -26,7 +26,7 @@ interface UseLlmCategorizationReturnInterface {
 }
 
 const resolveCategoryId = (categoryId: number | string, categories: CategoryEntityInterface[]): number => {
-    if (typeof categoryId === 'number') {
+    if (isNumber(categoryId)) {
         return categoryId;
     }
 
