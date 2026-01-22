@@ -16,4 +16,12 @@ config.server.enhanceMiddleware = middleware => {
 
 config.resolver.sourceExts.push('sql');
 
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (moduleName === 'onnxruntime-web' || moduleName.startsWith('onnxruntime-web/')) {
+        return { type: 'empty' };
+    }
+
+    return context.resolveRequest(context, moduleName, platform);
+};
+
 module.exports = withNativewind(config);

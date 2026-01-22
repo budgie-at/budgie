@@ -2,10 +2,13 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { AITransactionInterface } from '../../interface/ai-transaction.interface';
 import { buildExpenseUrl } from '../../util/build-expense-url.util';
+import { groupTransactionsByCategory } from '../../util/group-transactions-by-category.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 const EXIT_DURATION = 100;
@@ -22,8 +25,17 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
     const hasAutoStartedRef = useRef(false);
     const contentOpacity = useSharedValue(isOpen ? 1 : 0);
 
-    const handleDone = (transaction: AITransactionInterface) => {
-        const url = buildExpenseUrl(transaction, defaultAccount?.id);
+    const handleDone = (transactions: AITransactionInterface[]) => {
+        if (!isNotEmptyArray(transactions)) {
+            return;
+        }
+
+        const groupedTransaction = groupTransactionsByCategory(transactions);
+        if (!isDefined(groupedTransaction)) {
+            return;
+        }
+
+        const url = buildExpenseUrl(groupedTransaction, defaultAccount?.id);
         onClose();
         router.push(url);
     };
