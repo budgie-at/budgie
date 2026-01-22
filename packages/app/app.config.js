@@ -145,6 +145,15 @@ export default ({ config }) => ({
         ],
         ['expo-router', { origin: 'https://www.budgie.at/' }],
         [
+            'llama.rn',
+            {
+                enableEntitlements: true,
+                entitlementsProfile: 'production',
+                forceCxx20: true,
+                enableOpenCLAndHexagon: true
+            }
+        ],
+        [
             'expo-font',
             {
                 fonts: [

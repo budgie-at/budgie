@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
@@ -12,13 +12,13 @@ type VoiceInputState = 'idle' | 'recording' | 'transcribing' | 'confirming' | 'p
 
 interface VoiceInputData {
     transcription: { committed: string; partial: string };
-    transaction: AITransactionInterface | null;
+    transactions: AITransactionInterface[];
     error: string | null;
     audioLevel: number;
 }
 
 interface VoiceInputCallbacks {
-    onDone?: (transaction: AITransactionInterface) => void;
+    onDone?: (transactions: AITransactionInterface[]) => void;
     onError?: (error: string) => void;
 }
 
@@ -125,17 +125,17 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
             return;
         }
 
-        if (isDefined(categorization.transaction)) {
+        if (isNotEmptyArray(categorization.transactions)) {
             setState('done');
-            onDone?.(categorization.transaction);
+            onDone?.(categorization.transactions);
         } else {
             setState('processing');
 
-            void categorization.categorize(finalTranscription).then(result => {
+            void categorization.categorize(finalTranscription).then((results: AITransactionInterface[]) => {
                 setState('done');
-                onDone?.(result);
+                onDone?.(results);
 
-                return result;
+                return results;
             }, handleError);
         }
     };
@@ -159,7 +159,7 @@ export const useVoiceInput = (callbacks: VoiceInputCallbacks = {}): UseVoiceInpu
         state,
         data: {
             transcription,
-            transaction: categorization.transaction,
+            transactions: categorization.transactions,
             error,
             audioLevel: recording.audioLevel
         },

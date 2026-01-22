@@ -39,8 +39,14 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
     const { open: openVoiceInput } = useVoiceInputContext();
     const [isVisible, setIsVisible] = useState(false);
 
+    const LLM_PROGRESS_WEIGHT = 0.97;
+    const STT_PROGRESS_WEIGHT = 0.03;
+
     const isAiLoading = isAiAvailable && (!llm.isReady || !stt.isReady);
-    const aiDownloadProgress = isAiAvailable ? (llm.downloadProgress + stt.downloadProgress) / 2 : 0;
+    const isAiInitializing = isAiAvailable && llm.isInitializing;
+    const aiDownloadProgress = isAiAvailable
+        ? llm.downloadProgress * LLM_PROGRESS_WEIGHT + (stt.downloadProgress / 100) * STT_PROGRESS_WEIGHT
+        : 0;
 
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
@@ -128,7 +134,13 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
         <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             {showAiButton && (
                 <Animated.View className="absolute inset-x-0 bottom-0 items-center pb-lg" style={aiButtonStyle} pointerEvents="box-none">
-                    <AiButton onPress={handleAiPress} isAnimating={false} isLoading={isAiLoading} downloadProgress={aiDownloadProgress} />
+                    <AiButton
+                        onPress={handleAiPress}
+                        isAnimating={false}
+                        isLoading={isAiLoading}
+                        isInitializing={isAiInitializing}
+                        downloadProgress={aiDownloadProgress}
+                    />
                 </Animated.View>
             )}
 

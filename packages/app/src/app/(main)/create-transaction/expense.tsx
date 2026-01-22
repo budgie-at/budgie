@@ -3,6 +3,7 @@ import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgi
 import { useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider, useWatch } from 'react-hook-form';
+import { z } from 'zod';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -24,20 +25,41 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 import { transactionService } from '../../../transaction/service/transaction.service';
 /* jscpd:ignore-end */
 
+const EntryParamSchema = z.object({
+    categoryId: z.number(),
+    amount: z.number()
+});
+
+type EntryParamInterface = z.infer<typeof EntryParamSchema>;
+
+const EntriesParamSchema = z.array(EntryParamSchema);
+
+const parseEntriesParam = (entriesParam: string): EntryParamInterface[] | null => {
+    try {
+        const parsed = EntriesParamSchema.safeParse(JSON.parse(entriesParam));
+
+        return parsed.success ? parsed.data : null;
+    } catch {
+        return null;
+    }
+};
+
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount, defaultInstrument } = useSettingsContext();
-    const { accountId, categoryId, amount, comment } = useLocalSearchParams<{
+    const { accountId, categoryId, amount, comment, entries } = useLocalSearchParams<{
         accountId?: string;
         categoryId?: string;
         amount?: string;
         comment?: string;
+        entries?: string;
     }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
     const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
     const parsedAmount = isDefined(amount) && isPositiveNumber(Number(amount)) ? Number(amount) : void 0;
+    const parsedEntries = isDefined(entries) ? parseEntriesParam(entries) : null;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
@@ -47,7 +69,8 @@ export default function CreateExpenseTransactionPage() {
         toAccountId: null,
         amount: parsedAmount,
         categoryId: parsedCategoryId,
-        comment
+        comment,
+        entries: parsedEntries
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });

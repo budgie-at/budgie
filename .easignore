@@ -45,8 +45,8 @@ coverage
 # Bundle artifact
 *.jsbundle
 
-# CocoaPods
-Pods
+# CocoaPods - reinstalled by EAS build
+**/Pods
 
 # Env
 .env*
@@ -71,13 +71,10 @@ packages/site/public/~partytown
 # turbo
 .turbo
 
-# yarn 2
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+# yarn 2 - cache is largest, exclude it
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
 
 # nextjs
 .vercel
@@ -99,9 +96,46 @@ junit.xml
 
 # expo
 .expo
-android
 ios
+android
 *.apk
 *.aab
 google-service-account.json
 asc_api_key.p8
+
+# EAS build optimization - exclude unnecessary package build artifacts only
+# NOTE: Do NOT exclude workspace packages themselves (e.g. packages/landing)
+# Yarn workspaces require all packages to be present for resolution
+packages/landing/.next
+packages/landing/out
+packages/landing/node_modules
+
+# Git worktrees (isolated workspaces)
+.worktrees
+.git
+
+
+# Claude/AI files
+.claude
+
+# Documentation and reports
+docs
+**/*.md
+!README.md
+
+# Test and coverage
+**/__tests__
+**/__mocks__
+**/coverage
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Build artifacts that shouldn't be uploaded
+**/.turbo
+**/.expo
+**/ios
+**/android
+**/dist
+**/build
