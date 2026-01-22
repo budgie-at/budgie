@@ -1,23 +1,144 @@
-interface CategoryForPrompt {
+import { isNotEmptyArray } from '@rnw-community/shared';
+
+import { ExpenseTypeMappingInterface } from '../interface/expense-type-mapping.interface';
+
+const FALLBACK_CATEGORY_ID = 1;
+const LEGACY_FALLBACK_CATEGORY_ID = 39;
+const MAX_CATEGORIES = 39;
+
+interface CategoryForPromptInterface {
     title: string;
 }
 
-const MAX_CATEGORIES = 200;
+interface ParsedExpenseInterface {
+    type: string;
+    amount: number;
+}
 
-/* eslint-disable lingui/no-unlocalized-strings -- LLM prompts are not user-facing */
-const JSON_EXAMPLES = [
-    { input: 'Coffee at Starbucks for 5 dollars', output: '{"categoryId":12,"amount":5,"currency":"USD"}' },
-    { input: 'Uber 15 euros', output: '{"categoryId":13,"amount":15,"currency":"EUR"}' },
-    { input: 'Bread and milk 50', output: '{"categoryId":11,"amount":50}' }
-];
-
-export const buildSystemPrompt = (categories: CategoryForPrompt[]): string => {
-    const limitedCategories = categories.slice(0, MAX_CATEGORIES);
-    const categoriesWithIds = limitedCategories.map((category, index) => `${index + 1}=${category.title}`).join(', ');
-    const examples = JSON_EXAMPLES.map(example => `"${example.input}" -> ${example.output}`).join('; ');
-
-    return `You parse expenses into JSON. Categories: ${categoriesWithIds}. Output format: {"categoryId":N,"amount":X,"currency":"CUR"}. Currency is optional 3-letter ISO code. Examples: ${examples}. Reply ONLY with valid JSON.`;
+const EXPENSE_TYPE_TO_CATEGORY_MAP: Record<string, number[]> = {
+    food: [11, 12],
+    restaurant: [12],
+    groceries: [11],
+    transport: [13],
+    fuel: [14],
+    car: [14],
+    entertainment: [16],
+    shopping: [17],
+    health: [18],
+    bills: [20],
+    subscription: [21],
+    travel: [22],
+    education: [24],
+    gifts: [25],
+    pets: [26],
+    sports: [27],
+    beauty: [28],
+    home: [29],
+    clothing: [30],
+    electronics: [31],
+    other: [39]
 };
+
+const mapTypeToCategory = (type: string, mapping: ExpenseTypeMappingInterface[]): number => {
+    const normalizedType = type.toLowerCase().trim();
+    const match = mapping.find(entry => entry.type === normalizedType);
+
+    return match?.categoryId ?? FALLBACK_CATEGORY_ID;
+};
+
+const mapTypeToCategoryLegacy = (expenseType: string): number => {
+    const normalizedType = expenseType.toLowerCase().trim();
+    const categoryIds = EXPENSE_TYPE_TO_CATEGORY_MAP[normalizedType];
+
+    if (isNotEmptyArray(categoryIds)) {
+        return categoryIds[0];
+    }
+
+    return LEGACY_FALLBACK_CATEGORY_ID;
+};
+
+const extractTypeAmountJson = (response: string): string | undefined => {
+    const typeAmountMatch = response.match(/\{\s*"type"\s*:\s*"[^"]+"\s*,\s*"amount"\s*:\s*\d+\s*\}/u);
+
+    return typeAmountMatch?.[0];
+};
+
+const extractCategoryIdJson = (response: string): string | undefined => {
+    const categoryMatch = response.match(/\{\s*"categoryId"\s*:\s*\d+\s*,\s*"amount"\s*:\s*\d+\s*\}/u);
+
+    return categoryMatch?.[0];
+};
+
+const extractCodeBlockJson = (response: string): string | undefined => {
+    const codeBlockMatch = response.match(/```(?:json)?\s*(\{[^`]+\})\s*```/u);
+
+    return codeBlockMatch?.[1].trim();
+};
+
+const extractAnyJson = (response: string): string | undefined => {
+    const anyJsonMatch = response.match(/\{[^{}]+\}/u);
+
+    return anyJsonMatch?.[0];
+};
+
+const extractJsonFromResponse = (response: string): string =>
+    extractCodeBlockJson(response) ??
+    extractTypeAmountJson(response) ??
+    extractCategoryIdJson(response) ??
+    extractAnyJson(response) ??
+    response.trim();
+
+/* eslint-disable lingui/no-unlocalized-strings */
+export const buildCategorizationPrompt = (mapping: ExpenseTypeMappingInterface[]): string => {
+    const types = mapping.map(entry => entry.type).join(', ');
+
+    return `Parse expense. Output JSON with "type" and "amount".
+
+Types: ${types}
+
+Output ONLY valid JSON: {"type":"X","amount":N}`;
+};
+
+export const buildSystemPrompt = (
+    _categories: CategoryForPromptInterface[]
+): string => `Parse expense. Output JSON with "type" and "amount".
+
+Types: food, restaurant, groceries, transport, fuel, car, entertainment, shopping, health, bills, subscription, travel, education, gifts, pets, sports, beauty, home, clothing, electronics, other
+
+Examples:
+"pizza 10" → {"type":"restaurant","amount":10}
+"uber 25" → {"type":"transport","amount":25}
+"gas 50" → {"type":"fuel","amount":50}
+"coffee 5" → {"type":"food","amount":5}
+"netflix 15" → {"type":"subscription","amount":15}
+"groceries 80" → {"type":"groceries","amount":80}
+
+Output ONLY valid JSON: {"type":"X","amount":N}`;
 /* eslint-enable lingui/no-unlocalized-strings */
+
+export const extractAndMapResponse = (
+    response: string,
+    mapping?: ExpenseTypeMappingInterface[]
+): { categoryId: number; amount: number } | null => {
+    const jsonStr = extractJsonFromResponse(response);
+
+    try {
+        const parsed = JSON.parse(jsonStr) as ParsedExpenseInterface;
+
+        if (typeof parsed.type === 'string' && typeof parsed.amount === 'number') {
+            const categoryId = mapping ? mapTypeToCategory(parsed.type, mapping) : mapTypeToCategoryLegacy(parsed.type);
+
+            return { categoryId, amount: parsed.amount };
+        }
+
+        if ('categoryId' in parsed && typeof (parsed as { categoryId: number }).categoryId === 'number') {
+            return parsed as unknown as { categoryId: number; amount: number };
+        }
+    } catch {
+        return null;
+    }
+
+    return null;
+};
 
 export const getLimitedCategories = <T>(categories: T[]): T[] => categories.slice(0, MAX_CATEGORIES);
