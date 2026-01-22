@@ -11,6 +11,7 @@ interface Props {
 
 const disabledLlm: LlmInterface = {
     isReady: false,
+    isInitializing: false,
     isGenerating: false,
     downloadProgress: 0,
     error: null,
