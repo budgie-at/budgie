@@ -24,20 +24,41 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 import { transactionService } from '../../../transaction/service/transaction.service';
 /* jscpd:ignore-end */
 
+const parseEntriesParam = (entries: string): Array<{ categoryId: number; amount: number }> | undefined => {
+    try {
+        const parsed = JSON.parse(entries) as unknown;
+        if (Array.isArray(parsed)) {
+            return parsed.filter(
+                (item): item is { categoryId: number; amount: number } =>
+                    typeof item === 'object' &&
+                    item !== null &&
+                    typeof item.categoryId === 'number' &&
+                    typeof item.amount === 'number'
+            );
+        }
+    } catch {
+        return undefined;
+    }
+
+    return undefined;
+};
+
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount, defaultInstrument } = useSettingsContext();
-    const { accountId, categoryId, amount, comment } = useLocalSearchParams<{
+    const { accountId, categoryId, amount, comment, entries } = useLocalSearchParams<{
         accountId?: string;
         categoryId?: string;
         amount?: string;
         comment?: string;
+        entries?: string;
     }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
     const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
     const parsedAmount = isDefined(amount) && isPositiveNumber(Number(amount)) ? Number(amount) : void 0;
+    const parsedEntries = isDefined(entries) ? parseEntriesParam(entries) : undefined;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: data => transactionService.createInternal(data),
@@ -47,7 +68,8 @@ export default function CreateExpenseTransactionPage() {
         toAccountId: null,
         amount: parsedAmount,
         categoryId: parsedCategoryId,
-        comment
+        comment,
+        entries: parsedEntries
     });
 
     const fromAccountId = useWatch({ control: form.control, name: 'fromAccountId' });
