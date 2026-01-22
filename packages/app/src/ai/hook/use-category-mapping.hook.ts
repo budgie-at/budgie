@@ -8,6 +8,9 @@ import { CategoryForMappingInterface, categoryMappingService } from '../service/
 
 import { useLlm } from './use-llm.hook';
 
+/* eslint-disable-next-line lingui/no-unlocalized-strings */
+const SYSTEM_PROMPT = 'You classify expenses. Reply with one word only.';
+
 interface UseCategoryMappingReturnInterface {
     mapping: ExpenseTypeMappingInterface[];
     isLoading: boolean;
@@ -23,7 +26,7 @@ export const useCategoryMapping = (
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const llm = useLlm({ systemPrompt: '' });
+    const llm = useLlm({ systemPrompt: SYSTEM_PROMPT });
     const llmRef = useRef(llm);
     llmRef.current = llm;
 

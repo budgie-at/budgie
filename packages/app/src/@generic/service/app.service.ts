@@ -1,3 +1,4 @@
+import { categoryMappingStorageService } from '../../ai/service/category-mapping-storage.service';
 import {
     accountRepository,
     categoryRepository,
@@ -18,6 +19,8 @@ class AppService {
             await settingsRepository.update({ defaultAccountId: null }, tx);
             await accountRepository.truncate(tx);
         });
+
+        await categoryMappingStorageService.clearCache();
     }
 }
 
