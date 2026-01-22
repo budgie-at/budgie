@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.16.0](https://github.com/budgie-at/budgie/compare/v2.15.0...v2.16.0) (2026-01-22)
+
+### Bug Fixes
+
+- **app:** add isInitializing to disabled LLM provider ([21d81b2](https://github.com/budgie-at/budgie/commit/21d81b298340403078f5a564bd66cbe54951a899))
+- **app:** address code review issues from React/RN best practices analysis ([4921bac](https://github.com/budgie-at/budgie/commit/4921bac495dbcbf210cffd2ce24dce4c95a86652))
+- **app:** enable import.meta polyfill for @huggingface/transformers ([60ce7dd](https://github.com/budgie-at/budgie/commit/60ce7dd7e3b7e507372289da115313a8c2ad8ac5))
+- **app:** exclude onnxruntime-web from metro bundle ([789d38d](https://github.com/budgie-at/budgie/commit/789d38d2d9f9c4a4004ba1bb827b7248e477e1c6))
+- **app:** fix EAS build workspace resolution ([f2bfadd](https://github.com/budgie-at/budgie/commit/f2bfadd4c50befe28c87f4b7f09aed85aeb4c31d))
+- **app:** fix grouped entries validation by including all categories ([ff68881](https://github.com/budgie-at/budgie/commit/ff688816dca134f11bff66cbdb378a7e0a9589ac))
+- **app:** fix lint errors in expense page entries parsing ([1f81756](https://github.com/budgie-at/budgie/commit/1f817562da093accbab2fe222872883f19f469bf))
+- **app:** fix lint errors in hash utility ([48be969](https://github.com/budgie-at/budgie/commit/48be9693e2d9fa8a6ee9adc5c778f58dc7854dfb))
+- **app:** improve LLM prompt to prevent duplicate categorization ([130e299](https://github.com/budgie-at/budgie/commit/130e2990a56c62527b11fc0e58e1b6bd17abc885))
+- **app:** resolve ESLint errors in model download implementation ([5780080](https://github.com/budgie-at/budgie/commit/5780080329d7dda73ebe2764ef94225dfc1bf3ad))
+- **app:** switch category mapping storage from SecureStore to AsyncStorage ([d512ddc](https://github.com/budgie-at/budgie/commit/d512ddc34ecda4d4bdfb1b2f183dc9d61c00dc46))
+- **app:** use correct ONNX model repository and download both files ([6d1ca63](https://github.com/budgie-at/budgie/commit/6d1ca631dc5d502c413450da79a933550a669244))
+- **app:** use expo-sqlite/kv-store instead of AsyncStorage for category mapping ([6bec2c2](https://github.com/budgie-at/budgie/commit/6bec2c2ee7057c765c97c613153c509ba8461d23))
+
+### Features
+
+- **app:** add build direct prompt utility ([76d6d98](https://github.com/budgie-at/budgie/commit/76d6d983dbe94a769540dcb94ca3410501d05743))
+- **app:** add categories hash computation utility ([1ff31de](https://github.com/budgie-at/budgie/commit/1ff31de773c90392c14f009c857d1b9073791757))
+- **app:** add category analysis prompt builder ([dec586e](https://github.com/budgie-at/budgie/commit/dec586ebb5649bcdbbbcd840d57c065353a511f1))
+- **app:** add category mapping interfaces ([4c025d2](https://github.com/budgie-at/budgie/commit/4c025d2b7617201502bdedcb07afcc2552116f39))
+- **app:** add category mapping React hook ([37bd17a](https://github.com/budgie-at/budgie/commit/37bd17a207ec3df9436b810983c086b15684a132))
+- **app:** add category mapping service with LLM analysis ([c5b6c7a](https://github.com/budgie-at/budgie/commit/c5b6c7add358ac37918b0df80469b0531913f6f8))
+- **app:** add category mapping storage service ([01eb0f3](https://github.com/budgie-at/budgie/commit/01eb0f3966ed9ca83628338208250a9d84443c32))
+- **app:** add download configuration constants for ONNX model ([bb2dc27](https://github.com/budgie-at/budgie/commit/bb2dc271f8b93772bdff9577665bc3d49f9814ae))
+- **app:** add download state storage service for resumable downloads ([267359f](https://github.com/budgie-at/budgie/commit/267359f977abda215c7d46fa3448b5f87bdecbbf))
+- **app:** add filter user categories utility ([8bb2b67](https://github.com/budgie-at/budgie/commit/8bb2b67db6e466730d7c2bca0ba6694e895ef1f6))
+- **app:** add group transactions by category utility ([d784e29](https://github.com/budgie-at/budgie/commit/d784e29d392835def6dc9c3cdafb861f61fb6086))
+- **app:** add initializing state with pulsing ring animation to AiButton ([8136859](https://github.com/budgie-at/budgie/commit/8136859396b37c5fb1397ea2c8dd1686499dfdd6))
+- **app:** add isInitializing state to LLM context interface ([644749a](https://github.com/budgie-at/budgie/commit/644749a0c944b6e6eaab77f487ac9766edfc9505))
+- **app:** add JSON output with Zod validation and account matching ([8b1def9](https://github.com/budgie-at/budgie/commit/8b1def967bcc374facb4a160fa2d7b51e48cd1ce))
+- **app:** add LLM categorization constants ([403eebc](https://github.com/budgie-at/budgie/commit/403eebc0f29437dd679aa285a1c0b325143aac6d))
+- **app:** add ONNX Runtime integration for LFM2.5-1.2B-Thinking model ([43f788e](https://github.com/budgie-at/budgie/commit/43f788e1a962909ebb227f27a3cb9b79fb1b6672))
+- **app:** add parse LLM JSON response utility with Zod ([203bd56](https://github.com/budgie-at/budgie/commit/203bd561a86e3adaba21219323606733050942f2))
+- **app:** add weighted progress calculation and initializing state to menu ([a9140c6](https://github.com/budgie-at/budgie/commit/a9140c642b7211ce7d4b6da715ace49cb0330361))
+- **app:** parse entries URL param in expense page ([33b8f55](https://github.com/budgie-at/budgie/commit/33b8f556678fd92b421393bf1ab49adf4d5d12bd))
+- **app:** support initial entries in create transaction form ([69021e4](https://github.com/budgie-at/budgie/commit/69021e481514f0a0c6957a0f1236bd4a88fef46b))
+- **app:** update build expense URL to support entries ([00f9cc5](https://github.com/budgie-at/budgie/commit/00f9cc53bba6786f10935a1a6d61115c08c2dfd4))
+
 # [2.15.0](https://github.com/budgie-at/budgie/compare/v2.14.0...v2.15.0) (2026-01-21)
 
 ### Bug Fixes
