@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { useLlmContext } from '../context/llm.context';
+import { GenerateOptionsInterface, useLlmContext } from '../context/llm.context';
 
 interface UseLlmConfig {
     systemPrompt: string;
@@ -10,7 +10,7 @@ interface UseLlmReturn {
     isReady: boolean;
     isGenerating: boolean;
     downloadProgress: number;
-    sendMessage: (message: string) => Promise<string>;
+    sendMessage: (message: string, options?: GenerateOptionsInterface) => Promise<string>;
     interrupt: () => void;
 }
 
@@ -22,7 +22,8 @@ export const useLlm = (config: UseLlmConfig): UseLlmReturn => {
         systemPromptRef.current = config.systemPrompt;
     }, [config.systemPrompt]);
 
-    const sendMessage = async (message: string): Promise<string> => llm.generate(systemPromptRef.current, message);
+    const sendMessage = async (message: string, options?: GenerateOptionsInterface): Promise<string> =>
+        llm.generate(systemPromptRef.current, message, options);
 
     return {
         isReady: llm.isReady,
