@@ -27,7 +27,7 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     categoryId?: number;
     comment?: string;
     amount?: number;
-    entries?: Array<{ categoryId: number; amount: number }>;
+    entries?: Array<{ categoryId: number; amount: number }> | null;
 }
 
 interface BuildFormEntriesParamsInterface {
@@ -35,7 +35,7 @@ interface BuildFormEntriesParamsInterface {
     toAccountId: number | null;
     amount: number;
     categoryId: number;
-    entries?: Array<{ categoryId: number; amount: number }>;
+    entries?: Array<{ categoryId: number; amount: number }> | null;
 }
 
 const buildMainEntry = ({
