@@ -59,6 +59,7 @@ const runCompletion = async (context: LlamaContext, systemPrompt: string, userMe
 export const useLlamaLlm = (): LlmInterface => {
     const contextRef = useRef<LlamaContext | null>(null);
     const isLoadingRef = useRef(false);
+    const isMountedRef = useRef(true);
     const generateMutexRef = useRef<Promise<unknown>>(Promise.resolve());
 
     const [isReady, setIsReady] = useState(false);
@@ -72,10 +73,17 @@ export const useLlamaLlm = (): LlmInterface => {
             return emptyFn;
         }
         isLoadingRef.current = true;
+        isMountedRef.current = true;
+
+        const isMounted = (): boolean => isMountedRef.current;
 
         const initializeModel = async (): Promise<void> => {
             try {
                 const modelPath = await downloadModel(setDownloadProgress);
+
+                if (!isMounted()) {
+                    return;
+                }
 
                 setIsInitializing(true);
                 contextRef.current = await initLlama({
@@ -84,11 +92,22 @@ export const useLlamaLlm = (): LlmInterface => {
                     n_gpu_layers: GPU_LAYERS,
                     use_mlock: true
                 });
+
+                if (!isMounted()) {
+                    void releaseAllLlama();
+
+                    return;
+                }
+
                 setIsReady(true);
             } catch (err: unknown) {
-                setError(getErrorMessage(err));
+                if (isMounted()) {
+                    setError(getErrorMessage(err));
+                }
             } finally {
-                setIsInitializing(false);
+                if (isMounted()) {
+                    setIsInitializing(false);
+                }
                 isLoadingRef.current = false;
             }
         };
@@ -96,6 +115,7 @@ export const useLlamaLlm = (): LlmInterface => {
         void initializeModel();
 
         return () => {
+            isMountedRef.current = false;
             void releaseAllLlama();
         };
     }, []);
