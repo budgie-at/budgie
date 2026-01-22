@@ -58,6 +58,7 @@ packages/
 9. **One component per folder** - Each component file lives in its own folder
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components
 11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/core/macro` for string props, `<Trans>` for JSX children
+12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 
 ### Naming Conventions
 
@@ -69,12 +70,35 @@ packages/
 | Class | PascalCase | `AccountRepository` |
 | File | kebab-case + type suffix | `account.service.ts` |
 
-### Type Guards
+### Type Guards and Validation
 
-Use `@rnw-community/shared` for type checks:
-- `isDefined()`, `isEmptyArray()`
-- `isNotEmptyArray()`, `isNotEmptyString()`
-- `isPositiveNumber()`, `isNumber()`
+**Prefer `@rnw-community/shared` type guards over manual checks:**
+- `isDefined(x)` instead of `x !== null && x !== undefined`
+- `isNumber(x)` instead of `typeof x === 'number'`
+- `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
+- `isNotEmptyString(x)` instead of `typeof x === 'string' && x.length > 0`
+- `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0`
+
+**Prefer `.filter(isDefined)` over manual type guard filters:**
+```typescript
+// Good
+items.map(transform).filter(isDefined)
+
+// Bad
+items.map(transform).filter((item): item is ItemType => item !== null)
+```
+
+**Prefer Zod for complex object validation:**
+```typescript
+// Good - Zod schema
+const ItemSchema = z.object({ id: z.number(), name: z.string() });
+const result = ItemSchema.safeParse(data);
+if (result.success) { /* use result.data */ }
+
+// Bad - manual type guard
+const isItem = (x: unknown): x is Item =>
+    typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
+```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
 
@@ -118,3 +142,7 @@ Conventional commits: `type(scope): description`
 - After table changes in contracts: `cd packages/app && yarn db:generate`
 - Never modify `.jscpd.json` - fix duplication in source code
 - Each package has its own CLAUDE.md with package-specific rules
+
+## Local Documentation
+
+The `docs/plans/` folder contains design documents and implementation plans. This folder is gitignored for local-only usage - plans are working documents that don't need version control.
