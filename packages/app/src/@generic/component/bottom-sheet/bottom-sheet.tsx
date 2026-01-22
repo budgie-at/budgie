@@ -61,6 +61,8 @@ export const BottomSheet = (props: Props) => {
 
     const backdropComponent = isCloseable ? BottomSheetCloseableBackdrop : BottomSheetNonCloseableBackdrop;
 
+    const containerComponent = isIOS ? FullWindowOverlayContainer : rest.containerComponent;
+
     return (
         <Modal
             className={cn('shadow-primary shadow-2xl rounded-t-3xl', className)}
@@ -77,8 +79,8 @@ export const BottomSheet = (props: Props) => {
             ref={modalRef}
             topInset={top}
             index={index}
-            {...(isIOS && { containerComponent: FullWindowOverlayContainer })}
             {...rest}
+            containerComponent={containerComponent}
         >
             {children}
         </Modal>
