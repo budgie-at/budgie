@@ -39,6 +39,11 @@ const fixMalformedJson = (text: string): string => {
     return cleaned;
 };
 
+const CURRENCY_ENUM_VALUES = new Set<string>(Object.values(CurrencyEnum));
+const EXTRACT_JSON_PATTERN = /\{[^{}]*"categoryId"\s*:\s*(?:\d+|"[^"]+")[^{}]*"amount"\s*:\s*\d+(?:\.\d+)?[^{}]*\}/gu;
+
+const isCurrencyEnum = (value: string): value is CurrencyEnum => CURRENCY_ENUM_VALUES.has(value);
+
 const validateCurrency = (currency: string | null | undefined): CurrencyEnum | null => {
     if (!isDefined(currency)) {
         return null;
@@ -46,7 +51,7 @@ const validateCurrency = (currency: string | null | undefined): CurrencyEnum | n
 
     const normalized = currency.toUpperCase();
 
-    return Object.values(CurrencyEnum).includes(normalized as CurrencyEnum) ? (normalized as CurrencyEnum) : null;
+    return isCurrencyEnum(normalized) ? normalized : null;
 };
 
 const mapToInterface = (item: ParsedItemType): ParsedCategorizationItemInterface => ({
@@ -56,8 +61,8 @@ const mapToInterface = (item: ParsedItemType): ParsedCategorizationItemInterface
 });
 
 const extractWithRegex = (response: string): ParsedCategorizationItemInterface[] => {
-    const pattern = /\{[^{}]*"categoryId"\s*:\s*(?:\d+|"[^"]+")[^{}]*"amount"\s*:\s*\d+(?:\.\d+)?[^{}]*\}/gu;
-    const matches = [...response.matchAll(pattern)];
+    EXTRACT_JSON_PATTERN.lastIndex = 0;
+    const matches = [...response.matchAll(EXTRACT_JSON_PATTERN)];
 
     return matches
         .map(match => {
