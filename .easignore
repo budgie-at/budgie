@@ -103,8 +103,12 @@ android
 google-service-account.json
 asc_api_key.p8
 
-# EAS build optimization - exclude unnecessary packages
-packages/landing
+# EAS build optimization - exclude unnecessary package build artifacts only
+# NOTE: Do NOT exclude workspace packages themselves (e.g. packages/landing)
+# Yarn workspaces require all packages to be present for resolution
+packages/landing/.next
+packages/landing/out
+packages/landing/node_modules
 
 # Git worktrees (isolated workspaces)
 .worktrees
