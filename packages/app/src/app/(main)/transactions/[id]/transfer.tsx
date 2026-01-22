@@ -48,7 +48,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
 
     const transactionInput = convertTransactionToInput(transaction);
 
-    const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
+    const { form, handleSubmit } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
         id: transactionId
@@ -92,14 +92,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         onGoBack={handleGoBack}
                     />
                 }
-                footer={
-                    <TransactionFormFooter
-                        variant="default"
-                        buttonText={t`Update Transfer`}
-                        onSubmit={handleSubmit}
-                        onDelete={handleDelete}
-                    />
-                }
+                footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
             >
                 <KeyboardAwareScrollView
                     keyboardShouldPersistTaps="handled"

@@ -1191,6 +1191,7 @@ __metadata:
     expo-system-ui: "npm:~6.0.9"
     expo-task-manager: "npm:~14.0.9"
     expo-updates: "npm:~29.0.16"
+    llama.rn: "npm:^0.9.1"
     lucide-react-native: "npm:^0.545.0"
     nativewind: "npm:^5.0.0-preview.2"
     papaparse: "npm:^5.5.3"
@@ -14459,6 +14460,16 @@ __metadata:
     rfdc: "npm:^1.4.1"
     wrap-ansi: "npm:^9.0.0"
   checksum: 10/b78ffd60443aed9a8e0fc9162eb941ea4d63210700d61a895eb29348f23fc668327e26bbca87a9e6a6208e7fa96c475fe1f1c6c19b46f376f547e0cba3b935ae
+  languageName: node
+  linkType: hard
+
+"llama.rn@npm:^0.9.1":
+  version: 0.9.7
+  resolution: "llama.rn@npm:0.9.7"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/fdb77b4db81e877bc1ecd549dbe876ffb940a80dc4c44967b1f710e0dd1edabb1371040141b9d546e4a84228e0e224d7d8f191468f3d70099785239078891f2c
   languageName: node
   linkType: hard
 
