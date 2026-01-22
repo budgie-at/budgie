@@ -1,46 +1,108 @@
-/* eslint-disable no-console, no-await-in-loop, max-statements, n/no-unsupported-features/node-builtins, lingui/no-unlocalized-strings */
-import { File, Paths } from 'expo-file-system';
+/* eslint-disable no-console, max-statements, lingui/no-unlocalized-strings */
+import { Directory, File, Paths } from 'expo-file-system';
+import * as FileSystemLegacy from 'expo-file-system/legacy';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { LFM25_MODEL_ID, LFM25_MODEL_PATH } from '../constant/onnx-llm.constant';
+import { LFM25_DOWNLOAD_CONFIG, LFM25_MODEL_ID } from '../constant/onnx-llm.constant';
+
+import { lfm25DownloadStorageService } from './lfm25-download-storage.service';
 
 type ProgressCallback = (progress: number) => void;
 
-const MODEL_FILENAME = 'model_q4.onnx';
-const MODEL_DATA_FILENAME = 'model_q4.onnx_data';
-const HF_BASE_URL = 'https://huggingface.co';
-const PROGRESS_COMPLETE = 100;
-const MODEL_FILE_PROGRESS_WEIGHT = 0.01;
-const DATA_FILE_PROGRESS_WEIGHT = 0.99;
+interface DownloadFileOptionsInterface {
+    url: string;
+    cacheUri: string;
+    finalUri: string;
+    onProgress?: ProgressCallback;
+    progressOffset?: number;
+    progressWeight?: number;
+}
 
 class Lfm25ModelDownloadService {
-    private downloadPromise: Promise<string> | null = null;
+    private currentDownload: FileSystemLegacy.DownloadResumable | null = null;
 
-    async getModelPath(): Promise<string> {
+    async getModelPath(onProgress?: ProgressCallback): Promise<string> {
         if (this.isModelDownloaded()) {
             return this.getModelFile().uri;
         }
 
-        return this.downloadModel();
-    }
-
-    async downloadModel(onProgress?: ProgressCallback): Promise<string> {
-        if (isDefined(this.downloadPromise)) {
-            return this.downloadPromise;
-        }
-
-        this.downloadPromise = this.performDownload(onProgress);
-
-        try {
-            return await this.downloadPromise;
-        } finally {
-            this.downloadPromise = null;
-        }
+        return this.downloadModel(onProgress);
     }
 
     isModelDownloaded(): boolean {
         return this.getModelFile().exists && this.getModelDataFile().exists;
+    }
+
+    async downloadModel(onProgress?: ProgressCallback): Promise<string> {
+        const modelFile = this.getModelFile();
+        const modelDataFile = this.getModelDataFile();
+
+        this.ensureDirectoryExists();
+
+        const fileSizes = await this.getOrFetchFileSizes();
+        const totalSize = fileSizes.modelFile + fileSizes.dataFile;
+        const modelFileWeight = fileSizes.modelFile / totalSize;
+        const dataFileWeight = fileSizes.dataFile / totalSize;
+
+        onProgress?.(0);
+
+        try {
+            if (!modelFile.exists) {
+                console.log(`Downloading LFM2.5 model file from: ${this.getModelUrl()}`);
+                await this.downloadFile({
+                    url: this.getModelUrl(),
+                    cacheUri: this.getCacheUri(LFM25_DOWNLOAD_CONFIG.modelFilename),
+                    finalUri: modelFile.uri,
+                    onProgress,
+                    progressOffset: 0,
+                    progressWeight: modelFileWeight
+                });
+            }
+
+            if (!modelDataFile.exists) {
+                console.log(`Downloading LFM2.5 model data from: ${this.getModelDataUrl()}`);
+                await this.downloadFile({
+                    url: this.getModelDataUrl(),
+                    cacheUri: this.getCacheUri(LFM25_DOWNLOAD_CONFIG.modelDataFilename),
+                    finalUri: modelDataFile.uri,
+                    onProgress,
+                    progressOffset: modelFileWeight,
+                    progressWeight: dataFileWeight
+                });
+            }
+
+            console.log(`Model downloaded successfully to: ${modelFile.uri}`);
+            onProgress?.(1);
+
+            return modelFile.uri;
+        } catch (err: unknown) {
+            console.error(`Failed to download model: ${getErrorMessage(err)}`);
+            throw err;
+        }
+    }
+
+    async pauseDownload(): Promise<void> {
+        if (!isDefined(this.currentDownload)) {
+            return;
+        }
+
+        const pauseState = await this.currentDownload.pauseAsync();
+        await lfm25DownloadStorageService.saveDownloadState({
+            url: pauseState.url,
+            fileUri: pauseState.fileUri,
+            resumeData: pauseState.resumeData ?? ''
+        });
+        this.currentDownload = null;
+    }
+
+    async cancelDownload(): Promise<void> {
+        if (isDefined(this.currentDownload)) {
+            await this.currentDownload.cancelAsync();
+            this.currentDownload = null;
+        }
+        await lfm25DownloadStorageService.clearDownloadState();
+        await this.deletePartialFiles();
     }
 
     async deleteModel(): Promise<void> {
@@ -54,114 +116,112 @@ class Lfm25ModelDownloadService {
         if (modelDataFile.exists) {
             modelDataFile.delete();
         }
+
+        await this.deletePartialFiles();
+        await lfm25DownloadStorageService.clearDownloadState();
+    }
+
+    private async downloadFile(options: DownloadFileOptionsInterface): Promise<void> {
+        const { url, cacheUri, finalUri, onProgress, progressOffset = 0, progressWeight = 1 } = options;
+
+        const savedState = await lfm25DownloadStorageService.getDownloadState();
+        const isResumingThisFile = isDefined(savedState) && savedState.url === url;
+
+        const progressCallback = (downloadProgress: FileSystemLegacy.DownloadProgressData): void => {
+            if (downloadProgress.totalBytesExpectedToWrite <= 0) {
+                return;
+            }
+
+            const fileProgress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+            const totalProgress = progressOffset + fileProgress * progressWeight;
+            onProgress?.(totalProgress);
+        };
+
+        if (isResumingThisFile && isDefined(savedState.resumeData)) {
+            console.log(`Resuming download for: ${url}`);
+            this.currentDownload = new FileSystemLegacy.DownloadResumable(
+                savedState.url,
+                savedState.fileUri,
+                {},
+                progressCallback,
+                savedState.resumeData
+            );
+            await this.currentDownload.resumeAsync();
+        } else {
+            this.currentDownload = FileSystemLegacy.createDownloadResumable(url, cacheUri, {}, progressCallback);
+            await this.currentDownload.downloadAsync();
+        }
+
+        await lfm25DownloadStorageService.clearDownloadState();
+        this.currentDownload = null;
+
+        await FileSystemLegacy.moveAsync({ from: cacheUri, to: finalUri });
+    }
+
+    private async getOrFetchFileSizes(): Promise<{ modelFile: number; dataFile: number }> {
+        const cached = await lfm25DownloadStorageService.getFileSizes();
+
+        if (isDefined(cached)) {
+            return { modelFile: cached.modelFile, dataFile: cached.dataFile };
+        }
+
+        const [modelSize, dataSize] = await Promise.all([
+            this.fetchFileSize(this.getModelUrl()),
+            this.fetchFileSize(this.getModelDataUrl())
+        ]);
+
+        await lfm25DownloadStorageService.saveFileSizes(modelSize, dataSize);
+
+        return { modelFile: modelSize, dataFile: dataSize };
+    }
+
+    private async fetchFileSize(url: string): Promise<number> {
+        const response = await fetch(url, { method: 'HEAD' });
+        const contentLength = response.headers.get('content-length');
+
+        return isDefined(contentLength) ? parseInt(contentLength, 10) : 0;
+    }
+
+    private ensureDirectoryExists(): void {
+        const dir = new Directory(Paths.document, LFM25_DOWNLOAD_CONFIG.directory);
+
+        if (!dir.exists) {
+            dir.create();
+        }
+
+        const cacheDir = new Directory(Paths.cache, LFM25_DOWNLOAD_CONFIG.directory);
+
+        if (!cacheDir.exists) {
+            cacheDir.create();
+        }
+    }
+
+    private async deletePartialFiles(): Promise<void> {
+        const modelCacheUri = this.getCacheUri(LFM25_DOWNLOAD_CONFIG.modelFilename);
+        const dataCacheUri = this.getCacheUri(LFM25_DOWNLOAD_CONFIG.modelDataFilename);
+
+        await FileSystemLegacy.deleteAsync(modelCacheUri, { idempotent: true });
+        await FileSystemLegacy.deleteAsync(dataCacheUri, { idempotent: true });
     }
 
     private getModelFile(): File {
-        return new File(Paths.document, LFM25_MODEL_PATH);
+        return new File(Paths.document, `${LFM25_DOWNLOAD_CONFIG.directory}/${LFM25_DOWNLOAD_CONFIG.modelFilename}`);
     }
 
     private getModelDataFile(): File {
-        return new File(Paths.document, `${LFM25_MODEL_PATH}_data`);
+        return new File(Paths.document, `${LFM25_DOWNLOAD_CONFIG.directory}/${LFM25_DOWNLOAD_CONFIG.modelDataFilename}`);
+    }
+
+    private getCacheUri(filename: string): string {
+        return `${Paths.cache}${LFM25_DOWNLOAD_CONFIG.directory}/${filename}.partial`;
     }
 
     private getModelUrl(): string {
-        return `${HF_BASE_URL}/${LFM25_MODEL_ID}/resolve/main/onnx/${MODEL_FILENAME}`;
+        return `${LFM25_DOWNLOAD_CONFIG.hfBaseUrl}/${LFM25_MODEL_ID}/resolve/main/onnx/${LFM25_DOWNLOAD_CONFIG.modelFilename}`;
     }
 
     private getModelDataUrl(): string {
-        return `${HF_BASE_URL}/${LFM25_MODEL_ID}/resolve/main/onnx/${MODEL_DATA_FILENAME}`;
-    }
-
-    private async performDownload(onProgress?: ProgressCallback): Promise<string> {
-        const modelFile = this.getModelFile();
-        const modelDataFile = this.getModelDataFile();
-
-        onProgress?.(0);
-
-        try {
-            console.log(`Downloading LFM2.5 model file from: ${this.getModelUrl()}`);
-            const modelData = await this.fetchModelData(this.getModelUrl(), progress => {
-                onProgress?.(progress * MODEL_FILE_PROGRESS_WEIGHT);
-            });
-            this.writeModelFile(modelFile, modelData);
-
-            console.log(`Downloading LFM2.5 model data from: ${this.getModelDataUrl()}`);
-            const externalData = await this.fetchModelData(this.getModelDataUrl(), progress => {
-                onProgress?.(MODEL_FILE_PROGRESS_WEIGHT * PROGRESS_COMPLETE + progress * DATA_FILE_PROGRESS_WEIGHT);
-            });
-            this.writeModelFile(modelDataFile, externalData);
-
-            console.log(`Model downloaded successfully to: ${modelFile.uri}`);
-            onProgress?.(PROGRESS_COMPLETE);
-
-            return modelFile.uri;
-        } catch (err: unknown) {
-            console.error(`Failed to download model: ${getErrorMessage(err)}`);
-            throw err;
-        }
-    }
-
-    private async fetchModelData(modelUrl: string, onProgress?: ProgressCallback): Promise<Uint8Array> {
-        const response = await fetch(modelUrl);
-
-        if (!response.ok) {
-            throw new Error(`Failed to download model: ${response.status} ${response.statusText}`);
-        }
-
-        if (!isDefined(response.body)) {
-            throw new Error('No response body');
-        }
-
-        const contentLength = response.headers.get('content-length');
-        const totalBytes = isDefined(contentLength) ? parseInt(contentLength, 10) : 0;
-
-        return this.readResponseStream(response.body, totalBytes, onProgress);
-    }
-
-    private async readResponseStream(
-        body: ReadableStream<Uint8Array>,
-        totalBytes: number,
-        onProgress?: ProgressCallback
-    ): Promise<Uint8Array> {
-        const reader = body.getReader();
-        const chunks: Uint8Array[] = [];
-        let downloadedBytes = 0;
-        let done = false;
-
-        while (!done) {
-            const { done: readDone, value } = await reader.read();
-            done = readDone;
-
-            if (isDefined(value)) {
-                chunks.push(value);
-                downloadedBytes += value.length;
-
-                if (totalBytes > 0) {
-                    const progress = Math.round((downloadedBytes / totalBytes) * PROGRESS_COMPLETE);
-                    onProgress?.(progress);
-                }
-            }
-        }
-
-        return this.concatenateChunks(chunks);
-    }
-
-    private concatenateChunks(chunks: Uint8Array[]): Uint8Array {
-        const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-        const result = new Uint8Array(totalLength);
-        let offset = 0;
-
-        for (const chunk of chunks) {
-            result.set(chunk, offset);
-            offset += chunk.length;
-        }
-
-        return result;
-    }
-
-    private writeModelFile(modelFile: File, data: Uint8Array): void {
-        modelFile.create();
-        modelFile.write(data);
+        return `${LFM25_DOWNLOAD_CONFIG.hfBaseUrl}/${LFM25_MODEL_ID}/resolve/main/onnx/${LFM25_DOWNLOAD_CONFIG.modelDataFilename}`;
     }
 }
 
