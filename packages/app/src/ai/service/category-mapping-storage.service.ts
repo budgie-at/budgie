@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Storage from 'expo-sqlite/kv-store';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,7 +8,7 @@ const STORAGE_KEY = 'category_mapping_v1';
 
 class CategoryMappingStorageService {
     async getCache(): Promise<CategoryMappingCacheInterface | null> {
-        const data = await AsyncStorage.getItem(STORAGE_KEY);
+        const data = await Storage.getItem(STORAGE_KEY);
 
         if (!isDefined(data)) {
             return null;
@@ -18,11 +18,11 @@ class CategoryMappingStorageService {
     }
 
     async setCache(cache: CategoryMappingCacheInterface): Promise<void> {
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+        await Storage.setItem(STORAGE_KEY, JSON.stringify(cache));
     }
 
     async clearCache(): Promise<void> {
-        await AsyncStorage.removeItem(STORAGE_KEY);
+        await Storage.removeItem(STORAGE_KEY);
     }
 }
 
