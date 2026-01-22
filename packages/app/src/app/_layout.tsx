@@ -25,6 +25,7 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { CategoryMappingPreloader } from '../ai/component/category-mapping-preloader/category-mapping-preloader';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
@@ -97,6 +98,7 @@ export default function RootLayout() {
                                         <AuthGuard>
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
+                                                    <CategoryMappingPreloader />
                                                     <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                         <Stack.Screen name="(tabs)" />
 
