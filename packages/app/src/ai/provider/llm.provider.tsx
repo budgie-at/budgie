@@ -1,4 +1,4 @@
-/* eslint-disable no-console, lingui/no-unlocalized-strings */
+/* eslint-disable no-console, lingui/no-unlocalized-strings, max-statements */
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { WHISPER_BASE, useSpeechToText } from 'react-native-executorch';
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function, max-statements */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { useEffect } from 'react';
@@ -90,6 +91,7 @@ export const AiButton = (props: Props) => {
     const ringCenter = RING_SIZE / 2;
     const ringOrigin = `${ringCenter}, ${ringCenter}`;
     const isDisabled = isLoading || isInitializing;
+    const initRingContainerStyle = [containerStyle, initRingStyle];
 
     return (
         <Animated.View style={animatedStyle}>
@@ -114,7 +116,7 @@ export const AiButton = (props: Props) => {
                     </View>
                 )}
                 {isInitializing && (
-                    <Animated.View className="absolute items-center justify-center" style={[containerStyle, initRingStyle]}>
+                    <Animated.View className="absolute items-center justify-center" style={initRingContainerStyle}>
                         <Svg height={RING_SIZE} width={RING_SIZE}>
                             <Circle
                                 cx={ringCenter}
