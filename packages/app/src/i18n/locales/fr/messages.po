@@ -53,7 +53,7 @@ msgstr "100 % hors ligne et privé"
 msgid "About"
 msgstr "À propos"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:89
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Compte"
@@ -109,7 +109,7 @@ msgstr "Ajouter une note..."
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/app/(main)/create-transaction/expense.tsx:63
+#: src/app/(main)/create-transaction/expense.tsx:86
 msgid "Add Expense"
 msgstr "Ajouter une dépense"
 
@@ -208,7 +208,7 @@ msgstr "Comptes archivés"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action ne peut pas être annulée."
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:84
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:53
 msgid "Are you sure you want to delete this transaction?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette transaction ?"
 
@@ -265,6 +265,7 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
+#: src/app/(modals)/confirm-action.tsx:55
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
@@ -397,7 +398,7 @@ msgstr "Impossible de créer la catégorie"
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:100
+#: src/transaction/hook/use-create-transaction-form.hook.ts:60
 msgid "Could not create transaction. Please try again later."
 msgstr "Impossible de créer la transaction. Veuillez réessayer plus tard."
 
@@ -579,11 +580,11 @@ msgstr "Supprimer les données"
 msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:81
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Delete transaction"
 msgstr "Supprimer la transaction"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:68
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:78
 msgid "Delete Transaction"
 msgstr ""
 
@@ -725,8 +726,7 @@ msgstr "Date de retour prévue"
 msgid "Expected Return Date (Optional)"
 msgstr "Date de retour prévue (optionnel)"
 
-#: src/app/(main)/account/[id]/details.tsx:100
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:86
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:92
 #: src/transaction/constant/transaction-type.constant.ts:9
 msgid "Expense"
 msgstr "Dépense"
@@ -887,9 +887,8 @@ msgstr "Comptes inactifs"
 msgid "Include in Net Worth"
 msgstr "Inclure dans la valeur nette"
 
-#: src/app/(main)/account/[id]/details.tsx:108
 #: src/app/(tabs)/analytics.tsx:64
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:87
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:93
 #: src/transaction/components/transactions-page-header/transactions-page-header.tsx:34
 #: src/transaction/constant/transaction-type.constant.ts:7
 msgid "Income"
@@ -980,7 +979,7 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/app/(main)/create-transaction/expense.tsx:62
+#: src/app/(main)/create-transaction/expense.tsx:85
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
@@ -1348,7 +1347,7 @@ msgstr "Afficher ce compte sur la page principale"
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:99
+#: src/transaction/hook/use-create-transaction-form.hook.ts:59
 msgid "Something went wrong."
 msgstr "Quelque chose s'est mal passé."
 
@@ -1478,7 +1477,7 @@ msgstr ""
 " 💡 Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:80
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:54
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
@@ -1564,8 +1563,7 @@ msgstr "Transactions synchronisées"
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
 
-#: src/app/(main)/account/[id]/details.tsx:116
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:88
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
 #: src/transaction/constant/transaction-type.constant.ts:6
 msgid "Transfer"
 msgstr "Virement"
