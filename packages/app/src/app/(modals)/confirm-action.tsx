@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '../../@generic/component/button/button';
@@ -41,11 +41,12 @@ export default function ConfirmActionModal() {
     }
 
     const { variant, icon, title, description, buttonText, buttonIcon } = currentParams;
-    const containerStyle = { paddingBottom: bottom };
+    const containerStyle = { paddingBottom: bottom + 16 };
 
     return (
-        <View className="flex-1 justify-end bg-transparent" style={containerStyle}>
-            <View className={cardVariants({ variant })}>
+        <View className="flex-1">
+            <Pressable className="flex-1 bg-black/60" onPress={handleCancel} />
+            <View className={cardVariants({ variant })} style={containerStyle}>
                 <View className="mx-5 bg-primary-reverse pt-xl pb-5xl">
                     <CircleIcon icon={icon} variant={variant} size={50} iconSize={24} className="mb-4xl self-center rounded-3xl" />
                     <Text className="text-primary text-xl font-semibold text-center mb-sm">{title}</Text>
