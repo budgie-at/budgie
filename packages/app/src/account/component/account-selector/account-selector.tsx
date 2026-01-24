@@ -5,8 +5,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { useAccountSelectorModal } from '../../../@generic/context/account-selector-modal.context';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 
 interface Props {
