@@ -6,10 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { useAccountSelectorModal } from '../../../@generic/context/account-selector-modal.context';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
 
 interface Props {
