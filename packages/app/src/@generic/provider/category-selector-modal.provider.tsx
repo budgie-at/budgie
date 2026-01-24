@@ -15,7 +15,7 @@ export const CategorySelectorModalProvider = ({ children }: Props) => {
         new Promise(resolve => {
             setCurrentParams(params ?? {});
             resolverRef.current = resolve;
-            router.push('/(modals)/category-selector');
+            router.push('/category-selector');
         });
 
     const resolveCategorySelector = (categoryId: number | null) => {
