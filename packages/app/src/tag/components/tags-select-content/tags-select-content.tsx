@@ -13,8 +13,7 @@ import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 interface Props {
     readonly data: FlatListDataItem<TagEntityInterface>[];
     readonly selectedTagIds: number[];
-    readonly onToggle: (tagId: number) => void;
-    readonly footerHeight: number;
+    readonly onSelect: (tagId: number) => void;
 }
 
 const NUM_COLUMNS = 3;
@@ -25,7 +24,7 @@ const BG_DARK = '#000000';
 const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.id.toString());
 
 export const TagsSelectContent = (props: Props) => {
-    const { data, selectedTagIds, onToggle, footerHeight } = props;
+    const { data, selectedTagIds, onSelect } = props;
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const { isDarkColorSchema } = useThemeContext();
@@ -33,7 +32,7 @@ export const TagsSelectContent = (props: Props) => {
     /* jscpd:ignore-start - FormSheet modal pattern from docs/plans/2025-01-24-formsheet-modal-learnings.md */
     const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
     const flatListStyle = [StyleSheet.absoluteFill, { backgroundColor }];
-    const contentContainerStyle = { paddingTop: HEADER_OFFSET, paddingBottom: bottom + footerHeight, flexGrow: 1 };
+    const contentContainerStyle = { paddingTop: HEADER_OFFSET, paddingBottom: bottom, flexGrow: 1 };
     /* jscpd:ignore-end */
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
@@ -42,7 +41,7 @@ export const TagsSelectContent = (props: Props) => {
         ) : (
             <TagsSelectorCard
                 isSelected={selectedTagIds.includes(item.id)}
-                onSelect={onToggle}
+                onSelect={onSelect}
                 variant="static"
                 title={item.title}
                 id={item.id}
