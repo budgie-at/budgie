@@ -6,11 +6,11 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useCategorySelectorModal } from '../@generic/context/category-selector-modal.context';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { CategoryCreateForm } from '../category/components/category-create-form/category-create-form';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
+import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useCategoryForm } from '../category/hooks/use-category-form.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 import { useThemeContext } from '../theme/context/theme.context';
