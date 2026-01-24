@@ -22,6 +22,7 @@ interface ModalSelectorLayoutProps {
     readonly emptyState?: ReactNode;
     readonly isEmpty?: boolean;
     readonly className?: string;
+    readonly scrollable?: boolean;
 }
 
 export const ModalSelectorLayout = (props: ModalSelectorLayoutProps) => {
@@ -37,7 +38,8 @@ export const ModalSelectorLayout = (props: ModalSelectorLayoutProps) => {
         rightActionOnPress,
         emptyState,
         isEmpty = false,
-        className
+        className,
+        scrollable = true
     } = props;
 
     const { bottom } = useSafeAreaInsets();
@@ -81,14 +83,18 @@ export const ModalSelectorLayout = (props: ModalSelectorLayoutProps) => {
                 </View>
             )}
 
-            <ScrollView
-                className="flex-1"
-                contentContainerStyle={contentContainerStyle}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="on-drag"
-            >
-                {isEmpty && isDefined(emptyState) ? emptyState : children}
-            </ScrollView>
+            {scrollable ? (
+                <ScrollView
+                    className="flex-1"
+                    contentContainerStyle={contentContainerStyle}
+                    keyboardShouldPersistTaps="handled"
+                    keyboardDismissMode="on-drag"
+                >
+                    {isEmpty && isDefined(emptyState) ? emptyState : children}
+                </ScrollView>
+            ) : (
+                <View className="flex-1">{isEmpty && isDefined(emptyState) ? emptyState : children}</View>
+            )}
 
             {hasFooter && (
                 <View className="px-xl pt-md border-t border-t-secondary-corner" style={footerPaddingStyle}>

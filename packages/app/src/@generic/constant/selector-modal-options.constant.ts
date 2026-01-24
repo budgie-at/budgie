@@ -13,8 +13,3 @@ export const SELECTOR_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     sheetCornerRadius: SHEET_CORNER_RADIUS,
     contentStyle: { backgroundColor: 'transparent' }
 };
-
-export const SELECTOR_MODAL_FIT_OPTIONS: ExtendedStackNavigationOptions = {
-    ...SELECTOR_MODAL_OPTIONS,
-    sheetAllowedDetents: 'fitToContents'
-};

@@ -22,6 +22,7 @@ import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
+import { CategorySelectorModalProvider } from '../@generic/provider/category-selector-modal.provider';
 import { ConfirmActionModalProvider } from '../@generic/provider/confirm-action-modal.provider';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
@@ -99,27 +100,29 @@ export default function RootLayout() {
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
                                                     <ConfirmActionModalProvider>
-                                                        <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                            <Stack.Screen name="(tabs)" />
+                                                        <CategorySelectorModalProvider>
+                                                            <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
+                                                                <Stack.Screen name="(tabs)" />
 
-                                                            <Stack.Screen name="(main)/pin" />
-                                                            <Stack.Screen name="(main)/create-account" />
+                                                                <Stack.Screen name="(main)/pin" />
+                                                                <Stack.Screen name="(main)/create-account" />
 
-                                                            <Stack.Screen name="(main)/account/[id]/details" />
-                                                            <Stack.Screen name="(main)/account/[id]/update" />
+                                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                                <Stack.Screen name="(main)/account/[id]/update" />
 
-                                                            <Stack.Screen name="(main)/create-transaction/expense" />
-                                                            <Stack.Screen name="(main)/create-transaction/income" />
-                                                            <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                <Stack.Screen name="(main)/create-transaction/income" />
+                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
 
-                                                            <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                            <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                            <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
 
-                                                            <Stack.Screen name="(main)/analytics/transactions" />
+                                                                <Stack.Screen name="(main)/analytics/transactions" />
 
-                                                            <Stack.Screen name="(modals)" options={DEFAULT_STACK_OPTIONS} />
-                                                        </Stack>
+                                                                <Stack.Screen name="(modals)" options={DEFAULT_STACK_OPTIONS} />
+                                                            </Stack>
+                                                        </CategorySelectorModalProvider>
                                                     </ConfirmActionModalProvider>
                                                     <Toast />
                                                 </AiProviderWrapper>
