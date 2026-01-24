@@ -1,24 +1,22 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useCategorySelectorModal } from '../@generic/context/category-selector-modal.context';
-import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
+import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
-import { CategorySelectorCard } from '../category/components/category-selector-card/category-selector-card';
+import { CategoryCreateForm } from '../category/components/category-create-form/category-create-form';
+import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
+import { useCategoryForm } from '../category/hooks/use-category-form.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 
-const NUM_COLUMNS = 3;
-const HEADER_HEIGHT = { paddingTop: 88 };
+type Mode = 'select' | 'create';
 
-const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
-    item.isEmpty ? `empty-${index}` : item.id.toString();
+const NUM_COLUMNS = 3;
 
 const prepareCategoryData = (
     categories: CategoryEntityInterface[] | null,
@@ -33,69 +31,57 @@ const prepareCategoryData = (
 
 export default function CategorySelectorModal() {
     const { t } = useLingui();
-    const { bottom } = useSafeAreaInsets();
     const { currentParams, resolveCategorySelector } = useCategorySelectorModal();
+
+    const [mode, setMode] = useState<Mode>('select');
     const [search, setSearch] = useState('');
+
     const { categories } = useSearchCategoriesQuery(search, true);
+    const { handleSubmit, reset, control, register } = useCategoryForm(null, search);
 
     const variant = currentParams?.variant ?? 'primary';
     const initialCategoryId = currentParams?.initialCategoryId ?? null;
     const data = prepareCategoryData(categories, currentParams?.excludeCategoryIds ?? [], initialCategoryId);
-    const isEmpty = !isNotEmptyArray(data);
 
     const handleSelect = (categoryId: number) => void resolveCategorySelector(categoryId);
 
-    const flatListStyle = { flex: 1 };
-    const contentContainerStyle = [{ paddingBottom: bottom }, HEADER_HEIGHT];
+    const handleCreatePress = () => {
+        reset({ icon: UserIconNameEnum.Home, title: search });
+        setMode('create');
+    };
 
-    const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
-        item.isEmpty ? (
-            <CategorySelectorCard
-                className="opacity-0"
-                isSelected={false}
-                onSelect={emptyFn}
-                title=""
-                variant={variant}
-                icon={UserIconNameEnum.Circle}
-                id={0}
-            />
-        ) : (
-            <CategorySelectorCard
-                isSelected={item.id === initialCategoryId}
-                onSelect={handleSelect}
-                title={item.title}
-                variant={variant}
-                icon={item.icon}
-                id={item.id}
-            />
-        );
+    const handleCancelCreate = () => {
+        reset();
+        setMode('select');
+    };
+
+    const handleCreateSuccess = (categoryId: number) => {
+        setMode('select');
+        resolveCategorySelector(categoryId);
+    };
 
     return (
         <View className="flex-1 bg-primary-reverse">
-            <SelectorModalSearchHeader
-                search={search}
-                onSearchChange={setSearch}
-                placeholder={t`Search categories...`}
-                rightActionIcon={UserIconNameEnum.Plus}
-                rightActionOnPress={emptyFn}
-            />
+            {mode === 'select' ? (
+                <SelectorModalSearchHeader
+                    search={search}
+                    onSearchChange={setSearch}
+                    placeholder={t`Search categories...`}
+                    rightActionIcon={UserIconNameEnum.Plus}
+                    rightActionOnPress={handleCreatePress}
+                />
+            ) : null}
 
-            {isEmpty ? (
-                <View style={HEADER_HEIGHT}>
-                    <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
-                </View>
+            {mode === 'select' ? (
+                <CategorySelectContent data={data} variant={variant} initialCategoryId={initialCategoryId} onSelect={handleSelect} />
             ) : (
-                <FlatList
-                    style={flatListStyle}
-                    data={data}
-                    keyExtractor={keyExtractor}
-                    renderItem={renderItem}
-                    numColumns={NUM_COLUMNS}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                    columnWrapperClassName="gap-x-lg mb-lg"
-                    contentContainerClassName="px-xl"
-                    contentContainerStyle={contentContainerStyle}
+                <CategoryCreateForm
+                    control={control}
+                    register={register}
+                    reset={reset}
+                    handleSubmit={handleSubmit}
+                    onCancel={handleCancelCreate}
+                    onSuccess={handleCreateSuccess}
                 />
             )}
         </View>
