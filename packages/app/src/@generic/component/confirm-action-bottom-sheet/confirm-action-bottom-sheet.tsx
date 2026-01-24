@@ -1,13 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
-import { ClassValue } from 'clsx';
 import { ReactNode, RefObject } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn } from '@rnw-community/shared';
 
+import { CONFIRM_ACTION_CARD_VARIANTS } from '../../constant/confirm-action-card-variants.constant';
 import { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { BottomSheet } from '../bottom-sheet/bottom-sheet';
@@ -29,25 +28,6 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const cardVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
-    'mx-5xl rounded-5xl overflow-hidden border-2 shadow-[0px_0px_15px_-8px]',
-    {
-        variants: {
-            variant: {
-                'dark-warning': 'border-dark-warning-corner shadow-dark-warning-corner/75',
-                destructive: 'border-destructive-corner shadow-destructive-corner/75',
-                secondary: 'border-secondary-corner shadow-secondary-corner/75',
-                positive: 'border-positive-corner shadow-positive-corner/75',
-                warning: 'border-warning-corner shadow-warning-corner/75',
-                default: 'border-default-corner shadow-default-corner/75',
-                primary: 'border-ghost-corner shadow-ghost-corner/75',
-                ghost: 'border-ghost-corner shadow-ghost-corner/75',
-                pink: 'border-pink-corner shadow-pink-corner/75'
-            }
-        }
-    }
-);
-
 export const ConfirmActionBottomSheet = (props: Props) => {
     const { ref, variant, icon, title, description, buttonText, buttonIcon, isDisabled, isLoading, onSubmit, children } = props;
 
@@ -60,7 +40,14 @@ export const ConfirmActionBottomSheet = (props: Props) => {
     const submitButtonContent = isLoading ? <ActivityIndicator size="small" /> : buttonText;
 
     return (
-        <BottomSheet className={cardVariants({ variant })} ref={ref} enableDynamicSizing bottomInset={bottom} isCloseable={false} detached>
+        <BottomSheet
+            className={CONFIRM_ACTION_CARD_VARIANTS({ variant })}
+            ref={ref}
+            enableDynamicSizing
+            bottomInset={bottom}
+            isCloseable={false}
+            detached
+        >
             <BottomSheetView className="mx-5 bg-transparent pt-xl pb-5xl">
                 <CircleIcon icon={icon} variant={variant} size={50} iconSize={24} className="mb-4xl self-center rounded-3xl" />
                 <Text className="text-primary text-xl font-semibold text-center mb-sm">{title}</Text>
