@@ -1,16 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { useRef } from 'react';
 import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useAccountSelectorModal } from '../../../@generic/context/account-selector-modal.context';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useAccountSelector } from '../../hooks/use-account-selector.hook';
-import { AccountSelectorBottomSheet } from '../account-selector-bottom-sheet/account-selector-bottom-sheet';
 
 interface Props {
     readonly emptyStateDescription?: string;
@@ -42,38 +42,37 @@ export const AccountSelectorSquare = ({
     variant,
     className
 }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
     const { t } = useLingui();
-
+    const { openAccountSelector } = useAccountSelectorModal();
     const { selectedAccount, formattedBalance, icon, hasAccount } = useAccountSelector({ accountId });
 
-    const handleOpen = () => ref.current?.open();
+    const handleOpen = async () => {
+        const selectedAccountId = await openAccountSelector({
+            initialAccountId: accountId,
+            excludeAccountId,
+            emptyStateDescription
+        });
+
+        if (isDefined(selectedAccountId)) {
+            onSelect(selectedAccountId);
+        }
+    };
 
     const iconVariant = hasAccount ? variant : 'ghost';
     const subtitle = selectedAccount?.title ?? t`Select account`;
     const description = hasAccount ? formattedBalance : t`Tap to choose`;
 
     return (
-        <>
-            <Card onPress={handleOpen} className={cn(cardVariants({ status }), className)}>
-                <View className="flex-row gap-x-md items-center mb-lg">
-                    <CircleIcon size={34} iconSize={18} icon={icon} variant={iconVariant} />
-                    <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
-                </View>
+        <Card onPress={handleOpen} className={cn(cardVariants({ status }), className)}>
+            <View className="flex-row gap-x-md items-center mb-lg">
+                <CircleIcon size={34} iconSize={18} icon={icon} variant={iconVariant} />
+                <Text className="text-xxs text-secondary-foreground font-semibold">{title}</Text>
+            </View>
 
-                <Text className="text-primary mb-xs" numberOfLines={1}>
-                    {subtitle}
-                </Text>
-                <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
-            </Card>
-
-            <AccountSelectorBottomSheet
-                emptyStateDescription={emptyStateDescription}
-                excludeAccountId={excludeAccountId}
-                selectedAccount={selectedAccount}
-                onSelect={onSelect}
-                ref={ref}
-            />
-        </>
+            <Text className="text-primary mb-xs" numberOfLines={1}>
+                {subtitle}
+            </Text>
+            <Text className="font-medium text-secondary-foreground text-xs">{description}</Text>
+        </Card>
     );
 };
