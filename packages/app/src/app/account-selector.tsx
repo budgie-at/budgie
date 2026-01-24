@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useAccountSelectorModal } from '../@generic/context/account-selector-modal.context';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
+import { useAccountSelectorModal } from '../account/context/account-selector-modal.context';
 import { useSearchAccountsSortedQuery } from '../account/query/use-search-accounts-sorted.query';
 import { useThemeContext } from '../theme/context/theme.context';
 

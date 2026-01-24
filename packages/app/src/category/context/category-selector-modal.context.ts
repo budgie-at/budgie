@@ -2,7 +2,7 @@ import { createContext, use } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { ColorPaletteVariant } from '../type/color-palette-variant.type';
+import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 
 export interface CategorySelectorModalParams {
     readonly initialCategoryId?: number | null;

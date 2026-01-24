@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { useCategorySelectorModal } from '../../../@generic/context/category-selector-modal.context';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../query/use-get-category-by-id.query';
 
 interface Props {
