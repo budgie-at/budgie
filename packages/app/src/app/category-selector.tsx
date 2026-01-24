@@ -69,8 +69,8 @@ export default function CategorySelectorModal() {
             />
         );
 
-    const listHeader = (
-        <View className="pt-3xl pb-lg px-xl bg-primary-reverse">
+    const searchHeader = (
+        <View className="absolute top-0 left-0 right-0 z-10 pt-3xl pb-lg px-xl bg-primary-reverse">
             <View className="flex-row items-center gap-x-md">
                 <View className="flex-1 flex-row items-center rounded-5xl bg-secondary-background h-[48px] px-lg border border-secondary-corner">
                     <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
@@ -85,20 +85,25 @@ export default function CategorySelectorModal() {
                         clearButtonMode="while-editing"
                     />
                 </View>
-                <HapticPressable onPress={emptyFn} className="h-[48px] w-[48px] items-center justify-center rounded-full bg-primary">
-                    <Icon icon={UserIconNameEnum.Plus} size={22} className="text-primary-foreground" />
-                </HapticPressable>
+                <View className="h-[48px] w-[48px] items-center justify-center rounded-full bg-primary">
+                    <HapticPressable onPress={emptyFn} className="flex-1 w-full items-center justify-center">
+                        <Icon icon={UserIconNameEnum.Plus} size={22} className="text-primary-foreground" />
+                    </HapticPressable>
+                </View>
             </View>
         </View>
     );
 
+    const headerHeight = { paddingTop: 80 };
+
     return (
         <View className="flex-1 bg-primary-reverse">
+            {searchHeader}
+
             {isEmpty ? (
-                <>
-                    {listHeader}
+                <View style={headerHeight}>
                     <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
-                </>
+                </View>
             ) : (
                 <FlatList
                     style={flatListStyle}
@@ -109,10 +114,8 @@ export default function CategorySelectorModal() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     columnWrapperClassName="gap-x-lg mb-lg"
-                    contentContainerClassName="px-xl pt-lg"
-                    contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={listHeader}
-                    stickyHeaderIndices={[0]}
+                    contentContainerClassName="px-xl"
+                    contentContainerStyle={[contentContainerStyle, headerHeight]}
                 />
             )}
         </View>
