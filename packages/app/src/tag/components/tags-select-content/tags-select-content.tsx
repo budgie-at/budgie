@@ -1,13 +1,12 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FlatList, View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
-import { useThemeContext } from '../../../theme/context/theme.context';
 import { TagsSelectorCard } from '../tags-selector-card/tags-selector-card';
 
 interface Props {
@@ -17,23 +16,13 @@ interface Props {
 }
 
 const NUM_COLUMNS = 3;
-const HEADER_OFFSET = 88;
-const BG_LIGHT = '#FFFFFF';
-const BG_DARK = '#000000';
 
 const keyExtractor = (item: FlatListDataItem<TagEntityInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.id.toString());
 
 export const TagsSelectContent = (props: Props) => {
     const { data, selectedTagIds, onSelect } = props;
     const { t } = useLingui();
-    const { bottom } = useSafeAreaInsets();
-    const { isDarkColorSchema } = useThemeContext();
-
-    /* jscpd:ignore-start - FormSheet modal pattern from docs/plans/2025-01-24-formsheet-modal-learnings.md */
-    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
-    const flatListStyle = [StyleSheet.absoluteFill, { backgroundColor }];
-    const contentContainerStyle = { paddingTop: HEADER_OFFSET, paddingBottom: bottom, flexGrow: 1 };
-    /* jscpd:ignore-end */
+    const { flatListStyle, contentContainerStyle } = useFormsheetListStyles();
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
