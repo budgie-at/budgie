@@ -15,6 +15,7 @@ export const useFormsheetListStyles = () => {
 
     return {
         flatListStyle: [StyleSheet.absoluteFill, { backgroundColor }],
-        contentContainerStyle: { paddingTop: HEADER_OFFSET, paddingBottom: bottom, flexGrow: 1 }
+        contentContainerStyle: { paddingTop: HEADER_OFFSET, paddingBottom: bottom, flexGrow: 1 },
+        backgroundColor
     };
 };

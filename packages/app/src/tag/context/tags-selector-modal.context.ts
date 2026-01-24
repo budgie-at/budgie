@@ -4,6 +4,9 @@ import { emptyFn } from '@rnw-community/shared';
 
 export interface TagsSelectorModalParams {
     readonly initialTagIds?: number[];
+    readonly excludeTagIds?: number[];
+    readonly description?: string;
+    readonly singleSelect?: boolean;
 }
 
 interface TagsSelectorModalContextInterface {
