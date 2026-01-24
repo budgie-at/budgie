@@ -69,7 +69,7 @@ export default function CategorySelectorModal() {
         );
 
     return (
-        <View className="flex-1">
+        <View className="flex-1 min-h-[900px]">
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
@@ -79,7 +79,7 @@ export default function CategorySelectorModal() {
             />
 
             {isEmpty ? (
-                <View className="flex-1 items-center justify-center mt-[80px]">
+                <View className="flex-1 items-center mt-[80px]">
                     <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
                 </View>
             ) : (
