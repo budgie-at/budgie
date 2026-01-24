@@ -1,14 +1,13 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, TextInput, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../@generic/component/icon/icon';
+import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useCategorySelectorModal } from '../@generic/context/category-selector-modal.context';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
@@ -44,7 +43,7 @@ export default function CategorySelectorModal() {
     const isEmpty = !isNotEmptyArray(data);
 
     const handleSelect = (categoryId: number) => void resolveCategorySelector(categoryId);
-    const flatListStyle = { flex: 1 };
+
     const contentContainerStyle = { paddingBottom: bottom };
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
@@ -69,44 +68,23 @@ export default function CategorySelectorModal() {
             />
         );
 
-    const searchHeader = (
-        <View className="absolute top-0 left-0 right-0 z-10 pt-3xl pb-lg px-xl bg-primary-reverse">
-            <View className="flex-row items-center gap-x-md">
-                <View className="flex-1 flex-row items-center rounded-5xl bg-secondary-background h-[48px] px-lg border border-secondary-corner">
-                    <Icon icon={UserIconNameEnum.Search} size={20} className="text-secondary-foreground" />
-                    <TextInput
-                        className="flex-1 text-primary text-md ml-sm"
-                        value={search}
-                        onChangeText={setSearch}
-                        placeholder={t`Search categories...`}
-                        placeholderTextColor="rgba(128, 128, 128, 0.6)"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        clearButtonMode="while-editing"
-                    />
-                </View>
-                <View className="h-[48px] w-[48px] items-center justify-center rounded-full bg-primary">
-                    <HapticPressable onPress={emptyFn} className="flex-1 w-full items-center justify-center">
-                        <Icon icon={UserIconNameEnum.Plus} size={22} className="text-primary-foreground" />
-                    </HapticPressable>
-                </View>
-            </View>
-        </View>
-    );
-
-    const headerHeight = { paddingTop: 80 };
-
     return (
-        <View className="flex-1 bg-primary-reverse">
-            {searchHeader}
+        <View className="flex-1">
+            <SelectorModalSearchHeader
+                search={search}
+                onSearchChange={setSearch}
+                placeholder={t`Search categories...`}
+                rightActionIcon={UserIconNameEnum.Plus}
+                rightActionOnPress={emptyFn}
+            />
 
             {isEmpty ? (
-                <View style={headerHeight}>
+                <View className="flex-1 items-center justify-center mt-[80px]">
                     <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
                 </View>
             ) : (
                 <FlatList
-                    style={flatListStyle}
+                    className="flex-1"
                     data={data}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
@@ -114,8 +92,8 @@ export default function CategorySelectorModal() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     columnWrapperClassName="gap-x-lg mb-lg"
-                    contentContainerClassName="px-xl"
-                    contentContainerStyle={[contentContainerStyle, headerHeight]}
+                    contentContainerClassName="px-xl pt-[80px]"
+                    contentContainerStyle={contentContainerStyle}
                 />
             )}
         </View>
