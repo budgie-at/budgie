@@ -18,6 +18,7 @@ import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
@@ -121,6 +122,8 @@ export default function RootLayout() {
                                                                 <Stack.Screen name="(main)/analytics/transactions" />
 
                                                                 <Stack.Screen name="(modals)" options={DEFAULT_STACK_OPTIONS} />
+
+                                                                <Stack.Screen name="category-selector" options={SELECTOR_MODAL_OPTIONS} />
                                                             </Stack>
                                                         </CategorySelectorModalProvider>
                                                     </ConfirmActionModalProvider>
