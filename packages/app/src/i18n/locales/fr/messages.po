@@ -492,6 +492,7 @@ msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étiqueter et filtrer vos transactions"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:58
+#: src/account/component/account-select-content/account-select-content.tsx:55
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:57
 msgid "Create one to get started."
 msgstr "Créez-en un pour commencer."
@@ -1000,11 +1001,13 @@ msgstr "Nouveau revenu"
 msgid "New Transfer"
 msgstr "Nouveau transfert"
 
+#: src/account/component/account-select-content/account-select-content.tsx:52
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts found"
 msgstr "Aucun compte trouvé"
 
+#: src/account/component/account-select-content/account-select-content.tsx:52
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:61
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:22
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
@@ -1242,6 +1245,7 @@ msgid "Screenshot Protection"
 msgstr "Protection des captures d'écran"
 
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:68
+#: src/app/account-selector.tsx:32
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
@@ -1301,7 +1305,7 @@ msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:53
-#: src/account/component/account-selector/account-selector.tsx:51
+#: src/account/component/account-selector/account-selector.tsx:57
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
@@ -1586,6 +1590,7 @@ msgstr "Virement"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
+#: src/account/component/account-select-content/account-select-content.tsx:54
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
 #: src/category/components/category-select-content/category-select-content.tsx:63
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
