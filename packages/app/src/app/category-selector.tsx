@@ -13,6 +13,7 @@ import { CategoryCreateForm } from '../category/components/category-create-form/
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryForm } from '../category/hooks/use-category-form.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
+import { useThemeContext } from '../theme/context/theme.context';
 
 type Mode = 'select' | 'create';
 
@@ -29,12 +30,18 @@ const prepareCategoryData = (
     return padFlatListData(sorted, NUM_COLUMNS);
 };
 
+const BG_LIGHT = '#FFFFFF';
+const BG_DARK = '#000000';
+
 export default function CategorySelectorModal() {
     const { t } = useLingui();
     const { currentParams, resolveCategorySelector } = useCategorySelectorModal();
+    const { isDarkColorSchema } = useThemeContext();
 
     const [mode, setMode] = useState<Mode>('select');
     const [search, setSearch] = useState('');
+
+    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
 
     const { categories } = useSearchCategoriesQuery(search, true);
     const { handleSubmit, reset, control, register } = useCategoryForm(null, search);
@@ -42,8 +49,6 @@ export default function CategorySelectorModal() {
     const variant = currentParams?.variant ?? 'primary';
     const initialCategoryId = currentParams?.initialCategoryId ?? null;
     const data = prepareCategoryData(categories, currentParams?.excludeCategoryIds ?? [], initialCategoryId);
-
-    const handleSelect = (categoryId: number) => void resolveCategorySelector(categoryId);
 
     const handleCreatePress = () => {
         reset({ icon: UserIconNameEnum.Home, title: search });
@@ -61,7 +66,7 @@ export default function CategorySelectorModal() {
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse">
+        <View style={containerStyle}>
             {mode === 'select' ? (
                 <SelectorModalSearchHeader
                     search={search}
@@ -73,7 +78,12 @@ export default function CategorySelectorModal() {
             ) : null}
 
             {mode === 'select' ? (
-                <CategorySelectContent data={data} variant={variant} initialCategoryId={initialCategoryId} onSelect={handleSelect} />
+                <CategorySelectContent
+                    data={data}
+                    variant={variant}
+                    initialCategoryId={initialCategoryId}
+                    onSelect={resolveCategorySelector}
+                />
             ) : (
                 <CategoryCreateForm
                     control={control}
