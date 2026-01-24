@@ -13,7 +13,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { CategoryFormBottomSheet } from '../../../category/components/category-form-bottom-sheet/category-form-bottom-sheet';
-import { CategorySelectorBottomSheet } from '../../../category/components/category-selector-bottom-sheet/category-selector-bottom-sheet';
+import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
 import { categoryService } from '../../../category/service/category.service';
 
@@ -21,15 +21,12 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
+    const { openCategorySelector } = useCategorySelectorModal();
 
     const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
-    const reassignRef = useRef<BottomSheetInterface | null>(null);
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<CategoryEntityInterface | null>(null);
-    const [categoryToDelete, setCategoryToDelete] = useState<CategoryEntityInterface | null>(null);
     const { categories } = useSearchCategoriesQuery(search, false);
-
-    const excludeCategoryIds = isDefined(categoryToDelete) ? [categoryToDelete.id] : [];
 
     useCreateAction({
         icon: UserIconNameEnum.Folder,
@@ -44,31 +41,27 @@ export default function Categories() {
     const handleDeleteCategory = async (id: number) => {
         const count = await categoryService.countTransactionEntries(id);
         if (isPositiveNumber(count)) {
-            const category = categories?.find(cat => cat.id === id);
-            if (isDefined(category)) {
-                setCategoryToDelete(category);
-                void reassignRef.current?.open();
+            const targetCategoryId = await openCategorySelector({
+                excludeCategoryIds: [id],
+                description: t`This category has transactions. Select another category to reassign them to.`,
+                variant: 'primary'
+            });
+
+            if (isDefined(targetCategoryId)) {
+                try {
+                    await categoryService.mergeInto(id, targetCategoryId);
+                } catch {
+                    Toast.show({
+                        type: 'error',
+                        text1: t`Could not reassign category`,
+                        text2: t`Please try again later`
+                    });
+                }
             }
 
             return;
         }
         await categoryService.deleteById(id);
-    };
-
-    const handleReassignSelect = async (targetCategoryId: number | null) => {
-        if (isDefined(categoryToDelete) && isDefined(targetCategoryId)) {
-            try {
-                await categoryService.mergeInto(categoryToDelete.id, targetCategoryId);
-                void reassignRef.current?.close();
-                setCategoryToDelete(null);
-            } catch {
-                Toast.show({
-                    type: 'error',
-                    text1: t`Could not reassign category`,
-                    text2: t`Please try again later`
-                });
-            }
-        }
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
@@ -91,15 +84,6 @@ export default function Categories() {
             emptyState={<CategoryEmptyState search={search} />}
         >
             <CategoryFormBottomSheet ref={bottomSheetRef} category={selectedCategory} />
-
-            <CategorySelectorBottomSheet
-                ref={reassignRef}
-                selectedCategory={null}
-                excludeCategoryIds={excludeCategoryIds}
-                description={t`This category has transactions. Select another category to reassign them to.`}
-                variant="primary"
-                onSelect={handleReassignSelect}
-            />
         </SearchablePage>
     );
 }

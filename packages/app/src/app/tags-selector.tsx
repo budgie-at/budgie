@@ -1,11 +1,12 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagCreateForm } from '../tag/components/tag-create-form/tag-create-form';
@@ -13,40 +14,37 @@ import { TagsSelectContent } from '../tag/components/tags-select-content/tags-se
 import { useTagsSelectorModal } from '../tag/context/tags-selector-modal.context';
 import { useTagForm } from '../tag/hooks/use-tag-form.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
-import { useThemeContext } from '../theme/context/theme.context';
 
 type Mode = 'select' | 'create';
 
 const NUM_COLUMNS = 3;
 
-const prepareTagData = (tags: TagEntityInterface[] | null, selectedTagIds: number[]) => {
-    const sorted = sortSelectedFirst(isNotEmptyArray(tags) ? tags : [], selectedTagIds);
+const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number[], selectedTagIds: number[]) => {
+    const filtered = isNotEmptyArray(tags) ? tags.filter(tag => !excludeTagIds.includes(tag.id)) : [];
 
-    return padFlatListData(sorted, NUM_COLUMNS);
+    return padFlatListData(sortSelectedFirst(filtered, selectedTagIds), NUM_COLUMNS);
 };
-
-const BG_LIGHT = '#FFFFFF';
-const BG_DARK = '#000000';
 
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const { currentParams, resolveTagsSelector } = useTagsSelectorModal();
-    const { isDarkColorSchema } = useThemeContext();
-
+    const { backgroundColor } = useFormsheetListStyles();
     const [mode, setMode] = useState<Mode>('select');
     const [search, setSearch] = useState('');
-
-    const initialTagIds = currentParams?.initialTagIds ?? [];
-    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
-
     const { tags } = useSearchTagsQuery(search);
     const { handleSubmit, reset, register } = useTagForm({ title: search });
 
-    const data = prepareTagData(tags, initialTagIds);
+    const { initialTagIds = [], excludeTagIds = [], description, singleSelect = false } = currentParams ?? {};
+    const data = prepareTagData(tags, excludeTagIds, initialTagIds);
+    const containerStyle = { flex: 1, backgroundColor };
 
     const handleSelectTag = (tagId: number) => {
-        const newTagIds = initialTagIds.includes(tagId) ? initialTagIds.filter(id => id !== tagId) : [...initialTagIds, tagId];
-        resolveTagsSelector(newTagIds);
+        if (singleSelect) {
+            resolveTagsSelector([tagId]);
+
+            return;
+        }
+        resolveTagsSelector(initialTagIds.includes(tagId) ? initialTagIds.filter(id => id !== tagId) : [...initialTagIds, tagId]);
     };
 
     const handleCreatePress = () => {
@@ -65,6 +63,7 @@ export default function TagsSelectorModal() {
         resolveTagsSelector([...initialTagIds, tagId]);
     };
 
+    /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
         <View style={containerStyle}>
             {mode === 'select' ? (
@@ -75,6 +74,12 @@ export default function TagsSelectorModal() {
                     rightActionIcon={UserIconNameEnum.Plus}
                     rightActionOnPress={handleCreatePress}
                 />
+            ) : null}
+
+            {mode === 'select' && isNotEmptyString(description) ? (
+                <View className="px-xl pb-md">
+                    <Text className="text-foreground text-sm">{description}</Text>
+                </View>
             ) : null}
 
             {mode === 'select' ? (
@@ -90,4 +95,5 @@ export default function TagsSelectorModal() {
             )}
         </View>
     );
+    /* jscpd:ignore-end */
 }
