@@ -1,18 +1,16 @@
 import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'clsx';
-import { useRef } from 'react';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { FormFieldStatus } from '../../../@generic/type/form-field-status.type';
+import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../query/use-get-category-by-id.query';
-import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
 
 interface Props {
     readonly status?: FormFieldStatus;
@@ -35,28 +33,25 @@ const cardVariants = cva<{ status: Record<FormFieldStatus, ClassValue> }>(
 );
 
 export const TransactionEntryCategorySelector = ({ variant, categoryId, excludeCategoryIds, onSelect, status }: Props) => {
-    const ref = useRef<BottomSheetInterface | null>(null);
+    const { openCategorySelector } = useCategorySelectorModal();
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
 
-    const handleOpen = () => void ref.current?.open();
+    const handleOpen = async () => {
+        const selectedCategoryId = await openCategorySelector({
+            initialCategoryId: categoryId,
+            excludeCategoryIds,
+            variant
+        });
+        onSelect(selectedCategoryId);
+    };
 
     return (
-        <>
-            <Card onPress={handleOpen} className={cardVariants({ status })}>
-                {isDefined(category) ? <Icon icon={category.icon} size={14} className="text-primary" /> : null}
+        <Card onPress={handleOpen} className={cardVariants({ status })}>
+            {isDefined(category) ? <Icon icon={category.icon} size={14} className="text-primary" /> : null}
 
-                <Text className="text-primary text-xs flex-1" numberOfLines={1} ellipsizeMode="tail">
-                    {isDefined(category) ? category.title : <Trans>Category</Trans>}
-                </Text>
-            </Card>
-
-            <CategorySelectorBottomSheet
-                excludeCategoryIds={excludeCategoryIds}
-                variant={variant}
-                selectedCategory={category}
-                onSelect={onSelect}
-                ref={ref}
-            />
-        </>
+            <Text className="text-primary text-xs flex-1" numberOfLines={1} ellipsizeMode="tail">
+                {isDefined(category) ? category.title : <Trans>Category</Trans>}
+            </Text>
+        </Card>
     );
 };
