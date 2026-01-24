@@ -1,7 +1,7 @@
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { emptyFn, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -15,6 +15,7 @@ import { CategorySelectorCard } from '../category/components/category-selector-c
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 
 const NUM_COLUMNS = 3;
+const HEADER_HEIGHT = { paddingTop: 88 };
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
@@ -44,7 +45,8 @@ export default function CategorySelectorModal() {
 
     const handleSelect = (categoryId: number) => void resolveCategorySelector(categoryId);
 
-    const contentContainerStyle = { paddingBottom: bottom };
+    const flatListStyle = { flex: 1 };
+    const contentContainerStyle = [{ paddingBottom: bottom }, HEADER_HEIGHT];
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
@@ -69,7 +71,7 @@ export default function CategorySelectorModal() {
         );
 
     return (
-        <View className="flex-1 min-h-[900px]">
+        <View className="flex-1 bg-primary-reverse">
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
@@ -79,12 +81,12 @@ export default function CategorySelectorModal() {
             />
 
             {isEmpty ? (
-                <View className="flex-1 items-center mt-[80px]">
+                <View style={HEADER_HEIGHT}>
                     <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
                 </View>
             ) : (
                 <FlatList
-                    className="flex-1"
+                    style={flatListStyle}
                     data={data}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
@@ -92,7 +94,7 @@ export default function CategorySelectorModal() {
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     columnWrapperClassName="gap-x-lg mb-lg"
-                    contentContainerClassName="px-xl pt-[80px]"
+                    contentContainerClassName="px-xl"
                     contentContainerStyle={contentContainerStyle}
                 />
             )}
