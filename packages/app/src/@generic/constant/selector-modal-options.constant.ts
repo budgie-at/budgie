@@ -10,6 +10,5 @@ export const SELECTOR_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     sheetGrabberVisible: true,
     sheetAllowedDetents: [SHEET_DETENT_HALF, SHEET_DETENT_EXPANDED],
     sheetInitialDetentIndex: 1,
-    sheetCornerRadius: SHEET_CORNER_RADIUS,
-    contentStyle: { backgroundColor: 'transparent' }
+    sheetCornerRadius: SHEET_CORNER_RADIUS
 };
