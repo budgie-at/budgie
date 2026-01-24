@@ -269,7 +269,7 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(modals)/confirm-action.tsx:36
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/category/components/category-create-form/category-create-form.tsx:59
+#: src/category/components/category-create-form/category-create-form.tsx:70
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 msgid "Cancel"
@@ -298,7 +298,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-create-form/category-create-form.tsx:45
+#: src/category/components/category-create-form/category-create-form.tsx:56
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
 msgid "Category Name"
 msgstr "Category Name"
@@ -394,7 +394,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-create-form/category-create-form.tsx:37
+#: src/category/components/category-create-form/category-create-form.tsx:42
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Could not create category"
 msgstr "Could not create category"
@@ -451,7 +451,7 @@ msgstr "Could not update transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
 
-#: src/category/components/category-create-form/category-create-form.tsx:60
+#: src/category/components/category-create-form/category-create-form.tsx:71
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
 msgid "Create"
@@ -480,6 +480,10 @@ msgstr "Create and organize transaction tags"
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:69
 msgid "Create Categories"
 msgstr "Create Categories"
+
+#: src/category/components/category-create-form/category-create-form.tsx:52
+msgid "Create Category"
+msgstr "Create Category"
 
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:71
 msgid "Create custom categories in Settings to label and filter your transactions"
@@ -623,7 +627,7 @@ msgstr "e.g. Savings Account"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-create-form/category-create-form.tsx:48
+#: src/category/components/category-create-form/category-create-form.tsx:59
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:91
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
@@ -1013,7 +1017,7 @@ msgstr "No accounts yet"
 msgid "No archived accounts"
 msgstr "No archived accounts"
 
-#: src/category/components/category-select-content/category-select-content.tsx:60
+#: src/category/components/category-select-content/category-select-content.tsx:63
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:112
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
@@ -1163,7 +1167,7 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:68
 #: src/app/(tabs)/settings/tags.tsx:68
-#: src/category/components/category-create-form/category-create-form.tsx:38
+#: src/category/components/category-create-form/category-create-form.tsx:43
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:80
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
@@ -1245,7 +1249,7 @@ msgid "Search accounts..."
 msgstr "Search accounts..."
 
 #: src/app/(tabs)/settings/categories.tsx:86
-#: src/app/category-selector.tsx:69
+#: src/app/category-selector.tsx:74
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:107
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1585,7 +1589,7 @@ msgstr "Transfer"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
-#: src/category/components/category-select-content/category-select-content.tsx:60
+#: src/category/components/category-select-content/category-select-content.tsx:63
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 #: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
