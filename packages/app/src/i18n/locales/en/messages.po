@@ -265,10 +265,11 @@ msgid "Budgie"
 msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
-#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:77
+#: src/@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet.tsx:64
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(modals)/confirm-action.tsx:55
+#: src/app/(modals)/confirm-action.tsx:36
 #: src/app/(tabs)/settings/import.tsx:255
+#: src/category/components/category-create-form/category-create-form.tsx:59
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tags-selector-footer/tags-selector-footer.tsx:32
 msgid "Cancel"
@@ -297,6 +298,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
+#: src/category/components/category-create-form/category-create-form.tsx:45
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
 msgid "Category Name"
 msgstr "Category Name"
@@ -392,6 +394,7 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
+#: src/category/components/category-create-form/category-create-form.tsx:37
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
 msgid "Could not create category"
 msgstr "Could not create category"
@@ -448,6 +451,7 @@ msgstr "Could not update transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
 
+#: src/category/components/category-create-form/category-create-form.tsx:60
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
 msgid "Create"
@@ -619,6 +623,7 @@ msgstr "e.g. Savings Account"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
+#: src/category/components/category-create-form/category-create-form.tsx:48
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:91
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
@@ -1008,6 +1013,7 @@ msgstr "No accounts yet"
 msgid "No archived accounts"
 msgstr "No archived accounts"
 
+#: src/category/components/category-select-content/category-select-content.tsx:60
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:112
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
@@ -1157,6 +1163,7 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:68
 #: src/app/(tabs)/settings/tags.tsx:68
+#: src/category/components/category-create-form/category-create-form.tsx:38
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
 #: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:80
 #: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
@@ -1238,6 +1245,7 @@ msgid "Search accounts..."
 msgstr "Search accounts..."
 
 #: src/app/(tabs)/settings/categories.tsx:86
+#: src/app/category-selector.tsx:69
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:107
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1265,6 +1273,10 @@ msgstr "Search languages..."
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
+
+#: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx:33
+msgid "Search..."
+msgstr "Search..."
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx:20
 msgid "Secure your app with PIN & Face ID"
@@ -1299,7 +1311,7 @@ msgstr "Select accounts to sync:"
 msgid "Select All"
 msgstr "Select All"
 
-#: src/category/components/category-selector/category-selector.tsx:32
+#: src/category/components/category-selector/category-selector.tsx:31
 msgid "Select category"
 msgstr "Select category"
 
@@ -1573,6 +1585,7 @@ msgstr "Transfer"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-selector-bottom-sheet/account-selector-bottom-sheet.tsx:54
+#: src/category/components/category-select-content/category-select-content.tsx:60
 #: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 #: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
