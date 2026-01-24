@@ -9,6 +9,6 @@ export const SELECTOR_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     headerShown: false,
     sheetGrabberVisible: true,
     sheetAllowedDetents: [SHEET_DETENT_HALF, SHEET_DETENT_EXPANDED],
-    sheetInitialDetentIndex: 1,
+    sheetInitialDetentIndex: 0,
     sheetCornerRadius: SHEET_CORNER_RADIUS
 };
