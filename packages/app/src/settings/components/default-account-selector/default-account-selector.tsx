@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useAccountSelectorModal } from '../../../@generic/context/account-selector-modal.context';
+import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
