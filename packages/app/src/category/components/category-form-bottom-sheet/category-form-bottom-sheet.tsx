@@ -1,7 +1,7 @@
 /* jscpd:ignore-start */
 import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { RefObject, useRef } from 'react';
+import { RefObject } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,10 +11,10 @@ import { FormBottomSheet } from '../../../@generic/component/form-bottom-sheet/f
 import { FormBottomSheetTitleField } from '../../../@generic/component/form-bottom-sheet-title-field/form-bottom-sheet-title-field';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { categoryService } from '../../service/category.service';
 import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
-import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -26,12 +26,10 @@ interface Props {
 
 export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategoryCreated, onCategoryMerged }: Props) => {
     const { t } = useLingui();
-
-    const mergeSelectorRef = useRef<BottomSheetInterface | null>(null);
+    const { openCategorySelector } = useCategorySelectorModal();
 
     const { handleSubmit, reset, control } = useCategoryForm(category, defaultTitle);
     const isEditing = isDefined(category?.id);
-    const excludeCategoryIds = isDefined(category?.id) ? [category.id] : [];
 
     const handleCancel = () => {
         void ref.current?.close();
@@ -58,18 +56,22 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
         }
     });
 
-    const handleOpenMerge = () => {
-        void mergeSelectorRef.current?.open();
-    };
+    const handleOpenMerge = async () => {
+        if (!isDefined(category?.id)) {
+            return;
+        }
 
-    const handleMergeSelect = async (targetCategoryId: number | null) => {
-        if (!isDefined(category?.id) || !isDefined(targetCategoryId)) {
+        const targetCategoryId = await openCategorySelector({
+            excludeCategoryIds: [category.id],
+            variant: 'primary'
+        });
+
+        if (!isDefined(targetCategoryId)) {
             return;
         }
 
         try {
             await categoryService.mergeInto(category.id, targetCategoryId);
-            void mergeSelectorRef.current?.close();
             void ref.current?.close();
             reset();
             onCategoryMerged?.();
@@ -85,38 +87,26 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
     const submitLabel = isEditing ? t`Save` : t`Create`;
 
     return (
-        <>
-            <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
-                <FormBottomSheetTitleField
-                    placeholder={t`e.g., Groceries, Salary, Rent`}
-                    maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                    label={t`Category Name`}
-                    control={control}
-                />
+        <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
+            <FormBottomSheetTitleField
+                placeholder={t`e.g., Groceries, Salary, Rent`}
+                maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                label={t`Category Name`}
+                control={control}
+            />
 
-                <CategoryFormIconField control={control} />
+            <CategoryFormIconField control={control} />
 
-                {isEditing ? (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={UserIconNameEnum.Merge}
-                        onPress={handleOpenMerge}
-                        content={<Trans>Merge into another category</Trans>}
-                    />
-                ) : null}
-            </FormBottomSheet>
-
-            {isEditing && isDefined(category) ? (
-                <CategorySelectorBottomSheet
-                    ref={mergeSelectorRef}
-                    selectedCategory={null}
-                    excludeCategoryIds={excludeCategoryIds}
-                    variant="primary"
-                    onSelect={handleMergeSelect}
+            {isEditing ? (
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={UserIconNameEnum.Merge}
+                    onPress={handleOpenMerge}
+                    content={<Trans>Merge into another category</Trans>}
                 />
             ) : null}
-        </>
+        </FormBottomSheet>
     );
 };
 /* jscpd:ignore-end */
