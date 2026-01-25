@@ -79,13 +79,14 @@ export default function RulesPage() {
                     title={t`Rules`}
                 />
             }
+            withBlur
         >
             {isNotEmptyArray(rules) ? (
                 <AnimatedFlatList
                     testID={RulesPageSelectors.List}
                     className="flex-1"
                     data={rules}
-                    contentContainerClassName="gap-y-5xl"
+                    contentContainerClassName="gap-y-5xl pt-[70px]"
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     ListFooterComponent={listFooter}
