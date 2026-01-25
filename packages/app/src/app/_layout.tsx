@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-max-depth */
+/* eslint-disable react/jsx-max-depth, max-lines-per-function */
 import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
@@ -15,6 +15,7 @@ import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
@@ -29,11 +30,13 @@ import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { CategoryFormModalProvider } from '../category/provider/category-form-modal.provider';
 import { CategorySelectorModalProvider } from '../category/provider/category-selector-modal.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { TagFormModalProvider } from '../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../tag/provider/tags-selector-modal.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
@@ -48,14 +51,13 @@ const SQLOptions = { enableChangeListener: true };
 // eslint-disable-next-line dot-notation
 const isAiDisabled = process.env['EXPO_PUBLIC_AI_DISABLE'] === 'true';
 const AiProviderWrapper = isAiDisabled ? LlmDisabledProvider : LlmProvider;
+const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
-
     useResetDb(error);
     useAppInitialization(success);
-    useAppState(isActive => void (isActive && monobankSyncService.sync()));
-
+    useAppState(handleAppStateChange);
     if (!success) {
         return null;
     }
@@ -73,49 +75,57 @@ export default function RootLayout() {
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
                                                     <ConfirmActionModalProvider>
-                                                        <CategorySelectorModalProvider>
-                                                            <AccountSelectorModalProvider>
-                                                                <TagsSelectorModalProvider>
-                                                                    <Stack
-                                                                        screenOptions={DEFAULT_STACK_OPTIONS}
-                                                                        screenLayout={ScreenLayout}
-                                                                    >
-                                                                        <Stack.Screen name="(tabs)" />
-
-                                                                        <Stack.Screen name="(main)/pin" />
-                                                                        <Stack.Screen name="(main)/create-account" />
-
-                                                                        <Stack.Screen name="(main)/account/[id]/details" />
-                                                                        <Stack.Screen name="(main)/account/[id]/update" />
-
-                                                                        <Stack.Screen name="(main)/create-transaction/expense" />
-                                                                        <Stack.Screen name="(main)/create-transaction/income" />
-                                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
-
-                                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
-
-                                                                        <Stack.Screen name="(main)/analytics/transactions" />
-
-                                                                        <Stack.Screen name="(modals)" options={DEFAULT_STACK_OPTIONS} />
-
-                                                                        <Stack.Screen
-                                                                            name="category-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="account-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                        <Stack.Screen
-                                                                            name="tags-selector"
-                                                                            options={SELECTOR_MODAL_OPTIONS}
-                                                                        />
-                                                                    </Stack>
-                                                                </TagsSelectorModalProvider>
-                                                            </AccountSelectorModalProvider>
-                                                        </CategorySelectorModalProvider>
+                                                        <CategoryFormModalProvider>
+                                                            <CategorySelectorModalProvider>
+                                                                <AccountSelectorModalProvider>
+                                                                    <TagFormModalProvider>
+                                                                        <TagsSelectorModalProvider>
+                                                                            <Stack
+                                                                                screenOptions={DEFAULT_STACK_OPTIONS}
+                                                                                screenLayout={ScreenLayout}
+                                                                            >
+                                                                                <Stack.Screen name="(tabs)" />
+                                                                                <Stack.Screen name="(main)/pin" />
+                                                                                <Stack.Screen name="(main)/create-account" />
+                                                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                                                <Stack.Screen name="(main)/account/[id]/update" />
+                                                                                <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                                <Stack.Screen name="(main)/create-transaction/income" />
+                                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                                <Stack.Screen name="(main)/analytics/transactions" />
+                                                                                <Stack.Screen
+                                                                                    name="(modals)"
+                                                                                    options={DEFAULT_STACK_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="category-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="account-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="tags-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="category-form"
+                                                                                    options={FORM_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="tag-form"
+                                                                                    options={FORM_MODAL_OPTIONS}
+                                                                                />
+                                                                            </Stack>
+                                                                        </TagsSelectorModalProvider>
+                                                                    </TagFormModalProvider>
+                                                                </AccountSelectorModalProvider>
+                                                            </CategorySelectorModalProvider>
+                                                        </CategoryFormModalProvider>
                                                     </ConfirmActionModalProvider>
                                                     <Toast />
                                                 </AiProviderWrapper>
