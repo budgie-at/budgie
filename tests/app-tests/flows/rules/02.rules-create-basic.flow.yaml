@@ -1,7 +1,13 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
 ---
 # Test 02: Create a basic rule with 1 condition and 1 action
 # Creates a rule: Title CONTAINS "Netflix" -> SET_CATEGORY
+
+# Setup - creates account, category, tag with unique names
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: '02'
 
 # Navigate to Rules page
 - runFlow:
@@ -15,6 +21,7 @@ appId: com.vitalyiegorov.budgie
       id: 'RulesPage.CreateButton'
     timeout: 3000
 - waitForAnimationToEnd
+
 # Tap the Rule action item
 - tapOn:
     id: 'RulesPage.CreateButton'
@@ -22,65 +29,27 @@ appId: com.vitalyiegorov.budgie
     visible: 'Create Rule'
     timeout: 5000
 
-# The form should have a default condition (Title Contains)
-# Explicitly select the operator to ensure bottom sheet is handled
-- tapOn:
-    id: 'RuleForm.Condition.0.OperatorSelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on CONTAINS (3rd item in operator list, around 80% from top)
-- tapOn:
-    point: 50%, 80%
-# Swipe down to dismiss the operator bottom sheet
-- swipe:
-    start: 50%, 80%
-    end: 50%, 95%
-    duration: 300
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
-
 # Enter the value for condition
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-# Configure action: The default action should be SET_CATEGORY
-# Tap on category selector to select a category
+# Configure action: Select category using search
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first category (bottom sheet items start around 75-80% from top)
-- tapOn:
-    point: 50%, 78%
-# Swipe down to dismiss the category bottom sheet
-- swipe:
-    start: 50%, 50%
-    end: 50%, 90%
-    duration: 300
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Submit the rule - tap the submit button using testID
+# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
     timeout: 10000
-# Verify rule was created by checking for the rule card
+
+# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
