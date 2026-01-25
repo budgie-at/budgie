@@ -1,0 +1,36 @@
+appId: ${APP_ID}
+---
+# Setup: Create account, category, and tag for rules testing
+# Requires: TEST_ID env variable (e.g., '02')
+# Exports: ACCOUNT_NAME, CATEGORY_NAME, TAG_NAME
+
+- clearState
+- launchApp
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+# Generate unique names using TEST_ID + timestamp
+- evalScript: |
+    const timestamp = Date.now();
+    output.ACCOUNT_NAME = `Test${TEST_ID} Account ${timestamp}`;
+    output.CATEGORY_NAME = `Test${TEST_ID} Category ${timestamp}`;
+    output.TAG_NAME = `Test${TEST_ID} Tag ${timestamp}`;
+
+# Create account
+- runFlow:
+    file: ./create-account.flow.yaml
+    env:
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+
+# Create category
+- runFlow:
+    file: ./create-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+# Create tag
+- runFlow:
+    file: ./create-tag.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
