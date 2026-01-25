@@ -4,12 +4,15 @@ import { RefObject, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { AccountPickerBottomSheetSelectors } from '../../../@e2e/selectors/account-picker-bottom-sheet.selector';
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 
 interface Props {
+    readonly inputTestID?: string;
+    readonly accountTestID?: string;
     readonly emptyStateDescription?: string;
     readonly excludeAccountId?: number | null;
     readonly excludeAccountTypes?: AccountTypeEnum[];
@@ -26,7 +29,16 @@ const flatListProps = {
 };
 
 export const AccountSelectorBottomSheet = (props: Props) => {
-    const { ref, selectedAccount, excludeAccountId, excludeAccountTypes, onSelect, emptyStateDescription } = props;
+    const {
+        ref,
+        selectedAccount,
+        excludeAccountId,
+        excludeAccountTypes,
+        onSelect,
+        emptyStateDescription,
+        inputTestID = AccountPickerBottomSheetSelectors.Input,
+        accountTestID
+    } = props;
     const [search, setSearch] = useState('');
     const { accounts } = useSearchAccountsSortedQuery(search, { excludeTypes: excludeAccountTypes, excludeAccountId });
     const { t } = useLingui();
@@ -41,6 +53,7 @@ export const AccountSelectorBottomSheet = (props: Props) => {
             isSelected={item.id === selectedAccount?.id}
             instrument={item.instrument}
             onSelect={handleSelect}
+            testID={accountTestID}
             title={item.title}
             icon={item.icon}
             type={item.type}
@@ -72,6 +85,7 @@ export const AccountSelectorBottomSheet = (props: Props) => {
             emptyDescription={getEmptyStateDescription()}
             emptyTitle={emptyTitle}
             data={accounts}
+            inputTestID={inputTestID}
             flatListProps={flatListProps}
         />
     );
