@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { TagPickerBottomSheetSelectors } from '../../../@e2e/selectors/tag-picker-bottom-sheet.selector';
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { FlatListDataItem, padFlatListData } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -97,6 +98,7 @@ export const TagSelectorBottomSheet = ({ ref, description, excludeTagIds, select
                 emptyDescription={t`Try a different search term`}
                 emptyTitle={t`No tags found`}
                 data={data}
+                inputTestID={TagPickerBottomSheetSelectors.Input}
                 flatListProps={flatListProps}
                 headerContent={headerContent}
                 rightActionIcon={UserIconNameEnum.Plus}
