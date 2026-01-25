@@ -9,10 +9,9 @@ import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
-import { CategoryCreateForm } from '../category/components/category-create-form/category-create-form';
+import { CategoryForm, CategoryFormResult } from '../category/components/category-form/category-form';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
-import { useCategoryForm } from '../category/hooks/use-category-form.hook';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 
 type Mode = 'select' | 'create';
@@ -36,25 +35,22 @@ export default function CategorySelectorModal() {
     const [mode, setMode] = useState<Mode>('select');
     const [search, setSearch] = useState('');
     const { categories } = useSearchCategoriesQuery(search, true);
-    const { handleSubmit, reset, control, register } = useCategoryForm(null, search);
 
     const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
     const data = prepareCategoryData(categories, excludeCategoryIds, initialCategoryId);
     const containerStyle = { flex: 1, backgroundColor };
 
     const handleCreatePress = () => {
-        reset({ icon: UserIconNameEnum.Home, title: search });
         setMode('create');
     };
 
     const handleCancelCreate = () => {
-        reset();
         setMode('select');
     };
 
-    const handleCreateSuccess = (categoryId: number) => {
+    const handleCreateSuccess = (result: CategoryFormResult) => {
         setMode('select');
-        resolveCategorySelector(categoryId);
+        resolveCategorySelector(result.category.id);
     };
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
@@ -84,14 +80,7 @@ export default function CategorySelectorModal() {
                     onSelect={resolveCategorySelector}
                 />
             ) : (
-                <CategoryCreateForm
-                    control={control}
-                    register={register}
-                    reset={reset}
-                    handleSubmit={handleSubmit}
-                    onCancel={handleCancelCreate}
-                    onSuccess={handleCreateSuccess}
-                />
+                <CategoryForm defaultTitle={search} onCancel={handleCancelCreate} onSuccess={handleCreateSuccess} />
             )}
         </View>
     );
