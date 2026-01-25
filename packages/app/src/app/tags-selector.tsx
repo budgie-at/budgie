@@ -9,10 +9,9 @@ import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
-import { TagCreateForm } from '../tag/components/tag-create-form/tag-create-form';
+import { TagForm, TagFormResult } from '../tag/components/tag-form/tag-form';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { useTagsSelectorModal } from '../tag/context/tags-selector-modal.context';
-import { useTagForm } from '../tag/hooks/use-tag-form.hook';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 
 type Mode = 'select' | 'create';
@@ -32,7 +31,6 @@ export default function TagsSelectorModal() {
     const [mode, setMode] = useState<Mode>('select');
     const [search, setSearch] = useState('');
     const { tags } = useSearchTagsQuery(search);
-    const { handleSubmit, reset, register } = useTagForm({ title: search });
 
     const { initialTagIds = [], excludeTagIds = [], description, singleSelect = false } = currentParams ?? {};
     const data = prepareTagData(tags, excludeTagIds, initialTagIds);
@@ -48,19 +46,17 @@ export default function TagsSelectorModal() {
     };
 
     const handleCreatePress = () => {
-        reset({ title: search });
         setMode('create');
     };
 
     const handleCancelCreate = () => {
-        reset();
         setMode('select');
     };
 
-    const handleCreateSuccess = (tagId: number) => {
+    const handleCreateSuccess = (result: TagFormResult) => {
         setMode('select');
         setSearch('');
-        resolveTagsSelector([...initialTagIds, tagId]);
+        resolveTagsSelector([...initialTagIds, result.tag.id]);
     };
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
@@ -85,13 +81,7 @@ export default function TagsSelectorModal() {
             {mode === 'select' ? (
                 <TagsSelectContent data={data} selectedTagIds={initialTagIds} onSelect={handleSelectTag} />
             ) : (
-                <TagCreateForm
-                    register={register}
-                    reset={reset}
-                    handleSubmit={handleSubmit}
-                    onCancel={handleCancelCreate}
-                    onSuccess={handleCreateSuccess}
-                />
+                <TagForm defaultTitle={search} onCancel={handleCancelCreate} onSuccess={handleCreateSuccess} />
             )}
         </View>
     );
