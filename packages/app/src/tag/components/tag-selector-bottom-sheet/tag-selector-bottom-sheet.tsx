@@ -73,7 +73,7 @@ export const TagSelectorBottomSheet = ({ ref, description, excludeTagIds, select
         </View>
     ) : null;
 
-    const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
+    const renderItem = ({ item, index }: { item: FlatListDataItem<TagEntityInterface>; index: number }) =>
         item.isEmpty ? (
             <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
         ) : (
@@ -83,6 +83,7 @@ export const TagSelectorBottomSheet = ({ ref, description, excludeTagIds, select
                 variant="static"
                 title={item.title}
                 id={item.id}
+                testID={TagPickerBottomSheetSelectors.Card(index)}
             />
         );
 

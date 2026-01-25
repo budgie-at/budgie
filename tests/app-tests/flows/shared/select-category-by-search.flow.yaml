@@ -7,9 +7,11 @@ appId: ${APP_ID}
 - tapOn:
     id: 'CategoryPickerBottomSheet.Input'
 - inputText: ${CATEGORY_NAME}
+# Wait for search results to load
 - extendedWaitUntil:
-    visible: ${CATEGORY_NAME}
-    timeout: 3000
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.0'
+    timeout: 5000
+# Tap on the first search result
 - tapOn:
-    text: ${CATEGORY_NAME}
-    index: 1
+    id: 'CategoryPickerBottomSheet.Card.0'

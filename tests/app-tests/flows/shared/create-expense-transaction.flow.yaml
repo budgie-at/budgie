@@ -1,17 +1,11 @@
 appId: ${APP_ID}
 ---
-# Shared flow: Create an expense transaction
-# Requires: TITLE and AMOUNT environment variables
-# Example usage: runFlow with env: { TITLE: "Netflix", AMOUNT: "15" }
-
-# Navigate to Transactions tab
 - tapOn:
     id: 'TabBar.Transactions'
 - extendedWaitUntil:
     visible: 'Transactions'
     timeout: 3000
 
-# Tap the FAB to create transaction
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -20,7 +14,6 @@ appId: ${APP_ID}
     timeout: 2000
 - waitForAnimationToEnd
 
-# Select Expense type
 - tapOn:
     text: 'Expense'
 - waitForAnimationToEnd
@@ -28,24 +21,52 @@ appId: ${APP_ID}
     visible: 'New Expense'
     timeout: 5000
 
-# Enter amount
 - tapOn:
     id: 'TransactionForm.AmountInput'
 - inputText: ${AMOUNT}
 
-# Enter title in comment field
-- scrollUntilVisible:
-    element:
-      id: 'TransactionForm.CommentInput'
-    direction: DOWN
-    timeout: 5000
-- tapOn:
-    id: 'TransactionForm.CommentInput'
-- inputText: ${TITLE}
 
-# Submit the transaction
+- tapOn:
+    id: TransactionForm.AccountSelector
+- tapOn:
+    id: TransactionForm.AccountSearchInput
+- inputText: 'Test Account'
+- tapOn:
+    id: TransactionForm.Account
+
+- tapOn:
+    text: 'Select category'
+- tapOn:
+    text: 'Search categories...'
+- inputText: 'Groceries'
+- assertVisible:
+    text: 'Groceries'
+    index: 1
+- tapOn:
+    text: 'Groceries'
+    index: 1
+
+- swipe:
+    from:
+      id: TransactionForm.CategorySelector
+    direction: UP
+- assertVisible: Add a note...
+- tapOn: 'Add a note...'
+- inputText: ${INPUT}
+
+- tapOn:
+    id: TransactionForm.DatePicker
+- tapOn:
+    id: btn-month
+- tapOn:
+    text: January
+    index: -1
+- tapOn: "1"
+- tapOn: Submit
+
 - tapOn:
     id: 'TransactionForm.SubmitButton'
+
 - extendedWaitUntil:
     visible: 'Transactions'
     timeout: 5000

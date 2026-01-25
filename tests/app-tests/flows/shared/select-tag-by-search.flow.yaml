@@ -4,12 +4,8 @@ appId: ${APP_ID}
 # Requires: TAG_NAME env variable
 # Assumes: Tag selector bottom sheet is already open
 
-- tapOn:
-    id: 'TagPickerBottomSheet.Input'
-- inputText: ${TAG_NAME}
-- extendedWaitUntil:
-    visible: ${TAG_NAME}
-    timeout: 3000
+# Note: Rule form uses RuleActionBottomSheetSelector which doesn't have search
+# Wait for the bottom sheet to appear and tap on the tag
+- waitForAnimationToEnd
 - tapOn:
     text: ${TAG_NAME}
-    index: 1

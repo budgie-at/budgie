@@ -1,4 +1,9 @@
 appId: ${APP_ID}
+env:
+  TEST_ID: '04'
+  ACCOUNT_NAME: Test04 Account
+  CATEGORY_NAME: Test04 Category
+  TAG_NAME: Test04 Tag
 ---
 # Test 04: Create a rule with multiple actions
 # Creates a rule: Title CONTAINS "Amazon" -> SET_CATEGORY + ADD_TAG
@@ -7,7 +12,10 @@ appId: ${APP_ID}
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
-      TEST_ID: '04'
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
 
 # Navigate to Rules page
 - runFlow:
