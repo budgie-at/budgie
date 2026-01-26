@@ -36,12 +36,12 @@ const PRESS_ANIMATION_CONFIG = {
 
 const buttonVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
-}>('h-14 items-center justify-center rounded-xl', {
+}>('items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
-            digit: 'bg-ghost-background',
-            action: 'bg-transparent',
-            confirm: ''
+            digit: 'flex-1 bg-ghost-background',
+            action: 'flex-1 bg-transparent',
+            confirm: 'h-14'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
