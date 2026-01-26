@@ -32,6 +32,7 @@ export const TransactionAccountRow = ({ variant, fieldName, label }: Props) => {
 
         if (selectedAccountId !== null) {
             setValue(fieldName, selectedAccountId);
+            setValue('entries.0.accountId', selectedAccountId);
         }
     };
 
