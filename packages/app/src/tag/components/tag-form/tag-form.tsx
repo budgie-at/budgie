@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { FormSheetHeader } from '../../../@generic/component/form-sheet-header/form-sheet-header';
+import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
@@ -37,7 +38,6 @@ export const TagForm = (props: Props) => {
 
     const isEditing = isDefined(tag?.id);
     const containerStyle = { flex: 1, backgroundColor };
-    const spacerStyle = { height: 1000, backgroundColor };
     const title = isEditing ? <Trans>Edit Tag</Trans> : <Trans>Create Tag</Trans>;
     const submitButtonContent = isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>;
 
@@ -112,7 +112,7 @@ export const TagForm = (props: Props) => {
                     <Button className="flex-1" variant="cta" onPress={handleFormSubmit} content={submitButtonContent} />
                 </View>
             </View>
-            <View style={spacerStyle} />
+            <FormSheetSpacer />
         </View>
     );
     /* jscpd:ignore-end */
