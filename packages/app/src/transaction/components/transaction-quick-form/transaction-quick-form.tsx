@@ -28,8 +28,6 @@ interface Props {
     readonly onSubmit: () => void;
 }
 
-const MICRO_UNIT = 1_000_000;
-
 // eslint-disable-next-line max-statements, max-lines-per-function -- Component orchestrates multiple form fields, modals, and keypad state
 export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Props) => {
     const { defaultInstrument } = useSettingsContext();
@@ -42,7 +40,7 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
     const transferAccountsRef = useRef<TransactionTransferAccountsRowRef>(null);
 
-    const initialAmount = getValues('amount') / MICRO_UNIT;
+    const initialAmount = getValues('amount');
     const { displayValue, numericValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput(initialAmount);
 
     const fromAccountId = useWatch({ control, name: 'fromAccountId' });
@@ -56,13 +54,12 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     useEffect(() => {
-        const microAmount = Math.round(numericValue * MICRO_UNIT);
-        setValue('amount', microAmount);
+        setValue('amount', numericValue);
 
         const entries = getValues('entries');
 
         if (entries.length === 1) {
-            setValue('entries.0.amount', microAmount);
+            setValue('entries.0.amount', numericValue);
         }
     }, [numericValue, setValue, getValues]);
 
