@@ -3,12 +3,10 @@ env:
   TEST_ID: '11'
   ACCOUNT_NAME: Test11 Account
   CATEGORY_NAME: Test11 Category
+  ORIGINAL_CATEGORY_NAME: Test11 Original
   TAG_NAME: Test11 Tag
 ---
-# Test 11: Rule applies multiple actions (SET_CATEGORY + ADD_TAG) to new transactions
-# Creates a rule with 2 actions and verifies both are applied
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -17,11 +15,77 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Navigate to Rules page
+- runFlow:
+    file: ../setup/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+- tapOn:
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+    timeout: 2000
+- waitForAnimationToEnd
+
+- tapOn:
+    text: 'Expense'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionForm.AmountInput'
+- inputText: '50'
+
+- tapOn:
+    id: 'TransactionForm.AccountSelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.AccountSearchInput'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.AccountSearchInput'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.Account'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.Account'
+
+
+- tapOn: 'Select category'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
+
+- swipe:
+    from:
+      id: 'TransactionForm.CategorySelector'
+    direction: UP
+
+- tapOn: 'Add a note...'
+- inputText: 'Amazon Purchase'
+
+- tapOn: 'Add Expense'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 5000
+
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -35,12 +99,15 @@ env:
     visible: 'Create Rule'
     timeout: 5000
 
-# Configure condition: Title CONTAINS "Amazon"
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- waitForAnimationToEnd
+- tapOn: 'Comment'
+- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
 
-# Configure first action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -48,7 +115,6 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Add second action
 - scrollUntilVisible:
     element:
       id: 'RuleForm.ActionSection.AddButton'
@@ -57,7 +123,6 @@ env:
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 
-# Configure second action: ADD_TAG
 - scrollUntilVisible:
     element:
       id: 'RuleForm.Action.1.TypeSelector'
@@ -70,36 +135,61 @@ env:
     id: 'RuleForm.SelectorCard.ADD_TAG'
 - waitForAnimationToEnd
 
-# Select tag for second action
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
-- runFlow:
-    file: ../shared/select-tag-by-search.flow.yaml
-    env:
-      TAG_NAME: ${TAG_NAME}
+- waitForAnimationToEnd
 
-# Submit the rule
+- extendedWaitUntil:
+    visible: ${TAG_NAME}
+    timeout: 5000
+- tapOn: ${TAG_NAME}
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.ApplyToExistingToggle'
+    direction: DOWN
+    timeout: 5000
+- waitForAnimationToEnd
+- tapOn:
+    id: 'RuleForm.ApplyToExistingToggle'
+- waitForAnimationToEnd
+
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
+- assertVisible: 1, If all of:, |, Comment contains "Amazon", Then:, |, set category to Test11 Category, |, add tag Test11 Tag
 
-# Now create a transaction that matches the rule
-- runFlow:
-    file: ../shared/create-expense-transaction.flow.yaml
-    env:
-      TITLE: 'Amazon Purchase'
-      AMOUNT: '50'
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${CATEGORY_NAME}
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
 
-# The rule should have auto-applied both category and tag
-# Verify the transaction shows both indicators
-# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
-- assertVisible:
-    id: 'TransactionList.Card.1.CategoryBadge'
-- assertVisible:
-    id: 'TransactionList.Card.1.Tag'
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1.CategoryBadge'
+    timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1.Tag'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible: ${CATEGORY_NAME}
+    timeout: 5000
+
+- assertNotVisible: ${ORIGINAL_CATEGORY_NAME}
+
+- extendedWaitUntil:
+    visible: ${TAG_NAME}
+    timeout: 5000

@@ -1,34 +1,26 @@
 appId: com.vitalyiegorov.budgie
 ---
-# Test 05: Edit an existing rule
-# Modifies the first rule by changing its condition value
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap on the first rule to edit it
 - tapOn:
     id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
     timeout: 3000
 
-# Clear and update the condition value
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - eraseText
 - inputText: 'Netflix Updated'
 
-# Submit the changes
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
 - swipe:
     start: 50%, 50%
     end: 50%, 51%
     duration: 2000
 
-# Verify the rule was updated by checking the rule card exists
 - assertVisible:
     id: 'RulesPage.RuleCard.0'

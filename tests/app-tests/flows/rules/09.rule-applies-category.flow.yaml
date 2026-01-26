@@ -6,11 +6,7 @@ env:
   ORIGINAL_CATEGORY_NAME: Test09 Original Category
   TAG_NAME: Test09 Tag
 ---
-# Test 09: Rule applies SET_CATEGORY action to existing transactions
-# Creates a transaction with one category, then creates a rule with "Apply to existing"
-# toggle enabled to apply a DIFFERENT category to the existing transaction
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -19,13 +15,11 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Create an additional category for the original transaction
 - runFlow:
     file: ../setup/create-category.flow.yaml
     env:
       CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
 
-# First, create a transaction with the ORIGINAL category (before the rule exists)
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
@@ -34,11 +28,9 @@ env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${ORIGINAL_CATEGORY_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -52,8 +44,6 @@ env:
     visible: 'Create Rule'
     timeout: 5000
 
-# Configure condition: Comment CONTAINS "Netflix"
-# Change field from Title to Comment (title is empty for manual transactions)
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
 - waitForAnimationToEnd
@@ -63,7 +53,6 @@ env:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-# Select category for action using search
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -71,7 +60,6 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Enable "Apply to existing transactions" toggle
 - scrollUntilVisible:
     element:
       text: 'Apply to existing transactions'
@@ -81,27 +69,22 @@ env:
 - tapOn: 'Apply to existing transactions'
 - waitForAnimationToEnd
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Navigate to Transactions to verify the category was applied
 - tapOn:
     id: 'TabBar.Transactions'
 - waitForAnimationToEnd
 
-# Pull to refresh to ensure list shows latest data
 - swipe:
     direction: DOWN
     duration: 500
 - waitForAnimationToEnd
 
-# Wait for UI to refresh - tap on the transaction to verify category in details
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1'
@@ -110,10 +93,7 @@ env:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
 
-# Verify the category was changed in the transaction details
-# The NEW category should be visible
 - extendedWaitUntil:
     visible: ${CATEGORY_NAME}
     timeout: 5000
-# The ORIGINAL category should NOT be visible (proves the change happened)
 - assertNotVisible: ${ORIGINAL_CATEGORY_NAME}

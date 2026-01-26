@@ -5,10 +5,7 @@ env:
   CATEGORY_NAME: Test02 Category
   TAG_NAME: Test02 Tag
 ---
-# Test 02: Create a basic rule with 1 condition and 1 action
-# Creates a rule: Title CONTAINS "Netflix" -> SET_CATEGORY
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -17,11 +14,9 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open the FAB menu
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -30,19 +25,16 @@ env:
     timeout: 3000
 - waitForAnimationToEnd
 
-# Tap the Rule action item
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
     timeout: 5000
 
-# Enter the value for condition
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-# Configure action: Select category using search
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -50,7 +42,6 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
@@ -58,6 +49,5 @@ env:
       id: 'RulesPage.Page'
     timeout: 10000
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'

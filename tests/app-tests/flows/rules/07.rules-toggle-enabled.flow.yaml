@@ -1,36 +1,17 @@
 appId: com.vitalyiegorov.budgie
 ---
-# Test 07: Toggle rule enabled/disabled
-# Toggles the enabled state of the first rule
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Verify a rule exists
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Toggle the switch on the first rule (using coordinates - Switch testID not accessible on iOS)
 - tapOn:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 
-# Wait for state change
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1000
-
-# Toggle back to enabled
 - tapOn:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 
-# Wait for state change
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1000
-
-# Verify rule is still visible
 - assertVisible:
     id: 'RulesPage.RuleCard.0'

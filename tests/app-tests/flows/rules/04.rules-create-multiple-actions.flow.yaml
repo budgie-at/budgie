@@ -5,10 +5,7 @@ env:
   CATEGORY_NAME: Test04 Category
   TAG_NAME: Test04 Tag
 ---
-# Test 04: Create a rule with multiple actions
-# Creates a rule: Title CONTAINS "Amazon" -> SET_CATEGORY + ADD_TAG
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -17,11 +14,9 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -35,12 +30,10 @@ env:
     visible: 'Create Rule'
     timeout: 5000
 
-# Enter condition value
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
 
-# Select category for first action using search
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -48,7 +41,6 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Add second action
 - scrollUntilVisible:
     element:
       id: 'RuleForm.ActionSection.AddButton'
@@ -57,7 +49,6 @@ env:
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 
-# Change second action type to ADD_TAG
 - scrollUntilVisible:
     element:
       id: 'RuleForm.Action.1.TypeSelector'
@@ -70,7 +61,6 @@ env:
     id: 'RuleForm.SelectorCard.ADD_TAG'
 - waitForAnimationToEnd
 
-# Select tag for second action using search
 - tapOn:
     id: 'RuleForm.Action.1.TagSelector'
 - runFlow:
@@ -78,11 +68,9 @@ env:
     env:
       TAG_NAME: ${TAG_NAME}
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
