@@ -5,13 +5,12 @@ import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 /* jscpd:ignore-end */
@@ -35,9 +34,23 @@ export const AccountActionCard = (props: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
+    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
 
     const handleAction = async () => {
+        const confirmed = await openConfirmAction({
+            variant: 'positive',
+            icon: actionIcon,
+            title: confirmTitle,
+            description: confirmDescription,
+            buttonText: actionButtonText
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
         try {
+            updateConfirmActionParams({ isLoading: true });
             await onAction();
         } catch {
             Toast.show({
@@ -48,37 +61,22 @@ export const AccountActionCard = (props: Props) => {
         }
     };
 
-    const { ref, isLoading, handleOpen, handleConfirm } = useConfirmAction(handleAction);
-
     return (
-        <>
-            <SimpleHorizontalCell
-                right={
-                    <View className="flex-row items-center gap-x-xl">
-                        <ProtectedText className="text-destructive-foreground text-sm font-semibold">
-                            {formatDigits(balance, currencySymbol)}
-                        </ProtectedText>
+        <SimpleHorizontalCell
+            right={
+                <View className="flex-row items-center gap-x-xl">
+                    <ProtectedText className="text-destructive-foreground text-sm font-semibold">
+                        {formatDigits(balance, currencySymbol)}
+                    </ProtectedText>
 
-                        <HapticPressable onPress={handleOpen}>
-                            <CircleIcon variant="positive" icon={actionIcon} />
-                        </HapticPressable>
-                    </View>
-                }
-                left={<CircleIcon icon={icon} variant="dark-warning" size={46} iconSize={20} />}
-                title={title}
-                description={t(ACCOUNT_TYPE[type])}
-            />
-
-            <ConfirmActionBottomSheet
-                ref={ref}
-                icon={actionIcon}
-                isLoading={isLoading}
-                variant="positive"
-                buttonText={actionButtonText}
-                onSubmit={handleConfirm}
-                title={confirmTitle}
-                description={confirmDescription}
-            />
-        </>
+                    <HapticPressable onPress={handleAction}>
+                        <CircleIcon variant="positive" icon={actionIcon} />
+                    </HapticPressable>
+                </View>
+            }
+            left={<CircleIcon icon={icon} variant="dark-warning" size={46} iconSize={20} />}
+            title={title}
+            description={t(ACCOUNT_TYPE[type])}
+        />
     );
 };
