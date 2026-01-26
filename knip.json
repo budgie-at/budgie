@@ -15,7 +15,9 @@
         "**/*.web.tsx",
         "**/selectors.ts",
         "packages/app/src/game/store/game.state.ts",
-        "packages/contracts/src/**/*.enum.ts"
+        "packages/contracts/src/**/*.enum.ts",
+        "packages/app/src/ai/provider/llm.provider.tsx",
+        "packages/app/src/ai/hook/use-llama-llm.hook.ts"
     ],
     "ignoreDependencies": [
         "husky",
@@ -27,8 +29,7 @@
         "babel-jest",
         "tsx",
         "@jest/globals",
-        "babel-plugin-inline-import",
-        "babel-plugin-react-compiler",
+                "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom"
     ],
