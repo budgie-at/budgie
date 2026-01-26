@@ -11,6 +11,7 @@ export default function ConfirmActionModal() {
     const { currentParams, resolveConfirmAction } = useConfirmActionModal();
     const { backgroundColor } = useFormsheetListStyles();
     const containerStyle = { backgroundColor };
+    const spacerStyle = { height: 1000, backgroundColor };
 
     const handleConfirm = () => void resolveConfirmAction(true);
     const handleCancel = () => void resolveConfirmAction(false);
@@ -26,7 +27,7 @@ export default function ConfirmActionModal() {
 
     return (
         <View className="flex-1" style={containerStyle}>
-            <View className="px-5 pt-xl pb-5xl">
+            <View className="px-5 pt-7xl pb-5xl">
                 <CircleIcon icon={icon} variant={variant} size={50} iconSize={24} className="mb-4xl self-center rounded-3xl" />
                 <Text className="text-primary text-xl font-semibold text-center mb-sm">{title}</Text>
                 {description ? <Text className="text-secondary-foreground text-center text-sm mb-3xl">{description}</Text> : null}
@@ -42,6 +43,7 @@ export default function ConfirmActionModal() {
                     <Button onPress={handleCancel} content={cancelText ?? t`Cancel`} variant="ghost" disabled={isLoading} />
                 </View>
             </View>
+            <View style={spacerStyle} />
         </View>
     );
 }
