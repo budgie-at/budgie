@@ -35,21 +35,27 @@ export const HeroSectionHeader = () => (
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-red-600 to-orange-500">
-                <Trans>Stop Leaking Money.</Trans>
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
+                <Trans>Your Financial Data.</Trans>
             </span>
 
             <br />
 
             <span className="bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
-                <Trans>Start Keeping It.</Trans>
+                <Trans>Your Device.</Trans>
+            </span>
+
+            <br />
+
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-green-600 to-emerald-500">
+                <Trans>Your Rules.</Trans>
             </span>
         </h1>
 
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             <Trans>
-                The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your
-                fingerprint—so you finally see where your money really goes.
+                Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your
+                device—encrypted, offline, and yours alone.
             </Trans>
         </p>
 
