@@ -15,6 +15,7 @@ import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { CONFIRM_ACTION_MODAL_OPTIONS } from '../@generic/constant/confirm-action-modal-options.constant';
 import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -97,10 +98,6 @@ export default function RootLayout() {
                                                                                 <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                                 <Stack.Screen name="(main)/analytics/transactions" />
                                                                                 <Stack.Screen
-                                                                                    name="(modals)"
-                                                                                    options={DEFAULT_STACK_OPTIONS}
-                                                                                />
-                                                                                <Stack.Screen
                                                                                     name="category-selector"
                                                                                     options={SELECTOR_MODAL_OPTIONS}
                                                                                 />
@@ -119,6 +116,10 @@ export default function RootLayout() {
                                                                                 <Stack.Screen
                                                                                     name="tag-form"
                                                                                     options={FORM_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="confirm-action"
+                                                                                    options={CONFIRM_ACTION_MODAL_OPTIONS}
                                                                                 />
                                                                             </Stack>
                                                                         </TagsSelectorModalProvider>
