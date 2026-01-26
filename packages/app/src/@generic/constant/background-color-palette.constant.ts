@@ -12,5 +12,6 @@ export const BACKGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     'dark-warning': 'border-dark-warning-corner bg-dark-warning-background',
     ghost: 'border-secondary-corner bg-ghost-background',
     secondary: 'border-secondary-corner bg-ghost-background',
-    primary: 'border-secondary-corner bg-primary-reverse'
+    primary: 'border-secondary-corner bg-primary-reverse',
+    cta: 'border-cta-corner bg-cta-background'
 };

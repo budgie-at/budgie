@@ -11,5 +11,6 @@ export const FOREGROUND_COLOR_PALETTE: Record<ColorPaletteVariant, ClassValue> =
     'dark-warning': 'text-dark-warning-foreground',
     ghost: 'text-ghost-foreground',
     secondary: 'text-secondary-foreground',
-    primary: 'text-primary'
+    primary: 'text-primary',
+    cta: 'text-cta-foreground'
 };
