@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.17.0](https://github.com/budgie-at/budgie/compare/v2.16.0...v2.17.0) (2026-01-26)
+
+### Features
+
+- **landing:** add SEO blog posts for organic traffic ([d5c7507](https://github.com/budgie-at/budgie/commit/d5c75079c463b2be0d1caa118197562366575031))
+
 # [2.16.0](https://github.com/budgie-at/budgie/compare/v2.15.0...v2.16.0) (2026-01-22)
 
 ### Bug Fixes
