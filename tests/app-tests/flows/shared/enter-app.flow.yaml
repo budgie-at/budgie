@@ -1,9 +1,7 @@
 appId: com.vitalyiegorov.budgie
 ---
-# Setup: Create a test account for rule testing
-# This creates a "Test Account" (Savings/Cash type)
+# Clears app state, launches app, and handles dev mode popups
 
-# Clear app data and relaunch for a clean state
 - clearState
 - launchApp
 

@@ -16,7 +16,7 @@ interface Props extends ComponentProps<typeof BottomSheetTextInput> {
     readonly rightActionOnPress?: () => void;
 }
 
-export const BottomSheetSearch = ({ className, inputClassName, inputTestID, rightActionIcon, rightActionOnPress, ...rest }: Props) => (
+export const BottomSheetSearch = ({ className, inputClassName, rightActionIcon, rightActionOnPress, inputTestID, ...rest }: Props) => (
     <View className={cn('py-3xl px-xl border-b border-b-secondary-corner', className)}>
         <View className="flex-row items-center gap-x-md">
             <BottomSheetTextInput

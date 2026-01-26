@@ -1,5 +1,6 @@
 appId: ${APP_ID}
 ---
+
 - tapOn:
     id: 'TabBar.Transactions'
 - extendedWaitUntil:
@@ -25,47 +26,38 @@ appId: ${APP_ID}
     id: 'TransactionForm.AmountInput'
 - inputText: ${AMOUNT}
 
+- tapOn:
+    id: 'TransactionForm.AccountSelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.AccountSearchInput'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.AccountSearchInput'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.Account'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.Account'
 
-- tapOn:
-    id: TransactionForm.AccountSelector
-- tapOn:
-    id: TransactionForm.AccountSearchInput
-- inputText: 'Test Account'
-- tapOn:
-    id: TransactionForm.Account
-
-- tapOn:
-    text: 'Select category'
-- tapOn:
-    text: 'Search categories...'
-- inputText: 'Groceries'
-- assertVisible:
-    text: 'Groceries'
-    index: 1
-- tapOn:
-    text: 'Groceries'
-    index: 1
+- tapOn: 'Select category'
+- runFlow:
+    file: ./select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 - swipe:
     from:
-      id: TransactionForm.CategorySelector
+      id: 'TransactionForm.CategorySelector'
     direction: UP
-- assertVisible: Add a note...
+
 - tapOn: 'Add a note...'
-- inputText: ${INPUT}
+- inputText: ${TITLE}
 
-- tapOn:
-    id: TransactionForm.DatePicker
-- tapOn:
-    id: btn-month
-- tapOn:
-    text: January
-    index: -1
-- tapOn: "1"
-- tapOn: Submit
-
-- tapOn:
-    id: 'TransactionForm.SubmitButton'
+- tapOn: 'Add Expense'
 
 - extendedWaitUntil:
     visible: 'Transactions'

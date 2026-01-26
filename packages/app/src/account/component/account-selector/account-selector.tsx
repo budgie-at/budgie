@@ -18,6 +18,9 @@ interface Props {
     readonly onSelect: (accountId: number) => void;
     readonly cardVariant?: ColorPaletteVariant;
     readonly description?: string;
+    readonly inputTestID?: string;
+    readonly accountTestID?: string;
+    readonly accountSelectorTestID?: string;
     readonly excludeAccountId?: number | null;
     readonly excludeAccountTypes?: AccountTypeEnum[];
 }
@@ -31,7 +34,10 @@ export const AccountSelector = (props: Props) => {
         cardVariant = 'primary',
         description,
         excludeAccountId,
-        excludeAccountTypes
+        excludeAccountTypes,
+        accountSelectorTestID,
+        accountTestID,
+        inputTestID
     } = props;
 
     const { t } = useLingui();
@@ -52,6 +58,7 @@ export const AccountSelector = (props: Props) => {
                 description={description}
                 left={<CircleIcon icon={icon} variant={iconVariant} />}
                 onPress={handleOpen}
+                testID={accountSelectorTestID}
             />
 
             <AccountSelectorBottomSheet
@@ -61,6 +68,8 @@ export const AccountSelector = (props: Props) => {
                 excludeAccountTypes={excludeAccountTypes}
                 onSelect={onSelect}
                 ref={bottomSheetRef}
+                inputTestID={inputTestID}
+                accountTestID={accountTestID}
             />
         </>
     );

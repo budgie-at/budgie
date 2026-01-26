@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef } from 'react';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DatePickerBottomSheet } from '../../../@generic/component/date-picker-bottom-sheet/date-picker-bottom-sheet';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -25,6 +26,7 @@ export const TransactionFormDatePicker = ({ date, onChange, variant }: Props) =>
             <SimpleHorizontalCell
                 size="md"
                 right={null}
+                testID={TransactionFormSelectors.DatePicker}
                 left={<CircleIcon icon={UserIconNameEnum.Calendar} variant="ghost" size={16} iconSize={16} border={false} />}
                 onPress={handleOpen}
                 title={formatDayAndMonthAndYear(date)}

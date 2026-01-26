@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { CategoryPickerBottomSheetSelectors } from '../../../@e2e/selectors/category-picker-bottom-sheet.selector';
 import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -14,7 +15,6 @@ import { sortSelectedFirst } from '../../../@generic/utils/sort-selected-first.u
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 import { CategoryFormBottomSheet } from '../category-form-bottom-sheet/category-form-bottom-sheet';
 import { CategorySelectorCard } from '../category-selector-card/category-selector-card';
-import { CategoryPickerBottomSheetSelectors } from '../../../@e2e/selectors/category-picker-bottom-sheet.selector';
 
 interface Props {
     readonly description?: string;

@@ -106,6 +106,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable);
     }
 
+    async touchUpdatedAt(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ updatedAt: new Date() })
+            .where(eq(TransactionEntityTable.id, id));
+    }
+
     async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
         const results = await this.db
             .select({ externalId: TransactionEntityTable.externalId })

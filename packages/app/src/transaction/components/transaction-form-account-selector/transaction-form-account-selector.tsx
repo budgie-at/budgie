@@ -2,6 +2,7 @@ import { AccountTypeEnum, TransactionCreateInputInterface } from '@budgie/contra
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
+import { TransactionFormSelectors } from '../../../@e2e/selectors/transaction-form.selector';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountSelector } from '../../../account/component/account-selector/account-selector';
@@ -39,6 +40,9 @@ export const TransactionFormAccountSelector = ({ variant, fieldName }: Props) =>
                     accountId={value}
                     onSelect={handleAccountChange}
                     excludeAccountTypes={EXCLUDED_ACCOUNT_TYPES}
+                    accountTestID={TransactionFormSelectors.Account}
+                    inputTestID={TransactionFormSelectors.AccountSearchInput}
+                    accountSelectorTestID={TransactionFormSelectors.AccountSelector}
                     emptyStateDescription={t`Create your first account to start tracking transactions`}
                 />
             </FormItem>

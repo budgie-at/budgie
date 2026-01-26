@@ -1,21 +1,38 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
+env:
+  TEST_ID: '13'
+  ACCOUNT_NAME: Test13 Account
+  CATEGORY_NAME: Test13 Category
+  TAG_NAME: Test13 Tag
 ---
 # Test 13: Apply to existing toggle behavior
-# Creates a rule WITHOUT "Apply to existing", verifies transaction unchanged
-# Then edits rule to enable toggle, verifies transaction is updated
+# Creates a transaction, then creates a rule WITHOUT "Apply to existing"
+# Verifies transaction unchanged. Then edits rule to enable toggle
+# and verifies transaction is updated.
 
-# First, create an expense transaction with title "Spotify"
+# Setup - creates account, category, tag with unique names
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+# First, create a transaction (before the rule exists)
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
       TITLE: 'Spotify Premium'
       AMOUNT: '10'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 # Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open the FAB menu
+# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -23,7 +40,6 @@ appId: com.vitalyiegorov.budgie
       id: 'RulesPage.CreateButton'
     timeout: 3000
 - waitForAnimationToEnd
-# Tap the Rule action item
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
@@ -38,38 +54,27 @@ appId: com.vitalyiegorov.budgie
 # Configure action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first category (around 28% from top)
-- tapOn:
-    point: 50%, 28%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 # Submit the rule WITHOUT enabling "Apply to existing"
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
+
+# Verify rule was created
+- assertVisible:
+    id: 'RulesPage.RuleCard.0'
 
 # Navigate to Transactions to verify the transaction is UNCHANGED
 - tapOn:
     id: 'TabBar.Transactions'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Verify the transaction is visible (should have no category badge yet)
+# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1'
 
@@ -96,20 +101,14 @@ appId: com.vitalyiegorov.budgie
 # Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Navigate to Transactions to verify the category is NOW applied
 - tapOn:
     id: 'TabBar.Transactions'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Verify the transaction now shows the category badge
+# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1.CategoryBadge'

@@ -4,14 +4,21 @@ appId: ${APP_ID}
 # Requires: CATEGORY_NAME env variable
 # Assumes: Category selector bottom sheet is already open
 
+# Wait for bottom sheet to fully open
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+    timeout: 5000
 - tapOn:
     id: 'CategoryPickerBottomSheet.Input'
+- waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
 # Wait for search results to load
 - extendedWaitUntil:
     visible:
       id: 'CategoryPickerBottomSheet.Card.0'
-    timeout: 5000
+    timeout: 10000
 # Tap on the first search result
 - tapOn:
     id: 'CategoryPickerBottomSheet.Card.0'

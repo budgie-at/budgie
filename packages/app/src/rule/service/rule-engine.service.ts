@@ -176,6 +176,8 @@ class RuleEngineService {
                     if (isDefined(action.categoryId)) {
                         // eslint-disable-next-line no-await-in-loop
                         await transactionEntryRepository.updateCategoryByTransactionId(transactionId, action.categoryId, transaction);
+                        // eslint-disable-next-line no-await-in-loop
+                        await transactionRepository.touchUpdatedAt(transactionId, transaction);
                     }
                     break;
 
@@ -183,6 +185,8 @@ class RuleEngineService {
                     if (isDefined(action.tagId)) {
                         // eslint-disable-next-line no-await-in-loop
                         await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId }], transaction);
+                        // eslint-disable-next-line no-await-in-loop
+                        await transactionRepository.touchUpdatedAt(transactionId, transaction);
                     }
                     break;
 

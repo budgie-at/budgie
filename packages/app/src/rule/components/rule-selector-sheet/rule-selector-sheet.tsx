@@ -1,11 +1,11 @@
 import { ReactNode, Ref } from 'react';
 import { Text, View } from 'react-native';
 
+import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
 import { BottomSheetScrollView } from '../../../@generic/component/bottom-sheet-scroll-view/bottom-sheet-scroll-view';
 import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
-import { RuleFormSelectors } from '../../../@e2e/selectors/rule-form.selector';
 
 interface RuleSelectorOption<T> {
     value: T;

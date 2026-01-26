@@ -11,7 +11,7 @@ appId: com.vitalyiegorov.budgie
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Toggle the switch on the first rule
+# Toggle the switch on the first rule (using coordinates - Switch testID not accessible on iOS)
 - tapOn:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 

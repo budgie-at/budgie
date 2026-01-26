@@ -3,9 +3,6 @@ appId: ${APP_ID}
 # Setup: Create account, category, and tag for rules testing
 # Requires: ACCOUNT_NAME, CATEGORY_NAME, TAG_NAME env variables
 
-- clearState
-- launchApp
-
 - runFlow:
     file: ../shared/enter-app.flow.yaml
 

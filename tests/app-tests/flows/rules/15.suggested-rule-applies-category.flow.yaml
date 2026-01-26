@@ -1,4 +1,9 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
+env:
+  TEST_ID: '15'
+  ACCOUNT_NAME: Test15 Account
+  CATEGORY_NAME: Test15 Category
+  TAG_NAME: Test15 Tag
 ---
 # Test 15: Suggested rule flow applies category to matching imported transactions
 #
@@ -10,18 +15,22 @@ appId: com.vitalyiegorov.budgie
 # The suggested rule feature ONLY appears for external/imported transactions
 # (externalSource !== MANUAL), so this test uses CSV import.
 #
-# Alternatively, run this test manually or skip if CSV import automation is not set up.
+# SKIP: This test is skipped in automated runs.
+# Run manually after setting up CSV import.
 
-# Launch app fresh to ensure clean state
-- launchApp
+# Setup - creates account, category, tag with unique names
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
 
 # Navigate to Settings to import CSV
 - tapOn:
     id: 'TabBar.Settings'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Scroll to Import CSV and tap
 - scrollUntilVisible:
@@ -34,81 +43,54 @@ appId: com.vitalyiegorov.budgie
 
 # Wait for file picker - tap on test CSV file
 # Use coordinate tap since file picker is system UI
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 3000
+- waitForAnimationToEnd
+- waitForAnimationToEnd
 # Tap on first file in file picker (around center of screen)
 - tapOn:
     point: 50%, 50%
 
 # Wait for import screen, select Budgie preset
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 3000
+- waitForAnimationToEnd
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
 
 # Start import
 - tapOn:
     id: 'ImportScreen.SubmitButton'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 5000
+- waitForAnimationToEnd
+- waitForAnimationToEnd
 
 # Navigate to Transactions
 - tapOn:
     id: 'TabBar.Transactions'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Open first imported transaction (most recent)
 - tapOn:
-    id: 'TransactionList.Card.1'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+    id: 'TransactionList.Card.0'
+- waitForAnimationToEnd
 
-# Change category using coordinate tap on category selector
+# Change category using search
 - tapOn:
     id: 'TransactionForm.CategorySelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first category (around 28% from top)
-- tapOn:
-    point: 50%, 28%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 # "Add Rule" button should appear for imported transaction
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1000
+- waitForAnimationToEnd
 # Look for Add Rule button
 - tapOn:
     id: 'SuggestRule.AddRuleButton'
 
 # Wait for suggested rule bottom sheet
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Select "Comment" condition (if available)
 - tapOn:
     id: 'SuggestRule.ConditionChip.COMMENT'
+    optional: true
 
 # Enable "Apply to existing transactions"
 - tapOn:
@@ -119,19 +101,13 @@ appId: com.vitalyiegorov.budgie
     id: 'SuggestRule.CreateRuleButton'
 
 # Wait for rule creation
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Save the transaction
 - tapOn:
     id: 'TransactionForm.SubmitButton'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Verify we're back on transactions list
 - assertVisible:
-    id: 'TransactionList.Card.1'
+    id: 'TransactionList.Card.0'

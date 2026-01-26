@@ -1,6 +1,7 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
 import React, { FC, Ref, useImperativeHandle, useRef } from 'react';
+import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '../../utils/cn.util';
@@ -72,6 +73,10 @@ export const BottomSheet = (props: Props) => {
             enablePanDownToClose={isCloseable}
             ref={modalRef}
             topInset={top}
+            accessible={Platform.select({
+                // setting it to false on Android seems to cause issues with TalkBack instead
+                ios: false
+            })}
             index={index}
             {...rest}
         >

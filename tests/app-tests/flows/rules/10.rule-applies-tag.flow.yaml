@@ -1,21 +1,37 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
+env:
+  TEST_ID: '10'
+  ACCOUNT_NAME: Test10 Account
+  CATEGORY_NAME: Test10 Category
+  TAG_NAME: Test10 Tag
 ---
 # Test 10: Rule applies ADD_TAG action to existing transactions
-# Creates an expense transaction, then creates a rule that matches it with ADD_TAG action
-# Verifies the transaction now shows the tag
+# Creates a transaction first, then creates a rule with "Apply to existing"
+# toggle enabled to add the tag to the existing transaction
 
-# First, create an expense transaction with title "Starbucks"
+# Setup - creates account, category, tag with unique names
+- runFlow:
+    file: ../setup/setup-rules-test.flow.yaml
+    env:
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
+
+# First, create a transaction (before the rule exists)
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
       TITLE: 'Starbucks Coffee'
       AMOUNT: '5'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 # Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open the FAB menu
+# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -23,14 +39,19 @@ appId: com.vitalyiegorov.budgie
       id: 'RulesPage.CreateButton'
     timeout: 3000
 - waitForAnimationToEnd
-# Tap the Rule action item
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
     timeout: 5000
 
-# Configure condition: Title CONTAINS "Starbucks"
+# Configure condition: Comment CONTAINS "Starbucks"
+# (Title is empty for manual transactions - note goes into Comment field)
+- tapOn:
+    id: 'RuleForm.Condition.0.FieldSelector'
+- waitForAnimationToEnd
+- tapOn: 'Comment'
+- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Starbucks'
@@ -38,54 +59,33 @@ appId: com.vitalyiegorov.budgie
 # Change action type to ADD_TAG
 - tapOn:
     id: 'RuleForm.Action.0.TypeSelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on Add Tag (second item in action type list, around 38% from top)
 - tapOn:
-    point: 50%, 38%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+    id: 'RuleForm.SelectorCard.ADD_TAG'
+- waitForAnimationToEnd
 
-# Select tag
+# Select tag for action
 - tapOn:
     id: 'RuleForm.Action.0.TagSelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first tag (around 28% from top)
-- tapOn:
-    point: 50%, 28%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+- runFlow:
+    file: ../shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
 
-# Enable "Apply to existing transactions"
+# Enable "Apply to existing transactions" toggle
 - scrollUntilVisible:
     element:
       id: 'RuleForm.ApplyToExistingToggle'
     direction: DOWN
     timeout: 5000
+- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.ApplyToExistingToggle'
+- waitForAnimationToEnd
 
 # Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Verify rule was created
 - assertVisible:
@@ -94,11 +94,28 @@ appId: com.vitalyiegorov.budgie
 # Navigate to Transactions to verify the tag was applied
 - tapOn:
     id: 'TabBar.Transactions'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
-# Verify the transaction now shows the tag
-- assertVisible:
-    id: 'TransactionList.Card.1.Tag'
+# Pull to refresh to ensure list shows latest data
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+# The rule should have applied the tag to the existing transaction
+# Verify the tag element is visible on the transaction card
+# Note: The Tag element only renders if a tag is assigned, so this proves the rule worked
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1.Tag'
+    timeout: 5000
+
+# Open transaction details to verify the tag name
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+# Verify the tag is shown in transaction details
+- extendedWaitUntil:
+    visible: ${TAG_NAME}
+    timeout: 5000

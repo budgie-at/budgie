@@ -1,8 +1,5 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
 ---
-# Launch app to ensure it's running
-- launchApp
-
 # Navigate to Home first to ensure consistent state
 - tapOn:
     id: 'TabBar.Home'

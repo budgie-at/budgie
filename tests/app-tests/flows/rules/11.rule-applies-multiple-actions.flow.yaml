@@ -1,21 +1,27 @@
-appId: com.vitalyiegorov.budgie
+appId: ${APP_ID}
+env:
+  TEST_ID: '11'
+  ACCOUNT_NAME: Test11 Account
+  CATEGORY_NAME: Test11 Category
+  TAG_NAME: Test11 Tag
 ---
-# Test 11: Rule applies multiple actions (SET_CATEGORY + ADD_TAG) to existing transactions
-# Creates an expense transaction, then creates a rule with 2 actions
-# Verifies both category and tag are applied
+# Test 11: Rule applies multiple actions (SET_CATEGORY + ADD_TAG) to new transactions
+# Creates a rule with 2 actions and verifies both are applied
 
-# First, create an expense transaction with title "Amazon"
+# Setup - creates account, category, tag with unique names
 - runFlow:
-    file: ../shared/create-expense-transaction.flow.yaml
+    file: ../setup/setup-rules-test.flow.yaml
     env:
-      TITLE: 'Amazon Purchase'
-      AMOUNT: '50'
+      TEST_ID: ${TEST_ID}
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
+      TAG_NAME: ${TAG_NAME}
 
 # Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open the FAB menu
+# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -23,7 +29,6 @@ appId: com.vitalyiegorov.budgie
       id: 'RulesPage.CreateButton'
     timeout: 3000
 - waitForAnimationToEnd
-# Tap the Rule action item
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
@@ -35,22 +40,13 @@ appId: com.vitalyiegorov.budgie
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Amazon'
 
-# Configure first action: SET_CATEGORY (default)
+# Configure first action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first category (around 28% from top)
-- tapOn:
-    point: 50%, 28%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 # Add second action
 - scrollUntilVisible:
@@ -62,70 +58,47 @@ appId: com.vitalyiegorov.budgie
     id: 'RuleForm.ActionSection.AddButton'
 
 # Configure second action: ADD_TAG
-- tapOn:
-    id: 'RuleForm.Action.1.TypeSelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on Add Tag (second item in action type list, around 38% from top)
-- tapOn:
-    point: 50%, 38%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
-
-# Select tag
-- tapOn:
-    id: 'RuleForm.Action.1.TagSelector'
-# Wait for bottom sheet to open
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-# Tap on the first tag (around 28% from top)
-- tapOn:
-    point: 50%, 28%
-# Wait for bottom sheet to close
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
-
-# Enable "Apply to existing transactions"
 - scrollUntilVisible:
     element:
-      id: 'RuleForm.ApplyToExistingToggle'
+      id: 'RuleForm.Action.1.TypeSelector'
     direction: DOWN
     timeout: 5000
+    centerElement: true
 - tapOn:
-    id: 'RuleForm.ApplyToExistingToggle'
+    id: 'RuleForm.Action.1.TypeSelector'
+- tapOn:
+    id: 'RuleForm.SelectorCard.ADD_TAG'
+- waitForAnimationToEnd
+
+# Select tag for second action
+- tapOn:
+    id: 'RuleForm.Action.1.TagSelector'
+- runFlow:
+    file: ../shared/select-tag-by-search.flow.yaml
+    env:
+      TAG_NAME: ${TAG_NAME}
 
 # Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-# Wait for navigation back to Rules page
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+- waitForAnimationToEnd
 
 # Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Navigate to Transactions to verify both category and tag were applied
-- tapOn:
-    id: 'TabBar.Transactions'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
+# Now create a transaction that matches the rule
+- runFlow:
+    file: ../shared/create-expense-transaction.flow.yaml
+    env:
+      TITLE: 'Amazon Purchase'
+      AMOUNT: '50'
+      ACCOUNT_NAME: ${ACCOUNT_NAME}
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Verify the transaction shows both category and tag indicators
+# The rule should have auto-applied both category and tag
+# Verify the transaction shows both indicators
+# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1.CategoryBadge'
 - assertVisible:

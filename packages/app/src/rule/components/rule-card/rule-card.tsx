@@ -61,8 +61,8 @@ export const RuleCard = ({ onOpen, order, rule, testID, switchTestID, orderBadge
                 </View>
             </View>
 
-            <View className="flex-row items-center justify-end">
-                <ThemedSwitch testID={switchTestID} value={rule.enabled} onValueChange={handleToggle} />
+            <View testID={switchTestID} className="flex-row items-center justify-end">
+                <ThemedSwitch value={rule.enabled} onValueChange={handleToggle} />
             </View>
         </Card>
     );

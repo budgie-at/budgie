@@ -33,6 +33,7 @@ report
 !.yarn/versions
 
 .idea
+.worktrees
 
 # TypeScript
 *.tsbuildinfo
