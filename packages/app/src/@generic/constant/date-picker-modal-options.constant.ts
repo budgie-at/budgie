@@ -1,6 +1,6 @@
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 
-const SHEET_DETENT = 0.55;
+const SHEET_DETENT = 0.46;
 const SHEET_CORNER_RADIUS = 24;
 
 export const DATE_PICKER_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
