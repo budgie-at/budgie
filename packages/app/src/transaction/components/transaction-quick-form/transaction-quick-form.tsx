@@ -1,5 +1,4 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -18,6 +17,10 @@ import { TransactionAccountRow } from '../transaction-account-row/transaction-ac
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
+import {
+    TransactionTransferAccountsRow,
+    TransactionTransferAccountsRowRef
+} from '../transaction-transfer-accounts-row/transaction-transfer-accounts-row';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
@@ -27,9 +30,8 @@ interface Props {
 
 const MICRO_UNIT = 1_000_000;
 
-// eslint-disable-next-line max-statements -- Component orchestrates multiple form fields, modals, and keypad state
+// eslint-disable-next-line max-statements, max-lines-per-function -- Component orchestrates multiple form fields, modals, and keypad state
 export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Props) => {
-    const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const { control, setValue, getValues, trigger } = useFormContext<TransactionCreateInputInterface>();
     const { openDatePicker } = useDatePickerModal();
@@ -38,6 +40,7 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
+    const transferAccountsRef = useRef<TransactionTransferAccountsRowRef>(null);
 
     const initialAmount = getValues('amount') / MICRO_UNIT;
     const { displayValue, numericValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput(initialAmount);
@@ -76,37 +79,37 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
         }
     };
 
+    const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
+
+    const triggerValidationShakes = (hasValidAmount: boolean, hasCategory: boolean, hasFromAccount: boolean, hasToAccount: boolean) => {
+        if (!hasValidAmount) {amountDisplayRef.current?.shake();}
+        if (!hasCategory) {fieldIconsRef.current?.shakeCategory();}
+        if (!hasFromAccount) {transferAccountsRef.current?.shakeFrom();}
+        if (!hasToAccount) {transferAccountsRef.current?.shakeTo();}
+    };
+
     const handleConfirm = async () => {
         const amount = getValues('amount');
         const entries = getValues('entries');
+        const toAccountId = getValues('toAccountId');
         const hasValidAmount = amount > 0;
-        const hasCategory = (entries[0]?.categoryId ?? 0) > 0;
+        const hasCategory = isTransfer || (entries[0]?.categoryId ?? 0) > 0;
+        const hasFromAccount = (fromAccountId ?? 0) > 0;
+        const hasToAccount = !isTransfer || (toAccountId ?? 0) > 0;
 
-        if (!hasValidAmount || !hasCategory) {
+        if (!hasValidAmount || !hasCategory || !hasFromAccount || !hasToAccount) {
             hapticNotification(NotificationFeedbackType.Error);
-
-            if (!hasValidAmount) {
-                amountDisplayRef.current?.shake();
-            }
-
-            if (!hasCategory) {
-                fieldIconsRef.current?.shakeCategory();
-            }
+            triggerValidationShakes(hasValidAmount, hasCategory, hasFromAccount, hasToAccount);
 
             return;
         }
 
         const isValid = await trigger();
 
-        if (!isValid) {
-            return;
+        if (isValid) {
+            onSubmit();
         }
-
-        onSubmit();
     };
-
-    const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
-    const fromAccountLabel = isTransfer ? t`From` : void 0;
 
     return (
         <View className="flex-1">
@@ -121,9 +124,11 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
             />
 
             <View className="gap-md mb-lg">
-                <TransactionAccountRow variant={variant} fieldName="fromAccountId" label={fromAccountLabel} />
-
-                {isTransfer ? <TransactionAccountRow variant={variant} fieldName="toAccountId" label={t`To`} /> : null}
+                {isTransfer ? (
+                    <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
+                ) : (
+                    <TransactionAccountRow variant={variant} fieldName="fromAccountId" />
+                )}
             </View>
 
             <TransactionKeypad
