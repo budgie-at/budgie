@@ -267,10 +267,9 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(modals)/confirm-action.tsx:36
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/category/components/category-create-form/category-create-form.tsx:71
+#: src/category/components/category-form/category-form.tsx:114
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-create-form/tag-create-form.tsx:65
-#: src/tag/components/tags-selector-modal-footer/tags-selector-modal-footer.tsx:39
+#: src/tag/components/tag-form/tag-form.tsx:112
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -279,7 +278,7 @@ msgid "Cash"
 msgstr "Efectivo"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:85
+#: src/app/(tabs)/settings/categories.tsx:72
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:39
@@ -290,15 +289,14 @@ msgstr "Categorías"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categorías ({selectedCategoriesCount})"
 
-#: src/app/(tabs)/settings/categories.tsx:36
+#: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:49
+#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:53
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
 msgid "Category"
 msgstr "Categoría"
 
-#: src/category/components/category-create-form/category-create-form.tsx:57
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:93
+#: src/category/components/category-form/category-form.tsx:93
 msgid "Category Name"
 msgstr "Nombre de la categoría"
 
@@ -393,13 +391,11 @@ msgstr "No se pudo activar la cuenta."
 msgid "Could not archive account. Please try again later"
 msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 
-#: src/category/components/category-create-form/category-create-form.tsx:43
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form/category-form.tsx:52
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-create-form/tag-create-form.tsx:39
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form/tag-form.tsx:49
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -415,19 +411,19 @@ msgstr "No se pudo eliminar la cuenta."
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:79
+#: src/category/components/category-form/category-form.tsx:78
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:74
+#: src/tag/components/tag-form/tag-form.tsx:77
 msgid "Could not merge tag"
 msgstr "No se pudo fusionar la etiqueta"
 
-#: src/app/(tabs)/settings/categories.tsx:67
+#: src/app/(tabs)/settings/categories.tsx:51
 msgid "Could not reassign category"
 msgstr "No se pudo reasignar la categoría"
 
-#: src/app/(tabs)/settings/tags.tsx:67
+#: src/app/(tabs)/settings/tags.tsx:52
 msgid "Could not reassign tag"
 msgstr "No se pudo reasignar la etiqueta"
 
@@ -435,11 +431,11 @@ msgstr "No se pudo reasignar la etiqueta"
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:55
+#: src/category/components/category-form/category-form.tsx:52
 msgid "Could not update category"
 msgstr "No se pudo actualizar la categoría"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:50
+#: src/tag/components/tag-form/tag-form.tsx:49
 msgid "Could not update tag"
 msgstr "No se pudo actualizar la etiqueta"
 
@@ -451,10 +447,8 @@ msgstr "No se pudo actualizar la transacción."
 msgid "Count this account in your net worth calculation"
 msgstr "Contar esta cuenta en el cálculo de su patrimonio neto"
 
-#: src/category/components/category-create-form/category-create-form.tsx:72
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
-#: src/tag/components/tag-create-form/tag-create-form.tsx:66
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
+#: src/category/components/category-form/category-form.tsx:42
+#: src/tag/components/tag-form/tag-form.tsx:41
 msgid "Create"
 msgstr "Crear"
 
@@ -482,7 +476,7 @@ msgstr "Crear y organizar etiquetas de transacciones"
 msgid "Create Categories"
 msgstr "Crear categorías"
 
-#: src/category/components/category-create-form/category-create-form.tsx:53
+#: src/category/components/category-form/category-form.tsx:41
 msgid "Create Category"
 msgstr "Crear categoría"
 
@@ -495,13 +489,13 @@ msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar tus transacciones"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:58
-#: src/account/component/account-select-content/account-select-content.tsx:55
+#: src/account/component/account-select-content/account-select-content.tsx:42
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-create-form/tag-create-form.tsx:49
+#: src/tag/components/tag-form/tag-form.tsx:40
 msgid "Create Tag"
-msgstr ""
+msgstr "Crear etiqueta"
 
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:72
 msgid "Create Tags"
@@ -612,13 +606,8 @@ msgid "Disable App Lock"
 msgstr "Desactivar bloqueo"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/tag/components/tags-selector-modal-footer/tags-selector-modal-footer.tsx:28
 msgid "Done"
 msgstr "Listo"
-
-#: src/tag/components/tags-selector-modal-footer/tags-selector-modal-footer.tsx:28
-msgid "Done ({selectedTagsCount})"
-msgstr "Listo ({selectedTagsCount})"
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -628,15 +617,17 @@ msgstr "Neerlandés (Países Bajos)"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/tag/components/tag-create-form/tag-create-form.tsx:56
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:86
+#: src/tag/components/tag-form/tag-form.tsx:95
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ej. Negocios, Personal, Vacaciones"
 
-#: src/category/components/category-create-form/category-create-form.tsx:60
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:91
+#: src/category/components/category-form/category-form.tsx:96
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ej. Comestibles, Salario, Alquiler"
+
+#: src/category/components/category-form/category-form.tsx:41
+msgid "Edit Category"
+msgstr "Editar categoría"
 
 #: src/app/(main)/transactions/[id]/expense.tsx:71
 msgid "Edit Expense"
@@ -645,6 +636,10 @@ msgstr "Editar gasto"
 #: src/app/(main)/transactions/[id]/income.tsx:61
 msgid "Edit Income"
 msgstr "Editar ingreso"
+
+#: src/tag/components/tag-form/tag-form.tsx:40
+msgid "Edit Tag"
+msgstr "Editar etiqueta"
 
 #: src/app/(main)/transactions/[id]/transfer.tsx:83
 msgid "Edit Transfer"
@@ -972,11 +967,11 @@ msgstr "Asignar columnas CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:105
+#: src/category/components/category-form/category-form.tsx:110
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
 
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:98
+#: src/tag/components/tag-form/tag-form.tsx:108
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
@@ -1008,12 +1003,12 @@ msgstr "Nuevo ingreso"
 msgid "New Transfer"
 msgstr "Nueva transferencia"
 
-#: src/account/component/account-select-content/account-select-content.tsx:52
+#: src/account/component/account-select-content/account-select-content.tsx:39
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts found"
 msgstr "No se encontraron cuentas"
 
-#: src/account/component/account-select-content/account-select-content.tsx:52
+#: src/account/component/account-select-content/account-select-content.tsx:39
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:22
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
 msgid "No accounts yet"
@@ -1023,8 +1018,7 @@ msgstr "Aún no hay cuentas"
 msgid "No archived accounts"
 msgstr "No hay cuentas archivadas"
 
-#: src/category/components/category-select-content/category-select-content.tsx:63
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:112
+#: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:63
 msgid "No categories found"
 msgstr "No se encontraron categorías"
@@ -1083,8 +1077,7 @@ msgstr "No hay transacciones coincidentes"
 msgid "No Results"
 msgstr "Sin resultados"
 
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:98
-#: src/tag/components/tags-select-content/tags-select-content.tsx:56
+#: src/tag/components/tags-select-content/tags-select-content.tsx:44
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:65
 msgid "No tags found"
 msgstr "No se encontraron etiquetas"
@@ -1171,14 +1164,12 @@ msgstr "Por favor, ingrese su token API de Monobank"
 msgid "Please try again"
 msgstr "Por favor, inténtelo de nuevo"
 
-#: src/app/(tabs)/settings/categories.tsx:68
-#: src/app/(tabs)/settings/tags.tsx:68
-#: src/category/components/category-create-form/category-create-form.tsx:44
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:80
-#: src/tag/components/tag-create-form/tag-create-form.tsx:40
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:51
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:75
+#: src/app/(tabs)/settings/categories.tsx:52
+#: src/app/(tabs)/settings/tags.tsx:53
+#: src/category/components/category-form/category-form.tsx:52
+#: src/category/components/category-form/category-form.tsx:78
+#: src/tag/components/tag-form/tag-form.tsx:49
+#: src/tag/components/tag-form/tag-form.tsx:77
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1227,9 +1218,9 @@ msgstr "¿Restaurar cuenta?"
 msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:85
+#: src/category/components/category-form/category-form.tsx:42
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:80
+#: src/tag/components/tag-form/tag-form.tsx:41
 msgid "Save"
 msgstr "Guardar"
 
@@ -1250,14 +1241,13 @@ msgstr "Cuentas de ahorro"
 msgid "Screenshot Protection"
 msgstr "Protección de capturas de pantalla"
 
-#: src/app/account-selector.tsx:32
+#: src/app/account-selector.tsx:33
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
-#: src/app/(tabs)/settings/categories.tsx:86
-#: src/app/category-selector.tsx:74
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:107
+#: src/app/(tabs)/settings/categories.tsx:73
+#: src/app/category-selector.tsx:63
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Buscar categorías..."
@@ -1278,9 +1268,8 @@ msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
-#: src/app/(tabs)/settings/tags.tsx:86
-#: src/app/tags-selector.tsx:75
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:93
+#: src/app/(tabs)/settings/tags.tsx:74
+#: src/app/tags-selector.tsx:69
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
@@ -1297,9 +1286,17 @@ msgstr "Protege tu aplicación con PIN y Face ID"
 msgid "Security"
 msgstr "Seguridad"
 
+#: src/category/components/category-form/category-form.tsx:62
+msgid "Select a category to merge into"
+msgstr "Selecciona una categoría para fusionar"
+
 #: src/@generic/component/contact-selector/contact-selector.tsx:33
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
+
+#: src/tag/components/tag-form/tag-form.tsx:59
+msgid "Select a tag to merge into"
+msgstr "Selecciona una etiqueta para fusionar"
 
 #: src/app/(tabs)/settings/import.tsx:54
 #: src/app/(tabs)/settings/import.tsx:57
@@ -1460,16 +1457,15 @@ msgstr "Cuentas bancarias sincronizadas"
 msgid "Syncing history..."
 msgstr "Sincronizando historial..."
 
-#: src/app/(tabs)/settings/tags.tsx:36
+#: src/app/(tabs)/settings/tags.tsx:31
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: src/tag/components/tag-create-form/tag-create-form.tsx:53
-#: src/tag/components/tag-form-bottom-sheet/tag-form-bottom-sheet.tsx:88
+#: src/tag/components/tag-form/tag-form.tsx:92
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
-#: src/app/(tabs)/settings/tags.tsx:85
+#: src/app/(tabs)/settings/tags.tsx:73
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1507,7 +1503,7 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
-#: src/app/(tabs)/settings/categories.tsx:99
+#: src/app/(tabs)/settings/categories.tsx:41
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Esta categoría tiene transacciones. Selecciona otra categoría para reasignarlas."
 
@@ -1515,7 +1511,7 @@ msgstr "Esta categoría tiene transacciones. Selecciona otra categoría para rea
 msgid "This Month"
 msgstr "Este mes"
 
-#: src/app/(tabs)/settings/tags.tsx:99
+#: src/app/(tabs)/settings/tags.tsx:41
 msgid "This tag has transactions. Select another tag to reassign them to."
 msgstr "Esta etiqueta tiene transacciones. Selecciona otra etiqueta para reasignarlas."
 
@@ -1596,15 +1592,13 @@ msgstr "Transferencia"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
-#: src/account/component/account-select-content/account-select-content.tsx:54
-#: src/category/components/category-select-content/category-select-content.tsx:63
-#: src/category/components/category-selector-bottom-sheet/category-selector-bottom-sheet.tsx:111
+#: src/account/component/account-select-content/account-select-content.tsx:41
+#: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
-#: src/tag/components/tag-selector-bottom-sheet/tag-selector-bottom-sheet.tsx:97
 msgid "Try a different search term"
 msgstr "Prueba con un término de búsqueda diferente"
 
-#: src/tag/components/tags-select-content/tags-select-content.tsx:57
+#: src/tag/components/tags-select-content/tags-select-content.tsx:45
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
