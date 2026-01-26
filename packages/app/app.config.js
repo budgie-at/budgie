@@ -46,6 +46,10 @@ export default ({ config }) => ({
             usesNonExemptEncryption: false
         },
         associatedDomains: ['applinks:budgie.at'],
+        entitlements: {
+            'com.apple.developer.kernel.extended-virtual-addressing': true,
+            'com.apple.developer.kernel.increased-memory-limit': true
+        },
         icon: {
             dark: './assets/icons/ios-dark.png',
             light: './assets/icons/ios-light.png',
