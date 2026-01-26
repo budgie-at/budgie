@@ -6,25 +6,14 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
-import { ConfirmActionBottomSheet } from '../../../@generic/component/confirm-action-bottom-sheet/confirm-action-bottom-sheet';
+import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
-import { useConfirmAction } from '../../../settings/hook/use-confirm-action.hook';
 import { databaseImportService } from '../../service/database-import.service';
 
 export const ImportDatabase = () => {
     const { t } = useLingui();
+    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedUri, setSelectedUri] = useState<string | undefined>();
-
-    const handleImport = async () => {
-        if (!isNotEmptyString(selectedUri)) {
-            return;
-        }
-
-        await databaseImportService.importFromUri(selectedUri);
-    };
-
-    const { ref, isLoading: isConfirmLoading, handleConfirm } = useConfirmAction(handleImport);
 
     const handleSelectAndConfirm = async () => {
         setIsLoading(true);
@@ -41,8 +30,22 @@ export const ImportDatabase = () => {
                 return;
             }
 
-            setSelectedUri(uri);
-            ref.current?.open();
+            setIsLoading(false);
+
+            const confirmed = await openConfirmAction({
+                variant: 'destructive',
+                icon: UserIconNameEnum.OctagonAlert,
+                title: t`Import Database`,
+                description: t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`,
+                buttonText: t`Import Database`
+            });
+
+            if (!confirmed) {
+                return;
+            }
+
+            updateConfirmActionParams({ isLoading: true });
+            await databaseImportService.importFromUri(uri);
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Error`, text2: getErrorMessage(error) });
         } finally {
@@ -51,26 +54,13 @@ export const ImportDatabase = () => {
     };
 
     return (
-        <>
-            <SettingsCard
-                title={t`Import Database`}
-                description={t`Restore from a backup file`}
-                onPress={handleSelectAndConfirm}
-                icon={UserIconNameEnum.Database}
-                variant="ghost"
-                isLoading={isLoading}
-            />
-
-            <ConfirmActionBottomSheet
-                ref={ref}
-                isLoading={isConfirmLoading}
-                variant="destructive"
-                description={t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`}
-                buttonText={t`Import Database`}
-                onSubmit={handleConfirm}
-                icon={UserIconNameEnum.OctagonAlert}
-                title={t`Import Database`}
-            />
-        </>
+        <SettingsCard
+            title={t`Import Database`}
+            description={t`Restore from a backup file`}
+            onPress={handleSelectAndConfirm}
+            icon={UserIconNameEnum.Database}
+            variant="ghost"
+            isLoading={isLoading}
+        />
     );
 };
