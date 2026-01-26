@@ -2,6 +2,7 @@ import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackC
 
 const SHEET_DETENT = 0.4;
 const SHEET_CORNER_RADIUS = 24;
+const CONTENT_PADDING_BOTTOM = 24;
 
 export const FORM_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     presentation: 'formSheet',
@@ -9,5 +10,5 @@ export const FORM_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
     sheetGrabberVisible: true,
     sheetAllowedDetents: [SHEET_DETENT],
     sheetCornerRadius: SHEET_CORNER_RADIUS,
-    contentStyle: { backgroundColor: 'transparent' }
+    contentStyle: { backgroundColor: 'transparent', paddingBottom: CONTENT_PADDING_BOTTOM }
 };
