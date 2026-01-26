@@ -1,39 +1,44 @@
-/* eslint-disable react/jsx-max-depth */
+/* eslint-disable react/jsx-max-depth, max-lines-per-function */
 import { i18n } from '@lingui/core';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { SQLiteProvider } from 'expo-sqlite';
-import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import migrations from '../../drizzle/migrations';
 import '../account/task/account-balance-incremental.task';
 import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
+import { CONFIRM_ACTION_MODAL_OPTIONS } from '../@generic/constant/confirm-action-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
+import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
+import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
+import { useAppInitialization } from '../@generic/hook/use-app-initialization.hook';
 import { useAppState } from '../@generic/hook/use-app-state.hook';
+import { ConfirmActionModalProvider } from '../@generic/provider/confirm-action-modal.provider';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
-import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
+import { AccountSelectorModalProvider } from '../account/provider/account-selector-modal.provider';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
 import { LlmProvider } from '../ai/provider/llm.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
-import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
+import { CategoryFormModalProvider } from '../category/provider/category-form-modal.provider';
+import { CategorySelectorModalProvider } from '../category/provider/category-selector-modal.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { TagFormModalProvider } from '../tag/provider/tag-form-modal.provider';
+import { TagsSelectorModalProvider } from '../tag/provider/tags-selector-modal.provider';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -47,40 +52,13 @@ const SQLOptions = { enableChangeListener: true };
 // eslint-disable-next-line dot-notation
 const isAiDisabled = process.env['EXPO_PUBLIC_AI_DISABLE'] === 'true';
 const AiProviderWrapper = isAiDisabled ? LlmDisabledProvider : LlmProvider;
+const handleAppStateChange = (isActive: boolean) => void (isActive && monobankSyncService.sync());
 
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations);
-
-    // TODO: REMOVE ME WHEN DB IS STABLE!
     useResetDb(error);
-
-    useEffect(() => {
-        const init = async () => {
-            if (success) {
-                try {
-                    void exchangeRatesSyncService.sync();
-                    void exchangeRatesSyncService.registerBackgroundTask();
-
-                    void accountBalanceIncrementalService.updateAllBalances(false);
-                    void accountBalanceIncrementalService.registerBackgroundTask();
-
-                    void monobankSyncService.sync();
-                    void monobankSyncService.registerBackgroundTask();
-                } catch (e: unknown) {
-                    // eslint-disable-next-line no-console
-                    console.log(getErrorMessage(e));
-                } finally {
-                    // HINT: We need to time for db to return data
-                    setTimeout(() => void SplashScreen.hideAsync(), 200);
-                }
-            }
-        };
-
-        void init();
-    }, [success]);
-
-    useAppState(isActive => void (isActive && monobankSyncService.sync()));
-
+    useAppInitialization(success);
+    useAppState(handleAppStateChange);
     if (!success) {
         return null;
     }
@@ -97,23 +75,59 @@ export default function RootLayout() {
                                         <AuthGuard>
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
-                                                    <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
-                                                        <Stack.Screen name="(tabs)" />
-
-                                                        <Stack.Screen name="(main)/pin" />
-                                                        <Stack.Screen name="(main)/create-account" />
-
-                                                        <Stack.Screen name="(main)/account/[id]/details" />
-                                                        <Stack.Screen name="(main)/account/[id]/update" />
-
-                                                        <Stack.Screen name="(main)/create-transaction/expense" />
-                                                        <Stack.Screen name="(main)/create-transaction/income" />
-                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
-
-                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
-                                                    </Stack>
+                                                    <ConfirmActionModalProvider>
+                                                        <CategoryFormModalProvider>
+                                                            <CategorySelectorModalProvider>
+                                                                <AccountSelectorModalProvider>
+                                                                    <TagFormModalProvider>
+                                                                        <TagsSelectorModalProvider>
+                                                                            <Stack
+                                                                                screenOptions={DEFAULT_STACK_OPTIONS}
+                                                                                screenLayout={ScreenLayout}
+                                                                            >
+                                                                                <Stack.Screen name="(tabs)" />
+                                                                                <Stack.Screen name="(main)/pin" />
+                                                                                <Stack.Screen name="(main)/create-account" />
+                                                                                <Stack.Screen name="(main)/account/[id]/details" />
+                                                                                <Stack.Screen name="(main)/account/[id]/update" />
+                                                                                <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                                <Stack.Screen name="(main)/create-transaction/income" />
+                                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                                <Stack.Screen name="(main)/analytics/transactions" />
+                                                                                <Stack.Screen
+                                                                                    name="category-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="account-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="tags-selector"
+                                                                                    options={SELECTOR_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="category-form"
+                                                                                    options={FORM_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="tag-form"
+                                                                                    options={FORM_MODAL_OPTIONS}
+                                                                                />
+                                                                                <Stack.Screen
+                                                                                    name="confirm-action"
+                                                                                    options={CONFIRM_ACTION_MODAL_OPTIONS}
+                                                                                />
+                                                                            </Stack>
+                                                                        </TagsSelectorModalProvider>
+                                                                    </TagFormModalProvider>
+                                                                </AccountSelectorModalProvider>
+                                                            </CategorySelectorModalProvider>
+                                                        </CategoryFormModalProvider>
+                                                    </ConfirmActionModalProvider>
                                                     <Toast />
                                                 </AiProviderWrapper>
                                             </CreateActionProvider>

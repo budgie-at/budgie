@@ -1,13 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../query/use-get-category-by-id.query';
-import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
 
 interface Props {
     readonly categoryId: number | null;
@@ -18,23 +16,21 @@ interface Props {
 
 export const CategorySelector = ({ variant, categoryId, onSelect, cardVariant = 'primary' }: Props) => {
     const { t } = useLingui();
-
-    const bottomSheetRef = useRef<BottomSheetInterface | null>(null);
+    const { openCategorySelector } = useCategorySelectorModal();
 
     const { category: selectedCategory } = useGetCategoryByIdQuery(categoryId ?? 0);
 
-    const handleOpen = () => bottomSheetRef.current?.open();
+    const handleOpen = async () => {
+        const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
+        onSelect(selectedCategoryId);
+    };
 
     return (
-        <>
-            <SimpleHorizontalCell
-                variant={cardVariant}
-                title={selectedCategory?.title ?? t`Select category`}
-                left={<CircleIcon icon={selectedCategory?.icon ?? UserIconNameEnum.Home} variant={variant} />}
-                onPress={handleOpen}
-            />
-
-            <CategorySelectorBottomSheet variant={variant} selectedCategory={selectedCategory} onSelect={onSelect} ref={bottomSheetRef} />
-        </>
+        <SimpleHorizontalCell
+            variant={cardVariant}
+            title={selectedCategory?.title ?? t`Select category`}
+            left={<CircleIcon icon={selectedCategory?.icon ?? UserIconNameEnum.Home} variant={variant} />}
+            onPress={handleOpen}
+        />
     );
 };

@@ -143,6 +143,16 @@ Conventional commits: `type(scope): description`
 - Never modify `.jscpd.json` - fix duplication in source code
 - Each package has its own CLAUDE.md with package-specific rules
 
+## Token Usage Efficiency
+
+**CRITICAL: Minimize token usage. Avoid looping on lint fixes.**
+
+- If a lint rule (like `max-lines-per-function`) requires multiple refactoring attempts, add `eslint-disable` comment instead
+- If Prettier keeps reformatting your changes back, stop and use `eslint-disable`
+- Ask for confirmation before attempting complex refactors - do not go back and forth
+- Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
+- Use `jscpd:ignore-start/end` for intentionally similar code patterns (like form components)
+
 ## Local Documentation
 
 The `docs/plans/` folder contains design documents and implementation plans. This folder is gitignored for local-only usage - plans are working documents that don't need version control.

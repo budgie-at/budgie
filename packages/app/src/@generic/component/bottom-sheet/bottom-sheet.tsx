@@ -1,7 +1,9 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import React, { FC, Ref, useImperativeHandle, useRef } from 'react';
+import React, { FC, Ref, useCallback, useImperativeHandle, useRef } from 'react';
+import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FullWindowOverlay } from 'react-native-screens';
 
 import { cn } from '../../utils/cn.util';
 import { BottomSheetCloseableBackdrop } from '../bottom-sheet-closeable-backdrop/bottom-sheet-closeable-backdrop';
@@ -9,7 +11,7 @@ import { BottomSheetNonCloseableBackdrop } from '../bottom-sheet-non-closeable-b
 
 import type { BottomSheetInterface } from '../../interface/bottom-sheet.interface';
 import type { BottomSheetFooterProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetFooter';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, PropsWithChildren } from 'react';
 
 interface Props extends Omit<ComponentProps<typeof BottomSheetModal>, 'ref' | 'enablePanDownToClose'> {
     readonly index?: number;
@@ -28,6 +30,8 @@ const Modal = styled(BottomSheetModal, {
     backgroundClassName: 'backgroundStyle',
     handleIndicatorClassName: 'handleIndicatorStyle'
 });
+
+const isIOS = Platform.OS === 'ios';
 
 export const BottomSheet = (props: Props) => {
     const {
@@ -57,6 +61,11 @@ export const BottomSheet = (props: Props) => {
 
     const backdropComponent = isCloseable ? BottomSheetCloseableBackdrop : BottomSheetNonCloseableBackdrop;
 
+    const renderContainerComponent = useCallback(
+        (props: PropsWithChildren) => (isIOS ? <FullWindowOverlay>{props.children}</FullWindowOverlay> : <>{props.children}</>),
+        []
+    );
+
     return (
         <Modal
             className={cn('shadow-primary shadow-2xl rounded-t-3xl', className)}
@@ -74,6 +83,7 @@ export const BottomSheet = (props: Props) => {
             topInset={top}
             index={index}
             {...rest}
+            containerComponent={renderContainerComponent}
         >
             {children}
         </Modal>
