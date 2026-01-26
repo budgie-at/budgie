@@ -56,6 +56,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:38
 #: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
 msgid "Account"
 msgstr "Account"
@@ -118,6 +119,10 @@ msgstr "Add Expense"
 #: src/app/(main)/create-transaction/income.tsx:53
 msgid "Add Income"
 msgstr "Add Income"
+
+#: src/transaction/components/transaction-comment-input/transaction-comment-input.tsx:30
+msgid "Add Note"
+msgstr "Add Note"
 
 #: src/transaction/components/transaction-split/transaction-split.tsx:115
 msgid "Add Split"
@@ -267,7 +272,7 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/confirm-action.tsx:42
+#: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:113
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:111
@@ -294,6 +299,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:53
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:97
 #: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
 msgid "Category"
 msgstr "Category"
@@ -551,6 +557,7 @@ msgstr "Data management"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:118
 #: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
 msgid "Date"
 msgstr "Date"
@@ -610,6 +617,8 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
+#: src/transaction/components/transaction-comment-input/transaction-comment-input.tsx:43
+#: src/transaction/components/transaction-form-date-picker-embedded/transaction-form-date-picker-embedded.tsx:29
 msgid "Done"
 msgstr "Done"
 
@@ -685,6 +694,10 @@ msgstr "English (United States)"
 #: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Enter a {PIN_LENGTH}-digit PIN"
+
+#: src/transaction/components/transaction-comment-input/transaction-comment-input.tsx:36
+msgid "Enter a note..."
+msgstr "Enter a note..."
 
 #: src/auth/util/get-pin-setup-meta.util.ts:36
 #: src/auth/util/get-pin-setup-meta.util.ts:43
@@ -827,6 +840,10 @@ msgstr "French (France)"
 #: src/transaction/components/transaction-card-account-info/transaction-card-account-info.tsx:21
 msgid "from"
 msgstr "from"
+
+#: src/transaction/components/transaction-quick-form/transaction-quick-form.tsx:83
+msgid "From"
+msgstr "From"
 
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
 msgid "FROM"
@@ -1107,6 +1124,14 @@ msgstr "None"
 msgid "None selected"
 msgstr "None selected"
 
+#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:42
+msgid "not set"
+msgstr "not set"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:127
+msgid "Note"
+msgstr "Note"
+
 #: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:13
 msgid "Note (optional)"
 msgstr "Note (optional)"
@@ -1290,6 +1315,10 @@ msgstr "Secure your app with PIN & Face ID"
 msgid "Security"
 msgstr "Security"
 
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:39
+msgid "Select"
+msgstr "Select"
+
 #: src/category/components/category-form/category-form.tsx:63
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
@@ -1312,6 +1341,7 @@ msgstr "Select a valid column"
 
 #: src/account/component/account-selector-square/account-selector-square.tsx:62
 #: src/account/component/account-selector/account-selector.tsx:57
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:54
 msgid "Select account"
 msgstr "Select account"
 
@@ -1330,6 +1360,10 @@ msgstr "Select category"
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:31
 msgid "Select column..."
 msgstr "Select column..."
+
+#: src/transaction/components/transaction-form-date-picker-embedded/transaction-form-date-picker-embedded.tsx:25
+msgid "Select Date"
+msgstr "Select Date"
 
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
@@ -1470,6 +1504,7 @@ msgid "Tag Name"
 msgstr "Tag Name"
 
 #: src/app/(tabs)/settings/tags.tsx:73
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:108
 #: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
@@ -1539,6 +1574,10 @@ msgstr "This Year"
 msgid "to"
 msgstr "to"
 
+#: src/transaction/components/transaction-quick-form/transaction-quick-form.tsx:99
+msgid "To"
+msgstr "To"
+
 #: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
 msgid "TO"
 msgstr "TO"
@@ -1552,6 +1591,7 @@ msgid "To Currency"
 msgstr "To Currency"
 
 #: src/@generic/constant/date-period.constant.ts:7
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:86
 msgid "Today"
 msgstr "Today"
 
@@ -1697,6 +1737,10 @@ msgstr "When should it be returned?"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Who owes you?"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:86
+msgid "Yesterday"
+msgstr "Yesterday"
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
