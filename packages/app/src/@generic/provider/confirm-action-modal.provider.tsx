@@ -15,8 +15,12 @@ export const ConfirmActionModalProvider = ({ children }: Props) => {
         new Promise(resolve => {
             setCurrentParams(params);
             resolverRef.current = resolve;
-            router.push('/(modals)/confirm-action');
+            router.push('/confirm-action');
         });
+
+    const updateConfirmActionParams = (params: Partial<ConfirmActionModalParams>) => {
+        setCurrentParams(current => (current ? { ...current, ...params } : null));
+    };
 
     const resolveConfirmAction = (confirmed: boolean) => {
         resolverRef.current?.(confirmed);
@@ -25,7 +29,7 @@ export const ConfirmActionModalProvider = ({ children }: Props) => {
         router.back();
     };
 
-    const value = { openConfirmAction, resolveConfirmAction, currentParams };
+    const value = { openConfirmAction, resolveConfirmAction, updateConfirmActionParams, currentParams };
 
     return <ConfirmActionModalContext value={value}>{children}</ConfirmActionModalContext>;
 };
