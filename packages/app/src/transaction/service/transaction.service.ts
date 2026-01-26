@@ -207,9 +207,13 @@ class TransactionService {
             // HINT: This will work if bulkCreate will preserve the order of the inputs.
             const batchEntries = transactions.flatMap((transaction, index) =>
                 batch[index].entries.map(entry => ({
-                    ...entry,
                     transactionId: transaction.id,
-                    amount: convertToMicroUnits(entry.amount)
+                    accountId: entry.accountId,
+                    categoryId: entry.categoryId,
+                    mccCategoryId: entry.mccCategoryId,
+                    type: entry.type,
+                    amount: convertToMicroUnits(entry.amount),
+                    externalId: entry.externalId ?? null
                 }))
             );
 
@@ -228,7 +232,15 @@ class TransactionService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId })),
+            input.entries.map(entry => ({
+                transactionId,
+                accountId: entry.accountId,
+                categoryId: entry.categoryId,
+                mccCategoryId: entry.mccCategoryId,
+                type: entry.type,
+                amount: convertToMicroUnits(entry.amount),
+                externalId: entry.externalId ?? null
+            })),
             tx
         );
 
