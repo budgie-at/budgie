@@ -1,22 +1,22 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDatePickerModal } from '../../context/date-picker-modal.context';
+import { useNoteInputModal } from '../../context/note-input-modal.context';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
-import { TransactionAmountDisplay } from '../transaction-amount-display/transaction-amount-display';
-import { TransactionCommentInput } from '../transaction-comment-input/transaction-comment-input';
-import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
-import { TransactionFormDatePicker } from '../transaction-form-date-picker/transaction-form-date-picker';
+import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
 interface Props {
@@ -27,20 +27,25 @@ interface Props {
 
 const MICRO_UNIT = 1_000_000;
 
-// eslint-disable-next-line max-statements -- Component orchestrates multiple form fields, bottom sheets, and keypad state
+// eslint-disable-next-line max-statements -- Component orchestrates multiple form fields, modals, and keypad state
 export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
-    const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
+    const { control, setValue, getValues, trigger } = useFormContext<TransactionCreateInputInterface>();
+    const { openDatePicker } = useDatePickerModal();
+    const { openNoteInput } = useNoteInputModal();
+    const [hapticNotification] = useVibration();
 
-    const commentSheetRef = useRef<BottomSheetInterface | null>(null);
-    const dateSheetRef = useRef<BottomSheetInterface | null>(null);
+    const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
+    const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
 
     const initialAmount = getValues('amount') / MICRO_UNIT;
-    const { displayValue, numericValue, handleDigit, handleDecimal, handleDoubleZero, handleBackspace, handleClear } =
-        useKeypadInput(initialAmount);
+    const { displayValue, numericValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput(initialAmount);
 
     const fromAccountId = useWatch({ control, name: 'fromAccountId' });
+    const operatedAt = useWatch({ control, name: 'operatedAt' });
+    const comment = useWatch({ control, name: 'comment' });
+
     const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
@@ -55,24 +60,45 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
         }
     }, [numericValue, setValue, getValues]);
 
-    const handleCommentPress = () => {
-        commentSheetRef.current?.open();
+    const handleCommentPress = async () => {
+        const result = await openNoteInput({ initialValue: comment });
+
+        if (isDefined(result)) {
+            setValue('comment', result);
+        }
     };
 
-    const handleDatePress = () => {
-        dateSheetRef.current?.open();
+    const handleDatePress = async () => {
+        const result = await openDatePicker({ initialDate: operatedAt });
+
+        if (isDefined(result)) {
+            setValue('operatedAt', result);
+        }
     };
 
-    const handleCommentClose = () => {
-        commentSheetRef.current?.dismiss();
-    };
+    const handleConfirm = async () => {
+        const amount = getValues('amount');
+        const entries = getValues('entries');
+        const hasValidAmount = amount > 0;
+        const hasCategory = (entries[0]?.categoryId ?? 0) > 0;
 
-    const handleDateClose = () => {
-        dateSheetRef.current?.dismiss();
-    };
+        if (!hasValidAmount || !hasCategory) {
+            hapticNotification(NotificationFeedbackType.Error);
 
-    const handleConfirm = () => {
-        if (!isPositiveNumber(numericValue)) {
+            if (!hasValidAmount) {
+                amountDisplayRef.current?.shake();
+            }
+
+            if (!hasCategory) {
+                fieldIconsRef.current?.shakeCategory();
+            }
+
+            return;
+        }
+
+        const isValid = await trigger();
+
+        if (!isValid) {
             return;
         }
 
@@ -84,9 +110,10 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
 
     return (
         <View className="flex-1">
-            <TransactionAmountDisplay amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
 
             <TransactionFieldIcons
+                ref={fieldIconsRef}
                 variant={variant}
                 transactionType={transactionType}
                 onCommentPress={handleCommentPress}
@@ -103,20 +130,10 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
                 variant={variant}
                 onDigit={handleDigit}
                 onDecimal={handleDecimal}
-                onDoubleZero={handleDoubleZero}
                 onBackspace={handleBackspace}
                 onLongBackspace={handleClear}
                 onConfirm={handleConfirm}
-                isConfirmDisabled={!isPositiveNumber(numericValue)}
             />
-
-            <BottomSheet ref={commentSheetRef} enableDynamicSizing>
-                <TransactionCommentInput onClose={handleCommentClose} />
-            </BottomSheet>
-
-            <BottomSheet ref={dateSheetRef} enableDynamicSizing>
-                <TransactionFormDatePicker variant={variant} onClose={handleDateClose} />
-            </BottomSheet>
         </View>
     );
 };

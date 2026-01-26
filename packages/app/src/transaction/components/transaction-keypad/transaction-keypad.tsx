@@ -10,7 +10,6 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onDigit: (digit: string) => void;
     readonly onDecimal: () => void;
-    readonly onDoubleZero: () => void;
     readonly onBackspace: () => void;
     readonly onLongBackspace: () => void;
     readonly onConfirm: () => void;
@@ -18,7 +17,7 @@ interface Props {
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { variant, onDigit, onDecimal, onDoubleZero, onBackspace, onLongBackspace, onConfirm, isConfirmDisabled } = props;
+    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, isConfirmDisabled } = props;
 
     const handleDigit7 = () => void onDigit('7');
     const handleDigit8 = () => void onDigit('8');
@@ -32,9 +31,9 @@ export const TransactionKeypad = (props: Props) => {
     const handleDigit0 = () => void onDigit('0');
 
     return (
-        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 px-xl pb-xl">
-            <View className="flex-1 flex-row gap-md">
-                <View className="flex-[3] gap-md">
+        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 items-center px-xl pb-xl">
+            <View className="w-full max-w-sm flex-1 gap-md">
+                <View className="flex-1 gap-md">
                     <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="7" onPress={handleDigit7} />
                         <TransactionKeypadButton value="8" onPress={handleDigit8} />
@@ -53,12 +52,6 @@ export const TransactionKeypad = (props: Props) => {
                     <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="." onPress={onDecimal} />
                         <TransactionKeypadButton value="0" onPress={handleDigit0} />
-                        <TransactionKeypadButton value="00" onPress={onDoubleZero} />
-                    </View>
-                </View>
-
-                <View className="flex-1 gap-md">
-                    <View className="flex-1">
                         <TransactionKeypadButton
                             icon={UserIconNameEnum.Delete}
                             variant="action"
@@ -66,16 +59,15 @@ export const TransactionKeypad = (props: Props) => {
                             onLongPress={onLongBackspace}
                         />
                     </View>
-                    <View className="flex-[3]">
-                        <TransactionKeypadButton
-                            icon={UserIconNameEnum.CircleCheck}
-                            variant="confirm"
-                            colorVariant={variant}
-                            onPress={onConfirm}
-                            disabled={isConfirmDisabled}
-                        />
-                    </View>
                 </View>
+
+                <TransactionKeypadButton
+                    icon={UserIconNameEnum.CircleCheck}
+                    variant="confirm"
+                    colorVariant={variant}
+                    onPress={onConfirm}
+                    disabled={isConfirmDisabled}
+                />
             </View>
         </Animated.View>
     );

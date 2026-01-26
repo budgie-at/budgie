@@ -1,6 +1,7 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { format, isToday, isYesterday } from 'date-fns';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -17,13 +18,17 @@ import {
     NOTE_ANIMATION_DELAY,
     TAGS_ANIMATION_DELAY
 } from '../../constant/transaction-field-animation-delay.constant';
-import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
+import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
+}
+
+export interface TransactionFieldIconsRef {
+    shakeCategory: () => void;
 }
 
 const formatOperatedAt = (date: Date, today: string, yesterday: string): string => {
@@ -51,12 +56,18 @@ const getTagsDisplayValue = (tags: { title: string }[] | null): string | undefin
 };
 
 // eslint-disable-next-line max-statements -- Component requires orchestrating multiple form fields and handlers
-export const TransactionFieldIcons = (props: Props) => {
+export const TransactionFieldIcons = forwardRef<TransactionFieldIconsRef, Props>((props, ref) => {
     const { variant, transactionType, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const { openCategorySelector } = useCategorySelectorModal();
     const { openTagsSelector } = useTagsSelectorModal();
+
+    const categoryIconRef = useRef<TransactionFieldIconRef>(null);
+
+    useImperativeHandle(ref, () => ({
+        shakeCategory: () => categoryIconRef.current?.shake()
+    }));
 
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
     const tagIds = useWatch({ control, name: 'tagIds' });
@@ -93,6 +104,7 @@ export const TransactionFieldIcons = (props: Props) => {
         <View className="flex-row px-xl py-lg">
             {isTransfer ? null : (
                 <TransactionFieldIcon
+                    ref={categoryIconRef}
                     icon={category?.icon ?? UserIconNameEnum.Folder}
                     label={t`Category`}
                     value={category?.title}
@@ -132,4 +144,4 @@ export const TransactionFieldIcons = (props: Props) => {
             />
         </View>
     );
-};
+});

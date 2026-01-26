@@ -4,20 +4,31 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { TransactionFormDatePickerEmbedded } from '../transaction-form-date-picker-embedded/transaction-form-date-picker-embedded';
 import { TransactionFormDatePickerStandalone } from '../transaction-form-date-picker-standalone/transaction-form-date-picker-standalone';
 
-interface Props {
-    readonly variant: ColorPaletteVariant;
-    readonly onClose?: () => void;
-    readonly date?: Date;
-    readonly onChange?: (date: Date) => void;
+interface EmbeddedProps {
+    readonly variant?: ColorPaletteVariant;
+    readonly value: Date;
+    readonly onChange: (date: Date) => void;
+    readonly onClose: () => void;
+    readonly date?: never;
 }
 
-export const TransactionFormDatePicker = ({ variant, onClose, date, onChange }: Props) => {
-    if (isDefined(onClose)) {
-        return <TransactionFormDatePickerEmbedded onClose={onClose} />;
+interface StandaloneProps {
+    readonly variant: ColorPaletteVariant;
+    readonly date: Date;
+    readonly onChange: (date: Date) => void;
+    readonly onClose?: never;
+    readonly value?: never;
+}
+
+type Props = EmbeddedProps | StandaloneProps;
+
+export const TransactionFormDatePicker = (props: Props) => {
+    if (isDefined(props.onClose) && isDefined(props.value)) {
+        return <TransactionFormDatePickerEmbedded value={props.value} onChange={props.onChange} onClose={props.onClose} />;
     }
 
-    if (isDefined(date) && isDefined(onChange)) {
-        return <TransactionFormDatePickerStandalone date={date} onChange={onChange} variant={variant} />;
+    if (isDefined(props.date) && isDefined(props.variant)) {
+        return <TransactionFormDatePickerStandalone date={props.date} onChange={props.onChange} variant={props.variant} />;
     }
 
     return null;

@@ -13,7 +13,11 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TransactionQuickForm } from '../../../transaction/components/transaction-quick-form/transaction-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
+
+import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
+
+const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 export default function CreateIncomeTransactionPage() {
@@ -35,7 +39,7 @@ export default function CreateIncomeTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <Page header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
+            <Page header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
                 <TransactionQuickForm variant="positive" transactionType={TransactionTypeEnum.INCOME} onSubmit={handleSubmit} />
             </Page>
         </FormProvider>
