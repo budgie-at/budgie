@@ -269,9 +269,9 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(modals)/confirm-action.tsx:36
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/category/components/category-form/category-form.tsx:114
+#: src/category/components/category-form/category-form.tsx:113
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:112
+#: src/tag/components/tag-form/tag-form.tsx:111
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -298,7 +298,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-form/category-form.tsx:93
+#: src/category/components/category-form/category-form.tsx:92
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -393,11 +393,11 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form/category-form.tsx:52
+#: src/category/components/category-form/category-form.tsx:53
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/tag/components/tag-form/tag-form.tsx:49
+#: src/tag/components/tag-form/tag-form.tsx:50
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
@@ -413,11 +413,11 @@ msgstr "Could not delete account."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/category/components/category-form/category-form.tsx:78
+#: src/category/components/category-form/category-form.tsx:79
 msgid "Could not merge category"
 msgstr "Could not merge category"
 
-#: src/tag/components/tag-form/tag-form.tsx:77
+#: src/tag/components/tag-form/tag-form.tsx:78
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
 
@@ -433,11 +433,11 @@ msgstr "Could not reassign tag"
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/category/components/category-form/category-form.tsx:52
+#: src/category/components/category-form/category-form.tsx:53
 msgid "Could not update category"
 msgstr "Could not update category"
 
-#: src/tag/components/tag-form/tag-form.tsx:49
+#: src/tag/components/tag-form/tag-form.tsx:50
 msgid "Could not update tag"
 msgstr "Could not update tag"
 
@@ -449,8 +449,8 @@ msgstr "Could not update transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
 
-#: src/category/components/category-form/category-form.tsx:42
-#: src/tag/components/tag-form/tag-form.tsx:41
+#: src/category/components/category-form/category-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Create"
 msgstr "Create"
 
@@ -478,7 +478,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form/category-form.tsx:41
+#: src/category/components/category-form/category-form.tsx:42
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -495,7 +495,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form/tag-form.tsx:40
+#: src/tag/components/tag-form/tag-form.tsx:41
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -619,15 +619,15 @@ msgstr "Dutch (Netherlands)"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/tag/components/tag-form/tag-form.tsx:95
+#: src/tag/components/tag-form/tag-form.tsx:94
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-form/category-form.tsx:96
+#: src/category/components/category-form/category-form.tsx:95
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
 
-#: src/category/components/category-form/category-form.tsx:41
+#: src/category/components/category-form/category-form.tsx:42
 msgid "Edit Category"
 msgstr "Edit Category"
 
@@ -639,7 +639,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/tag/components/tag-form/tag-form.tsx:40
+#: src/tag/components/tag-form/tag-form.tsx:41
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
@@ -969,11 +969,11 @@ msgstr "Map CSV Columns"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
-#: src/category/components/category-form/category-form.tsx:110
+#: src/category/components/category-form/category-form.tsx:109
 msgid "Merge into another category"
 msgstr "Merge into another category"
 
-#: src/tag/components/tag-form/tag-form.tsx:108
+#: src/tag/components/tag-form/tag-form.tsx:107
 msgid "Merge into another tag"
 msgstr "Merge into another tag"
 
@@ -1168,10 +1168,10 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:52
-#: src/category/components/category-form/category-form.tsx:78
-#: src/tag/components/tag-form/tag-form.tsx:49
-#: src/tag/components/tag-form/tag-form.tsx:77
+#: src/category/components/category-form/category-form.tsx:53
+#: src/category/components/category-form/category-form.tsx:79
+#: src/tag/components/tag-form/tag-form.tsx:50
+#: src/tag/components/tag-form/tag-form.tsx:78
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -1220,9 +1220,9 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
-#: src/category/components/category-form/category-form.tsx:42
+#: src/category/components/category-form/category-form.tsx:43
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:41
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Save"
 msgstr "Save"
 
@@ -1288,7 +1288,7 @@ msgstr "Secure your app with PIN & Face ID"
 msgid "Security"
 msgstr "Security"
 
-#: src/category/components/category-form/category-form.tsx:62
+#: src/category/components/category-form/category-form.tsx:63
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
 
@@ -1296,7 +1296,7 @@ msgstr "Select a category to merge into"
 msgid "Select a contact"
 msgstr "Select a contact"
 
-#: src/tag/components/tag-form/tag-form.tsx:59
+#: src/tag/components/tag-form/tag-form.tsx:60
 msgid "Select a tag to merge into"
 msgstr "Select a tag to merge into"
 
@@ -1463,7 +1463,7 @@ msgstr "Syncing history..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/tag/components/tag-form/tag-form.tsx:92
+#: src/tag/components/tag-form/tag-form.tsx:91
 msgid "Tag Name"
 msgstr "Tag Name"
 
