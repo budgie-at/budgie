@@ -13,6 +13,9 @@ import type { ReactNode } from 'react';
 export const light = {
     '--color-primary': 'rgb(0, 0, 0)',
     '--color-primary-reverse': 'rgb(255, 255, 255)',
+    '--color-cta-foreground': 'rgb(255, 255, 255)',
+    '--color-cta-background': 'rgb(0, 0, 0)',
+    '--color-cta-corner': 'rgb(0, 0, 0)',
     '--color-secondary-foreground': 'rgba(115, 115, 115, 1)',
     '--color-secondary-corner': 'rgba(229, 229, 229, 1)',
     '--color-secondary-background': 'rgba(248, 248, 248, 1)',
@@ -47,6 +50,9 @@ export const light = {
 export const dark = {
     '--color-primary': 'rgb(255, 255, 255)',
     '--color-primary-reverse': 'rgb(0, 0, 0)',
+    '--color-cta-foreground': 'rgb(0, 0, 0)',
+    '--color-cta-background': 'rgb(255, 255, 255)',
+    '--color-cta-corner': 'rgb(255, 255, 255)',
     '--color-secondary-foreground': 'rgba(136, 136, 136, 1)',
     '--color-secondary-corner': 'rgba(34, 34, 34, 1)',
     '--color-secondary-background': 'rgba(10, 10, 10, 1)',
