@@ -1,11 +1,12 @@
 import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { FormSheetHeader } from '../../../@generic/component/form-sheet-header/form-sheet-header';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
@@ -86,9 +87,7 @@ export const CategoryForm = (props: Props) => {
 
     return (
         <View style={containerStyle}>
-            <View className="pt-5xl pb-4xl px-3xl">
-                <Text className="text-primary text-2xl font-semibold text-center">{title}</Text>
-            </View>
+            <FormSheetHeader>{title}</FormSheetHeader>
             <View className="px-3xl gap-y-2xl">
                 <FormItem label={t`Category Name`}>
                     <TextInput
