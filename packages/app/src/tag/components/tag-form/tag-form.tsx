@@ -36,6 +36,7 @@ export const TagForm = (props: Props) => {
 
     const isEditing = isDefined(tag?.id);
     const containerStyle = { flex: 1, backgroundColor };
+    const spacerStyle = { height: 1000, backgroundColor };
     const title = isEditing ? <Trans>Edit Tag</Trans> : <Trans>Create Tag</Trans>;
     const submitButtonContent = isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>;
 
@@ -112,6 +113,7 @@ export const TagForm = (props: Props) => {
                     <Button className="flex-1" variant="primary" onPress={handleFormSubmit} content={submitButtonContent} />
                 </View>
             </View>
+            <View style={spacerStyle} />
         </View>
     );
     /* jscpd:ignore-end */

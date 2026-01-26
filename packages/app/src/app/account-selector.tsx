@@ -18,7 +18,8 @@ export default function AccountSelectorModal() {
 
     const [search, setSearch] = useState('');
 
-    const containerStyle = { flex: 1, backgroundColor: isDarkColorSchema ? BG_DARK : BG_LIGHT };
+    const backgroundColor = isDarkColorSchema ? BG_DARK : BG_LIGHT;
+    const containerStyle = { flex: 1, backgroundColor };
 
     const initialAccountId = currentParams?.initialAccountId ?? null;
     const excludeAccountId = currentParams?.excludeAccountId;
