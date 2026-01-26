@@ -7,4 +7,5 @@ export type ColorPaletteVariant =
     | 'ghost'
     | 'pink'
     | 'secondary'
-    | 'primary';
+    | 'primary'
+    | 'cta';
