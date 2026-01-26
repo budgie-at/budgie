@@ -49,6 +49,7 @@ export const TransactionTransferAccountsRow = forwardRef<TransactionTransferAcco
 
         if (selectedAccountId !== null) {
             setValue('fromAccountId', selectedAccountId);
+            setValue('entries.0.accountId', selectedAccountId);
         }
     };
 
@@ -60,12 +61,15 @@ export const TransactionTransferAccountsRow = forwardRef<TransactionTransferAcco
 
         if (selectedAccountId !== null) {
             setValue('toAccountId', selectedAccountId);
+            setValue('entries.1.accountId', selectedAccountId);
         }
     };
 
     const handleSwap = () => {
         setValue('fromAccountId', toAccountId);
         setValue('toAccountId', fromAccountId);
+        setValue('entries.0.accountId', toAccountId ?? 0);
+        setValue('entries.1.accountId', fromAccountId ?? 0);
     };
 
     const fromAccessibilityLabel = `${t`From`}: ${fromAccount?.title ?? t`Select`}`;
