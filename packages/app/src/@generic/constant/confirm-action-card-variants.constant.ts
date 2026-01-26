@@ -16,7 +16,8 @@ export const CONFIRM_ACTION_CARD_VARIANTS = cva<{ variant: Record<ColorPaletteVa
                 default: 'border-default-corner shadow-default-corner/75',
                 primary: 'border-ghost-corner shadow-ghost-corner/75',
                 ghost: 'border-ghost-corner shadow-ghost-corner/75',
-                pink: 'border-pink-corner shadow-pink-corner/75'
+                pink: 'border-pink-corner shadow-pink-corner/75',
+                cta: 'border-cta-corner shadow-cta-corner/75'
             }
         }
     }

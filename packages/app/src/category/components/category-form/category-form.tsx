@@ -112,7 +112,7 @@ export const CategoryForm = (props: Props) => {
                 ) : null}
                 <View className="flex-row gap-x-md pt-md">
                     <Button className="flex-1" variant="ghost" onPress={handleCancelPress} content={<Trans>Cancel</Trans>} />
-                    <Button className="flex-1" variant="primary" onPress={handleFormSubmit} content={submitButtonContent} />
+                    <Button className="flex-1" variant="cta" onPress={handleFormSubmit} content={submitButtonContent} />
                 </View>
             </View>
             <View style={spacerStyle} />

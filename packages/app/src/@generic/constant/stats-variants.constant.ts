@@ -20,7 +20,8 @@ export const statsBarVariants = cva<{ variant: Record<ColorPaletteVariant, Class
             default: 'bg-default-foreground',
             ghost: 'bg-ghost-foreground',
             pink: 'bg-pink-foreground',
-            primary: 'bg-primary'
+            primary: 'bg-primary',
+            cta: 'bg-cta-foreground'
         }
     }
 });
