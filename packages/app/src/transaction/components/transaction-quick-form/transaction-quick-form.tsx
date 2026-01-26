@@ -46,10 +46,13 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
     const { displayValue, numericValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput(initialAmount);
 
     const fromAccountId = useWatch({ control, name: 'fromAccountId' });
+    const toAccountId = useWatch({ control, name: 'toAccountId' });
     const operatedAt = useWatch({ control, name: 'operatedAt' });
     const comment = useWatch({ control, name: 'comment' });
 
-    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
+    const isIncome = transactionType === TransactionTypeEnum.INCOME;
+    const displayAccountId = isIncome ? toAccountId : fromAccountId;
+    const { account } = useGetAccountByIdQuery(displayAccountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
     useEffect(() => {
@@ -80,26 +83,34 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
+    const accountFieldName = isIncome ? 'toAccountId' : 'fromAccountId';
 
     const triggerValidationShakes = (hasValidAmount: boolean, hasCategory: boolean, hasFromAccount: boolean, hasToAccount: boolean) => {
-        if (!hasValidAmount) {amountDisplayRef.current?.shake();}
-        if (!hasCategory) {fieldIconsRef.current?.shakeCategory();}
-        if (!hasFromAccount) {transferAccountsRef.current?.shakeFrom();}
-        if (!hasToAccount) {transferAccountsRef.current?.shakeTo();}
+        if (!hasValidAmount) {
+            amountDisplayRef.current?.shake();
+        }
+        if (!hasCategory) {
+            fieldIconsRef.current?.shakeCategory();
+        }
+        if (!hasFromAccount) {
+            transferAccountsRef.current?.shakeFrom();
+        }
+        if (!hasToAccount) {
+            transferAccountsRef.current?.shakeTo();
+        }
     };
 
     const handleConfirm = async () => {
         const amount = getValues('amount');
         const entries = getValues('entries');
-        const toAccountId = getValues('toAccountId');
         const hasValidAmount = amount > 0;
         const hasCategory = isTransfer || (entries[0]?.categoryId ?? 0) > 0;
-        const hasFromAccount = (fromAccountId ?? 0) > 0;
-        const hasToAccount = !isTransfer || (toAccountId ?? 0) > 0;
+        const hasAccount = isIncome ? (toAccountId ?? 0) > 0 : (fromAccountId ?? 0) > 0;
+        const hasTransferToAccount = !isTransfer || (toAccountId ?? 0) > 0;
 
-        if (!hasValidAmount || !hasCategory || !hasFromAccount || !hasToAccount) {
+        if (!hasValidAmount || !hasCategory || !hasAccount || !hasTransferToAccount) {
             hapticNotification(NotificationFeedbackType.Error);
-            triggerValidationShakes(hasValidAmount, hasCategory, hasFromAccount, hasToAccount);
+            triggerValidationShakes(hasValidAmount, hasCategory, hasAccount, hasTransferToAccount);
 
             return;
         }
@@ -127,7 +138,7 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
                 {isTransfer ? (
                     <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
                 ) : (
-                    <TransactionAccountRow variant={variant} fieldName="fromAccountId" />
+                    <TransactionAccountRow variant={variant} fieldName={accountFieldName} />
                 )}
             </View>
 
