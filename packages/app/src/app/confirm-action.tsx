@@ -3,6 +3,7 @@ import { ActivityIndicator, Text, View } from 'react-native';
 
 import { Button } from '../@generic/component/button/button';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
+import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { useConfirmActionModal } from '../@generic/context/confirm-action-modal.context';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
@@ -11,7 +12,6 @@ export default function ConfirmActionModal() {
     const { currentParams, resolveConfirmAction } = useConfirmActionModal();
     const { backgroundColor } = useFormsheetListStyles();
     const containerStyle = { backgroundColor };
-    const spacerStyle = { height: 1000, backgroundColor };
 
     const handleConfirm = () => void resolveConfirmAction(true);
     const handleCancel = () => void resolveConfirmAction(false);
@@ -43,7 +43,7 @@ export default function ConfirmActionModal() {
                     <Button onPress={handleCancel} content={cancelText ?? t`Cancel`} variant="ghost" disabled={isLoading} />
                 </View>
             </View>
-            <View style={spacerStyle} />
+            <FormSheetSpacer />
         </View>
     );
 }
