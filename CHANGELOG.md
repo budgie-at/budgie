@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.18.0](https://github.com/budgie-at/budgie/compare/v2.17.0...v2.18.0) (2026-01-26)
+
+### Bug Fixes
+
+- **app:** add analytics layout to fix transaction bottom sheets ([3f1617b](https://github.com/budgie-at/budgie/commit/3f1617b7b2c2de19066e15686c58bdee923c783c))
+- **app:** add bottom padding to formSheet modals ([2503406](https://github.com/budgie-at/budgie/commit/2503406293662bab7889c87ed1188f59e3273cc9))
+- **app:** add contentStyle transparent background to formSheet modals ([cb2ca0a](https://github.com/budgie-at/budgie/commit/cb2ca0a5a63ebd97c19732ad7a574e101aa2d41a))
+- **app:** add CTA colors to theme provider for dark mode support ([17d0d98](https://github.com/budgie-at/budgie/commit/17d0d980d7b093ba1f4401f98a7e97c1d3da3000))
+- **app:** add proper spacing to confirm-action formSheet modal ([e80822f](https://github.com/budgie-at/budgie/commit/e80822f5f84b02744b0352a59581217202461ed0))
+- **app:** add spacer view to form modals for proper background ([5507642](https://github.com/budgie-at/budgie/commit/5507642a569553f9b368212595a1f91347df671f))
+- **app:** adjust category selector layout ([4661bf3](https://github.com/budgie-at/budgie/commit/4661bf3d827763c3a9310dfd4eccdfaea2e4352c))
+- **app:** ensure containerComponent prop is properly passed to BottomSheetModal ([59b5138](https://github.com/budgie-at/budgie/commit/59b51383ba1010fd9fdc07a3c8fbff0100266f3c))
+- **app:** fix category selector formSheet background and create form layout ([b4bc725](https://github.com/budgie-at/budgie/commit/b4bc725205e234cb81e9cae9189115de7847080b))
+- **app:** fix tags selector footer with inline styles for formSheet ([626d2ac](https://github.com/budgie-at/budgie/commit/626d2ac1cda558b2872cc206870a569eb3eee5b1))
+- **app:** improve category selector modal UX ([bd70027](https://github.com/budgie-at/budgie/commit/bd70027e75eed51a0acde2618c302a584174bb7c))
+- **app:** register analytics/transactions directly without nested layout ([bb1ddc9](https://github.com/budgie-at/budgie/commit/bb1ddc9cf748a2ebaf348befb52dcc6b006a9269))
+- **app:** resolve formSheet modal layout issues for category selector ([753f165](https://github.com/budgie-at/budgie/commit/753f16563f9768e873bb6ecc5872fd93ac0eea0d))
+- **app:** use BottomSheetsProvider for gesture support in transaction screens ([4170f3b](https://github.com/budgie-at/budgie/commit/4170f3bcfc2076a2118320f76ab5adf6616e98fc))
+- **app:** use fade animation with reanimated SlideInDown for modal ([6c5222b](https://github.com/budgie-at/budgie/commit/6c5222bd5a2b5c917ef01cf86d9a652ccb2436d6))
+- **app:** use fixed 40% detent for formSheet modals ([a9adadd](https://github.com/budgie-at/budgie/commit/a9adaddb8c20fe3c8041f2d667ee0649387a06ed))
+- **app:** use FullWindowOverlay for bottom sheets on iOS ([a17fe2a](https://github.com/budgie-at/budgie/commit/a17fe2acf42b988a96d79e97b033996781798510))
+- **app:** use transparentModal with slide_from_bottom animation ([132a978](https://github.com/budgie-at/budgie/commit/132a978e5051b5ec8645f2816d0c9f83c38ed59b))
+- **app:** use useCallback for containerComponent to prevent flickering ([8a54ea5](https://github.com/budgie-at/budgie/commit/8a54ea5e631b1b470da58ffc5c809278297c4d49))
+- **app:** wrap transaction edit screens with BottomSheetModalProvider ([5223493](https://github.com/budgie-at/budgie/commit/522349345acc4dd8cebec66871a18188e9473878))
+
+### Features
+
+- **app:** add category creation in selector modal ([61846e5](https://github.com/budgie-at/budgie/commit/61846e59a25b1bac4f763e15f15cd39a4b7ad244))
+- **app:** add category selector modal with Promise-based API ([6f83256](https://github.com/budgie-at/budgie/commit/6f83256ba65c291ae9e5df3b2d6e4ad208810c19))
+- **app:** add high-contrast CTA button variant for form modals ([376e262](https://github.com/budgie-at/budgie/commit/376e2624a8f22bf31767d0e5d53ac1aec51581b6))
+- **app:** add route-based confirm action modal POC ([e94c358](https://github.com/budgie-at/budgie/commit/e94c3581432aace11c6d7fa5fc8d7338c8712b8f))
+- **app:** add SelectorModalSearchHeader component ([fef1b0a](https://github.com/budgie-at/budgie/commit/fef1b0a71b4da720ac4d6d7c3c318ba39980b9a1))
+- **app:** add shared infrastructure for Expo modal selectors ([ccab7eb](https://github.com/budgie-at/budgie/commit/ccab7eb15a341820c4034fccb8c7f79e71f0c99f))
+- **app:** migrate account selector to Expo formSheet modal ([085172a](https://github.com/budgie-at/budgie/commit/085172acf5a8487b1788a2834f56ee7785c2754c))
+- **app:** migrate tags selector to Expo formSheet modal ([2ee8058](https://github.com/budgie-at/budgie/commit/2ee8058363e9efb4961079f76504e2a2365b4aa8))
+
 # [2.17.0](https://github.com/budgie-at/budgie/compare/v2.16.0...v2.17.0) (2026-01-26)
 
 ### Features
