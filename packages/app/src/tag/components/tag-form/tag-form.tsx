@@ -85,10 +85,10 @@ export const TagForm = (props: Props) => {
 
     return (
         <View style={containerStyle}>
-            <View className="pt-4xl pb-3xl px-xl">
-                <Text className="text-primary text-xl font-semibold text-center">{title}</Text>
+            <View className="pt-5xl pb-4xl px-3xl">
+                <Text className="text-primary text-2xl font-semibold text-center">{title}</Text>
             </View>
-            <View className="px-xl gap-y-xl">
+            <View className="px-3xl gap-y-2xl">
                 <FormItem label={t`Tag Name`}>
                     <TextInput
                         className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
