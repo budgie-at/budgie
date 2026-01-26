@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.18.1](https://github.com/budgie-at/budgie/compare/v2.18.0...v2.18.1) (2026-01-26)
+
+### Bug Fixes
+
+- **app:** add iOS entitlements for consistent fingerprint ([0600b70](https://github.com/budgie-at/budgie/commit/0600b70dbd59fc89551e428155f721b2bab80a87))
+
 # [2.18.0](https://github.com/budgie-at/budgie/compare/v2.17.0...v2.18.0) (2026-01-26)
 
 ### Bug Fixes
