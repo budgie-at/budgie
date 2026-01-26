@@ -1,17 +1,20 @@
 import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
+import { forwardRef, useImperativeHandle } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Ticker } from '../../../@generic/component/ticker/ticker';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 
 interface Props {
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
+}
+
+export interface TransactionAmountDisplayRef {
+    shake: () => void;
 }
 
 const textVariants = cva('', {
@@ -20,16 +23,16 @@ const textVariants = cva('', {
     }
 });
 
-export const TransactionAmountDisplay = ({ amount, currencySymbol, variant }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+export const TransactionAmountDisplay = forwardRef<TransactionAmountDisplayRef, Props>(({ amount, currencySymbol, variant }, ref) => {
+    const { shake, animatedStyle } = useShakeAnimation();
 
-    const displayAmount = amount === '0' ? formatDigits('0') : formatDigits(amount);
-    const fullDisplay = `${currencySymbol} ${displayAmount}`;
+    useImperativeHandle(ref, () => ({ shake }));
+
+    const fullDisplay = `${currencySymbol} ${amount}`;
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center px-xl">
-            <View className="w-full">
+            <Animated.View style={animatedStyle} className="w-full">
                 <Ticker
                     number={fullDisplay}
                     textClassName={`font-extralight ${textVariants({ variant })}`}
@@ -37,7 +40,7 @@ export const TransactionAmountDisplay = ({ amount, currencySymbol, variant }: Pr
                     minFontSize={24}
                     maxFontSize={72}
                 />
-            </View>
+            </Animated.View>
         </Animated.View>
     );
-};
+});

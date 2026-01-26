@@ -16,7 +16,11 @@ import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.
 import { TransactionQuickForm } from '../../../transaction/components/transaction-quick-form/transaction-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
+
+import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
+
+const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 export default function CreateTransferTransactionPage() {
@@ -56,7 +60,7 @@ export default function CreateTransferTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <Page header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />}>
+            <Page header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
                 <TransactionQuickForm variant="default" transactionType={TransactionTypeEnum.TRANSFER} onSubmit={handleSubmit} />
             </Page>
         </FormProvider>

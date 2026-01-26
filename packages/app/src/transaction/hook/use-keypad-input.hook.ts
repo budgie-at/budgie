@@ -28,8 +28,9 @@ export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
             const parts = prev.split('.');
             const hasDecimal = parts.length > 1;
             const decimalPart = parts[1] ?? '';
+            const maxDecimals = Math.max(decimalPlaces, 2);
 
-            if (hasDecimal && decimalPart.length >= decimalPlaces) {
+            if (hasDecimal && decimalPart.length >= maxDecimals) {
                 return prev;
             }
 
@@ -56,9 +57,10 @@ export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
             const parts = prev.split('.');
             const hasDecimal = parts.length > 1;
             const decimalPart = parts[1] ?? '';
+            const maxDecimals = Math.max(decimalPlaces, 2);
 
             if (hasDecimal) {
-                const remainingDecimals = decimalPlaces - decimalPart.length;
+                const remainingDecimals = maxDecimals - decimalPart.length;
 
                 if (remainingDecimals >= 2) {
                     return `${prev}00`;
