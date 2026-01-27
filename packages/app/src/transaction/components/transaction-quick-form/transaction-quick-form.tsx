@@ -131,7 +131,7 @@ export const TransactionQuickForm = ({ variant, transactionType, onSubmit }: Pro
                 onDatePress={handleDatePress}
             />
 
-            <View className="gap-md mb-lg">
+            <View className="mb-xl">
                 {isTransfer ? (
                     <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
                 ) : (
