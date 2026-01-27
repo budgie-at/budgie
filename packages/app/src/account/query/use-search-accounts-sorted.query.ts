@@ -9,10 +9,11 @@ export const useSearchAccountsSortedQuery = (search = '', filter?: AccountFilter
     const excludeAccountId = filter?.excludeAccountId;
     const excludeTypes = filter?.excludeTypes;
     const excludeTypesKey = excludeTypes?.join(',');
+    const onlyActive = filter?.onlyActive;
 
     const { data, updatedAt, error } = useLiveQuery(
-        accountRepository.findBySearchQuerySortedByBalance(search, { excludeAccountId, excludeTypes }),
-        [search, excludeAccountId, excludeTypesKey]
+        accountRepository.findBySearchQuerySortedByBalance(search, { excludeAccountId, excludeTypes, onlyActive }),
+        [search, excludeAccountId, excludeTypesKey, onlyActive]
     );
 
     if (!isDefined(updatedAt)) {
