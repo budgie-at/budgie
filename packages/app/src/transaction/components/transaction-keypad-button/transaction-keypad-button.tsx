@@ -41,7 +41,7 @@ const buttonVariants = cva<{
         buttonVariant: {
             digit: 'flex-1 bg-ghost-background',
             action: 'flex-1 bg-transparent',
-            confirm: 'h-12'
+            confirm: 'h-14'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
