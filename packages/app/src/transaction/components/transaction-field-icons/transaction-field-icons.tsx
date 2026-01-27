@@ -114,7 +114,7 @@ export const TransactionFieldIcons = (props: Props) => {
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
 
     return (
-        <View className="flex-row px-xl py-lg">
+        <View className="flex-row px-5xl py-lg">
             <TransactionFieldIcon
                 icon={UserIconNameEnum.Calendar}
                 label={t`Date`}

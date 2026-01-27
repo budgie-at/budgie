@@ -77,7 +77,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const toAccessibilityLabel = `${t`To`}: ${toAccount?.title ?? t`Select`}`;
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm mx-xl">
+        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm mx-5xl">
             <Animated.View style={fromAnimatedStyle} className="flex-1">
                 <HapticPressable
                     className="flex-row items-center px-md py-md gap-sm bg-secondary-background rounded-2xl"
@@ -85,7 +85,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                     accessibilityLabel={fromAccessibilityLabel}
                     accessibilityRole="button"
                 >
-                    <CircleIcon icon={fromAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={32} iconSize={16} radius={10} />
+                    <CircleIcon icon={fromAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={36} iconSize={18} radius={12} />
 
                     <View className="flex-1">
                         <Text className="text-2xs text-secondary-foreground uppercase">{t`From`}</Text>
@@ -99,7 +99,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             </Animated.View>
 
             <HapticPressable onPress={handleSwap} accessibilityLabel={t`Swap accounts`} accessibilityRole="button">
-                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={32} iconSize={14} />
+                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={36} iconSize={16} />
             </HapticPressable>
 
             <Animated.View style={toAnimatedStyle} className="flex-1">
@@ -109,7 +109,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
                     accessibilityLabel={toAccessibilityLabel}
                     accessibilityRole="button"
                 >
-                    <CircleIcon icon={toAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={32} iconSize={16} radius={10} />
+                    <CircleIcon icon={toAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={36} iconSize={18} radius={12} />
 
                     <View className="flex-1">
                         <Text className="text-2xs text-secondary-foreground uppercase">{t`To`}</Text>
