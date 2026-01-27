@@ -83,8 +83,6 @@ export const TransferQuickForm = ({ variant, onSubmit }: Props) => {
         const from = getValues('fromAccountId') ?? 0;
         const to = getValues('toAccountId') ?? 0;
 
-        console.log('[TransferQuickForm] handleConfirm called', { amount, from, to });
-
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: from > 0, shake: () => transferAccountsRef.current?.shakeFrom() },
@@ -92,8 +90,6 @@ export const TransferQuickForm = ({ variant, onSubmit }: Props) => {
         ]);
 
         if (!isValid) {
-            console.log('[TransferQuickForm] Validation failed');
-
             return;
         }
 
@@ -104,13 +100,7 @@ export const TransferQuickForm = ({ variant, onSubmit }: Props) => {
             categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
         });
 
-        console.log('[TransferQuickForm] Built entries:', JSON.stringify(entries, null, 2));
-
         setValue('entries', entries, { shouldValidate: false });
-
-        const formValues = getValues();
-
-        console.log('[TransferQuickForm] Form values before submit:', JSON.stringify(formValues, null, 2));
 
         onSubmit();
     };

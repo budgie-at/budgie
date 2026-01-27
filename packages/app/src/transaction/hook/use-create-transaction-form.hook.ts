@@ -52,13 +52,10 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     });
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
-        console.log('[useCreateTransactionForm] handleSubmit called with data:', JSON.stringify(data, null, 2));
-
         try {
             await onSubmit(data);
             router.back();
-        } catch (error) {
-            console.error('[useCreateTransactionForm] Error:', error);
+        } catch {
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong.`,
@@ -67,14 +64,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
         }
     };
 
-    const wrappedHandleSubmit = async () => {
-        console.log('[useCreateTransactionForm] wrappedHandleSubmit called');
-        console.log('[useCreateTransactionForm] Form values:', JSON.stringify(form.getValues(), null, 2));
-
-        return form.handleSubmit(handleSubmit, errors => {
-            console.error('[useCreateTransactionForm] Validation errors:', JSON.stringify(errors, null, 2));
-        })();
-    };
+    const wrappedHandleSubmit = () => form.handleSubmit(handleSubmit)();
 
     return {
         form,
