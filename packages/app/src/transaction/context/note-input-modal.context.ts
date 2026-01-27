@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
 export interface NoteInputModalParams {
@@ -17,6 +16,7 @@ export const useNoteInputModal = () => {
     const context = use(NoteInputModalContext);
 
     if (context === null) {
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
         throw new Error('useNoteInputModal must be used within NoteInputModalProvider');
     }
 

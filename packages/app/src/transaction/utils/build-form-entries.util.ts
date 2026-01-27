@@ -12,12 +12,14 @@ interface BuildFormEntriesParamsInterface {
     entries?: Array<{ categoryId: number; amount: number }> | null;
 }
 
+type TransactionEntryFormInterface = Omit<TransactionEntryCreateEntityInterface, 'transactionId'>;
+
 const buildMainEntry = ({
     fromAccountId,
     toAccountId,
     amount,
     categoryId
-}: Omit<BuildFormEntriesParamsInterface, 'entries'>): Omit<TransactionEntryCreateEntityInterface, 'transactionId'> => {
+}: Omit<BuildFormEntriesParamsInterface, 'entries'>): TransactionEntryFormInterface => {
     if (isDefined(fromAccountId)) {
         return createTransactionEntryInput({
             accountId: fromAccountId,
@@ -47,7 +49,7 @@ const buildEntriesFromInput = (
     entries: Array<{ categoryId: number; amount: number }>,
     fromAccountId: number | null,
     toAccountId: number | null
-): Array<Omit<TransactionEntryCreateEntityInterface, 'transactionId'>> =>
+): TransactionEntryFormInterface[] =>
     entries.map(entry =>
         createTransactionEntryInput({
             accountId: fromAccountId ?? toAccountId ?? 0,
@@ -63,7 +65,7 @@ export const buildFormEntries = ({
     amount,
     categoryId,
     entries
-}: BuildFormEntriesParamsInterface): Array<Omit<TransactionEntryCreateEntityInterface, 'transactionId'>> => {
+}: BuildFormEntriesParamsInterface): TransactionEntryFormInterface[] => {
     if (isNotEmptyArray(entries)) {
         return buildEntriesFromInput(entries, fromAccountId, toAccountId);
     }

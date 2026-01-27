@@ -1,7 +1,7 @@
 /* jscpd:ignore-start - Transfer account selector similar to single account row but with dual accounts and swap */
 import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { forwardRef, useImperativeHandle } from 'react';
+import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -16,17 +16,18 @@ import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-b
 
 const ANIMATION_DELAY = 170;
 
-interface Props {
-    readonly variant: ColorPaletteVariant;
-}
-
 export interface TransactionTransferAccountsRowRef {
     shakeFrom: () => void;
     shakeTo: () => void;
 }
 
+interface Props {
+    readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
+    readonly variant: ColorPaletteVariant;
+}
+
 // eslint-disable-next-line max-statements -- Component manages dual account selectors with shake animations
-export const TransactionTransferAccountsRow = forwardRef<TransactionTransferAccountsRowRef, Props>(({ variant }, ref) => {
+export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const { openAccountSelector } = useAccountSelectorModal();
@@ -122,5 +123,5 @@ export const TransactionTransferAccountsRow = forwardRef<TransactionTransferAcco
             </Animated.View>
         </Animated.View>
     );
-});
+};
 /* jscpd:ignore-end */
