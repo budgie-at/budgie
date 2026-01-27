@@ -25,8 +25,9 @@ export default function AccountSelectorModal() {
     const excludeAccountId = currentParams?.excludeAccountId;
     const excludeAccountTypes = currentParams?.excludeAccountTypes;
     const emptyStateDescription = currentParams?.emptyStateDescription;
+    const onlyActive = currentParams?.onlyActive ?? true;
 
-    const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes });
+    const { accounts } = useSearchAccountsSortedQuery(search, { excludeAccountId, excludeTypes: excludeAccountTypes, onlyActive });
 
     return (
         <View style={containerStyle}>
