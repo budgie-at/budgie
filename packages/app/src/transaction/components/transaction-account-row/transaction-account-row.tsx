@@ -47,7 +47,7 @@ export const TransactionAccountRow = ({ variant, fieldName, label }: Props) => {
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={32} iconSize={16} radius={10} />
+                <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
 
                 <View className="flex-1">
                     <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
