@@ -5,6 +5,7 @@ import { FlatList, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 
@@ -55,9 +56,10 @@ export const AccountSelectContent = (props: Props) => {
             renderItem={renderItem}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-xl pt-3 gap-y-lg"
+            contentContainerClassName="px-xl pt-3"
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
+            ItemSeparatorComponent={ListItemSeparator}
         />
     );
 };
