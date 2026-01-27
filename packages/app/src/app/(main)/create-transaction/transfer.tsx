@@ -13,7 +13,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
-import { TransactionQuickForm } from '../../../transaction/components/transaction-quick-form/transaction-quick-form';
+import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
 
@@ -61,7 +61,7 @@ export default function CreateTransferTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
-                <TransactionQuickForm variant="default" transactionType={TransactionTypeEnum.TRANSFER} onSubmit={handleSubmit} />
+                <TransferQuickForm variant="default" onSubmit={handleSubmit} />
             </Page>
         </FormProvider>
     );

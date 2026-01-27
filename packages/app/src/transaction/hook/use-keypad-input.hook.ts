@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
+
+interface UseKeypadInputConfig {
+    readonly initialValue?: number;
+    readonly onChange?: (value: number) => void;
+}
 
 interface UseKeypadInputResult {
     readonly displayValue: string;
@@ -13,32 +18,48 @@ interface UseKeypadInputResult {
     readonly setFromNumeric: (value: number) => void;
 }
 
-export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
+// eslint-disable-next-line max-lines-per-function -- Hook manages keypad state with multiple handlers
+export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
+    const { initialValue = 0, onChange } = config;
     const { decimalPlaces } = useSettingsContext();
     const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : initialValue.toString()));
+    const isInitialMount = useRef(true);
 
     const numericValue = parseFloat(displayValue) || 0;
 
-    const handleDigit = (digit: string) => {
-        setDisplayValue(prev => {
-            if (prev === '0') {
-                return digit;
-            }
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
 
-            const parts = prev.split('.');
-            const hasDecimal = parts.length > 1;
-            const decimalPart = parts[1] ?? '';
-            const maxDecimals = Math.max(decimalPlaces, 2);
+            return;
+        }
 
-            if (hasDecimal && decimalPart.length >= maxDecimals) {
-                return prev;
-            }
+        onChange?.(numericValue);
+    }, [numericValue, onChange]);
 
-            return prev + digit;
-        });
-    };
+    const handleDigit = useCallback(
+        (digit: string) => {
+            setDisplayValue(prev => {
+                if (prev === '0') {
+                    return digit;
+                }
 
-    const handleDecimal = () => {
+                const parts = prev.split('.');
+                const hasDecimal = parts.length > 1;
+                const decimalPart = parts[1] ?? '';
+                const maxDecimals = Math.max(decimalPlaces, 2);
+
+                if (hasDecimal && decimalPart.length >= maxDecimals) {
+                    return prev;
+                }
+
+                return prev + digit;
+            });
+        },
+        [decimalPlaces]
+    );
+
+    const handleDecimal = useCallback(() => {
         setDisplayValue(prev => {
             if (prev.includes('.')) {
                 return prev;
@@ -46,9 +67,9 @@ export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
 
             return `${prev}.`;
         });
-    };
+    }, []);
 
-    const handleDoubleZero = () => {
+    const handleDoubleZero = useCallback(() => {
         setDisplayValue(prev => {
             if (prev === '0') {
                 return prev;
@@ -75,9 +96,9 @@ export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
 
             return `${prev}00`;
         });
-    };
+    }, [decimalPlaces]);
 
-    const handleBackspace = () => {
+    const handleBackspace = useCallback(() => {
         setDisplayValue(prev => {
             if (prev.length <= 1) {
                 return '0';
@@ -85,15 +106,17 @@ export const useKeypadInput = (initialValue = 0): UseKeypadInputResult => {
 
             return prev.slice(0, -1);
         });
-    };
+    }, []);
 
-    const handleClear = () => {
+    const handleClear = useCallback(() => {
         setDisplayValue('0');
-    };
+    }, []);
 
-    const setFromNumeric = (value: number) => {
-        setDisplayValue(value === 0 ? '0' : value.toString());
-    };
+    const setFromNumeric = useCallback((value: number) => {
+        const newDisplay = value === 0 ? '0' : value.toString();
+
+        setDisplayValue(newDisplay);
+    }, []);
 
     return {
         displayValue,

@@ -10,7 +10,7 @@ import { Page } from '../../../@generic/component/page/page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { TransactionQuickForm } from '../../../transaction/components/transaction-quick-form/transaction-quick-form';
+import { IncomeQuickForm } from '../../../transaction/components/income-quick-form/income-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
 
@@ -40,7 +40,7 @@ export default function CreateIncomeTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
-                <TransactionQuickForm variant="positive" transactionType={TransactionTypeEnum.INCOME} onSubmit={handleSubmit} />
+                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} />
             </Page>
         </FormProvider>
     );
