@@ -1,11 +1,16 @@
+/* jscpd:ignore-start - Selector modal imports pattern */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useNavigation } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
+import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
+/* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
@@ -24,8 +29,10 @@ const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number
     return padFlatListData(sortSelectedFirst(filtered, selectedTagIds), NUM_COLUMNS);
 };
 
+// eslint-disable-next-line max-statements -- Modal component with mode switching and dynamic sheet sizing
 export default function TagsSelectorModal() {
     const { t } = useLingui();
+    const navigation = useNavigation();
     const { currentParams, resolveTagsSelector } = useTagsSelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [mode, setMode] = useState<Mode>('select');
@@ -35,6 +42,11 @@ export default function TagsSelectorModal() {
     const { initialTagIds = [], excludeTagIds = [], description, singleSelect = false } = currentParams ?? {};
     const data = prepareTagData(tags, excludeTagIds, initialTagIds);
     const containerStyle = { flex: 1, backgroundColor };
+
+    useEffect(() => {
+        const options = mode === 'create' ? FORM_MODAL_OPTIONS : SELECTOR_MODAL_OPTIONS;
+        navigation.setOptions(options);
+    }, [mode, navigation]);
 
     const handleSelectTag = (tagId: number) => {
         if (singleSelect) {
