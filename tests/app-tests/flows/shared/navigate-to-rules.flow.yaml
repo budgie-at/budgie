@@ -14,12 +14,17 @@ appId: ${APP_ID}
     visible: 'Settings'
     timeout: 3000
 
-# Scroll to Organization section and tap Manage Rules
+# Wait for settings to load, scroll to top first, then find Manage Rules
+- waitForAnimationToEnd
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: 'SettingsPage.ManageRulesCard'
     direction: DOWN
-    timeout: 5000
+    timeout: 10000
 - tapOn:
     id: 'SettingsPage.ManageRulesCard'
 - extendedWaitUntil:

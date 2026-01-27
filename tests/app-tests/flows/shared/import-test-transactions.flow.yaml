@@ -10,22 +10,19 @@ appId: ${APP_ID}
     visible: 'Settings'
     timeout: 3000
 
-# Scroll to Import CSV card and tap it
+# Wait for settings content to load, then scroll to Import CSV card
+- waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: 'Settings.ImportCsvCard'
     direction: DOWN
-    timeout: 5000
+    timeout: 10000
 - tapOn:
     id: 'Settings.ImportCsvCard'
 
-# Wait for file picker and select test CSV
-# Note: This requires the test-transactions.csv to be accessible in Files app
-- extendedWaitUntil:
-    visible: 'test-transactions.csv'
-    timeout: 10000
+# Wait for file picker and select the CSV file (iOS hides .csv extension)
 - tapOn:
-    text: 'test-transactions.csv'
+    id: ${CSV_DISPLAY_NAME}, csv
 
 # Wait for import screen to load
 - extendedWaitUntil:
