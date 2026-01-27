@@ -18,7 +18,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const textVariants = cva('text-center font-extralight', {
+const textVariants = cva('text-center font-light', {
     variants: {
         variant: FOREGROUND_COLOR_PALETTE
     }
@@ -27,7 +27,7 @@ const textVariants = cva('text-center font-extralight', {
 const BOUNCE_SCALE = 1.04;
 const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
 const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
-const FONT_SIZE = 64;
+const FONT_SIZE = 52;
 const fontSizeStyle = { fontSize: FONT_SIZE };
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant }: Props) => {
@@ -57,7 +57,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant 
     const fullDisplay = `${currencySymbol} ${amount}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center px-5xl">
+        <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
             <Animated.View style={shakeStyle} className="w-full">
                 <Animated.View style={scaleStyle}>
                     <Text className={textVariants({ variant })} style={fontSizeStyle} adjustsFontSizeToFit numberOfLines={1}>

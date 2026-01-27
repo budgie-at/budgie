@@ -42,12 +42,12 @@ export const TransactionAccountRow = ({ variant, fieldName, label }: Props) => {
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
             <HapticPressable
-                className="flex-row items-center px-lg py-md gap-md bg-secondary-background mx-5xl rounded-2xl"
+                className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
                 onPress={handlePress}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={40} iconSize={20} radius={14} />
+                <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={32} iconSize={16} radius={10} />
 
                 <View className="flex-1">
                     <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>

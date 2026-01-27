@@ -31,25 +31,25 @@ export const TransactionKeypad = (props: Props) => {
     const handleDigit0 = () => void onDigit('0');
 
     return (
-        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 items-center px-5xl pb-5xl">
-            <View className="w-full max-w-md flex-1 gap-lg">
-                <View className="flex-1 gap-lg">
-                    <View className="flex-1 flex-row gap-lg">
+        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 pb-lg">
+            <View className="flex-1 gap-md">
+                <View className="flex-1 gap-md">
+                    <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="7" onPress={handleDigit7} />
                         <TransactionKeypadButton value="8" onPress={handleDigit8} />
                         <TransactionKeypadButton value="9" onPress={handleDigit9} />
                     </View>
-                    <View className="flex-1 flex-row gap-lg">
+                    <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="4" onPress={handleDigit4} />
                         <TransactionKeypadButton value="5" onPress={handleDigit5} />
                         <TransactionKeypadButton value="6" onPress={handleDigit6} />
                     </View>
-                    <View className="flex-1 flex-row gap-lg">
+                    <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="1" onPress={handleDigit1} />
                         <TransactionKeypadButton value="2" onPress={handleDigit2} />
                         <TransactionKeypadButton value="3" onPress={handleDigit3} />
                     </View>
-                    <View className="flex-1 flex-row gap-lg">
+                    <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="." onPress={onDecimal} />
                         <TransactionKeypadButton value="0" onPress={handleDigit0} />
                         <TransactionKeypadButton

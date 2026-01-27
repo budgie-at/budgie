@@ -63,12 +63,12 @@ export const TransactionFieldIcon = (props: Props) => {
                         accessibilityLabel={accessibilityLabel}
                         accessibilityRole="button"
                     >
-                        <CircleIcon icon={icon} variant={circleIconVariant} size={52} iconSize={24} radius={18} />
-                        <View className="items-center gap-y-0.5 h-[32px]">
+                        <CircleIcon icon={icon} variant={circleIconVariant} size={44} iconSize={20} radius={14} />
+                        <View className="items-center gap-y-0.5 h-[28px]">
                             <Text className="text-xs text-secondary-foreground uppercase" numberOfLines={1}>
                                 {label}
                             </Text>
-                            <Text className="text-xs text-primary font-medium max-w-[80px] min-h-[14px]" numberOfLines={1}>
+                            <Text className="text-xs text-primary font-medium max-w-[68px] min-h-[14px]" numberOfLines={1}>
                                 {hasValue ? value : ''}
                             </Text>
                         </View>
