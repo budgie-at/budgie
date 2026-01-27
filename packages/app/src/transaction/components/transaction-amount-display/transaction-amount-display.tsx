@@ -1,5 +1,5 @@
 import { cva } from 'class-variance-authority';
-import { forwardRef, useImperativeHandle } from 'react';
+import { RefObject, useImperativeHandle } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Ticker } from '../../../@generic/component/ticker/ticker';
@@ -7,14 +7,15 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
+export interface TransactionAmountDisplayRef {
+    shake: () => void;
+}
+
 interface Props {
+    readonly ref?: RefObject<TransactionAmountDisplayRef | null>;
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
-}
-
-export interface TransactionAmountDisplayRef {
-    shake: () => void;
 }
 
 const textVariants = cva('', {
@@ -23,7 +24,7 @@ const textVariants = cva('', {
     }
 });
 
-export const TransactionAmountDisplay = forwardRef<TransactionAmountDisplayRef, Props>(({ amount, currencySymbol, variant }, ref) => {
+export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant }: Props) => {
     const { shake, animatedStyle } = useShakeAnimation();
 
     useImperativeHandle(ref, () => ({ shake }));
@@ -43,4 +44,4 @@ export const TransactionAmountDisplay = forwardRef<TransactionAmountDisplayRef, 
             </Animated.View>
         </Animated.View>
     );
-});
+};

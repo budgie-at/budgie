@@ -1,7 +1,7 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { format, isToday, isYesterday } from 'date-fns';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { isToday, isYesterday } from 'date-fns';
+import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -10,6 +10,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import {
@@ -20,18 +21,26 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
+export interface TransactionFieldIconsRef {
+    shakeCategory: () => void;
+}
+
 interface Props {
+    readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
 }
 
-export interface TransactionFieldIconsRef {
-    shakeCategory: () => void;
+interface FormatOperatedAtParamsInterface {
+    date: Date;
+    today: string;
+    yesterday: string;
+    formatDate: (date: Date, options?: Intl.DateTimeFormatOptions) => string;
 }
 
-const formatOperatedAt = (date: Date, today: string, yesterday: string): string => {
+const formatOperatedAt = ({ date, today, yesterday, formatDate }: FormatOperatedAtParamsInterface): string => {
     if (isToday(date)) {
         return today;
     }
@@ -40,7 +49,7 @@ const formatOperatedAt = (date: Date, today: string, yesterday: string): string 
         return yesterday;
     }
 
-    return format(date, 'MMM d');
+    return formatDate(date, { month: 'short', day: 'numeric' });
 };
 
 const getTagsDisplayValue = (tags: { title: string }[] | null): string | undefined => {
@@ -56,9 +65,10 @@ const getTagsDisplayValue = (tags: { title: string }[] | null): string | undefin
 };
 
 // eslint-disable-next-line max-statements -- Component requires orchestrating multiple form fields and handlers
-export const TransactionFieldIcons = forwardRef<TransactionFieldIconsRef, Props>((props, ref) => {
-    const { variant, transactionType, onCommentPress, onDatePress } = props;
+export const TransactionFieldIcons = (props: Props) => {
+    const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
+    const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const { openCategorySelector } = useCategorySelectorModal();
     const { openTagsSelector } = useTagsSelectorModal();
@@ -94,25 +104,34 @@ export const TransactionFieldIcons = forwardRef<TransactionFieldIconsRef, Props>
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
-    const formattedDate = formatOperatedAt(operatedAt, t`Today`, t`Yesterday`);
+    const formattedDate = formatOperatedAt({
+        date: operatedAt,
+        today: t`Today`,
+        yesterday: t`Yesterday`,
+        formatDate: intl.formatDate
+    });
     const tagsValue = getTagsDisplayValue(tags);
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
-    const dateAnimationDelay = isTransfer ? CATEGORY_ANIMATION_DELAY : DATE_ANIMATION_DELAY;
-    const noteAnimationDelay = isTransfer ? TAGS_ANIMATION_DELAY : NOTE_ANIMATION_DELAY;
 
     return (
         <View className="flex-row px-xl py-lg">
-            {isTransfer ? null : (
-                <TransactionFieldIcon
-                    ref={categoryIconRef}
-                    icon={category?.icon ?? UserIconNameEnum.Folder}
-                    label={t`Category`}
-                    value={category?.title}
-                    variant={variant}
-                    onPress={handleCategoryPress}
-                    animationDelay={CATEGORY_ANIMATION_DELAY}
-                />
-            )}
+            <TransactionFieldIcon
+                icon={UserIconNameEnum.Calendar}
+                label={t`Date`}
+                value={formattedDate}
+                variant={variant}
+                onPress={onDatePress}
+                animationDelay={DATE_ANIMATION_DELAY}
+            />
+
+            <TransactionFieldIcon
+                icon={UserIconNameEnum.MessageSquare}
+                label={t`Note`}
+                value={noteValue}
+                variant={variant}
+                onPress={onCommentPress}
+                animationDelay={NOTE_ANIMATION_DELAY}
+            />
 
             {isTransfer ? null : (
                 <TransactionFieldIcon
@@ -125,23 +144,17 @@ export const TransactionFieldIcons = forwardRef<TransactionFieldIconsRef, Props>
                 />
             )}
 
-            <TransactionFieldIcon
-                icon={UserIconNameEnum.Calendar}
-                label={t`Date`}
-                value={formattedDate}
-                variant={variant}
-                onPress={onDatePress}
-                animationDelay={dateAnimationDelay}
-            />
-
-            <TransactionFieldIcon
-                icon={UserIconNameEnum.MessageSquare}
-                label={t`Note`}
-                value={noteValue}
-                variant={variant}
-                onPress={onCommentPress}
-                animationDelay={noteAnimationDelay}
-            />
+            {isTransfer ? null : (
+                <TransactionFieldIcon
+                    ref={categoryIconRef}
+                    icon={category?.icon ?? UserIconNameEnum.Folder}
+                    label={t`Category`}
+                    value={category?.title}
+                    variant={variant}
+                    onPress={handleCategoryPress}
+                    animationDelay={CATEGORY_ANIMATION_DELAY}
+                />
+            )}
         </View>
     );
-});
+};
