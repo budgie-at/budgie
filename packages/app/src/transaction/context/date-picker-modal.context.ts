@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
 export interface DatePickerModalParams {
@@ -17,6 +16,7 @@ export const useDatePickerModal = () => {
     const context = use(DatePickerModalContext);
 
     if (context === null) {
+        // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
         throw new Error('useDatePickerModal must be used within DatePickerModalProvider');
     }
 

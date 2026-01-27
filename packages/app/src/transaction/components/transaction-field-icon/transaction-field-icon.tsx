@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { forwardRef, useImperativeHandle } from 'react';
+import { RefObject, useImperativeHandle } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -13,7 +13,12 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 
 const PRESSED_SCALE = 0.95;
 
+export interface TransactionFieldIconRef {
+    shake: () => void;
+}
+
 interface Props {
+    readonly ref?: RefObject<TransactionFieldIconRef | null>;
     readonly icon: UserIconNameEnum;
     readonly label: string;
     readonly value?: string;
@@ -22,12 +27,8 @@ interface Props {
     readonly animationDelay?: number;
 }
 
-export interface TransactionFieldIconRef {
-    shake: () => void;
-}
-
-export const TransactionFieldIcon = forwardRef<TransactionFieldIconRef, Props>((props, ref) => {
-    const { icon, label, value, variant, onPress, animationDelay = 0 } = props;
+export const TransactionFieldIcon = (props: Props) => {
+    const { ref, icon, label, value, variant, onPress, animationDelay = 0 } = props;
 
     const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -63,19 +64,17 @@ export const TransactionFieldIcon = forwardRef<TransactionFieldIconRef, Props>((
                         accessibilityRole="button"
                     >
                         <CircleIcon icon={icon} variant={circleIconVariant} size={48} iconSize={22} radius={16} />
-                        <View className="items-center gap-y-0.5">
+                        <View className="items-center gap-y-0.5 h-[30px]">
                             <Text className="text-xs text-secondary-foreground uppercase" numberOfLines={1}>
                                 {label}
                             </Text>
-                            {hasValue ? (
-                                <Text className="text-xs text-primary font-medium max-w-[72px]" numberOfLines={1}>
-                                    {value}
-                                </Text>
-                            ) : null}
+                            <Text className="text-xs text-primary font-medium max-w-[72px] min-h-[14px]" numberOfLines={1}>
+                                {hasValue ? value : ''}
+                            </Text>
                         </View>
                     </HapticPressable>
                 </Animated.View>
             </Animated.View>
         </Animated.View>
     );
-});
+};
