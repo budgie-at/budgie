@@ -48,6 +48,8 @@ export const AccountSelectContent = (props: Props) => {
         </View>
     );
 
+    const listFooterComponent = <View className="h-7xl" />;
+
     return (
         <FlatList
             style={flatListStyle}
@@ -59,6 +61,7 @@ export const AccountSelectContent = (props: Props) => {
             contentContainerClassName="px-xl pt-3"
             contentContainerStyle={contentContainerStyle}
             ListEmptyComponent={listEmptyComponent}
+            ListFooterComponent={listFooterComponent}
             ItemSeparatorComponent={ListItemSeparator}
         />
     );

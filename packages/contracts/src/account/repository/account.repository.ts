@@ -120,14 +120,15 @@ export class AccountRepository {
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {
-        const { excludeTypes, excludeAccountId } = filter;
+        const { excludeTypes, excludeAccountId, onlyActive } = filter;
 
         return and(
             isNull(AccountEntityTable.parentId),
             isNull(AccountEntityTable.deletedAt),
             like(AccountEntityTable.titleSearch, `%${search.toLowerCase()}%`),
             isNotEmptyArray(excludeTypes) ? notInArray(AccountEntityTable.type, excludeTypes) : sql`1=1`,
-            isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`
+            isDefined(excludeAccountId) ? ne(AccountEntityTable.id, excludeAccountId) : sql`1=1`,
+            onlyActive === true ? eq(AccountEntityTable.isActive, true) : sql`1=1`
         );
     }
 }
