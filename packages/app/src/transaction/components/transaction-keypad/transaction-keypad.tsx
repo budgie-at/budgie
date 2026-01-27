@@ -19,15 +19,15 @@ interface Props {
 export const TransactionKeypad = (props: Props) => {
     const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, isConfirmDisabled } = props;
 
-    const handleDigit7 = () => void onDigit('7');
-    const handleDigit8 = () => void onDigit('8');
-    const handleDigit9 = () => void onDigit('9');
-    const handleDigit4 = () => void onDigit('4');
-    const handleDigit5 = () => void onDigit('5');
-    const handleDigit6 = () => void onDigit('6');
     const handleDigit1 = () => void onDigit('1');
     const handleDigit2 = () => void onDigit('2');
     const handleDigit3 = () => void onDigit('3');
+    const handleDigit4 = () => void onDigit('4');
+    const handleDigit5 = () => void onDigit('5');
+    const handleDigit6 = () => void onDigit('6');
+    const handleDigit7 = () => void onDigit('7');
+    const handleDigit8 = () => void onDigit('8');
+    const handleDigit9 = () => void onDigit('9');
     const handleDigit0 = () => void onDigit('0');
 
     return (
@@ -35,9 +35,9 @@ export const TransactionKeypad = (props: Props) => {
             <View className="flex-1 gap-md">
                 <View className="flex-1 gap-md">
                     <View className="flex-1 flex-row gap-md">
-                        <TransactionKeypadButton value="7" onPress={handleDigit7} />
-                        <TransactionKeypadButton value="8" onPress={handleDigit8} />
-                        <TransactionKeypadButton value="9" onPress={handleDigit9} />
+                        <TransactionKeypadButton value="1" onPress={handleDigit1} />
+                        <TransactionKeypadButton value="2" onPress={handleDigit2} />
+                        <TransactionKeypadButton value="3" onPress={handleDigit3} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="4" onPress={handleDigit4} />
@@ -45,9 +45,9 @@ export const TransactionKeypad = (props: Props) => {
                         <TransactionKeypadButton value="6" onPress={handleDigit6} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
-                        <TransactionKeypadButton value="1" onPress={handleDigit1} />
-                        <TransactionKeypadButton value="2" onPress={handleDigit2} />
-                        <TransactionKeypadButton value="3" onPress={handleDigit3} />
+                        <TransactionKeypadButton value="7" onPress={handleDigit7} />
+                        <TransactionKeypadButton value="8" onPress={handleDigit8} />
+                        <TransactionKeypadButton value="9" onPress={handleDigit9} />
                     </View>
                     <View className="flex-1 flex-row gap-md">
                         <TransactionKeypadButton value="." onPress={onDecimal} />

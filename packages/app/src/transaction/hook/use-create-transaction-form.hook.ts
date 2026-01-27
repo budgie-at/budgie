@@ -1,11 +1,15 @@
-import { TransactionCreateInputInterface, TransactionEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateInputInterface,
+    TransactionEntityInterface,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { buildFormEntries } from '../utils/build-form-entries.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
@@ -19,7 +23,6 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     categoryId?: number;
     comment?: string;
     amount?: number;
-    entries?: Array<{ categoryId: number; amount: number }> | null;
 }
 
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
@@ -30,30 +33,32 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     toAccountId,
     amount = 0,
     categoryId = 0,
-    comment = '',
-    entries
+    comment = ''
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
     const form = useForm({
         mode: 'onSubmit',
         resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema),
-        values: createTransactionInput({
+        defaultValues: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
             comment,
             amount,
             type,
-            entries: buildFormEntries({ fromAccountId, toAccountId, amount, categoryId, entries })
+            entries: [{ accountId: 0, categoryId, amount: 0, type: TransactionEntryTypeEnum.CREDIT, mccCategoryId: null, externalId: null }]
         })
     });
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
+        console.log('[useCreateTransactionForm] handleSubmit called with data:', JSON.stringify(data, null, 2));
+
         try {
             await onSubmit(data);
             router.back();
-        } catch {
+        } catch (error) {
+            console.error('[useCreateTransactionForm] Error:', error);
             Toast.show({
                 type: 'error',
                 text1: t`Something went wrong.`,
@@ -62,8 +67,17 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
         }
     };
 
+    const wrappedHandleSubmit = async () => {
+        console.log('[useCreateTransactionForm] wrappedHandleSubmit called');
+        console.log('[useCreateTransactionForm] Form values:', JSON.stringify(form.getValues(), null, 2));
+
+        return form.handleSubmit(handleSubmit, errors => {
+            console.error('[useCreateTransactionForm] Validation errors:', JSON.stringify(errors, null, 2));
+        })();
+    };
+
     return {
         form,
-        handleSubmit: form.handleSubmit(handleSubmit)
+        handleSubmit: wrappedHandleSubmit
     };
 };
