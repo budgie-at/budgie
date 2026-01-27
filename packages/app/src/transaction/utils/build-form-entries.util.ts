@@ -59,6 +59,26 @@ const buildEntriesFromInput = (
         })
     );
 
+const buildTransferEntries = (
+    fromAccountId: number,
+    toAccountId: number,
+    amount: number,
+    categoryId: number
+): TransactionEntryFormInterface[] => [
+    createTransactionEntryInput({
+        accountId: fromAccountId,
+        type: TransactionEntryTypeEnum.CREDIT,
+        amount,
+        categoryId
+    }),
+    createTransactionEntryInput({
+        accountId: toAccountId,
+        type: TransactionEntryTypeEnum.DEBIT,
+        amount,
+        categoryId
+    })
+];
+
 export const buildFormEntries = ({
     fromAccountId,
     toAccountId,
@@ -68,6 +88,10 @@ export const buildFormEntries = ({
 }: BuildFormEntriesParamsInterface): TransactionEntryFormInterface[] => {
     if (isNotEmptyArray(entries)) {
         return buildEntriesFromInput(entries, fromAccountId, toAccountId);
+    }
+
+    if (isDefined(fromAccountId) && isDefined(toAccountId)) {
+        return buildTransferEntries(fromAccountId, toAccountId, amount, categoryId);
     }
 
     return [buildMainEntry({ fromAccountId, toAccountId, amount, categoryId })];
