@@ -18,7 +18,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const textVariants = cva('text-center font-light', {
+const textVariants = cva('text-center font-semibold', {
     variants: {
         variant: FOREGROUND_COLOR_PALETTE
     }
