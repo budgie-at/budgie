@@ -7,6 +7,7 @@ import { cn } from '../../utils/cn.util';
 
 export interface InputProps extends ComponentProps<typeof TextInput> {
     readonly status?: FormFieldStatus;
+    readonly borderless?: boolean;
     readonly size?: 'sm' | 'md' | 'lg';
 }
 
@@ -20,10 +21,14 @@ export const inputVariant = cva('text-primary placeholder-primary/50 rounded-2xl
         status: {
             error: 'border border-destructive-corner bg-destructive-background/5 text-destructive-foreground',
             default: 'border border-secondary-corner'
+        },
+        borderless: {
+            true: 'border-0',
+            false: ''
         }
     }
 });
 
-export const Input = ({ size = 'sm', status = 'default', className, ...rest }: InputProps) => (
-    <TextInput {...rest} className={cn(inputVariant({ size, status }), className)} />
+export const Input = ({ size = 'sm', status = 'default', borderless = false, className, ...rest }: InputProps) => (
+    <TextInput {...rest} className={cn(inputVariant({ size, status, borderless }), className)} />
 );

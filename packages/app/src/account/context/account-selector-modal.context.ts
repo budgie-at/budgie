@@ -8,6 +8,7 @@ export interface AccountSelectorModalParams {
     readonly excludeAccountId?: number | null;
     readonly excludeAccountTypes?: AccountTypeEnum[];
     readonly emptyStateDescription?: string;
+    readonly onlyActive?: boolean;
 }
 
 interface AccountSelectorModalContextInterface {

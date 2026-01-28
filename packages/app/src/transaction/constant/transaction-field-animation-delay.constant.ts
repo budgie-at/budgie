@@ -1,0 +1,4 @@
+export const CATEGORY_ANIMATION_DELAY = 50;
+export const TAGS_ANIMATION_DELAY = 80;
+export const DATE_ANIMATION_DELAY = 110;
+export const NOTE_ANIMATION_DELAY = 140;
