@@ -19,6 +19,7 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 
 class TransactionService {
     async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
@@ -49,6 +50,7 @@ class TransactionService {
     }
 
     async createInternalTransfer(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
+        // eslint-disable-next-line max-statements -- Transfer creation with optional custom exchange rate
         return await db.transaction(async tx => {
             const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
 
@@ -58,12 +60,16 @@ class TransactionService {
             ]);
 
             const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
+            const hasCustomExchangeRate = input.exchangeRate !== 1;
 
-            const { amount: toAmount, exchangeRate } = await exchangeRatesService.convert(
+            const { amount: autoToAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
                 fromAccount.instrumentId,
                 toAccount.instrumentId,
                 fromAmountInMicroUnits
             );
+
+            const exchangeRate = hasCustomExchangeRate ? input.exchangeRate : autoExchangeRate;
+            const toAmount = hasCustomExchangeRate ? fromAmountInMicroUnits / input.exchangeRate : autoToAmount;
 
             const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
 
@@ -126,7 +132,9 @@ class TransactionService {
     }
 
     /* jscpd:ignore-start */
-    async convertExpenseToTransfer(id: number, toAccountId: number): Promise<TransactionEntityInterface> {
+    async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
+        const { id, accountId: toAccountId, customExchangeRate } = params;
+
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.getById(id);
@@ -160,11 +168,15 @@ class TransactionService {
 
             const fromAmountInMicroUnits = entries[0].amount;
 
-            const { amount: toAmount, exchangeRate } = await exchangeRatesService.convert(
+            const { amount: autoToAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
                 fromAccount.instrumentId,
                 toAccount.instrumentId,
                 fromAmountInMicroUnits
             );
+
+            const hasCustomRate = customExchangeRate > 0 && customExchangeRate !== 1;
+            const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
+            const toAmount = hasCustomRate ? fromAmountInMicroUnits / customExchangeRate : autoToAmount;
 
             const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
 
@@ -212,7 +224,9 @@ class TransactionService {
     /* jscpd:ignore-end */
 
     /* jscpd:ignore-start */
-    async convertIncomeToTransfer(id: number, fromAccountId: number): Promise<TransactionEntityInterface> {
+    async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
+        const { id, accountId: fromAccountId, customExchangeRate } = params;
+
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
             const transaction = await transactionRepository.getById(id);
@@ -246,11 +260,15 @@ class TransactionService {
 
             const toAmountInMicroUnits = entries[0].amount;
 
-            const { amount: fromAmount, exchangeRate } = await exchangeRatesService.convert(
+            const { amount: autoFromAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
                 toAccount.instrumentId,
                 fromAccount.instrumentId,
                 toAmountInMicroUnits
             );
+
+            const hasCustomRate = customExchangeRate > 0 && customExchangeRate !== 1;
+            const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
+            const fromAmount = hasCustomRate ? toAmountInMicroUnits / customExchangeRate : autoFromAmount;
 
             const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
 
