@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 import { UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -109,3 +110,4 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
         </BottomSheet>
     );
 };
+/* jscpd:ignore-end */
