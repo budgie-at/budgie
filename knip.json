@@ -29,7 +29,7 @@
         "babel-jest",
         "tsx",
         "@jest/globals",
-                "babel-plugin-react-compiler",
+        "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom"
     ],
