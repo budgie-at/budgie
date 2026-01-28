@@ -27,11 +27,12 @@ import {
 interface Props {
     readonly variant: ColorPaletteVariant;
     readonly onSubmit: () => void;
+    readonly onCancel: () => void;
 }
 
 /* jscpd:ignore-start */
 // eslint-disable-next-line max-statements -- Form component orchestrates multiple hooks, modals, and handlers
-export const TransferQuickForm = ({ variant, onSubmit }: Props) => {
+export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { openDatePicker } = useDatePickerModal();
@@ -124,6 +125,7 @@ export const TransferQuickForm = ({ variant, onSubmit }: Props) => {
                 onBackspace={handleBackspace}
                 onLongBackspace={handleClear}
                 onConfirm={handleConfirm}
+                onCancel={onCancel}
             />
         </View>
     );

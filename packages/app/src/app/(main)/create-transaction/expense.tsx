@@ -46,7 +46,7 @@ export default function CreateExpenseTransactionPage() {
     return (
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
-                <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} />
+                <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>
     );
