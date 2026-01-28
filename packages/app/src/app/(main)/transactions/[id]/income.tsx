@@ -45,7 +45,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
                 }
             >
-                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} />
+                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>
     );
