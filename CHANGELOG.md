@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.19.0](https://github.com/budgie-at/budgie/compare/v2.18.1...v2.19.0) (2026-01-28)
+
+### Bug Fixes
+
+- **app:** add gap between account selector list items ([6c18c71](https://github.com/budgie-at/budgie/commit/6c18c71179395edb465ea3d1f3f27bec10bead95))
+- **app:** address PR review feedback ([1fea1f0](https://github.com/budgie-at/budgie/commit/1fea1f04b2ed52c6eab35d67565e93395a2e875b))
+- **app:** correct income transaction account handling and transfer entry sync ([309d424](https://github.com/budgie-at/budgie/commit/309d4244490f539036dfc0c367d5150c2c968a5b))
+- **app:** explicitly pick entry fields to prevent extra columns in DB insert ([eda0100](https://github.com/budgie-at/budgie/commit/eda010031161e236f6b7faf649db0f06a531edb7))
+- **app:** fix transfer creation and adjust quick form layout ([0717803](https://github.com/budgie-at/budgie/commit/0717803d671039b91b2c6cb8364867c8aa953f6d))
+- **app:** pass onlyActive filter to account repository query ([6dd7677](https://github.com/budgie-at/budgie/commit/6dd76772163ab4c777a7e0af0653b57d664a805f))
+- **app:** store raw decimal amount instead of micro units in form ([cf013ac](https://github.com/budgie-at/budgie/commit/cf013acdabc6da06f65218be415f3149780b1408))
+- **app:** sync entries.0.accountId when selecting account in TransactionAccountRow ([e06aa44](https://github.com/budgie-at/budgie/commit/e06aa449baf1875fff3c56bda62a73799c77f4c1))
+- **app:** use inline style for list item separator height ([7418e18](https://github.com/budgie-at/budgie/commit/7418e1815028c13b8b60fa43342f84da28486883))
+- **app:** use Trans component for JSX text children ([623ce05](https://github.com/budgie-at/budgie/commit/623ce05f3af195f22c8bfc1da269a57061bd294a))
+
+### Features
+
+- **app:** add cancel button to transaction quick forms ([d2e40b2](https://github.com/budgie-at/budgie/commit/d2e40b244bb530faf4a8d4959d8999fe30dd7218))
+- **app:** add TransactionAccountRow component ([c19d185](https://github.com/budgie-at/budgie/commit/c19d185ecd15f2f73e4ef3d231c281cbf33464da))
+- **app:** add TransactionAmountDisplay component ([fb04f7d](https://github.com/budgie-at/budgie/commit/fb04f7d74e0a528d8fdf803174c4289354006da3))
+- **app:** add TransactionCommentInput component ([23f8090](https://github.com/budgie-at/budgie/commit/23f809098f41ea712284b4eb54306825360c3291))
+- **app:** add TransactionFieldIcon component ([f47c6fb](https://github.com/budgie-at/budgie/commit/f47c6fbfefaf20cb9d7ac6693d54bf76991ad7b0))
+- **app:** add TransactionFieldIcons container component ([b21e956](https://github.com/budgie-at/budgie/commit/b21e9567d4349625fc26c2481a9051c5db81b923))
+- **app:** add TransactionKeypad component ([2c54685](https://github.com/budgie-at/budgie/commit/2c546852fff974d2b3e54b8cf05f8c2c1364973b))
+- **app:** add TransactionKeypadButton component ([b52105c](https://github.com/budgie-at/budgie/commit/b52105c63dd06e1f0a610103ab72365e15e6b0d6))
+- **app:** add TransactionQuickForm main component ([cca54b3](https://github.com/budgie-at/budgie/commit/cca54b3ff6fc045a40de27ebf95495115f39973d))
+- **app:** add transfer accounts row with validation and swap functionality ([5d742de](https://github.com/budgie-at/budgie/commit/5d742de50b090575d5fd56ac692750a011c18b68))
+- **app:** add useKeypadInput hook for custom keypad ([3f14133](https://github.com/budgie-at/budgie/commit/3f141338d4985f4b608c29a48a6d78b70cb17ffe))
+- **app:** add validation feedback and modal improvements to transaction quick form ([a702b74](https://github.com/budgie-at/budgie/commit/a702b74b85ad6ed50bd101dc4d5b67baeb4a91d1))
+- **app:** filter inactive accounts in account selector ([4d3aa38](https://github.com/budgie-at/budgie/commit/4d3aa38f9c8e732c651114f0c7fceaf812f7bb84))
+- **app:** improve quick form UI with smooth animation and larger layout ([59c3cea](https://github.com/budgie-at/budgie/commit/59c3cea0204f38d297771288a4df3df3c199c7ed))
+- **app:** integrate TransactionQuickForm into expense page ([a0181ce](https://github.com/budgie-at/budgie/commit/a0181ce235b0499003175f8d23fb2c74567f5a09))
+- **app:** integrate TransactionQuickForm into income page ([ab95a4a](https://github.com/budgie-at/budgie/commit/ab95a4aaf98cf395d86217bd8510cc73685def29))
+- **app:** integrate TransactionQuickForm into transfer page ([3cc110c](https://github.com/budgie-at/budgie/commit/3cc110cc4bdf69a2d67d862066ae3c5812cac04c))
+- **app:** update TransactionFormDatePicker for bottom sheet usage ([ff52f82](https://github.com/budgie-at/budgie/commit/ff52f8209f9a2be42783c92466119f6b59335983))
+
 ## [2.18.1](https://github.com/budgie-at/budgie/compare/v2.18.0...v2.18.1) (2026-01-26)
 
 ### Bug Fixes
