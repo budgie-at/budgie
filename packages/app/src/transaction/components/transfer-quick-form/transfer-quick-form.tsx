@@ -78,7 +78,18 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const displaySymbol = isEditingDestination
         ? (toAccount?.instrument.symbol ?? defaultInstrument.symbol)
         : (fromAccount?.instrument.symbol ?? defaultInstrument.symbol);
-    const receivingAmountLabel = t`Receiving amount`;
+    const fromCode = fromAccount?.instrument.code ?? '';
+    const toCode = toAccount?.instrument.code ?? '';
+    const editingLabel = isEditingDestination ? t`Receiving ${toCode}` : t`Sending ${fromCode}`;
+    const amountLabel = conversion.isCrossCurrency ? editingLabel : null;
+
+    const secondarySymbol = isEditingDestination
+        ? (fromAccount?.instrument.symbol ?? defaultInstrument.symbol)
+        : (toAccount?.instrument.symbol ?? defaultInstrument.symbol);
+    const secondaryValue = isEditingDestination ? sourceKeypad.numericValue : conversion.destinationAmount;
+    const secondaryPrefix = isEditingDestination ? '' : '\u2248 ';
+    const formattedSecondaryValue = secondaryValue > 0 ? secondaryValue.toFixed(2) : '0.00';
+    const secondaryAmountText = conversion.isCrossCurrency ? `${secondaryPrefix}${secondarySymbol} ${formattedSecondaryValue}` : null;
 
     const conversionRowAmount = isEditingDestination ? sourceKeypad.numericValue : conversion.destinationAmount;
     const conversionRowSymbol = isEditingDestination
@@ -177,7 +188,8 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
                 amount={displayAmount}
                 currencySymbol={displaySymbol}
                 variant={variant}
-                {...(isEditingDestination ? { label: receivingAmountLabel } : {})}
+                secondaryAmount={secondaryAmountText}
+                label={amountLabel}
             />
 
             <TransactionFieldIcons
