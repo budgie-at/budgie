@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode, createContext, useContext, useRef, useState } from 'react';
+import { ReactNode, createContext, use, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { EmptyFn, emptyFn } from '@rnw-community/shared';
@@ -13,7 +13,7 @@ import { useConfirmActionModal } from '../../../@generic/context/confirm-action-
 
 const TransactionActionsMenuContext = createContext<EmptyFn>(emptyFn);
 
-export const useTransactionActionsMenu = () => useContext(TransactionActionsMenuContext);
+export const useTransactionActionsMenu = () => use(TransactionActionsMenuContext);
 
 interface Props {
     readonly onDelete: () => Promise<void> | void;

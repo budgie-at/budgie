@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -87,24 +87,20 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
 
     const showAiButton = isAiAvailable && !isDefined(createAction);
 
-    const actionItems: CreateActionInterface[] = useMemo(() => {
-        const defaultItems: CreateActionInterface[] = [
-            { icon: UserIconNameEnum.TrendingDown, label: t`Expense`, variant: 'destructive', onPress: handleCreateExpense },
-            { icon: UserIconNameEnum.TrendingUp, label: t`Income`, variant: 'positive', onPress: handleCreateIncome },
-            { icon: UserIconNameEnum.ArrowLeftRight, label: t`Transfer`, variant: 'warning', onPress: handleCreateTransfer },
-            { icon: UserIconNameEnum.Wallet, label: t`Account`, variant: 'secondary', onPress: handleCreateAccount }
-        ];
+    const defaultItems: CreateActionInterface[] = [
+        { icon: UserIconNameEnum.TrendingDown, label: t`Expense`, variant: 'destructive', onPress: handleCreateExpense },
+        { icon: UserIconNameEnum.TrendingUp, label: t`Income`, variant: 'positive', onPress: handleCreateIncome },
+        { icon: UserIconNameEnum.ArrowLeftRight, label: t`Transfer`, variant: 'warning', onPress: handleCreateTransfer },
+        { icon: UserIconNameEnum.Wallet, label: t`Account`, variant: 'secondary', onPress: handleCreateAccount }
+    ];
 
-        if (isDefined(createAction)) {
-            return [{ ...createAction, onPress: handleCreateAction }, ...defaultItems];
-        }
-
-        return defaultItems;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [createAction, t]);
+    const actionItems: CreateActionInterface[] = isDefined(createAction)
+        ? [{ ...createAction, onPress: handleCreateAction }, ...defaultItems]
+        : defaultItems;
 
     useEffect(() => {
         if (isOpen) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
             setIsVisible(true);
             rotation.value = withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG);
             menuScale.value = withSpring(1, SPRING_CONFIG);

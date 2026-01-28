@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { styled } from 'nativewind';
-import React, { FC, Ref, useCallback, useImperativeHandle, useRef } from 'react';
+import React, { FC, Ref, useImperativeHandle, useRef } from 'react';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FullWindowOverlay } from 'react-native-screens';
@@ -61,10 +61,8 @@ export const BottomSheet = (props: Props) => {
 
     const backdropComponent = isCloseable ? BottomSheetCloseableBackdrop : BottomSheetNonCloseableBackdrop;
 
-    const renderContainerComponent = useCallback(
-        (props: PropsWithChildren) => (isIOS ? <FullWindowOverlay>{props.children}</FullWindowOverlay> : <>{props.children}</>),
-        []
-    );
+    const renderContainerComponent = (containerProps: PropsWithChildren) =>
+        isIOS ? <FullWindowOverlay>{containerProps.children}</FullWindowOverlay> : <>{containerProps.children}</>;
 
     return (
         <Modal
