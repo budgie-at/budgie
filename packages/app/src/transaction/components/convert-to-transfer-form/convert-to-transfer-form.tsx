@@ -1,6 +1,7 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -18,20 +19,25 @@ import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-repl
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
+import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useConvertExpenseToTransferMutation } from '../../hooks/use-convert-expense-to-transfer.mutation';
 import { useConvertIncomeToTransferMutation } from '../../hooks/use-convert-income-to-transfer.mutation';
+import { ConversionRow } from '../conversion-row/conversion-row';
 
 interface Props {
     readonly transactionId: number;
     readonly transactionType: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
     readonly excludeAccountId: number;
+    readonly sourceAmount: number;
+    readonly sourceInstrumentId: number;
+    readonly sourceCode: string;
     readonly onSuccess: () => void;
     readonly onCancel: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const ConvertToTransferForm = (props: Props) => {
-    const { transactionId, transactionType, excludeAccountId, onSuccess, onCancel } = props;
+    const { transactionId, transactionType, excludeAccountId, sourceAmount, sourceInstrumentId, sourceCode, onSuccess, onCancel } = props;
 
     const { t } = useLingui();
     const { backgroundColor } = useFormsheetListStyles();
@@ -54,6 +60,8 @@ export const ConvertToTransferForm = (props: Props) => {
     const accountIdForSelector = accountId > 0 ? accountId : null;
     const { selectedAccount, icon } = useAccountSelector({ accountId: accountIdForSelector });
 
+    const conversion = useCurrencyConversion();
+
     const containerStyle = { flex: 1, backgroundColor };
     const iconVariant = isDefined(selectedAccount) ? confirmVariant : 'secondary';
     const accountLabel = isExpense ? t`Select destination account` : t`Select source account`;
@@ -72,6 +80,13 @@ export const ConvertToTransferForm = (props: Props) => {
         }
     };
 
+    const destinationInstrumentId = selectedAccount?.instrumentId ?? 0;
+
+    useEffect(() => {
+        conversion.convert(sourceAmount, sourceInstrumentId, destinationInstrumentId);
+    }, [destinationInstrumentId, sourceAmount, sourceInstrumentId, conversion]);
+
+    // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleConvert = async () => {
         if (!form.formState.isValid) {
             return;
@@ -93,10 +108,13 @@ export const ConvertToTransferForm = (props: Props) => {
             updateConfirmActionParams({ isLoading: true });
             const selectedAccountId = form.getValues('accountId');
 
+            const customRate = conversion.isCrossCurrency ? conversion.exchangeRate : 0;
+            const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
+
             if (isExpense) {
-                await convertExpenseMutation(transactionId, selectedAccountId);
+                await convertExpenseMutation(convertParams);
             } else {
-                await convertIncomeMutation(transactionId, selectedAccountId);
+                await convertIncomeMutation(convertParams);
             }
 
             onSuccess();
@@ -125,6 +143,16 @@ export const ConvertToTransferForm = (props: Props) => {
                     left={<CircleIcon icon={icon} variant={iconVariant} />}
                     onPress={handleOpenAccountSelector}
                 />
+                {conversion.isCrossCurrency ? (
+                    <ConversionRow
+                        destinationAmount={conversion.destinationAmount}
+                        destinationSymbol={selectedAccount?.instrument.symbol ?? ''}
+                        sourceCode={sourceCode}
+                        destinationCode={selectedAccount?.instrument.code ?? ''}
+                        exchangeRate={conversion.exchangeRate}
+                        isManualRate={conversion.isManualRate}
+                    />
+                ) : null}
                 <View className="flex-row gap-x-md pt-md">
                     <Button className="flex-1" variant="ghost" onPress={onCancel} content={t`Cancel`} />
                     <Button
