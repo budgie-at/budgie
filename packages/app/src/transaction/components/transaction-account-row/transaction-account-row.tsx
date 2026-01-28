@@ -4,6 +4,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -30,7 +32,7 @@ export const TransactionAccountRow = ({ variant, fieldName, label }: Props) => {
     const handlePress = async () => {
         const selectedAccountId = await openAccountSelector({ initialAccountId: accountId });
 
-        if (selectedAccountId !== null) {
+        if (isDefined(selectedAccountId)) {
             setValue(fieldName, selectedAccountId);
         }
     };

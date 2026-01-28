@@ -1,11 +1,10 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { isToday, isYesterday } from 'date-fns';
 import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -19,6 +18,8 @@ import {
     NOTE_ANIMATION_DELAY,
     TAGS_ANIMATION_DELAY
 } from '../../constant/transaction-field-animation-delay.constant';
+import { formatOperatedAt } from '../../utils/format-operated-at.util';
+import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 export interface TransactionFieldIconsRef {
@@ -33,38 +34,7 @@ interface Props {
     readonly onDatePress: () => void;
 }
 
-interface FormatOperatedAtParamsInterface {
-    date: Date;
-    today: string;
-    yesterday: string;
-    formatDate: (date: Date, options?: Intl.DateTimeFormatOptions) => string;
-}
-
-const formatOperatedAt = ({ date, today, yesterday, formatDate }: FormatOperatedAtParamsInterface): string => {
-    if (isToday(date)) {
-        return today;
-    }
-
-    if (isYesterday(date)) {
-        return yesterday;
-    }
-
-    return formatDate(date, { month: 'short', day: 'numeric' });
-};
-
-const getTagsDisplayValue = (tags: { title: string }[] | null): string | undefined => {
-    if (!isNotEmptyArray(tags)) {
-        return void 0;
-    }
-
-    if (tags.length === 1) {
-        return tags[0].title;
-    }
-
-    return `${tags[0].title} +${tags.length - 1}`;
-};
-
-// eslint-disable-next-line max-statements -- Component requires orchestrating multiple form fields and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
     const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
@@ -90,7 +60,7 @@ export const TransactionFieldIcons = (props: Props) => {
     const handleCategoryPress = async () => {
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: categoryId, variant });
 
-        if (selectedCategoryId !== null) {
+        if (isDefined(selectedCategoryId)) {
             setValue('entries.0.categoryId', selectedCategoryId);
         }
     };
@@ -98,7 +68,7 @@ export const TransactionFieldIcons = (props: Props) => {
     const handleTagsPress = async () => {
         const selectedTagIds = await openTagsSelector({ initialTagIds: tagIds });
 
-        if (selectedTagIds !== null) {
+        if (isDefined(selectedTagIds)) {
             setValue('tagIds', selectedTagIds);
         }
     };
