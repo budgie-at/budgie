@@ -8,24 +8,15 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { BlurScrollView } from '../../../../@generic/component/blur-scroll-view/blur-scroll-view';
-import { FormLayoutGroup } from '../../../../@generic/component/form-layout-group/form-layout-group';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { Page } from '../../../../@generic/component/page/page';
+import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
-import { useSettingsContext } from '../../../../settings/context/settings.context';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
-import { TransactionFormAmountBase } from '../../../../transaction/components/transaction-form-amount/transaction-form-amount-base';
-import { TransactionFormComment } from '../../../../transaction/components/transaction-form-comment/transaction-form-comment';
-import { TransactionFormDateField } from '../../../../transaction/components/transaction-form-date-field/transaction-form-date-field';
-import { TransactionFormFooter } from '../../../../transaction/components/transaction-form-footer/transaction-form-footer';
-import { TransactionFormTagsField } from '../../../../transaction/components/transaction-form-tags-field/transaction-form-tags-field';
-import { TransactionMccInfoField } from '../../../../transaction/components/transaction-mcc-info-field/transaction-mcc-info-field';
-import { TransferTransactionFormAccounts } from '../../../../transaction/components/transfer-transaction-form/transfer-transaction-form-accounts';
+import { TransferQuickForm } from '../../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
@@ -39,7 +30,6 @@ interface UpdateTransferFormProps {
 /* jscpd:ignore-start */
 const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -67,17 +57,11 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
         }
     }, [exceedsDebtBalance, form, t]);
 
-    const handleAmountChange = (newAmount: number) => {
-        form.setValue('amount', newAmount);
-        form.setValue('entries.0.amount', newAmount);
-        form.setValue('entries.1.amount', newAmount);
-    };
-
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
         <FormProvider {...form}>
-            <Page
+            <FullPage
                 header={
                     <PageHeader
                         title={t`Edit Transfer`}
@@ -85,32 +69,9 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                         right={<TransactionActionsMenu onDelete={handleDelete} />}
                     />
                 }
-                footer={<TransactionFormFooter variant="default" buttonText={t`Update Transfer`} onSubmit={handleSubmit} />}
-                withBlur
             >
-                <BlurScrollView>
-                    <TransferTransactionFormAccounts variant="default" />
-
-                    <TransactionFormAmountBase
-                        variant="default"
-                        instrumentSymbol={account?.instrument.symbol ?? defaultInstrument.symbol}
-                        onAmountChange={handleAmountChange}
-                    />
-
-                    {isDefined(transaction.entries[0]?.mccCategory) ? (
-                        <TransactionMccInfoField mccCategory={transaction.entries[0].mccCategory} />
-                    ) : null}
-
-                    <FormLayoutGroup>
-                        <FormLayoutGroup variant="horizontal">
-                            <TransactionFormDateField variant="default" />
-                            <TransactionFormTagsField variant="default" />
-                        </FormLayoutGroup>
-
-                        <TransactionFormComment />
-                    </FormLayoutGroup>
-                </BlurScrollView>
-            </Page>
+                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
+            </FullPage>
         </FormProvider>
     );
 };
