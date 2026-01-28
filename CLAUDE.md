@@ -59,6 +59,9 @@ packages/
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components
 11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/core/macro` for string props, `<Trans>` for JSX children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
+13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
+14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
+15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
 
 ### Naming Conventions
 
@@ -152,6 +155,21 @@ Conventional commits: `type(scope): description`
 - Ask for confirmation before attempting complex refactors - do not go back and forth
 - Layout files (`_layout.tsx`) inherently need many lines - disable `max-lines-per-function` there
 - Use `jscpd:ignore-start/end` for intentionally similar code patterns (like form components)
+
+## Acceptable ESLint Disable Comments
+
+Add `eslint-disable-next-line` with justification for these specific cases:
+
+| Rule | When to Disable | Justification Pattern |
+|------|-----------------|----------------------|
+| `max-statements` | Form orchestration components with multiple hooks/handlers | `-- Form orchestration component with multiple hooks and handlers` |
+| `max-lines-per-function` | Layout files, complex form components | `-- Layout/form component requires many lines` |
+
+Example:
+```typescript
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+export const MyFormComponent = (props: Props) => { ... };
+```
 
 ## Local Documentation
 
