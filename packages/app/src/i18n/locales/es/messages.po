@@ -1273,8 +1273,6 @@ msgid "Security"
 msgstr "Seguridad"
 
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:75
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:88
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -1431,7 +1429,7 @@ msgstr "Acciones"
 msgid "Submit"
 msgstr "Enviar"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:82
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
 msgid "Swap accounts"
 msgstr "Intercambiar cuentas"
 
@@ -1538,7 +1536,7 @@ msgstr "Este año"
 msgid "to"
 msgstr "a"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:87
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:86
 msgid "To"
 msgstr "A"
 
