@@ -1,6 +1,7 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { StyleProp, Text, View, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { useEffect } from 'react';
+import { StyleProp, View, ViewStyle } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,16 +12,30 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 
 interface Props {
     readonly label: string;
-    readonly selectLabel: string;
     readonly account: AccountWithInstrumentEntityInterface | null | undefined;
     readonly variant: ColorPaletteVariant;
     readonly animatedStyle?: StyleProp<ViewStyle>;
     readonly onPress: () => void;
 }
 
-export const TransferAccountPicker = ({ label, selectLabel, account, variant, animatedStyle, onPress }: Props) => {
-    const accessibilityLabel = `${label}: ${account?.title ?? selectLabel}`;
-    const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
+const SPRING_CONFIG = { damping: 15, stiffness: 150 };
+const TITLE_FONT_SIZE_SELECTED = 15;
+const TITLE_FONT_SIZE_UNSELECTED = 14;
+
+export const TransferAccountPicker = ({ label, account, variant, animatedStyle, onPress }: Props) => {
+    const hasAccount = isDefined(account);
+    const accessibilityLabel = `${label}: ${account?.title ?? label}`;
+    const icon = hasAccount ? account.icon : UserIconNameEnum.Wallet;
+    const titleFontSize = useSharedValue(hasAccount ? TITLE_FONT_SIZE_SELECTED : TITLE_FONT_SIZE_UNSELECTED);
+
+    useEffect(() => {
+        titleFontSize.set(withSpring(hasAccount ? TITLE_FONT_SIZE_SELECTED : TITLE_FONT_SIZE_UNSELECTED, SPRING_CONFIG));
+    }, [hasAccount, titleFontSize]);
+
+    const titleClassName = hasAccount ? 'font-medium text-primary' : 'font-medium text-secondary-foreground';
+    const titleAnimatedStyle = useAnimatedStyle(() => ({
+        fontSize: titleFontSize.value
+    }));
 
     return (
         <Animated.View style={animatedStyle} className="flex-1">
@@ -32,11 +47,10 @@ export const TransferAccountPicker = ({ label, selectLabel, account, variant, an
             >
                 <CircleIcon icon={icon} variant={variant} size={28} iconSize={14} radius={8} />
 
-                <View className="flex-1">
-                    <Text className="text-2xs text-secondary-foreground uppercase">{label}</Text>
-                    <Text className="text-sm font-medium text-primary" numberOfLines={1}>
-                        {account?.title ?? selectLabel}
-                    </Text>
+                <View className="flex-1 justify-center">
+                    <Animated.Text style={titleAnimatedStyle} className={titleClassName} numberOfLines={1}>
+                        {account?.title ?? label}
+                    </Animated.Text>
                 </View>
 
                 <Icon icon={UserIconNameEnum.ChevronDown} size={14} className="text-secondary-foreground" />
