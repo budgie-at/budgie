@@ -56,8 +56,8 @@ packages/
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()` 
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per folder** - Each component file lives in its own folder
-10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components
-11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/core/macro` for string props, `<Trans>` for JSX children
+10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
+11. **Use `t` macro for string props** - Use `t\`text\`` from `@lingui/react/macro` for string props (like `content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
@@ -103,7 +103,58 @@ const isItem = (x: unknown): x is Item =>
     typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
 ```
 
+**Form schemas belong in `/constant` folder:**
+```typescript
+// Good - schema in constant file
+// src/transaction/constant/convert-to-transfer-schema.constant.ts
+export const ConvertToTransferSchema = z.object({
+    accountId: z.number().positive()
+});
+export type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+
+// Then import in component
+import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
+
+// Bad - schema defined inline in component
+const ConvertToTransferSchema = z.object({ accountId: z.number().positive() });
+type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+```
+
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
+
+### i18n (Lingui) Usage
+
+**Use `t` macro for string props, `<Trans>` for JSX text children:**
+
+```typescript
+// Good - t macro for string props
+<Button content={t`Cancel`} />
+<PageHeader title={t`Edit Expense`} />
+<Toast text1={t`Conversion failed`} />
+
+// Good - Trans for direct JSX text children
+<Text><Trans>Select the destination account</Trans></Text>
+<FormSheetHeader><Trans>Convert to Transfer</Trans></FormSheetHeader>
+
+// Bad - Trans for string props (renders ReactNode, not string)
+<Button content={<Trans>Cancel</Trans>} />  // Wrong!
+```
+
+**Conditional i18n text:**
+```typescript
+// Good - extract to variable first
+const accountLabel = isExpense ? t`Select destination account` : t`Select source account`;
+<SimpleHorizontalCell title={accountLabel} />
+
+// Good - conditional Trans in JSX children
+<Text>
+    {isExpense ? (
+        <Trans>Select the destination account for this transfer.</Trans>
+    ) : (
+        <Trans>Select the source account for this transfer.</Trans>
+    )}
+</Text>
+```
 
 ## Tech Stack
 
