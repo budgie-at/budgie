@@ -109,23 +109,23 @@ export const TransactionKeypadButton = (props: Props) => {
     const contentClassName = cn(textVariants({ buttonVariant: variant }), isConfirm && confirmTextVariants({ variant: colorVariant }));
 
     return (
-        <HapticPressable
-            accessibilityLabel={value ?? icon}
-            accessibilityRole="button"
-            className={containerClassName}
-            disabled={disabled}
-            onLongPress={onLongPress}
-            onPress={onPress}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-        >
-            <Animated.View className="items-center justify-center" style={animatedStyle}>
+        <Animated.View className="flex-1" style={animatedStyle}>
+            <HapticPressable
+                accessibilityLabel={value ?? icon}
+                accessibilityRole="button"
+                className={containerClassName}
+                disabled={disabled}
+                onLongPress={onLongPress}
+                onPress={onPress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+            >
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (
                     <Text className={contentClassName}>{value}</Text>
                 )}
-            </Animated.View>
-        </HapticPressable>
+            </HapticPressable>
+        </Animated.View>
     );
 };
