@@ -1,5 +1,5 @@
 /* eslint-disable lingui/no-unlocalized-strings */
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -19,16 +19,10 @@ const disabledLlm: LlmInterface = {
     interrupt: emptyFn
 };
 
-export const LlmDisabledProvider = ({ children }: Props) => {
-    const value = useMemo(
-        () =>
-            ({
-                isAvailable: false,
-                llm: disabledLlm,
-                stt: { isReady: false, downloadProgress: 0 }
-            }) as LlmContextInterface,
-        []
-    );
+const disabledValue = {
+    isAvailable: false,
+    llm: disabledLlm,
+    stt: { isReady: false, downloadProgress: 0 }
+} as LlmContextInterface;
 
-    return <LlmContext value={value}>{children}</LlmContext>;
-};
+export const LlmDisabledProvider = ({ children }: Props) => <LlmContext value={disabledValue}>{children}</LlmContext>;

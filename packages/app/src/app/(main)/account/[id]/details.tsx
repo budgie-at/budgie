@@ -2,7 +2,7 @@ import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Link, Redirect, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -40,9 +40,9 @@ export default function AccountDetails() {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const handleGoBack = useCallback(() => void goBackOrReplace('/'), []);
-    const handleOpenMenu = useCallback(() => void setIsMenuOpen(true), []);
-    const handleCloseMenu = useCallback(() => void setIsMenuOpen(false), []);
+    const handleGoBack = () => void goBackOrReplace('/');
+    const handleOpenMenu = () => void setIsMenuOpen(true);
+    const handleCloseMenu = () => void setIsMenuOpen(false);
 
     if (isLoading) {
         return <LoadingScreen />;
