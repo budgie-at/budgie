@@ -14,6 +14,7 @@ import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.i
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
 import { TagSelectorBottomSheet } from '../tag-selector-bottom-sheet/tag-selector-bottom-sheet';
+import { TagFormSelectors } from '../../../@e2e/selectors/tag-form.selector';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -81,10 +82,11 @@ export const TagFormBottomSheet = ({ ref, tag, defaultTitle, onTagSaved, onTagMe
 
     return (
         <>
-            <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
+            <FormBottomSheet submitButtonTestID={TagFormSelectors.Submit} onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
                 <FormBottomSheetTitleField
                     placeholder={t`e.g., Business, Personal, Vacation`}
                     maxLength={TAG_TITLE_MAX_LENGTH}
+                    testID={TagFormSelectors.Input}
                     label={t`Tag Name`}
                     control={control}
                 />

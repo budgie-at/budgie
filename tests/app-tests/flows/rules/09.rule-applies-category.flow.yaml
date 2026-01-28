@@ -36,13 +36,11 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
@@ -64,7 +62,6 @@ env:
     element:
       text: 'Apply to existing transactions'
     direction: DOWN
-    timeout: 5000
 - waitForAnimationToEnd
 - tapOn: 'Apply to existing transactions'
 - waitForAnimationToEnd
@@ -88,12 +85,10 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1'
-    timeout: 5000
 - tapOn:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible: ${CATEGORY_NAME}
-    timeout: 5000
 - assertNotVisible: ${ORIGINAL_CATEGORY_NAME}

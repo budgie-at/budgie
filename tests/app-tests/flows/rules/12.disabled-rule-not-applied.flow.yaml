@@ -5,11 +5,7 @@ env:
   CATEGORY_NAME: Test12 Category
   TAG_NAME: Test12 Tag
 ---
-# Test 12: Disabled rules are not applied to new transactions
-# Creates a rule, disables it, then creates a matching transaction
-# Verifies the rule is NOT applied since it's disabled
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -18,30 +14,24 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
-# Configure condition: Title CONTAINS "Uber"
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Uber'
 
-# Configure action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -49,21 +39,17 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Disable the rule by tapping the switch
 - tapOn:
     id: 'RulesPage.RuleCard.0.EnabledSwitch'
 - waitForAnimationToEnd
 
-# Now create a transaction that matches the rule
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
@@ -72,10 +58,5 @@ env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# The rule should NOT be applied since it's disabled
-# Verify the transaction is visible but has no category badge
-# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1'
-# Note: We can't easily assert that CategoryBadge is NOT visible
-# The test passes if the transaction is created without errors

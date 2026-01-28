@@ -4,7 +4,6 @@ env:
   CATEGORY_NAME: Shopping
   CSV_DISPLAY_NAME: test17-suggested-rule
 ---
-# Test 17: Suggested rule "Create Rule" creates rule directly from bottom sheet
 
 - runFlow:
     file: ../shared/enter-app.flow.yaml
@@ -26,7 +25,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1'
-    timeout: 5000
 - tapOn:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
@@ -42,7 +40,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'SuggestRule.AddRuleButton'
-    timeout: 5000
 
 - tapOn:
     id: 'SuggestRule.AddRuleButton'
@@ -50,7 +47,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'SuggestRule.BottomSheet'
-    timeout: 5000
 
 - tapOn:
     id: 'SuggestRule.ConditionChip.COMMENT'
@@ -69,4 +65,3 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.RuleCard.0'
-    timeout: 5000

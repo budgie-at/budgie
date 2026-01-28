@@ -15,6 +15,7 @@ import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { categoryService } from '../../service/category.service';
 import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
 import { CategorySelectorBottomSheet } from '../category-selector-bottom-sheet/category-selector-bottom-sheet';
+import { CategoryFormSelectors } from '../../../@e2e/selectors/category-form.selector';
 
 interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
@@ -86,10 +87,18 @@ export const CategoryFormBottomSheet = ({ ref, category, defaultTitle, onCategor
 
     return (
         <>
-            <FormBottomSheet onDismiss={handleCancel} onCancel={handleCancel} onSubmit={onSubmit} submitLabel={submitLabel} ref={ref}>
+            <FormBottomSheet
+                submitButtonTestID={CategoryFormSelectors.Submit}
+                onDismiss={handleCancel}
+                onCancel={handleCancel}
+                onSubmit={onSubmit}
+                submitLabel={submitLabel}
+                ref={ref}
+            >
                 <FormBottomSheetTitleField
                     placeholder={t`e.g., Groceries, Salary, Rent`}
                     maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                    testID={CategoryFormSelectors.Input}
                     label={t`Category Name`}
                     control={control}
                 />

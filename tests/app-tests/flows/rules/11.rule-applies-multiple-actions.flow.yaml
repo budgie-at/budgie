@@ -24,14 +24,12 @@ env:
     id: 'TabBar.Transactions'
 - extendedWaitUntil:
     visible: 'Transactions'
-    timeout: 3000
 
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.0'
-    timeout: 2000
 - waitForAnimationToEnd
 
 - tapOn:
@@ -39,7 +37,6 @@ env:
 - waitForAnimationToEnd
 - extendedWaitUntil:
     visible: 'New Expense'
-    timeout: 5000
 
 - tapOn:
     id: 'TransactionForm.AmountInput'
@@ -51,14 +48,12 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.AccountSearchInput'
-    timeout: 5000
 - tapOn:
     id: 'TransactionForm.AccountSearchInput'
 - inputText: ${ACCOUNT_NAME}
 - extendedWaitUntil:
     visible:
       id: 'TransactionForm.Account'
-    timeout: 5000
 - tapOn:
     id: 'TransactionForm.Account'
 
@@ -81,7 +76,6 @@ env:
 
 - extendedWaitUntil:
     visible: 'Transactions'
-    timeout: 5000
 
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
@@ -91,13 +85,11 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
@@ -119,7 +111,6 @@ env:
     element:
       id: 'RuleForm.ActionSection.AddButton'
     direction: DOWN
-    timeout: 5000
 - tapOn:
     id: 'RuleForm.ActionSection.AddButton'
 
@@ -127,7 +118,6 @@ env:
     element:
       id: 'RuleForm.Action.1.TypeSelector'
     direction: DOWN
-    timeout: 5000
     centerElement: true
 - tapOn:
     id: 'RuleForm.Action.1.TypeSelector'
@@ -141,14 +131,12 @@ env:
 
 - extendedWaitUntil:
     visible: ${TAG_NAME}
-    timeout: 5000
 - tapOn: ${TAG_NAME}
 
 - scrollUntilVisible:
     element:
       id: 'RuleForm.ApplyToExistingToggle'
     direction: DOWN
-    timeout: 5000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.ApplyToExistingToggle'
@@ -174,11 +162,9 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1.CategoryBadge'
-    timeout: 5000
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1.Tag'
-    timeout: 5000
 
 - tapOn:
     id: 'TransactionList.Card.1'
@@ -186,11 +172,9 @@ env:
 
 - extendedWaitUntil:
     visible: ${CATEGORY_NAME}
-    timeout: 5000
 
 - assertNotVisible: ${ORIGINAL_CATEGORY_NAME}
 
 - extendedWaitUntil:
     visible: ${TAG_NAME}
-    timeout: 5000
 

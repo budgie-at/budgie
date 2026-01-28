@@ -1,67 +1,43 @@
 appId: ${APP_ID}
 ---
-# Setup: Create a tag with the given name
-# Requires: TAG_NAME env variable
-# Assumes: App is launched
 
-# Navigate to Home first to reset Settings scroll position
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible: 'TOTAL BALANCE'
-    timeout: 3000
 
-# Navigate to Settings > Tags
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible: 'Settings'
-    timeout: 3000
 
-# Find and tap Manage Tags
 - scrollUntilVisible:
     element:
       id: 'SettingsPage.ManageTagsCard'
     direction: DOWN
-    timeout: 15000
     speed: 20
 - tapOn:
     id: 'SettingsPage.ManageTagsCard'
 - extendedWaitUntil:
     visible: 'Tags'
-    timeout: 3000
 
-# Tap the + FAB button to reveal create actions
 - tapOn:
     id: 'CreateTransactionTrigger'
-- extendedWaitUntil:
-    visible:
-      id: 'ActionItem.0'
-    timeout: 3000
+    
 - waitForAnimationToEnd
 
-# Tap the Tag action item
-- tapOn:
-    id: 'ActionItem.0'
-- extendedWaitUntil:
-    notVisible:
-      id: 'ActionItem.0'
-    timeout: 5000
+- tapOn: Tag
 
-# Enter tag name
 - tapOn:
-    point: 50%, 82%
+    id: TagForm.Input
 - inputText: ${TAG_NAME}
 
-# Tap the Create button
 - tapOn:
-    point: 75%, 96%
+    id: TagForm.Submit
+
 - waitForAnimationToEnd
 
-# TODO: Maestro can't match text even when visible - needs investigation
-# Wait for UI to stabilize after tag creation
-- waitForAnimationToEnd
+- assertVisible: ${TAG_NAME}, Swipe left
 
-# Go back to settings
 - tapOn:
     id: 'TabBar.Settings'

@@ -26,7 +26,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionList.Card.1'
-    timeout: 5000
 - tapOn:
     id: 'TransactionList.Card.1'
 - waitForAnimationToEnd
@@ -42,7 +41,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'SuggestRule.AddRuleButton'
-    timeout: 5000
 
 - tapOn:
     id: 'SuggestRule.AddRuleButton'
@@ -50,7 +48,6 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'SuggestRule.BottomSheet'
-    timeout: 5000
 
 - tapOn:
     id: 'SuggestRule.ConditionChip.COMMENT'
@@ -61,7 +58,6 @@ env:
 
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
 - assertVisible: 'Comment'
 

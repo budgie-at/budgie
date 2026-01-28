@@ -5,12 +5,7 @@ env:
   CATEGORY_NAME: Test13 Category
   TAG_NAME: Test13 Tag
 ---
-# Test 13: Apply to existing toggle behavior
-# Creates a transaction, then creates a rule WITHOUT "Apply to existing"
-# Verifies transaction unchanged. Then edits rule to enable toggle
-# and verifies transaction is updated.
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -19,7 +14,6 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# First, create a transaction (before the rule exists)
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
@@ -28,30 +22,24 @@ env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
-# Configure condition: Title CONTAINS "Spotify"
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Spotify'
 
-# Configure action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -59,56 +47,42 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Submit the rule WITHOUT enabling "Apply to existing"
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Navigate to Transactions to verify the transaction is UNCHANGED
 - tapOn:
     id: 'TabBar.Transactions'
 - waitForAnimationToEnd
 
-# Verify the transaction is visible (should have no category badge yet)
-# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1'
 
-# Now edit the rule and enable "Apply to existing"
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Tap on the rule to edit it
 - tapOn:
     id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
-    timeout: 3000
 
-# Enable "Apply to existing transactions"
 - scrollUntilVisible:
     element:
       id: 'RuleForm.ApplyToExistingToggle'
     direction: DOWN
-    timeout: 5000
 - tapOn:
     id: 'RuleForm.ApplyToExistingToggle'
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Navigate to Transactions to verify the category is NOW applied
 - tapOn:
     id: 'TabBar.Transactions'
 - waitForAnimationToEnd
 
-# Verify the transaction now shows the category badge
-# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1.CategoryBadge'

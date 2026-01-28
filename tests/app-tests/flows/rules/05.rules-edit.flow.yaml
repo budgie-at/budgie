@@ -1,26 +1,27 @@
 appId: com.vitalyiegorov.budgie
+env:
+  TITLE_CONTAINS_TEXT: Netflix Updated
+  CATEGORY_NAME: Test02 Category
 ---
 
 - runFlow:
-    file: ../shared/navigate-to-rules.flow.yaml
+    file: ./02.rules-create-basic.flow.yaml
 
 - tapOn:
     id: 'RulesPage.RuleCard.0'
 - extendedWaitUntil:
     visible: 'Edit Rule'
-    timeout: 3000
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - eraseText
-- inputText: 'Netflix Updated'
+- inputText: ${TITLE_CONTAINS_TEXT}
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
+
+- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}
+

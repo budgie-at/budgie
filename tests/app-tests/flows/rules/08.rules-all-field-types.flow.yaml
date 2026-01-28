@@ -1,4 +1,8 @@
 appId: com.vitalyiegorov.budgie
+env:
+  CATEGORY_NAME: Groceries
+  COMMENT_CONTAINS_TEXT: Test08 Comment
+  AMOUNT: 100
 ---
 
 - runFlow:
@@ -9,13 +13,11 @@ appId: com.vitalyiegorov.budgie
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
 - tapOn:
     id: 'RuleForm.Condition.0.FieldSelector'
@@ -29,7 +31,27 @@ appId: com.vitalyiegorov.budgie
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- inputText: '100'
+- inputText: ${AMOUNT}
+
+- tapOn:
+    id: 'RuleForm.ConditionSection.AddButton'
+
+- tapOn:
+    id: 'RuleForm.Condition.1.FieldSelector'
+
+- tapOn: Comment
+
+- tapOn:
+    id: 'RuleForm.Condition.1.ValueInput'
+- inputText: ${COMMENT_CONTAINS_TEXT}
+
+- tapOn: return
+
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Action.0.TypeSelector'
+    direction: DOWN
+    centerElement: true
 
 - tapOn:
     id: RuleForm.Action.0.TypeSelector
@@ -37,13 +59,11 @@ appId: com.vitalyiegorov.budgie
     id: RuleForm.SelectorCard.SET_CATEGORY
 
 - tapOn:
-    id: RuleForm.Action.0.CategorySelector
-- tapOn:
-    id: CategoryPickerBottomSheet.Input
-- inputText: 'Groceries'
-- tapOn:
-    text: 'Groceries'
-    index: 1
+    id: 'RuleForm.Action.0.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
@@ -51,4 +71,4 @@ appId: com.vitalyiegorov.budgie
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-- assertVisible: 1, If all of:, |, Title contains "Netflix Updated", |, Title contains "Premium", Then:, |, set category to Car & Fuel
+- assertVisible: 1, If all of:, |, Amount > "${AMOUNT}", |, Comment contains "${COMMENT_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}

@@ -5,11 +5,7 @@ env:
   CATEGORY_NAME: Test14 Category
   TAG_NAME: Test14 Tag
 ---
-# Test 14: Rule does NOT apply when conditions don't match
-# Creates a rule for "Netflix", then creates a "Spotify" transaction
-# Verifies the rule is NOT applied since conditions don't match
 
-# Setup - creates account, category, tag with unique names
 - runFlow:
     file: ../setup/setup-rules-test.flow.yaml
     env:
@@ -18,11 +14,9 @@ env:
       CATEGORY_NAME: ${CATEGORY_NAME}
       TAG_NAME: ${TAG_NAME}
 
-# Navigate to Rules page
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
 
-# Open FAB and tap Create Rule
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
@@ -36,12 +30,10 @@ env:
     visible: 'Create Rule'
     timeout: 5000
 
-# Configure condition: Title CONTAINS "Netflix" (will NOT match "Spotify")
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - inputText: 'Netflix'
 
-# Configure action: SET_CATEGORY
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
 - runFlow:
@@ -49,16 +41,13 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Submit the rule
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - waitForAnimationToEnd
 
-# Verify rule was created
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
 
-# Now create a transaction that does NOT match the rule
 - runFlow:
     file: ../shared/create-expense-transaction.flow.yaml
     env:
@@ -67,9 +56,5 @@ env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# The rule should NOT be applied since conditions don't match
-# Verify the transaction is visible
-# Note: Index 1 because index 0 is the section header (e.g., "JAN 2026")
 - assertVisible:
     id: 'TransactionList.Card.1'
-# Note: The transaction should have no category badge since "Spotify" != "Netflix"

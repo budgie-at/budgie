@@ -6,6 +6,7 @@ import { FormItem } from '../form-item/form-item';
 interface Props<T extends FieldValues> {
     readonly control: Control<T>;
     readonly label: string;
+    readonly testID?: string;
     readonly placeholder: string;
     readonly name?: Path<T>;
     readonly maxLength: number;
@@ -14,6 +15,7 @@ interface Props<T extends FieldValues> {
 export const FormBottomSheetTitleField = <T extends FieldValues>({
     control,
     label,
+    testID,
     placeholder,
     name = 'title' as Path<T>,
     maxLength
@@ -26,6 +28,7 @@ export const FormBottomSheetTitleField = <T extends FieldValues>({
                 <BottomSheetTextInput
                     value={value}
                     status={status}
+                    testID={testID}
                     maxLength={maxLength}
                     onChangeText={onChange}
                     placeholder={placeholder}

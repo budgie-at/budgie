@@ -11,6 +11,7 @@ export const RulesPageSelectors = {
 
 export const RuleCardSelectors = {
     Card: (index: number) => `RulesPage.RuleCard.${index}`,
+    DeleteAction: (index: number) => `RulesPage.RuleCard.${index}.DeleteAction`,
     EnabledSwitch: (index: number) => `RulesPage.RuleCard.${index}.EnabledSwitch`,
     OrderBadge: (index: number) => `RulesPage.RuleCard.${index}.OrderBadge`,
     ConditionsText: (index: number) => `RulesPage.RuleCard.${index}.Conditions`,

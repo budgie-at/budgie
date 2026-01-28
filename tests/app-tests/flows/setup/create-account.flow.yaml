@@ -1,40 +1,29 @@
 appId: ${APP_ID}
 ---
-# Setup: Create an account with the given name
-# Requires: ACCOUNT_NAME env variable
-# Assumes: App is launched and on home screen
-
-# Check if we're in empty state or have existing accounts
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible: 'TOTAL BALANCE'
-    timeout: 3000
 
 - tapOn:
     id: 'CreateTransactionTrigger'
 - extendedWaitUntil:
     visible:
       id: 'ActionItem.0'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     text: 'Account'
 - extendedWaitUntil:
     visible: 'New Account'
-    timeout: 10000
 - tapOn:
     id: 'CreateAccount.CASH'
 - extendedWaitUntil:
     visible: 'Account Name & Icon'
-    timeout: 5000
 - tapOn:
     text: 'e.g. Savings Account'
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
     text: 'Submit'
 
-# Wait for home screen with account
-- extendedWaitUntil:
-    visible: 'TOTAL BALANCE'
-    timeout: 60000
+- assertVisible: ${ACCOUNT_NAME}, $0
+- assertVisible: 'TOTAL BALANCE'

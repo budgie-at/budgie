@@ -53,7 +53,7 @@ export default function RulesPage() {
         const order = index + 1;
 
         return (
-            <DeletableRow id={rule.id} onDelete={handleDeleteRule}>
+            <DeletableRow deleteActionTestID={RuleCardSelectors.DeleteAction(index)} id={rule.id} onDelete={handleDeleteRule}>
                 <RuleCard
                     testID={RuleCardSelectors.Card(index)}
                     switchTestID={RuleCardSelectors.EnabledSwitch(index)}

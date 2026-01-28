@@ -1,5 +1,17 @@
 appId: com.vitalyiegorov.budgie
+env:
+  TEST_ID: 03
+  CATEGORY_NAME: Test03 Category
+  TITLE_CONTAINS_TEXT: Spotify
+  COMMENT_CONTAINS_TEXT: Premium
 ---
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+- runFlow:
+    file: ../setup/create-category.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 - runFlow:
     file: ../shared/navigate-to-rules.flow.yaml
@@ -9,41 +21,29 @@ appId: com.vitalyiegorov.budgie
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.CreateButton'
-    timeout: 3000
 - waitForAnimationToEnd
 - tapOn:
     id: 'RulesPage.CreateButton'
 - extendedWaitUntil:
     visible: 'Create Rule'
-    timeout: 5000
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- inputText: 'Spotify'
+- inputText: ${TITLE_CONTAINS_TEXT}
 
 - tapOn:
     id: 'RuleForm.ConditionSection.AddButton'
 
 - tapOn:
     id: 'RuleForm.Condition.1.FieldSelector'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-- tapOn:
-    point: 50%, 78%
-- swipe:
-    start: 50%, 80%
-    end: 50%, 95%
-    duration: 300
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+
+- tapOn: Comment
 
 - tapOn:
     id: 'RuleForm.Condition.1.ValueInput'
-- inputText: 'Premium'
+- inputText: ${COMMENT_CONTAINS_TEXT}
+
+- tapOn: return
 
 - assertVisible:
     text: 'Match All'
@@ -52,31 +52,22 @@ appId: com.vitalyiegorov.budgie
     element:
       id: 'RuleForm.Action.0.CategorySelector'
     direction: DOWN
-    timeout: 5000
 
 - tapOn:
     id: 'RuleForm.Action.0.CategorySelector'
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 2000
-- tapOn:
-    point: 50%, 78%
-- swipe:
-    start: 50%, 80%
-    end: 50%, 95%
-    duration: 300
-- swipe:
-    start: 50%, 50%
-    end: 50%, 51%
-    duration: 1500
+
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
 
 - tapOn:
     id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
-    timeout: 10000
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
+
+- assertVisible: 1, If all of:, |, Title contains "${TITLE_CONTAINS_TEXT}", |, Comment contains "${COMMENT_CONTAINS_TEXT}", Then:, |, set category to ${CATEGORY_NAME}

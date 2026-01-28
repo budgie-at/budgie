@@ -1,24 +1,19 @@
 appId: ${APP_ID}
 ---
-# Setup: Create account, category, and tag for rules testing
-# Requires: ACCOUNT_NAME, CATEGORY_NAME, TAG_NAME env variables
 
 - runFlow:
     file: ../shared/enter-app.flow.yaml
 
-# Create account
 - runFlow:
     file: ./create-account.flow.yaml
     env:
       ACCOUNT_NAME: ${ACCOUNT_NAME}
 
-# Create category
 - runFlow:
     file: ./create-category.flow.yaml
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-# Create tag
 - runFlow:
     file: ./create-tag.flow.yaml
     env:

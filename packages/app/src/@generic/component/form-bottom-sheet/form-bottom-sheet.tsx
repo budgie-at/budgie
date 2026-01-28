@@ -14,6 +14,7 @@ interface Props {
     readonly title?: string;
     readonly description?: string;
     readonly submitLabel?: string;
+    readonly submitButtonTestID?: string;
     readonly onSubmit: EmptyFn;
     readonly onCancel: EmptyFn;
     readonly onDismiss: EmptyFn;
@@ -21,7 +22,7 @@ interface Props {
 }
 
 export const FormBottomSheet = (props: Props) => {
-    const { ref, title, description, submitLabel, onSubmit, onCancel, onDismiss, children } = props;
+    const { ref, title, description, submitLabel, onSubmit, onCancel, onDismiss, children, submitButtonTestID } = props;
 
     return (
         <BottomSheet enableDynamicSizing onDismiss={onDismiss} ref={ref}>
@@ -36,7 +37,12 @@ export const FormBottomSheet = (props: Props) => {
                     <View className="gap-y-3xl">{children}</View>
                 </View>
 
-                <BottomSheetFormFooter onCancel={onCancel} onSubmit={onSubmit} submitLabel={submitLabel} />
+                <BottomSheetFormFooter
+                    submitButtonTestID={submitButtonTestID}
+                    onCancel={onCancel}
+                    onSubmit={onSubmit}
+                    submitLabel={submitLabel}
+                />
             </BottomSheetScrollView>
         </BottomSheet>
     );
