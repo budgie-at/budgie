@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
 import { NoteInputModalContext, NoteInputModalParams } from '../context/note-input-modal.context';
 
 interface Props {
@@ -8,24 +8,9 @@ interface Props {
 }
 
 export const NoteInputModalProvider = ({ children }: Props) => {
-    const [currentParams, setCurrentParams] = useState<NoteInputModalParams | null>(null);
-    const resolverRef = useRef<((value: string | null) => void) | null>(null);
+    const { currentParams, open, resolve } = useModalResolver<NoteInputModalParams, string | null>('/note-input');
 
-    const openNoteInput = (params?: NoteInputModalParams): Promise<string | null> =>
-        new Promise(resolve => {
-            setCurrentParams(params ?? {});
-            resolverRef.current = resolve;
-            router.push('/note-input');
-        });
-
-    const resolveNoteInput = (value: string | null) => {
-        resolverRef.current?.(value);
-        resolverRef.current = null;
-        setCurrentParams(null);
-        router.back();
-    };
-
-    const value = { openNoteInput, resolveNoteInput, currentParams };
+    const value = { openNoteInput: open, resolveNoteInput: resolve, currentParams };
 
     return <NoteInputModalContext value={value}>{children}</NoteInputModalContext>;
 };
