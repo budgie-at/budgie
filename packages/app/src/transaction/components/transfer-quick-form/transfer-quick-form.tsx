@@ -1,6 +1,7 @@
 /* jscpd:ignore-start */
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useRef } from 'react';
+import { useLingui } from '@lingui/react/macro';
+import { useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -12,9 +13,11 @@ import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useDatePickerModal } from '../../context/date-picker-modal.context';
 import { useNoteInputModal } from '../../context/note-input-modal.context';
+import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
+import { ConversionRow } from '../conversion-row/conversion-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -31,8 +34,9 @@ interface Props {
 }
 
 /* jscpd:ignore-start */
-// eslint-disable-next-line max-statements -- Form component orchestrates multiple hooks, modals, and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function, complexity -- Form component orchestrates multiple hooks, modals, and handlers
 export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
+    const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { openDatePicker } = useDatePickerModal();
@@ -42,23 +46,69 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const transferAccountsRef = useRef<TransactionTransferAccountsRowRef>(null);
 
+    const [isEditingDestination, setIsEditingDestination] = useState(false);
+
     const initialAmount = getValues('amount');
-
-    const handleAmountChange = (value: number) => {
-        setValue('amount', value);
-    };
-
-    const { displayValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput({
-        initialValue: initialAmount,
-        onChange: handleAmountChange
-    });
+    const conversion = useCurrencyConversion();
 
     const fromAccountId = useWatch({ control, name: 'fromAccountId' });
+    const toAccountId = useWatch({ control, name: 'toAccountId' });
     const operatedAt = useWatch({ control, name: 'operatedAt' });
     const comment = useWatch({ control, name: 'comment' });
 
     const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const currencySymbol = fromAccount?.instrument.symbol ?? defaultInstrument.symbol;
+    const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
+
+    const handleSourceAmountChange = (value: number) => {
+        setValue('amount', value);
+    };
+
+    const sourceKeypad = useKeypadInput({
+        initialValue: initialAmount,
+        onChange: handleSourceAmountChange
+    });
+
+    const destinationKeypad = useKeypadInput({
+        initialValue: 0
+    });
+
+    const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
+
+    const displayAmount = isEditingDestination ? destinationKeypad.displayValue : sourceKeypad.displayValue;
+    const displaySymbol = isEditingDestination
+        ? (toAccount?.instrument.symbol ?? defaultInstrument.symbol)
+        : (fromAccount?.instrument.symbol ?? defaultInstrument.symbol);
+    const receivingAmountLabel = t`Receiving amount`;
+
+    const conversionRowAmount = isEditingDestination ? sourceKeypad.numericValue : conversion.destinationAmount;
+    const conversionRowSymbol = isEditingDestination
+        ? (fromAccount?.instrument.symbol ?? defaultInstrument.symbol)
+        : (toAccount?.instrument.symbol ?? defaultInstrument.symbol);
+    const conversionRowSourceCode = isEditingDestination ? (toAccount?.instrument.code ?? '') : (fromAccount?.instrument.code ?? '');
+    const conversionRowDestCode = isEditingDestination ? (fromAccount?.instrument.code ?? '') : (toAccount?.instrument.code ?? '');
+    const conversionRowRate = !isEditingDestination && conversion.exchangeRate > 0 ? 1 / conversion.exchangeRate : conversion.exchangeRate;
+
+    const fromInstrumentId = fromAccount?.instrumentId ?? 0;
+    const toInstrumentId = toAccount?.instrumentId ?? 0;
+
+    useEffect(() => {
+        conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
+    }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
+
+    const handleConversionRowPress = () => {
+        if (isEditingDestination) {
+            const destinationAmount = destinationKeypad.numericValue;
+
+            if (destinationAmount > 0) {
+                conversion.setManualDestinationAmount(sourceKeypad.numericValue, destinationAmount);
+            }
+
+            setIsEditingDestination(false);
+        } else {
+            destinationKeypad.setFromNumeric(conversion.destinationAmount);
+            setIsEditingDestination(true);
+        }
+    };
 
     const handleCommentPress = async () => {
         const result = await openNoteInput({ initialValue: comment });
@@ -76,7 +126,20 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
         }
     };
 
+    // eslint-disable-next-line max-statements -- Handles both destination editing and form submission with validation
     const handleConfirm = () => {
+        if (isEditingDestination) {
+            const destinationAmount = destinationKeypad.numericValue;
+
+            if (destinationAmount > 0) {
+                conversion.setManualDestinationAmount(sourceKeypad.numericValue, destinationAmount);
+            }
+
+            setIsEditingDestination(false);
+
+            return;
+        }
+
         const amount = getValues('amount');
         const from = getValues('fromAccountId') ?? 0;
         const to = getValues('toAccountId') ?? 0;
@@ -89,6 +152,10 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
 
         if (!isValid) {
             return;
+        }
+
+        if (conversion.isCrossCurrency) {
+            setValue('exchangeRate', conversion.exchangeRate);
         }
 
         const entries = buildTransferEntries({
@@ -105,7 +172,13 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
 
     return (
         <View className="flex-1">
-            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+            <TransactionAmountDisplay
+                ref={amountDisplayRef}
+                amount={displayAmount}
+                currencySymbol={displaySymbol}
+                variant={variant}
+                {...(isEditingDestination ? { label: receivingAmountLabel } : {})}
+            />
 
             <TransactionFieldIcons
                 variant={variant}
@@ -118,12 +191,26 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
                 <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
             </View>
 
+            {conversion.isCrossCurrency ? (
+                <View className="px-lg mb-sm">
+                    <ConversionRow
+                        destinationAmount={conversionRowAmount}
+                        destinationSymbol={conversionRowSymbol}
+                        sourceCode={conversionRowSourceCode}
+                        destinationCode={conversionRowDestCode}
+                        exchangeRate={conversionRowRate}
+                        isManualRate={conversion.isManualRate}
+                        onPress={handleConversionRowPress}
+                    />
+                </View>
+            ) : null}
+
             <TransactionKeypad
                 variant={variant}
-                onDigit={handleDigit}
-                onDecimal={handleDecimal}
-                onBackspace={handleBackspace}
-                onLongBackspace={handleClear}
+                onDigit={activeKeypad.handleDigit}
+                onDecimal={activeKeypad.handleDecimal}
+                onBackspace={activeKeypad.handleBackspace}
+                onLongBackspace={activeKeypad.handleClear}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
             />
