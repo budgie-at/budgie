@@ -1,6 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
@@ -86,9 +86,11 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                     iconSize={24}
                     className="mb-4xl self-center rounded-3xl"
                 />
-                <Text className="text-primary text-xl font-semibold text-center mb-sm">{t`Convert to Transfer?`}</Text>
+                <Text className="text-primary text-xl font-semibold text-center mb-sm">
+                    <Trans>Convert to Transfer?</Trans>
+                </Text>
                 <Text className="text-secondary-foreground text-center text-sm mb-3xl">
-                    {t`Select the destination account for this transfer.`}
+                    <Trans>Select the destination account for this transfer.</Trans>
                 </Text>
                 <View className="mb-3xl">
                     <AccountSelector
