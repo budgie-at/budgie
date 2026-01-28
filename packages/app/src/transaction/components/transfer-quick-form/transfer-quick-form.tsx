@@ -192,7 +192,7 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
             </View>
 
             {conversion.isCrossCurrency ? (
-                <View className="px-lg mb-sm">
+                <View className="mb-sm">
                     <ConversionRow
                         destinationAmount={conversionRowAmount}
                         destinationSymbol={conversionRowSymbol}
