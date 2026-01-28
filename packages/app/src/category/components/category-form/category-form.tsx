@@ -31,7 +31,6 @@ interface Props {
     readonly onCancel: () => void;
 }
 
- 
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
