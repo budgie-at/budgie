@@ -3,6 +3,7 @@
 import { IncomeTransactionCreateInputSchema, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
+import { useRef } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,8 +11,11 @@ import { isDefined } from '@rnw-community/shared';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
+import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { ConvertIncomeToTransferBottomSheet } from '../../../../transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet';
+import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { IncomeQuickForm } from '../../../../transaction/components/income-quick-form/income-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
@@ -27,6 +31,7 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-start */
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
+    const convertSheetRef = useRef<BottomSheetInterface | null>(null);
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -36,18 +41,32 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         id: transactionId
     });
 
+    const toAccountId = form.watch('toAccountId');
+
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleOpenConvert = () => void convertSheetRef.current?.open();
 
     return (
-        <FormProvider {...form}>
-            <FullPage
-                header={
-                    <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
-                }
-            >
-                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
-            </FullPage>
-        </FormProvider>
+        <>
+            <FormProvider {...form}>
+                <FullPage
+                    header={
+                        <PageHeader
+                            title={t`Edit Income`}
+                            onGoBack={handleGoBack}
+                            right={
+                                <TransactionActionsMenu onDelete={handleDelete}>
+                                    <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
+                                </TransactionActionsMenu>
+                            }
+                        />
+                    }
+                >
+                    <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                </FullPage>
+            </FormProvider>
+            <ConvertIncomeToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} toAccountId={toAccountId ?? 0} />
+        </>
     );
 };
 /* jscpd:ignore-end */
