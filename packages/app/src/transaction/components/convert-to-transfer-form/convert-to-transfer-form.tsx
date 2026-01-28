@@ -1,6 +1,7 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
@@ -15,7 +16,6 @@ import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/f
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
-import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
@@ -118,7 +118,14 @@ export const ConvertToTransferForm = (props: Props) => {
             }
 
             onSuccess();
-            dismissAllOrReplace(`/transactions/${transactionId}/transfer`);
+            const transferRoute = `/transactions/${transactionId}/transfer` as const;
+
+            if (router.canDismiss()) {
+                router.dismissAll();
+                router.push(transferRoute);
+            } else {
+                router.replace(transferRoute);
+            }
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
         }
