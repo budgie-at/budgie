@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.20.0](https://github.com/budgie-at/budgie/compare/v2.19.1...v2.20.0) (2026-01-28)
+
+### Bug Fixes
+
+- **app:** address PR review feedback ([d50393a](https://github.com/budgie-at/budgie/commit/d50393a63fe0dfe5ccc2c895548cb942d8d12d77))
+- **app:** fix account selector in conversion bottom sheets ([9c00994](https://github.com/budgie-at/budgie/commit/9c009940634d935e3e1f06caec19536033e1070d))
+
+### Features
+
+- **app:** add income to transfer conversion ([0091ff2](https://github.com/budgie-at/budgie/commit/0091ff280132a9e37cc54b06ee993ba3ccfc6649))
+
 ## [2.19.1](https://github.com/budgie-at/budgie/compare/v2.19.0...v2.19.1) (2026-01-28)
 
 ### Bug Fixes
