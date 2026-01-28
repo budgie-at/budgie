@@ -16,6 +16,7 @@ interface Props {
 
 const ANIMATION_DELAY = 100;
 const ANIMATION_DURATION = 200;
+const ENTERING_ANIMATION = FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION);
 const RATE_DECIMALS = 4;
 
 export const ConversionRow = (props: Props) => {
@@ -26,11 +27,13 @@ export const ConversionRow = (props: Props) => {
     const formattedAmount = destinationAmount > 0 ? destinationAmount.toFixed(2) : '0.00';
     const formattedRate = exchangeRate > 0 ? exchangeRate.toFixed(RATE_DECIMALS) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
+    const accessibilityLabel = t`Exchange rate: ${rateLabel}. Tap to edit receiving amount`;
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(ANIMATION_DURATION)}>
+        <Animated.View entering={ENTERING_ANIMATION}>
             <HapticPressable
                 className="flex-row items-center justify-between px-md py-sm bg-secondary-background rounded-2xl"
+                accessibilityLabel={accessibilityLabel}
                 onPress={onPress}
             >
                 <Text className="text-lg font-semibold text-primary">
