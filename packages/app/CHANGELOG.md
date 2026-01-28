@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.19.1](https://github.com/budgie-at/budgie/compare/v2.19.0...v2.19.1) (2026-01-28)
+
+### Bug Fixes
+
+- **app:** fix tag/category form not receiving search input ([bd8dd7b](https://github.com/budgie-at/budgie/commit/bd8dd7b6eccc532faf3a404be7e61d046f4cc764)), closes [#278](https://github.com/budgie-at/budgie/issues/278)
+
 # [2.19.0](https://github.com/budgie-at/budgie/compare/v2.18.1...v2.19.0) (2026-01-28)
 
 ### Bug Fixes
