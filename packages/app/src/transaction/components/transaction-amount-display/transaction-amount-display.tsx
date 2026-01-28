@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { RefObject, useEffect, useImperativeHandle, useRef } from 'react';
 import { Text } from 'react-native';
-import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -18,7 +18,8 @@ interface Props {
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
-    readonly label?: string;
+    readonly label?: string | null;
+    readonly secondaryAmount?: string | null;
 }
 
 const textVariants = cva('text-center font-semibold', {
@@ -33,7 +34,10 @@ const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
 const FONT_SIZE = 52;
 const fontSizeStyle = { fontSize: FONT_SIZE };
 
-export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, label }: Props) => {
+const SECONDARY_ANIMATION_DELAY = 50;
+const SECONDARY_ANIMATION_DURATION = 200;
+
+export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, label, secondaryAmount }: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -69,6 +73,14 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
                 </Animated.View>
             </Animated.View>
             {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
+            {isDefined(secondaryAmount) ? (
+                <Animated.Text
+                    entering={FadeInDown.delay(SECONDARY_ANIMATION_DELAY).duration(SECONDARY_ANIMATION_DURATION)}
+                    className="text-lg text-secondary-foreground font-medium mt-xs"
+                >
+                    {secondaryAmount}
+                </Animated.Text>
+            ) : null}
         </Animated.View>
     );
 };
