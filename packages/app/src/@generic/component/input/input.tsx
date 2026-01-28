@@ -2,11 +2,11 @@ import { cva } from 'class-variance-authority';
 import { ComponentProps } from 'react';
 import { TextInput } from 'react-native';
 
-import { FormFieldStatusWithBorderless } from '../../type/form-field-status.type';
+import { InputVariant } from '../../type/input-variant.type';
 import { cn } from '../../utils/cn.util';
 
 export interface InputProps extends ComponentProps<typeof TextInput> {
-    readonly status?: FormFieldStatusWithBorderless;
+    readonly status?: InputVariant;
     readonly size?: 'sm' | 'md' | 'lg';
 }
 

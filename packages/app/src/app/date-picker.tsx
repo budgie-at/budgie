@@ -12,13 +12,9 @@ export default function DatePickerModal() {
 
     const containerStyle = { flex: 1, backgroundColor };
 
-    const handleDateSelect = (date: Date) => {
-        resolveDatePicker(date);
-    };
-
     return (
         <View style={containerStyle}>
-            <SingleDatePicker date={initialDate} onChange={handleDateSelect} />
+            <SingleDatePicker date={initialDate} onChange={resolveDatePicker} />
 
             <FormSheetSpacer />
         </View>

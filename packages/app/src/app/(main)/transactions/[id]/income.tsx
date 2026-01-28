@@ -8,7 +8,7 @@ import { FormProvider } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { Page } from '../../../../@generic/component/page/page';
+import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
@@ -18,15 +18,11 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-import type { Edge } from 'react-native-safe-area-context';
-
 interface UpdateIncomeFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
 /* jscpd:ignore-end */
-
-const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
@@ -44,14 +40,13 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
 
     return (
         <FormProvider {...form}>
-            <Page
+            <FullPage
                 header={
                     <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
                 }
-                safeEdges={SAFE_EDGES}
             >
                 <IncomeQuickForm variant="positive" onSubmit={handleSubmit} />
-            </Page>
+            </FullPage>
         </FormProvider>
     );
 };

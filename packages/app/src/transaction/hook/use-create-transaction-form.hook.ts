@@ -1,15 +1,11 @@
-import {
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { TransactionCreateInputInterface, TransactionEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
+import { buildExpenseEntry } from '../utils/build-expense-entry.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
@@ -47,7 +43,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             comment,
             amount,
             type,
-            entries: [{ accountId: 0, categoryId, amount: 0, type: TransactionEntryTypeEnum.CREDIT, mccCategoryId: null, externalId: null }]
+            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0 })
         })
     });
 

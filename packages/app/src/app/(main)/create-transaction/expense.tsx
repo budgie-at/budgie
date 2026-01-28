@@ -6,18 +6,14 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Page } from '../../../@generic/component/page/page';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ExpenseQuickForm } from '../../../transaction/components/expense-quick-form/expense-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
-
-import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
-
-const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
@@ -49,9 +45,9 @@ export default function CreateExpenseTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <Page header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
+            <FullPage header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
                 <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} />
-            </Page>
+            </FullPage>
         </FormProvider>
     );
 }

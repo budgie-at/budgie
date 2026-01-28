@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
 
@@ -18,7 +18,6 @@ interface UseKeypadInputResult {
     readonly setFromNumeric: (value: number) => void;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Hook manages keypad state with multiple handlers
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
     const { decimalPlaces } = useSettingsContext();
@@ -37,29 +36,26 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         onChange?.(numericValue);
     }, [numericValue, onChange]);
 
-    const handleDigit = useCallback(
-        (digit: string) => {
-            setDisplayValue(prev => {
-                if (prev === '0') {
-                    return digit;
-                }
+    const handleDigit = (digit: string) => {
+        setDisplayValue(prev => {
+            if (prev === '0') {
+                return digit;
+            }
 
-                const parts = prev.split('.');
-                const hasDecimal = parts.length > 1;
-                const decimalPart = parts[1] ?? '';
-                const maxDecimals = Math.max(decimalPlaces, 2);
+            const parts = prev.split('.');
+            const hasDecimal = parts.length > 1;
+            const decimalPart = parts[1] ?? '';
+            const maxDecimals = Math.max(decimalPlaces, 2);
 
-                if (hasDecimal && decimalPart.length >= maxDecimals) {
-                    return prev;
-                }
+            if (hasDecimal && decimalPart.length >= maxDecimals) {
+                return prev;
+            }
 
-                return prev + digit;
-            });
-        },
-        [decimalPlaces]
-    );
+            return prev + digit;
+        });
+    };
 
-    const handleDecimal = useCallback(() => {
+    const handleDecimal = () => {
         setDisplayValue(prev => {
             if (prev.includes('.')) {
                 return prev;
@@ -67,9 +63,9 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
 
             return `${prev}.`;
         });
-    }, []);
+    };
 
-    const handleDoubleZero = useCallback(() => {
+    const handleDoubleZero = () => {
         setDisplayValue(prev => {
             if (prev === '0') {
                 return prev;
@@ -96,9 +92,9 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
 
             return `${prev}00`;
         });
-    }, [decimalPlaces]);
+    };
 
-    const handleBackspace = useCallback(() => {
+    const handleBackspace = () => {
         setDisplayValue(prev => {
             if (prev.length <= 1) {
                 return '0';
@@ -106,17 +102,17 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
 
             return prev.slice(0, -1);
         });
-    }, []);
+    };
 
-    const handleClear = useCallback(() => {
+    const handleClear = () => {
         setDisplayValue('0');
-    }, []);
+    };
 
-    const setFromNumeric = useCallback((value: number) => {
+    const setFromNumeric = (value: number) => {
         const newDisplay = value === 0 ? '0' : value.toString();
 
         setDisplayValue(newDisplay);
-    }, []);
+    };
 
     return {
         displayValue,

@@ -1,18 +1,18 @@
-/* jscpd:ignore-start - Transfer account selector similar to single account row but with dual accounts and swap */
 import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 
 const ANIMATION_DELAY = 170;
 
@@ -26,7 +26,6 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-// eslint-disable-next-line max-statements -- Component manages dual account selectors with shake animations
 export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -48,7 +47,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             excludeAccountId: toAccountId
         });
 
-        if (selectedAccountId !== null) {
+        if (isDefined(selectedAccountId)) {
             setValue('fromAccountId', selectedAccountId);
         }
     };
@@ -59,7 +58,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             excludeAccountId: fromAccountId
         });
 
-        if (selectedAccountId !== null) {
+        if (isDefined(selectedAccountId)) {
             setValue('toAccountId', selectedAccountId);
         }
     };
@@ -69,55 +68,29 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
         setValue('toAccountId', fromAccountId);
     };
 
-    const fromAccessibilityLabel = `${t`From`}: ${fromAccount?.title ?? t`Select`}`;
-    const toAccessibilityLabel = `${t`To`}: ${toAccount?.title ?? t`Select`}`;
-
     return (
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm">
-            <Animated.View style={fromAnimatedStyle} className="flex-1">
-                <HapticPressable
-                    className="flex-row items-center px-md py-md gap-sm bg-secondary-background rounded-2xl"
-                    onPress={handleFromPress}
-                    accessibilityLabel={fromAccessibilityLabel}
-                    accessibilityRole="button"
-                >
-                    <CircleIcon icon={fromAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
-
-                    <View className="flex-1">
-                        <Text className="text-2xs text-secondary-foreground uppercase">{t`From`}</Text>
-                        <Text className="text-sm font-medium text-primary" numberOfLines={1}>
-                            {fromAccount?.title ?? t`Select`}
-                        </Text>
-                    </View>
-
-                    <Icon icon={UserIconNameEnum.ChevronDown} size={14} className="text-secondary-foreground" />
-                </HapticPressable>
-            </Animated.View>
+            <TransferAccountPicker
+                label={t`From`}
+                selectLabel={t`Select`}
+                account={fromAccount}
+                variant={variant}
+                animatedStyle={fromAnimatedStyle}
+                onPress={handleFromPress}
+            />
 
             <HapticPressable onPress={handleSwap} accessibilityLabel={t`Swap accounts`} accessibilityRole="button">
                 <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={28} iconSize={12} />
             </HapticPressable>
 
-            <Animated.View style={toAnimatedStyle} className="flex-1">
-                <HapticPressable
-                    className="flex-row items-center px-md py-md gap-sm bg-secondary-background rounded-2xl"
-                    onPress={handleToPress}
-                    accessibilityLabel={toAccessibilityLabel}
-                    accessibilityRole="button"
-                >
-                    <CircleIcon icon={toAccount?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
-
-                    <View className="flex-1">
-                        <Text className="text-2xs text-secondary-foreground uppercase">{t`To`}</Text>
-                        <Text className="text-sm font-medium text-primary" numberOfLines={1}>
-                            {toAccount?.title ?? t`Select`}
-                        </Text>
-                    </View>
-
-                    <Icon icon={UserIconNameEnum.ChevronDown} size={14} className="text-secondary-foreground" />
-                </HapticPressable>
-            </Animated.View>
+            <TransferAccountPicker
+                label={t`To`}
+                selectLabel={t`Select`}
+                account={toAccount}
+                variant={variant}
+                animatedStyle={toAnimatedStyle}
+                onPress={handleToPress}
+            />
         </Animated.View>
     );
 };
-/* jscpd:ignore-end */

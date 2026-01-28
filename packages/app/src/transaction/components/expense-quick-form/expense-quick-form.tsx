@@ -1,6 +1,6 @@
 /* jscpd:ignore-start */
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
@@ -39,12 +39,9 @@ export const ExpenseQuickForm = ({ variant, onSubmit }: Props) => {
 
     const initialAmount = getValues('amount');
 
-    const handleAmountChange = useCallback(
-        (value: number) => {
-            setValue('amount', value);
-        },
-        [setValue]
-    );
+    const handleAmountChange = (value: number) => {
+        setValue('amount', value);
+    };
 
     const { displayValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput({
         initialValue: initialAmount,
