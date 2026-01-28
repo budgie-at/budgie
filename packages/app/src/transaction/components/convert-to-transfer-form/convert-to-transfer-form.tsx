@@ -4,7 +4,6 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { z } from 'zod';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -18,14 +17,9 @@ import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-lis
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
+import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
 import { useConvertExpenseToTransferMutation } from '../../hooks/use-convert-expense-to-transfer.mutation';
 import { useConvertIncomeToTransferMutation } from '../../hooks/use-convert-income-to-transfer.mutation';
-
-const ConvertToTransferSchema = z.object({
-    accountId: z.number().positive()
-});
-
-type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 
 interface Props {
     readonly transactionId: number;
@@ -132,13 +126,13 @@ export const ConvertToTransferForm = (props: Props) => {
                     onPress={handleOpenAccountSelector}
                 />
                 <View className="flex-row gap-x-md pt-md">
-                    <Button className="flex-1" variant="ghost" onPress={onCancel} content={<Trans>Cancel</Trans>} />
+                    <Button className="flex-1" variant="ghost" onPress={onCancel} content={t`Cancel`} />
                     <Button
                         className="flex-1"
                         variant={buttonVariant}
                         disabled={!form.formState.isValid}
                         onPress={handleConvert}
-                        content={<Trans>Convert</Trans>}
+                        content={t`Convert`}
                     />
                 </View>
             </View>
