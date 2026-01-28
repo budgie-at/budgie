@@ -80,8 +80,9 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
         : (fromAccount?.instrument.symbol ?? defaultInstrument.symbol);
     const fromCode = fromAccount?.instrument.code ?? '';
     const toCode = toAccount?.instrument.code ?? '';
+    const hasAccountCodes = fromCode.length > 0 && toCode.length > 0;
     const editingLabel = isEditingDestination ? t`Receiving ${toCode}` : t`Sending ${fromCode}`;
-    const amountLabel = conversion.isCrossCurrency ? editingLabel : null;
+    const amountLabel = conversion.isCrossCurrency && hasAccountCodes ? editingLabel : null;
 
     const secondarySymbol = isEditingDestination
         ? (fromAccount?.instrument.symbol ?? defaultInstrument.symbol)
@@ -106,15 +107,19 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
         conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
     }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
 
+    const finishDestinationEditing = () => {
+        const destinationAmount = destinationKeypad.numericValue;
+
+        if (destinationAmount > 0) {
+            conversion.setManualDestinationAmount(sourceKeypad.numericValue, destinationAmount);
+        }
+
+        setIsEditingDestination(false);
+    };
+
     const handleConversionRowPress = () => {
         if (isEditingDestination) {
-            const destinationAmount = destinationKeypad.numericValue;
-
-            if (destinationAmount > 0) {
-                conversion.setManualDestinationAmount(sourceKeypad.numericValue, destinationAmount);
-            }
-
-            setIsEditingDestination(false);
+            finishDestinationEditing();
         } else {
             destinationKeypad.setFromNumeric(conversion.destinationAmount);
             setIsEditingDestination(true);
@@ -137,16 +142,9 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
         }
     };
 
-    // eslint-disable-next-line max-statements -- Handles both destination editing and form submission with validation
     const handleConfirm = () => {
         if (isEditingDestination) {
-            const destinationAmount = destinationKeypad.numericValue;
-
-            if (destinationAmount > 0) {
-                conversion.setManualDestinationAmount(sourceKeypad.numericValue, destinationAmount);
-            }
-
-            setIsEditingDestination(false);
+            finishDestinationEditing();
 
             return;
         }
