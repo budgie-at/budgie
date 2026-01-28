@@ -10,8 +10,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-
-const PRESSED_SCALE = 0.95;
+import { PRESSED_SCALE } from '../../constant/pressed-scale.constant';
 
 export interface TransactionFieldIconRef {
     shake: () => void;

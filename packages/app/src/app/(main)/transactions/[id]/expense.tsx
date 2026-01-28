@@ -9,7 +9,7 @@ import { FormProvider } from 'react-hook-form';
 import { isDefined } from '@rnw-community/shared';
 
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { Page } from '../../../../@generic/component/page/page';
+import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -22,15 +22,11 @@ import { useUpdateTransactionForm } from '../../../../transaction/hook/use-updat
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
-import type { Edge } from 'react-native-safe-area-context';
-
 interface UpdateExpenseFormProps {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
 }
 /* jscpd:ignore-end */
-
-const SAFE_EDGES: Edge[] = ['top', 'bottom'];
 
 /* jscpd:ignore-start */
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
@@ -53,7 +49,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     return (
         <>
             <FormProvider {...form}>
-                <Page
+                <FullPage
                     header={
                         <PageHeader
                             title={t`Edit Expense`}
@@ -65,10 +61,9 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                             }
                         />
                     }
-                    safeEdges={SAFE_EDGES}
                 >
                     <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} />
-                </Page>
+                </FullPage>
             </FormProvider>
             <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />
         </>
