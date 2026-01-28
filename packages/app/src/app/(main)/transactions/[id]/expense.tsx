@@ -1,6 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    ExpenseTransactionCreateInputSchema,
+    PRECISION,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
@@ -42,11 +47,19 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const fromAccountId = form.watch('fromAccountId');
 
     const handleGoBack = () => void goBackOrReplace('/');
+    const [sourceEntry] = transaction.entries;
+    const sourceAmount = sourceEntry.amount;
+    const sourceAccount = sourceEntry.account;
+    const sourceInstrumentId = sourceAccount.instrumentId;
+
     const handleOpenConvert = () =>
         void openConvertToTransfer({
             transactionId,
             transactionType: TransactionTypeEnum.EXPENSE,
-            excludeAccountId: fromAccountId ?? 0
+            excludeAccountId: fromAccountId ?? 0,
+            sourceAmount: sourceAmount / PRECISION,
+            sourceInstrumentId,
+            sourceCode: sourceAccount.instrument.code
         });
 
     return (

@@ -1,4 +1,5 @@
+import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import { transactionService } from '../service/transaction.service';
 
-export const useConvertIncomeToTransferMutation = () => async (id: number, fromAccountId: number) =>
-    await transactionService.convertIncomeToTransfer(id, fromAccountId);
+export const useConvertIncomeToTransferMutation = () => async (params: ConvertToTransferParamsInterface) =>
+    await transactionService.convertIncomeToTransfer(params);

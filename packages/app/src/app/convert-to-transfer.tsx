@@ -19,6 +19,9 @@ export default function ConvertToTransferModal() {
             transactionId={currentParams?.transactionId ?? 0}
             transactionType={currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE}
             excludeAccountId={currentParams?.excludeAccountId ?? 0}
+            sourceAmount={currentParams?.sourceAmount ?? 0}
+            sourceInstrumentId={currentParams?.sourceInstrumentId ?? 0}
+            sourceCode={currentParams?.sourceCode ?? ''}
             onSuccess={handleSuccess}
             onCancel={handleCancel}
         />
