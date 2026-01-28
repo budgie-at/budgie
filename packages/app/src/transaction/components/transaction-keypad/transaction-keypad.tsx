@@ -13,11 +13,12 @@ interface Props {
     readonly onBackspace: () => void;
     readonly onLongBackspace: () => void;
     readonly onConfirm: () => void;
+    readonly onCancel: () => void;
     readonly isConfirmDisabled?: boolean;
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, isConfirmDisabled } = props;
+    const { variant, onDigit, onDecimal, onBackspace, onLongBackspace, onConfirm, onCancel, isConfirmDisabled } = props;
 
     const handleDigit1 = () => void onDigit('1');
     const handleDigit2 = () => void onDigit('2');
@@ -61,13 +62,16 @@ export const TransactionKeypad = (props: Props) => {
                     </View>
                 </View>
 
-                <TransactionKeypadButton
-                    icon={UserIconNameEnum.CircleCheck}
-                    variant="confirm"
-                    colorVariant={variant}
-                    onPress={onConfirm}
-                    disabled={isConfirmDisabled}
-                />
+                <View className="flex-row gap-md">
+                    <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
+                    <TransactionKeypadButton
+                        icon={UserIconNameEnum.CircleCheck}
+                        variant="confirm"
+                        colorVariant={variant}
+                        onPress={onConfirm}
+                        disabled={isConfirmDisabled}
+                    />
+                </View>
             </View>
         </Animated.View>
     );

@@ -61,7 +61,7 @@ export default function CreateTransferTransactionPage() {
     return (
         <FormProvider {...form}>
             <Page header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
-                <TransferQuickForm variant="default" onSubmit={handleSubmit} />
+                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </Page>
         </FormProvider>
     );

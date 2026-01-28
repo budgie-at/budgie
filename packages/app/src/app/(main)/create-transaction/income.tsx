@@ -36,7 +36,7 @@ export default function CreateIncomeTransactionPage() {
     return (
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
-                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} />
+                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>
     );

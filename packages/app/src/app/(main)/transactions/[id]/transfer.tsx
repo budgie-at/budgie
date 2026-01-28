@@ -70,7 +70,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     />
                 }
             >
-                <TransferQuickForm variant="default" onSubmit={handleSubmit} />
+                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>
     );

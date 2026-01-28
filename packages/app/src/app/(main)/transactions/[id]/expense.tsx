@@ -62,7 +62,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                         />
                     }
                 >
-                    <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} />
+                    <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
                 </FullPage>
             </FormProvider>
             <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />

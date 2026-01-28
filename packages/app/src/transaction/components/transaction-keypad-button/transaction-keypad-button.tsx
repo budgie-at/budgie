@@ -14,7 +14,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { ClassValue } from 'clsx';
 
-type KeypadButtonVariant = 'digit' | 'action' | 'confirm';
+type KeypadButtonVariant = 'digit' | 'action' | 'confirm' | 'cancel';
 
 interface Props {
     readonly value?: string;
@@ -41,7 +41,8 @@ const buttonVariants = cva<{
         buttonVariant: {
             digit: 'flex-1 bg-ghost-background',
             action: 'flex-1 bg-transparent',
-            confirm: 'h-14'
+            confirm: 'flex-[2] h-14',
+            cancel: 'flex-1 h-14 bg-ghost-background'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
@@ -58,7 +59,8 @@ const textVariants = cva<{
         buttonVariant: {
             digit: 'text-primary',
             action: 'text-secondary-foreground',
-            confirm: ''
+            confirm: '',
+            cancel: 'text-secondary-foreground'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
