@@ -33,7 +33,7 @@ export default function NoteInputModal() {
                         autoFocus
                         returnKeyType="done"
                         onSubmitEditing={handleSubmit}
-                        status="borderless"
+                        borderless
                         autoCorrect={false}
                         spellCheck={false}
                         autoComplete="off"

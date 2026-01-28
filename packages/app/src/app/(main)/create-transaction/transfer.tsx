@@ -7,7 +7,7 @@ import { FormProvider, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Page } from '../../../@generic/component/page/page';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
@@ -60,9 +60,9 @@ export default function CreateTransferTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <Page header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
+            <FullPage header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
                 <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
-            </Page>
+            </FullPage>
         </FormProvider>
     );
 }
