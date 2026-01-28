@@ -72,7 +72,6 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm">
             <TransferAccountPicker
                 label={t`From`}
-                selectLabel={t`Select`}
                 account={fromAccount}
                 variant={variant}
                 animatedStyle={fromAnimatedStyle}
@@ -85,7 +84,6 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
 
             <TransferAccountPicker
                 label={t`To`}
-                selectLabel={t`Select`}
                 account={toAccount}
                 variant={variant}
                 animatedStyle={toAnimatedStyle}
