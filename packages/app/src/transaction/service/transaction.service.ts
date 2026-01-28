@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import {
     AccountTypeEnum,
     ExternalSourceEnum,
@@ -80,8 +79,24 @@ class TransactionService {
 
             await transactionEntryRepository.bulkCreate(
                 [
-                    { ...fromEntry, amount: fromAmountInMicroUnits, transactionId: transaction.id, type: TransactionEntryTypeEnum.CREDIT },
-                    { ...toEntry, amount: toAmount, transactionId: transaction.id, type: TransactionEntryTypeEnum.DEBIT }
+                    {
+                        transactionId: transaction.id,
+                        accountId: fromEntry.accountId,
+                        categoryId: fromEntry.categoryId,
+                        mccCategoryId: fromEntry.mccCategoryId,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        amount: fromAmountInMicroUnits,
+                        externalId: fromEntry.externalId ?? null
+                    },
+                    {
+                        transactionId: transaction.id,
+                        accountId: toEntry.accountId,
+                        categoryId: toEntry.categoryId,
+                        mccCategoryId: toEntry.mccCategoryId,
+                        type: TransactionEntryTypeEnum.DEBIT,
+                        amount: toAmount,
+                        externalId: toEntry.externalId ?? null
+                    }
                 ],
                 tx
             );
@@ -115,20 +130,24 @@ class TransactionService {
             const transaction = await transactionRepository.getById(id);
 
             if (!isDefined(transaction)) {
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
                 throw new Error('Transaction not found');
             }
 
             if (transaction.type !== TransactionTypeEnum.EXPENSE) {
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
                 throw new Error('Only expense transactions can be converted');
             }
 
             if (!isDefined(transaction.fromAccountId)) {
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
                 throw new Error('Transaction must have a source account');
             }
 
             const { entries } = transaction;
 
             if (entries.length !== 1) {
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
                 throw new Error('Only single-entry expenses can be converted');
             }
 
@@ -194,6 +213,7 @@ class TransactionService {
         const toEntry = entries.find(({ accountId }) => accountId === toAccountId);
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
             throw new Error('Transfer must have exactly two entries');
         }
 
@@ -207,9 +227,13 @@ class TransactionService {
             // HINT: This will work if bulkCreate will preserve the order of the inputs.
             const batchEntries = transactions.flatMap((transaction, index) =>
                 batch[index].entries.map(entry => ({
-                    ...entry,
                     transactionId: transaction.id,
-                    amount: convertToMicroUnits(entry.amount)
+                    accountId: entry.accountId,
+                    categoryId: entry.categoryId,
+                    mccCategoryId: entry.mccCategoryId,
+                    type: entry.type,
+                    amount: convertToMicroUnits(entry.amount),
+                    externalId: entry.externalId ?? null
                 }))
             );
 
@@ -228,7 +252,15 @@ class TransactionService {
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
 
         await transactionEntryRepository.bulkCreate(
-            input.entries.map(entry => ({ ...entry, amount: convertToMicroUnits(entry.amount), transactionId })),
+            input.entries.map(entry => ({
+                transactionId,
+                accountId: entry.accountId,
+                categoryId: entry.categoryId,
+                mccCategoryId: entry.mccCategoryId,
+                type: entry.type,
+                amount: convertToMicroUnits(entry.amount),
+                externalId: entry.externalId ?? null
+            })),
             tx
         );
 
