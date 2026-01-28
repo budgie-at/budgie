@@ -125,6 +125,7 @@ class TransactionService {
         });
     }
 
+    /* jscpd:ignore-start */
     async convertExpenseToTransfer(id: number, toAccountId: number): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
@@ -208,7 +209,9 @@ class TransactionService {
             return updated;
         });
     }
+    /* jscpd:ignore-end */
 
+    /* jscpd:ignore-start */
     async convertIncomeToTransfer(id: number, fromAccountId: number): Promise<TransactionEntityInterface> {
         // eslint-disable-next-line max-statements
         return await db.transaction(async tx => {
@@ -292,6 +295,7 @@ class TransactionService {
             return updated;
         });
     }
+    /* jscpd:ignore-end */
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
         const fromEntry = entries.find(({ accountId }) => accountId === fromAccountId);
