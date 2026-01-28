@@ -1,5 +1,6 @@
 import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Controller, UseControllerReturn } from 'react-hook-form';
 import { TextInput, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -30,12 +31,13 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+ 
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { backgroundColor } = useFormsheetListStyles();
     const { openCategorySelector } = useCategorySelectorModal();
-    const { handleSubmit, reset, register, control } = useCategoryForm(category ?? null, defaultTitle);
+    const { handleSubmit, reset, control } = useCategoryForm(category ?? null, defaultTitle);
 
     const isEditing = isDefined(category?.id);
     const containerStyle = { flex: 1, backgroundColor };
@@ -85,19 +87,24 @@ export const CategoryForm = (props: Props) => {
         onCancel();
     };
 
+    const renderTitleInput = ({ field: { value, onChange } }: UseControllerReturn<CategoryCreateEntityInterface, 'title'>) => (
+        <TextInput
+            className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
+            placeholder={t`e.g., Groceries, Salary, Rent`}
+            maxLength={CATEGORY_TITLE_MAX_LENGTH}
+            autoCapitalize="words"
+            autoCorrect={false}
+            value={value}
+            onChangeText={onChange}
+        />
+    );
+
     return (
         <View style={containerStyle}>
             <FormSheetHeader>{title}</FormSheetHeader>
             <View className="px-3xl gap-y-2xl">
                 <FormItem label={t`Category Name`}>
-                    <TextInput
-                        className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
-                        placeholder={t`e.g., Groceries, Salary, Rent`}
-                        maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                        autoCapitalize="words"
-                        autoCorrect={false}
-                        {...register('title')}
-                    />
+                    <Controller name="title" control={control} render={renderTitleInput} />
                 </FormItem>
                 <CategoryFormIconField control={control} />
                 {isEditing ? (
