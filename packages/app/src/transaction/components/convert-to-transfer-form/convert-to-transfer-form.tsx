@@ -84,7 +84,7 @@ export const ConvertToTransferForm = (props: Props) => {
 
     useEffect(() => {
         conversion.convert(sourceAmount, sourceInstrumentId, destinationInstrumentId);
-    }, [destinationInstrumentId, sourceAmount, sourceInstrumentId, conversion]);
+    }, [destinationInstrumentId, sourceAmount, sourceInstrumentId]); // eslint-disable-line react-hooks/exhaustive-deps -- conversion object recreated each render, convert is called imperatively
 
     // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleConvert = async () => {

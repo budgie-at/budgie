@@ -60,7 +60,7 @@ class TransactionService {
             ]);
 
             const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
-            const hasCustomExchangeRate = input.exchangeRate !== 1;
+            const hasCustomExchangeRate = input.exchangeRate > 0 && input.exchangeRate !== 1;
 
             const { amount: autoToAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
                 fromAccount.instrumentId,

@@ -36,6 +36,7 @@ const fontSizeStyle = { fontSize: FONT_SIZE };
 
 const SECONDARY_ANIMATION_DELAY = 50;
 const SECONDARY_ANIMATION_DURATION = 200;
+const SECONDARY_ENTERING_ANIMATION = FadeInDown.delay(SECONDARY_ANIMATION_DELAY).duration(SECONDARY_ANIMATION_DURATION);
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, label, secondaryAmount }: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -74,10 +75,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
             </Animated.View>
             {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
             {isDefined(secondaryAmount) ? (
-                <Animated.Text
-                    entering={FadeInDown.delay(SECONDARY_ANIMATION_DELAY).duration(SECONDARY_ANIMATION_DURATION)}
-                    className="text-lg text-secondary-foreground font-medium mt-xs"
-                >
+                <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">
                     {secondaryAmount}
                 </Animated.Text>
             ) : null}
