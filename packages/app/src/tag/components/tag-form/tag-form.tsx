@@ -1,5 +1,6 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Controller, UseControllerReturn } from 'react-hook-form';
 import { TextInput, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -29,12 +30,13 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+ 
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { backgroundColor } = useFormsheetListStyles();
     const { openTagsSelector } = useTagsSelectorModal();
-    const { handleSubmit, reset, register } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const { handleSubmit, reset, control } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
     const isEditing = isDefined(tag?.id);
     const containerStyle = { flex: 1, backgroundColor };
@@ -84,19 +86,24 @@ export const TagForm = (props: Props) => {
         onCancel();
     };
 
+    const renderTitleInput = ({ field: { value, onChange } }: UseControllerReturn<TagCreateEntityInterface, 'title'>) => (
+        <TextInput
+            className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
+            placeholder={t`e.g., Business, Personal, Vacation`}
+            maxLength={TAG_TITLE_MAX_LENGTH}
+            autoCapitalize="words"
+            autoCorrect={false}
+            value={value}
+            onChangeText={onChange}
+        />
+    );
+
     return (
         <View style={containerStyle}>
             <FormSheetHeader>{title}</FormSheetHeader>
             <View className="px-3xl gap-y-2xl">
                 <FormItem label={t`Tag Name`}>
-                    <TextInput
-                        className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
-                        placeholder={t`e.g., Business, Personal, Vacation`}
-                        maxLength={TAG_TITLE_MAX_LENGTH}
-                        autoCapitalize="words"
-                        autoCorrect={false}
-                        {...register('title')}
-                    />
+                    <Controller name="title" control={control} render={renderTitleInput} />
                 </FormItem>
                 {isEditing ? (
                     <Button
