@@ -8,6 +8,9 @@ import {
     ExchangeRateRepository,
     InstrumentRepository,
     MccCategoryRepository,
+    RuleActionRepository,
+    RuleConditionRepository,
+    RuleRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
@@ -64,3 +67,6 @@ export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
+export const ruleRepository = new RuleRepository(db);
+export const ruleConditionRepository = new RuleConditionRepository(db);
+export const ruleActionRepository = new RuleActionRepository(db);

@@ -6,7 +6,7 @@ import type { ListRenderItem } from '@react-native/virtualized-lists';
 
 interface Props<T> extends Pick<
     ComponentProps<typeof FlatList>,
-    'className' | 'contentContainerClassName' | 'contentContainerStyle' | 'ListFooterComponent'
+    'className' | 'contentContainerClassName' | 'contentContainerStyle' | 'ListFooterComponent' | 'testID'
 > {
     readonly data: readonly T[];
     readonly keyExtractor: (item: T, index: number) => string;

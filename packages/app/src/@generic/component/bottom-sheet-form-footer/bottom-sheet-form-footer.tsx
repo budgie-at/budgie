@@ -12,9 +12,10 @@ interface Props {
     readonly onSubmit: EmptyFn;
     readonly onCancel: EmptyFn;
     readonly submitLabel?: string;
+    readonly submitButtonTestID?: string;
 }
 
-export const BottomSheetFormFooter = ({ onSubmit, onCancel, submitLabel }: Props) => (
+export const BottomSheetFormFooter = ({ onSubmit, onCancel, submitLabel, submitButtonTestID }: Props) => (
     <Footer>
         <View className="flex-row gap-x-xl">
             <HapticPressable onPress={onCancel} className="bg-primary-reverse flex-1 rounded-5xl p-2xl border border-secondary-corner">
@@ -24,6 +25,7 @@ export const BottomSheetFormFooter = ({ onSubmit, onCancel, submitLabel }: Props
             </HapticPressable>
 
             <HapticPressable
+                testID={submitButtonTestID}
                 onPress={onSubmit}
                 className="bg-primary flex-1 rounded-5xl p-2xl flex-row gap-x-md items-center justify-center"
             >

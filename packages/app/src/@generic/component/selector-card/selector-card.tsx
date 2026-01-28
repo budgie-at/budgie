@@ -18,6 +18,7 @@ interface Props<T = number> {
     readonly title: ReactNode;
     readonly subtitle?: ReactNode;
     readonly verticalAlign?: 'middle' | 'top' | 'bottom';
+    readonly testID?: string;
 }
 
 const cardVariants = cva(`rounded-3xl p-3xl border-2 border-secondary-corner gap-x-xl flex-row`, {
@@ -35,7 +36,7 @@ const cardVariants = cva(`rounded-3xl p-3xl border-2 border-secondary-corner gap
 });
 
 export const SelectorCard = <T = number,>(props: Props<T>) => {
-    const { className, verticalAlign = 'middle', isSelected, title, subtitle, onSelect, identifier, iconSlot } = props;
+    const { className, verticalAlign = 'middle', isSelected, title, subtitle, onSelect, identifier, iconSlot, testID } = props;
     const handleSelect = isSelected ? emptyFn : () => void onSelect(identifier);
 
     const right = isSelected ? (
@@ -46,6 +47,7 @@ export const SelectorCard = <T = number,>(props: Props<T>) => {
 
     return (
         <HorizontalCell
+            testID={testID}
             right={right}
             left={iconSlot}
             className={cn(cardVariants({ isSelected, verticalAlign }), className)}

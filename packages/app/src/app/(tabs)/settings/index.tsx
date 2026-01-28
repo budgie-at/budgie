@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
+import { SettingsPageSelectors } from '../../../@e2e/selectors/settings-page.selector';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { Page } from '../../../@generic/component/page/page';
@@ -37,6 +38,7 @@ export default function SettingsPage() {
     const handleNavigateToArchived = () => void router.push('/settings/archived');
     const handleNavigateToInactive = () => void router.push('/settings/inactive');
     const handleNavigateToTags = () => void router.push('/settings/tags');
+    const navigateToRules = () => void router.push('/settings/rules');
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
         await updateSettingsMutation({ [key]: checked });
@@ -82,6 +84,7 @@ export default function SettingsPage() {
 
                     <SettingsGroup title={t`Organization`}>
                         <SettingsCard
+                            testID={SettingsPageSelectors.ManageCategoriesCard}
                             onPress={handleNavigateToCategories}
                             title={t`Manage Categories`}
                             description={t`View and delete custom categories`}
@@ -89,11 +92,20 @@ export default function SettingsPage() {
                             variant="default"
                         />
                         <SettingsCard
+                            testID={SettingsPageSelectors.ManageTagsCard}
                             onPress={handleNavigateToTags}
                             title={t`Manage Tags`}
                             description={t`Create and organize transaction tags`}
                             icon={UserIconNameEnum.Tag}
                             variant="pink"
+                        />
+                        <SettingsCard
+                            testID={SettingsPageSelectors.ManageRulesCard}
+                            onPress={navigateToRules}
+                            title={t`Manage Rules`}
+                            description={t`Auto-categorize transactions`}
+                            icon={UserIconNameEnum.Zap}
+                            variant="ghost"
                         />
                         <SettingsCard
                             onPress={handleNavigateToArchived}

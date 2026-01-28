@@ -1,0 +1,92 @@
+import { AccountEntityInterface, AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { RefObject, useState } from 'react';
+
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { AccountPickerBottomSheetSelectors } from '../../../@e2e/selectors/account-picker-bottom-sheet.selector';
+import { SearchableListBottomSheet } from '../../../@generic/component/bottom-sheet-searchable-list/bottom-sheet-searchable-list';
+import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
+import { useSearchAccountsSortedQuery } from '../../query/use-search-accounts-sorted.query';
+import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
+
+interface Props {
+    readonly inputTestID?: string;
+    readonly accountTestID?: string;
+    readonly emptyStateDescription?: string;
+    readonly excludeAccountId?: number | null;
+    readonly excludeAccountTypes?: AccountTypeEnum[];
+    readonly onSelect: (accountId: number) => void;
+    readonly ref: RefObject<BottomSheetInterface | null>;
+    readonly selectedAccount: AccountEntityInterface | null;
+}
+
+const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toString();
+
+const flatListProps = {
+    className: 'pt-3 px-xl',
+    contentContainerClassName: 'gap-y-lg'
+};
+
+export const AccountSelectorBottomSheet = (props: Props) => {
+    const {
+        ref,
+        selectedAccount,
+        excludeAccountId,
+        excludeAccountTypes,
+        onSelect,
+        emptyStateDescription,
+        inputTestID = AccountPickerBottomSheetSelectors.Input,
+        accountTestID
+    } = props;
+    const [search, setSearch] = useState('');
+    const { accounts } = useSearchAccountsSortedQuery(search, { excludeTypes: excludeAccountTypes, excludeAccountId });
+    const { t } = useLingui();
+
+    const handleSelect = (accountId: number) => {
+        void ref.current?.dismiss();
+        onSelect(accountId);
+    };
+
+    const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
+        <AccountSelectorCard
+            isSelected={item.id === selectedAccount?.id}
+            instrument={item.instrument}
+            onSelect={handleSelect}
+            testID={accountTestID}
+            title={item.title}
+            icon={item.icon}
+            type={item.type}
+            key={item.id}
+            id={item.id}
+        />
+    );
+
+    const getEmptyStateDescription = () => {
+        if (isNotEmptyString(search)) {
+            return t`Try a different search term`;
+        }
+
+        return emptyStateDescription ?? t`Create one to get started.`;
+    };
+
+    const emptyIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Wallet;
+    const emptyTitle = isNotEmptyString(search) ? t`No accounts found` : t`No accounts yet`;
+
+    return (
+        <SearchableListBottomSheet
+            ref={ref}
+            emptyIcon={emptyIcon}
+            onSearchChange={setSearch}
+            searchPlaceholder={t`Search accounts...`}
+            search={search}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            emptyDescription={getEmptyStateDescription()}
+            emptyTitle={emptyTitle}
+            data={accounts}
+            inputTestID={inputTestID}
+            flatListProps={flatListProps}
+        />
+    );
+};

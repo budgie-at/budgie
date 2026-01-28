@@ -14,10 +14,11 @@ interface Props extends Pick<AccountWithInstrumentEntityInterface, 'id' | 'icon'
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
     readonly className?: string;
+    readonly testID?: string;
 }
 
 export const AccountSelectorCard = (props: Props) => {
-    const { className, isSelected, title, onSelect, id, icon, type, instrument } = props;
+    const { className, isSelected, title, onSelect, id, icon, type, instrument, testID } = props;
 
     const { t } = useLingui();
     const { decimalPlaces } = useSettingsContext();
@@ -26,6 +27,7 @@ export const AccountSelectorCard = (props: Props) => {
 
     return (
         <SelectorCard
+            testID={testID}
             identifier={id}
             isSelected={isSelected}
             onSelect={onSelect}
