@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { RefObject, useEffect, useImperativeHandle, useRef } from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
@@ -20,6 +20,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly label?: string | null;
     readonly secondaryAmount?: string | null;
+    readonly onSecondaryAmountPress?: () => void;
 }
 
 const textVariants = cva('text-center font-semibold', {
@@ -38,7 +39,15 @@ const SECONDARY_ANIMATION_DELAY = 50;
 const SECONDARY_ANIMATION_DURATION = 200;
 const SECONDARY_ENTERING_ANIMATION = FadeInDown.delay(SECONDARY_ANIMATION_DELAY).duration(SECONDARY_ANIMATION_DURATION);
 
-export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, label, secondaryAmount }: Props) => {
+export const TransactionAmountDisplay = ({
+    ref,
+    amount,
+    currencySymbol,
+    variant,
+    label,
+    secondaryAmount,
+    onSecondaryAmountPress
+}: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -75,9 +84,11 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
             </Animated.View>
             {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
             {isDefined(secondaryAmount) ? (
-                <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">
-                    {secondaryAmount}
-                </Animated.Text>
+                <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
+                    <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">
+                        {secondaryAmount}
+                    </Animated.Text>
+                </Pressable>
             ) : null}
         </Animated.View>
     );

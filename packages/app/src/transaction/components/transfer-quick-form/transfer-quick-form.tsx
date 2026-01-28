@@ -188,6 +188,7 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
                 variant={variant}
                 secondaryAmount={secondaryAmountText}
                 label={amountLabel}
+                onSecondaryAmountPress={handleConversionRowPress}
             />
 
             <TransactionFieldIcons

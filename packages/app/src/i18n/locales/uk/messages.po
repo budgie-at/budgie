@@ -1273,8 +1273,6 @@ msgid "Security"
 msgstr "Безпека"
 
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:75
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:88
 msgid "Select"
 msgstr "Вибрати"
 
@@ -1431,7 +1429,7 @@ msgstr "Акції"
 msgid "Submit"
 msgstr "Відправити"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:82
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
 msgid "Swap accounts"
 msgstr "Поміняти рахунки"
 
@@ -1538,7 +1536,7 @@ msgstr "Цього року"
 msgid "to"
 msgstr "до"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:87
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:86
 msgid "To"
 msgstr "На"
 
