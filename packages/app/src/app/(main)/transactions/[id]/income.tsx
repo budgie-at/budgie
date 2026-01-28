@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { IncomeTransactionCreateInputSchema, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import { IncomeTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
@@ -12,8 +12,10 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { IncomeQuickForm } from '../../../../transaction/components/income-quick-form/income-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
+import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
@@ -27,6 +29,7 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-start */
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
+    const { openConvertToTransfer } = useConvertToTransferModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -36,13 +39,29 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
         id: transactionId
     });
 
+    const toAccountId = form.watch('toAccountId');
+
     const handleGoBack = () => void goBackOrReplace('/');
+    const handleOpenConvert = () =>
+        void openConvertToTransfer({
+            transactionId,
+            transactionType: TransactionTypeEnum.INCOME,
+            excludeAccountId: toAccountId ?? 0
+        });
 
     return (
         <FormProvider {...form}>
             <FullPage
                 header={
-                    <PageHeader title={t`Edit Income`} onGoBack={handleGoBack} right={<TransactionActionsMenu onDelete={handleDelete} />} />
+                    <PageHeader
+                        title={t`Edit Income`}
+                        onGoBack={handleGoBack}
+                        right={
+                            <TransactionActionsMenu onDelete={handleDelete}>
+                                <ConvertToTransferMenuItem onConvert={handleOpenConvert} />
+                            </TransactionActionsMenu>
+                        }
+                    />
                 }
             >
                 <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />

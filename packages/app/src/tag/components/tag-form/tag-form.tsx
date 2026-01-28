@@ -30,7 +30,6 @@ interface Props {
     readonly onCancel: () => void;
 }
 
- 
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
