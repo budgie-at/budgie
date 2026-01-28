@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
 import { TagFormResult } from '../components/tag-form/tag-form';
 import { TagFormModalContext, TagFormModalParams } from '../context/tag-form-modal.context';
 
@@ -9,24 +9,9 @@ interface Props {
 }
 
 export const TagFormModalProvider = ({ children }: Props) => {
-    const [currentParams, setCurrentParams] = useState<TagFormModalParams | null>(null);
-    const resolverRef = useRef<((result: TagFormResult | null) => void) | null>(null);
+    const { currentParams, open, resolve } = useModalResolver<TagFormModalParams, TagFormResult | null>('/tag-form');
 
-    const openTagForm = (params?: TagFormModalParams): Promise<TagFormResult | null> =>
-        new Promise(resolve => {
-            setCurrentParams(params ?? {});
-            resolverRef.current = resolve;
-            router.push('/tag-form');
-        });
-
-    const resolveTagForm = (result: TagFormResult | null) => {
-        resolverRef.current?.(result);
-        resolverRef.current = null;
-        setCurrentParams(null);
-        router.back();
-    };
-
-    const value = { openTagForm, resolveTagForm, currentParams };
+    const value = { openTagForm: open, resolveTagForm: resolve, currentParams };
 
     return <TagFormModalContext value={value}>{children}</TagFormModalContext>;
 };

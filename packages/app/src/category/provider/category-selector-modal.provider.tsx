@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
 import { CategorySelectorModalContext, CategorySelectorModalParams } from '../context/category-selector-modal.context';
 
 interface Props {
@@ -8,24 +8,9 @@ interface Props {
 }
 
 export const CategorySelectorModalProvider = ({ children }: Props) => {
-    const [currentParams, setCurrentParams] = useState<CategorySelectorModalParams | null>(null);
-    const resolverRef = useRef<((categoryId: number | null) => void) | null>(null);
+    const { currentParams, open, resolve } = useModalResolver<CategorySelectorModalParams, number | null>('/category-selector');
 
-    const openCategorySelector = (params?: CategorySelectorModalParams): Promise<number | null> =>
-        new Promise(resolve => {
-            setCurrentParams(params ?? {});
-            resolverRef.current = resolve;
-            router.push('/category-selector');
-        });
-
-    const resolveCategorySelector = (categoryId: number | null) => {
-        resolverRef.current?.(categoryId);
-        resolverRef.current = null;
-        setCurrentParams(null);
-        router.back();
-    };
-
-    const value = { openCategorySelector, resolveCategorySelector, currentParams };
+    const value = { openCategorySelector: open, resolveCategorySelector: resolve, currentParams };
 
     return <CategorySelectorModalContext value={value}>{children}</CategorySelectorModalContext>;
 };

@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
 import { CategoryFormResult } from '../components/category-form/category-form';
 import { CategoryFormModalContext, CategoryFormModalParams } from '../context/category-form-modal.context';
 
@@ -9,24 +9,9 @@ interface Props {
 }
 
 export const CategoryFormModalProvider = ({ children }: Props) => {
-    const [currentParams, setCurrentParams] = useState<CategoryFormModalParams | null>(null);
-    const resolverRef = useRef<((result: CategoryFormResult | null) => void) | null>(null);
+    const { currentParams, open, resolve } = useModalResolver<CategoryFormModalParams, CategoryFormResult | null>('/category-form');
 
-    const openCategoryForm = (params?: CategoryFormModalParams): Promise<CategoryFormResult | null> =>
-        new Promise(resolve => {
-            setCurrentParams(params ?? {});
-            resolverRef.current = resolve;
-            router.push('/category-form');
-        });
-
-    const resolveCategoryForm = (result: CategoryFormResult | null) => {
-        resolverRef.current?.(result);
-        resolverRef.current = null;
-        setCurrentParams(null);
-        router.back();
-    };
-
-    const value = { openCategoryForm, resolveCategoryForm, currentParams };
+    const value = { openCategoryForm: open, resolveCategoryForm: resolve, currentParams };
 
     return <CategoryFormModalContext value={value}>{children}</CategoryFormModalContext>;
 };
