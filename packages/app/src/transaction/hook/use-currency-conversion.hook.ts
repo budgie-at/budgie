@@ -1,6 +1,8 @@
 import { PRECISION } from '@budgie/contracts';
 import { useRef, useState } from 'react';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 interface ConversionState {
@@ -54,7 +56,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
             setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
 
             return result;
-        });
+        }, emptyFn);
     };
 
     const setManualDestinationAmount = (sourceAmount: number, destinationAmount: number) => {
