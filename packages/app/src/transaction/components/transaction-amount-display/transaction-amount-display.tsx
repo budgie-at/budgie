@@ -75,13 +75,15 @@ export const TransactionAmountDisplay = ({
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
-            <Animated.View style={shakeStyle} className="w-full">
-                <Animated.View style={scaleStyle}>
-                    <Text className={textVariants({ variant })} style={fontSizeStyle} adjustsFontSizeToFit numberOfLines={1}>
-                        {fullDisplay}
-                    </Text>
+            <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
+                <Animated.View style={shakeStyle} className="w-full">
+                    <Animated.View style={scaleStyle}>
+                        <Text className={textVariants({ variant })} style={fontSizeStyle} adjustsFontSizeToFit numberOfLines={1}>
+                            {fullDisplay}
+                        </Text>
+                    </Animated.View>
                 </Animated.View>
-            </Animated.View>
+            </Pressable>
             {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
             {isDefined(secondaryAmount) ? (
                 <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
