@@ -250,11 +250,11 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
-#: src/category/components/category-form/category-form.tsx:120
+#: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:118
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:106
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:111
+#: src/tag/components/tag-form/tag-form.tsx:117
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:126
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:131
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -280,7 +280,7 @@ msgstr "Categorías ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Categoría"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Category Name"
 msgstr "Nombre de la categoría"
 
@@ -354,23 +354,23 @@ msgstr "Contacto (opcional)"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:73
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:73
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:81
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:81
 msgid "Conversion failed"
 msgstr "Error en la conversión"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:61
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:105
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:61
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:106
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:69
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:125
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:69
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:126
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:59
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:90
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:67
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:111
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:67
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:111
 msgid "Convert to Transfer?"
 msgstr "¿Convertir a transferencia?"
 
@@ -382,11 +382,11 @@ msgstr "No se pudo activar la cuenta."
 msgid "Could not archive account. Please try again later"
 msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:54
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:52
+#: src/tag/components/tag-form/tag-form.tsx:51
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -402,11 +402,11 @@ msgstr "No se pudo eliminar la cuenta."
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
-#: src/category/components/category-form/category-form.tsx:81
+#: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:80
+#: src/tag/components/tag-form/tag-form.tsx:79
 msgid "Could not merge tag"
 msgstr "No se pudo fusionar la etiqueta"
 
@@ -422,11 +422,11 @@ msgstr "No se pudo reasignar la etiqueta"
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:54
 msgid "Could not update category"
 msgstr "No se pudo actualizar la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:52
+#: src/tag/components/tag-form/tag-form.tsx:51
 msgid "Could not update tag"
 msgstr "No se pudo actualizar la etiqueta"
 
@@ -438,8 +438,8 @@ msgstr "No se pudo actualizar la transacción."
 msgid "Count this account in your net worth calculation"
 msgstr "Contar esta cuenta en el cálculo de su patrimonio neto"
 
-#: src/category/components/category-form/category-form.tsx:45
-#: src/tag/components/tag-form/tag-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:44
+#: src/tag/components/tag-form/tag-form.tsx:43
 msgid "Create"
 msgstr "Crear"
 
@@ -467,7 +467,7 @@ msgstr "Crear y organizar etiquetas de transacciones"
 msgid "Create Categories"
 msgstr "Crear categorías"
 
-#: src/category/components/category-form/category-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:43
 msgid "Create Category"
 msgstr "Crear categoría"
 
@@ -484,7 +484,7 @@ msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-form/tag-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
@@ -602,27 +602,27 @@ msgstr "Neerlandés (Países Bajos)"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/tag/components/tag-form/tag-form.tsx:92
+#: src/tag/components/tag-form/tag-form.tsx:91
 msgid "e.g., Business, Personal, Vacation"
 msgstr "ej. Negocios, Personal, Vacaciones"
 
-#: src/category/components/category-form/category-form.tsx:93
+#: src/category/components/category-form/category-form.tsx:92
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ej. Comestibles, Salario, Alquiler"
 
-#: src/category/components/category-form/category-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:43
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:55
+#: src/app/(main)/transactions/[id]/expense.tsx:57
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:55
+#: src/app/(main)/transactions/[id]/income.tsx:57
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
-#: src/tag/components/tag-form/tag-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
@@ -952,11 +952,11 @@ msgstr "Asignar columnas CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
-#: src/category/components/category-form/category-form.tsx:116
+#: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:114
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
@@ -1141,17 +1141,17 @@ msgstr "Los PIN no coinciden"
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:73
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:73
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:81
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:81
 msgid "Please try again"
 msgstr "Por favor, inténtelo de nuevo"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:55
-#: src/category/components/category-form/category-form.tsx:81
-#: src/tag/components/tag-form/tag-form.tsx:52
-#: src/tag/components/tag-form/tag-form.tsx:80
+#: src/category/components/category-form/category-form.tsx:54
+#: src/category/components/category-form/category-form.tsx:80
+#: src/tag/components/tag-form/tag-form.tsx:51
+#: src/tag/components/tag-form/tag-form.tsx:79
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1196,9 +1196,9 @@ msgstr "¿Restaurar cuenta?"
 msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
-#: src/category/components/category-form/category-form.tsx:45
+#: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:44
+#: src/tag/components/tag-form/tag-form.tsx:43
 msgid "Save"
 msgstr "Guardar"
 
@@ -1270,7 +1270,7 @@ msgstr "Seguridad"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Selecciona una categoría para fusionar"
 
@@ -1278,7 +1278,7 @@ msgstr "Selecciona una categoría para fusionar"
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
 
-#: src/tag/components/tag-form/tag-form.tsx:62
+#: src/tag/components/tag-form/tag-form.tsx:61
 msgid "Select a tag to merge into"
 msgstr "Selecciona una etiqueta para fusionar"
 
@@ -1290,7 +1290,8 @@ msgstr "Selecciona una etiqueta para fusionar"
 msgid "Select a valid column"
 msgstr "Selecciona una columna válida"
 
-#: src/account/component/account-selector/account-selector.tsx:57
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:119
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:119
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
 msgid "Select account"
 msgstr "Seleccionar cuenta"
@@ -1311,11 +1312,11 @@ msgstr "Seleccionar columna..."
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:114
 msgid "Select the destination account for this transfer."
 msgstr "Seleccione la cuenta de destino para esta transferencia."
 
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:93
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:114
 msgid "Select the source account for this transfer."
 msgstr "Selecciona la cuenta de origen para esta transferencia."
 
@@ -1445,7 +1446,7 @@ msgstr "Sincronizando historial..."
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: src/tag/components/tag-form/tag-form.tsx:105
+#: src/tag/components/tag-form/tag-form.tsx:104
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
@@ -1503,11 +1504,11 @@ msgstr "Esta semana"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:60
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:68
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:60
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:68
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
