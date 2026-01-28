@@ -19,7 +19,7 @@
     "scripts": {
         "build": "run -T tsc -p tsconfig.json",
         "build:watch": "yarn build --watch",
-        "clear": "run -T rimraf dist && run -T rimraf node_modules/.cache && run -T rimraf .turbo",
+        "clear": "yarn run -T rimraf dist node_modules/.cache .turbo",
         "format": "run -T prettier --write src",
         "lint": "run -T eslint --fix src",
         "ts": "run -T tsc -p .",
