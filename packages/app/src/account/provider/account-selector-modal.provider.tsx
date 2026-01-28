@@ -1,6 +1,6 @@
-import { router } from 'expo-router';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 
+import { useModalResolver } from '../../@generic/hook/use-modal-resolver/use-modal-resolver.hook';
 import { AccountSelectorModalContext, AccountSelectorModalParams } from '../context/account-selector-modal.context';
 
 interface Props {
@@ -8,24 +8,9 @@ interface Props {
 }
 
 export const AccountSelectorModalProvider = ({ children }: Props) => {
-    const [currentParams, setCurrentParams] = useState<AccountSelectorModalParams | null>(null);
-    const resolverRef = useRef<((accountId: number | null) => void) | null>(null);
+    const { currentParams, open, resolve } = useModalResolver<AccountSelectorModalParams, number | null>('/account-selector');
 
-    const openAccountSelector = (params?: AccountSelectorModalParams): Promise<number | null> =>
-        new Promise(resolve => {
-            setCurrentParams(params ?? {});
-            resolverRef.current = resolve;
-            router.push('/account-selector');
-        });
-
-    const resolveAccountSelector = (accountId: number | null) => {
-        resolverRef.current?.(accountId);
-        resolverRef.current = null;
-        setCurrentParams(null);
-        router.back();
-    };
-
-    const value = { openAccountSelector, resolveAccountSelector, currentParams };
+    const value = { openAccountSelector: open, resolveAccountSelector: resolve, currentParams };
 
     return <AccountSelectorModalContext value={value}>{children}</AccountSelectorModalContext>;
 };

@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { buildFormEntries } from '../utils/build-form-entries.util';
+import { buildExpenseEntry } from '../utils/build-expense-entry.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 
 import type { ZodType } from 'zod';
@@ -19,7 +19,6 @@ interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
     categoryId?: number;
     comment?: string;
     amount?: number;
-    entries?: Array<{ categoryId: number; amount: number }> | null;
 }
 
 export const useCreateTransactionForm = <T extends TransactionCreateInputInterface>({
@@ -30,22 +29,21 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
     toAccountId,
     amount = 0,
     categoryId = 0,
-    comment = '',
-    entries
+    comment = ''
 }: UseTransactionFormConfig<T>) => {
     const { t } = useLingui();
 
     const form = useForm({
         mode: 'onSubmit',
         resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema),
-        values: createTransactionInput({
+        defaultValues: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,
             toAccountId,
             comment,
             amount,
             type,
-            entries: buildFormEntries({ fromAccountId, toAccountId, amount, categoryId, entries })
+            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0 })
         })
     });
 
@@ -62,8 +60,10 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
         }
     };
 
+    const wrappedHandleSubmit = () => form.handleSubmit(handleSubmit)();
+
     return {
         form,
-        handleSubmit: form.handleSubmit(handleSubmit)
+        handleSubmit: wrappedHandleSubmit
     };
 };

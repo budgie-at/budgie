@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "build": "next build",
+        "clear": "yarn run -T rimraf dist .next node_modules/.cache .turbo",
         "release:start": "next start",
         "start": "next dev",
         "lint": "run -T eslint --fix .",

@@ -56,7 +56,7 @@ msgid "About"
 msgstr "About"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:95
-#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:35
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:40
 msgid "Account"
 msgstr "Account"
 
@@ -103,29 +103,13 @@ msgstr "Activate Account?"
 msgid "Active"
 msgstr "Active"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:14
+#: src/app/note-input.tsx:32
 msgid "Add a note..."
 msgstr "Add a note..."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
 msgstr "Add Account"
-
-#: src/app/(main)/create-transaction/expense.tsx:86
-msgid "Add Expense"
-msgstr "Add Expense"
-
-#: src/app/(main)/create-transaction/income.tsx:53
-msgid "Add Income"
-msgstr "Add Income"
-
-#: src/transaction/components/transaction-split/transaction-split.tsx:115
-msgid "Add Split"
-msgstr "Add Split"
-
-#: src/app/(main)/create-transaction/transfer.tsx:76
-msgid "Add Transfer"
-msgstr "Add Transfer"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
@@ -155,10 +139,6 @@ msgstr "All Time"
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
-#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:52
-msgid "Allocated"
-msgstr "Allocated"
-
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:32
 msgid "Already syncing"
 msgstr "Already syncing"
@@ -167,8 +147,8 @@ msgstr "Already syncing"
 msgid "Amount"
 msgstr "Amount"
 
-#: src/app/(main)/create-transaction/transfer.tsx:58
-#: src/app/(main)/transactions/[id]/transfer.tsx:64
+#: src/app/(main)/create-transaction/transfer.tsx:53
+#: src/app/(main)/transactions/[id]/transfer.tsx:54
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -184,6 +164,10 @@ msgstr "App Lock"
 #: src/app/(tabs)/settings/index.tsx:114
 msgid "Appearance"
 msgstr "Appearance"
+
+#: src/app/note-input.tsx:45
+msgid "Apply"
+msgstr "Apply"
 
 #: src/transaction/components/transaction-base-filter/transaction-base-filter.tsx:38
 msgid "Apply Filter"
@@ -267,11 +251,11 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/confirm-action.tsx:42
+#: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:113
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:111
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:104
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:106
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -293,8 +277,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/category/components/transaction-entry-category-selector/transaction-entry-category-selector.tsx:53
-#: src/transaction/components/transaction-form-category/transaction-form-category.tsx:36
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
 msgid "Category"
 msgstr "Category"
 
@@ -377,13 +360,13 @@ msgid "Conversion failed"
 msgstr "Conversion failed"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:61
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:103
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:105
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
 
 #: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:89
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
 
@@ -403,7 +386,7 @@ msgstr "Could not create category"
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:60
+#: src/transaction/hook/use-create-transaction-form.hook.ts:58
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
@@ -493,7 +476,7 @@ msgid "Create custom tags in Settings to label and filter your transactions"
 msgstr "Create custom tags in Settings to label and filter your transactions"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:58
-#: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/account/component/account-select-content/account-select-content.tsx:43
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
@@ -508,12 +491,6 @@ msgstr "Create Tags"
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx:18
 msgid "Create tags to organize your transactions"
 msgstr "Create tags to organize your transactions"
-
-#: src/transaction/components/transaction-form-account-selector/transaction-form-account-selector.tsx:42
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:77
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:102
-msgid "Create your first account to start tracking transactions"
-msgstr "Create your first account to start tracking transactions"
 
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:78
 msgid "Create your first account to start tracking your finances"
@@ -551,7 +528,7 @@ msgstr "Data management"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-form-date-field/transaction-form-date-field.tsx:18
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
 msgid "Date"
 msgstr "Date"
 
@@ -633,11 +610,11 @@ msgstr "e.g., Groceries, Salary, Rent"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:71
+#: src/app/(main)/transactions/[id]/expense.tsx:55
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:61
+#: src/app/(main)/transactions/[id]/income.tsx:45
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -645,7 +622,7 @@ msgstr "Edit Income"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:83
+#: src/app/(main)/transactions/[id]/transfer.tsx:67
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -828,9 +805,9 @@ msgstr "French (France)"
 msgid "from"
 msgstr "from"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:76
-msgid "FROM"
-msgstr "FROM"
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:74
+msgid "From"
+msgstr "From"
 
 #: src/app/(tabs)/settings/import.tsx:219
 msgid "From Account"
@@ -995,24 +972,24 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/app/(main)/create-transaction/expense.tsx:85
+#: src/app/(main)/create-transaction/expense.tsx:48
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/app/(main)/create-transaction/income.tsx:52
+#: src/app/(main)/create-transaction/income.tsx:38
 msgid "New Income"
 msgstr "New Income"
 
-#: src/app/(main)/create-transaction/transfer.tsx:75
+#: src/app/(main)/create-transaction/transfer.tsx:63
 msgid "New Transfer"
 msgstr "New Transfer"
 
-#: src/account/component/account-select-content/account-select-content.tsx:39
+#: src/account/component/account-select-content/account-select-content.tsx:40
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:71
 msgid "No accounts found"
 msgstr "No accounts found"
 
-#: src/account/component/account-select-content/account-select-content.tsx:39
+#: src/account/component/account-select-content/account-select-content.tsx:40
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:22
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:76
 msgid "No accounts yet"
@@ -1099,17 +1076,17 @@ msgstr "No Tags Yet"
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
-#: src/tag/components/tags-selector/tags-selector.tsx:59
-msgid "None"
-msgstr "None"
-
 #: src/settings/components/default-account-selector/default-account-selector.tsx:34
 msgid "None selected"
 msgstr "None selected"
 
-#: src/transaction/components/transaction-form-comment/transaction-form-comment.tsx:13
-msgid "Note (optional)"
-msgstr "Note (optional)"
+#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:51
+msgid "not set"
+msgstr "not set"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+msgid "Note"
+msgstr "Note"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
@@ -1118,10 +1095,6 @@ msgstr "Open Monobank to get your token"
 #: src/app/(tabs)/settings/index.tsx:83
 msgid "Organization"
 msgstr "Organization"
-
-#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:53
-msgid "Over:"
-msgstr "Over:"
 
 #: src/app/(tabs)/analytics.tsx:54
 msgid "Overview"
@@ -1206,10 +1179,6 @@ msgstr "Recalculate"
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
-#: src/transaction/components/transaction-split/transaction-split-allocation.tsx:54
-msgid "Remaining:"
-msgstr "Remaining:"
-
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
 msgstr "Restore"
@@ -1245,13 +1214,13 @@ msgstr "Savings accounts"
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
-#: src/app/account-selector.tsx:33
+#: src/app/account-selector.tsx:34
 #: src/transaction/components/transaction-account-filter/transaction-account-filter.tsx:68
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
 #: src/app/(tabs)/settings/categories.tsx:73
-#: src/app/category-selector.tsx:63
+#: src/app/category-selector.tsx:74
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Search categories..."
@@ -1273,7 +1242,7 @@ msgid "Search languages..."
 msgstr "Search languages..."
 
 #: src/app/(tabs)/settings/tags.tsx:74
-#: src/app/tags-selector.tsx:69
+#: src/app/tags-selector.tsx:81
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Search tags..."
@@ -1289,6 +1258,12 @@ msgstr "Secure your app with PIN & Face ID"
 #: src/app/(tabs)/settings/index.tsx:60
 msgid "Security"
 msgstr "Security"
+
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:75
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:88
+msgid "Select"
+msgstr "Select"
 
 #: src/category/components/category-form/category-form.tsx:63
 msgid "Select a category to merge into"
@@ -1310,8 +1285,8 @@ msgstr "Select a tag to merge into"
 msgid "Select a valid column"
 msgstr "Select a valid column"
 
-#: src/account/component/account-selector-square/account-selector-square.tsx:62
 #: src/account/component/account-selector/account-selector.tsx:57
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
 msgid "Select account"
 msgstr "Select account"
 
@@ -1323,10 +1298,6 @@ msgstr "Select accounts to sync:"
 msgid "Select All"
 msgstr "Select All"
 
-#: src/category/components/category-selector/category-selector.tsx:31
-msgid "Select category"
-msgstr "Select category"
-
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:31
 msgid "Select column..."
 msgstr "Select column..."
@@ -1335,7 +1306,7 @@ msgstr "Select column..."
 msgid "Select Import Preset"
 msgstr "Select Import Preset"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:91
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
 msgid "Select the destination account for this transfer."
 msgstr "Select the destination account for this transfer."
 
@@ -1373,7 +1344,7 @@ msgstr "Show this account on the main page"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/transaction/hook/use-create-transaction-form.hook.ts:59
+#: src/transaction/hook/use-create-transaction-form.hook.ts:57
 msgid "Something went wrong."
 msgstr "Something went wrong."
 
@@ -1403,10 +1374,6 @@ msgstr "Spending by Tag"
 msgid "Spent"
 msgstr "Spent"
 
-#: src/transaction/components/transaction-split/transaction-split.tsx:89
-msgid "Split by Category"
-msgstr "Split by Category"
-
 #: src/app/(tabs)/settings/import.tsx:149
 msgid "Start Import"
 msgstr "Start Import"
@@ -1435,6 +1402,10 @@ msgstr "Stocks"
 #: src/account/component/create-account-screen/create-account-screen.tsx:47
 msgid "Submit"
 msgstr "Submit"
+
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:82
+msgid "Swap accounts"
+msgstr "Swap accounts"
 
 #: src/category/components/category-card/category-card.tsx:22
 #: src/tag/components/tag-card/tag-card.tsx:20
@@ -1470,7 +1441,7 @@ msgid "Tag Name"
 msgstr "Tag Name"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-form-tags-field/transaction-form-tags-field.tsx:18
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1479,10 +1450,6 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
-
-#: src/account/component/account-selector-square/account-selector-square.tsx:63
-msgid "Tap to choose"
-msgstr "Tap to choose"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
@@ -1539,9 +1506,9 @@ msgstr "This Year"
 msgid "to"
 msgstr "to"
 
-#: src/transaction/components/transfer-transaction-form/transfer-transaction-form-accounts.tsx:98
-msgid "TO"
-msgstr "TO"
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:87
+msgid "To"
+msgstr "To"
 
 #: src/app/(tabs)/settings/import.tsx:172
 msgid "To Account"
@@ -1552,6 +1519,7 @@ msgid "To Currency"
 msgstr "To Currency"
 
 #: src/@generic/constant/date-period.constant.ts:7
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
 msgid "Today"
 msgstr "Today"
 
@@ -1600,7 +1568,7 @@ msgstr "Transfer"
 
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
-#: src/account/component/account-select-content/account-select-content.tsx:41
+#: src/account/component/account-select-content/account-select-content.tsx:42
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
@@ -1649,18 +1617,6 @@ msgstr "Up to date"
 msgid "Update Account"
 msgstr "Update Account"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:80
-msgid "Update Expense"
-msgstr "Update Expense"
-
-#: src/app/(main)/transactions/[id]/income.tsx:63
-msgid "Update Income"
-msgstr "Update Income"
-
-#: src/app/(main)/transactions/[id]/transfer.tsx:88
-msgid "Update Transfer"
-msgstr "Update Transfer"
-
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx:33
 #: src/auth/util/get-pin-setup-meta.util.ts:24
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
@@ -1697,6 +1653,10 @@ msgstr "When should it be returned?"
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Who owes you?"
 msgstr "Who owes you?"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+msgid "Yesterday"
+msgstr "Yesterday"
 
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"

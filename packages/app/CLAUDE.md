@@ -58,6 +58,61 @@ src/
    export const MyComponent = forwardRef<ViewRef, Props>((props, ref) => { ... });
    ```
 
+## Code Organization Rules
+
+### No Complex Logic in JSX Props
+
+Extract ternaries and logical operators to variables before JSX (`@rnw-community/no-complex-jsx-logic`):
+```typescript
+// Good
+const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
+<CircleIcon icon={icon} />
+
+// Bad - Lint error
+<CircleIcon icon={isDefined(account) ? account.icon : UserIconNameEnum.Wallet} />
+```
+
+### Constants and Utilities
+
+- **Constants** → module's `constant/` folder: `transaction/constant/pressed-scale.constant.ts`
+- **Utility functions** → module's `utils/` folder: `transaction/utils/format-operated-at.util.ts`
+
+### Remove Useless Wrappers
+
+Don't create single-line wrapper functions that just forward to another function:
+```typescript
+// Good - Pass directly
+<SingleDatePicker onChange={resolveDatePicker} />
+
+// Bad - Useless wrapper
+const handleDateSelect = (date: Date) => resolveDatePicker(date);
+<SingleDatePicker onChange={handleDateSelect} />
+```
+
+### Use Minimal Interface Properties
+
+When only specific properties are needed, use `Pick<>`:
+```typescript
+// Good
+export const getTagsDisplayValue = (tags: Pick<TagEntityInterface, 'title'>[] | null) => { ... };
+
+// Bad - Requires full interface when only title is used
+export const getTagsDisplayValue = (tags: TagEntityInterface[] | null) => { ... };
+```
+
+## ESLint Disable Guidelines
+
+For form orchestration components that exceed `max-statements` (15), add disable comment:
+```typescript
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+export const TransactionFieldIcons = (props: Props) => { ... };
+```
+
+Valid cases for `max-statements` disable:
+- Components with 5+ hooks (useFormContext, useWatch, custom hooks)
+- Components orchestrating multiple modals/selectors
+- Form components with validation and submission logic
+
 ## Component Patterns
 
 ### File Organization

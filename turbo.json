@@ -15,22 +15,18 @@
         "format": {
             "outputs": []
         },
+        "clear": {
+            "outputs": []
+        },
         "build": {
-            "outputs": [
-                "dist/**",
-                ".next/**"
-            ]
+            "outputs": ["dist/**", ".next/**"]
         },
         "test": {},
         "test:coverage": {
-            "outputs": [
-                "coverage/**"
-            ]
+            "outputs": ["coverage/**"]
         },
         "//#cpd": {
-            "outputs": [
-                "report/jscpd/**"
-            ]
+            "outputs": ["report/jscpd/**"]
         },
         "//#deadcode": {
             "outputs": []
