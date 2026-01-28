@@ -1,5 +1,5 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -21,23 +21,20 @@ export default function TabsLayout() {
 
     const containerStyle = { paddingBottom: bottom };
 
-    const handleCloseMenu = useCallback(() => void setIsMenuOpen(false), [setIsMenuOpen]);
+    const handleCloseMenu = () => void setIsMenuOpen(false);
 
-    const handleOpenVoiceInput = useCallback(() => {
+    const handleOpenVoiceInput = () => {
         setIsMenuOpen(false);
         setIsVoiceInputOpen(true);
-    }, [setIsMenuOpen]);
+    };
 
-    const handleCloseVoiceInput = useCallback(() => void setIsVoiceInputOpen(false), []);
+    const handleCloseVoiceInput = () => void setIsVoiceInputOpen(false);
 
-    const voiceInputContextValue = useMemo(
-        () => ({
-            isOpen: isVoiceInputOpen,
-            open: handleOpenVoiceInput,
-            close: handleCloseVoiceInput
-        }),
-        [isVoiceInputOpen, handleOpenVoiceInput, handleCloseVoiceInput]
-    );
+    const voiceInputContextValue = {
+        isOpen: isVoiceInputOpen,
+        open: handleOpenVoiceInput,
+        close: handleCloseVoiceInput
+    };
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
