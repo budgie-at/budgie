@@ -3,6 +3,8 @@ import { RefObject, useEffect, useImperativeHandle, useRef } from 'react';
 import { Text } from 'react-native';
 import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -16,6 +18,7 @@ interface Props {
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
+    readonly label?: string;
 }
 
 const textVariants = cva('text-center font-semibold', {
@@ -30,7 +33,7 @@ const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
 const FONT_SIZE = 52;
 const fontSizeStyle = { fontSize: FONT_SIZE };
 
-export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant }: Props) => {
+export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, label }: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -65,6 +68,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant 
                     </Text>
                 </Animated.View>
             </Animated.View>
+            {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
         </Animated.View>
     );
 };
