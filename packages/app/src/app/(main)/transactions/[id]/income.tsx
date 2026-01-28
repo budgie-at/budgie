@@ -14,6 +14,7 @@ import { PageHeader } from '../../../../@generic/component/page-header/page-head
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { useAccountSelectorModal } from '../../../../account/context/account-selector-modal.context';
 import { ConvertIncomeToTransferBottomSheet } from '../../../../transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { IncomeQuickForm } from '../../../../transaction/components/income-quick-form/income-quick-form';
@@ -32,6 +33,7 @@ interface UpdateIncomeFormProps {
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const convertSheetRef = useRef<BottomSheetInterface | null>(null);
+    const { openAccountSelector } = useAccountSelectorModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -65,7 +67,12 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
                 </FullPage>
             </FormProvider>
-            <ConvertIncomeToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} toAccountId={toAccountId ?? 0} />
+            <ConvertIncomeToTransferBottomSheet
+                ref={convertSheetRef}
+                transactionId={transactionId}
+                toAccountId={toAccountId ?? 0}
+                openAccountSelector={openAccountSelector}
+            />
         </>
     );
 };

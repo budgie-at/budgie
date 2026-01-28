@@ -8,14 +8,18 @@ import { Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { z } from 'zod';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { BottomSheet } from '../../../@generic/component/bottom-sheet/bottom-sheet';
 import { BottomSheetView } from '../../../@generic/component/bottom-sheet-view/bottom-sheet-view';
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
-import { AccountSelector } from '../../../account/component/account-selector/account-selector';
+import { AccountSelectorModalParams } from '../../../account/context/account-selector-modal.context';
+import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { useConvertExpenseToTransferMutation } from '../../hooks/use-convert-expense-to-transfer.mutation';
 
 const ConvertToTransferSchema = z.object({
@@ -28,10 +32,11 @@ interface Props {
     readonly ref: RefObject<BottomSheetInterface | null>;
     readonly transactionId: number;
     readonly fromAccountId: number;
+    readonly openAccountSelector: (params?: AccountSelectorModalParams) => Promise<number | null>;
 }
 
 export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
-    const { ref, transactionId, fromAccountId } = props;
+    const { ref, transactionId, fromAccountId, openAccountSelector } = props;
 
     const { t } = useLingui();
     const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
@@ -44,6 +49,8 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
     });
 
     const toAccountId = useWatch({ control: form.control, name: 'toAccountId' });
+    const accountIdForSelector = toAccountId > 0 ? toAccountId : null;
+    const { selectedAccount, icon } = useAccountSelector({ accountId: accountIdForSelector });
 
     const handleClose = () => void ref.current?.close();
 
@@ -75,7 +82,20 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
         }
     };
 
-    const handleSelect = (accountId: number) => void form.setValue('toAccountId', accountId, { shouldValidate: true });
+    const handleOpenAccountSelector = async () => {
+        ref.current?.close();
+        const selectedAccountId = await openAccountSelector({
+            initialAccountId: toAccountId,
+            excludeAccountId: fromAccountId
+        });
+
+        if (isDefined(selectedAccountId)) {
+            form.setValue('toAccountId', selectedAccountId, { shouldValidate: true });
+        }
+        ref.current?.open();
+    };
+
+    const iconVariant = isDefined(selectedAccount) ? 'default' : 'secondary';
 
     return (
         <BottomSheet ref={ref} enableDynamicSizing isCloseable>
@@ -94,12 +114,11 @@ export const ConvertExpenseToTransferBottomSheet = (props: Props) => {
                     <Trans>Select the destination account for this transfer.</Trans>
                 </Text>
                 <View className="mb-3xl">
-                    <AccountSelector
-                        accountId={toAccountId}
-                        excludeAccountId={fromAccountId}
-                        onSelect={handleSelect}
-                        variant="default"
-                        cardVariant="ghost"
+                    <SimpleHorizontalCell
+                        variant="ghost"
+                        title={selectedAccount?.title ?? t`Select account`}
+                        left={<CircleIcon icon={icon} variant={iconVariant} />}
+                        onPress={handleOpenAccountSelector}
                     />
                 </View>
                 <View className="gap-y-md">

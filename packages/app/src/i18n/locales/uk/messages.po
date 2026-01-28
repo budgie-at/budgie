@@ -250,11 +250,11 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
-#: src/category/components/category-form/category-form.tsx:120
+#: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:118
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:106
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:111
+#: src/tag/components/tag-form/tag-form.tsx:117
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:126
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:131
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -280,7 +280,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Категорія"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Category Name"
 msgstr "Назва категорії"
 
@@ -354,23 +354,23 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:73
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:73
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:81
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:81
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:61
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:105
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:61
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:106
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:69
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:125
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:69
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:126
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:59
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:90
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:59
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:90
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:67
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:111
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:67
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:111
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -382,11 +382,11 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:54
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/tag/components/tag-form/tag-form.tsx:52
+#: src/tag/components/tag-form/tag-form.tsx:51
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
@@ -402,11 +402,11 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/category/components/category-form/category-form.tsx:81
+#: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
 
-#: src/tag/components/tag-form/tag-form.tsx:80
+#: src/tag/components/tag-form/tag-form.tsx:79
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
 
@@ -422,11 +422,11 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:54
 msgid "Could not update category"
 msgstr "Не вдалося оновити категорію"
 
-#: src/tag/components/tag-form/tag-form.tsx:52
+#: src/tag/components/tag-form/tag-form.tsx:51
 msgid "Could not update tag"
 msgstr "Не вдалося оновити тег"
 
@@ -438,8 +438,8 @@ msgstr "Не вдалося оновити транзакцію."
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
 
-#: src/category/components/category-form/category-form.tsx:45
-#: src/tag/components/tag-form/tag-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:44
+#: src/tag/components/tag-form/tag-form.tsx:43
 msgid "Create"
 msgstr "Створити"
 
@@ -467,7 +467,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form/category-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:43
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -484,7 +484,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/tag/components/tag-form/tag-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Create Tag"
 msgstr "Створити тег"
 
@@ -602,27 +602,27 @@ msgstr "Нідерландська (Нідерланди)"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/tag/components/tag-form/tag-form.tsx:92
+#: src/tag/components/tag-form/tag-form.tsx:91
 msgid "e.g., Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/category/components/category-form/category-form.tsx:93
+#: src/category/components/category-form/category-form.tsx:92
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
-#: src/category/components/category-form/category-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:43
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:55
+#: src/app/(main)/transactions/[id]/expense.tsx:57
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:55
+#: src/app/(main)/transactions/[id]/income.tsx:57
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/tag/components/tag-form/tag-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:42
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
@@ -952,11 +952,11 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/category/components/category-form/category-form.tsx:116
+#: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
 
-#: src/tag/components/tag-form/tag-form.tsx:114
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
 
@@ -1141,17 +1141,17 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:73
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:73
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:81
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:81
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:55
-#: src/category/components/category-form/category-form.tsx:81
-#: src/tag/components/tag-form/tag-form.tsx:52
-#: src/tag/components/tag-form/tag-form.tsx:80
+#: src/category/components/category-form/category-form.tsx:54
+#: src/category/components/category-form/category-form.tsx:80
+#: src/tag/components/tag-form/tag-form.tsx:51
+#: src/tag/components/tag-form/tag-form.tsx:79
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
@@ -1196,9 +1196,9 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/category/components/category-form/category-form.tsx:45
+#: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:44
+#: src/tag/components/tag-form/tag-form.tsx:43
 msgid "Save"
 msgstr "Зберегти"
 
@@ -1270,7 +1270,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
 
@@ -1278,7 +1278,7 @@ msgstr "Виберіть категорію для об'єднання"
 msgid "Select a contact"
 msgstr "Виберіть контакт"
 
-#: src/tag/components/tag-form/tag-form.tsx:62
+#: src/tag/components/tag-form/tag-form.tsx:61
 msgid "Select a tag to merge into"
 msgstr "Виберіть тег для об'єднання"
 
@@ -1290,7 +1290,8 @@ msgstr "Виберіть тег для об'єднання"
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
-#: src/account/component/account-selector/account-selector.tsx:57
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:119
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:119
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
 msgid "Select account"
 msgstr "Виберіть рахунок"
@@ -1311,11 +1312,11 @@ msgstr "Виберіть стовпець..."
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:93
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:114
 msgid "Select the destination account for this transfer."
 msgstr "Оберіть рахунок призначення для цього переказу."
 
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:93
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:114
 msgid "Select the source account for this transfer."
 msgstr "Оберіть рахунок-джерело для цього переказу."
 
@@ -1445,7 +1446,7 @@ msgstr "Синхронізація історії..."
 msgid "Tag"
 msgstr "Тег"
 
-#: src/tag/components/tag-form/tag-form.tsx:105
+#: src/tag/components/tag-form/tag-form.tsx:104
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1503,11 +1504,11 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:60
+#: src/transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet.tsx:68
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
 
-#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:60
+#: src/transaction/components/convert-income-to-transfer-bottom-sheet/convert-income-to-transfer-bottom-sheet.tsx:68
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 

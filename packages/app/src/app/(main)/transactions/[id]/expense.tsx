@@ -14,6 +14,7 @@ import { PageHeader } from '../../../../@generic/component/page-header/page-head
 import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { useAccountSelectorModal } from '../../../../account/context/account-selector-modal.context';
 import { ConvertExpenseToTransferBottomSheet } from '../../../../transaction/components/convert-expense-to-transfer-bottom-sheet/convert-expense-to-transfer-bottom-sheet';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { ExpenseQuickForm } from '../../../../transaction/components/expense-quick-form/expense-quick-form';
@@ -32,6 +33,7 @@ interface UpdateExpenseFormProps {
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const convertSheetRef = useRef<BottomSheetInterface | null>(null);
+    const { openAccountSelector } = useAccountSelectorModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -65,7 +67,12 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
                 </FullPage>
             </FormProvider>
-            <ConvertExpenseToTransferBottomSheet ref={convertSheetRef} transactionId={transactionId} fromAccountId={fromAccountId ?? 0} />
+            <ConvertExpenseToTransferBottomSheet
+                ref={convertSheetRef}
+                transactionId={transactionId}
+                fromAccountId={fromAccountId ?? 0}
+                openAccountSelector={openAccountSelector}
+            />
         </>
     );
 };
