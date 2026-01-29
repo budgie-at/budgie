@@ -1,8 +1,9 @@
 import { PRECISION } from '@budgie/contracts';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
+import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 interface ConversionState {
@@ -22,11 +23,19 @@ interface UseCurrencyConversionResult {
 }
 
 const INITIAL_STATE: ConversionState = { destinationAmount: 0, exchangeRate: 1, isManualRate: false };
+const UNMOUNTED_REQUEST_ID = -1;
 
 export const useCurrencyConversion = (): UseCurrencyConversionResult => {
     const [state, setState] = useState<ConversionState>(INITIAL_STATE);
     const [isCrossCurrency, setIsCrossCurrency] = useState(false);
     const latestRequestId = useRef(0);
+
+    useEffect(
+        () => () => {
+            latestRequestId.current = UNMOUNTED_REQUEST_ID;
+        },
+        []
+    );
 
     const convert = (sourceAmount: number, sourceInstrumentId: number, destinationInstrumentId: number) => {
         if (sourceInstrumentId === destinationInstrumentId || sourceInstrumentId === 0 || destinationInstrumentId === 0) {
@@ -38,7 +47,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
 
         setIsCrossCurrency(true);
 
-        if (sourceAmount <= 0) {
+        if (!isPositiveNumber(sourceAmount)) {
             setState(previous => ({ ...previous, destinationAmount: 0, exchangeRate: previous.exchangeRate }));
 
             return;
@@ -46,22 +55,28 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
 
         latestRequestId.current += 1;
         const requestId = latestRequestId.current;
-        const sourceAmountInMicroUnits = Math.round(sourceAmount * PRECISION);
+        const sourceAmountInMicroUnits = convertToMicroUnits(sourceAmount);
 
-        void exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, sourceAmountInMicroUnits).then(result => {
-            if (requestId !== latestRequestId.current) {
+        void exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, sourceAmountInMicroUnits).then(
+            result => {
+                if (requestId !== latestRequestId.current || latestRequestId.current === UNMOUNTED_REQUEST_ID) {
+                    return result;
+                }
+
+                setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
+
                 return result;
+            },
+            (error: unknown) => {
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- Internal error logging
+                console.warn('Currency conversion failed:', getErrorMessage(error));
             }
-
-            setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
-
-            return result;
-        }, emptyFn);
+        );
     };
 
     const setManualDestinationAmount = (sourceAmount: number, destinationAmount: number) => {
         latestRequestId.current += 1;
-        const manualRate = sourceAmount > 0 && destinationAmount > 0 ? sourceAmount / destinationAmount : 1;
+        const manualRate = isPositiveNumber(sourceAmount) && isPositiveNumber(destinationAmount) ? sourceAmount / destinationAmount : 1;
 
         setState({ destinationAmount, exchangeRate: manualRate, isManualRate: true });
     };
