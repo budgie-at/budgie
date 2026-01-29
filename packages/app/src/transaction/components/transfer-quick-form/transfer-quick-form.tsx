@@ -38,8 +38,8 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
-    const entries = useWatch({ control, name: 'entries' });
-    const initialDestinationAmount = getTransferDestinationAmount(entries, toAccountId ?? null);
+    const [entries, formAmount] = useWatch({ control, name: ['entries', 'amount'] });
+    const initialDestinationAmount = getTransferDestinationAmount(entries, toAccountId ?? null, formAmount);
 
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
     const toInstrumentId = toAccount?.instrumentId ?? 0;
