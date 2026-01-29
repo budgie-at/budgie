@@ -68,7 +68,6 @@ export default function ConvertToTransferModal() {
 
     const handleCancel = () => {
         resolveConvertToTransfer(false);
-        router.back();
     };
 
     // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
