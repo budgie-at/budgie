@@ -22,6 +22,7 @@ interface Props {
     readonly label?: string | null;
     readonly isLabelFlipped?: boolean;
     readonly secondaryAmount?: string | null;
+    readonly onLabelPress?: () => void;
     readonly onSecondaryAmountPress?: () => void;
 }
 
@@ -48,6 +49,7 @@ export const TransactionAmountDisplay = ({
     variant,
     label,
     isLabelFlipped = false,
+    onLabelPress,
     secondaryAmount,
     onSecondaryAmountPress
 }: Props) => {
@@ -87,7 +89,7 @@ export const TransactionAmountDisplay = ({
                     </Animated.View>
                 </Animated.View>
             </Pressable>
-            {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} /> : null}
+            {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} onPress={onLabelPress} /> : null}
             {isDefined(secondaryAmount) ? (
                 <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                     <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">
