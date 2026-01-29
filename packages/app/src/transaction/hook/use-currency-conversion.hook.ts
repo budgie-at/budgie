@@ -78,6 +78,7 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
         latestRequestId.current += 1;
         const manualRate = isPositiveNumber(sourceAmount) && isPositiveNumber(destinationAmount) ? sourceAmount / destinationAmount : 1;
 
+        setIsCrossCurrency(true);
         setState({ destinationAmount, exchangeRate: manualRate, isManualRate: true });
     };
 
