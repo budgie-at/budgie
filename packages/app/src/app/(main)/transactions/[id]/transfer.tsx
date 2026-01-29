@@ -1,6 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { AccountTypeEnum, TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    TransferTransactionCreateInputSchema
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -32,6 +37,9 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { t } = useLingui();
 
     const transactionInput = convertTransactionToInput(transaction);
+
+    const debitEntry = transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+    const initialDestinationAmount = debitEntry?.amount;
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
@@ -70,7 +78,12 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     />
                 }
             >
-                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <TransferQuickForm
+                    variant="default"
+                    initialDestinationAmount={initialDestinationAmount}
+                    onSubmit={handleSubmit}
+                    onCancel={handleGoBack}
+                />
             </FullPage>
         </FormProvider>
     );
