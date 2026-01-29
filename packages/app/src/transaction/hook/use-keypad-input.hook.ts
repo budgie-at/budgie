@@ -18,10 +18,17 @@ interface UseKeypadInputResult {
     readonly setFromNumeric: (value: number) => void;
 }
 
+const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string => {
+    const rounded = parseFloat(value.toFixed(maxDecimalPlaces));
+
+    return rounded.toString();
+};
+
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
     const { decimalPlaces } = useSettingsContext();
-    const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : initialValue.toString()));
+    const maxDecimals = Math.max(decimalPlaces, 2);
+    const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : formatNumericDisplay(initialValue, maxDecimals)));
     const isInitialMount = useRef(true);
 
     const numericValue = parseFloat(displayValue) || 0;
@@ -45,7 +52,6 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
             const parts = prev.split('.');
             const hasDecimal = parts.length > 1;
             const decimalPart = parts[1] ?? '';
-            const maxDecimals = Math.max(decimalPlaces, 2);
 
             if (hasDecimal && decimalPart.length >= maxDecimals) {
                 return prev;
@@ -74,7 +80,6 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
             const parts = prev.split('.');
             const hasDecimal = parts.length > 1;
             const decimalPart = parts[1] ?? '';
-            const maxDecimals = Math.max(decimalPlaces, 2);
 
             if (hasDecimal) {
                 const remainingDecimals = maxDecimals - decimalPart.length;
@@ -109,7 +114,7 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
     };
 
     const setFromNumeric = (value: number) => {
-        const newDisplay = value === 0 ? '0' : value.toString();
+        const newDisplay = value === 0 ? '0' : formatNumericDisplay(value, maxDecimals);
 
         setDisplayValue(newDisplay);
     };
