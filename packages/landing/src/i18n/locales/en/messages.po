@@ -17,7 +17,7 @@ msgstr ""
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 
-#: src/generic/component/hero-section/hero-section-header.tsx:78
+#: src/generic/component/hero-section/hero-section-header.tsx:84
 msgid "(Beta testers)"
 msgstr "(Beta testers)"
 
@@ -230,7 +230,7 @@ msgid "Blazing Fast"
 msgstr "Blazing Fast"
 
 #: src/generic/component/footer/footer.tsx:112
-#: src/generic/component/header/header.tsx:69
+#: src/generic/component/header/header.tsx:74
 #: src/generic/component/mobile-menu/mobile-menu.tsx:33
 msgid "Blog"
 msgstr "Blog"
@@ -243,7 +243,7 @@ msgstr "Blog & Insights"
 #: src/app/[lang]/layout.tsx:83
 #: src/generic/component/comparison-section/comparison-table-header.tsx:12
 #: src/generic/component/footer/footer.tsx:27
-#: src/generic/component/header/header.tsx:46
+#: src/generic/component/header/header.tsx:49
 #: src/generic/component/open-source-section/open-source-visual-header.tsx:12
 msgid "Budgie"
 msgstr "Budgie"
@@ -481,10 +481,6 @@ msgstr "Download"
 msgid "Download & Install"
 msgstr "Download & Install"
 
-#: src/generic/component/header/header.tsx:92
-msgid "Download App"
-msgstr "Download App"
-
 #: src/generic/component/trust-banner/trust-banner.tsx:36
 msgid "Downloads"
 msgstr "Downloads"
@@ -501,7 +497,7 @@ msgstr "Due Jan 30, 2025"
 msgid "Early Access"
 msgstr "Early Access"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:55
+#: src/generic/component/waitlist-form/waitlist-success.tsx:59
 msgid "Early access members get 50% off lifetime"
 msgstr "Early access members get 50% off lifetime"
 
@@ -550,7 +546,7 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "expense tracker, budget app, bank sync, crypto tracking, privacy, offline-first, multi-currency, debt tracking, financial management"
 
 #: src/generic/component/faq-section/faq-section.tsx:27
-#: src/generic/component/header/header.tsx:83
+#: src/generic/component/header/header.tsx:90
 #: src/generic/component/mobile-menu/mobile-menu.tsx:41
 msgid "FAQ"
 msgstr "FAQ"
@@ -560,7 +556,7 @@ msgid "Feature"
 msgstr "Feature"
 
 #: src/generic/component/footer/footer.tsx:80
-#: src/generic/component/header/header.tsx:55
+#: src/generic/component/header/header.tsx:59
 #: src/generic/component/mobile-menu/mobile-menu.tsx:25
 msgid "Features"
 msgstr "Features"
@@ -706,7 +702,7 @@ msgstr "Integrations"
 msgid "Investment Portfolio"
 msgstr "Investment Portfolio"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:88
+#: src/generic/component/hero-section/hero-section-header.tsx:94
 msgid "iOS & Android"
 msgstr "iOS & Android"
 
@@ -738,6 +734,7 @@ msgstr "Join the Budgie waitlist and be among the first to experience truly priv
 msgid "Join the Whitelist & Save 25%"
 msgstr "Join the Whitelist & Save 25%"
 
+#: src/generic/component/header/header.tsx:100
 #: src/generic/component/waitlist-form/waitlist-form.tsx:116
 msgid "Join Waitlist"
 msgstr "Join Waitlist"
@@ -1132,10 +1129,6 @@ msgstr "Stars"
 msgid "Start Free Trial"
 msgstr "Start Free Trial"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:45
-msgid "Start Keeping It."
-msgstr "Start Keeping It."
-
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
 msgstr "Start Tracking in Minutes"
@@ -1143,10 +1136,6 @@ msgstr "Start Tracking in Minutes"
 #: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
-
-#: src/generic/component/hero-section/hero-section-header.tsx:39
-msgid "Stop Leaking Money."
-msgstr "Stop Leaking Money."
 
 #: src/generic/component/features-section/features-section-header.tsx:30
 msgid "Stop switching between apps. Budgie tracks your bank accounts, credit cards, cash, crypto, and investments together—so you finally see the complete picture of your finances."
@@ -1181,7 +1170,7 @@ msgstr "Syncs with 1000+ banks and financial institutions"
 msgid "Terms of Service"
 msgstr "Terms of Service"
 
-#: src/generic/component/header/header.tsx:62
+#: src/generic/component/header/header.tsx:67
 #: src/generic/component/mobile-menu/mobile-menu.tsx:29
 msgid "Testimonials"
 msgstr "Testimonials"
@@ -1189,10 +1178,6 @@ msgstr "Testimonials"
 #: src/generic/component/analytics-section/analytics-section-content.tsx:26
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
-
-#: src/generic/component/hero-section/hero-section-header.tsx:50
-msgid "The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your fingerprint—so you finally see where your money really goes."
-msgstr "The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your fingerprint—so you finally see where your money really goes."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:28
 msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
@@ -1222,7 +1207,7 @@ msgstr "Third parties see your data"
 msgid "This Month's Reality Check"
 msgstr "This Month's Reality Check"
 
-#: src/generic/component/header/header.tsx:100
+#: src/generic/component/header/header.tsx:109
 msgid "Toggle menu"
 msgstr "Toggle menu"
 
@@ -1339,7 +1324,7 @@ msgstr "View All Integrations"
 msgid "View on GitHub"
 msgstr "View on GitHub"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:61
+#: src/generic/component/hero-section/hero-section-header.tsx:67
 msgid "View Source Code"
 msgstr "View Source Code"
 
@@ -1384,7 +1369,7 @@ msgid "What Makes Us Different"
 msgstr "What Makes Us Different"
 
 #: src/generic/component/footer/footer.tsx:88
-#: src/generic/component/header/header.tsx:76
+#: src/generic/component/header/header.tsx:82
 #: src/generic/component/mobile-menu/mobile-menu.tsx:37
 msgid "Whitelist"
 msgstr "Whitelist"
@@ -1430,7 +1415,7 @@ msgid "Works Offline"
 msgstr "Works Offline"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:12
-#: src/generic/component/hero-section/hero-section-header.tsx:108
+#: src/generic/component/hero-section/hero-section-header.tsx:114
 msgid "Works without internet"
 msgstr "Works without internet"
 
@@ -1446,13 +1431,17 @@ msgstr "Yes, show me the details"
 msgid "You owe Sarah"
 msgstr "You owe Sarah"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:47
-msgid "You're #{position} on the waitlist. We'll notify you when Budgie launches!"
-msgstr "You're #{position} on the waitlist. We'll notify you when Budgie launches!"
+#: src/generic/component/waitlist-form/waitlist-success.tsx:51
+msgid "You're #{displayPosition} on the waitlist. We'll notify you when Budgie launches!"
+msgstr "You're #{displayPosition} on the waitlist. We'll notify you when Budgie launches!"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:41
+#: src/generic/component/waitlist-form/waitlist-success.tsx:45
 msgid "You're in!"
 msgstr "You're in!"
+
+#: src/generic/component/hero-section/hero-section-header.tsx:56
+msgid "Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device—encrypted, offline, and yours alone."
+msgstr "Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device—encrypted, offline, and yours alone."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:58
 msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
@@ -1475,6 +1464,10 @@ msgstr "Your Data Stays Yours"
 msgid "Your data stored on their servers"
 msgstr "Your data stored on their servers"
 
+#: src/generic/component/hero-section/hero-section-header.tsx:45
+msgid "Your Device."
+msgstr "Your Device."
+
 #: src/generic/component/security-section/security-section-header.tsx:30
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
 msgstr "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
@@ -1482,6 +1475,14 @@ msgstr "Your financial data never leaves your device. No servers, no cloud, no t
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:41
 msgid "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
 msgstr "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
+
+#: src/generic/component/hero-section/hero-section-header.tsx:39
+msgid "Your Financial Data."
+msgstr "Your Financial Data."
+
+#: src/generic/component/hero-section/hero-section-header.tsx:51
+msgid "Your Rules."
+msgstr "Your Rules."
 
 #: src/generic/component/ai-section/ai-section.tsx:47
 msgid "Zero Cloud"
@@ -1491,7 +1492,7 @@ msgstr "Zero Cloud"
 msgid "Zero Cloud Storage"
 msgstr "Zero Cloud Storage"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:98
+#: src/generic/component/hero-section/hero-section-header.tsx:104
 msgid "Zero data collection"
 msgstr "Zero data collection"
 
