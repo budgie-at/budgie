@@ -15,6 +15,7 @@ import '../exchange-rate/task/exchange-rate-sync.task';
 import '../global.css';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { CONFIRM_ACTION_MODAL_OPTIONS } from '../@generic/constant/confirm-action-modal-options.constant';
+import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
@@ -142,7 +143,7 @@ export default function RootLayout() {
                                                                                             />
                                                                                             <Stack.Screen
                                                                                                 name="convert-to-transfer"
-                                                                                                options={FORM_MODAL_OPTIONS}
+                                                                                                options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
                                                                                             />
                                                                                         </Stack>
                                                                                     </ConvertToTransferModalProvider>

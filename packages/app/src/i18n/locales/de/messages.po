@@ -45,6 +45,10 @@ msgstr "{percentage}% der Einnahmen"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
+#: src/transaction/components/conversion-row/conversion-row.tsx:31
+msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
+msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
+
 #: src/app/(tabs)/settings/index.tsx:55
 msgid "100% Offline & Private"
 msgstr "100% Offline & Privat"
@@ -146,7 +150,7 @@ msgid "Amount"
 msgstr "Betrag"
 
 #: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:54
+#: src/app/(main)/transactions/[id]/transfer.tsx:63
 msgid "Amount exceeds debt account balance"
 msgstr "Betrag übersteigt den Schuldenkontostand"
 
@@ -253,7 +257,6 @@ msgstr "Budgie"
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:117
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:129
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -353,21 +356,17 @@ msgstr "Kontakt (optional)"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:105
+#: src/app/convert-to-transfer.tsx:107
 msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:135
-msgid "Convert"
-msgstr ""
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:85
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:112
+#: src/app/convert-to-transfer.tsx:77
+#: src/app/convert-to-transfer.tsx:113
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:83
+#: src/app/convert-to-transfer.tsx:75
 msgid "Convert to Transfer?"
 msgstr "In Überweisung umwandeln?"
 
@@ -611,11 +610,11 @@ msgstr "z. B. Lebensmittel, Gehalt, Miete"
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:57
+#: src/app/(main)/transactions/[id]/expense.tsx:70
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/app/(main)/transactions/[id]/income.tsx:57
+#: src/app/(main)/transactions/[id]/income.tsx:70
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
@@ -623,7 +622,7 @@ msgstr "Einnahme bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:67
+#: src/app/(main)/transactions/[id]/transfer.tsx:76
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
@@ -711,6 +710,10 @@ msgstr "Fehler"
 #: src/app/(main)/create-account/index.tsx:26
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
+
+#: src/transaction/components/conversion-row/conversion-row.tsx:32
+msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
+msgstr "Wechselkurs: {rateLabel}. Tippen, um den Empfangsbetrag zu bearbeiten"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:29
 msgid "Expected return date"
@@ -806,7 +809,7 @@ msgstr "Französisch (Frankreich)"
 msgid "from"
 msgstr "von"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:74
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:69
 msgid "From"
 msgstr "Von"
 
@@ -1138,7 +1141,7 @@ msgstr "PINs stimmen nicht überein"
 msgid "Please enter your Monobank API token"
 msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:105
+#: src/app/convert-to-transfer.tsx:107
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
@@ -1179,6 +1182,10 @@ msgstr "Neu berechnen"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
 msgid "Recalculate Balances"
 msgstr "Salden neu berechnen"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
+msgid "Receiving {toCode}"
+msgstr "Empfang {toCode}"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
@@ -1261,8 +1268,6 @@ msgid "Security"
 msgstr "Sicherheit"
 
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:75
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:88
 msgid "Select"
 msgstr "Auswählen"
 
@@ -1302,25 +1307,9 @@ msgstr "Alle auswählen"
 msgid "Select column..."
 msgstr "Spalte auswählen..."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:59
-msgid "Select destination account"
-msgstr ""
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Import-Vorlage auswählen"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:59
-msgid "Select source account"
-msgstr ""
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:117
-msgid "Select the destination account for this transfer."
-msgstr "Wählen Sie das Zielkonto für diese Überweisung."
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:119
-msgid "Select the source account for this transfer."
-msgstr "Wählen Sie das Quellkonto für diese Überweisung."
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1329,6 +1318,10 @@ msgstr "Wählen Sie den Kontotyp"
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:55
 msgid "Selected"
 msgstr "Ausgewählt"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
+msgid "Sending {fromCode}"
+msgstr "Senden {fromCode}"
 
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx:30
 msgid "Set Return Date"
@@ -1415,7 +1408,7 @@ msgstr "Aktien"
 msgid "Submit"
 msgstr "Absenden"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:82
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:76
 msgid "Swap accounts"
 msgstr "Konten tauschen"
 
@@ -1506,11 +1499,11 @@ msgstr "Diese Woche"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:61
+#: src/app/convert-to-transfer.tsx:63
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:62
+#: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
 
@@ -1522,7 +1515,7 @@ msgstr "Dieses Jahr"
 msgid "to"
 msgstr "nach"
 
-#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:87
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx:81
 msgid "To"
 msgstr "Nach"
 

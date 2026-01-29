@@ -10,9 +10,10 @@ import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { IncomeQuickForm } from '../../../transaction/components/income-quick-form/income-quick-form';
+import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
+import { buildIncomeEntry } from '../../../transaction/utils/build-income-entry.util';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
@@ -36,7 +37,14 @@ export default function CreateIncomeTransactionPage() {
     return (
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
-                <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <SimpleQuickForm
+                    variant="positive"
+                    transactionType={TransactionTypeEnum.INCOME}
+                    accountFieldName="toAccountId"
+                    buildEntries={buildIncomeEntry}
+                    onSubmit={handleSubmit}
+                    onCancel={handleGoBack}
+                />
             </FullPage>
         </FormProvider>
     );
