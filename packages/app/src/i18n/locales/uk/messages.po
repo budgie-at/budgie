@@ -257,7 +257,6 @@ msgstr "Budgie"
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:117
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:164
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -357,21 +356,17 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
+#: src/app/convert-to-transfer.tsx:112
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:170
-msgid "Convert"
-msgstr "Конвертувати"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:100
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:137
+#: src/app/convert-to-transfer.tsx:81
+#: src/app/convert-to-transfer.tsx:118
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:98
+#: src/app/convert-to-transfer.tsx:79
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -1146,7 +1141,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
+#: src/app/convert-to-transfer.tsx:112
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1312,25 +1307,9 @@ msgstr "Вибрати все"
 msgid "Select column..."
 msgstr "Виберіть стовпець..."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:67
-msgid "Select destination account"
-msgstr "Оберіть рахунок призначення"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:67
-msgid "Select source account"
-msgstr "Оберіть рахунок джерела"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:142
-msgid "Select the destination account for this transfer."
-msgstr "Оберіть рахунок призначення для цього переказу."
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:144
-msgid "Select the source account for this transfer."
-msgstr "Оберіть рахунок-джерело для цього переказу."
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1520,11 +1499,11 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:69
+#: src/app/convert-to-transfer.tsx:66
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:70
+#: src/app/convert-to-transfer.tsx:67
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 

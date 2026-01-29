@@ -1,29 +1,123 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+/* jscpd:ignore-start */
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
+import { FormProvider, useForm } from 'react-hook-form';
+import Toast from 'react-native-toast-message';
 
-import { ConvertToTransferForm } from '../transaction/components/convert-to-transfer-form/convert-to-transfer-form';
+import { FullPage } from '../@generic/component/page/full-page';
+import { PageHeader } from '../@generic/component/page-header/page-header';
+import { useConfirmActionModal } from '../@generic/context/confirm-action-modal.context';
+import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
+import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
+import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-convert-expense-to-transfer.mutation';
+import { useConvertIncomeToTransferMutation } from '../transaction/hooks/use-convert-income-to-transfer.mutation';
+import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
+import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
 
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { Edge } from 'react-native-safe-area-context';
+/* jscpd:ignore-end */
+
+const SAFE_EDGES: Edge[] = ['top', 'bottom'];
+
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
+    const { t } = useLingui();
     const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
+    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
 
-    const handleSuccess = () => {
-        resolveConvertToTransfer(true);
-    };
+    const convertExpenseMutation = useConvertExpenseToTransferMutation();
+    const convertIncomeMutation = useConvertIncomeToTransferMutation();
+
+    const transactionId = currentParams?.transactionId ?? 0;
+    const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
+    const excludeAccountId = currentParams?.excludeAccountId ?? 0;
+    const sourceAmount = currentParams?.sourceAmount ?? 0;
+
+    const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
+    const confirmVariant = isExpense ? 'default' : 'positive';
+    const colorVariant = isExpense ? 'default' : 'positive';
+
+    const fromAccountId = isExpense ? excludeAccountId : 0;
+    const toAccountId = isExpense ? 0 : excludeAccountId;
+
+    const form = useForm<TransactionCreateInputInterface>({
+        mode: 'onSubmit',
+        resolver: zodResolver(TransferTransactionCreateInputSchema),
+        defaultValues: createTransactionInput({
+            exchangeRate: 1,
+            fromAccountId,
+            toAccountId,
+            amount: sourceAmount,
+            type: TransactionTypeEnum.TRANSFER,
+            entries: buildTransferEntries({
+                fromAccountId,
+                toAccountId,
+                amount: sourceAmount,
+                categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+            })
+        })
+    });
+
+    const description = isExpense
+        ? t`This will convert the expense to a transfer between accounts.`
+        : t`This will convert the income to a transfer between accounts.`;
 
     const handleCancel = () => {
         resolveConvertToTransfer(false);
+        router.back();
+    };
+
+    // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
+    const handleSubmit = async () => {
+        const confirmed = await openConfirmAction({
+            variant: confirmVariant,
+            icon: UserIconNameEnum.ArrowRightLeft,
+            title: t`Convert to Transfer?`,
+            description,
+            buttonText: t`Convert to Transfer`
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            updateConfirmActionParams({ isLoading: true });
+
+            const formValues = form.getValues();
+            const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
+            const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
+            const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
+
+            if (isExpense) {
+                await convertExpenseMutation(convertParams);
+            } else {
+                await convertIncomeMutation(convertParams);
+            }
+
+            resolveConvertToTransfer(true);
+            const transferRoute = `/transactions/${transactionId}/transfer` as const;
+
+            if (router.canDismiss()) {
+                router.dismissAll();
+                router.push(transferRoute);
+            } else {
+                router.replace(transferRoute);
+            }
+        } catch {
+            Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
+        }
     };
 
     return (
-        <ConvertToTransferForm
-            transactionId={currentParams?.transactionId ?? 0}
-            transactionType={currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE}
-            excludeAccountId={currentParams?.excludeAccountId ?? 0}
-            sourceAmount={currentParams?.sourceAmount ?? 0}
-            sourceInstrumentId={currentParams?.sourceInstrumentId ?? 0}
-            sourceCode={currentParams?.sourceCode ?? ''}
-            onSuccess={handleSuccess}
-            onCancel={handleCancel}
-        />
+        <FormProvider {...form}>
+            <FullPage header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />} safeEdges={SAFE_EDGES}>
+                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
+            </FullPage>
+        </FormProvider>
     );
 }

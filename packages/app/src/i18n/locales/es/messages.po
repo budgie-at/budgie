@@ -257,7 +257,6 @@ msgstr "Budgie"
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:117
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:164
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -357,21 +356,17 @@ msgstr "Contacto (opcional)"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
+#: src/app/convert-to-transfer.tsx:112
 msgid "Conversion failed"
 msgstr "Error en la conversión"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:170
-msgid "Convert"
-msgstr "Convertir"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:100
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:137
+#: src/app/convert-to-transfer.tsx:81
+#: src/app/convert-to-transfer.tsx:118
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:98
+#: src/app/convert-to-transfer.tsx:79
 msgid "Convert to Transfer?"
 msgstr "¿Convertir a transferencia?"
 
@@ -1146,7 +1141,7 @@ msgstr "Los PIN no coinciden"
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
+#: src/app/convert-to-transfer.tsx:112
 msgid "Please try again"
 msgstr "Por favor, inténtelo de nuevo"
 
@@ -1312,25 +1307,9 @@ msgstr "Seleccionar todo"
 msgid "Select column..."
 msgstr "Seleccionar columna..."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:67
-msgid "Select destination account"
-msgstr "Seleccionar cuenta destino"
-
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:67
-msgid "Select source account"
-msgstr "Seleccionar cuenta origen"
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:142
-msgid "Select the destination account for this transfer."
-msgstr "Seleccione la cuenta de destino para esta transferencia."
-
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:144
-msgid "Select the source account for this transfer."
-msgstr "Selecciona la cuenta de origen para esta transferencia."
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
@@ -1520,11 +1499,11 @@ msgstr "Esta semana"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:69
+#: src/app/convert-to-transfer.tsx:66
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:70
+#: src/app/convert-to-transfer.tsx:67
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
