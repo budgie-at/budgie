@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 
 export interface TransactionAmountDisplayRef {
     shake: () => void;
@@ -19,6 +20,7 @@ interface Props {
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly label?: string | null;
+    readonly isLabelFlipped?: boolean;
     readonly secondaryAmount?: string | null;
     readonly onSecondaryAmountPress?: () => void;
 }
@@ -45,6 +47,7 @@ export const TransactionAmountDisplay = ({
     currencySymbol,
     variant,
     label,
+    isLabelFlipped = false,
     secondaryAmount,
     onSecondaryAmountPress
 }: Props) => {
@@ -84,7 +87,7 @@ export const TransactionAmountDisplay = ({
                     </Animated.View>
                 </Animated.View>
             </Pressable>
-            {isDefined(label) ? <Text className="text-xs text-secondary-foreground uppercase mt-sm">{label}</Text> : null}
+            {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} /> : null}
             {isDefined(secondaryAmount) ? (
                 <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                     <Animated.Text entering={SECONDARY_ENTERING_ANIMATION} className="text-lg text-secondary-foreground font-medium mt-xs">

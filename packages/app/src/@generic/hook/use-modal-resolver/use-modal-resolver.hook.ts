@@ -1,10 +1,14 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 
+interface ResolveOptions {
+    readonly skipBack?: boolean;
+}
+
 interface UseModalResolverResult<TParams, TResult> {
     currentParams: TParams | null;
     open: (params?: TParams) => Promise<TResult>;
-    resolve: (result: TResult) => void;
+    resolve: (result: TResult, options?: ResolveOptions) => void;
 }
 
 export const useModalResolver = <TParams, TResult>(route: string): UseModalResolverResult<TParams, TResult> => {
@@ -18,11 +22,14 @@ export const useModalResolver = <TParams, TResult>(route: string): UseModalResol
             router.push(route as never);
         });
 
-    const resolve = (result: TResult) => {
+    const resolve = (result: TResult, options?: ResolveOptions) => {
         resolverRef.current?.(result);
         resolverRef.current = null;
         setCurrentParams(null);
-        router.back();
+
+        if (!options?.skipBack) {
+            router.back();
+        }
     };
 
     return { currentParams, open, resolve };

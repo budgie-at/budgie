@@ -14,7 +14,7 @@ export interface ConvertToTransferModalParams {
 
 interface ConvertToTransferModalContextInterface {
     openConvertToTransfer: (params: ConvertToTransferModalParams) => Promise<boolean>;
-    resolveConvertToTransfer: (result: boolean) => void;
+    resolveConvertToTransfer: (result: boolean, options?: { readonly skipBack?: boolean }) => void;
     currentParams: ConvertToTransferModalParams | null;
 }
 
