@@ -12,6 +12,9 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { SuggestRuleSection } from '../../../../rule/components/suggest-rule-section/suggest-rule-section';
+import { useSuggestRuleModal } from '../../../../rule/context/suggest-rule-modal.context';
+import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { IncomeQuickForm } from '../../../../transaction/components/income-quick-form/income-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -27,9 +30,11 @@ interface UpdateIncomeFormProps {
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+
 const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps) => {
     const { t } = useLingui();
     const { openConvertToTransfer } = useConvertToTransferModal();
+    const { openSuggestRule } = useSuggestRuleModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -40,6 +45,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     });
 
     const toAccountId = form.watch('toAccountId');
+    const { shouldSuggestRule, suggestRuleData } = useSuggestRuleDetection({ transaction, control: form.control });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleOpenConvert = () =>
@@ -48,6 +54,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
             transactionType: TransactionTypeEnum.INCOME,
             excludeAccountId: toAccountId ?? 0
         });
+    const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
 
     return (
         <FormProvider {...form}>
@@ -64,6 +71,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     />
                 }
             >
+                {shouldSuggestRule ? <SuggestRuleSection onPress={handleOpenSuggestRule} /> : null}
                 <IncomeQuickForm variant="positive" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>

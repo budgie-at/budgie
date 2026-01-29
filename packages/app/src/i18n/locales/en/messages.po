@@ -13,19 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/rule/components/suggest-rule-description-actions/suggest-rule-description-actions.tsx:26
-#: src/rule/components/suggest-rule-description-condition/suggest-rule-description-condition.tsx:23
-msgid " and "
-msgstr " and "
-
-#: src/rule/components/suggest-rule-description-condition/suggest-rule-description-condition.tsx:21
-msgid " contains "
-msgstr " contains "
-
-#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:22
-msgid ", then "
-msgstr ", then "
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
@@ -45,6 +32,10 @@ msgstr "{accountTitle} will be restored to your main view."
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:37
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
+
+#: src/rule/components/suggest-rule-description-condition/suggest-rule-description-condition.tsx:18
+msgid "{fieldLabel} contains \"{value}\""
+msgstr "{fieldLabel} contains \"{value}\""
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -68,17 +59,13 @@ msgstr ">"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/app/(tabs)/settings/index.tsx:56
+#: src/app/(tabs)/settings/index.tsx:57
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(tabs)/settings/index.tsx:145
+#: src/app/(tabs)/settings/index.tsx:146
 msgid "About"
 msgstr "About"
-
-#: src/rule/constant/suggest-rule-field.constant.ts:8
-msgid "account"
-msgstr "account"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:16
 #: src/rule/constant/rule-condition-field.constant.ts:8
@@ -154,17 +141,17 @@ msgstr "Add a note..."
 msgid "Add Account"
 msgstr "Add Account"
 
-#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:24
+#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:19
 msgid "Add Rule"
 msgstr "Add Rule"
+
+#: src/rule/util/get-suggest-rule-action-items.util.ts:26
+msgid "add tag"
+msgstr "add tag"
 
 #: src/rule/constant/rule-action-type-options.constant.ts:12
 msgid "Add Tag"
 msgstr "Add Tag"
-
-#: src/rule/util/get-suggest-rule-action-items.util.tsx:33
-msgid "add tag <0>\"{title}\"</0>"
-msgstr "add tag <0>\"{title}\"</0>"
 
 #: src/rule/components/rule-card-action/rule-card-action.tsx:27
 msgid "add tag <0>{tagTitle}</0>"
@@ -178,7 +165,7 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
-#: src/app/(tabs)/settings/index.tsx:150
+#: src/app/(tabs)/settings/index.tsx:151
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -194,17 +181,13 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(tabs)/settings/index.tsx:57
+#: src/app/(tabs)/settings/index.tsx:58
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx:32
 msgid "Already syncing"
 msgstr "Already syncing"
-
-#: src/rule/constant/suggest-rule-field.constant.ts:7
-msgid "amount"
-msgstr "amount"
 
 #: src/app/(tabs)/settings/import.tsx:196
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:15
@@ -214,7 +197,6 @@ msgstr "Amount"
 
 #: src/app/(main)/create-transaction/transfer.tsx:53
 #: src/app/(main)/transactions/[id]/transfer.tsx:54
-#: src/transaction/hook/use-transfer-debt-validation.hook.ts:25
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -227,7 +209,7 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(tabs)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:126
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -244,7 +226,7 @@ msgid "Apply Filter ({selected})"
 msgstr "Apply Filter ({selected})"
 
 #: src/rule/components/rule-apply-to-existing-toggle/rule-apply-to-existing-toggle.tsx:20
-#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:67
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:72
 msgid "Apply to existing transactions"
 msgstr "Apply to existing transactions"
 
@@ -257,7 +239,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(tabs)/settings/archived.tsx:17
-#: src/app/(tabs)/settings/index.tsx:111
+#: src/app/(tabs)/settings/index.tsx:112
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -277,11 +259,11 @@ msgstr "Are you sure you want to delete this transaction?"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
-#: src/rule/util/get-suggest-rule-action-items.util.tsx:24
-msgid "assign category <0>\"{title}\"</0>"
-msgstr "assign category <0>\"{title}\"</0>"
+#: src/rule/util/get-suggest-rule-action-items.util.ts:21
+msgid "assign category"
+msgstr "assign category"
 
-#: src/app/(tabs)/settings/index.tsx:105
+#: src/app/(tabs)/settings/index.tsx:106
 msgid "Auto-categorize transactions"
 msgstr "Auto-categorize transactions"
 
@@ -339,7 +321,7 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(tabs)/settings/index.tsx:148
+#: src/app/(tabs)/settings/index.tsx:149
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -377,7 +359,7 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Category"
 msgstr "Category"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:102
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:103
 #: src/category/components/category-form/category-form.tsx:105
 msgid "Category Name"
 msgstr "Category Name"
@@ -436,14 +418,10 @@ msgstr "Close menu"
 msgid "Coinbase"
 msgstr "Coinbase"
 
-#: src/rule/constant/suggest-rule-field.constant.ts:6
-msgid "comment"
-msgstr "comment"
-
 #: src/app/(tabs)/settings/import.tsx:240
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:14
-#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:38
 #: src/rule/constant/rule-condition-field.constant.ts:6
+#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:6
 msgid "Comment"
 msgstr "Comment"
 
@@ -455,7 +433,7 @@ msgstr "Condition {conditionNumber}"
 msgid "Conditions"
 msgstr "Conditions"
 
-#: src/rule/components/suggest-rule-bottom-sheet-footer/suggest-rule-bottom-sheet-footer.tsx:34
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:91
 msgid "Configure Rule"
 msgstr "Configure Rule"
 
@@ -510,13 +488,12 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 #: src/category/components/category-form/category-form.tsx:54
 msgid "Could not create category"
 msgstr "Could not create category"
 
 #: src/rule/hooks/use-rule-form.hook.ts:88
-#: src/rule/hooks/use-suggest-rule-bottom-sheet.hook.ts:108
 msgid "Could not create rule"
 msgstr "Could not create rule"
 
@@ -540,7 +517,7 @@ msgstr "Could not delete rule."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:80
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:81
 #: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Could not merge category"
@@ -561,7 +538,7 @@ msgstr "Could not reassign tag"
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:56
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
 #: src/category/components/category-form/category-form.tsx:54
 msgid "Could not update category"
 msgstr "Could not update category"
@@ -582,7 +559,7 @@ msgstr "Could not update transaction."
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:86
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:87
 #: src/category/components/category-form/category-form.tsx:44
 #: src/tag/components/tag-form/tag-form.tsx:43
 msgid "Create"
@@ -604,11 +581,15 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(tabs)/settings/index.tsx:97
+#: src/app/(tabs)/settings/index.tsx:98
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
-#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:20
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:46
+msgid "Create Automation Rule"
+msgstr "Create Automation Rule"
+
+#: src/rule/components/suggest-rule-section/suggest-rule-section.tsx:15
 msgid "Create automation rule?"
 msgstr "Create automation rule?"
 
@@ -636,13 +617,9 @@ msgstr "Create one to get started."
 
 #: src/app/(main)/rules/create.tsx:29
 #: src/app/(main)/rules/create.tsx:39
-#: src/rule/components/suggest-rule-bottom-sheet-footer/suggest-rule-bottom-sheet-footer.tsx:25
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:84
 msgid "Create Rule"
 msgstr "Create Rule"
-
-#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:53
-msgid "Create Rule?"
-msgstr "Create Rule?"
 
 #: src/app/(tabs)/settings/rules.tsx:99
 msgid "Create rules to automatically categorize and tag your bank transactions"
@@ -693,7 +670,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(tabs)/settings/index.tsx:136
+#: src/app/(tabs)/settings/index.tsx:137
 msgid "Data management"
 msgstr "Data management"
 
@@ -783,7 +760,7 @@ msgstr "e.g. Savings Account"
 msgid "e.g., Business, Personal, Vacation"
 msgstr "e.g., Business, Personal, Vacation"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:99
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:100
 #: src/category/components/category-form/category-form.tsx:92
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "e.g., Groceries, Salary, Rent"
@@ -792,11 +769,11 @@ msgstr "e.g., Groceries, Salary, Rent"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:57
+#: src/app/(main)/transactions/[id]/expense.tsx:64
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:57
+#: src/app/(main)/transactions/[id]/income.tsx:64
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -1028,7 +1005,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(tabs)/settings/index.tsx:78
+#: src/app/(tabs)/settings/index.tsx:79
 msgid "General"
 msgstr "General"
 
@@ -1048,7 +1025,7 @@ msgstr "Get API Token"
 msgid "Greater Than"
 msgstr "Greater Than"
 
-#: src/app/(tabs)/settings/index.tsx:67
+#: src/app/(tabs)/settings/index.tsx:68
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -1060,10 +1037,6 @@ msgstr "History synced"
 msgid "Icon"
 msgstr "Icon"
 
-#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:18
-msgid "If "
-msgstr "If "
-
 #: src/rule/components/rule-card/rule-card.tsx:31
 msgid "If all of:"
 msgstr "If all of:"
@@ -1071,6 +1044,10 @@ msgstr "If all of:"
 #: src/rule/components/rule-card/rule-card.tsx:31
 msgid "If any of:"
 msgstr "If any of:"
+
+#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:33
+msgid "If:"
+msgstr "If:"
 
 #: src/import/components/import-csv/import-csv.tsx:38
 msgid "Import CSV"
@@ -1103,7 +1080,7 @@ msgid "In List"
 msgstr "In List"
 
 #: src/app/(tabs)/settings/inactive.tsx:17
-#: src/app/(tabs)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -1171,15 +1148,15 @@ msgstr "Loading..."
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings/index.tsx:88
+#: src/app/(tabs)/settings/index.tsx:89
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(tabs)/settings/index.tsx:104
+#: src/app/(tabs)/settings/index.tsx:105
 msgid "Manage Rules"
 msgstr "Manage Rules"
 
-#: src/app/(tabs)/settings/index.tsx:96
+#: src/app/(tabs)/settings/index.tsx:97
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -1199,13 +1176,13 @@ msgstr "Match All"
 msgid "Match Any"
 msgstr "Match Any"
 
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:52
+msgid "Match conditions"
+msgstr "Match conditions"
+
 #: src/app/(tabs)/settings/import.tsx:157
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
-
-#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:22
-msgid "Match transactions by:"
-msgstr "Match transactions by:"
 
 #: src/rule/constant/rule-condition-operator.constant.ts:9
 msgid "matches"
@@ -1219,17 +1196,13 @@ msgstr "Matches Regex"
 msgid "MCC categories are not loaded"
 msgstr "MCC categories are not loaded"
 
-#: src/rule/constant/suggest-rule-field.constant.ts:9
-msgid "MCC code"
-msgstr "MCC code"
-
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:17
-#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:49
 #: src/rule/constant/rule-condition-field.constant.ts:9
+#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:7
 msgid "MCC Code"
 msgstr "MCC Code"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:114
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:115
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Merge into another category"
@@ -1370,7 +1343,7 @@ msgstr "No tags match your search"
 msgid "No Tags Yet"
 msgstr "No Tags Yet"
 
-#: src/rule/components/suggest-rule-bottom-sheet-footer/suggest-rule-bottom-sheet-footer.tsx:43
+#: src/rule/components/suggest-rule-bottom-sheet/suggest-rule-bottom-sheet.tsx:97
 msgid "No thanks"
 msgstr "No thanks"
 
@@ -1414,7 +1387,7 @@ msgstr "Open Monobank to get your token"
 msgid "Operator"
 msgstr "Operator"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:85
 msgid "Organization"
 msgstr "Organization"
 
@@ -1465,12 +1438,11 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:57
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:81
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:58
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:82
 #: src/category/components/category-form/category-form.tsx:54
 #: src/category/components/category-form/category-form.tsx:80
 #: src/rule/hooks/use-rule-form.hook.ts:89
-#: src/rule/hooks/use-suggest-rule-bottom-sheet.hook.ts:108
 #: src/tag/components/tag-form/tag-form.tsx:51
 #: src/tag/components/tag-form/tag-form.tsx:79
 msgid "Please try again later"
@@ -1488,7 +1460,7 @@ msgstr "Portuguese (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
 
-#: src/app/(tabs)/settings/index.tsx:53
+#: src/app/(tabs)/settings/index.tsx:54
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1533,7 +1505,7 @@ msgstr "Rule"
 msgid "Rules"
 msgstr "Rules"
 
-#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:86
+#: src/category/components/category-form-bottom-sheet/category-form-bottom-sheet.tsx:87
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1557,7 +1529,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(tabs)/settings/index.tsx:66
+#: src/app/(tabs)/settings/index.tsx:67
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1612,7 +1584,7 @@ msgstr "Secondary Value"
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:61
+#: src/app/(tabs)/settings/index.tsx:62
 msgid "Security"
 msgstr "Security"
 
@@ -1664,7 +1636,7 @@ msgstr "Select Action Type"
 msgid "Select All"
 msgstr "Select All"
 
-#: src/rule/components/suggest-rule-description/suggest-rule-description.tsx:36
+#: src/rule/components/suggest-rule-description/suggest-rule-description.tsx:29
 msgid "Select at least one condition"
 msgstr "Select at least one condition"
 
@@ -1755,15 +1727,15 @@ msgstr "set category to <0>{categoryTitle}</0>"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(tabs)/settings/index.tsx:49
+#: src/app/(tabs)/settings/index.tsx:50
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(tabs)/settings/index.tsx:129
+#: src/app/(tabs)/settings/index.tsx:130
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/(tabs)/settings/index.tsx:128
+#: src/app/(tabs)/settings/index.tsx:129
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -1786,10 +1758,6 @@ msgstr "Something went wrong."
 #: src/account/component/archived-account-card/archived-account-card.tsx:70
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
-
-#: src/rule/constant/suggest-rule-field.constant.ts:11
-msgid "source"
-msgstr "source"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:19
 #: src/rule/constant/rule-condition-field.constant.ts:11
@@ -1903,6 +1871,7 @@ msgid "Target balance"
 msgstr "Target balance"
 
 #: src/rule/components/rule-card/rule-card.tsx:54
+#: src/rule/components/suggest-rule-description-content/suggest-rule-description-content.tsx:41
 msgid "Then:"
 msgstr "Then:"
 
@@ -1954,13 +1923,9 @@ msgstr "This will convert the income to a transfer between accounts."
 msgid "This Year"
 msgstr "This Year"
 
-#: src/rule/constant/suggest-rule-field.constant.ts:5
-msgid "title"
-msgstr "title"
-
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:13
-#: src/rule/components/suggest-rule-condition-selector/suggest-rule-condition-selector.tsx:28
 #: src/rule/constant/rule-condition-field.constant.ts:5
+#: src/rule/constant/suggest-rule-condition-field-labels.constant.ts:5
 msgid "Title"
 msgstr "Title"
 
@@ -2060,10 +2025,6 @@ msgstr "Try adjusting your filters to see more results"
 msgid "Try Again"
 msgstr "Try Again"
 
-#: src/rule/constant/suggest-rule-field.constant.ts:10
-msgid "type"
-msgstr "type"
-
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx:18
 #: src/rule/constant/rule-condition-field.constant.ts:10
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx:38
@@ -2117,15 +2078,15 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 msgid "Value"
 msgstr "Value"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:120
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(tabs)/settings/index.tsx:89
+#: src/app/(tabs)/settings/index.tsx:90
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(tabs)/settings/index.tsx:112
+#: src/app/(tabs)/settings/index.tsx:113
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 

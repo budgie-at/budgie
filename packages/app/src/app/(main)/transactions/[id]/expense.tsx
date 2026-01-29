@@ -12,6 +12,9 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { SuggestRuleSection } from '../../../../rule/components/suggest-rule-section/suggest-rule-section';
+import { useSuggestRuleModal } from '../../../../rule/context/suggest-rule-modal.context';
+import { useSuggestRuleDetection } from '../../../../rule/hooks/use-suggest-rule-detection.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { ExpenseQuickForm } from '../../../../transaction/components/expense-quick-form/expense-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -27,9 +30,11 @@ interface UpdateExpenseFormProps {
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
+
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const { openConvertToTransfer } = useConvertToTransferModal();
+    const { openSuggestRule } = useSuggestRuleModal();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -40,6 +45,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     });
 
     const fromAccountId = form.watch('fromAccountId');
+    const { shouldSuggestRule, suggestRuleData } = useSuggestRuleDetection({ transaction, control: form.control });
 
     const handleGoBack = () => void goBackOrReplace('/');
     const handleOpenConvert = () =>
@@ -48,6 +54,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
             transactionType: TransactionTypeEnum.EXPENSE,
             excludeAccountId: fromAccountId ?? 0
         });
+    const handleOpenSuggestRule = () => void openSuggestRule({ suggestRuleData });
 
     return (
         <FormProvider {...form}>
@@ -64,6 +71,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     />
                 }
             >
+                {shouldSuggestRule ? <SuggestRuleSection onPress={handleOpenSuggestRule} /> : null}
                 <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>
