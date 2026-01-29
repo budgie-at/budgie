@@ -39,8 +39,7 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
     const entries = useWatch({ control, name: 'entries' });
-    const sourceAmount = getValues('amount');
-    const initialDestinationAmount = getTransferDestinationAmount(entries, toAccountId ?? null, sourceAmount);
+    const initialDestinationAmount = getTransferDestinationAmount(entries, toAccountId ?? null);
 
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
     const toInstrumentId = toAccount?.instrumentId ?? 0;
