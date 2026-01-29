@@ -1,6 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { AccountTypeEnum, TransactionWithRelationsEntityInterface, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    TransactionEntryTypeEnum,
+    TransactionWithRelationsEntityInterface,
+    TransferTransactionCreateInputSchema
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -12,6 +17,7 @@ import { LoadingScreen } from '../../../../@generic/component/loading-screen/loa
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
+import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
@@ -32,6 +38,9 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { t } = useLingui();
 
     const transactionInput = convertTransactionToInput(transaction);
+
+    const debitEntry = transaction.entries.find(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+    const initialDestinationAmount = isDefined(debitEntry) ? convertFromMicroUnits(debitEntry.amount) : 0;
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
@@ -70,7 +79,12 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                     />
                 }
             >
-                <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <TransferQuickForm
+                    variant="default"
+                    initialDestinationAmount={initialDestinationAmount}
+                    onSubmit={handleSubmit}
+                    onCancel={handleGoBack}
+                />
             </FullPage>
         </FormProvider>
     );
