@@ -259,7 +259,7 @@ msgstr "Budgie"
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/tag/components/tag-form/tag-form.tsx:117
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:157
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:164
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -359,16 +359,16 @@ msgstr "Contact (optional)"
 msgid "Continue"
 msgstr "Continue"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:123
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
 msgid "Conversion failed"
 msgstr "Conversion failed"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:163
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:170
 msgid "Convert"
 msgstr "Convert"
 
 #: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:100
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:137
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
@@ -1148,7 +1148,7 @@ msgstr "PINs do not match"
 msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:123
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:130
 msgid "Please try again"
 msgstr "Please try again"
 
@@ -1326,11 +1326,11 @@ msgstr "Select Import Preset"
 msgid "Select source account"
 msgstr "Select source account"
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:135
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:142
 msgid "Select the destination account for this transfer."
 msgstr "Select the destination account for this transfer."
 
-#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:137
+#: src/transaction/components/convert-to-transfer-form/convert-to-transfer-form.tsx:144
 msgid "Select the source account for this transfer."
 msgstr "Select the source account for this transfer."
 
