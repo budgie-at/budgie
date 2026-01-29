@@ -2,14 +2,15 @@
 import { TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
-import { FullPage } from '../@generic/component/page/full-page';
-import { PageHeader } from '../@generic/component/page-header/page-header';
+import { ModalPage } from '../@generic/component/page/modal-page';
 import { useConfirmActionModal } from '../@generic/context/confirm-action-modal.context';
 import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
+import { useThemeContext } from '../theme/context/theme.context';
+import { dark, light } from '../theme/provider/theme.provider';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
 import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-convert-expense-to-transfer.mutation';
@@ -18,12 +19,9 @@ import { buildTransferEntries } from '../transaction/utils/build-transfer-entrie
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
-import type { Edge } from 'react-native-safe-area-context';
 /* jscpd:ignore-end */
 
-const SAFE_EDGES: Edge[] = ['top', 'bottom'];
-
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
@@ -112,11 +110,24 @@ export default function ConvertToTransferModal() {
         }
     };
 
+    const { isDarkColorSchema } = useThemeContext();
+    const themeColors = isDarkColorSchema ? dark : light;
+    const headerBackgroundColor = themeColors['--color-primary-reverse'];
+    const headerTintColor = themeColors['--color-primary'];
+
+    const headerOptions = {
+        title: t`Convert to Transfer`,
+        headerStyle: { backgroundColor: headerBackgroundColor },
+        headerTintColor,
+        headerShadowVisible: false
+    };
+
     return (
         <FormProvider {...form}>
-            <FullPage header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />} safeEdges={SAFE_EDGES}>
+            <Stack.Screen options={headerOptions} />
+            <ModalPage>
                 <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
-            </FullPage>
+            </ModalPage>
         </FormProvider>
     );
 }

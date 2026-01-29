@@ -188,7 +188,7 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
                 variant={variant}
                 secondaryAmount={secondaryAmountText}
                 label={amountLabel}
-                onSecondaryAmountPress={conversion.isCrossCurrency ? handleConversionRowPress : undefined}
+                {...(conversion.isCrossCurrency && { onSecondaryAmountPress: handleConversionRowPress })}
             />
 
             <TransactionFieldIcons
