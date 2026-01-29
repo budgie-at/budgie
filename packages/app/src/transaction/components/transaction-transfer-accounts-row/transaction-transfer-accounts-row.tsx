@@ -1,7 +1,7 @@
 import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,7 +11,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
-import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
 
 const ANIMATION_DELAY = 170;
@@ -28,18 +28,13 @@ interface Props {
 
 export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
     const { t } = useLingui();
-    const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
+    const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const { openAccountSelector } = useAccountSelectorModal();
     const { shake: shakeFrom, animatedStyle: fromAnimatedStyle } = useShakeAnimation();
     const { shake: shakeTo, animatedStyle: toAnimatedStyle } = useShakeAnimation();
+    const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
 
     useImperativeHandle(ref, () => ({ shakeFrom, shakeTo }));
-
-    const fromAccountId = useWatch({ control, name: 'fromAccountId' });
-    const toAccountId = useWatch({ control, name: 'toAccountId' });
-
-    const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);
 
     const handleFromPress = async () => {
         const selectedAccountId = await openAccountSelector({
