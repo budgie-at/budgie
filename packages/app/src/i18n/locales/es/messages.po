@@ -356,17 +356,17 @@ msgstr "Contacto (opcional)"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:108
 msgid "Conversion failed"
 msgstr "Error en la conversión"
 
-#: src/app/convert-to-transfer.tsx:81
-#: src/app/convert-to-transfer.tsx:118
+#: src/app/convert-to-transfer.tsx:77
+#: src/app/convert-to-transfer.tsx:114
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Convertir a transferencia"
 
-#: src/app/convert-to-transfer.tsx:79
+#: src/app/convert-to-transfer.tsx:75
 msgid "Convert to Transfer?"
 msgstr "¿Convertir a transferencia?"
 
@@ -1141,7 +1141,7 @@ msgstr "Los PIN no coinciden"
 msgid "Please enter your Monobank API token"
 msgstr "Por favor, ingrese su token API de Monobank"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:108
 msgid "Please try again"
 msgstr "Por favor, inténtelo de nuevo"
 
@@ -1499,11 +1499,11 @@ msgstr "Esta semana"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Esto borrará todos los saldos de cuentas en caché y los recalculará a partir de tus transacciones. Esto puede tomar un momento."
 
-#: src/app/convert-to-transfer.tsx:66
+#: src/app/convert-to-transfer.tsx:63
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Esto convertirá el gasto en una transferencia entre cuentas."
 
-#: src/app/convert-to-transfer.tsx:67
+#: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
