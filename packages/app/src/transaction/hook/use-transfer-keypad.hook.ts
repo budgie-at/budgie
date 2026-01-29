@@ -54,42 +54,25 @@ export const useTransferKeypad = ({
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
     const activeHandlers = activeKeypad.handlers;
 
-    const hasInitializedWithStoredAmount = useRef(false);
-    const previousInstrumentPair = useRef<string>('');
+    const hasInitializedRef = useRef(false);
 
-    // eslint-disable-next-line max-statements -- Effect handles initialization and conversion logic with multiple conditions
     useEffect(() => {
-        const isCrossCurrency = fromInstrumentId !== toInstrumentId && fromInstrumentId > 0 && toInstrumentId > 0;
-        const instrumentPair = `${fromInstrumentId}-${toInstrumentId}`;
-        const instrumentsChanged = instrumentPair !== previousInstrumentPair.current;
-
-        if (!isCrossCurrency) {
-            conversion.reset();
-            previousInstrumentPair.current = instrumentPair;
-
+        if (fromInstrumentId === toInstrumentId || fromInstrumentId === 0 || toInstrumentId === 0) {
             return;
         }
 
-        const hasStoredAmount = isPositiveNumber(initialDestinationAmount);
-        const shouldInitializeWithStored = hasStoredAmount && !hasInitializedWithStoredAmount.current;
+        const hasStoredDestination = isPositiveNumber(initialDestinationAmount) && initialDestinationAmount !== initialAmount;
 
-        if (shouldInitializeWithStored) {
+        if (hasStoredDestination && !hasInitializedRef.current) {
             conversion.setManualDestinationAmount(sourceKeypad.numericValue, initialDestinationAmount);
-            hasInitializedWithStoredAmount.current = true;
-            previousInstrumentPair.current = instrumentPair;
+            hasInitializedRef.current = true;
 
             return;
         }
 
-        const shouldRecalculate = instrumentsChanged || !conversion.isManualRate;
-
-        if (shouldRecalculate) {
-            conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
-        }
-
-        previousInstrumentPair.current = instrumentPair;
-        // eslint-disable-next-line react-hooks/exhaustive-deps -- Controlled dependencies for conversion logic
-    }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId, initialDestinationAmount]);
+        conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
+    }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
 
     const finishDestinationEditing = () => {
         const destinationAmount = destinationKeypad.numericValue;
