@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.21.0](https://github.com/budgie-at/budgie/compare/v2.20.3...v2.21.0) (2026-01-29)
+
+### Bug Fixes
+
+- **app:** address PR review feedback ([c33c263](https://github.com/budgie-at/budgie/commit/c33c26326b71de1af9080568a7d697c13de94a47))
+- **app:** adjust convert-to-transfer detent to 0.35 ([a0456d5](https://github.com/budgie-at/budgie/commit/a0456d5ad53a497d72eb7ad21b678ea93b24c4c9))
+- **app:** backdrop now covers header on account transactions page ([3fbc081](https://github.com/budgie-at/budgie/commit/3fbc0819dd9814575fd538537f6d2a1d2f8891e1))
+- **app:** convert destination amount from micro units using utility ([4fd930b](https://github.com/budgie-at/budgie/commit/4fd930b921cc0e521ac5f7247eed4b4dae9f05b0))
+- **app:** fix conversion row width and exchange rate display ([c62e4f7](https://github.com/budgie-at/budgie/commit/c62e4f7e98be18ad766c2d880f09d4e36f84a711))
+- **app:** further reduce convert-to-transfer detent to 0.3 ([d75a4d5](https://github.com/budgie-at/budgie/commit/d75a4d51a17a6d75f6bb80442aab79b5f339832e))
+- **app:** preserve destination amount when editing cross-currency transfers ([bf24250](https://github.com/budgie-at/budgie/commit/bf24250a8245fd93a1bd1258db6cd11b960b7c72))
+- **app:** prevent false cross-currency initialization in convert modal ([e055770](https://github.com/budgie-at/budgie/commit/e0557708b87a488ec95a2146d9141f8d5e7736e3))
+- **app:** prevent infinite loop by using getValues instead of useWatch for amount ([526516b](https://github.com/budgie-at/budgie/commit/526516bb9754379b4c1d74c3855dc7380c31af76))
+- **app:** reduce convert-to-transfer form sheet detent ([3cdb8d8](https://github.com/budgie-at/budgie/commit/3cdb8d81d4e0a43af98db3bf001ddc2e1f1af8fb))
+- **app:** remove duplicate router.back in convert-to-transfer cancel ([2f7acfa](https://github.com/budgie-at/budgie/commit/2f7acfa523491ef89a19feb95364d7e26c3a1de8))
+- **app:** remove redundant ≈ prefix from secondary amount display ([8f26629](https://github.com/budgie-at/budgie/commit/8f26629033b731029906beacdde6aaa831bb896e))
+- **app:** remove redundant list footer from selector formsheets ([94919b3](https://github.com/budgie-at/budgie/commit/94919b31cc1c15ec71886512a1e1dfc1393b7567))
+- **app:** rewrite transfer keypad to properly handle stored destination amounts ([1ef121d](https://github.com/budgie-at/budgie/commit/1ef121d916bd959a23bf2d104e7504aa3851ec51))
+- **app:** round keypad display values and disable currency switch without both accounts ([6a211d9](https://github.com/budgie-at/budgie/commit/6a211d9d5050dc91fd68d770e7d98bafaa90b5f3))
+- **app:** set isCrossCurrency flag in setManualDestinationAmount ([17c767d](https://github.com/budgie-at/budgie/commit/17c767d65c15fc8d64c353ae7cf3d5e9eaf72610))
+- **app:** simplify transfer keypad initialization logic ([8c21c2e](https://github.com/budgie-at/budgie/commit/8c21c2e256a275027c90094a645cad995c7001be))
+- **app:** use custom PageHeader with ModalPage for convert-to-transfer modal ([98a10e7](https://github.com/budgie-at/budgie/commit/98a10e7277f15cf181c33d5dafcb0d1a6d65c578))
+
+### Features
+
+- **app:** add cross-currency transfer UX with conversion row and rate display ([05d0652](https://github.com/budgie-at/budgie/commit/05d065286af7f66bf3222a15d92e9a5df0e49a8e))
+- **app:** add currency mode pill with rotation animation, fix navigation back stack ([cb879ff](https://github.com/budgie-at/budgie/commit/cb879ff66f5f17e7a22bb95cdb530448250cb865))
+- **app:** add dual amount display with currency-aware labels for cross-currency transfers ([0a00024](https://github.com/budgie-at/budgie/commit/0a0002480f622e1ed3015ed7616e5e97fbd1a336))
+- **app:** add tap-to-switch currency mode on secondary amount ([724c0cb](https://github.com/budgie-at/budgie/commit/724c0cb400261c6c46a37b5ed897603b8b1ddee9))
+- **app:** make currency mode pill clickable to switch send/receive modes ([93d191a](https://github.com/budgie-at/budgie/commit/93d191ad3b1c937e7a9b4c16893743c36ca9830d))
+- **app:** make main amount tappable to switch currency mode ([b520884](https://github.com/budgie-at/budgie/commit/b5208843defe7fd46b0aaa3215b6641ebc5dd16f))
+- **app:** navigate to transfer page after conversion ([49380ea](https://github.com/budgie-at/budgie/commit/49380ea3c74f60701082d435509564d4ebe2519f))
+- **app:** simplify transfer account picker empty and selected states ([60d0068](https://github.com/budgie-at/budgie/commit/60d00689a21050230f7a1405e84d6f0ede328dfa))
+- **app:** use native iOS modal with theme-aware header for convert-to-transfer ([f0c266e](https://github.com/budgie-at/budgie/commit/f0c266e1cb3363ec719ea260a08ca6fec9a8447f))
+
 ## [2.20.3](https://github.com/budgie-at/budgie/compare/v2.20.2...v2.20.3) (2026-01-29)
 
 **Note:** Version bump only for package @budgie-at/app
