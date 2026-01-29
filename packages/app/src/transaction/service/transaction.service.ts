@@ -9,7 +9,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { db, transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
 import { Transaction } from '../../@generic/type/transaction.type';
@@ -60,7 +60,7 @@ class TransactionService {
             ]);
 
             const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
-            const hasCustomExchangeRate = input.exchangeRate > 0 && input.exchangeRate !== 1;
+            const hasCustomExchangeRate = isPositiveNumber(input.exchangeRate) && input.exchangeRate !== 1;
 
             const { amount: autoToAmount, exchangeRate: autoExchangeRate } = await exchangeRatesService.convert(
                 fromAccount.instrumentId,
@@ -174,7 +174,7 @@ class TransactionService {
                 fromAmountInMicroUnits
             );
 
-            const hasCustomRate = customExchangeRate > 0 && customExchangeRate !== 1;
+            const hasCustomRate = isPositiveNumber(customExchangeRate) && customExchangeRate !== 1;
             const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
             const toAmount = hasCustomRate ? fromAmountInMicroUnits / customExchangeRate : autoToAmount;
 
@@ -266,7 +266,7 @@ class TransactionService {
                 toAmountInMicroUnits
             );
 
-            const hasCustomRate = customExchangeRate > 0 && customExchangeRate !== 1;
+            const hasCustomRate = isPositiveNumber(customExchangeRate) && customExchangeRate !== 1;
             const exchangeRate = hasCustomRate ? customExchangeRate : autoExchangeRate;
             const fromAmount = hasCustomRate ? toAmountInMicroUnits / customExchangeRate : autoFromAmount;
 
