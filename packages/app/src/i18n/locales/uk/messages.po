@@ -356,17 +356,17 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:108
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/app/convert-to-transfer.tsx:81
-#: src/app/convert-to-transfer.tsx:118
+#: src/app/convert-to-transfer.tsx:77
+#: src/app/convert-to-transfer.tsx:114
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
-#: src/app/convert-to-transfer.tsx:79
+#: src/app/convert-to-transfer.tsx:75
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
@@ -1141,7 +1141,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/app/convert-to-transfer.tsx:112
+#: src/app/convert-to-transfer.tsx:108
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1499,11 +1499,11 @@ msgstr "Цього тижня"
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/app/convert-to-transfer.tsx:66
+#: src/app/convert-to-transfer.tsx:63
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
 
-#: src/app/convert-to-transfer.tsx:67
+#: src/app/convert-to-transfer.tsx:64
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
