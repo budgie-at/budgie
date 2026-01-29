@@ -78,9 +78,8 @@ export const computeTransferDisplay = (params: ComputeTransferDisplayParams): Tr
 
     const secondarySymbol = isEditingDestination ? fromInfo.symbol : toInfo.symbol;
     const secondaryValue = isEditingDestination ? sourceNumericValue : conversion.destinationAmount;
-    const secondaryPrefix = isEditingDestination ? '' : '\u2248 ';
     const formattedSecondaryValue = secondaryValue > 0 ? secondaryValue.toFixed(2) : '0.00';
-    const secondaryAmountText = conversion.isCrossCurrency ? `${secondaryPrefix}${secondarySymbol} ${formattedSecondaryValue}` : null;
+    const secondaryAmountText = conversion.isCrossCurrency ? `${secondarySymbol} ${formattedSecondaryValue}` : null;
 
     const conversionRowAmount = isEditingDestination ? sourceNumericValue : conversion.destinationAmount;
     const conversionRowSymbol = isEditingDestination ? fromInfo.symbol : toInfo.symbol;
