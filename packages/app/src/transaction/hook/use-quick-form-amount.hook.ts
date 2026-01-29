@@ -8,13 +8,6 @@ import { useKeypadInput } from './use-keypad-input.hook';
 
 type AccountFieldName = 'fromAccountId' | 'toAccountId';
 
-interface KeypadHandlers {
-    readonly onDigit: (digit: string) => void;
-    readonly onDecimal: () => void;
-    readonly onBackspace: () => void;
-    readonly onLongBackspace: () => void;
-}
-
 interface UseQuickFormAmountConfig {
     readonly accountFieldName: AccountFieldName;
 }
@@ -23,7 +16,7 @@ interface UseQuickFormAmountResult {
     readonly displayValue: string;
     readonly numericValue: number;
     readonly currencySymbol: string;
-    readonly keypadHandlers: KeypadHandlers;
+    readonly keypadHandlers: ReturnType<typeof useKeypadInput>['handlers'];
 }
 
 export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfig): UseQuickFormAmountResult => {
@@ -36,7 +29,7 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
         setValue('amount', value);
     };
 
-    const { displayValue, numericValue, handleDigit, handleDecimal, handleBackspace, handleClear } = useKeypadInput({
+    const { displayValue, numericValue, handlers } = useKeypadInput({
         initialValue: initialAmount,
         onChange: handleAmountChange
     });
@@ -45,12 +38,5 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
 
-    const keypadHandlers: KeypadHandlers = {
-        onDigit: handleDigit,
-        onDecimal: handleDecimal,
-        onBackspace: handleBackspace,
-        onLongBackspace: handleClear
-    };
-
-    return { displayValue, numericValue, currencySymbol, keypadHandlers };
+    return { displayValue, numericValue, currencySymbol, keypadHandlers: handlers };
 };

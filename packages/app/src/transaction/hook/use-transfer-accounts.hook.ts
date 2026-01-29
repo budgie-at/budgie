@@ -13,8 +13,7 @@ interface UseTransferAccountsResult {
 export const useTransferAccounts = (): UseTransferAccountsResult => {
     const { control } = useFormContext<TransactionCreateInputInterface>();
 
-    const fromAccountId = useWatch({ control, name: 'fromAccountId' });
-    const toAccountId = useWatch({ control, name: 'toAccountId' });
+    const [fromAccountId, toAccountId] = useWatch({ control, name: ['fromAccountId', 'toAccountId'] });
 
     const { account: fromAccount } = useGetAccountByIdQuery(fromAccountId ?? 0);
     const { account: toAccount } = useGetAccountByIdQuery(toAccountId ?? 0);

@@ -16,8 +16,7 @@ export const useQuickFormModals = (): UseQuickFormModalsResult => {
     const { openDatePicker } = useDatePickerModal();
     const { openNoteInput } = useNoteInputModal();
 
-    const operatedAt = useWatch({ control, name: 'operatedAt' });
-    const comment = useWatch({ control, name: 'comment' });
+    const [operatedAt, comment] = useWatch({ control, name: ['operatedAt', 'comment'] });
 
     const handleCommentPress = async () => {
         const result = await openNoteInput({ initialValue: comment });
