@@ -1,6 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 /* jscpd:ignore-start */
-import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import {
+    ExpenseTransactionCreateInputSchema,
+    PRECISION,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
@@ -13,11 +18,12 @@ import { PageHeader } from '../../../../@generic/component/page-header/page-head
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
-import { ExpenseQuickForm } from '../../../../transaction/components/expense-quick-form/expense-quick-form';
+import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { useConvertToTransferModal } from '../../../../transaction/context/convert-to-transfer-modal.context';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
 import { useGetTransactionByIdQuery } from '../../../../transaction/query/use-get-transaction-by-id.query';
+import { buildExpenseEntry } from '../../../../transaction/utils/build-expense-entry.util';
 import { convertTransactionToInput } from '../../../../transaction/utils/convert-transaction-to-input.util';
 
 interface UpdateExpenseFormProps {
@@ -42,11 +48,19 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const fromAccountId = form.watch('fromAccountId');
 
     const handleGoBack = () => void goBackOrReplace('/');
+    const [sourceEntry] = transaction.entries;
+    const sourceAmount = sourceEntry.amount;
+    const sourceAccount = sourceEntry.account;
+    const sourceInstrumentId = sourceAccount.instrumentId;
+
     const handleOpenConvert = () =>
         void openConvertToTransfer({
             transactionId,
             transactionType: TransactionTypeEnum.EXPENSE,
-            excludeAccountId: fromAccountId ?? 0
+            excludeAccountId: fromAccountId ?? 0,
+            sourceAmount: sourceAmount / PRECISION,
+            sourceInstrumentId,
+            sourceCode: sourceAccount.instrument.code
         });
 
     return (
@@ -64,7 +78,14 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     />
                 }
             >
-                <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <SimpleQuickForm
+                    variant="destructive"
+                    transactionType={TransactionTypeEnum.EXPENSE}
+                    accountFieldName="fromAccountId"
+                    buildEntries={buildExpenseEntry}
+                    onSubmit={handleSubmit}
+                    onCancel={handleGoBack}
+                />
             </FullPage>
         </FormProvider>
     );

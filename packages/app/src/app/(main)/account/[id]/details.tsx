@@ -55,49 +55,51 @@ export default function AccountDetails() {
     const { title, icon, type, instrument } = account;
 
     return (
-        <Page
-            header={
-                <PageHeader
-                    icon={icon}
-                    onGoBack={handleGoBack}
-                    title={title}
-                    iconVariant={ACCOUNT_COLOR[type]}
-                    right={
-                        <Link href={`/account/${id}/update`} asChild>
-                            <HapticPressable className="ml-auto">
-                                <CircleIcon
-                                    icon={UserIconNameEnum.EllipsisVertical}
-                                    variant="ghost"
-                                    size={40}
-                                    iconSize={24}
-                                    border={false}
-                                />
-                            </HapticPressable>
-                        </Link>
-                    }
-                    description={t(ACCOUNT_TYPE[type])}
-                    descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
-                />
-            }
-            contentClassName="px-0 flex-1"
-        >
-            <View className="pb-md">
-                {type === AccountTypeEnum.DEBT ? (
-                    <DebtAccountBalance
-                        balance={balance}
-                        instrumentSymbol={instrument.symbol}
-                        targetAmount={convertFromMicroUnits(account.targetBalance)}
+        <View className="relative flex-1">
+            <Page
+                header={
+                    <PageHeader
+                        icon={icon}
+                        onGoBack={handleGoBack}
+                        title={title}
+                        iconVariant={ACCOUNT_COLOR[type]}
+                        right={
+                            <Link href={`/account/${id}/update`} asChild>
+                                <HapticPressable className="ml-auto">
+                                    <CircleIcon
+                                        icon={UserIconNameEnum.EllipsisVertical}
+                                        variant="ghost"
+                                        size={40}
+                                        iconSize={24}
+                                        border={false}
+                                    />
+                                </HapticPressable>
+                            </Link>
+                        }
+                        description={t(ACCOUNT_TYPE[type])}
+                        descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[type] })}
                     />
-                ) : (
-                    <AccountBalance instrumentSymbol={instrument.symbol} balance={balance} />
-                )}
-            </View>
+                }
+                contentClassName="px-0 flex-1"
+            >
+                <View className="pb-md">
+                    {type === AccountTypeEnum.DEBT ? (
+                        <DebtAccountBalance
+                            balance={balance}
+                            instrumentSymbol={instrument.symbol}
+                            targetAmount={convertFromMicroUnits(account.targetBalance)}
+                        />
+                    ) : (
+                        <AccountBalance instrumentSymbol={instrument.symbol} balance={balance} />
+                    )}
+                </View>
 
-            <TransactionList accountId={id} footerSpacerMultiplier={3} />
+                <TransactionList accountId={id} footerSpacerMultiplier={3} />
+            </Page>
 
             <AccountFab isMenuOpen={isMenuOpen} onPress={handleOpenMenu} />
             <AnimatedBackdrop isVisible={isMenuOpen} onClose={handleCloseMenu} />
             <CreateTransactionMenu isOpen={isMenuOpen} onClose={handleCloseMenu} accountId={id} />
-        </Page>
+        </View>
     );
 }
