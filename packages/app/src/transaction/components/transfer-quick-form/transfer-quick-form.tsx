@@ -1,7 +1,7 @@
 import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -13,6 +13,7 @@ import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { useTransferKeypad } from '../../hook/use-transfer-keypad.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
+import { getTransferDestinationAmount } from '../../utils/get-transfer-destination-amount.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
@@ -32,10 +33,13 @@ interface Props {
 export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
-    const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
+    const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { fromAccountId, toAccountId, fromAccount, toAccount } = useTransferAccounts();
+
+    const entries = useWatch({ control, name: 'entries' });
+    const initialDestinationAmount = getTransferDestinationAmount(entries, toAccountId ?? null);
 
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
     const toInstrumentId = toAccount?.instrumentId ?? 0;
@@ -48,7 +52,7 @@ export const TransferQuickForm = ({ variant, onSubmit, onCancel }: Props) => {
         conversion,
         finishDestinationEditing,
         handleConversionRowPress
-    } = useTransferKeypad({ fromInstrumentId, toInstrumentId });
+    } = useTransferKeypad({ fromInstrumentId, toInstrumentId, initialDestinationAmount });
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const transferAccountsRef = useRef<TransactionTransferAccountsRowRef>(null);

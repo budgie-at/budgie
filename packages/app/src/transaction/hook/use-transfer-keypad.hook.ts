@@ -12,6 +12,7 @@ import type { UseKeypadInputResult } from './use-keypad-input.hook';
 interface UseTransferKeypadConfig {
     readonly fromInstrumentId: number;
     readonly toInstrumentId: number;
+    readonly initialDestinationAmount?: number;
 }
 
 interface UseTransferKeypadResult {
@@ -25,9 +26,14 @@ interface UseTransferKeypadResult {
     readonly handleConversionRowPress: () => void;
 }
 
-export const useTransferKeypad = ({ fromInstrumentId, toInstrumentId }: UseTransferKeypadConfig): UseTransferKeypadResult => {
+export const useTransferKeypad = ({
+    fromInstrumentId,
+    toInstrumentId,
+    initialDestinationAmount
+}: UseTransferKeypadConfig): UseTransferKeypadResult => {
     const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const [isEditingDestination, setIsEditingDestination] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     const initialAmount = getValues('amount');
     const conversion = useCurrencyConversion();
@@ -42,13 +48,22 @@ export const useTransferKeypad = ({ fromInstrumentId, toInstrumentId }: UseTrans
     });
 
     const destinationKeypad = useKeypadInput({
-        initialValue: 0
+        initialValue: initialDestinationAmount ?? 0
     });
 
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
     const activeHandlers = activeKeypad.handlers;
 
     useEffect(() => {
+        const hasStoredDestinationAmount = isPositiveNumber(initialDestinationAmount) && !isInitialized;
+
+        if (hasStoredDestinationAmount) {
+            conversion.setManualDestinationAmount(initialAmount, initialDestinationAmount);
+            setIsInitialized(true);
+
+            return;
+        }
+
         conversion.convert(sourceKeypad.numericValue, fromInstrumentId, toInstrumentId);
         // eslint-disable-next-line react-hooks/exhaustive-deps -- conversion methods are stable, only trigger on value/instrument changes
     }, [sourceKeypad.numericValue, fromInstrumentId, toInstrumentId]);
