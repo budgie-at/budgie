@@ -10,9 +10,10 @@ import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { ExpenseQuickForm } from '../../../transaction/components/expense-quick-form/expense-quick-form';
+import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
+import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
 /* jscpd:ignore-end */
 
 /* jscpd:ignore-start */
@@ -46,7 +47,14 @@ export default function CreateExpenseTransactionPage() {
     return (
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
-                <ExpenseQuickForm variant="destructive" onSubmit={handleSubmit} onCancel={handleGoBack} />
+                <SimpleQuickForm
+                    variant="destructive"
+                    transactionType={TransactionTypeEnum.EXPENSE}
+                    accountFieldName="fromAccountId"
+                    buildEntries={buildExpenseEntry}
+                    onSubmit={handleSubmit}
+                    onCancel={handleGoBack}
+                />
             </FullPage>
         </FormProvider>
     );
