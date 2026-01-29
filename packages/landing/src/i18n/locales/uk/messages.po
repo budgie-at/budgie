@@ -17,7 +17,7 @@ msgstr ""
 msgid "'Yes! You can sync your data across devices using your own cloud storage (iCloud, Google Drive, Dropbox). Your data remains encrypted and private—we never see it during the sync process."
 msgstr "Так! Ви можете синхронізувати свої дані між пристроями, використовуючи власне хмарне сховище (iCloud, Google Drive, Dropbox). Ваші дані залишаються зашифрованими та приватними — ми ніколи не бачимо їх під час синхронізації."
 
-#: src/generic/component/hero-section/hero-section-header.tsx:78
+#: src/generic/component/hero-section/hero-section-header.tsx:84
 msgid "(Beta testers)"
 msgstr "(Бета-тестери)"
 
@@ -230,7 +230,7 @@ msgid "Blazing Fast"
 msgstr "Блискавична швидкість"
 
 #: src/generic/component/footer/footer.tsx:112
-#: src/generic/component/header/header.tsx:69
+#: src/generic/component/header/header.tsx:74
 #: src/generic/component/mobile-menu/mobile-menu.tsx:33
 msgid "Blog"
 msgstr "Блог"
@@ -243,7 +243,7 @@ msgstr "Блог та Аналітика"
 #: src/app/[lang]/layout.tsx:83
 #: src/generic/component/comparison-section/comparison-table-header.tsx:12
 #: src/generic/component/footer/footer.tsx:27
-#: src/generic/component/header/header.tsx:46
+#: src/generic/component/header/header.tsx:49
 #: src/generic/component/open-source-section/open-source-visual-header.tsx:12
 msgid "Budgie"
 msgstr "Budgie"
@@ -481,10 +481,6 @@ msgstr "Завантажити"
 msgid "Download & Install"
 msgstr "Завантажте та встановіть"
 
-#: src/generic/component/header/header.tsx:92
-msgid "Download App"
-msgstr "Завантажити додаток"
-
 #: src/generic/component/trust-banner/trust-banner.tsx:36
 msgid "Downloads"
 msgstr "Завантаження"
@@ -501,7 +497,7 @@ msgstr "До 30 січня 2025"
 msgid "Early Access"
 msgstr "Ранній доступ"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:55
+#: src/generic/component/waitlist-form/waitlist-success.tsx:59
 msgid "Early access members get 50% off lifetime"
 msgstr "Учасники раннього доступу отримують 50% знижки назавжди"
 
@@ -550,7 +546,7 @@ msgid "expense tracker, budget app, bank sync, crypto tracking, privacy, offline
 msgstr "трекер витрат, бюджетний додаток, синхронізація з банком, облік криптовалюти, приватність, офлайн, мультивалюта, облік боргів, фінансовий менеджмент"
 
 #: src/generic/component/faq-section/faq-section.tsx:27
-#: src/generic/component/header/header.tsx:83
+#: src/generic/component/header/header.tsx:90
 #: src/generic/component/mobile-menu/mobile-menu.tsx:41
 msgid "FAQ"
 msgstr "Питання та відповіді"
@@ -560,7 +556,7 @@ msgid "Feature"
 msgstr "Функція"
 
 #: src/generic/component/footer/footer.tsx:80
-#: src/generic/component/header/header.tsx:55
+#: src/generic/component/header/header.tsx:59
 #: src/generic/component/mobile-menu/mobile-menu.tsx:25
 msgid "Features"
 msgstr "Можливості"
@@ -706,7 +702,7 @@ msgstr "Інтеграції"
 msgid "Investment Portfolio"
 msgstr "Інвестиційний портфель"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:88
+#: src/generic/component/hero-section/hero-section-header.tsx:94
 msgid "iOS & Android"
 msgstr "iOS та Android"
 
@@ -738,6 +734,7 @@ msgstr "Приєднуйтесь до списку очікування Budgie �
 msgid "Join the Whitelist & Save 25%"
 msgstr "Приєднуйтесь до білого списку та заощаджуйте 25%"
 
+#: src/generic/component/header/header.tsx:100
 #: src/generic/component/waitlist-form/waitlist-form.tsx:116
 msgid "Join Waitlist"
 msgstr "Приєднатися до списку очікування"
@@ -1132,10 +1129,6 @@ msgstr "Зірки"
 msgid "Start Free Trial"
 msgstr "Почати безкоштовно"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:45
-msgid "Start Keeping It."
-msgstr "Почніть зберігати."
-
 #: src/generic/component/how-it-works-section/how-it-works-section.tsx:32
 msgid "Start Tracking in Minutes"
 msgstr "Почніть облік за кілька хвилин"
@@ -1143,10 +1136,6 @@ msgstr "Почніть облік за кілька хвилин"
 #: src/app/[lang]/blog/page.tsx:50
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
 msgstr "Будьте в курсі фінансової конфіденційності, найкращих практик безпеки та останніх функцій Budgie."
-
-#: src/generic/component/hero-section/hero-section-header.tsx:39
-msgid "Stop Leaking Money."
-msgstr "Припиніть втрачати гроші."
 
 #: src/generic/component/features-section/features-section-header.tsx:30
 msgid "Stop switching between apps. Budgie tracks your bank accounts, credit cards, cash, crypto, and investments together—so you finally see the complete picture of your finances."
@@ -1181,7 +1170,7 @@ msgstr "Синхронізується з 1000+ банками та фінанс
 msgid "Terms of Service"
 msgstr "Умови користування"
 
-#: src/generic/component/header/header.tsx:62
+#: src/generic/component/header/header.tsx:67
 #: src/generic/component/mobile-menu/mobile-menu.tsx:29
 msgid "Testimonials"
 msgstr "Відгуки"
@@ -1189,10 +1178,6 @@ msgstr "Відгуки"
 #: src/generic/component/analytics-section/analytics-section-content.tsx:26
 msgid "That daily coffee? $150/month. Forgotten subscriptions? $80/month. Budgie exposes every spending leak so you can finally plug them and keep more money in your pocket."
 msgstr "Та щоденна кава? $150/місяць. Забуті підписки? $80/місяць. Budgie виявляє кожен витік грошей, щоб ви нарешті могли їх зупинити й тримати більше грошей у кишені."
-
-#: src/generic/component/hero-section/hero-section-header.tsx:50
-msgid "The average person overspends $400/month without realizing it. Budgie tracks every dollar offline, encrypted with your fingerprint—so you finally see where your money really goes."
-msgstr "Середня людина перевитрачає $400/місяць, не усвідомлюючи цього. Budgie відстежує кожну гривню офлайн, зашифровану вашим відбитком пальця — щоб ви нарешті побачили, куди насправді йдуть ваші гроші."
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx:28
 msgid "The debt tracking feature helped me pay off my student loans 6 months early. Watching that progress bar fill up kept me motivated every single day."
@@ -1222,7 +1207,7 @@ msgstr "Треті сторони бачать ваші дані"
 msgid "This Month's Reality Check"
 msgstr "Перевірка реальності цього місяця"
 
-#: src/generic/component/header/header.tsx:100
+#: src/generic/component/header/header.tsx:109
 msgid "Toggle menu"
 msgstr "Відкрити/закрити меню"
 
@@ -1339,7 +1324,7 @@ msgstr "Переглянути всі інтеграції"
 msgid "View on GitHub"
 msgstr "Переглянути на GitHub"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:61
+#: src/generic/component/hero-section/hero-section-header.tsx:67
 msgid "View Source Code"
 msgstr "Переглянути вихідний код"
 
@@ -1384,7 +1369,7 @@ msgid "What Makes Us Different"
 msgstr "Що робить нас особливими"
 
 #: src/generic/component/footer/footer.tsx:88
-#: src/generic/component/header/header.tsx:76
+#: src/generic/component/header/header.tsx:82
 #: src/generic/component/mobile-menu/mobile-menu.tsx:37
 msgid "Whitelist"
 msgstr "Білий список"
@@ -1430,7 +1415,7 @@ msgid "Works Offline"
 msgstr "Працює офлайн"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx:12
-#: src/generic/component/hero-section/hero-section-header.tsx:108
+#: src/generic/component/hero-section/hero-section-header.tsx:114
 msgid "Works without internet"
 msgstr "Працює без інтернету"
 
@@ -1446,13 +1431,17 @@ msgstr "Так, покажи деталі"
 msgid "You owe Sarah"
 msgstr "Ви винні Сарі"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:47
-msgid "You're #{position} on the waitlist. We'll notify you when Budgie launches!"
-msgstr "Ви #{position} у списку очікування. Ми повідомимо вас, коли Budgie запуститься!"
+#: src/generic/component/waitlist-form/waitlist-success.tsx:51
+msgid "You're #{displayPosition} on the waitlist. We'll notify you when Budgie launches!"
+msgstr "Ви #{displayPosition} у списку очікування. Ми повідомимо вас, коли Budgie запуститься!"
 
-#: src/generic/component/waitlist-form/waitlist-success.tsx:41
+#: src/generic/component/waitlist-form/waitlist-success.tsx:45
 msgid "You're in!"
 msgstr "Ви в списку!"
+
+#: src/generic/component/hero-section/hero-section-header.tsx:56
+msgid "Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device—encrypted, offline, and yours alone."
+msgstr "Ваш банк знає все. Mint продав ваші дані. YNAB зберігає їх на своїх серверах. Budgie тримає ваші фінанси на вашому пристрої — зашифровані, офлайн і тільки ваші."
 
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:58
 msgid "Your data is encrypted using your Face ID or fingerprint. Only you can ever access it."
@@ -1475,6 +1464,10 @@ msgstr "Ваші дані залишаються вашими"
 msgid "Your data stored on their servers"
 msgstr "Ваші дані зберігаються на їхніх серверах"
 
+#: src/generic/component/hero-section/hero-section-header.tsx:45
+msgid "Your Device."
+msgstr "Ваш Пристрій."
+
 #: src/generic/component/security-section/security-section-header.tsx:30
 msgid "Your financial data never leaves your device. No servers, no cloud, no tracking—just complete privacy with enterprise-grade security features."
 msgstr "Ваші фінансові дані ніколи не залишають ваш пристрій. Без серверів, без хмари, без відстеження — лише повна приватність із функціями безпеки корпоративного рівня."
@@ -1482,6 +1475,14 @@ msgstr "Ваші фінансові дані ніколи не залишают�
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx:41
 msgid "Your financial data never leaves your phone. No servers, no cloud, no risk of data breaches."
 msgstr "Ваші фінансові дані ніколи не залишають ваш телефон. Без серверів, без хмари, без ризику витоку даних."
+
+#: src/generic/component/hero-section/hero-section-header.tsx:39
+msgid "Your Financial Data."
+msgstr "Ваші Фінансові Дані."
+
+#: src/generic/component/hero-section/hero-section-header.tsx:51
+msgid "Your Rules."
+msgstr "Ваші Правила."
 
 #: src/generic/component/ai-section/ai-section.tsx:47
 msgid "Zero Cloud"
@@ -1491,7 +1492,7 @@ msgstr "Без хмари"
 msgid "Zero Cloud Storage"
 msgstr "Без хмарного сховища"
 
-#: src/generic/component/hero-section/hero-section-header.tsx:98
+#: src/generic/component/hero-section/hero-section-header.tsx:104
 msgid "Zero data collection"
 msgstr "Без збору даних"
 
