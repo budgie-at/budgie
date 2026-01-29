@@ -45,7 +45,7 @@ msgstr "{percentage}% der Einnahmen"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/transaction/components/conversion-row/conversion-row.tsx:29
+#: src/transaction/components/conversion-row/conversion-row.tsx:31
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr ""
 
@@ -150,7 +150,7 @@ msgid "Amount"
 msgstr "Betrag"
 
 #: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:54
+#: src/app/(main)/transactions/[id]/transfer.tsx:63
 msgid "Amount exceeds debt account balance"
 msgstr "Betrag übersteigt den Schuldenkontostand"
 
@@ -622,7 +622,7 @@ msgstr "Einnahme bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:67
+#: src/app/(main)/transactions/[id]/transfer.tsx:76
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
@@ -711,7 +711,7 @@ msgstr "Fehler"
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
 
-#: src/transaction/components/conversion-row/conversion-row.tsx:30
+#: src/transaction/components/conversion-row/conversion-row.tsx:32
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr ""
 
@@ -1183,7 +1183,7 @@ msgstr "Neu berechnen"
 msgid "Recalculate Balances"
 msgstr "Salden neu berechnen"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:73
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr ""
 
@@ -1319,7 +1319,7 @@ msgstr "Wählen Sie den Kontotyp"
 msgid "Selected"
 msgstr "Ausgewählt"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:72
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
 msgid "Sending {fromCode}"
 msgstr ""
 
