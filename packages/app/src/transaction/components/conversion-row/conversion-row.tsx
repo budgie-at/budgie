@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
@@ -24,8 +26,8 @@ export const ConversionRow = (props: Props) => {
     const { t } = useLingui();
 
     const prefix = isManualRate ? '=' : '\u2248';
-    const formattedAmount = destinationAmount > 0 ? destinationAmount.toFixed(2) : '0.00';
-    const formattedRate = exchangeRate > 0 ? exchangeRate.toFixed(RATE_DECIMALS) : '—';
+    const formattedAmount = isPositiveNumber(destinationAmount) ? destinationAmount.toFixed(2) : '0.00';
+    const formattedRate = isPositiveNumber(exchangeRate) ? exchangeRate.toFixed(RATE_DECIMALS) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const accessibilityLabel = t`Exchange rate: ${rateLabel}. Tap to edit receiving amount`;
 
