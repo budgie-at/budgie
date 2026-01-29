@@ -95,15 +95,14 @@ export default function ConvertToTransferModal() {
                 await convertIncomeMutation(convertParams);
             }
 
-            resolveConvertToTransfer(true);
+            resolveConvertToTransfer(true, { skipBack: true });
             const transferRoute = `/transactions/${transactionId}/transfer` as const;
 
             if (router.canDismiss()) {
                 router.dismissAll();
-                router.push(transferRoute);
-            } else {
-                router.replace(transferRoute);
             }
+
+            router.replace(transferRoute);
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
         }
