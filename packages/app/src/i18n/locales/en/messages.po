@@ -47,7 +47,7 @@ msgstr "{percentage}% of income"
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
-#: src/transaction/components/conversion-row/conversion-row.tsx:29
+#: src/transaction/components/conversion-row/conversion-row.tsx:31
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
@@ -152,7 +152,7 @@ msgid "Amount"
 msgstr "Amount"
 
 #: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:54
+#: src/app/(main)/transactions/[id]/transfer.tsx:63
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -624,7 +624,7 @@ msgstr "Edit Income"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:67
+#: src/app/(main)/transactions/[id]/transfer.tsx:76
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -713,7 +713,7 @@ msgstr "Errors"
 msgid "Everyday transactions and spending"
 msgstr "Everyday transactions and spending"
 
-#: src/transaction/components/conversion-row/conversion-row.tsx:30
+#: src/transaction/components/conversion-row/conversion-row.tsx:32
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 
@@ -1185,7 +1185,7 @@ msgstr "Recalculate"
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:73
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
@@ -1321,7 +1321,7 @@ msgstr "Select the type of account"
 msgid "Selected"
 msgstr "Selected"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:72
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
