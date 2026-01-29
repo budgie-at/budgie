@@ -4,8 +4,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 export const getTransferDestinationAmount = (
     entries: TransactionEntryCreateInputInterface[],
-    toAccountId: number | null,
-    sourceAmount: number
+    toAccountId: number | null
 ): number | undefined => {
     if (!isPositiveNumber(toAccountId)) {
         return void 0;
@@ -13,11 +12,5 @@ export const getTransferDestinationAmount = (
 
     const destinationEntry = entries.find(entry => entry.accountId === toAccountId && entry.type === TransactionEntryTypeEnum.DEBIT);
 
-    const destinationAmount = destinationEntry?.amount;
-
-    if (!isPositiveNumber(destinationAmount) || destinationAmount === sourceAmount) {
-        return void 0;
-    }
-
-    return destinationAmount;
+    return destinationEntry?.amount;
 };
