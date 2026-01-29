@@ -163,6 +163,13 @@ Both `.po` (source) and `.ts` (compiled) files are required and must be committe
 
 After modifying user-facing text, run `yarn i18n:sync` and commit both file types.
 
+**Adding missing translations:**
+1. Run `yarn i18n:sync` to see which locales have missing translations
+2. Open `.po` files for each locale (de, es, fr, uk) and find entries with empty `msgstr ""`
+3. Add translations for each missing entry
+4. Run `yarn i18n:sync` again to compile the `.ts` files
+5. Commit both `.po` and `.ts` files
+
 ## Tech Stack
 
 | Package | Stack |
