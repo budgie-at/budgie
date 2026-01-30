@@ -38,7 +38,7 @@ interface Props {
     readonly onDatePress: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
     const { ref, variant, transactionType, transactionTitle, mccCategoryId, amount, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
@@ -138,7 +138,7 @@ export const TransactionFieldIcons = (props: Props) => {
                             transactionTitle={transactionTitle}
                             mccCategoryId={mccCategoryId}
                             amount={amount}
-                            comment={comment ?? ''}
+                            comment={comment}
                             variant={variant}
                             onApply={handleApplySuggestion}
                         />

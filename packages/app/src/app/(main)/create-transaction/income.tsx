@@ -41,6 +41,8 @@ export default function CreateIncomeTransactionPage() {
                     variant="positive"
                     transactionType={TransactionTypeEnum.INCOME}
                     accountFieldName="toAccountId"
+                    transactionTitle=""
+                    mccCategoryId={null}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

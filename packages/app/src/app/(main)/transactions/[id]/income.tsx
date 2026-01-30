@@ -52,6 +52,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const sourceAmount = sourceEntry.amount;
     const sourceAccount = sourceEntry.account;
     const sourceInstrumentId = sourceAccount.instrumentId;
+    const mccCategoryId = sourceEntry.mccCategoryId ?? null;
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -82,6 +83,8 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     variant="positive"
                     transactionType={TransactionTypeEnum.INCOME}
                     accountFieldName="toAccountId"
+                    transactionTitle={transaction.title}
+                    mccCategoryId={mccCategoryId}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

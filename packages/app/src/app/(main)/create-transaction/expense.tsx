@@ -51,6 +51,8 @@ export default function CreateExpenseTransactionPage() {
                     variant="destructive"
                     transactionType={TransactionTypeEnum.EXPENSE}
                     accountFieldName="fromAccountId"
+                    transactionTitle=""
+                    mccCategoryId={null}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
