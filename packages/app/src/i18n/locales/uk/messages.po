@@ -1468,9 +1468,9 @@ msgstr "Натисніть, щоб очистити"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
-#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:84
-msgid "Thinking..."
-msgstr "Думаю..."
+#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:65
+msgid "Thinking"
+msgstr "Думаю"
 
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
