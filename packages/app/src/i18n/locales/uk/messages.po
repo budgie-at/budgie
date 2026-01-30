@@ -179,6 +179,10 @@ msgstr "Застосувати фільтр"
 msgid "Apply Filter ({selected})"
 msgstr "Застосувати фільтр ({selected})"
 
+#: src/transaction/components/category-suggestion-ready-pill/category-suggestion-ready-pill.tsx:18
+msgid "Apply suggested category: {categoryTitle}"
+msgstr "Застосувати запропоновану категорію: {categoryTitle}"
+
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
 msgstr "Архівувати"
@@ -278,7 +282,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:130
 msgid "Category"
 msgstr "Категорія"
 
@@ -528,7 +532,7 @@ msgstr "Управління даними"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:98
 msgid "Date"
 msgstr "Дата"
 
@@ -610,11 +614,11 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:70
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:70
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -976,11 +980,11 @@ msgstr "Монобанк"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:48
+#: src/app/(main)/create-transaction/expense.tsx:49
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/app/(main)/create-transaction/income.tsx:38
+#: src/app/(main)/create-transaction/income.tsx:39
 msgid "New Income"
 msgstr "Новий дохід"
 
@@ -1088,7 +1092,7 @@ msgstr "Нічого не вибрано"
 msgid "not set"
 msgstr "не встановлено"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:107
 msgid "Note"
 msgstr "Нотатка"
 
@@ -1446,7 +1450,7 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:117
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1528,7 +1532,7 @@ msgid "To Currency"
 msgstr "Валюта на"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:87
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -1663,7 +1667,7 @@ msgstr "Коли це потрібно повернути?"
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Yesterday"
 msgstr "Вчора"
 

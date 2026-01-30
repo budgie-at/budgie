@@ -179,6 +179,10 @@ msgstr "Filter anwenden"
 msgid "Apply Filter ({selected})"
 msgstr "Filter anwenden ({selected})"
 
+#: src/transaction/components/category-suggestion-ready-pill/category-suggestion-ready-pill.tsx:18
+msgid "Apply suggested category: {categoryTitle}"
+msgstr "Vorgeschlagene Kategorie anwenden: {categoryTitle}"
+
 #: src/account/component/archive-account/archive-account.tsx:25
 msgid "Archive"
 msgstr "Archivieren"
@@ -278,7 +282,7 @@ msgstr "Kategorien ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:130
 msgid "Category"
 msgstr "Kategorie"
 
@@ -528,7 +532,7 @@ msgstr "Datenverwaltung"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:98
 msgid "Date"
 msgstr "Datum"
 
@@ -610,11 +614,11 @@ msgstr "z. B. Lebensmittel, Gehalt, Miete"
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:70
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/app/(main)/transactions/[id]/income.tsx:70
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
@@ -976,11 +980,11 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "Neues Konto"
 
-#: src/app/(main)/create-transaction/expense.tsx:48
+#: src/app/(main)/create-transaction/expense.tsx:49
 msgid "New Expense"
 msgstr "Neue Ausgabe"
 
-#: src/app/(main)/create-transaction/income.tsx:38
+#: src/app/(main)/create-transaction/income.tsx:39
 msgid "New Income"
 msgstr "Neue Einnahme"
 
@@ -1088,7 +1092,7 @@ msgstr "Nichts ausgewählt"
 msgid "not set"
 msgstr "nicht gesetzt"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:107
 msgid "Note"
 msgstr "Notiz"
 
@@ -1446,7 +1450,7 @@ msgid "Tag Name"
 msgstr "Tag-Name"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:117
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1528,7 +1532,7 @@ msgid "To Currency"
 msgstr "In Währung"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:87
 msgid "Today"
 msgstr "Heute"
 
@@ -1663,7 +1667,7 @@ msgstr "Wann soll es zurückgegeben werden?"
 msgid "Who owes you?"
 msgstr "Wer schuldet Ihnen Geld?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Yesterday"
 msgstr "Gestern"
 
