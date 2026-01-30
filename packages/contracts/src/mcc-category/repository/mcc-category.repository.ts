@@ -1,3 +1,5 @@
+import { eq } from 'drizzle-orm';
+
 import { TX } from '../../@generic/type/db.type';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
 import { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
@@ -11,6 +13,12 @@ export class MccCategoryRepository {
 
     findAll() {
         return this.db.query.MccCategoryEntityTable.findMany();
+    }
+
+    findById(id: number) {
+        return this.db.query.MccCategoryEntityTable.findFirst({
+            where: eq(MccCategoryEntityTable.id, id)
+        });
     }
 
     async create(input: MccCategoryCreateEntityInterface, tx?: TX): Promise<MccCategoryEntityInterface> {
