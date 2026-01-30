@@ -1468,6 +1468,10 @@ msgstr "Натисніть, щоб очистити"
 msgid "Target balance"
 msgstr "Цільовий баланс"
 
+#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:84
+msgid "Thinking..."
+msgstr "Думаю..."
+
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
