@@ -11,7 +11,7 @@ import { parseCategorySuggestionResponse } from '../util/parse-category-suggesti
 
 import { useLlm } from './use-llm.hook';
 
-export interface UseCategorySuggestionParams {
+interface UseCategorySuggestionParams {
     transactionTitle: string;
     mccCategoryId: number | null;
     amount: number;
@@ -19,9 +19,9 @@ export interface UseCategorySuggestionParams {
     enabled: boolean;
 }
 
-export type CategorySuggestionStatus = 'idle' | 'loading' | 'success' | 'error';
+type CategorySuggestionStatus = 'idle' | 'loading' | 'success' | 'error';
 
-export interface UseCategorySuggestionReturn {
+interface UseCategorySuggestionReturn {
     status: CategorySuggestionStatus;
     suggestedCategory: CategoryEntityInterface | null;
 }
