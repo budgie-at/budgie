@@ -41,7 +41,7 @@ export const CategorySuggestionPill = (props: Props) => {
     };
 
     return (
-        <Animated.View entering={FadeIn.duration(200).delay(100)} className="absolute right-0 top-0">
+        <Animated.View entering={FadeIn.duration(200).delay(100)} className="mt-sm">
             {isLoading && <CategorySuggestionLoadingPill />}
             {isReady && <CategorySuggestionReadyPill category={suggestedCategory} variant={variant} onPress={handleApply} />}
         </Animated.View>
