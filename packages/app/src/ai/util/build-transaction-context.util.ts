@@ -1,6 +1,6 @@
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-export interface TransactionContextInterface {
+interface TransactionContextInterface {
     title: string | null;
     mccDescription: string | null;
     amount: number;
