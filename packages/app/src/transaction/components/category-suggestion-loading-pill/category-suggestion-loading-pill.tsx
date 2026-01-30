@@ -77,7 +77,7 @@ export const CategorySuggestionLoadingPill = () => {
             <Animated.View className="absolute inset-0 rounded-full" style={glowStyle} />
             <Animated.View style={containerStyle} className="flex-row items-center gap-sm">
                 <Animated.View style={sparkleStyle}>
-                    <Icon icon={UserIconNameEnum.Sparkles} size={16} className="text-primary" />
+                    <Icon icon={UserIconNameEnum.Sparkles} size={16} className="text-destructive" />
                 </Animated.View>
                 <Animated.Text className="text-xs text-secondary-foreground font-medium">{thinkingText}</Animated.Text>
                 <View className="flex-row gap-xs">{dots}</View>
