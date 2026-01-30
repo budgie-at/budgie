@@ -1468,9 +1468,9 @@ msgstr "Toca para limpiar"
 msgid "Target balance"
 msgstr "Saldo objetivo"
 
-#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:84
-msgid "Thinking..."
-msgstr "Pensando..."
+#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:65
+msgid "Thinking"
+msgstr "Pensando"
 
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
