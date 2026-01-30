@@ -4,7 +4,7 @@ import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -133,7 +133,7 @@ export const TransactionFieldIcons = (props: Props) => {
                         onPress={handleCategoryPress}
                         animationDelay={CATEGORY_ANIMATION_DELAY}
                     />
-                    {!isDefined(categoryId) && (
+                    {!isPositiveNumber(categoryId) && (
                         <CategorySuggestionPill
                             transactionTitle={transactionTitle}
                             mccCategoryId={mccCategoryId}
