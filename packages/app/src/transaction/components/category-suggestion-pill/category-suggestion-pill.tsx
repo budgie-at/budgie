@@ -27,10 +27,12 @@ export const CategorySuggestionPill = (props: Props) => {
         enabled: true
     });
 
+    const isInitializing = status === 'initializing';
     const isLoading = status === 'loading';
     const isReady = status === 'success' && isDefined(suggestedCategory);
+    const showLoadingState = isInitializing || isLoading;
 
-    if (!isLoading && !isReady) {
+    if (!showLoadingState && !isReady) {
         return null;
     }
 
@@ -42,7 +44,7 @@ export const CategorySuggestionPill = (props: Props) => {
 
     return (
         <Animated.View entering={FadeIn.duration(200).delay(100)} className="mt-sm">
-            {isLoading && <CategorySuggestionLoadingPill />}
+            {showLoadingState && <CategorySuggestionLoadingPill />}
             {isReady && <CategorySuggestionReadyPill category={suggestedCategory} variant={variant} onPress={handleApply} />}
         </Animated.View>
     );
