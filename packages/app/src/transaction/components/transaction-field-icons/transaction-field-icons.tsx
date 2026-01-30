@@ -20,6 +20,7 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
+import { CategorySuggestionPill } from '../category-suggestion-pill/category-suggestion-pill';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 export interface TransactionFieldIconsRef {
@@ -30,13 +31,16 @@ interface Props {
     readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
+    readonly amount: number;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
 }
 
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
+    const { ref, variant, transactionType, transactionTitle, mccCategoryId, amount, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -71,6 +75,10 @@ export const TransactionFieldIcons = (props: Props) => {
         if (isDefined(selectedTagIds)) {
             setValue('tagIds', selectedTagIds);
         }
+    };
+
+    const handleApplySuggestion = (suggestedCategoryId: number) => {
+        setValue('entries.0.categoryId', suggestedCategoryId);
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
@@ -115,15 +123,27 @@ export const TransactionFieldIcons = (props: Props) => {
             )}
 
             {isTransfer ? null : (
-                <TransactionFieldIcon
-                    ref={categoryIconRef}
-                    icon={category?.icon ?? UserIconNameEnum.Folder}
-                    label={t`Category`}
-                    value={category?.title}
-                    variant={variant}
-                    onPress={handleCategoryPress}
-                    animationDelay={CATEGORY_ANIMATION_DELAY}
-                />
+                <View className="flex-1 relative">
+                    <TransactionFieldIcon
+                        ref={categoryIconRef}
+                        icon={category?.icon ?? UserIconNameEnum.Folder}
+                        label={t`Category`}
+                        value={category?.title}
+                        variant={variant}
+                        onPress={handleCategoryPress}
+                        animationDelay={CATEGORY_ANIMATION_DELAY}
+                    />
+                    {!isDefined(categoryId) && (
+                        <CategorySuggestionPill
+                            transactionTitle={transactionTitle}
+                            mccCategoryId={mccCategoryId}
+                            amount={amount}
+                            comment={comment ?? ''}
+                            variant={variant}
+                            onApply={handleApplySuggestion}
+                        />
+                    )}
+                </View>
             )}
         </View>
     );
