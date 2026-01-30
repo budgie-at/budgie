@@ -123,7 +123,7 @@ export const TransactionFieldIcons = (props: Props) => {
             )}
 
             {isTransfer ? null : (
-                <View className="flex-1 relative">
+                <View className="flex-1 items-center">
                     <TransactionFieldIcon
                         ref={categoryIconRef}
                         icon={category?.icon ?? UserIconNameEnum.Folder}
