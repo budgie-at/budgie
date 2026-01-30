@@ -1468,9 +1468,9 @@ msgstr "Appuyez pour effacer"
 msgid "Target balance"
 msgstr "Solde cible"
 
-#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:84
-msgid "Thinking..."
-msgstr "Réflexion..."
+#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:65
+msgid "Thinking"
+msgstr "Réflexion"
 
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
