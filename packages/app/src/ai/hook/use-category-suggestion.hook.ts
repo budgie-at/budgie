@@ -19,7 +19,8 @@ interface UseCategorySuggestionParams {
     enabled: boolean;
 }
 
-type CategorySuggestionStatus = 'idle' | 'loading' | 'success' | 'error';
+type InternalStatus = 'idle' | 'loading' | 'success' | 'error';
+type CategorySuggestionStatus = 'idle' | 'initializing' | 'loading' | 'success' | 'error';
 
 interface UseCategorySuggestionReturn {
     status: CategorySuggestionStatus;
@@ -35,7 +36,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const systemPrompt = buildCategorySuggestionPrompt(categories);
     const llm = useLlm({ systemPrompt });
 
-    const [status, setStatus] = useState<CategorySuggestionStatus>('idle');
+    const [internalStatus, setInternalStatus] = useState<InternalStatus>('idle');
     const [suggestedCategory, setSuggestedCategory] = useState<CategoryEntityInterface | null>(null);
 
     const hasTriggeredRef = useRef(false);
@@ -48,7 +49,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
         hasTriggeredRef.current = true;
 
         const suggest = async (): Promise<void> => {
-            setStatus('loading');
+            setInternalStatus('loading');
 
             try {
                 const context = buildTransactionContext({
@@ -63,14 +64,17 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
                 const category = isDefined(categoryId) ? (categories.find(item => item.id === categoryId) ?? null) : null;
 
                 setSuggestedCategory(category);
-                setStatus(isDefined(category) ? 'success' : 'error');
+                setInternalStatus(isDefined(category) ? 'success' : 'error');
             } catch {
-                setStatus('error');
+                setInternalStatus('error');
             }
         };
 
         void suggest();
     }, [enabled, llm.isReady]);
+
+    const isWaitingForLlm = enabled && !llm.isReady && internalStatus === 'idle';
+    const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
 
     return { status, suggestedCategory };
 };
