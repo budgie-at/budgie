@@ -1468,6 +1468,10 @@ msgstr "Tippen zum Leeren"
 msgid "Target balance"
 msgstr "Zielsaldo"
 
+#: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:84
+msgid "Thinking..."
+msgstr "Denkt nach..."
+
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
 "This account will be hidden from your main view and won't be included in totals. \n"
