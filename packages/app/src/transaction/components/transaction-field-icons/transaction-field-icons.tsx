@@ -133,7 +133,7 @@ export const TransactionFieldIcons = (props: Props) => {
                         onPress={handleCategoryPress}
                         animationDelay={CATEGORY_ANIMATION_DELAY}
                     />
-                    {!isPositiveNumber(categoryId) && (
+                    {!isPositiveNumber(categoryId) && isPositiveNumber(mccCategoryId) && (
                         <CategorySuggestionPill
                             transactionTitle={transactionTitle}
                             mccCategoryId={mccCategoryId}
