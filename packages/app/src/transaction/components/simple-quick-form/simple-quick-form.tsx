@@ -24,13 +24,15 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly accountFieldName: AccountFieldName;
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
 export const SimpleQuickForm = (props: Props) => {
-    const { variant, transactionType, accountFieldName, buildEntries, onSubmit, onCancel } = props;
+    const { variant, transactionType, accountFieldName, transactionTitle, mccCategoryId, buildEntries, onSubmit, onCancel } = props;
 
     const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
@@ -70,6 +72,9 @@ export const SimpleQuickForm = (props: Props) => {
                 ref={fieldIconsRef}
                 variant={variant}
                 transactionType={transactionType}
+                transactionTitle={transactionTitle}
+                mccCategoryId={mccCategoryId}
+                amount={getValues('amount')}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />
