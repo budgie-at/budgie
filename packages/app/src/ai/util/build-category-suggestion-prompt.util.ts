@@ -2,9 +2,11 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { filterUserCategories } from './filter-user-categories.util';
 
+const getCategoryLabel = (category: CategoryEntityInterface): string => category.titleTags ?? category.title;
+
 export const buildCategorySuggestionPrompt = (categories: CategoryEntityInterface[]): string => {
     const userCategories = filterUserCategories(categories);
-    const categoryList = userCategories.map(category => `${category.id}=${category.title}`).join(', ');
+    const categoryList = userCategories.map(category => `${category.id}=${getCategoryLabel(category)}`).join(', ');
 
     /* eslint-disable lingui/no-unlocalized-strings */
     return `Pick the best expense category. Return ONLY the category ID number.
