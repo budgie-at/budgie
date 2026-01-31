@@ -82,18 +82,13 @@ export const CategoryAiFields = (props: Props) => {
                     </View>
                 </Animated.View>
 
-                <Animated.View
-                    entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className="flex-row px-xl py-lg"
-                >
+                <Animated.View entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)} className="flex-row px-xl py-lg">
                     <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
                     <View className="ml-lg flex-1">
                         <Text className="text-xxs text-secondary-foreground uppercase">
                             <Trans>Search Keywords</Trans>
                         </Text>
-                        <Text className="text-sm text-primary font-medium">
-                            {tagsValue}
-                        </Text>
+                        <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
                     </View>
                 </Animated.View>
                 {/* jscpd:ignore-end */}
