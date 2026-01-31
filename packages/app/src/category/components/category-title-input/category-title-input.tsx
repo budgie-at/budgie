@@ -28,6 +28,9 @@ export const CategoryTitleInput = ({ value, onChange, animationDelay = DEFAULT_A
                     autoCapitalize="words"
                     autoCorrect={false}
                     autoComplete="off"
+                    textContentType="none"
+                    spellCheck={false}
+                    inputMode="text"
                 />
             </FormItem>
         </Animated.View>
