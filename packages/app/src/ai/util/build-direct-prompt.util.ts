@@ -2,12 +2,10 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { COMMON_CURRENCIES } from '../constant/llm-categorization.constant';
 
-import { filterUserCategories } from './filter-user-categories.util';
-
 const getCategoryLabel = (category: CategoryEntityInterface): string => category.titleTags ?? category.title;
 
 export const buildDirectPrompt = (categories: CategoryEntityInterface[]): string => {
-    const userCategories = filterUserCategories(categories);
+    const userCategories = categories.filter(category => !category.isSystemCategory && !category.isDefault);
     const categoryList = userCategories.map(category => `${category.id}=${getCategoryLabel(category)}`).join(', ');
     const currencies = COMMON_CURRENCIES.join(', ');
 
