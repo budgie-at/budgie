@@ -1,6 +1,7 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -123,7 +124,7 @@ export const CategoryForm = (props: Props) => {
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <View className="flex-1">
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
                 <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
@@ -137,7 +138,7 @@ export const CategoryForm = (props: Props) => {
                     onRegenerate={handleRegenerate}
                     modelStatus={llm}
                 />
-            </View>
+            </KeyboardAwareScrollView>
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
                 {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another category</Trans>} /> : null}
