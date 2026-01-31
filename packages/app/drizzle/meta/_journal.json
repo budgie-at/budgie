@@ -64,6 +64,13 @@
       "when": 1769848373546,
       "tag": "0008_breezy_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1769881598629,
+      "tag": "0009_fine_molten_man",
+      "breakpoints": true
     }
   ]
 }
