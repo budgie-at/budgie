@@ -269,7 +269,7 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/category-edit.tsx:147
+#: src/app/category-edit.tsx:140
 #: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -416,7 +416,7 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/app/category-edit.tsx:95
+#: src/app/category-edit.tsx:92
 #: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
@@ -437,7 +437,7 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/app/category-edit.tsx:116
+#: src/app/category-edit.tsx:113
 msgid "Could not save category"
 msgstr "Не вдалося зберегти категорію"
 
@@ -633,6 +633,8 @@ msgstr "напр. Бізнес, Особисте, Відпустка"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "напр. Продукти, Зарплата, Оренда"
 
+#: src/app/category-edit.tsx:120
+#: src/app/category-edit.tsx:124
 #: src/category/components/category-form/category-form.tsx:43
 msgid "Edit Category"
 msgstr "Редагувати категорію"
@@ -995,7 +997,7 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/app/category-edit.tsx:156
+#: src/app/category-edit.tsx:149
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
@@ -1196,8 +1198,8 @@ msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:54
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/app/category-edit.tsx:96
-#: src/app/category-edit.tsx:117
+#: src/app/category-edit.tsx:93
+#: src/app/category-edit.tsx:114
 #: src/category/components/category-form/category-form.tsx:54
 #: src/category/components/category-form/category-form.tsx:80
 #: src/tag/components/tag-form/tag-form.tsx:51
@@ -1262,7 +1264,7 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/app/category-edit.tsx:148
+#: src/app/category-edit.tsx:141
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1339,7 +1341,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/app/category-edit.tsx:81
+#: src/app/category-edit.tsx:78
 #: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
