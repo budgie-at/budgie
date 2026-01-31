@@ -1,9 +1,17 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import { useEffect } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import Animated, {
+    Easing,
+    FadeInUp,
+    cancelAnimation,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withTiming
+} from 'react-native-reanimated';
 
-import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
@@ -16,27 +24,46 @@ interface Props {
 
 const FIELD_DELAY_OFFSET = 100;
 const DEFAULT_ANIMATION_DELAY = 200;
+const FULL_ROTATION = 360;
+const ROTATION_DURATION = 1000;
 
 export const CategoryAiFields = (props: Props) => {
     const { titleEn, titleTags, isRegenerating, onRegenerate, animationDelay = DEFAULT_ANIMATION_DELAY } = props;
     const { t } = useLingui();
+    const rotation = useSharedValue(0);
 
     const englishValue = titleEn ?? t`Not generated`;
     const tagsValue = titleTags ?? t`Not generated`;
-    const buttonContent = isRegenerating ? t`Generating...` : t`Regenerate`;
 
     const englishDelay = animationDelay;
     const tagsDelay = animationDelay + FIELD_DELAY_OFFSET;
-    const buttonDelay = animationDelay + FIELD_DELAY_OFFSET * 2;
+
+    useEffect(() => {
+        if (isRegenerating) {
+            rotation.set(withRepeat(withTiming(FULL_ROTATION, { duration: ROTATION_DURATION, easing: Easing.linear }), -1, false));
+        } else {
+            cancelAnimation(rotation);
+            rotation.set(withTiming(0, { duration: DEFAULT_ANIMATION_DELAY }));
+        }
+    }, [isRegenerating, rotation]);
+
+    const rotatingStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${rotation.value}deg` }]
+    }));
 
     return (
         <View className="px-3xl pt-xl">
             <View className="bg-secondary-background rounded-2xl border border-secondary-corner overflow-hidden">
                 <View className="flex-row items-center px-xl py-md border-b border-secondary-corner">
                     <Icon icon={UserIconNameEnum.Sparkles} size={14} className="text-secondary-foreground" />
-                    <Text className="text-xs text-secondary-foreground ml-sm uppercase font-medium">
+                    <Text className="text-xs text-secondary-foreground ml-sm uppercase font-medium flex-1">
                         <Trans>AI-Generated Metadata</Trans>
                     </Text>
+                    <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
+                        <Animated.View style={rotatingStyle}>
+                            <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-secondary-foreground" />
+                        </Animated.View>
+                    </Pressable>
                 </View>
 
                 {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
@@ -71,17 +98,6 @@ export const CategoryAiFields = (props: Props) => {
                 </Animated.View>
                 {/* jscpd:ignore-end */}
             </View>
-
-            <Animated.View entering={FadeInUp.delay(buttonDelay).duration(DEFAULT_ANIMATION_DELAY)} className="items-center pt-lg">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={UserIconNameEnum.RefreshCw}
-                    onPress={onRegenerate}
-                    disabled={isRegenerating}
-                    content={buttonContent}
-                />
-            </Animated.View>
         </View>
     );
 };
