@@ -7,10 +7,9 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SttInterface } from '../context/llm.context';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+/* jscpd:ignore-start -- Intentionally mirrors use-llama-llm.hook.ts model lifecycle pattern */
 const MODEL_URL = 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin';
 const MODEL_FILENAME = 'ggml-small.bin';
-/* eslint-enable lingui/no-unlocalized-strings */
 
 const REALTIME_AUDIO_SEC = 60;
 const REALTIME_AUDIO_SLICE_SEC = 5;
@@ -39,7 +38,7 @@ const downloadModel = async (onProgress: (progress: number) => void): Promise<st
     return result.uri;
 };
 
-// eslint-disable-next-line max-lines-per-function -- STT hook requires model lifecycle and streaming state management
+// eslint-disable-next-line max-lines-per-function, max-statements -- STT hook requires model lifecycle and streaming state management
 export const useWhisperStt = (): SttInterface => {
     const contextRef = useRef<WhisperContext | null>(null);
     const isLoadingRef = useRef(false);
@@ -142,9 +141,8 @@ export const useWhisperStt = (): SttInterface => {
         });
     };
 
-    const streamInsert = (_samples: Float32Array): void => {
-        // eslint-disable-next-line no-empty-function -- whisper.rn transcribeRealtime manages its own audio recording
-    };
+    // eslint-disable-next-line no-empty-function -- whisper.rn transcribeRealtime manages its own audio recording
+    const streamInsert = (_samples: Float32Array): void => {};
 
     const streamStop = (): void => {
         if (isDefined(stopFnRef.current)) {
@@ -165,3 +163,4 @@ export const useWhisperStt = (): SttInterface => {
         streamStop
     };
 };
+/* jscpd:ignore-end */
