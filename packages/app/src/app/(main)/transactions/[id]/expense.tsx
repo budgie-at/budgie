@@ -85,7 +85,6 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     accountFieldName="fromAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    aiContext=""
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

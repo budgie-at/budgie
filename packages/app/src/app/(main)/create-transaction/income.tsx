@@ -43,7 +43,6 @@ export default function CreateIncomeTransactionPage() {
                     accountFieldName="toAccountId"
                     transactionTitle=""
                     mccCategoryId={null}
-                    aiContext=""
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

@@ -1,6 +1,6 @@
 /* jscpd:ignore-start - Tag suggestions row mirrors category suggestions row pattern */
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -23,13 +23,9 @@ const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 const LOADING_DELAY_MS = 400;
 const ROW_HEIGHT = 40;
+const CONTAINER_STYLE = { height: ROW_HEIGHT };
 
-const styles = StyleSheet.create({
-    container: { height: ROW_HEIGHT, overflow: 'hidden' },
-    scrollContent: { flexGrow: 1, justifyContent: 'flex-end', gap: 8 }
-});
-
-// eslint-disable-next-line max-statements, max-lines-per-function -- Component with multiple state hooks and effect for delayed loading logic
+// eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const TagSuggestionsRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
@@ -96,8 +92,7 @@ export const TagSuggestionsRow = (props: Props) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             className="flex-1"
-            contentContainerClassName="gap-sm"
-            contentContainerStyle={styles.scrollContent}
+            contentContainerClassName="flex-grow justify-end gap-sm"
         >
             {suggestedTags.map((tag, index) => (
                 <TagSuggestionPillItem
@@ -113,7 +108,7 @@ export const TagSuggestionsRow = (props: Props) => {
     );
 
     return (
-        <View style={styles.container} className="justify-center">
+        <View style={CONTAINER_STYLE} className="justify-center overflow-hidden">
             {showContent ? (
                 <Animated.View
                     entering={FadeIn.duration(ANIMATION_DURATION)}

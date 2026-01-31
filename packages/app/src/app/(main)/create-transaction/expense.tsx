@@ -54,7 +54,7 @@ export default function CreateExpenseTransactionPage() {
                     accountFieldName="fromAccountId"
                     transactionTitle=""
                     mccCategoryId={null}
-                    aiContext={aiContext ?? ''}
+                    aiContext={aiContext}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

@@ -7,7 +7,9 @@ import { useGetCategoryByIdQuery } from '../../category/query/use-get-category-b
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
-import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '../interface/suggestion.interface';
+import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
+import { SuggestionStatus } from '../interface/suggestion-status.type';
+import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
 import { TagLlmService } from '../service/tag-llm.service';
 
 interface UseTagSuggestionParams {
