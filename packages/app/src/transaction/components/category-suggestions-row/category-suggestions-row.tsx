@@ -20,8 +20,6 @@ interface Props {
 const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 const LOADING_DELAY_MS = 400;
-const ROW_HEIGHT = 40;
-const CONTAINER_STYLE = { height: ROW_HEIGHT };
 
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const CategorySuggestionsRow = (props: Props) => {
@@ -105,7 +103,7 @@ export const CategorySuggestionsRow = (props: Props) => {
     );
 
     return (
-        <View style={CONTAINER_STYLE} className="justify-center overflow-hidden">
+        <View className="h-10 justify-center overflow-hidden">
             {showContent ? (
                 <Animated.View
                     entering={FadeIn.duration(ANIMATION_DURATION)}
