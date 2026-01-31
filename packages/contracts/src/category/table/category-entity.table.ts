@@ -9,6 +9,9 @@ export const CategoryEntityTable = sqliteTable(
     withBaseEntityTableColumns({
         title: text().default('').notNull(),
         titleSearch: text('title_search').default('').notNull(),
+        titleEn: text('title_en'),
+        titleTags: text('title_tags'),
+        tagsGeneratedAt: int('tags_generated_at', { mode: 'number' }),
         icon: text({ enum: convertEnumToDrizzleEnum(UserIconNameEnum) })
             .$type<UserIconNameEnum>()
             .notNull(),
