@@ -21,6 +21,7 @@ interface CategoryLlmErrorHandler {
     (category: CategoryEntityInterface, error: unknown): void;
 }
 
+const TRANSLATION_TEMPERATURE = 0.4;
 const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
@@ -102,10 +103,10 @@ export class CategoryLlmService {
     }
 
     private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
-        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title);
+        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTitleEn = titleEn.trim().toLowerCase();
 
-        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn);
+        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTags = tags.trim().toLowerCase();
 
         return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
