@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, like, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, isNull, like, sql } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -57,9 +57,14 @@ export class CategoryRepository {
     }
 
     async updateById(id: number, input: CategoryUpdateEntityInterface): Promise<CategoryEntityInterface> {
+        const newTitle = input.title;
+        const titleChanged = isDefined(newTitle);
         const [category] = await this.db
             .update(CategoryEntityTable)
-            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+            .set({
+                ...input,
+                ...(titleChanged && { titleSearch: newTitle.toLowerCase(), titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            })
             .where(eq(CategoryEntityTable.id, id))
             .returning();
 
@@ -96,5 +101,25 @@ export class CategoryRepository {
         await (tx ?? this.db)
             .delete(CategoryEntityTable)
             .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false));
+    }
+
+    findWithoutTags() {
+        return this.db.query.CategoryEntityTable.findMany({
+            where: and(isNull(CategoryEntityTable.tagsGeneratedAt), eq(CategoryEntityTable.isSystemCategory, false))
+        });
+    }
+
+    async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
+        await this.db
+            .update(CategoryEntityTable)
+            .set({ titleEn, titleTags, tagsGeneratedAt: Date.now() })
+            .where(eq(CategoryEntityTable.id, id));
+    }
+
+    async clearTranslation(id: number): Promise<void> {
+        await this.db
+            .update(CategoryEntityTable)
+            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            .where(eq(CategoryEntityTable.id, id));
     }
 }

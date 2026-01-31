@@ -123,6 +123,18 @@ msgstr "Add your first account to start tracking your finances"
 msgid "Adjustment"
 msgstr "Adjustment"
 
+#: src/transaction/components/category-suggestion-bubble/category-suggestion-bubble.tsx:99
+msgid "AI is analyzing transaction"
+msgstr "AI is analyzing transaction"
+
+#: src/transaction/components/category-suggestion-bubble/category-suggestion-bubble.tsx:99
+msgid "AI suggests: {categoryTitle}. Tap to apply"
+msgstr "AI suggests: {categoryTitle}. Tap to apply"
+
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:38
+msgid "AI-Generated Metadata"
+msgstr "AI-Generated Metadata"
+
 #: src/app/(tabs)/settings/index.tsx:139
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
@@ -258,6 +270,7 @@ msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
+#: src/app/(tabs)/settings/category/[id].tsx:162
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:119
@@ -271,7 +284,7 @@ msgid "Cash"
 msgstr "Cash"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:72
+#: src/app/(tabs)/settings/categories.tsx:74
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:39
@@ -282,13 +295,14 @@ msgstr "Categories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categories ({selectedCategoriesCount})"
 
-#: src/app/(tabs)/settings/categories.tsx:31
+#: src/app/(tabs)/settings/categories.tsx:33
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:130
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:139
 msgid "Category"
 msgstr "Category"
 
 #: src/category/components/category-form/category-form.tsx:105
+#: src/category/components/category-title-input/category-title-input.tsx:21
 msgid "Category Name"
 msgstr "Category Name"
 
@@ -404,6 +418,7 @@ msgstr "Could not delete account."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
+#: src/app/(tabs)/settings/category/[id].tsx:101
 #: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Could not merge category"
@@ -412,7 +427,7 @@ msgstr "Could not merge category"
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
 
-#: src/app/(tabs)/settings/categories.tsx:51
+#: src/app/(tabs)/settings/categories.tsx:53
 msgid "Could not reassign category"
 msgstr "Could not reassign category"
 
@@ -423,6 +438,10 @@ msgstr "Could not reassign tag"
 #: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "Could not restore account."
 msgstr "Could not restore account."
+
+#: src/app/(tabs)/settings/category/[id].tsx:122
+msgid "Could not save category"
+msgstr "Could not save category"
 
 #: src/category/components/category-form/category-form.tsx:54
 msgid "Could not update category"
@@ -600,6 +619,10 @@ msgstr "Done"
 msgid "Dutch (Netherlands)"
 msgstr "Dutch (Netherlands)"
 
+#: src/category/components/category-title-input/category-title-input.tsx:27
+msgid "e.g. Groceries, Entertainment"
+msgstr "e.g. Groceries, Entertainment"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx:47
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
@@ -664,6 +687,10 @@ msgstr "English (United Kingdom)"
 #: src/i18n/constant/locales.constant.ts:13
 msgid "English (United States)"
 msgstr "English (United States)"
+
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:50
+msgid "English Translation"
+msgstr "English Translation"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
@@ -835,6 +862,10 @@ msgstr "From Currency"
 msgid "General"
 msgstr "General"
 
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:26
+msgid "Generating..."
+msgstr "Generating..."
+
 #: src/i18n/constant/languages.constant.ts:26
 msgid "German"
 msgstr "German"
@@ -938,6 +969,10 @@ msgstr "Lent"
 msgid "Listening..."
 msgstr "Listening..."
 
+#: src/category/hooks/use-regenerate-category-translation.hook.ts:29
+msgid "LLM not ready"
+msgstr "LLM not ready"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
 msgstr "Main Currency"
@@ -958,6 +993,7 @@ msgstr "Map CSV Columns"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
+#: src/app/(tabs)/settings/category/[id].tsx:177
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Merge into another category"
@@ -1090,6 +1126,11 @@ msgstr "No transactions yet"
 msgid "None selected"
 msgstr "None selected"
 
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:24
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:25
+msgid "Not generated"
+msgstr "Not generated"
+
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:51
 msgid "not set"
 msgstr "not set"
@@ -1151,7 +1192,9 @@ msgstr "Please enter your Monobank API token"
 msgid "Please try again"
 msgstr "Please try again"
 
-#: src/app/(tabs)/settings/categories.tsx:52
+#: src/app/(tabs)/settings/categories.tsx:54
+#: src/app/(tabs)/settings/category/[id].tsx:102
+#: src/app/(tabs)/settings/category/[id].tsx:123
 #: src/app/(tabs)/settings/tags.tsx:53
 #: src/category/components/category-form/category-form.tsx:54
 #: src/category/components/category-form/category-form.tsx:80
@@ -1193,6 +1236,10 @@ msgstr "Recalculate Balances"
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:26
+msgid "Regenerate"
+msgstr "Regenerate"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
 msgstr "Restore"
@@ -1205,6 +1252,7 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
+#: src/app/(tabs)/settings/category/[id].tsx:168
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1233,7 +1281,7 @@ msgstr "Screenshot Protection"
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
-#: src/app/(tabs)/settings/categories.tsx:73
+#: src/app/(tabs)/settings/categories.tsx:75
 #: src/app/category-selector.tsx:74
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1250,6 +1298,10 @@ msgstr "Search currencies..."
 #: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Search icons (e.g., money, travel, food)..."
+
+#: src/category/components/category-ai-fields/category-ai-fields.tsx:62
+msgid "Search Keywords"
+msgstr "Search Keywords"
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Search languages..."
@@ -1277,6 +1329,7 @@ msgstr "Security"
 msgid "Select"
 msgstr "Select"
 
+#: src/app/(tabs)/settings/category/[id].tsx:87
 #: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
@@ -1462,6 +1515,10 @@ msgstr "Tags"
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
 
+#: src/category/components/category-icon-display/category-icon-display.tsx:73
+msgid "Tap to change icon"
+msgstr "Tap to change icon"
+
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
 msgstr "Tap to clear"
@@ -1473,6 +1530,10 @@ msgstr "Target balance"
 #: src/transaction/components/category-suggestion-loading-pill/category-suggestion-loading-pill.tsx:65
 msgid "Thinking"
 msgstr "Thinking"
+
+#: src/transaction/components/category-suggestion-bubble/category-suggestion-bubble.tsx:97
+msgid "Thinking..."
+msgstr "Thinking..."
 
 #: src/account/component/archive-account/archive-account.tsx:24
 msgid ""
@@ -1489,7 +1550,7 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
-#: src/app/(tabs)/settings/categories.tsx:41
+#: src/app/(tabs)/settings/categories.tsx:43
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "This category has transactions. Select another category to reassign them to."
 
