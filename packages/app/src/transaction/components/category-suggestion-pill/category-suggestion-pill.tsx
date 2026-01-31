@@ -10,19 +10,17 @@ import { CategorySuggestionReadyPill } from '../category-suggestion-ready-pill/c
 interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly amount: number;
     readonly comment: string;
     readonly variant: ColorPaletteVariant;
     readonly onApply: (categoryId: number) => void;
 }
 
 export const CategorySuggestionPill = (props: Props) => {
-    const { transactionTitle, mccCategoryId, amount, comment, variant, onApply } = props;
+    const { transactionTitle, mccCategoryId, comment, variant, onApply } = props;
 
     const { status, suggestedCategory } = useCategorySuggestion({
         transactionTitle,
         mccCategoryId,
-        amount,
         comment,
         enabled: true
     });
