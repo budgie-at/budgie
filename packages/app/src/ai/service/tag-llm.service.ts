@@ -9,6 +9,7 @@ import { CategoryTranslationResult } from './category-llm.service';
 
 interface TagSuggestionParams {
     transactionTitle: string;
+    categoryName: string | null;
     mccDescription: string | null;
     comment: string;
     tags: TagEntityInterface[];
@@ -83,16 +84,35 @@ export class TagLlmService {
     }
 
     async suggestTags(params: TagSuggestionParams): Promise<TagEntityInterface[]> {
-        const { transactionTitle, mccDescription, comment, tags } = params;
+        const { transactionTitle, categoryName, mccDescription, comment, tags } = params;
 
         if (tags.length === 0) {
+            /* eslint-disable no-console, lingui/no-unlocalized-strings */
+            console.log('[TagLlmService] No tags available, returning empty');
+            /* eslint-enable no-console, lingui/no-unlocalized-strings */
+
             return [];
         }
 
         const systemPrompt = this.buildSuggestionPrompt(tags);
-        const context = this.buildTransactionContext(transactionTitle, mccDescription, comment);
+        const context = this.buildTransactionContext(transactionTitle, categoryName, mccDescription, comment);
+
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log('[TagLlmService] System prompt:', systemPrompt);
+        console.log('[TagLlmService] User context:', context);
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
+
         const response = await this.llm.generate(systemPrompt, context);
+
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log('[TagLlmService] Raw LLM response:', JSON.stringify(response));
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
+
         const tagIds = this.parseSuggestionResponse(response, tags);
+
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log('[TagLlmService] Parsed tag IDs:', tagIds);
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
         return tagIds.map(id => tags.find(tag => tag.id === id)).filter(isDefined);
     }
@@ -121,8 +141,8 @@ export class TagLlmService {
 TAGS: ${tagList}
 
 EXAMPLES:
-Transaction: McDonalds | Type: Fast Food Restaurant -> 12
-Transaction: Uber | Type: Taxicabs -> 5,8
+Transaction: McDonalds | Category: food | Type: Fast Food Restaurant -> 12
+Transaction: Uber | Category: transport | Type: Taxicabs -> 5,8
 
 RULES:
 - Return comma-separated numbers (e.g., 12 or 12,5)
@@ -132,13 +152,22 @@ RULES:
         /* eslint-enable lingui/no-unlocalized-strings */
     }
 
-    private buildTransactionContext(title: string, mccDescription: string | null, comment: string): string {
+    private buildTransactionContext(
+        title: string,
+        categoryName: string | null,
+        mccDescription: string | null,
+        comment: string
+    ): string {
         const parts: string[] = [];
         const hasTitle = isNotEmptyString(title);
 
         /* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
         if (hasTitle) {
             parts.push(`Transaction: ${title}`);
+        }
+
+        if (isNotEmptyString(categoryName)) {
+            parts.push(`Category: ${categoryName}`);
         }
 
         if (isNotEmptyString(mccDescription)) {
