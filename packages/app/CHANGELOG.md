@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.22.0](https://github.com/budgie-at/budgie/compare/v2.21.0...v2.22.0) (2026-01-31)
+
+### Features
+
+- **app:** add icon selector formSheet route ([7750280](https://github.com/budgie-at/budgie/commit/775028080f99ef4ca5544ddf4ff759734b2119fb))
+- **app:** add icon selector modal context ([ffbcc61](https://github.com/budgie-at/budgie/commit/ffbcc61230a75e5388e9a1f39d0fef3b117fcba0))
+- **app:** add icon selector modal options constant ([f0bd896](https://github.com/budgie-at/budgie/commit/f0bd896529bcb4e277a3068a82eda5756e91aade))
+- **app:** add icon selector modal provider ([167cfbc](https://github.com/budgie-at/budgie/commit/167cfbc4ce79f4f3137d27a8e602ed3a51e4a98e))
+- **app:** register icon selector provider and route ([377f683](https://github.com/budgie-at/budgie/commit/377f68321bf7b521090bf4e2d7e029623885cd4d))
+
 # [2.21.0](https://github.com/budgie-at/budgie/compare/v2.20.3...v2.21.0) (2026-01-29)
 
 ### Bug Fixes
