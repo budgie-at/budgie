@@ -269,7 +269,7 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/category-edit.tsx:147
+#: src/app/category-edit.tsx:140
 #: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -416,7 +416,7 @@ msgstr "Impossible de supprimer le compte."
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
-#: src/app/category-edit.tsx:95
+#: src/app/category-edit.tsx:92
 #: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Impossible de fusionner la catégorie"
@@ -437,7 +437,7 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/app/category-edit.tsx:116
+#: src/app/category-edit.tsx:113
 msgid "Could not save category"
 msgstr "Impossible de sauvegarder la catégorie"
 
@@ -633,6 +633,8 @@ msgstr "ex. Professionnel, Personnel, Vacances"
 msgid "e.g., Groceries, Salary, Rent"
 msgstr "ex. Épicerie, Salaire, Loyer"
 
+#: src/app/category-edit.tsx:120
+#: src/app/category-edit.tsx:124
 #: src/category/components/category-form/category-form.tsx:43
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
@@ -995,7 +997,7 @@ msgstr "Mapper les colonnes CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
-#: src/app/category-edit.tsx:156
+#: src/app/category-edit.tsx:149
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Fusionner avec une autre catégorie"
@@ -1196,8 +1198,8 @@ msgstr "Veuillez réessayer"
 
 #: src/app/(tabs)/settings/categories.tsx:54
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/app/category-edit.tsx:96
-#: src/app/category-edit.tsx:117
+#: src/app/category-edit.tsx:93
+#: src/app/category-edit.tsx:114
 #: src/category/components/category-form/category-form.tsx:54
 #: src/category/components/category-form/category-form.tsx:80
 #: src/tag/components/tag-form/tag-form.tsx:51
@@ -1262,7 +1264,7 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
-#: src/app/category-edit.tsx:148
+#: src/app/category-edit.tsx:141
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1339,7 +1341,7 @@ msgstr "Sécurité"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/app/category-edit.tsx:81
+#: src/app/category-edit.tsx:78
 #: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Sélectionnez une catégorie pour fusionner"
