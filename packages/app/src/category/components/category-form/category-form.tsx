@@ -14,6 +14,7 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
@@ -35,13 +36,14 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { openCategorySelector } = useCategorySelectorModal();
     const { openIconSelector } = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
+    const { llm } = useLlmContext();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
@@ -52,7 +54,8 @@ export const CategoryForm = (props: Props) => {
         entityId: category?.id ?? 0,
         currentTitle: title,
         regenerate,
-        isRegenerating
+        isRegenerating,
+        isModelReady: llm.isReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -132,6 +135,7 @@ export const CategoryForm = (props: Props) => {
                     isRegenerating={isRegenerating}
                     disabled={isGenerateDisabled}
                     onRegenerate={handleRegenerate}
+                    modelStatus={llm}
                 />
             </View>
 

@@ -57,7 +57,6 @@ export const TagSuggestionsRow = (props: Props) => {
     const isReady = status === 'success' && isNotEmptyArray(suggestedTags);
     const isProcessing = isInitializing || isLoading;
 
-
     useEffect(() => {
         if (timerRef.current !== null) {
             clearTimeout(timerRef.current);
