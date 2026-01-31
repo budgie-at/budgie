@@ -10,6 +10,9 @@ import { CategoryEntityTable } from '../table/category-entity.table';
 export const CategoryEntitySchema = createSelectSchema(CategoryEntityTable, {
     ...BaseEntityFields,
     title: schema => schema.trim().min(CATEGORY_TITLE_MIN_LENGTH).max(CATEGORY_TITLE_MAX_LENGTH).describe('The category title.'),
+    titleEn: schema => schema.nullable().describe('LLM-generated English translation of the title.'),
+    titleTags: schema => schema.nullable().describe('LLM-generated English tags for categorization.'),
+    tagsGeneratedAt: schema => schema.nullable().describe('Timestamp when tags were generated.'),
     icon: zodEnum(UserIconNameEnum, {
         message: 'Invalid icon selected'
     }).describe('The category icon.'),
