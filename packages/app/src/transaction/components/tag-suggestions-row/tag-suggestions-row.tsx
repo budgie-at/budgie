@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     scrollContent: { flexGrow: 1, justifyContent: 'flex-end', gap: 8 }
 });
 
-// eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
+// eslint-disable-next-line max-statements, max-lines-per-function -- Component with multiple state hooks and effect for delayed loading logic
 export const TagSuggestionsRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
