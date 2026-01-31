@@ -1,0 +1,12 @@
+import { Trans } from '@lingui/react/macro';
+
+import { Button } from '../button/button';
+
+interface Props {
+    readonly disabled?: boolean;
+    readonly onPress: () => void;
+}
+
+export const ModalFormSaveButton = ({ disabled, onPress }: Props) => (
+    <Button className="flex-1" variant="cta" onPress={onPress} disabled={disabled} content={<Trans>Save</Trans>} />
+);
