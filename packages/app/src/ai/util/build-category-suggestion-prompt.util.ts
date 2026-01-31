@@ -34,17 +34,18 @@ export const buildCategorySuggestionPrompt = (categories: CategoryEntityInterfac
     const categoryList = userCategories.map(category => `${category.id}=${getCategoryLabel(category)}`).join(', ');
 
     /* eslint-disable lingui/no-unlocalized-strings */
-    return `Match the transaction to a category. Return ONLY the category ID number.
+    return `Match the transaction to categories. Return up to 3 category IDs, best match first.
 
 CATEGORIES: ${categoryList}
 
 EXAMPLES:
 Transaction: McDonalds | Type: Fast Food Restaurant -> 292
-Transaction: Uber | Type: Taxicabs -> 364
+Transaction: Uber | Type: Taxicabs -> 364,288
 
 RULES:
-- Return ONLY a number
-- Match transaction to the most relevant category
+- Return comma-separated numbers (e.g., 292 or 292,387)
+- Best match first, then alternatives
+- Maximum 3 IDs
 - If no match, return 0`;
     /* eslint-enable lingui/no-unlocalized-strings */
 };
