@@ -10,23 +10,21 @@ interface TransactionContextInterface {
 export const buildTransactionContext = (data: TransactionContextInterface): string => {
     const parts: string[] = [];
 
-    /* eslint-disable lingui/no-unlocalized-strings */
     if (isNotEmptyString(data.title)) {
-        parts.push(`Transaction: ${data.title}`);
+        parts.push(data.title);
     }
 
     if (isNotEmptyString(data.mccDescription)) {
-        parts.push(`Merchant type: ${data.mccDescription}`);
+        parts.push(data.mccDescription.toLowerCase());
     }
 
     if (isPositiveNumber(data.amount)) {
-        parts.push(`Amount: ${data.amount}`);
+        parts.push(String(data.amount));
     }
 
     if (isNotEmptyString(data.comment)) {
-        parts.push(`Note: ${data.comment}`);
+        parts.push(data.comment);
     }
-    /* eslint-enable lingui/no-unlocalized-strings */
 
-    return parts.join('\n');
+    return parts.join(' ');
 };
