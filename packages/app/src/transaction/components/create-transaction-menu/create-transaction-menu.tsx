@@ -152,6 +152,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId }: Props) => 
                             totalItems={actionItems.length}
                             isOpen={isOpen}
                             onPress={item.onPress}
+                            testID={`ActionItem.${index}`}
                         />
                     ))}
 

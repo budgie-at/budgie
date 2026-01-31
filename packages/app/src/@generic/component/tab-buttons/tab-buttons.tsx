@@ -7,19 +7,19 @@ import { TabButton } from '../tab-button/tab-button';
 export const TabButtons = () => (
     <View className="flex-row items-center gap-sm">
         <TabTrigger name="home" asChild reset="always">
-            <TabButton icon={UserIconNameEnum.Home} />
+            <TabButton icon={UserIconNameEnum.Home} testID="TabBar.Home" />
         </TabTrigger>
 
         <TabTrigger name="transactions" asChild reset="always">
-            <TabButton icon={UserIconNameEnum.Receipt} />
+            <TabButton icon={UserIconNameEnum.Receipt} testID="TabBar.Transactions" />
         </TabTrigger>
 
         <TabTrigger name="analytics" asChild reset="always">
-            <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} />
+            <TabButton icon={UserIconNameEnum.ChartNoAxesColumn} testID="TabBar.Analytics" />
         </TabTrigger>
 
         <TabTrigger name="settings" asChild reset="always">
-            <TabButton icon={UserIconNameEnum.Settings} />
+            <TabButton icon={UserIconNameEnum.Settings} testID="TabBar.Settings" />
         </TabTrigger>
     </View>
 );

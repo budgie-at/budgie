@@ -23,6 +23,7 @@ export const CreateTransactionTrigger = ({ isOpen, onPress }: Props) => {
     return (
         <HapticPressable
             className="bg-primary rounded-full items-center justify-center w-18 h-18"
+            testID="CreateTransactionTrigger"
             {...(!isOpen && { onPress: handlePress })}
         >
             <Icon className="text-primary-reverse" icon={UserIconNameEnum.Plus} size={TRIGGER_ICON_SIZE} />

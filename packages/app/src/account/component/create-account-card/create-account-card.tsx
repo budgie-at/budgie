@@ -22,6 +22,7 @@ export const CreateAccountCard = ({ title, description, type, icon }: Props) => 
             title={title}
             onPress={handleNavigate}
             description={description}
+            testID={`CreateAccount.${type}`}
         />
     );
 };

@@ -24,6 +24,10 @@ appId: ${APP_ID}
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
     text: 'Submit'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'TOTAL BALANCE'
+    timeout: 10000
 
 - assertVisible: ${ACCOUNT_NAME}, $0
 - assertVisible: 'TOTAL BALANCE'
