@@ -1,17 +1,14 @@
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, CurrencyEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray, isNumber } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
-import { FALLBACK_CATEGORY_ID } from '../constant/llm-categorization.constant';
+import { useLlmContext } from '../context/llm.context';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { buildDirectPrompt } from '../util/build-direct-prompt.util';
+import { CategoryLlmService, ExtractedTransaction } from '../service/category-llm.service';
 import { findAccountByCurrency } from '../util/find-account-by-currency.util';
-import { ParsedCategorizationItemInterface, parseLlmJsonResponse } from '../util/parse-llm-json-response.util';
-
-import { useLlm } from './use-llm.hook';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -24,17 +21,6 @@ interface UseLlmCategorizationReturnInterface {
     categorize: (text: string) => Promise<AITransactionInterface[]>;
     reset: () => void;
 }
-
-const resolveCategoryId = (categoryId: number | string, categories: CategoryEntityInterface[]): number => {
-    if (isNumber(categoryId)) {
-        return categoryId;
-    }
-
-    const normalized = categoryId.toLowerCase().trim();
-    const match = categories.find(category => category.title.toLowerCase() === normalized);
-
-    return match?.id ?? FALLBACK_CATEGORY_ID;
-};
 
 interface BuildTransactionParamsInterface {
     comment: string;
@@ -58,23 +44,20 @@ const buildTransaction = (params: BuildTransactionParamsInterface): AITransactio
     };
 };
 
-const mapParsedToTransactions = (
-    parsed: ParsedCategorizationItemInterface[],
+const mapExtractedToTransactions = (
+    extracted: ExtractedTransaction[],
     comment: string,
     accounts: AccountWithInstrumentEntityInterface[],
     categories: CategoryEntityInterface[]
 ): AITransactionInterface[] =>
-    parsed.map(item => {
-        const categoryId = resolveCategoryId(item.categoryId, categories);
-
-        return buildTransaction({ comment, categoryId, amount: item.amount, currency: item.currency, accounts, categories });
-    });
+    extracted.map(item =>
+        buildTransaction({ comment, categoryId: item.categoryId, amount: item.amount, currency: item.currency, accounts, categories })
+    );
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { categories } = useAllCategoriesQuery();
     const { accounts } = useSearchAccountsSortedQuery();
-    const systemPrompt = buildDirectPrompt(categories);
-    const llm = useLlm({ systemPrompt });
+    const { llm } = useLlmContext();
 
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
@@ -86,15 +69,15 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         setTransactions([]);
 
         try {
-            const response = await llm.sendMessage(text);
-            const parsed = parseLlmJsonResponse(response);
+            const service = new CategoryLlmService(llm);
+            const extracted = await service.extractTransactionsFromText({ text, categories });
 
-            if (!isNotEmptyArray(parsed)) {
+            if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
-                throw new Error(`Failed to parse LLM response: ${response}`);
+                throw new Error('Failed to extract transactions from text');
             }
 
-            const results = mapParsedToTransactions(parsed, text, accounts, categories);
+            const results = mapExtractedToTransactions(extracted, text, accounts, categories);
             setTransactions(results);
             setStatus('done');
 
@@ -107,7 +90,6 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     };
 
     const reset = (): void => {
-        llm.interrupt();
         setStatus('idle');
         setTransactions([]);
         setError(null);
