@@ -10,7 +10,6 @@ import { useCreateActionContext } from '../../@generic/context/create-action.con
 import { VoiceInputOverlay } from '../../ai/component/voice-input-overlay/voice-input-overlay';
 import { useLlmContext } from '../../ai/context/llm.context';
 import { VoiceInputContext } from '../../ai/context/voice-input.context';
-import { useCategoryTagsSync } from '../../ai/hook/use-category-tags-sync.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
@@ -19,8 +18,6 @@ export default function TabsLayout() {
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isAvailable: isAiAvailable } = useLlmContext();
     const [isVoiceInputOpen, setIsVoiceInputOpen] = useState(false);
-
-    useCategoryTagsSync();
 
     const containerStyle = { paddingBottom: bottom };
 
