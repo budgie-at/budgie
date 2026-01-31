@@ -22,7 +22,6 @@ import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.
 interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly amount: number;
     readonly comment: string;
     readonly onApply: (categoryId: number) => void;
 }
@@ -39,13 +38,12 @@ const POSITION_STYLE = { left: '50%', transform: [{ translateX: '-50%' }] } as c
 
 // eslint-disable-next-line max-statements -- Component with animations and conditional states
 export const CategorySuggestionBubble = (props: Props) => {
-    const { transactionTitle, mccCategoryId, amount, comment, onApply } = props;
+    const { transactionTitle, mccCategoryId, comment, onApply } = props;
     const { t } = useLingui();
 
     const { status, suggestedCategory } = useCategorySuggestion({
         transactionTitle,
         mccCategoryId,
-        amount,
         comment,
         enabled: true
     });

@@ -128,7 +128,6 @@ export const TransactionFieldIcons = (props: Props) => {
                         <CategorySuggestionBubble
                             transactionTitle={transactionTitle}
                             mccCategoryId={mccCategoryId}
-                            amount={0}
                             comment={comment}
                             onApply={handleApplySuggestion}
                         />
