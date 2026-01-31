@@ -12,12 +12,13 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { Icon } from '../../../@generic/component/icon/icon';
+import { Icon } from '../icon/icon';
 
 interface Props {
     readonly titleEn: string | null;
     readonly titleTags: string | null;
     readonly isRegenerating: boolean;
+    readonly disabled?: boolean;
     readonly onRegenerate: () => void;
     readonly animationDelay?: number;
 }
@@ -27,8 +28,8 @@ const DEFAULT_ANIMATION_DELAY = 200;
 const FULL_ROTATION = 360;
 const ROTATION_DURATION = 1000;
 
-export const CategoryAiFields = (props: Props) => {
-    const { titleEn, titleTags, isRegenerating, onRegenerate, animationDelay = DEFAULT_ANIMATION_DELAY } = props;
+export const AiTranslationFields = (props: Props) => {
+    const { titleEn, titleTags, isRegenerating, disabled = false, onRegenerate, animationDelay = DEFAULT_ANIMATION_DELAY } = props;
     const { t } = useLingui();
     const rotation = useSharedValue(0);
 
@@ -51,6 +52,14 @@ export const CategoryAiFields = (props: Props) => {
         transform: [{ rotate: `${rotation.value}deg` }]
     }));
 
+    const regenerateButton = disabled ? null : (
+        <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
+            <Animated.View style={rotatingStyle}>
+                <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
+            </Animated.View>
+        </Pressable>
+    );
+
     return (
         <View className="px-3xl pt-xl">
             <View className="bg-secondary-background rounded-2xl border border-secondary-corner overflow-hidden">
@@ -59,11 +68,7 @@ export const CategoryAiFields = (props: Props) => {
                     <Text className="text-xs text-secondary-foreground ml-sm uppercase font-medium flex-1">
                         <Trans>AI-Generated Metadata</Trans>
                     </Text>
-                    <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
-                        <Animated.View style={rotatingStyle}>
-                            <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
-                        </Animated.View>
-                    </Pressable>
+                    {regenerateButton}
                 </View>
 
                 {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
