@@ -61,7 +61,7 @@ export class TagRepository {
     }
 
     async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
-        await this.db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: Date.now() }).where(eq(TagEntityTable.id, id));
+        await this.db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(TagEntityTable.id, id));
     }
 
     async clearTranslation(id: number): Promise<void> {

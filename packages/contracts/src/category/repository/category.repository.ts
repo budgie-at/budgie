@@ -122,7 +122,7 @@ export class CategoryRepository {
     async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
         await this.db
             .update(CategoryEntityTable)
-            .set({ titleEn, titleTags, tagsGeneratedAt: Date.now() })
+            .set({ titleEn, titleTags, tagsGeneratedAt: new Date() })
             .where(eq(CategoryEntityTable.id, id));
     }
 
