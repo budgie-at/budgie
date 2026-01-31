@@ -1,8 +1,6 @@
 /* eslint-disable lingui/no-unlocalized-strings */
 import { createContext, use } from 'react';
 
-import type { useSpeechToText } from 'react-native-executorch';
-
 export interface GenerateOptionsInterface {
     maxNewTokens?: number;
     temperature?: number;
@@ -18,10 +16,22 @@ export interface LlmInterface {
     interrupt: () => void;
 }
 
+export interface SttInterface {
+    isReady: boolean;
+    downloadProgress: number;
+    error: string | null;
+    isInitializing: boolean;
+    committedTranscription: string;
+    nonCommittedTranscription: string;
+    stream: (options: { language: string }) => Promise<string>;
+    streamInsert: (samples: Float32Array) => void;
+    streamStop: () => void;
+}
+
 export interface LlmContextInterface {
     isAvailable: boolean;
     llm: LlmInterface;
-    stt: ReturnType<typeof useSpeechToText>;
+    stt: SttInterface;
 }
 
 export const LlmContext = createContext<LlmContextInterface | null>(null);

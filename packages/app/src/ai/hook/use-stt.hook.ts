@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
-import { SpeechToTextLanguage } from 'react-native-executorch';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
@@ -69,7 +68,7 @@ export const useStt = (): UseSttReturn => {
 
             baseTranscriptionRef.current = stt.committedTranscription;
 
-            streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
+            streamPromiseRef.current = stt.stream({ language: locale.languageCode }).catch(() => '');
             setStatus('streaming');
         })();
     };
