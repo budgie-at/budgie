@@ -5,6 +5,7 @@ import type { useSpeechToText } from 'react-native-executorch';
 
 export interface GenerateOptionsInterface {
     maxNewTokens?: number;
+    temperature?: number;
 }
 
 export interface LlmInterface {
