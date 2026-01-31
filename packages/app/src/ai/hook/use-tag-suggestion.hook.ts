@@ -42,27 +42,11 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggesti
     const hasTagsLoaded = isNotEmptyArray(allTags);
 
     useEffect(() => {
-        /* eslint-disable lingui/no-unlocalized-strings, no-console */
-        console.log('[TagSuggestion] Effect check:', {
-            enabled,
-            llmReady: llm.isReady,
-            isCategoryLoading,
-            isMccLoading,
-            isTagsLoading,
-            hasTagsLoaded,
-            hasTriggered: hasTriggeredRef.current,
-            tagsCount: allTags?.length ?? 0,
-            categoryTitle: category?.title ?? null
-        });
-
         if (!enabled || !llm.isReady || isCategoryLoading || isMccLoading || isTagsLoading || !hasTagsLoaded || hasTriggeredRef.current) {
-            console.log('[TagSuggestion] Skipping - conditions not met');
-
             return;
         }
 
         hasTriggeredRef.current = true;
-        console.log('[TagSuggestion] Triggering suggestion...');
 
         const suggest = async (): Promise<void> => {
             setInternalStatus('loading');
@@ -73,14 +57,6 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggesti
                 const mccDescription = mccCategory?.fullDescription ?? null;
                 const categoryName = category?.titleEn ?? category?.title ?? null;
 
-                console.log('[TagSuggestion] Params:', {
-                    transactionTitle,
-                    categoryName,
-                    mccDescription,
-                    comment: suggestionComment,
-                    tagsCount: allTags.length
-                });
-
                 const results = await service.suggestTags({
                     transactionTitle,
                     categoryName,
@@ -89,15 +65,12 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggesti
                     tags: allTags
                 });
 
-                console.log('[TagSuggestion] Results:', results.map(t => `${t.id}=${t.title}`));
                 setSuggestedTags(results);
                 setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch (error: unknown) {
-                console.error('[TagSuggestion] Error:', error);
+            } catch {
                 setInternalStatus('error');
             }
         };
-        /* eslint-enable lingui/no-unlocalized-strings, no-console */
 
         void suggest();
     }, [enabled, llm.isReady, isCategoryLoading, isMccLoading, isTagsLoading, hasTagsLoaded]);
