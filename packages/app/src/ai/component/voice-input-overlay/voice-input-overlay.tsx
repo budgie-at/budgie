@@ -23,6 +23,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
 
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const hasAutoStartedRef = useRef(false);
+    const originalTextRef = useRef('');
     const contentOpacity = useSharedValue(isOpen ? 1 : 0);
 
     const handleDone = (transactions: AITransactionInterface[]) => {
@@ -30,7 +31,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
             return;
         }
 
-        const groupedTransaction = groupVoiceTransactions(transactions);
+        const groupedTransaction = groupVoiceTransactions(transactions, originalTextRef.current);
         if (!isDefined(groupedTransaction)) {
             return;
         }
@@ -76,6 +77,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
                 voiceInput.stop();
                 break;
             case 'confirming':
+                originalTextRef.current = voiceInput.data.transcription.committed;
                 voiceInput.confirm();
                 break;
             case 'idle':
