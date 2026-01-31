@@ -7,11 +7,11 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { GenerateOptionsInterface, LlmInterface } from '../context/llm.context';
 
-/* eslint-disable lingui/no-unlocalized-strings */
+ 
 const MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf';
 const MODEL_FILENAME = 'qwen2.5-1.5b-instruct-q8_0.gguf';
 const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
-/* eslint-enable lingui/no-unlocalized-strings */
+ 
 
 const DEFAULT_MAX_TOKENS = 64;
 const GPU_LAYERS = 99;

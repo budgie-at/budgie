@@ -117,7 +117,7 @@ export default function CategoryEditModal() {
         }
 
         try {
-            await categoryRepository.updateById(categoryId, { title, icon });
+            await categoryRepository.updateById(categoryId, { title, icon, titleEn, titleTags });
             router.back();
         } catch {
             Toast.show({
