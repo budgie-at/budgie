@@ -11,7 +11,7 @@ const ParsedItemSchema = z.object({
 
 type ParsedItemType = z.infer<typeof ParsedItemSchema>;
 
-export interface ParsedCategorizationItemInterface {
+interface ParsedCategorizationItemInterface {
     categoryId: number | string;
     amount: number;
     currency: CurrencyEnum | null;
