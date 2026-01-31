@@ -1,15 +1,12 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
-import { buildCategorySuggestionPrompt } from '../util/build-category-suggestion-prompt.util';
-import { buildTransactionContext } from '../util/build-transaction-context.util';
-import { parseCategorySuggestionResponse } from '../util/parse-category-suggestion-response.util';
-
-import { useLlm } from './use-llm.hook';
+import { useLlmContext } from '../context/llm.context';
+import { CategoryLlmService } from '../service/category-llm.service';
 
 interface UseCategorySuggestionParams {
     transactionTitle: string;
@@ -29,11 +26,9 @@ interface UseCategorySuggestionReturn {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseCategorySuggestionReturn => {
     const { transactionTitle, mccCategoryId, comment, enabled } = params;
 
+    const { llm } = useLlmContext();
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
-
-    const systemPrompt = buildCategorySuggestionPrompt(categories);
-    const llm = useLlm({ systemPrompt });
 
     const [internalStatus, setInternalStatus] = useState<InternalStatus>('idle');
     const [suggestedCategories, setSuggestedCategories] = useState<CategoryEntityInterface[]>([]);
@@ -51,18 +46,16 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
             setInternalStatus('loading');
 
             try {
-                const context = buildTransactionContext({
-                    title: transactionTitle,
+                const service = new CategoryLlmService(llm);
+                const results = await service.suggestCategories({
+                    transactionTitle,
                     mccDescription: mccCategory?.fullDescription ?? null,
-                    comment
+                    comment,
+                    categories
                 });
 
-                const response = await llm.sendMessage(context);
-                const categoryIds = parseCategorySuggestionResponse(response, categories);
-                const matchedCategories = categoryIds.map(id => categories.find(item => item.id === id)).filter(isDefined);
-
-                setSuggestedCategories(matchedCategories);
-                setInternalStatus(isNotEmptyArray(matchedCategories) ? 'success' : 'error');
+                setSuggestedCategories(results);
+                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
             } catch {
                 setInternalStatus('error');
             }
