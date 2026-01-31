@@ -1,7 +1,7 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
@@ -23,7 +23,7 @@ type CategorySuggestionStatus = 'idle' | 'initializing' | 'loading' | 'success' 
 
 interface UseCategorySuggestionReturn {
     status: CategorySuggestionStatus;
-    suggestedCategory: CategoryEntityInterface | null;
+    suggestedCategories: CategoryEntityInterface[];
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseCategorySuggestionReturn => {
@@ -36,7 +36,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const llm = useLlm({ systemPrompt });
 
     const [internalStatus, setInternalStatus] = useState<InternalStatus>('idle');
-    const [suggestedCategory, setSuggestedCategory] = useState<CategoryEntityInterface | null>(null);
+    const [suggestedCategories, setSuggestedCategories] = useState<CategoryEntityInterface[]>([]);
 
     const hasTriggeredRef = useRef(false);
 
@@ -66,13 +66,13 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
                 const response = await llm.sendMessage(context);
                 // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
                 console.log('LLM response:', response);
-                const categoryId = parseCategorySuggestionResponse(response, categories);
+                const categoryIds = parseCategorySuggestionResponse(response, categories);
                 // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('Parsed categoryId:', categoryId);
-                const category = isDefined(categoryId) ? (categories.find(item => item.id === categoryId) ?? null) : null;
+                console.log('Parsed categoryIds:', categoryIds);
+                const matchedCategories = categoryIds.map(id => categories.find(item => item.id === id)).filter(isDefined);
 
-                setSuggestedCategory(category);
-                setInternalStatus(isDefined(category) ? 'success' : 'error');
+                setSuggestedCategories(matchedCategories);
+                setInternalStatus(isNotEmptyArray(matchedCategories) ? 'success' : 'error');
             } catch (error) {
                 // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
                 console.log('LLM error:', error);
@@ -86,5 +86,5 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const isWaitingForLlm = enabled && (!llm.isReady || isMccLoading || isCategoriesLoading) && internalStatus === 'idle';
     const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
 
-    return { status, suggestedCategory };
+    return { status, suggestedCategories };
 };
