@@ -19,7 +19,6 @@ import { CONFIRM_ACTION_MODAL_OPTIONS } from '../@generic/constant/confirm-actio
 import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-to-transfer-modal-options.constant';
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
-import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -128,7 +127,7 @@ export default function RootLayout() {
                                                                                             />
                                                                                             <Stack.Screen
                                                                                                 name="tag-form"
-                                                                                                options={FORM_MODAL_OPTIONS}
+                                                                                                options={CATEGORY_EDIT_MODAL_OPTIONS}
                                                                                             />
                                                                                             <Stack.Screen
                                                                                                 name="confirm-action"
