@@ -16,6 +16,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
@@ -43,6 +44,7 @@ export const TagForm = (props: Props) => {
     const { t } = useLingui();
     const { openTagsSelector } = useTagsSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
+    const { llm } = useLlmContext();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -53,7 +55,8 @@ export const TagForm = (props: Props) => {
         entityId: tag?.id ?? 0,
         currentTitle: title,
         regenerate,
-        isRegenerating
+        isRegenerating,
+        isModelReady: llm.isReady
     });
 
     const isSaveDisabled = !isNotEmptyString(title);
@@ -140,6 +143,7 @@ export const TagForm = (props: Props) => {
                     isRegenerating={isRegenerating}
                     disabled={isGenerateDisabled}
                     onRegenerate={handleRegenerate}
+                    modelStatus={llm}
                 />
             </View>
 

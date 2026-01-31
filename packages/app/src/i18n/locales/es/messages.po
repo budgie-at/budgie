@@ -125,7 +125,7 @@ msgstr "Ajuste"
 msgid "AI"
 msgstr ""
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:69
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
 msgid "AI-Generated Metadata"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:110
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -409,7 +409,7 @@ msgstr "No se pudo eliminar la transacción."
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:90
+#: src/tag/components/tag-form/tag-form.tsx:93
 msgid "Could not merge tag"
 msgstr "No se pudo fusionar la etiqueta"
 
@@ -429,7 +429,7 @@ msgstr "No se pudo restaurar la cuenta."
 msgid "Could not save category"
 msgstr ""
 
-#: src/tag/components/tag-form/tag-form.tsx:110
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Could not save tag"
 msgstr ""
 
@@ -482,7 +482,7 @@ msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-form/tag-form.tsx:60
+#: src/tag/components/tag-form/tag-form.tsx:63
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
@@ -596,7 +596,7 @@ msgstr "Listo"
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:129
 msgid "e.g. Business, Personal, Vacation"
 msgstr ""
 
@@ -620,7 +620,7 @@ msgstr "Editar gasto"
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
-#: src/tag/components/tag-form/tag-form.tsx:60
+#: src/tag/components/tag-form/tag-form.tsx:63
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
@@ -661,7 +661,7 @@ msgstr "Inglés (Reino Unido)"
 msgid "English (United States)"
 msgstr "Inglés (Estados Unidos)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:82
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
 msgid "English Translation"
 msgstr ""
 
@@ -963,11 +963,11 @@ msgstr "Asignar columnas CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:143
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:147
+#: src/tag/components/tag-form/tag-form.tsx:151
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
@@ -1091,8 +1091,8 @@ msgstr "Aún no hay transacciones"
 msgid "None selected"
 msgstr "Ninguna seleccionada"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:36
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:37
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
 msgid "Not generated"
 msgstr ""
 
@@ -1161,8 +1161,8 @@ msgstr "Por favor, inténtelo de nuevo"
 #: src/app/(tabs)/settings/tags.tsx:53
 #: src/category/components/category-form/category-form.tsx:99
 #: src/category/components/category-form/category-form.tsx:120
-#: src/tag/components/tag-form/tag-form.tsx:90
-#: src/tag/components/tag-form/tag-form.tsx:111
+#: src/tag/components/tag-form/tag-form.tsx:93
+#: src/tag/components/tag-form/tag-form.tsx:114
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1264,7 +1264,7 @@ msgstr "Buscar monedas..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:94
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
 msgid "Search Keywords"
 msgstr ""
 
@@ -1302,7 +1302,7 @@ msgstr "Selecciona una categoría para fusionar"
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
 
-#: src/tag/components/tag-form/tag-form.tsx:73
+#: src/tag/components/tag-form/tag-form.tsx:76
 msgid "Select a tag to merge into"
 msgstr "Selecciona una etiqueta para fusionar"
 
@@ -1464,7 +1464,7 @@ msgstr "Sincronizando historial..."
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: src/tag/components/tag-form/tag-form.tsx:119
+#: src/tag/components/tag-form/tag-form.tsx:122
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
