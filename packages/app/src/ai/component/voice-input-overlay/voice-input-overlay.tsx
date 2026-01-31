@@ -7,8 +7,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
 import { AITransactionInterface } from '../../interface/ai-transaction.interface';
+import { groupVoiceTransactions } from '../../service/voice-llm.service';
 import { buildExpenseUrl } from '../../util/build-expense-url.util';
-import { groupTransactionsByCategory } from '../../util/group-transactions-by-category.util';
 import { VoiceInputOverlayContent } from '../voice-input-overlay-content/voice-input-overlay-content';
 
 const EXIT_DURATION = 100;
@@ -30,7 +30,7 @@ export const VoiceInputOverlay = ({ isOpen, onClose }: Props) => {
             return;
         }
 
-        const groupedTransaction = groupTransactionsByCategory(transactions);
+        const groupedTransaction = groupVoiceTransactions(transactions);
         if (!isDefined(groupedTransaction)) {
             return;
         }
