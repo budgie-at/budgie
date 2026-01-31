@@ -31,7 +31,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const { transactionTitle, mccCategoryId, amount, comment, enabled } = params;
 
     const { categories } = useAllCategoriesQuery();
-    const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
+    const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const systemPrompt = buildCategorySuggestionPrompt(categories);
     const llm = useLlm({ systemPrompt });
@@ -42,7 +42,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const hasTriggeredRef = useRef(false);
 
     useEffect(() => {
-        if (!enabled || !llm.isReady || hasTriggeredRef.current) {
+        if (!enabled || !llm.isReady || isMccLoading || hasTriggeredRef.current) {
             return;
         }
 
@@ -59,21 +59,33 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
                     comment
                 });
 
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('LLM system prompt:', systemPrompt);
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('LLM context:', context);
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('MCC category:', mccCategory);
                 const response = await llm.sendMessage(context);
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('LLM response:', response);
                 const categoryId = parseCategorySuggestionResponse(response, categories);
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('Parsed categoryId:', categoryId);
                 const category = isDefined(categoryId) ? (categories.find(item => item.id === categoryId) ?? null) : null;
 
                 setSuggestedCategory(category);
                 setInternalStatus(isDefined(category) ? 'success' : 'error');
-            } catch {
+            } catch (error) {
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
+                console.log('LLM error:', error);
                 setInternalStatus('error');
             }
         };
 
         void suggest();
-    }, [enabled, llm.isReady]);
+    }, [enabled, llm.isReady, isMccLoading]);
 
-    const isWaitingForLlm = enabled && !llm.isReady && internalStatus === 'idle';
+    const isWaitingForLlm = enabled && (!llm.isReady || isMccLoading) && internalStatus === 'idle';
     const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
 
     return { status, suggestedCategory };

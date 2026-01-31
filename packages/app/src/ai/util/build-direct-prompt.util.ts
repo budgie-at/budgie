@@ -4,9 +4,11 @@ import { COMMON_CURRENCIES } from '../constant/llm-categorization.constant';
 
 import { filterUserCategories } from './filter-user-categories.util';
 
+const getCategoryLabel = (category: CategoryEntityInterface): string => category.titleTags ?? category.title;
+
 export const buildDirectPrompt = (categories: CategoryEntityInterface[]): string => {
     const userCategories = filterUserCategories(categories);
-    const categoryList = userCategories.map(category => `${category.id}=${category.title}`).join(', ');
+    const categoryList = userCategories.map(category => `${category.id}=${getCategoryLabel(category)}`).join(', ');
     const currencies = COMMON_CURRENCIES.join(', ');
 
     /* eslint-disable lingui/no-unlocalized-strings */

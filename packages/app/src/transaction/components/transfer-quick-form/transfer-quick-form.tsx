@@ -190,7 +190,6 @@ export const TransferQuickForm = (props: Props) => {
                 transactionType={TransactionTypeEnum.TRANSFER}
                 transactionTitle=""
                 mccCategoryId={null}
-                amount={getValues('amount')}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />

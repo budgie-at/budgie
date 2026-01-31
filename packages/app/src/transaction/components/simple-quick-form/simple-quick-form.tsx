@@ -74,7 +74,6 @@ export const SimpleQuickForm = (props: Props) => {
                 transactionType={transactionType}
                 transactionTitle={transactionTitle}
                 mccCategoryId={mccCategoryId}
-                amount={getValues('amount')}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />
