@@ -1,8 +1,8 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { LlmInterface } from '../context/llm.context';
 
 export interface CategoryTranslationResult {
@@ -19,6 +19,10 @@ interface CategorySuggestionParams {
 
 interface CategoryLlmErrorHandler {
     (category: CategoryEntityInterface, error: unknown): void;
+}
+
+interface TagLlmErrorHandler {
+    (tag: TagEntityInterface, error: unknown): void;
 }
 
 const MAX_TAGS = 3;
@@ -85,6 +89,28 @@ export class CategoryLlmService {
         /* eslint-enable no-await-in-loop */
     }
 
+    async regenerateOneTag(tagId: number, title: string): Promise<CategoryTranslationResult> {
+        const result = await this.generateTranslationAndTags(title);
+        await this.saveTagTranslation(tagId, result);
+
+        return result;
+    }
+
+    async regenerateAllTags(onError?: TagLlmErrorHandler): Promise<void> {
+        const tags = await tagRepository.findAll();
+
+        /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
+        for (const tag of tags) {
+            try {
+                const result = await this.generateTranslationAndTags(tag.title);
+                await this.saveTagTranslation(tag.id, result);
+            } catch (error: unknown) {
+                onError?.(tag, error);
+            }
+        }
+        /* eslint-enable no-await-in-loop */
+    }
+
     async suggestCategories(params: CategorySuggestionParams): Promise<CategoryEntityInterface[]> {
         const { transactionTitle, mccDescription, comment, categories } = params;
 
@@ -113,6 +139,10 @@ export class CategoryLlmService {
 
     private async saveTranslation(categoryId: number, result: CategoryTranslationResult): Promise<void> {
         await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
+    }
+
+    private async saveTagTranslation(tagId: number, result: CategoryTranslationResult): Promise<void> {
+        await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
     }
 
     private filterUserCategories(categories: CategoryEntityInterface[]): CategoryEntityInterface[] {
