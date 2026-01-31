@@ -15,6 +15,7 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly comment: string;
+    readonly enabled: boolean;
     readonly onSelect: (categoryId: number) => void;
 }
 
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
 
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const CategorySuggestionsRow = (props: Props) => {
-    const { transactionTitle, mccCategoryId, comment, onSelect } = props;
+    const { transactionTitle, mccCategoryId, comment, enabled, onSelect } = props;
     const { t } = useLingui();
 
     const [showLoading, setShowLoading] = useState(false);
@@ -47,7 +48,7 @@ export const CategorySuggestionsRow = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         comment,
-        enabled: true
+        enabled
     });
 
     const isInitializing = status === 'initializing';
@@ -85,7 +86,7 @@ export const CategorySuggestionsRow = (props: Props) => {
     }, [isProcessing]);
 
     const showLoadingIndicator = showLoading && !isReady;
-    const showContent = !hasSelected && (showLoadingIndicator || isReady);
+    const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
 
     return (
         <View style={styles.container} className="justify-center">
