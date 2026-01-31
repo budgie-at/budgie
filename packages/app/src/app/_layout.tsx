@@ -127,10 +127,6 @@ export default function RootLayout() {
                                                                                                 options={CATEGORY_EDIT_MODAL_OPTIONS}
                                                                                             />
                                                                                             <Stack.Screen
-                                                                                                name="category-edit"
-                                                                                                options={CATEGORY_EDIT_MODAL_OPTIONS}
-                                                                                            />
-                                                                                            <Stack.Screen
                                                                                                 name="tag-form"
                                                                                                 options={FORM_MODAL_OPTIONS}
                                                                                             />
