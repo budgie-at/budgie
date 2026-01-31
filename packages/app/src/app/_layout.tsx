@@ -19,6 +19,7 @@ import { CONVERT_TO_TRANSFER_MODAL_OPTIONS } from '../@generic/constant/convert-
 import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-modal-options.constant';
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { FORM_MODAL_OPTIONS } from '../@generic/constant/form-modal-options.constant';
+import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
@@ -28,6 +29,7 @@ import { useAppInitialization } from '../@generic/hook/use-app-initialization.ho
 import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { ConfirmActionModalProvider } from '../@generic/provider/confirm-action-modal.provider';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
+import { IconSelectorModalProvider } from '../@generic/provider/icon-selector-modal.provider';
 import { BottomSheetsProvider } from '../@generic/providers/bottom-sheets.provider';
 import { AccountSelectorModalProvider } from '../account/provider/account-selector-modal.provider';
 import { LlmDisabledProvider } from '../ai/provider/llm-disabled.provider';
@@ -84,8 +86,9 @@ export default function RootLayout() {
                                         <AuthGuard>
                                             <CreateActionProvider>
                                                 <AiProviderWrapper>
-                                                    <ConfirmActionModalProvider>
-                                                        <CategoryFormModalProvider>
+                                                    <IconSelectorModalProvider>
+                                                        <ConfirmActionModalProvider>
+                                                            <CategoryFormModalProvider>
                                                             <CategorySelectorModalProvider>
                                                                 <AccountSelectorModalProvider>
                                                                     <TagFormModalProvider>
@@ -145,6 +148,10 @@ export default function RootLayout() {
                                                                                                 name="convert-to-transfer"
                                                                                                 options={CONVERT_TO_TRANSFER_MODAL_OPTIONS}
                                                                                             />
+                                                                                            <Stack.Screen
+                                                                                                name="icon-selector"
+                                                                                                options={ICON_SELECTOR_MODAL_OPTIONS}
+                                                                                            />
                                                                                         </Stack>
                                                                                     </ConvertToTransferModalProvider>
                                                                                 </NoteInputModalProvider>
@@ -155,6 +162,7 @@ export default function RootLayout() {
                                                             </CategorySelectorModalProvider>
                                                         </CategoryFormModalProvider>
                                                     </ConfirmActionModalProvider>
+                                                    </IconSelectorModalProvider>
                                                     <Toast />
                                                 </AiProviderWrapper>
                                             </CreateActionProvider>
