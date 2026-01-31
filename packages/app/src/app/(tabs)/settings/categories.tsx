@@ -62,7 +62,7 @@ export default function Categories() {
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
-        router.push(`/settings/category/${category.id}`);
+        router.push({ pathname: '/category-edit', params: { id: category.id.toString() } });
     };
 
     const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
