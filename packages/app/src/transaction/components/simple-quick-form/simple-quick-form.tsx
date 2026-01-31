@@ -3,13 +3,14 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
+import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
 import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
@@ -35,6 +36,7 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const SimpleQuickForm = (props: Props) => {
     const { variant, transactionType, accountFieldName, transactionTitle, mccCategoryId, aiContext, buildEntries, onSubmit, onCancel } =
         props;
@@ -46,6 +48,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const comment = useWatch({ control, name: 'comment' });
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
+    const tagIds = useWatch({ control, name: 'tagIds' });
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
@@ -54,8 +57,16 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('entries.0.categoryId', selectedCategoryId);
     };
 
+    const handleSelectTag = (selectedTagId: number) => {
+        const currentTagIds = getValues('tagIds');
+        setValue('tagIds', [...currentTagIds, selectedTagId]);
+    };
+
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
-    const showCategorySuggestions = !isPositiveNumber(categoryId) && hasContext;
+    const hasCategorySelected = isPositiveNumber(categoryId);
+    const hasTagsSelected = isNotEmptyArray(tagIds);
+    const showCategorySuggestions = !hasCategorySelected && hasContext;
+    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext;
 
     const handleConfirm = () => {
         const amount = getValues('amount');
@@ -83,14 +94,25 @@ export const SimpleQuickForm = (props: Props) => {
         <View className="flex-1">
             <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
 
-            <CategorySuggestionsRow
-                transactionTitle={transactionTitle}
-                mccCategoryId={mccCategoryId}
-                comment={comment}
-                aiContext={aiContext}
-                enabled={showCategorySuggestions}
-                onSelect={handleSelectCategory}
-            />
+            {showTagSuggestions ? (
+                <TagSuggestionsRow
+                    transactionTitle={transactionTitle}
+                    mccCategoryId={mccCategoryId}
+                    comment={comment}
+                    aiContext={aiContext}
+                    enabled={showTagSuggestions}
+                    onSelect={handleSelectTag}
+                />
+            ) : (
+                <CategorySuggestionsRow
+                    transactionTitle={transactionTitle}
+                    mccCategoryId={mccCategoryId}
+                    comment={comment}
+                    aiContext={aiContext}
+                    enabled={showCategorySuggestions}
+                    onSelect={handleSelectCategory}
+                />
+            )}
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}
