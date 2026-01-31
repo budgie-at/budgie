@@ -28,7 +28,7 @@ export const CategorySuggestionPillItem = (props: Props) => {
             layout={LinearTransition.duration(animationDuration)}
         >
             <HapticPressable
-                className="flex-row items-center gap-sm px-md py-xs bg-default-background border border-default-corner rounded-full"
+                className="flex-row items-center gap-sm px-md py-xs bg-default-background border border-default-corner rounded-full max-w-40"
                 onPress={handlePress}
             >
                 <CircleIcon
@@ -38,7 +38,7 @@ export const CategorySuggestionPillItem = (props: Props) => {
                     radius={PILL_ICON_RADIUS}
                     variant="secondary"
                 />
-                <Text className="text-sm text-default-foreground pr-xs" numberOfLines={1}>
+                <Text className="text-sm text-default-foreground pr-xs shrink" numberOfLines={1}>
                     {category.title}
                 </Text>
             </HapticPressable>

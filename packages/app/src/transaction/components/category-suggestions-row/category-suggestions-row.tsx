@@ -1,12 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
 import { CategorySuggestionLoadingIndicator } from '../category-suggestion-loading-indicator/category-suggestion-loading-indicator';
 import { CategorySuggestionPillItem } from '../category-suggestion-pill-item/category-suggestion-pill-item';
@@ -32,7 +29,6 @@ const styles = StyleSheet.create({
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const CategorySuggestionsRow = (props: Props) => {
     const { transactionTitle, mccCategoryId, comment, enabled, onSelect } = props;
-    const { t } = useLingui();
 
     const [showLoading, setShowLoading] = useState(false);
     const [hasSelected, setHasSelected] = useState(false);
@@ -88,37 +84,39 @@ export const CategorySuggestionsRow = (props: Props) => {
     const showLoadingIndicator = showLoading && !isReady;
     const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
 
+    const pillsContent = showLoadingIndicator ? (
+        <View className="flex-1" />
+    ) : (
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            className="flex-1"
+            contentContainerClassName="gap-sm"
+            contentContainerStyle={styles.scrollContent}
+        >
+            {suggestedCategories.map((category, index) => (
+                <CategorySuggestionPillItem
+                    key={category.id}
+                    category={category}
+                    index={index}
+                    animationDuration={ANIMATION_DURATION}
+                    staggerDelay={STAGGER_DELAY}
+                    onSelect={handleSelect}
+                />
+            ))}
+        </ScrollView>
+    );
+
     return (
         <View style={styles.container} className="justify-center">
             {showContent ? (
-                <Animated.View entering={FadeIn.duration(ANIMATION_DURATION)} exiting={FadeOut.duration(ANIMATION_DURATION)}>
-                    {showLoadingIndicator ? (
-                        <View className="items-end pr-lg">
-                            <CategorySuggestionLoadingIndicator />
-                        </View>
-                    ) : (
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerClassName="pr-lg"
-                            contentContainerStyle={styles.scrollContent}
-                        >
-                            {suggestedCategories.map((category, index) => (
-                                <CategorySuggestionPillItem
-                                    key={category.id}
-                                    category={category}
-                                    index={index}
-                                    animationDuration={ANIMATION_DURATION}
-                                    staggerDelay={STAGGER_DELAY}
-                                    onSelect={handleSelect}
-                                />
-                            ))}
-                            <View className="flex-row items-center gap-xs pl-sm">
-                                <Icon icon={UserIconNameEnum.Sparkles} size={12} className="text-secondary-foreground" />
-                                <Text className="text-xs text-secondary-foreground">{t`AI`}</Text>
-                            </View>
-                        </ScrollView>
-                    )}
+                <Animated.View
+                    entering={FadeIn.duration(ANIMATION_DURATION)}
+                    exiting={FadeOut.duration(ANIMATION_DURATION)}
+                    className="flex-row items-center overflow-hidden"
+                >
+                    {pillsContent}
+                    <CategorySuggestionLoadingIndicator isAnimating={showLoadingIndicator} />
                 </Animated.View>
             ) : null}
         </View>

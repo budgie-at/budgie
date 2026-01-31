@@ -57,25 +57,13 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
                     comment
                 });
 
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('LLM system prompt:', systemPrompt);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('LLM context:', context);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('MCC category:', mccCategory);
                 const response = await llm.sendMessage(context);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('LLM response:', response);
                 const categoryIds = parseCategorySuggestionResponse(response, categories);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('Parsed categoryIds:', categoryIds);
                 const matchedCategories = categoryIds.map(id => categories.find(item => item.id === id)).filter(isDefined);
 
                 setSuggestedCategories(matchedCategories);
                 setInternalStatus(isNotEmptyArray(matchedCategories) ? 'success' : 'error');
-            } catch (error) {
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings -- DEBUG
-                console.log('LLM error:', error);
+            } catch {
                 setInternalStatus('error');
             }
         };
