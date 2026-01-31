@@ -35,8 +35,10 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
 
     const hasTriggeredRef = useRef(false);
 
+    const hasCategoriesLoaded = categories.length > 0;
+
     useEffect(() => {
-        if (!enabled || !llm.isReady || isMccLoading || isCategoriesLoading || hasTriggeredRef.current) {
+        if (!enabled || !llm.isReady || isMccLoading || isCategoriesLoading || !hasCategoriesLoaded || hasTriggeredRef.current) {
             return;
         }
 
@@ -62,9 +64,10 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
         };
 
         void suggest();
-    }, [enabled, llm.isReady, isMccLoading, isCategoriesLoading]);
+    }, [enabled, llm.isReady, isMccLoading, isCategoriesLoading, hasCategoriesLoaded]);
 
-    const isWaitingForLlm = enabled && (!llm.isReady || isMccLoading || isCategoriesLoading) && internalStatus === 'idle';
+    const isWaitingForLlm =
+        enabled && (!llm.isReady || isMccLoading || isCategoriesLoading || !hasCategoriesLoaded) && internalStatus === 'idle';
     const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
 
     return { status, suggestedCategories };
