@@ -269,7 +269,7 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/category-edit.tsx:140
+#: src/app/category-edit.tsx:143
 #: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -997,7 +997,7 @@ msgstr "CSV-Spalten zuordnen"
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
-#: src/app/category-edit.tsx:149
+#: src/app/category-edit.tsx:139
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "In eine andere Kategorie zusammenführen"
@@ -1264,7 +1264,7 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
-#: src/app/category-edit.tsx:141
+#: src/app/category-edit.tsx:144
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1526,10 +1526,6 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
-
-#: src/category/components/category-icon-display/category-icon-display.tsx:73
-msgid "Tap to change icon"
-msgstr "Tippen, um Symbol zu ändern"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:62
 msgid "Tap to clear"
