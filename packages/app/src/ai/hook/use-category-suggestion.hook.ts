@@ -6,7 +6,9 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useLlmContext } from '../context/llm.context';
-import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '../interface/suggestion.interface';
+import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
+import { SuggestionStatus } from '../interface/suggestion-status.type';
+import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
 import { CategoryLlmService } from '../service/category-llm.service';
 
 interface UseCategorySuggestionParams {
