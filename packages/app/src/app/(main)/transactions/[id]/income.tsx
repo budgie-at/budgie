@@ -85,6 +85,7 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
+                    aiContext=""
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
