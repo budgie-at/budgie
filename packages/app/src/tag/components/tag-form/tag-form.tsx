@@ -1,19 +1,21 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
+import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
+import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
+import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { CategoryAiFields } from '../../../category/components/category-ai-fields/category-ai-fields';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
@@ -35,7 +37,7 @@ interface Props {
 
 const TITLE_ANIMATION_DELAY = 100;
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
@@ -46,37 +48,19 @@ export const TagForm = (props: Props) => {
 
     const isEditing = isDefined(tag?.id);
 
-    const [titleEn, setTitleEn] = useState<string | null>(tag?.titleEn ?? null);
-    const [titleTags, setTitleTags] = useState<string | null>(tag?.titleTags ?? null);
-
-    const lastRegeneratedTitle = useRef<string>(tag?.title ?? '');
+    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+        entity: tag ?? null,
+        entityId: tag?.id ?? 0,
+        currentTitle: title,
+        regenerate,
+        isRegenerating
+    });
 
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
-    };
-
-    /* jscpd:ignore-start */
-    const handleRegenerate = async () => {
-        const tagId = tag?.id ?? 0;
-        const result = await regenerate(tagId, title);
-
-        if (isDefined(result)) {
-            setTitleEn(result.titleEn);
-            setTitleTags(result.titleTags);
-            lastRegeneratedTitle.current = title;
-        }
-    };
-
-    const handleTitleBlur = () => {
-        const titleChanged = title !== lastRegeneratedTitle.current;
-        const hasValidTitle = isNotEmptyString(title);
-
-        if (titleChanged && hasValidTitle && !isRegenerating) {
-            void handleRegenerate();
-        }
     };
 
     const handleMerge = async () => {
@@ -128,16 +112,6 @@ export const TagForm = (props: Props) => {
         }
     });
 
-    const mergeButton = isEditing ? (
-        <Button
-            variant="ghost"
-            size="sm"
-            leftIcon={UserIconNameEnum.Merge}
-            onPress={handleMerge}
-            content={<Trans>Merge into another tag</Trans>}
-        />
-    ) : null;
-
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
             <View className="flex-1">
@@ -160,24 +134,23 @@ export const TagForm = (props: Props) => {
                     </FormItem>
                 </Animated.View>
 
-                <CategoryAiFields titleEn={titleEn} titleTags={titleTags} isRegenerating={isRegenerating} onRegenerate={handleRegenerate} />
+                <AiTranslationFields
+                    titleEn={titleEn}
+                    titleTags={titleTags}
+                    isRegenerating={isRegenerating}
+                    disabled={isGenerateDisabled}
+                    onRegenerate={handleRegenerate}
+                />
             </View>
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {mergeButton}
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another tag</Trans>} /> : null}
 
                 <View className="flex-row gap-x-md">
-                    <Button className="flex-1" variant="ghost" onPress={onCancel} content={<Trans>Cancel</Trans>} />
-                    <Button
-                        className="flex-1"
-                        variant="cta"
-                        onPress={handleFormSubmit}
-                        disabled={isSaveDisabled}
-                        content={<Trans>Save</Trans>}
-                    />
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
                 </View>
             </View>
         </ModalPage>
     );
-    /* jscpd:ignore-end */
 };

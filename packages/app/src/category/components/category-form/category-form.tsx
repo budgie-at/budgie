@@ -1,22 +1,25 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { IconSelectorBottomSheet } from '../../../@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet';
+import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
+import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
+import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
 import { categoryService } from '../../service/category.service';
-import { CategoryAiFields } from '../category-ai-fields/category-ai-fields';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
@@ -45,11 +48,15 @@ export const CategoryForm = (props: Props) => {
 
     const isEditing = isDefined(category?.id);
 
-    const [titleEn, setTitleEn] = useState<string | null>(category?.titleEn ?? null);
-    const [titleTags, setTitleTags] = useState<string | null>(category?.titleTags ?? null);
+    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+        entity: category ?? null,
+        entityId: category?.id ?? 0,
+        currentTitle: title,
+        regenerate,
+        isRegenerating
+    });
 
     const iconSelectorRef = useRef<BottomSheetInterface | null>(null);
-    const lastRegeneratedTitle = useRef<string>(category?.title ?? '');
 
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
@@ -64,27 +71,6 @@ export const CategoryForm = (props: Props) => {
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
-    };
-
-    /* jscpd:ignore-start */
-    const handleRegenerate = async () => {
-        const categoryId = category?.id ?? 0;
-        const result = await regenerate(categoryId, title);
-
-        if (isDefined(result)) {
-            setTitleEn(result.titleEn);
-            setTitleTags(result.titleTags);
-            lastRegeneratedTitle.current = title;
-        }
-    };
-
-    const handleTitleBlur = () => {
-        const titleChanged = title !== lastRegeneratedTitle.current;
-        const hasValidTitle = isNotEmptyString(title);
-
-        if (titleChanged && hasValidTitle && !isRegenerating) {
-            void handleRegenerate();
-        }
     };
 
     const handleMerge = async () => {
@@ -135,16 +121,6 @@ export const CategoryForm = (props: Props) => {
         }
     });
 
-    const mergeButton = isEditing ? (
-        <Button
-            variant="ghost"
-            size="sm"
-            leftIcon={UserIconNameEnum.Merge}
-            onPress={handleMerge}
-            content={<Trans>Merge into another category</Trans>}
-        />
-    ) : null;
-
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
             <View className="flex-1">
@@ -152,26 +128,27 @@ export const CategoryForm = (props: Props) => {
 
                 <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
 
-                <CategoryAiFields titleEn={titleEn} titleTags={titleTags} isRegenerating={isRegenerating} onRegenerate={handleRegenerate} />
+                {/* jscpd:ignore-start */}
+                <AiTranslationFields
+                    titleEn={titleEn}
+                    titleTags={titleTags}
+                    isRegenerating={isRegenerating}
+                    disabled={isGenerateDisabled}
+                    onRegenerate={handleRegenerate}
+                />
             </View>
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {mergeButton}
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another category</Trans>} /> : null}
 
                 <View className="flex-row gap-x-md">
-                    <Button className="flex-1" variant="ghost" onPress={onCancel} content={<Trans>Cancel</Trans>} />
-                    <Button
-                        className="flex-1"
-                        variant="cta"
-                        onPress={handleFormSubmit}
-                        disabled={isSaveDisabled}
-                        content={<Trans>Save</Trans>}
-                    />
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
                 </View>
             </View>
+            {/* jscpd:ignore-end */}
 
             <IconSelectorBottomSheet ref={iconSelectorRef} variant="default" selectedIcon={icon} onSelect={handleIconSelect} />
         </ModalPage>
     );
-    /* jscpd:ignore-end */
 };
