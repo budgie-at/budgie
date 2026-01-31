@@ -30,16 +30,25 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly aiContext: string;
+    readonly aiContext?: string;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const SimpleQuickForm = (props: Props) => {
-    const { variant, transactionType, accountFieldName, transactionTitle, mccCategoryId, aiContext, buildEntries, onSubmit, onCancel } =
-        props;
+    const {
+        variant,
+        transactionType,
+        accountFieldName,
+        transactionTitle,
+        mccCategoryId,
+        aiContext = '',
+        buildEntries,
+        onSubmit,
+        onCancel
+    } = props;
 
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();

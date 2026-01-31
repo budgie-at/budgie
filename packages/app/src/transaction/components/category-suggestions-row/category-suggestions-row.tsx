@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -21,11 +21,7 @@ const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 const LOADING_DELAY_MS = 400;
 const ROW_HEIGHT = 40;
-
-const styles = StyleSheet.create({
-    container: { height: ROW_HEIGHT, overflow: 'hidden' },
-    scrollContent: { flexGrow: 1, justifyContent: 'flex-end', gap: 8 }
-});
+const CONTAINER_STYLE = { height: ROW_HEIGHT };
 
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const CategorySuggestionsRow = (props: Props) => {
@@ -93,8 +89,7 @@ export const CategorySuggestionsRow = (props: Props) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             className="flex-1"
-            contentContainerClassName="gap-sm"
-            contentContainerStyle={styles.scrollContent}
+            contentContainerClassName="flex-grow justify-end gap-sm"
         >
             {suggestedCategories.map((category, index) => (
                 <CategorySuggestionPillItem
@@ -110,7 +105,7 @@ export const CategorySuggestionsRow = (props: Props) => {
     );
 
     return (
-        <View style={styles.container} className="justify-center">
+        <View style={CONTAINER_STYLE} className="justify-center overflow-hidden">
             {showContent ? (
                 <Animated.View
                     entering={FadeIn.duration(ANIMATION_DURATION)}
