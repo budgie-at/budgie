@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
@@ -52,7 +52,8 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('entries.0.categoryId', selectedCategoryId);
     };
 
-    const showCategorySuggestions = !isPositiveNumber(categoryId) && isPositiveNumber(mccCategoryId);
+    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment);
+    const showCategorySuggestions = !isPositiveNumber(categoryId) && hasContext;
 
     const handleConfirm = () => {
         const amount = getValues('amount');
