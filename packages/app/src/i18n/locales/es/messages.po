@@ -62,7 +62,7 @@ msgstr "Acerca de"
 msgid "Account"
 msgstr "Cuenta"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:36
+#: src/@generic/component/account-details-field/account-details-field.tsx:45
 msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
@@ -123,11 +123,11 @@ msgstr "Ajuste"
 
 #: src/transaction/components/category-suggestion-loading-indicator/category-suggestion-loading-indicator.tsx:34
 msgid "AI"
-msgstr "IA"
+msgstr ""
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:60
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:69
 msgid "AI-Generated Metadata"
-msgstr "Metadatos generados por IA"
+msgstr ""
 
 #: src/app/(tabs)/settings/index.tsx:141
 msgid ""
@@ -260,11 +260,10 @@ msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
+#: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:10
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
-#: src/category/components/category-form/category-form.tsx:162
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:170
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -386,11 +385,11 @@ msgstr "No se pudo activar la cuenta."
 msgid "Could not archive account. Please try again later"
 msgstr "No se pudo archivar la cuenta. Inténtalo de nuevo más tarde"
 
-#: src/category/components/category-form/category-form.tsx:133
+#: src/category/components/category-form/category-form.tsx:119
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:110
 msgid "Could not create tag"
 msgstr "No se pudo crear la etiqueta"
 
@@ -406,11 +405,11 @@ msgstr "No se pudo eliminar la cuenta."
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
-#: src/category/components/category-form/category-form.tsx:113
+#: src/category/components/category-form/category-form.tsx:99
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:106
+#: src/tag/components/tag-form/tag-form.tsx:90
 msgid "Could not merge tag"
 msgstr "No se pudo fusionar la etiqueta"
 
@@ -426,13 +425,13 @@ msgstr "No se pudo reasignar la etiqueta"
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/category/components/category-form/category-form.tsx:133
+#: src/category/components/category-form/category-form.tsx:119
 msgid "Could not save category"
-msgstr "No se pudo guardar la categoría"
+msgstr ""
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:110
 msgid "Could not save tag"
-msgstr "No se pudo guardar la etiqueta"
+msgstr ""
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -466,7 +465,7 @@ msgstr "Crear y organizar etiquetas de transacciones"
 msgid "Create Categories"
 msgstr "Crear categorías"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:62
 msgid "Create Category"
 msgstr "Crear categoría"
 
@@ -483,7 +482,7 @@ msgstr "Crea etiquetas personalizadas en Configuración para etiquetar y filtrar
 msgid "Create one to get started."
 msgstr "Crea una para comenzar."
 
-#: src/tag/components/tag-form/tag-form.tsx:55
+#: src/tag/components/tag-form/tag-form.tsx:60
 msgid "Create Tag"
 msgstr "Crear etiqueta"
 
@@ -597,19 +596,19 @@ msgstr "Listo"
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
 
-#: src/tag/components/tag-form/tag-form.tsx:152
+#: src/tag/components/tag-form/tag-form.tsx:126
 msgid "e.g. Business, Personal, Vacation"
-msgstr "p.ej. Trabajo, Personal, Vacaciones"
+msgstr ""
 
 #: src/category/components/category-title-input/category-title-input.tsx:29
 msgid "e.g. Groceries, Entertainment"
-msgstr "p. ej., Compras, Entretenimiento"
+msgstr ""
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:47
+#: src/@generic/component/account-details-field/account-details-field.tsx:56
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:62
 msgid "Edit Category"
 msgstr "Editar categoría"
 
@@ -621,7 +620,7 @@ msgstr "Editar gasto"
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
-#: src/tag/components/tag-form/tag-form.tsx:55
+#: src/tag/components/tag-form/tag-form.tsx:60
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
@@ -662,9 +661,9 @@ msgstr "Inglés (Reino Unido)"
 msgid "English (United States)"
 msgstr "Inglés (Estados Unidos)"
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:77
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:82
 msgid "English Translation"
-msgstr "Traducción al inglés"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
@@ -778,7 +777,7 @@ msgstr "Error al cargar los contactos."
 
 #: src/category/hooks/use-regenerate-all-categories.hook.ts:36
 msgid "Failed to regenerate category translations"
-msgstr "No se pudieron regenerar las traducciones de categorías"
+msgstr ""
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -942,7 +941,7 @@ msgstr "Escuchando..."
 #: src/category/hooks/use-regenerate-category-translation.hook.ts:22
 #: src/tag/hooks/use-regenerate-tag-translation.hook.ts:24
 msgid "LLM not ready"
-msgstr "IA no está lista"
+msgstr ""
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
@@ -964,11 +963,11 @@ msgstr "Asignar columnas CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
-#: src/category/components/category-form/category-form.tsx:144
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
 
-#: src/tag/components/tag-form/tag-form.tsx:137
+#: src/tag/components/tag-form/tag-form.tsx:147
 msgid "Merge into another tag"
 msgstr "Fusionar con otra etiqueta"
 
@@ -1048,11 +1047,7 @@ msgstr "No se encontraron monedas"
 msgid "No Custom Categories"
 msgstr "Sin categorías personalizadas"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
-msgid "No icons"
-msgstr "Sin iconos"
-
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
+#: src/app/icon-selector.tsx:66
 msgid "No icons found"
 msgstr "No se encontraron iconos"
 
@@ -1096,10 +1091,10 @@ msgstr "Aún no hay transacciones"
 msgid "None selected"
 msgstr "Ninguna seleccionada"
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:35
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:36
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:36
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:37
 msgid "Not generated"
-msgstr "No generado"
+msgstr ""
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:51
 msgid "not set"
@@ -1164,10 +1159,10 @@ msgstr "Por favor, inténtelo de nuevo"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:113
-#: src/category/components/category-form/category-form.tsx:134
-#: src/tag/components/tag-form/tag-form.tsx:106
-#: src/tag/components/tag-form/tag-form.tsx:127
+#: src/category/components/category-form/category-form.tsx:99
+#: src/category/components/category-form/category-form.tsx:120
+#: src/tag/components/tag-form/tag-form.tsx:90
+#: src/tag/components/tag-form/tag-form.tsx:111
 msgid "Please try again later"
 msgstr "Por favor, inténtalo de nuevo más tarde"
 
@@ -1206,11 +1201,11 @@ msgstr "Recibiendo {toCode}"
 
 #: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
 msgid "Regenerate AI Data"
-msgstr "Regenerar datos de IA"
+msgstr ""
 
 #: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
 msgid "Regenerate translations and search keywords for all categories and tags"
-msgstr "Regenerar traducciones y palabras clave de búsqueda para todas las categorías y etiquetas"
+msgstr ""
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
@@ -1224,9 +1219,8 @@ msgstr "¿Restaurar cuenta?"
 msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
-#: src/category/components/category-form/category-form.tsx:168
+#: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:11
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:176
 msgid "Save"
 msgstr "Guardar"
 
@@ -1253,7 +1247,7 @@ msgid "Search accounts..."
 msgstr "Buscar cuentas..."
 
 #: src/app/(tabs)/settings/categories.tsx:73
-#: src/app/category-selector.tsx:74
+#: src/app/category-selector.tsx:56
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Buscar categorías..."
@@ -1266,20 +1260,20 @@ msgstr "Buscar contactos..."
 msgid "Search currencies..."
 msgstr "Buscar monedas..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/app/icon-selector.tsx:75
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:89
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:94
 msgid "Search Keywords"
-msgstr "Palabras clave de búsqueda"
+msgstr ""
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Search languages..."
 msgstr "Buscar idiomas..."
 
 #: src/app/(tabs)/settings/tags.tsx:74
-#: src/app/tags-selector.tsx:81
+#: src/app/tags-selector.tsx:61
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Buscar etiquetas..."
@@ -1300,7 +1294,7 @@ msgstr "Seguridad"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/category/components/category-form/category-form.tsx:97
+#: src/category/components/category-form/category-form.tsx:83
 msgid "Select a category to merge into"
 msgstr "Selecciona una categoría para fusionar"
 
@@ -1308,7 +1302,7 @@ msgstr "Selecciona una categoría para fusionar"
 msgid "Select a contact"
 msgstr "Selecciona un contacto"
 
-#: src/tag/components/tag-form/tag-form.tsx:89
+#: src/tag/components/tag-form/tag-form.tsx:73
 msgid "Select a tag to merge into"
 msgstr "Selecciona una etiqueta para fusionar"
 
@@ -1470,7 +1464,7 @@ msgstr "Sincronizando historial..."
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: src/tag/components/tag-form/tag-form.tsx:145
+#: src/tag/components/tag-form/tag-form.tsx:119
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
@@ -1607,6 +1601,7 @@ msgstr "Transferencia"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/app/icon-selector.tsx:66
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
