@@ -68,6 +68,18 @@ export const SimpleQuickForm = (props: Props) => {
     const showCategorySuggestions = !hasCategorySelected && hasContext;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext;
 
+    /* eslint-disable no-console, lingui/no-unlocalized-strings */
+    console.log('[SimpleQuickForm] Tag suggestion state:', {
+        categoryId,
+        tagIds,
+        mccCategoryId,
+        hasContext,
+        hasCategorySelected,
+        hasTagsSelected,
+        showTagSuggestions
+    });
+    /* eslint-enable no-console, lingui/no-unlocalized-strings */
+
     const handleConfirm = () => {
         const amount = getValues('amount');
         const categoryId = getValues('entries.0.categoryId') ?? 0;
@@ -97,6 +109,7 @@ export const SimpleQuickForm = (props: Props) => {
             {showTagSuggestions ? (
                 <TagSuggestionsRow
                     transactionTitle={transactionTitle}
+                    categoryId={categoryId}
                     mccCategoryId={mccCategoryId}
                     comment={comment}
                     aiContext={aiContext}

@@ -11,6 +11,7 @@ import { TagSuggestionPillItem } from '../tag-suggestion-pill-item/tag-suggestio
 
 interface Props {
     readonly transactionTitle: string;
+    readonly categoryId: number;
     readonly mccCategoryId: number | null;
     readonly comment: string;
     readonly aiContext: string;
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
 
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const TagSuggestionsRow = (props: Props) => {
-    const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
+    const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
     const [showLoading, setShowLoading] = useState(false);
     const [hasSelected, setHasSelected] = useState(false);
@@ -44,6 +45,7 @@ export const TagSuggestionsRow = (props: Props) => {
 
     const { status, suggestedTags } = useTagSuggestion({
         transactionTitle,
+        categoryId,
         mccCategoryId,
         comment,
         aiContext,
@@ -54,6 +56,18 @@ export const TagSuggestionsRow = (props: Props) => {
     const isLoading = status === 'loading';
     const isReady = status === 'success' && isNotEmptyArray(suggestedTags);
     const isProcessing = isInitializing || isLoading;
+
+    /* eslint-disable no-console, lingui/no-unlocalized-strings */
+    console.log('[TagSuggestionsRow] Render:', {
+        enabled,
+        status,
+        hasSelected,
+        suggestedTagsCount: suggestedTags.length,
+        isProcessing,
+        isReady,
+        showLoading
+    });
+    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
     useEffect(() => {
         if (timerRef.current !== null) {
