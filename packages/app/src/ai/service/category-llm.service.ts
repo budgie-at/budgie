@@ -141,9 +141,10 @@ RULES:
 
     private buildTransactionContext(title: string, mccDescription: string | null, comment: string): string {
         const parts: string[] = [];
+        const hasTitle = isNotEmptyString(title);
 
         /* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
-        if (isNotEmptyString(title)) {
+        if (hasTitle) {
             parts.push(`Transaction: ${title}`);
         }
 
@@ -152,7 +153,8 @@ RULES:
         }
 
         if (isNotEmptyString(comment)) {
-            parts.push(`Note: ${comment}`);
+            const commentLabel = hasTitle ? 'Note' : 'Transaction';
+            parts.push(`${commentLabel}: ${comment}`);
         }
 
         return parts.join(' | ');

@@ -20,11 +20,12 @@ import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entr
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const { accountId, categoryId, amount, comment } = useLocalSearchParams<{
+    const { accountId, categoryId, amount, comment, aiContext } = useLocalSearchParams<{
         accountId?: string;
         categoryId?: string;
         amount?: string;
         comment?: string;
+        aiContext?: string;
     }>();
 
     const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
@@ -53,6 +54,7 @@ export default function CreateExpenseTransactionPage() {
                     accountFieldName="fromAccountId"
                     transactionTitle=""
                     mccCategoryId={null}
+                    aiContext={aiContext ?? ''}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

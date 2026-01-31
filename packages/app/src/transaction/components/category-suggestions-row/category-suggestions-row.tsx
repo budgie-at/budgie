@@ -12,6 +12,7 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly comment: string;
+    readonly aiContext: string;
     readonly enabled: boolean;
     readonly onSelect: (categoryId: number) => void;
 }
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
 
 // eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
 export const CategorySuggestionsRow = (props: Props) => {
-    const { transactionTitle, mccCategoryId, comment, enabled, onSelect } = props;
+    const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
     const [showLoading, setShowLoading] = useState(false);
     const [hasSelected, setHasSelected] = useState(false);
@@ -44,6 +45,7 @@ export const CategorySuggestionsRow = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         comment,
+        aiContext,
         enabled
     });
 

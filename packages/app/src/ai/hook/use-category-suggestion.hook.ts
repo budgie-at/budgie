@@ -1,7 +1,7 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
@@ -12,6 +12,7 @@ interface UseCategorySuggestionParams {
     transactionTitle: string;
     mccCategoryId: number | null;
     comment: string;
+    aiContext: string;
     enabled: boolean;
 }
 
@@ -24,7 +25,7 @@ interface UseCategorySuggestionReturn {
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseCategorySuggestionReturn => {
-    const { transactionTitle, mccCategoryId, comment, enabled } = params;
+    const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { llm } = useLlmContext();
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
@@ -49,10 +50,11 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
 
             try {
                 const service = new CategoryLlmService(llm);
+                const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
                 const results = await service.suggestCategories({
                     transactionTitle,
                     mccDescription: mccCategory?.fullDescription ?? null,
-                    comment,
+                    comment: suggestionComment,
                     categories
                 });
 

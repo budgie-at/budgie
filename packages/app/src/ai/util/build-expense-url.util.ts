@@ -20,6 +20,9 @@ export const buildExpenseUrl = (transaction: GroupedVoiceTransactionInterface, d
     if (isNotEmptyString(transaction.comment)) {
         params.set('comment', transaction.comment);
     }
+    if (isNotEmptyString(transaction.aiContext)) {
+        params.set('aiContext', transaction.aiContext);
+    }
 
     const queryString = params.toString();
 
