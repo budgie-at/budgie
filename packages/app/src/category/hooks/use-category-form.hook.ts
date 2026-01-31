@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: UserIconNameEnum.Home, title: '' };
+const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: UserIconNameEnum.Folder, title: '' };
 
 export const useCategoryForm = (defaultValues: CategoryEntityInterface | null, defaultTitle?: string) => {
     const form = useForm({
