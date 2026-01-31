@@ -103,7 +103,7 @@ export const CategorySuggestionsRow = (props: Props) => {
     );
 
     return (
-        <View className="h-10 justify-center overflow-hidden">
+        <View className="h-10 items-end justify-center overflow-hidden">
             {showContent ? (
                 <Animated.View
                     entering={FadeIn.duration(ANIMATION_DURATION)}
