@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.23.0](https://github.com/budgie-at/budgie/compare/v2.22.0...v2.23.0) (2026-01-31)
+
+### Bug Fixes
+
+- **app:** address PR [#292](https://github.com/budgie-at/budgie/issues/292) review comments round 2 ([5d3876a](https://github.com/budgie-at/budgie/commit/5d3876a395d753473fe4519093172b207ec0fd87))
+- **app:** align suggestion pills to the right in suggestion rows ([d83d2bf](https://github.com/budgie-at/budgie/commit/d83d2bf62904b2e5287e1a701a797da9c748bcf6))
+- **app:** change category suggestion pill to inline positioning ([05a12d8](https://github.com/budgie-at/budgie/commit/05a12d816f6f675e3f9708b46acb1270023d31f0))
+- **app:** disable keyboard suggestions bar on category name input ([9654c18](https://github.com/budgie-at/budgie/commit/9654c18306fbf3d873f8f2836b06a0b158c30588))
+- **app:** disable max-lines-per-function lint for tag suggestions row ([96ee8de](https://github.com/budgie-at/budgie/commit/96ee8debee63c2ed26578a1d96ac16488f9dea07))
+- **app:** dismiss keyboard on tap outside input in category and tag forms ([a995cbf](https://github.com/budgie-at/budgie/commit/a995cbf2787a2e35f8733f1e466a39cff6113e4e))
+- **app:** improve AI category suggestions UI polish ([af630b3](https://github.com/budgie-at/budgie/commit/af630b32976d0cf941dbb3877a947c911befd91e))
+- **app:** improve tag suggestion prompt accuracy ([ad45ca4](https://github.com/budgie-at/budgie/commit/ad45ca4ba38fadc611a5fab88892b976d6cdd78e))
+- **app:** increase translation temperature to 0.7 for more variation ([4bdad4e](https://github.com/budgie-at/budgie/commit/4bdad4e648cc033b950b539da7a9a021bb33dd6d))
+- **app:** only show category suggestion pill when MCC is available ([c51d430](https://github.com/budgie-at/budgie/commit/c51d4305d7feeafbf5b9e4827fa0e985fb9be822))
+- **app:** open full modal when creating from selector ([02e9cfb](https://github.com/budgie-at/budgie/commit/02e9cfbcc8cfa64374a5c119da0bcdbb17e0d3aa))
+- **app:** prevent layout shift when AI category suggestions disappear ([b784cd3](https://github.com/budgie-at/budgie/commit/b784cd3a8168d4139505c2bee2ec16b60a94aa96))
+- **app:** show category suggestion pill when categoryId is 0 ([9f969af](https://github.com/budgie-at/budgie/commit/9f969aff181efdd0bb8b5f84a5f60e7f937e65cf))
+- **app:** show loading pill during LLM initialization ([2734c11](https://github.com/budgie-at/budgie/commit/2734c117cd82ed73a29d83772c2989b854c7f2fa))
+- **app:** simplify LLM prompts to prevent misinterpretation ([e00c9be](https://github.com/budgie-at/budgie/commit/e00c9be597118809afee1e0beb3cb290fddc7266))
+- **app:** update category LLM prompts to support income categories ([d4127ce](https://github.com/budgie-at/budgie/commit/d4127ce8a25153515ac7af7cf2e2733bc6eaacb0))
+- **app:** wait for categories to load before triggering AI suggestions ([1e42d31](https://github.com/budgie-at/budgie/commit/1e42d31ec4e0d3015733df9ee74ba74ef5d95bc1))
+- **contracts,app:** preserve AI fields when saving category ([0ff1a4b](https://github.com/budgie-at/budgie/commit/0ff1a4be7c5a372fb22264ebdb5ede6edf88d40d))
+
+### Features
+
+- ai categorization ([8fc5c69](https://github.com/budgie-at/budgie/commit/8fc5c69d870aa2d4f81333ed1494654ff265ee94))
+- **app:** add AI model readiness badge, temperature option, and fix selector padding ([8c56567](https://github.com/budgie-at/budgie/commit/8c56567de2666fa5e103e435f91b94625d4f9da0))
+- **app:** add AI tag suggestions on transaction form ([2e7c27d](https://github.com/budgie-at/budgie/commit/2e7c27d720c7b8e703282433cbc34077c294991f))
+- **app:** add buildCategorySuggestionPrompt utility ([d3bed0d](https://github.com/budgie-at/budgie/commit/d3bed0d61742e40b13e39517117dc1bc94278723))
+- **app:** add buildTransactionContext utility ([5bf26c2](https://github.com/budgie-at/budgie/commit/5bf26c23b62a1c75a9dd407de89b40167046af7d))
+- **app:** add category edit page with AI-generated metadata ([40f2484](https://github.com/budgie-at/budgie/commit/40f24849a5013726ce899ecfd1008e5a54beffac))
+- **app:** add CategorySuggestionPill component ([ecd1a02](https://github.com/budgie-at/budgie/commit/ecd1a02ce0ac9ef88d4bb9e2c847aeba663409b2))
+- **app:** add parseCategorySuggestionResponse utility ([ddfc9f5](https://github.com/budgie-at/budgie/commit/ddfc9f5ac6dbcd87a3eca9616c7e40ed1a56cf39))
+- **app:** add tag regeneration to LLM service and hook ([686f63f](https://github.com/budgie-at/budgie/commit/686f63f33a1ade62c1b053fa52e225f37b67b145))
+- **app:** add useCategorySuggestion hook ([909920c](https://github.com/budgie-at/budgie/commit/909920cf16b002662bf253c0e0adf2a9edf03021))
+- **app:** add useGetMccCategoryByIdQuery hook ([b0f5824](https://github.com/budgie-at/budgie/commit/b0f582458aee2eac240ceba4f4c4a403ed2c7834))
+- **app:** add voice input translation to English before extraction ([d61bafa](https://github.com/budgie-at/budgie/commit/d61bafa7066dc710ebfb0dae02c069bc69984e29))
+- **app:** auto-regenerate AI metadata on title blur ([e20af30](https://github.com/budgie-at/budgie/commit/e20af3063f0ab8f26a97a45ded2b1e7a6ad978c6))
+- **app:** enhance category suggestion loading animation ([f95885d](https://github.com/budgie-at/budgie/commit/f95885daadb0857b760916fb9478346bcd3c1ba4))
+- **app:** improve LLM category suggestion prompt and context ([1bfc9b2](https://github.com/budgie-at/budgie/commit/1bfc9b2bc32e9bccf6410e714a95e30bc803b84c))
+- **app:** integrate CategorySuggestionPill into TransactionFieldIcons ([fbc8bdd](https://github.com/budgie-at/budgie/commit/fbc8bdd28c9545f1dd79872625b78ddcce1dd105))
+- **app:** pass category suggestion props through form components ([8a0bb08](https://github.com/budgie-at/budgie/commit/8a0bb08377fb6da8424d3ceb9ccdc116a4fb5da4))
+- **app:** pass selected category name to tag suggestion LLM prompt ([c9b6ab0](https://github.com/budgie-at/budgie/commit/c9b6ab010e7bbe99a03c9957466808945696c178))
+- **app:** regenerate AI data for both categories and tags ([c6c03d9](https://github.com/budgie-at/budgie/commit/c6c03d9cca61be8d6fea1b2746cfc78498fb9b67))
+- **app:** separate original text and English AI context for voice suggestions ([0a5d885](https://github.com/budgie-at/budgie/commit/0a5d8856e1ca7930d5af6ac14d413fecdb41ac35))
+- **app:** switch to Qwen 2.5-1.5B for better multilingual support ([8db9423](https://github.com/budgie-at/budgie/commit/8db942316cdf9b654c411dbea808a1dda239f0c4))
+- **app:** upgrade whisper model from base to small for better transcription ([94acc09](https://github.com/budgie-at/budgie/commit/94acc0903c8a216d3db7741c1200c8c14af9b6a8))
+- **contracts:** add AI fields to tag entity table ([7f03be9](https://github.com/budgie-at/budgie/commit/7f03be987b2c83eb8288fe91457ed6e01de8505c))
+- working llm mcc category hints ([557b174](https://github.com/budgie-at/budgie/commit/557b1748a37956642e07b51da0a93742c8b90c33))
+
 # [2.22.0](https://github.com/budgie-at/budgie/compare/v2.21.0...v2.22.0) (2026-01-31)
 
 ### Features
