@@ -10,6 +10,7 @@ import m0005 from './0005_omniscient_jasper_sitwell.sql';
 import m0006 from './0006_nice_warlock.sql';
 import m0007 from './0007_pretty_puck.sql';
 import m0008 from './0008_breezy_darkhawk.sql';
+import m0009 from './0009_fine_molten_man.sql';
 
   export default {
     journal,
@@ -22,7 +23,8 @@ m0004,
 m0005,
 m0006,
 m0007,
-m0008
+m0008,
+m0009
     }
   }
   
