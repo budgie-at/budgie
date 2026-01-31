@@ -368,6 +368,72 @@ Root layout has 11 nested providers in this order:
 10. CreateActionProvider
 11. AiProviderWrapper
 
+## AI/LLM Module Patterns
+
+### Prompt Constants
+
+Extract LLM prompts to dedicated constant files in `ai/constant/`:
+```typescript
+// Good - prompt in constant file
+// ai/constant/translation-prompt.constant.ts
+export const TRANSLATION_SYSTEM_PROMPT = `...`;
+export const TRANSLATION_TEMPERATURE = 0.7;
+
+// Bad - prompt inline in service
+class CategoryLlmService {
+    private readonly PROMPT = `...`; // Move to constant file
+}
+```
+
+### Shared Hook Types
+
+Use generic interfaces for hooks with similar return shapes:
+```typescript
+// Good - shared generic interface in ai/interface/
+export interface UseSuggestionReturnInterface<T> {
+    status: SuggestionStatus;
+    suggestions: T[];
+}
+
+// Bad - duplicate interfaces per hook
+interface UseCategorySuggestionReturn { status: ...; suggestedCategories: ... }
+interface UseTagSuggestionReturn { status: ...; suggestedTags: ... }
+```
+
+### Extract Complex JSX to Components
+
+When a function returns ReactNode (like `getHeaderRight`), extract it into a proper React component in its own folder. This enables hooks and follows the one-component-per-folder rule:
+```typescript
+// Good - separate component with hooks
+export const AiTranslationFieldsHeaderRight = (props: Props) => {
+    const { t } = useLingui();
+    const style = useAnimatedStyle(() => ...);
+    ...
+};
+
+// Bad - plain function returning ReactNode
+const getHeaderRight = (params: Params): ReactNode => { ... };
+```
+
+### Async Functions in useEffect
+
+Keep async functions defined inside `useEffect` (not extracted outside) to avoid `react-hooks/set-state-in-effect` lint errors:
+```typescript
+// Good - suggest defined inside useEffect
+useEffect(() => {
+    if (!isReady) return;
+    const suggest = async (): Promise<void> => {
+        setStatus('loading');
+        // ...
+    };
+    void suggest();
+}, [isReady]);
+
+// Bad - suggest defined outside useEffect
+const suggest = async () => { setStatus('loading'); ... };
+useEffect(() => { void suggest(); }, [isReady]);
+```
+
 ## Background Tasks
 
 Register tasks in `_layout.tsx` after migrations:

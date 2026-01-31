@@ -1,0 +1,1 @@
+ALTER TABLE `categories` ADD `title_en` text;
