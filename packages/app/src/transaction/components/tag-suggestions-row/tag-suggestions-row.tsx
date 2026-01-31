@@ -57,17 +57,6 @@ export const TagSuggestionsRow = (props: Props) => {
     const isReady = status === 'success' && isNotEmptyArray(suggestedTags);
     const isProcessing = isInitializing || isLoading;
 
-    /* eslint-disable no-console, lingui/no-unlocalized-strings */
-    console.log('[TagSuggestionsRow] Render:', {
-        enabled,
-        status,
-        hasSelected,
-        suggestedTagsCount: suggestedTags.length,
-        isProcessing,
-        isReady,
-        showLoading
-    });
-    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
     useEffect(() => {
         if (timerRef.current !== null) {

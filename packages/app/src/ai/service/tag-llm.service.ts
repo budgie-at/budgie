@@ -19,7 +19,6 @@ interface TagLlmErrorHandler {
     (tag: TagEntityInterface, error: unknown): void;
 }
 
-const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
 /* eslint-disable lingui/no-unlocalized-strings */
@@ -87,32 +86,13 @@ export class TagLlmService {
         const { transactionTitle, categoryName, mccDescription, comment, tags } = params;
 
         if (tags.length === 0) {
-            /* eslint-disable no-console, lingui/no-unlocalized-strings */
-            console.log('[TagLlmService] No tags available, returning empty');
-            /* eslint-enable no-console, lingui/no-unlocalized-strings */
-
             return [];
         }
 
         const systemPrompt = this.buildSuggestionPrompt(tags);
         const context = this.buildTransactionContext(transactionTitle, categoryName, mccDescription, comment);
-
-        /* eslint-disable no-console, lingui/no-unlocalized-strings */
-        console.log('[TagLlmService] System prompt:', systemPrompt);
-        console.log('[TagLlmService] User context:', context);
-        /* eslint-enable no-console, lingui/no-unlocalized-strings */
-
         const response = await this.llm.generate(systemPrompt, context);
-
-        /* eslint-disable no-console, lingui/no-unlocalized-strings */
-        console.log('[TagLlmService] Raw LLM response:', JSON.stringify(response));
-        /* eslint-enable no-console, lingui/no-unlocalized-strings */
-
         const tagIds = this.parseSuggestionResponse(response, tags);
-
-        /* eslint-disable no-console, lingui/no-unlocalized-strings */
-        console.log('[TagLlmService] Parsed tag IDs:', tagIds);
-        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
         return tagIds.map(id => tags.find(tag => tag.id === id)).filter(isDefined);
     }
@@ -133,22 +113,19 @@ export class TagLlmService {
     }
 
     private buildSuggestionPrompt(tags: TagEntityInterface[]): string {
-        const tagList = tags.map(tag => `${tag.id}=${this.getTagLabel(tag)}`).join(', ');
+        const tagList = tags.map(tag => `${tag.id}=${tag.titleEn ?? tag.title}`).join(', ');
+        const exampleId = tags[0]?.id ?? 1;
+        const exampleId2 = tags[1]?.id ?? 2;
+        const exampleId3 = tags[2]?.id ?? 3;
 
         /* eslint-disable lingui/no-unlocalized-strings */
-        return `Match the transaction to tags. Return up to 3 tag IDs, best match first.
+        return `Pick exactly 3 tag IDs that best match the transaction. Return ONLY numbers.
 
 TAGS: ${tagList}
 
-EXAMPLES:
-Transaction: McDonalds | Category: food | Type: Fast Food Restaurant -> 12
-Transaction: Uber | Category: transport | Type: Taxicabs -> 5,8
-
-RULES:
-- Return comma-separated numbers (e.g., 12 or 12,5)
-- Best match first, then alternatives
-- Maximum 3 IDs
-- If no match, return 0`;
+Always return 3 comma-separated IDs from TAGS above, best match first.
+Example: ${exampleId},${exampleId2},${exampleId3}
+If nothing matches at all: 0`;
         /* eslint-enable lingui/no-unlocalized-strings */
     }
 
@@ -195,27 +172,5 @@ RULES:
             .slice(0, MAX_SUGGESTIONS);
     }
 
-    private getTagLabel(tag: TagEntityInterface): string {
-        const title = tag.titleEn ?? tag.title;
-        const tags = this.getFirstTags(tag.titleTags);
-
-        if (tags.length === 0) {
-            return title;
-        }
-
-        return `${title} (${tags.join(', ')})`;
-    }
-
-    private getFirstTags(titleTags: string | null): string[] {
-        if (!isNotEmptyString(titleTags)) {
-            return [];
-        }
-
-        return titleTags
-            .split(',')
-            .map(tag => tag.trim())
-            .filter(isNotEmptyString)
-            .slice(0, MAX_TAGS);
-    }
     /* jscpd:ignore-end */
 }
