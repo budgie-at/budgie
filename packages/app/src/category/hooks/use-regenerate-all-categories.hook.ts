@@ -6,6 +6,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../ai/context/llm.context';
 import { CategoryLlmService } from '../../ai/service/category-llm.service';
+import { TagLlmService } from '../../ai/service/tag-llm.service';
 
 interface UseRegenerateAllCategoriesReturn {
     regenerateAll: () => Promise<void>;
@@ -24,9 +25,11 @@ export const useRegenerateAllCategories = (): UseRegenerateAllCategoriesReturn =
         setIsRegenerating(true);
 
         try {
-            const service = new CategoryLlmService(llm);
-            await service.regenerateAll();
-            await service.regenerateAllTags();
+            const categoryService = new CategoryLlmService(llm);
+            await categoryService.regenerateAll();
+
+            const tagService = new TagLlmService(llm);
+            await tagService.regenerateAll();
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
