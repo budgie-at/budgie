@@ -62,7 +62,7 @@ msgstr "Про застосунок"
 msgid "Account"
 msgstr "Рахунок"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:36
+#: src/@generic/component/account-details-field/account-details-field.tsx:45
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
@@ -123,11 +123,11 @@ msgstr "Коригування"
 
 #: src/transaction/components/category-suggestion-loading-indicator/category-suggestion-loading-indicator.tsx:34
 msgid "AI"
-msgstr "ШІ"
+msgstr ""
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:60
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:69
 msgid "AI-Generated Metadata"
-msgstr "Метадані, згенеровані ШІ"
+msgstr ""
 
 #: src/app/(tabs)/settings/index.tsx:141
 msgid ""
@@ -260,11 +260,10 @@ msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
+#: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:10
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
-#: src/category/components/category-form/category-form.tsx:162
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:170
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -386,11 +385,11 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form/category-form.tsx:133
+#: src/category/components/category-form/category-form.tsx:119
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:110
 msgid "Could not create tag"
 msgstr "Не вдалося створити тег"
 
@@ -406,11 +405,11 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/category/components/category-form/category-form.tsx:113
+#: src/category/components/category-form/category-form.tsx:99
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
 
-#: src/tag/components/tag-form/tag-form.tsx:106
+#: src/tag/components/tag-form/tag-form.tsx:90
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
 
@@ -426,13 +425,13 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form/category-form.tsx:133
+#: src/category/components/category-form/category-form.tsx:119
 msgid "Could not save category"
-msgstr "Не вдалося зберегти категорію"
+msgstr ""
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:110
 msgid "Could not save tag"
-msgstr "Не вдалося зберегти тег"
+msgstr ""
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -466,7 +465,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:62
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -483,7 +482,7 @@ msgstr "Створіть користувацькі теги в Налаштув
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
 
-#: src/tag/components/tag-form/tag-form.tsx:55
+#: src/tag/components/tag-form/tag-form.tsx:60
 msgid "Create Tag"
 msgstr "Створити тег"
 
@@ -597,19 +596,19 @@ msgstr "Готово"
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
 
-#: src/tag/components/tag-form/tag-form.tsx:152
+#: src/tag/components/tag-form/tag-form.tsx:126
 msgid "e.g. Business, Personal, Vacation"
-msgstr "напр. Бізнес, Особисте, Відпустка"
+msgstr ""
 
 #: src/category/components/category-title-input/category-title-input.tsx:29
 msgid "e.g. Groceries, Entertainment"
-msgstr "напр. Продукти, Розваги"
+msgstr ""
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:47
+#: src/@generic/component/account-details-field/account-details-field.tsx:56
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/category/components/category-form/category-form.tsx:55
+#: src/category/components/category-form/category-form.tsx:62
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
@@ -621,7 +620,7 @@ msgstr "Редагувати витрату"
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
-#: src/tag/components/tag-form/tag-form.tsx:55
+#: src/tag/components/tag-form/tag-form.tsx:60
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
@@ -662,9 +661,9 @@ msgstr "Англійська (Велика Британія)"
 msgid "English (United States)"
 msgstr "Англійська (США)"
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:77
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:82
 msgid "English Translation"
-msgstr "Англійський переклад"
+msgstr ""
 
 #: src/auth/util/get-pin-setup-meta.util.ts:51
 msgid "Enter a {PIN_LENGTH}-digit PIN"
@@ -778,7 +777,7 @@ msgstr "Не вдалося завантажити контакти."
 
 #: src/category/hooks/use-regenerate-all-categories.hook.ts:36
 msgid "Failed to regenerate category translations"
-msgstr "Не вдалося перегенерувати переклади категорій"
+msgstr ""
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -942,7 +941,7 @@ msgstr "Слухаю..."
 #: src/category/hooks/use-regenerate-category-translation.hook.ts:22
 #: src/tag/hooks/use-regenerate-tag-translation.hook.ts:24
 msgid "LLM not ready"
-msgstr "ШІ не готовий"
+msgstr ""
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx:27
 msgid "Main Currency"
@@ -964,11 +963,11 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/category/components/category-form/category-form.tsx:144
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
 
-#: src/tag/components/tag-form/tag-form.tsx:137
+#: src/tag/components/tag-form/tag-form.tsx:147
 msgid "Merge into another tag"
 msgstr "Об'єднати з іншим тегом"
 
@@ -1048,11 +1047,7 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
-msgid "No icons"
-msgstr "Немає іконок"
-
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
+#: src/app/icon-selector.tsx:66
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
@@ -1096,10 +1091,10 @@ msgstr "Поки немає транзакцій"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:35
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:36
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:36
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:37
 msgid "Not generated"
-msgstr "Не згенеровано"
+msgstr ""
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:51
 msgid "not set"
@@ -1164,10 +1159,10 @@ msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:113
-#: src/category/components/category-form/category-form.tsx:134
-#: src/tag/components/tag-form/tag-form.tsx:106
-#: src/tag/components/tag-form/tag-form.tsx:127
+#: src/category/components/category-form/category-form.tsx:99
+#: src/category/components/category-form/category-form.tsx:120
+#: src/tag/components/tag-form/tag-form.tsx:90
+#: src/tag/components/tag-form/tag-form.tsx:111
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
@@ -1206,11 +1201,11 @@ msgstr "Отримання {toCode}"
 
 #: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
 msgid "Regenerate AI Data"
-msgstr "Перегенерувати дані ШІ"
+msgstr ""
 
 #: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
 msgid "Regenerate translations and search keywords for all categories and tags"
-msgstr "Перегенерувати переклади та пошукові ключові слова для всіх категорій та тегів"
+msgstr ""
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
@@ -1224,9 +1219,8 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/category/components/category-form/category-form.tsx:168
+#: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx:11
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:176
 msgid "Save"
 msgstr "Зберегти"
 
@@ -1253,7 +1247,7 @@ msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
 #: src/app/(tabs)/settings/categories.tsx:73
-#: src/app/category-selector.tsx:74
+#: src/app/category-selector.tsx:56
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
 msgstr "Пошук категорій..."
@@ -1266,20 +1260,20 @@ msgstr "Шукати контакти..."
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/app/icon-selector.tsx:75
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
-#: src/category/components/category-ai-fields/category-ai-fields.tsx:89
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:94
 msgid "Search Keywords"
-msgstr "Пошукові ключові слова"
+msgstr ""
 
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:27
 msgid "Search languages..."
 msgstr "Пошук мов..."
 
 #: src/app/(tabs)/settings/tags.tsx:74
-#: src/app/tags-selector.tsx:81
+#: src/app/tags-selector.tsx:61
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:66
 msgid "Search tags..."
 msgstr "Пошук тегів..."
@@ -1300,7 +1294,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/category/components/category-form/category-form.tsx:97
+#: src/category/components/category-form/category-form.tsx:83
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
 
@@ -1308,7 +1302,7 @@ msgstr "Виберіть категорію для об'єднання"
 msgid "Select a contact"
 msgstr "Виберіть контакт"
 
-#: src/tag/components/tag-form/tag-form.tsx:89
+#: src/tag/components/tag-form/tag-form.tsx:73
 msgid "Select a tag to merge into"
 msgstr "Виберіть тег для об'єднання"
 
@@ -1470,7 +1464,7 @@ msgstr "Синхронізація історії..."
 msgid "Tag"
 msgstr "Тег"
 
-#: src/tag/components/tag-form/tag-form.tsx:145
+#: src/tag/components/tag-form/tag-form.tsx:119
 msgid "Tag Name"
 msgstr "Назва тегу"
 
@@ -1607,6 +1601,7 @@ msgstr "Переказ"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/app/icon-selector.tsx:66
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"

@@ -1,20 +1,18 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRef } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { IconSelectorBottomSheet } from '../../../@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { BottomSheetInterface } from '../../../@generic/interface/bottom-sheet.interface';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
@@ -37,11 +35,12 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { openCategorySelector } = useCategorySelectorModal();
+    const { openIconSelector } = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
@@ -56,17 +55,15 @@ export const CategoryForm = (props: Props) => {
         isRegenerating
     });
 
-    const iconSelectorRef = useRef<BottomSheetInterface | null>(null);
-
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
 
-    const handleIconPress = () => {
-        iconSelectorRef.current?.open();
-    };
+    const handleIconPress = async () => {
+        const selectedIcon = await openIconSelector({ selectedIcon: icon });
 
-    const handleIconSelect = (selectedIcon: UserIconNameEnum) => {
-        setValue('icon', selectedIcon);
+        if (isDefined(selectedIcon)) {
+            setValue('icon', selectedIcon);
+        }
     };
 
     const handleTitleChange = (value: string) => {
@@ -147,8 +144,6 @@ export const CategoryForm = (props: Props) => {
                 </View>
             </View>
             {/* jscpd:ignore-end */}
-
-            <IconSelectorBottomSheet ref={iconSelectorRef} variant="default" selectedIcon={icon} onSelect={handleIconSelect} />
         </ModalPage>
     );
 };
