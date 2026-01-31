@@ -121,8 +121,7 @@ msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 msgid "Adjustment"
 msgstr "Ajustement"
 
-#: src/transaction/components/category-suggestion-loading-indicator/category-suggestion-loading-indicator.tsx:25
-#: src/transaction/components/category-suggestions-row/category-suggestions-row.tsx:99
+#: src/transaction/components/category-suggestion-loading-indicator/category-suggestion-loading-indicator.tsx:34
 msgid "AI"
 msgstr "IA"
 
@@ -262,11 +261,10 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/category-edit.tsx:155
 #: src/app/confirm-action.tsx:43
-#: src/category/components/category-form/category-form.tsx:119
+#: src/category/components/category-form/category-form.tsx:162
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
-#: src/tag/components/tag-form/tag-form.tsx:117
+#: src/tag/components/tag-form/tag-form.tsx:170
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -275,7 +273,7 @@ msgid "Cash"
 msgstr "Espèces"
 
 #: src/app/(main)/analytics/transactions.tsx:60
-#: src/app/(tabs)/settings/categories.tsx:74
+#: src/app/(tabs)/settings/categories.tsx:72
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:28
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:60
 #: src/transaction/components/transaction-list/transaction-list.tsx:39
@@ -286,13 +284,12 @@ msgstr "Catégories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Catégories ({selectedCategoriesCount})"
 
-#: src/app/(tabs)/settings/categories.tsx:33
+#: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/category/components/category-form/category-form.tsx:105
 #: src/category/components/category-title-input/category-title-input.tsx:22
 msgid "Category Name"
 msgstr "Nom de la catégorie"
@@ -389,11 +386,11 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account. Please try again later"
 msgstr "Impossible d'archiver le compte. Veuillez réessayer plus tard"
 
-#: src/category/components/category-form/category-form.tsx:54
+#: src/category/components/category-form/category-form.tsx:133
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
-#: src/tag/components/tag-form/tag-form.tsx:51
+#: src/tag/components/tag-form/tag-form.tsx:126
 msgid "Could not create tag"
 msgstr "Impossible de créer l'étiquette"
 
@@ -409,16 +406,15 @@ msgstr "Impossible de supprimer le compte."
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
-#: src/app/category-edit.tsx:104
-#: src/category/components/category-form/category-form.tsx:80
+#: src/category/components/category-form/category-form.tsx:113
 msgid "Could not merge category"
 msgstr "Impossible de fusionner la catégorie"
 
-#: src/tag/components/tag-form/tag-form.tsx:79
+#: src/tag/components/tag-form/tag-form.tsx:106
 msgid "Could not merge tag"
 msgstr "Impossible de fusionner l'étiquette"
 
-#: src/app/(tabs)/settings/categories.tsx:53
+#: src/app/(tabs)/settings/categories.tsx:51
 msgid "Could not reassign category"
 msgstr "Impossible de réassigner la catégorie"
 
@@ -430,17 +426,13 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/app/category-edit.tsx:125
+#: src/category/components/category-form/category-form.tsx:133
 msgid "Could not save category"
 msgstr "Impossible de sauvegarder la catégorie"
 
-#: src/category/components/category-form/category-form.tsx:54
-msgid "Could not update category"
-msgstr "Impossible de mettre à jour la catégorie"
-
-#: src/tag/components/tag-form/tag-form.tsx:51
-msgid "Could not update tag"
-msgstr "Impossible de mettre à jour l'étiquette"
+#: src/tag/components/tag-form/tag-form.tsx:126
+msgid "Could not save tag"
+msgstr "Impossible d'enregistrer le tag"
 
 #: src/transaction/hook/use-update-transaction-form.hook.ts:41
 msgid "Could not update transaction."
@@ -449,11 +441,6 @@ msgstr "Impossible de mettre à jour la transaction."
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx:21
 msgid "Count this account in your net worth calculation"
 msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
-
-#: src/category/components/category-form/category-form.tsx:44
-#: src/tag/components/tag-form/tag-form.tsx:43
-msgid "Create"
-msgstr "Créer"
 
 #: src/export/components/export-database/export-database.tsx:15
 msgid "Create a backup of all your data"
@@ -479,7 +466,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
-#: src/category/components/category-form/category-form.tsx:43
+#: src/category/components/category-form/category-form.tsx:55
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
@@ -496,7 +483,7 @@ msgstr "Créez des étiquettes personnalisées dans les Paramètres pour étique
 msgid "Create one to get started."
 msgstr "Créez-en un pour commencer."
 
-#: src/tag/components/tag-form/tag-form.tsx:42
+#: src/tag/components/tag-form/tag-form.tsx:55
 msgid "Create Tag"
 msgstr "Créer une étiquette"
 
@@ -610,6 +597,10 @@ msgstr "Terminé"
 msgid "Dutch (Netherlands)"
 msgstr "Néerlandais (Pays-Bas)"
 
+#: src/tag/components/tag-form/tag-form.tsx:152
+msgid "e.g. Business, Personal, Vacation"
+msgstr "ex. Professionnel, Personnel, Vacances"
+
 #: src/category/components/category-title-input/category-title-input.tsx:29
 msgid "e.g. Groceries, Entertainment"
 msgstr "p. ex. Courses, Divertissement"
@@ -618,17 +609,7 @@ msgstr "p. ex. Courses, Divertissement"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/tag/components/tag-form/tag-form.tsx:91
-msgid "e.g., Business, Personal, Vacation"
-msgstr "ex. Professionnel, Personnel, Vacances"
-
-#: src/category/components/category-form/category-form.tsx:92
-msgid "e.g., Groceries, Salary, Rent"
-msgstr "ex. Épicerie, Salaire, Loyer"
-
-#: src/app/category-edit.tsx:132
-#: src/app/category-edit.tsx:136
-#: src/category/components/category-form/category-form.tsx:43
+#: src/category/components/category-form/category-form.tsx:55
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
@@ -640,7 +621,7 @@ msgstr "Modifier la dépense"
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
-#: src/tag/components/tag-form/tag-form.tsx:42
+#: src/tag/components/tag-form/tag-form.tsx:55
 msgid "Edit Tag"
 msgstr "Modifier l'étiquette"
 
@@ -795,7 +776,7 @@ msgstr "Échec de la récupération des comptes"
 msgid "Failed to load contacts."
 msgstr "Échec du chargement des contacts."
 
-#: src/category/hooks/use-regenerate-all-categories.hook.ts:32
+#: src/category/hooks/use-regenerate-all-categories.hook.ts:36
 msgid "Failed to regenerate category translations"
 msgstr "Échec de la régénération des traductions de catégories"
 
@@ -879,10 +860,6 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "History synced"
 msgstr "Historique synchronisé"
 
-#: src/category/components/category-form-icon-field/category-form-icon-field.tsx:18
-msgid "Icon"
-msgstr "Icône"
-
 #: src/import/components/import-csv/import-csv.tsx:38
 msgid "Import CSV"
 msgstr "Importer CSV"
@@ -963,6 +940,7 @@ msgid "Listening..."
 msgstr "Écoute..."
 
 #: src/category/hooks/use-regenerate-category-translation.hook.ts:22
+#: src/tag/hooks/use-regenerate-tag-translation.hook.ts:24
 msgid "LLM not ready"
 msgstr "IA non prête"
 
@@ -986,12 +964,11 @@ msgstr "Mapper les colonnes CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
-#: src/app/category-edit.tsx:151
-#: src/category/components/category-form/category-form.tsx:115
+#: src/category/components/category-form/category-form.tsx:144
 msgid "Merge into another category"
 msgstr "Fusionner avec une autre catégorie"
 
-#: src/tag/components/tag-form/tag-form.tsx:113
+#: src/tag/components/tag-form/tag-form.tsx:137
 msgid "Merge into another tag"
 msgstr "Fusionner avec une autre étiquette"
 
@@ -1011,7 +988,7 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/app/(main)/create-transaction/expense.tsx:49
+#: src/app/(main)/create-transaction/expense.tsx:50
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
@@ -1185,14 +1162,12 @@ msgstr "Veuillez entrer votre jeton API Monobank"
 msgid "Please try again"
 msgstr "Veuillez réessayer"
 
-#: src/app/(tabs)/settings/categories.tsx:54
+#: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/app/category-edit.tsx:105
-#: src/app/category-edit.tsx:126
-#: src/category/components/category-form/category-form.tsx:54
-#: src/category/components/category-form/category-form.tsx:80
-#: src/tag/components/tag-form/tag-form.tsx:51
-#: src/tag/components/tag-form/tag-form.tsx:79
+#: src/category/components/category-form/category-form.tsx:113
+#: src/category/components/category-form/category-form.tsx:134
+#: src/tag/components/tag-form/tag-form.tsx:106
+#: src/tag/components/tag-form/tag-form.tsx:127
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -1234,8 +1209,8 @@ msgid "Regenerate AI Data"
 msgstr "Régénérer les données IA"
 
 #: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
-msgid "Regenerate translations and search keywords for all categories"
-msgstr "Régénérer les traductions et mots-clés de recherche pour toutes les catégories"
+msgid "Regenerate translations and search keywords for all categories and tags"
+msgstr "Régénérer les traductions et mots-clés de recherche pour toutes les catégories et tags"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
@@ -1249,10 +1224,9 @@ msgstr "Restaurer le compte ?"
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
 
-#: src/app/category-edit.tsx:156
-#: src/category/components/category-form/category-form.tsx:44
+#: src/category/components/category-form/category-form.tsx:168
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
-#: src/tag/components/tag-form/tag-form.tsx:43
+#: src/tag/components/tag-form/tag-form.tsx:176
 msgid "Save"
 msgstr "Enregistrer"
 
@@ -1278,7 +1252,7 @@ msgstr "Protection des captures d'écran"
 msgid "Search accounts..."
 msgstr "Rechercher des comptes..."
 
-#: src/app/(tabs)/settings/categories.tsx:75
+#: src/app/(tabs)/settings/categories.tsx:73
 #: src/app/category-selector.tsx:74
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx:64
 msgid "Search categories..."
@@ -1326,8 +1300,7 @@ msgstr "Sécurité"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/app/category-edit.tsx:90
-#: src/category/components/category-form/category-form.tsx:64
+#: src/category/components/category-form/category-form.tsx:97
 msgid "Select a category to merge into"
 msgstr "Sélectionnez une catégorie pour fusionner"
 
@@ -1335,7 +1308,7 @@ msgstr "Sélectionnez une catégorie pour fusionner"
 msgid "Select a contact"
 msgstr "Sélectionner un contact"
 
-#: src/tag/components/tag-form/tag-form.tsx:61
+#: src/tag/components/tag-form/tag-form.tsx:89
 msgid "Select a tag to merge into"
 msgstr "Sélectionnez une étiquette pour fusionner"
 
@@ -1497,7 +1470,7 @@ msgstr "Synchronisation de l'historique..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/tag/components/tag-form/tag-form.tsx:104
+#: src/tag/components/tag-form/tag-form.tsx:145
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
 
@@ -1535,7 +1508,7 @@ msgstr ""
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
-#: src/app/(tabs)/settings/categories.tsx:43
+#: src/app/(tabs)/settings/categories.tsx:41
 msgid "This category has transactions. Select another category to reassign them to."
 msgstr "Cette catégorie a des transactions. Sélectionnez une autre catégorie pour les réassigner."
 
