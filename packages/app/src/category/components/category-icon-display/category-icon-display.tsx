@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import * as Haptics from 'expo-haptics';
 import { useEffect, useRef } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, {
     FadeIn,
     interpolate,
@@ -35,12 +35,6 @@ const PRESS_OUT_DURATION = 200;
 const INTERPOLATE_RANGE: [number, number] = [0, 1];
 const RING_COLOR_TRANSPARENT = 'transparent';
 const RING_COLOR_ACTIVE = 'rgba(99, 102, 241, 0.3)';
-
-const triggerHaptic = (style: Haptics.ImpactFeedbackStyle) => {
-    if (Platform.OS === 'ios') {
-        void Haptics.impactAsync(style);
-    }
-};
 
 export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
     const scale = useSharedValue(1);
@@ -78,7 +72,7 @@ export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
 
     const handlePressIn = () => {
         pressed.set(withTiming(1, { duration: PRESS_IN_DURATION }));
-        triggerHaptic(Haptics.ImpactFeedbackStyle.Light);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     const handlePressOut = () => {
@@ -86,7 +80,7 @@ export const CategoryIconDisplay = ({ icon, onPress }: Props) => {
     };
 
     const handlePress = () => {
-        triggerHaptic(Haptics.ImpactFeedbackStyle.Medium);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         onPress();
     };
 
