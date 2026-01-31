@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
 import { CategorySuggestionLoadingIndicator } from '../category-suggestion-loading-indicator/category-suggestion-loading-indicator';
@@ -41,7 +41,7 @@ export const CategorySuggestionsRow = (props: Props) => {
         onSelect(categoryId);
     };
 
-    const { status, suggestedCategories } = useCategorySuggestion({
+    const { status, suggestions: suggestedCategories } = useCategorySuggestion({
         transactionTitle,
         mccCategoryId,
         comment,
@@ -55,7 +55,7 @@ export const CategorySuggestionsRow = (props: Props) => {
     const isProcessing = isInitializing || isLoading;
 
     useEffect(() => {
-        if (timerRef.current !== null) {
+        if (isDefined(timerRef.current)) {
             clearTimeout(timerRef.current);
             timerRef.current = null;
         }
@@ -77,7 +77,7 @@ export const CategorySuggestionsRow = (props: Props) => {
         }
 
         return () => {
-            if (timerRef.current !== null) {
+            if (isDefined(timerRef.current)) {
                 clearTimeout(timerRef.current);
             }
         };
