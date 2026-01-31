@@ -124,7 +124,7 @@ export default function RootLayout() {
                                                                                             />
                                                                                             <Stack.Screen
                                                                                                 name="category-form"
-                                                                                                options={FORM_MODAL_OPTIONS}
+                                                                                                options={CATEGORY_EDIT_MODAL_OPTIONS}
                                                                                             />
                                                                                             <Stack.Screen
                                                                                                 name="category-edit"
