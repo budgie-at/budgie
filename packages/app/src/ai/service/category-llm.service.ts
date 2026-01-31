@@ -21,7 +21,7 @@ interface CategoryLlmErrorHandler {
     (category: CategoryEntityInterface, error: unknown): void;
 }
 
-const TRANSLATION_TEMPERATURE = 0.4;
+const TRANSLATION_TEMPERATURE = 0.7;
 const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
