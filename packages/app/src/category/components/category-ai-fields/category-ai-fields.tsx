@@ -61,7 +61,7 @@ export const CategoryAiFields = (props: Props) => {
                     </Text>
                     <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
                         <Animated.View style={rotatingStyle}>
-                            <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-secondary-foreground" />
+                            <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
                         </Animated.View>
                     </Pressable>
                 </View>
