@@ -109,6 +109,12 @@ export class CategoryRepository {
         });
     }
 
+    findAllNonSystem() {
+        return this.db.query.CategoryEntityTable.findMany({
+            where: eq(CategoryEntityTable.isSystemCategory, false)
+        });
+    }
+
     async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
         await this.db
             .update(CategoryEntityTable)

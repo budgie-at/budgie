@@ -51,11 +51,11 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/app/(tabs)/settings/index.tsx:55
+#: src/app/(tabs)/settings/index.tsx:56
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
-#: src/app/(tabs)/settings/index.tsx:134
+#: src/app/(tabs)/settings/index.tsx:136
 msgid "About"
 msgstr "About"
 
@@ -135,7 +135,7 @@ msgstr "AI suggests: {categoryTitle}. Tap to apply"
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
-#: src/app/(tabs)/settings/index.tsx:139
+#: src/app/(tabs)/settings/index.tsx:141
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -151,7 +151,7 @@ msgstr "All columns have been assigned"
 msgid "All Time"
 msgstr "All Time"
 
-#: src/app/(tabs)/settings/index.tsx:56
+#: src/app/(tabs)/settings/index.tsx:57
 msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 msgstr "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
 
@@ -177,7 +177,7 @@ msgstr "API Token"
 msgid "App Lock"
 msgstr "App Lock"
 
-#: src/app/(tabs)/settings/index.tsx:114
+#: src/app/(tabs)/settings/index.tsx:115
 msgid "Appearance"
 msgstr "Appearance"
 
@@ -206,7 +206,7 @@ msgid "Archive Account?"
 msgstr "Archive Account?"
 
 #: src/app/(tabs)/settings/archived.tsx:17
-#: src/app/(tabs)/settings/index.tsx:100
+#: src/app/(tabs)/settings/index.tsx:101
 msgid "Archived Accounts"
 msgstr "Archived Accounts"
 
@@ -264,14 +264,14 @@ msgstr "Biometric Authentication"
 msgid "Borrowed"
 msgstr "Borrowed"
 
-#: src/app/(tabs)/settings/index.tsx:137
+#: src/app/(tabs)/settings/index.tsx:139
 msgid "Budgie"
 msgstr "Budgie"
 
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
-#: src/app/(tabs)/settings/category/[id].tsx:162
 #: src/app/(tabs)/settings/import.tsx:255
+#: src/app/category-edit.tsx:147
 #: src/app/confirm-action.tsx:43
 #: src/category/components/category-form/category-form.tsx:119
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -418,7 +418,7 @@ msgstr "Could not delete account."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/app/(tabs)/settings/category/[id].tsx:101
+#: src/app/category-edit.tsx:95
 #: src/category/components/category-form/category-form.tsx:80
 msgid "Could not merge category"
 msgstr "Could not merge category"
@@ -439,7 +439,7 @@ msgstr "Could not reassign tag"
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/app/(tabs)/settings/category/[id].tsx:122
+#: src/app/category-edit.tsx:116
 msgid "Could not save category"
 msgstr "Could not save category"
 
@@ -480,7 +480,7 @@ msgstr "Create accounts"
 msgid "Create and copy the personal token"
 msgstr "Create and copy the personal token"
 
-#: src/app/(tabs)/settings/index.tsx:94
+#: src/app/(tabs)/settings/index.tsx:95
 msgid "Create and organize transaction tags"
 msgstr "Create and organize transaction tags"
 
@@ -546,7 +546,7 @@ msgstr "Custom categories you create will appear here"
 msgid "Dark Mode"
 msgstr "Dark Mode"
 
-#: src/app/(tabs)/settings/index.tsx:125
+#: src/app/(tabs)/settings/index.tsx:126
 msgid "Data management"
 msgstr "Data management"
 
@@ -802,6 +802,10 @@ msgstr "Failed to fetch accounts"
 msgid "Failed to load contacts."
 msgstr "Failed to load contacts."
 
+#: src/category/hooks/use-regenerate-all-categories.hook.ts:32
+msgid "Failed to regenerate category translations"
+msgstr "Failed to regenerate category translations"
+
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
@@ -858,7 +862,7 @@ msgstr "From Amount"
 msgid "From Currency"
 msgstr "From Currency"
 
-#: src/app/(tabs)/settings/index.tsx:77
+#: src/app/(tabs)/settings/index.tsx:78
 msgid "General"
 msgstr "General"
 
@@ -878,7 +882,7 @@ msgstr "German (Germany)"
 msgid "Get API Token"
 msgstr "Get API Token"
 
-#: src/app/(tabs)/settings/index.tsx:66
+#: src/app/(tabs)/settings/index.tsx:67
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
@@ -913,7 +917,7 @@ msgid "Importing a database will replace all current data. The app will restart 
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
 #: src/app/(tabs)/settings/inactive.tsx:17
-#: src/app/(tabs)/settings/index.tsx:107
+#: src/app/(tabs)/settings/index.tsx:108
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
@@ -969,7 +973,7 @@ msgstr "Lent"
 msgid "Listening..."
 msgstr "Listening..."
 
-#: src/category/hooks/use-regenerate-category-translation.hook.ts:29
+#: src/category/hooks/use-regenerate-category-translation.hook.ts:22
 msgid "LLM not ready"
 msgstr "LLM not ready"
 
@@ -977,11 +981,11 @@ msgstr "LLM not ready"
 msgid "Main Currency"
 msgstr "Main Currency"
 
-#: src/app/(tabs)/settings/index.tsx:86
+#: src/app/(tabs)/settings/index.tsx:87
 msgid "Manage Categories"
 msgstr "Manage Categories"
 
-#: src/app/(tabs)/settings/index.tsx:93
+#: src/app/(tabs)/settings/index.tsx:94
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
@@ -993,7 +997,7 @@ msgstr "Map CSV Columns"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
-#: src/app/(tabs)/settings/category/[id].tsx:177
+#: src/app/category-edit.tsx:156
 #: src/category/components/category-form/category-form.tsx:115
 msgid "Merge into another category"
 msgstr "Merge into another category"
@@ -1143,7 +1147,7 @@ msgstr "Note"
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
-#: src/app/(tabs)/settings/index.tsx:83
+#: src/app/(tabs)/settings/index.tsx:84
 msgid "Organization"
 msgstr "Organization"
 
@@ -1193,9 +1197,9 @@ msgid "Please try again"
 msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:54
-#: src/app/(tabs)/settings/category/[id].tsx:102
-#: src/app/(tabs)/settings/category/[id].tsx:123
 #: src/app/(tabs)/settings/tags.tsx:53
+#: src/app/category-edit.tsx:96
+#: src/app/category-edit.tsx:117
 #: src/category/components/category-form/category-form.tsx:54
 #: src/category/components/category-form/category-form.tsx:80
 #: src/tag/components/tag-form/tag-form.tsx:51
@@ -1215,7 +1219,7 @@ msgstr "Portuguese (Portugal)"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset applied. Adjust columns below if needed."
 
-#: src/app/(tabs)/settings/index.tsx:52
+#: src/app/(tabs)/settings/index.tsx:53
 msgid "Privacy"
 msgstr "Privacy"
 
@@ -1240,6 +1244,14 @@ msgstr "Receiving {toCode}"
 msgid "Regenerate"
 msgstr "Regenerate"
 
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+msgid "Regenerate AI Data"
+msgstr "Regenerate AI Data"
+
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+msgid "Regenerate translations and search keywords for all categories"
+msgstr "Regenerate translations and search keywords for all categories"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx:38
 msgid "Restore"
 msgstr "Restore"
@@ -1252,7 +1264,7 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
-#: src/app/(tabs)/settings/category/[id].tsx:168
+#: src/app/category-edit.tsx:148
 #: src/category/components/category-form/category-form.tsx:44
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:76
 #: src/tag/components/tag-form/tag-form.tsx:43
@@ -1272,7 +1284,7 @@ msgstr "Savings Account"
 msgid "Savings accounts"
 msgstr "Savings accounts"
 
-#: src/app/(tabs)/settings/index.tsx:65
+#: src/app/(tabs)/settings/index.tsx:66
 msgid "Screenshot Protection"
 msgstr "Screenshot Protection"
 
@@ -1321,7 +1333,7 @@ msgstr "Search..."
 msgid "Secure your app with PIN & Face ID"
 msgstr "Secure your app with PIN & Face ID"
 
-#: src/app/(tabs)/settings/index.tsx:60
+#: src/app/(tabs)/settings/index.tsx:61
 msgid "Security"
 msgstr "Security"
 
@@ -1329,7 +1341,7 @@ msgstr "Security"
 msgid "Select"
 msgstr "Select"
 
-#: src/app/(tabs)/settings/category/[id].tsx:87
+#: src/app/category-edit.tsx:81
 #: src/category/components/category-form/category-form.tsx:64
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
@@ -1386,15 +1398,15 @@ msgstr "Sending {fromCode}"
 msgid "Set Return Date"
 msgstr "Set Return Date"
 
-#: src/app/(tabs)/settings/index.tsx:48
+#: src/app/(tabs)/settings/index.tsx:49
 msgid "Settings"
 msgstr "Settings"
 
-#: src/app/(tabs)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Show $1,234.56 instead of $1,235"
 
-#: src/app/(tabs)/settings/index.tsx:117
+#: src/app/(tabs)/settings/index.tsx:118
 msgid "Show Cents"
 msgstr "Show Cents"
 
@@ -1710,15 +1722,15 @@ msgstr "Use Face ID to unlock your app quickly and securely"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
 
-#: src/app/(tabs)/settings/index.tsx:108
+#: src/app/(tabs)/settings/index.tsx:109
 msgid "View and activate hidden accounts"
 msgstr "View and activate hidden accounts"
 
-#: src/app/(tabs)/settings/index.tsx:87
+#: src/app/(tabs)/settings/index.tsx:88
 msgid "View and delete custom categories"
 msgstr "View and delete custom categories"
 
-#: src/app/(tabs)/settings/index.tsx:101
+#: src/app/(tabs)/settings/index.tsx:102
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
