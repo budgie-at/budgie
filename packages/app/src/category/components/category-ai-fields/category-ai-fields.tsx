@@ -41,7 +41,7 @@ export const CategoryAiFields = (props: Props) => {
 
                 {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
                 <Animated.View
-                    entering={FadeInUp.delay(englishDelay).duration(200)}
+                    entering={FadeInUp.delay(englishDelay).duration(DEFAULT_ANIMATION_DELAY)}
                     className="flex-row items-center px-xl py-lg border-b border-secondary-corner"
                 >
                     <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
@@ -55,13 +55,16 @@ export const CategoryAiFields = (props: Props) => {
                     </View>
                 </Animated.View>
 
-                <Animated.View entering={FadeInUp.delay(tagsDelay).duration(200)} className="flex-row items-center px-xl py-lg">
-                    <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground" />
+                <Animated.View
+                    entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
+                    className="flex-row px-xl py-lg"
+                >
+                    <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
                     <View className="ml-lg flex-1">
                         <Text className="text-xxs text-secondary-foreground uppercase">
                             <Trans>Search Keywords</Trans>
                         </Text>
-                        <Text className="text-sm text-primary font-medium" numberOfLines={1}>
+                        <Text className="text-sm text-primary font-medium">
                             {tagsValue}
                         </Text>
                     </View>
@@ -69,7 +72,7 @@ export const CategoryAiFields = (props: Props) => {
                 {/* jscpd:ignore-end */}
             </View>
 
-            <Animated.View entering={FadeInUp.delay(buttonDelay).duration(200)} className="items-center pt-lg">
+            <Animated.View entering={FadeInUp.delay(buttonDelay).duration(DEFAULT_ANIMATION_DELAY)} className="items-center pt-lg">
                 <Button
                     variant="ghost"
                     size="sm"
