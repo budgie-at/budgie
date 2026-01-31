@@ -15,7 +15,7 @@ export const RegenerateCategories = () => {
             onPress={handleRegenerate}
             isLoading={isRegenerating}
             title={t`Regenerate AI Data`}
-            description={t`Regenerate translations and search keywords for all categories`}
+            description={t`Regenerate translations and search keywords for all categories and tags`}
             icon={UserIconNameEnum.Sparkles}
             variant="secondary"
         />
