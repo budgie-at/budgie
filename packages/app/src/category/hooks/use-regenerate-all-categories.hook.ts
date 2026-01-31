@@ -26,6 +26,7 @@ export const useRegenerateAllCategories = (): UseRegenerateAllCategoriesReturn =
         try {
             const service = new CategoryLlmService(llm);
             await service.regenerateAll();
+            await service.regenerateAllTags();
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
