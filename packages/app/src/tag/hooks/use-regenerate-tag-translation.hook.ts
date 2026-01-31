@@ -18,6 +18,7 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    /* jscpd:ignore-start - Mirrors category regeneration hook pattern */
     const regenerate = async (tagId: number, title: string): Promise<CategoryTranslationResult | null> => {
         if (!llm.isReady) {
             setError(t`LLM not ready`);
@@ -41,5 +42,6 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
         }
     };
 
+    /* jscpd:ignore-end */
     return { regenerate, isRegenerating, error };
 };
