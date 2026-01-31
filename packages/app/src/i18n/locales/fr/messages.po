@@ -62,7 +62,7 @@ msgstr "À propos"
 msgid "Account"
 msgstr "Compte"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:36
+#: src/@generic/component/account-details-field/account-details-field.tsx:45
 msgid "Account Name & Icon"
 msgstr "Nom et icône du compte"
 
@@ -594,7 +594,7 @@ msgstr "Terminé"
 msgid "Dutch (Netherlands)"
 msgstr "Néerlandais (Pays-Bas)"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:47
+#: src/@generic/component/account-details-field/account-details-field.tsx:56
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
@@ -610,11 +610,11 @@ msgstr "ex. Épicerie, Salaire, Loyer"
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:70
+#: src/app/(main)/transactions/[id]/expense.tsx:71
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:70
+#: src/app/(main)/transactions/[id]/income.tsx:71
 msgid "Edit Income"
 msgstr "Modifier le revenu"
 
@@ -849,7 +849,7 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "History synced"
 msgstr "Historique synchronisé"
 
-#: src/category/components/category-form-icon-field/category-form-icon-field.tsx:18
+#: src/category/components/category-form-icon-field/category-form-icon-field.tsx:29
 msgid "Icon"
 msgstr "Icône"
 
@@ -976,11 +976,11 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "Nouveau compte"
 
-#: src/app/(main)/create-transaction/expense.tsx:48
+#: src/app/(main)/create-transaction/expense.tsx:49
 msgid "New Expense"
 msgstr "Nouvelle dépense"
 
-#: src/app/(main)/create-transaction/income.tsx:38
+#: src/app/(main)/create-transaction/income.tsx:39
 msgid "New Income"
 msgstr "Nouveau revenu"
 
@@ -1036,11 +1036,7 @@ msgstr "Aucune devise trouvée"
 msgid "No Custom Categories"
 msgstr "Aucune catégorie personnalisée"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
-msgid "No icons"
-msgstr "Aucune icône"
-
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
+#: src/app/icon-selector.tsx:66
 msgid "No icons found"
 msgstr "Aucune icône trouvée"
 
@@ -1241,7 +1237,7 @@ msgstr "Rechercher des contacts..."
 msgid "Search currencies..."
 msgstr "Rechercher des devises..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/app/icon-selector.tsx:75
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Rechercher des icônes (ex. argent, voyage, nourriture)..."
 
@@ -1578,6 +1574,7 @@ msgstr "Virement"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/app/icon-selector.tsx:66
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"

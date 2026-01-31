@@ -62,7 +62,7 @@ msgstr "Про застосунок"
 msgid "Account"
 msgstr "Рахунок"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:36
+#: src/@generic/component/account-details-field/account-details-field.tsx:45
 msgid "Account Name & Icon"
 msgstr "Назва і іконка рахунку"
 
@@ -594,7 +594,7 @@ msgstr "Готово"
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx:47
+#: src/@generic/component/account-details-field/account-details-field.tsx:56
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
@@ -610,11 +610,11 @@ msgstr "напр. Продукти, Зарплата, Оренда"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:70
+#: src/app/(main)/transactions/[id]/expense.tsx:71
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:70
+#: src/app/(main)/transactions/[id]/income.tsx:71
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -849,7 +849,7 @@ msgstr "Приховувати баланси рахунків та загаль
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
-#: src/category/components/category-form-icon-field/category-form-icon-field.tsx:18
+#: src/category/components/category-form-icon-field/category-form-icon-field.tsx:29
 msgid "Icon"
 msgstr "Іконка"
 
@@ -976,11 +976,11 @@ msgstr "Монобанк"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:48
+#: src/app/(main)/create-transaction/expense.tsx:49
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/app/(main)/create-transaction/income.tsx:38
+#: src/app/(main)/create-transaction/income.tsx:39
 msgid "New Income"
 msgstr "Новий дохід"
 
@@ -1036,11 +1036,7 @@ msgstr "Не знайдено жодної валюти"
 msgid "No Custom Categories"
 msgstr "Немає власних категорій"
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:67
-msgid "No icons"
-msgstr "Немає іконок"
-
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:66
+#: src/app/icon-selector.tsx:66
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
@@ -1241,7 +1237,7 @@ msgstr "Шукати контакти..."
 msgid "Search currencies..."
 msgstr "Пошук валют..."
 
-#: src/@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet.tsx:62
+#: src/app/icon-selector.tsx:75
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
@@ -1578,6 +1574,7 @@ msgstr "Переказ"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
+#: src/app/icon-selector.tsx:66
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
