@@ -1,0 +1,125 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
+
+import { Icon } from '../../../@generic/component/icon/icon';
+import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
+import { CategorySuggestionLoadingIndicator } from '../category-suggestion-loading-indicator/category-suggestion-loading-indicator';
+import { CategorySuggestionPillItem } from '../category-suggestion-pill-item/category-suggestion-pill-item';
+
+interface Props {
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly onSelect: (categoryId: number) => void;
+}
+
+const ANIMATION_DURATION = 200;
+const STAGGER_DELAY = 60;
+const LOADING_DELAY_MS = 400;
+const ROW_HEIGHT = 40;
+
+const styles = StyleSheet.create({
+    container: { height: ROW_HEIGHT, overflow: 'hidden' },
+    scrollContent: { flexGrow: 1, justifyContent: 'flex-end', gap: 8 }
+});
+
+// eslint-disable-next-line max-statements -- Component with multiple state hooks and effect for delayed loading logic
+export const CategorySuggestionsRow = (props: Props) => {
+    const { transactionTitle, mccCategoryId, comment, onSelect } = props;
+    const { t } = useLingui();
+
+    const [showLoading, setShowLoading] = useState(false);
+    const [hasSelected, setHasSelected] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const wasProcessingRef = useRef(false);
+
+    const handleSelect = (categoryId: number): void => {
+        setHasSelected(true);
+        onSelect(categoryId);
+    };
+
+    const { status, suggestedCategories } = useCategorySuggestion({
+        transactionTitle,
+        mccCategoryId,
+        comment,
+        enabled: true
+    });
+
+    const isInitializing = status === 'initializing';
+    const isLoading = status === 'loading';
+    const isReady = status === 'success' && isNotEmptyArray(suggestedCategories);
+    const isProcessing = isInitializing || isLoading;
+
+    useEffect(() => {
+        if (timerRef.current !== null) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+
+        if (isProcessing && !wasProcessingRef.current) {
+            wasProcessingRef.current = true;
+            timerRef.current = setTimeout(() => {
+                setShowLoading(true);
+                timerRef.current = null;
+            }, LOADING_DELAY_MS);
+        }
+
+        if (!isProcessing && wasProcessingRef.current) {
+            wasProcessingRef.current = false;
+            timerRef.current = setTimeout(() => {
+                setShowLoading(false);
+                timerRef.current = null;
+            }, 0);
+        }
+
+        return () => {
+            if (timerRef.current !== null) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [isProcessing]);
+
+    const showLoadingIndicator = showLoading && !isReady;
+    const showContent = !hasSelected && (showLoadingIndicator || isReady);
+
+    return (
+        <View style={styles.container} className="justify-center">
+            {showContent ? (
+                <Animated.View entering={FadeIn.duration(ANIMATION_DURATION)} exiting={FadeOut.duration(ANIMATION_DURATION)}>
+                    {showLoadingIndicator ? (
+                        <View className="items-end pr-lg">
+                            <CategorySuggestionLoadingIndicator />
+                        </View>
+                    ) : (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerClassName="pr-lg"
+                            contentContainerStyle={styles.scrollContent}
+                        >
+                            {suggestedCategories.map((category, index) => (
+                                <CategorySuggestionPillItem
+                                    key={category.id}
+                                    category={category}
+                                    index={index}
+                                    animationDuration={ANIMATION_DURATION}
+                                    staggerDelay={STAGGER_DELAY}
+                                    onSelect={handleSelect}
+                                />
+                            ))}
+                            <View className="flex-row items-center gap-xs pl-sm">
+                                <Icon icon={UserIconNameEnum.Sparkles} size={12} className="text-secondary-foreground" />
+                                <Text className="text-xs text-secondary-foreground">{t`AI`}</Text>
+                            </View>
+                        </ScrollView>
+                    )}
+                </Animated.View>
+            ) : null}
+        </View>
+    );
+};
