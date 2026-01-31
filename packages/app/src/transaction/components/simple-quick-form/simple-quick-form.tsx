@@ -29,13 +29,15 @@ interface Props {
     readonly accountFieldName: AccountFieldName;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
+    readonly aiContext: string;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
 }
 
 export const SimpleQuickForm = (props: Props) => {
-    const { variant, transactionType, accountFieldName, transactionTitle, mccCategoryId, buildEntries, onSubmit, onCancel } = props;
+    const { variant, transactionType, accountFieldName, transactionTitle, mccCategoryId, aiContext, buildEntries, onSubmit, onCancel } =
+        props;
 
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
@@ -52,7 +54,7 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('entries.0.categoryId', selectedCategoryId);
     };
 
-    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment);
+    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const showCategorySuggestions = !isPositiveNumber(categoryId) && hasContext;
 
     const handleConfirm = () => {
@@ -85,6 +87,7 @@ export const SimpleQuickForm = (props: Props) => {
                 transactionTitle={transactionTitle}
                 mccCategoryId={mccCategoryId}
                 comment={comment}
+                aiContext={aiContext}
                 enabled={showCategorySuggestions}
                 onSelect={handleSelectCategory}
             />
