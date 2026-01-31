@@ -1,13 +1,12 @@
-import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, CurrencyEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
-import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useLlmContext } from '../context/llm.context';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { CategoryLlmService, ExtractedTransaction } from '../service/category-llm.service';
+import { ExtractedVoiceTransaction, VoiceLlmService } from '../service/voice-llm.service';
 import { findAccountByCurrency } from '../util/find-account-by-currency.util';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
@@ -22,40 +21,20 @@ interface UseLlmCategorizationReturnInterface {
     reset: () => void;
 }
 
-interface BuildTransactionParamsInterface {
-    comment: string;
-    categoryId: number;
-    amount: number;
-    currency: CurrencyEnum | null;
-    accounts: AccountWithInstrumentEntityInterface[];
-    categories: CategoryEntityInterface[];
-}
-
-const buildTransaction = (params: BuildTransactionParamsInterface): AITransactionInterface => {
-    const category = params.categories.find(category => category.id === params.categoryId) ?? null;
-
-    return {
-        category,
-        amount: params.amount,
-        currency: params.currency,
-        account: findAccountByCurrency(params.accounts, params.currency),
-        type: TransactionTypeEnum.EXPENSE,
-        comment: params.comment
-    };
-};
-
 const mapExtractedToTransactions = (
-    extracted: ExtractedTransaction[],
-    comment: string,
-    accounts: AccountWithInstrumentEntityInterface[],
-    categories: CategoryEntityInterface[]
+    extracted: ExtractedVoiceTransaction[],
+    accounts: AccountWithInstrumentEntityInterface[]
 ): AITransactionInterface[] =>
-    extracted.map(item =>
-        buildTransaction({ comment, categoryId: item.categoryId, amount: item.amount, currency: item.currency, accounts, categories })
-    );
+    extracted.map(item => ({
+        category: null,
+        amount: item.amount,
+        currency: item.currency,
+        account: findAccountByCurrency(accounts, item.currency),
+        type: TransactionTypeEnum.EXPENSE,
+        comment: item.description
+    }));
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
-    const { categories } = useAllCategoriesQuery();
     const { accounts } = useSearchAccountsSortedQuery();
     const { llm } = useLlmContext();
 
@@ -69,15 +48,15 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         setTransactions([]);
 
         try {
-            const service = new CategoryLlmService(llm);
-            const extracted = await service.extractTransactionsFromText({ text, categories });
+            const service = new VoiceLlmService(llm);
+            const extracted = await service.extractTransactions(text);
 
             if (!isNotEmptyArray(extracted)) {
                 // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
                 throw new Error('Failed to extract transactions from text');
             }
 
-            const results = mapExtractedToTransactions(extracted, text, accounts, categories);
+            const results = mapExtractedToTransactions(extracted, accounts);
             setTransactions(results);
             setStatus('done');
 

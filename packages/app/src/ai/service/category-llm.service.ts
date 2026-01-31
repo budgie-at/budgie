@@ -1,11 +1,9 @@
-import { CategoryEntityInterface, CurrencyEnum } from '@budgie/contracts';
+import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { COMMON_CURRENCIES, FALLBACK_CATEGORY_ID } from '../constant/llm-categorization.constant';
 import { LlmInterface } from '../context/llm.context';
-import { parseLlmJsonResponse } from '../util/parse-llm-json-response.util';
 
 export interface CategoryTranslationResult {
     titleEn: string;
@@ -17,17 +15,6 @@ interface CategorySuggestionParams {
     mccDescription: string | null;
     comment: string;
     categories: CategoryEntityInterface[];
-}
-
-interface TransactionExtractionParams {
-    text: string;
-    categories: CategoryEntityInterface[];
-}
-
-export interface ExtractedTransaction {
-    categoryId: number;
-    amount: number;
-    currency: CurrencyEnum | null;
 }
 
 interface CategoryLlmErrorHandler {
@@ -71,16 +58,6 @@ freelance -> freelance, consulting, gig, contract, self-employed, client
 dividends -> dividends, stocks, shares, investment, portfolio, returns
 coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
 
-const VOICE_INPUT_TRANSLATION_PROMPT = `Translate expense input to English. Keep numbers and currencies exactly as-is. Return ONLY the translation.
-
-Examples:
-кава 50 грн -> coffee 50 uah
-таксі додому 120 -> taxi home 120
-обід в ресторані 350 uah -> lunch at restaurant 350 uah
-продукти в АТБ 890 -> groceries at ATB 890
-бензин 1200 грн, мийка 150 -> gas 1200 uah, car wash 150
-подарунок мамі 500 -> gift for mom 500
-ліки в аптеці 230 -> medicine at pharmacy 230`;
 /* eslint-enable lingui/no-unlocalized-strings */
 
 export class CategoryLlmService {
@@ -122,32 +99,6 @@ export class CategoryLlmService {
         const categoryIds = this.parseSuggestionResponse(response, categories);
 
         return categoryIds.map(id => categories.find(category => category.id === id)).filter(isDefined);
-    }
-
-    async extractTransactionsFromText(params: TransactionExtractionParams): Promise<ExtractedTransaction[]> {
-        const { text, categories } = params;
-
-        const userCategories = this.filterUserCategories(categories);
-        if (userCategories.length === 0) {
-            return [];
-        }
-
-        const translatedText = await this.translateVoiceInput(text);
-        const systemPrompt = this.buildExtractionPrompt(userCategories);
-        const response = await this.llm.generate(systemPrompt, translatedText);
-        const parsed = parseLlmJsonResponse(response);
-
-        return parsed.map(item => ({
-            categoryId: this.resolveCategoryId(item.categoryId, categories),
-            amount: item.amount,
-            currency: item.currency
-        }));
-    }
-
-    private async translateVoiceInput(text: string): Promise<string> {
-        const translated = await this.llm.generate(VOICE_INPUT_TRANSLATION_PROMPT, text);
-
-        return translated.trim();
     }
 
     private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
@@ -241,41 +192,5 @@ RULES:
             .map(tag => tag.trim())
             .filter(isNotEmptyString)
             .slice(0, MAX_TAGS);
-    }
-
-    private buildExtractionPrompt(userCategories: CategoryEntityInterface[]): string {
-        const categoryList = userCategories.map(category => `${category.id}=${this.getCategoryLabel(category)}`).join(', ');
-        const currencies = COMMON_CURRENCIES.join(', ');
-
-        /* eslint-disable lingui/no-unlocalized-strings */
-        return `Extract expenses from text. Return JSON array.
-
-CATEGORIES: ${categoryList}
-
-CURRENCIES: ${currencies}
-
-FORMAT: [{"categoryId":N,"amount":N,"currency":"XXX"}]
-
-RULES:
-- ONE amount = ONE entry (never duplicate the same amount)
-- Pick the BEST matching category for each expense
-- Multiple entries ONLY when multiple amounts are mentioned
-- categoryId = NUMBER from list
-- currency = 3-letter code or null
-
-Example: "coffee 5 usd, taxi 10" -> [{"categoryId":1,"amount":5,"currency":"USD"},{"categoryId":2,"amount":10,"currency":null}]
-Example: "pizza at restaurant 10" -> [{"categoryId":3,"amount":10,"currency":null}] (ONE entry, not two)`;
-        /* eslint-enable lingui/no-unlocalized-strings */
-    }
-
-    private resolveCategoryId(categoryId: number | string, categories: CategoryEntityInterface[]): number {
-        if (typeof categoryId === 'number') {
-            return categoryId;
-        }
-
-        const normalized = categoryId.toLowerCase().trim();
-        const match = categories.find(category => category.title.toLowerCase() === normalized);
-
-        return match?.id ?? FALLBACK_CATEGORY_ID;
     }
 }
