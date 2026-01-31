@@ -8,25 +8,23 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../../@generic/component/button/button';
-import { GoBackButton } from '../../../../@generic/component/go-back-button/go-back-button';
-import { IconSelectorBottomSheet } from '../../../../@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet';
-import { ScreenLayout } from '../../../../@generic/component/screen-layout/screen-layout';
-import { categoryRepository } from '../../../../@generic/drizzle/db/db';
-import { BottomSheetInterface } from '../../../../@generic/interface/bottom-sheet.interface';
-import { CategoryAiFields } from '../../../../category/components/category-ai-fields/category-ai-fields';
-import { CategoryIconDisplay } from '../../../../category/components/category-icon-display/category-icon-display';
-import { CategoryTitleInput } from '../../../../category/components/category-title-input/category-title-input';
-import { useCategorySelectorModal } from '../../../../category/context/category-selector-modal.context';
-import { useRegenerateCategoryTranslation } from '../../../../category/hooks/use-regenerate-category-translation.hook';
-import { categoryService } from '../../../../category/service/category.service';
+import { Button } from '../@generic/component/button/button';
+import { IconSelectorBottomSheet } from '../@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet';
+import { categoryRepository } from '../@generic/drizzle/db/db';
+import { BottomSheetInterface } from '../@generic/interface/bottom-sheet.interface';
+import { CategoryAiFields } from '../category/components/category-ai-fields/category-ai-fields';
+import { CategoryIconDisplay } from '../category/components/category-icon-display/category-icon-display';
+import { CategoryTitleInput } from '../category/components/category-title-input/category-title-input';
+import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
+import { useRegenerateCategoryTranslation } from '../category/hooks/use-regenerate-category-translation.hook';
+import { categoryService } from '../category/service/category.service';
 
 const TITLE_INPUT_DELAY = 100;
 const AI_FIELDS_DELAY = 200;
 const ACTIONS_DELAY = 400;
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Category edit page with form state management
-export default function CategoryEditPage() {
+// eslint-disable-next-line max-lines-per-function, max-statements -- Category edit modal with form state management
+export default function CategoryEditModal() {
     const { t } = useLingui();
     const router = useRouter();
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -59,10 +57,6 @@ export default function CategoryEditPage() {
 
         void loadCategory();
     }, [categoryId]);
-
-    const handleGoBack = () => {
-        router.back();
-    };
 
     const handleIconPress = () => {
         iconSelectorRef.current?.open();
@@ -126,60 +120,50 @@ export default function CategoryEditPage() {
     };
 
     if (!isDefined(category)) {
-        return (
-            <ScreenLayout>
-                <View />
-            </ScreenLayout>
-        );
+        return <View className="flex-1 bg-primary-reverse rounded-t-3xl" />;
     }
 
     return (
-        <ScreenLayout>
-            <View className="flex-1">
-                <View className="px-5xl pt-md">
-                    <GoBackButton onPress={handleGoBack} />
+        <View className="flex-1 bg-primary-reverse rounded-t-3xl">
+            <ScrollView className="flex-1" contentContainerClassName="pb-3xl" keyboardShouldPersistTaps="handled">
+                <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
+
+                <CategoryTitleInput value={title} onChange={setTitle} animationDelay={TITLE_INPUT_DELAY} />
+
+                <CategoryAiFields
+                    titleEn={titleEn}
+                    titleTags={titleTags}
+                    isRegenerating={isRegenerating}
+                    onRegenerate={handleRegenerate}
+                    animationDelay={AI_FIELDS_DELAY}
+                />
+            </ScrollView>
+
+            <Animated.View
+                entering={FadeInUp.delay(ACTIONS_DELAY).duration(200)}
+                className="px-3xl pb-3xl gap-y-md border-t border-secondary-corner pt-xl"
+            >
+                <View className="flex-row gap-x-md">
+                    <Button className="flex-1" variant="ghost" onPress={handleCancel} content={<Trans>Cancel</Trans>} />
+                    <Button
+                        className="flex-1"
+                        variant="cta"
+                        onPress={handleSave}
+                        disabled={isSaveDisabled}
+                        content={<Trans>Save</Trans>}
+                    />
                 </View>
 
-                <ScrollView className="flex-1" contentContainerClassName="pb-3xl" keyboardShouldPersistTaps="handled">
-                    <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
-
-                    <CategoryTitleInput value={title} onChange={setTitle} animationDelay={TITLE_INPUT_DELAY} />
-
-                    <CategoryAiFields
-                        titleEn={titleEn}
-                        titleTags={titleTags}
-                        isRegenerating={isRegenerating}
-                        onRegenerate={handleRegenerate}
-                        animationDelay={AI_FIELDS_DELAY}
-                    />
-                </ScrollView>
-
-                <Animated.View
-                    entering={FadeInUp.delay(ACTIONS_DELAY).duration(200)}
-                    className="px-3xl pb-3xl gap-y-md border-t border-secondary-corner pt-xl"
-                >
-                    <View className="flex-row gap-x-md">
-                        <Button className="flex-1" variant="ghost" onPress={handleCancel} content={<Trans>Cancel</Trans>} />
-                        <Button
-                            className="flex-1"
-                            variant="cta"
-                            onPress={handleSave}
-                            disabled={isSaveDisabled}
-                            content={<Trans>Save</Trans>}
-                        />
-                    </View>
-
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={UserIconNameEnum.Merge}
-                        onPress={handleMerge}
-                        content={<Trans>Merge into another category</Trans>}
-                    />
-                </Animated.View>
-            </View>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={UserIconNameEnum.Merge}
+                    onPress={handleMerge}
+                    content={<Trans>Merge into another category</Trans>}
+                />
+            </Animated.View>
 
             <IconSelectorBottomSheet ref={iconSelectorRef} variant="default" selectedIcon={icon} onSelect={handleIconSelect} />
-        </ScreenLayout>
+        </View>
     );
 }
