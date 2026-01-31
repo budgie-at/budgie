@@ -6,7 +6,10 @@ export const CategoryCreateEntitySchema = convertToCreateEntitySchema(CategoryEn
     .omit({
         isDefault: true,
         isSystemCategory: true,
-        titleSearch: true
+        titleSearch: true,
+        titleEn: true,
+        titleTags: true,
+        tagsGeneratedAt: true
     })
     .partial({
         parentId: true

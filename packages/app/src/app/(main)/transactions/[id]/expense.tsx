@@ -52,6 +52,7 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
     const sourceAmount = sourceEntry.amount;
     const sourceAccount = sourceEntry.account;
     const sourceInstrumentId = sourceAccount.instrumentId;
+    const mccCategoryId = sourceEntry.mccCategoryId ?? null;
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -82,6 +83,8 @@ const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProp
                     variant="destructive"
                     transactionType={TransactionTypeEnum.EXPENSE}
                     accountFieldName="fromAccountId"
+                    transactionTitle={transaction.title}
+                    mccCategoryId={mccCategoryId}
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

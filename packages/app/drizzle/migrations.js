@@ -8,16 +8,23 @@ import m0003 from './0003_unusual_maestro.sql';
 import m0004 from './0004_cloudy_juggernaut.sql';
 import m0005 from './0005_omniscient_jasper_sitwell.sql';
 import m0006 from './0006_nice_warlock.sql';
+import m0007 from './0007_pretty_puck.sql';
+import m0008 from './0008_breezy_darkhawk.sql';
+import m0009 from './0009_fine_molten_man.sql';
 
-export default {
+  export default {
     journal,
     migrations: {
-        m0000,
-        m0001,
-        m0002,
-        m0003,
-        m0004,
-        m0005,
-        m0006
+      m0000,
+m0001,
+m0002,
+m0003,
+m0004,
+m0005,
+m0006,
+m0007,
+m0008,
+m0009
     }
-};
+  }
+  

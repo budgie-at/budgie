@@ -1,18 +1,25 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn } from 'react-hook-form';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { FormSheetHeader } from '../../../@generic/component/form-sheet-header/form-sheet-header';
-import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
+import { Input } from '../../../@generic/component/input/input';
+import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
+import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
+import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { tagService } from '../../service/tag.service';
 
@@ -30,32 +37,41 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+const TITLE_ANIMATION_DELAY = 100;
+
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { backgroundColor } = useFormsheetListStyles();
     const { openTagsSelector } = useTagsSelectorModal();
-    const { handleSubmit, reset, control } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const { regenerate, isRegenerating } = useRegenerateTagTranslation();
+    const { llm } = useLlmContext();
+
+    const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
     const isEditing = isDefined(tag?.id);
-    const containerStyle = { flex: 1, backgroundColor };
-    const title = isEditing ? <Trans>Edit Tag</Trans> : <Trans>Create Tag</Trans>;
-    const submitButtonContent = isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>;
 
-    const handleFormSubmit = handleSubmit(async (values: TagCreateEntityInterface) => {
-        try {
-            const savedTag = isEditing ? await tagRepository.updateById(tag.id, values) : await tagRepository.create(values);
-            reset();
-            onSuccess({ tag: savedTag, action: isEditing ? 'updated' : 'created' });
-        } catch {
-            showErrorToast(isEditing ? t`Could not update tag` : t`Could not create tag`, t`Please try again later`);
-        }
+    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+        entity: tag ?? null,
+        entityId: tag?.id ?? 0,
+        currentTitle: title,
+        regenerate,
+        isRegenerating,
+        isModelReady: llm.isReady
     });
+
+    const isSaveDisabled = !isNotEmptyString(title);
+    const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
+
+    const handleTitleChange = (value: string) => {
+        setValue('title', value);
+    };
 
     const handleMerge = async () => {
         if (!isDefined(tag?.id)) {
             return;
         }
+
         const targetTagIds = await openTagsSelector({
             excludeTagIds: [tag.id],
             description: t`Select a tag to merge into`,
@@ -70,56 +86,76 @@ export const TagForm = (props: Props) => {
         try {
             const [targetTag] = await tagRepository.findByIds([targetTagId]);
             await tagService.mergeInto(tag.id, targetTagId);
-            reset();
+
             if (isDefined(targetTag)) {
                 onSuccess({ tag: targetTag, action: 'merged' });
             }
-            /* jscpd:ignore-start - Form merge pattern */
         } catch {
             showErrorToast(t`Could not merge tag`, t`Please try again later`);
         }
     };
 
-    const handleCancelPress = () => {
-        reset();
-        onCancel();
-    };
+    const handleFormSubmit = handleSubmit(async (values: TagCreateEntityInterface) => {
+        try {
+            if (isEditing) {
+                const savedTag = await tagRepository.updateById(tag.id, { ...values, titleEn, titleTags });
+                onSuccess({ tag: savedTag, action: 'updated' });
+            } else {
+                const savedTag = await tagRepository.create(values);
+                const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
-    const renderTitleInput = ({ field: { value, onChange } }: UseControllerReturn<TagCreateEntityInterface, 'title'>) => (
-        <TextInput
-            className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
-            placeholder={t`e.g., Business, Personal, Vacation`}
-            maxLength={TAG_TITLE_MAX_LENGTH}
-            autoCapitalize="words"
-            autoCorrect={false}
-            value={value}
-            onChangeText={onChange}
-        />
-    );
+                if (hasTranslationData) {
+                    await tagRepository.updateTranslation(savedTag.id, titleEn, titleTags);
+                }
+
+                onSuccess({ tag: savedTag, action: 'created' });
+            }
+        } catch {
+            const errorMessage = isEditing ? t`Could not save tag` : t`Could not create tag`;
+            showErrorToast(errorMessage, t`Please try again later`);
+        }
+    });
 
     return (
-        <View style={containerStyle}>
-            <FormSheetHeader>{title}</FormSheetHeader>
-            <View className="px-3xl gap-y-2xl">
-                <FormItem label={t`Tag Name`}>
-                    <Controller name="title" control={control} render={renderTitleInput} />
-                </FormItem>
-                {isEditing ? (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={UserIconNameEnum.Merge}
-                        onPress={handleMerge}
-                        content={<Trans>Merge into another tag</Trans>}
-                    />
-                ) : null}
-                <View className="flex-row gap-x-md pt-md">
-                    <Button className="flex-1" variant="ghost" onPress={handleCancelPress} content={<Trans>Cancel</Trans>} />
-                    <Button className="flex-1" variant="cta" onPress={handleFormSubmit} content={submitButtonContent} />
+        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
+                <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
+                    <FormItem label={t`Tag Name`}>
+                        <Input
+                            size="lg"
+                            value={title}
+                            onChangeText={handleTitleChange}
+                            onBlur={handleTitleBlur}
+                            maxLength={TAG_TITLE_MAX_LENGTH}
+                            placeholder={t`e.g. Business, Personal, Vacation`}
+                            autoCapitalize="words"
+                            autoCorrect={false}
+                            autoComplete="off"
+                            textContentType="none"
+                            spellCheck={false}
+                            inputMode="text"
+                        />
+                    </FormItem>
+                </Animated.View>
+
+                <AiTranslationFields
+                    titleEn={titleEn}
+                    titleTags={titleTags}
+                    isRegenerating={isRegenerating}
+                    disabled={isGenerateDisabled}
+                    onRegenerate={handleRegenerate}
+                    modelStatus={llm}
+                />
+            </KeyboardAwareScrollView>
+
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another tag</Trans>} /> : null}
+
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
                 </View>
             </View>
-            <FormSheetSpacer />
-        </View>
+        </ModalPage>
     );
-    /* jscpd:ignore-end */
 };

@@ -1,18 +1,15 @@
 import { Href } from 'expo-router';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { GroupedTransactionInterface } from './group-transactions-by-category.util';
+import { GroupedVoiceTransactionInterface } from '../service/voice-llm.service';
 
-export const buildExpenseUrl = (transaction: GroupedTransactionInterface, defaultAccountId: number | undefined): Href => {
+export const buildExpenseUrl = (transaction: GroupedVoiceTransactionInterface, defaultAccountId: number | undefined): Href => {
     const params = new URLSearchParams();
     const accountId = transaction.account?.id ?? defaultAccountId;
 
     if (isPositiveNumber(transaction.amount)) {
         params.set('amount', String(transaction.amount));
-    }
-    if (isPositiveNumber(transaction.categoryId)) {
-        params.set('categoryId', String(transaction.categoryId));
     }
     if (isDefined(accountId)) {
         params.set('accountId', String(accountId));
@@ -23,8 +20,8 @@ export const buildExpenseUrl = (transaction: GroupedTransactionInterface, defaul
     if (isNotEmptyString(transaction.comment)) {
         params.set('comment', transaction.comment);
     }
-    if (isNotEmptyArray(transaction.entries)) {
-        params.set('entries', JSON.stringify(transaction.entries));
+    if (isNotEmptyString(transaction.aiContext)) {
+        params.set('aiContext', transaction.aiContext);
     }
 
     const queryString = params.toString();

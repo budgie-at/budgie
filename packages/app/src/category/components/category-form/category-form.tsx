@@ -1,21 +1,27 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn } from 'react-hook-form';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { FormSheetHeader } from '../../../@generic/component/form-sheet-header/form-sheet-header';
-import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
+import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
+import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
+import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useLlmContext } from '../../../ai/context/llm.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
+import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
 import { categoryService } from '../../service/category.service';
-import { CategoryFormIconField } from '../category-form-icon-field/category-form-icon-field';
+import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
+import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
 type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
 
@@ -31,34 +37,48 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { backgroundColor } = useFormsheetListStyles();
     const { openCategorySelector } = useCategorySelectorModal();
-    const { handleSubmit, reset, control } = useCategoryForm(category ?? null, defaultTitle);
+    const { openIconSelector } = useIconSelectorModal();
+    const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
+    const { llm } = useLlmContext();
+
+    const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
     const isEditing = isDefined(category?.id);
-    const containerStyle = { flex: 1, backgroundColor };
-    const title = isEditing ? <Trans>Edit Category</Trans> : <Trans>Create Category</Trans>;
-    const submitButtonContent = isEditing ? <Trans>Save</Trans> : <Trans>Create</Trans>;
 
-    const handleFormSubmit = handleSubmit(async (values: CategoryCreateEntityInterface) => {
-        try {
-            const savedCategory = isEditing
-                ? await categoryRepository.updateById(category.id, values)
-                : await categoryRepository.create(values);
-            reset();
-            onSuccess({ category: savedCategory, action: isEditing ? 'updated' : 'created' });
-        } catch {
-            showErrorToast(isEditing ? t`Could not update category` : t`Could not create category`, t`Please try again later`);
-        }
+    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+        entity: category ?? null,
+        entityId: category?.id ?? 0,
+        currentTitle: title,
+        regenerate,
+        isRegenerating,
+        isModelReady: llm.isReady
     });
+
+    const isSaveDisabled = !isNotEmptyString(title);
+    const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
+
+    const handleIconPress = async () => {
+        const selectedIcon = await openIconSelector({ selectedIcon: icon });
+
+        if (isDefined(selectedIcon)) {
+            setValue('icon', selectedIcon);
+        }
+    };
+
+    const handleTitleChange = (value: string) => {
+        setValue('title', value);
+    };
 
     const handleMerge = async () => {
         if (!isDefined(category?.id)) {
             return;
         }
+
         const targetCategoryId = await openCategorySelector({
             excludeCategoryIds: [category.id],
             description: t`Select a category to merge into`,
@@ -68,60 +88,67 @@ export const CategoryForm = (props: Props) => {
         if (!isDefined(targetCategoryId)) {
             return;
         }
+
         try {
             const targetCategory = await categoryRepository.findById(targetCategoryId);
             await categoryService.mergeInto(category.id, targetCategoryId);
-            reset();
+
             if (isDefined(targetCategory)) {
                 onSuccess({ category: targetCategory, action: 'merged' });
             }
-            /* jscpd:ignore-start - Form merge pattern */
         } catch {
             showErrorToast(t`Could not merge category`, t`Please try again later`);
         }
     };
 
-    const handleCancelPress = () => {
-        reset();
-        onCancel();
-    };
+    const handleFormSubmit = handleSubmit(async (values: CategoryCreateEntityInterface) => {
+        try {
+            if (isEditing) {
+                const savedCategory = await categoryRepository.updateById(category.id, { ...values, titleEn, titleTags });
+                onSuccess({ category: savedCategory, action: 'updated' });
+            } else {
+                const savedCategory = await categoryRepository.create(values);
+                const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
-    const renderTitleInput = ({ field: { value, onChange } }: UseControllerReturn<CategoryCreateEntityInterface, 'title'>) => (
-        <TextInput
-            className="h-[48px] px-lg bg-secondary-background rounded-xl border border-secondary-corner text-primary"
-            placeholder={t`e.g., Groceries, Salary, Rent`}
-            maxLength={CATEGORY_TITLE_MAX_LENGTH}
-            autoCapitalize="words"
-            autoCorrect={false}
-            value={value}
-            onChangeText={onChange}
-        />
-    );
+                if (hasTranslationData) {
+                    await categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags);
+                }
+
+                onSuccess({ category: savedCategory, action: 'created' });
+            }
+        } catch {
+            const errorMessage = isEditing ? t`Could not save category` : t`Could not create category`;
+            showErrorToast(errorMessage, t`Please try again later`);
+        }
+    });
 
     return (
-        <View style={containerStyle}>
-            <FormSheetHeader>{title}</FormSheetHeader>
-            <View className="px-3xl gap-y-2xl">
-                <FormItem label={t`Category Name`}>
-                    <Controller name="title" control={control} render={renderTitleInput} />
-                </FormItem>
-                <CategoryFormIconField control={control} />
-                {isEditing ? (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={UserIconNameEnum.Merge}
-                        onPress={handleMerge}
-                        content={<Trans>Merge into another category</Trans>}
-                    />
-                ) : null}
-                <View className="flex-row gap-x-md pt-md">
-                    <Button className="flex-1" variant="ghost" onPress={handleCancelPress} content={<Trans>Cancel</Trans>} />
-                    <Button className="flex-1" variant="cta" onPress={handleFormSubmit} content={submitButtonContent} />
+        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
+            <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
+                <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
+
+                <CategoryTitleInput value={title} onChange={handleTitleChange} onBlur={handleTitleBlur} />
+
+                {/* jscpd:ignore-start */}
+                <AiTranslationFields
+                    titleEn={titleEn}
+                    titleTags={titleTags}
+                    isRegenerating={isRegenerating}
+                    disabled={isGenerateDisabled}
+                    onRegenerate={handleRegenerate}
+                    modelStatus={llm}
+                />
+            </KeyboardAwareScrollView>
+
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another category</Trans>} /> : null}
+
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
                 </View>
             </View>
-            <FormSheetSpacer />
-        </View>
+            {/* jscpd:ignore-end */}
+        </ModalPage>
     );
-    /* jscpd:ignore-end */
 };

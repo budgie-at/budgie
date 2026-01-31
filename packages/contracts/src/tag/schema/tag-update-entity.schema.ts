@@ -1,3 +1,7 @@
-import { TagCreateEntitySchema } from './tag-create-entity.schema';
+import { TagEntitySchema } from './tag-entity.schema';
 
-export const TagUpdateEntitySchema = TagCreateEntitySchema.partial();
+export const TagUpdateEntitySchema = TagEntitySchema.pick({
+    title: true,
+    titleEn: true,
+    titleTags: true
+}).partial();
