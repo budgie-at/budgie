@@ -3,10 +3,11 @@ import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormItem } from '../form-item/form-item';
-import { IconSelector } from '../icon-selector/icon-selector';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Input } from '../input/input';
 
 type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconNameEnum }> = {
@@ -19,15 +20,23 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
     variant
 }: AccountDetailsFieldsProps<T>) => {
     const { t } = useLingui();
+    const { openIconSelector } = useIconSelectorModal();
 
-    const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
-        <IconSelector
-            variant={variant}
-            onSelect={onChange}
-            icon={value as UserIconNameEnum}
-            trigger={<CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconNameEnum} />}
-        />
-    );
+    const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
+        const handlePress = async () => {
+            const selectedIcon = await openIconSelector({ selectedIcon: value as UserIconNameEnum, variant });
+
+            if (selectedIcon) {
+                onChange(selectedIcon as Parameters<typeof onChange>[0]);
+            }
+        };
+
+        return (
+            <HapticPressable onPress={handlePress}>
+                <CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconNameEnum} />
+            </HapticPressable>
+        );
+    };
 
     const renderTitleField = ({ field, fieldState }: UseControllerReturn<T, FieldPath<T>>) => {
         const status = fieldState.invalid ? 'error' : 'default';
