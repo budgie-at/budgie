@@ -70,6 +70,17 @@ salary -> salary, wages, paycheck, income, employment, job, work
 freelance -> freelance, consulting, gig, contract, self-employed, client
 dividends -> dividends, stocks, shares, investment, portfolio, returns
 coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
+
+const VOICE_INPUT_TRANSLATION_PROMPT = `Translate expense input to English. Keep numbers and currencies exactly as-is. Return ONLY the translation.
+
+Examples:
+кава 50 грн -> coffee 50 uah
+таксі додому 120 -> taxi home 120
+обід в ресторані 350 uah -> lunch at restaurant 350 uah
+продукти в АТБ 890 -> groceries at ATB 890
+бензин 1200 грн, мийка 150 -> gas 1200 uah, car wash 150
+подарунок мамі 500 -> gift for mom 500
+ліки в аптеці 230 -> medicine at pharmacy 230`;
 /* eslint-enable lingui/no-unlocalized-strings */
 
 export class CategoryLlmService {
@@ -121,8 +132,9 @@ export class CategoryLlmService {
             return [];
         }
 
+        const translatedText = await this.translateVoiceInput(text);
         const systemPrompt = this.buildExtractionPrompt(userCategories);
-        const response = await this.llm.generate(systemPrompt, text);
+        const response = await this.llm.generate(systemPrompt, translatedText);
         const parsed = parseLlmJsonResponse(response);
 
         return parsed.map(item => ({
@@ -130,6 +142,12 @@ export class CategoryLlmService {
             amount: item.amount,
             currency: item.currency
         }));
+    }
+
+    private async translateVoiceInput(text: string): Promise<string> {
+        const translated = await this.llm.generate(VOICE_INPUT_TRANSLATION_PROMPT, text);
+
+        return translated.trim();
     }
 
     private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
