@@ -7,11 +7,17 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { GenerateOptionsInterface, LlmInterface } from '../context/llm.context';
 
-/* eslint-disable lingui/no-unlocalized-strings */
-const MODEL_URL = 'https://huggingface.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF/resolve/main/LFM2.5-1.2B-Instruct-Q8_0.gguf';
-const MODEL_FILENAME = 'LFM2.5-1.2B-Instruct-Q8_0.gguf';
-const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>', '</s>'];
-/* eslint-enable lingui/no-unlocalized-strings */
+interface RunCompletionParams {
+    context: LlamaContext;
+    systemPrompt: string;
+    userMessage: string;
+    maxTokens: number;
+    temperature?: number;
+}
+
+const MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf';
+const MODEL_FILENAME = 'qwen2.5-1.5b-instruct-q8_0.gguf';
+const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
 
 const DEFAULT_MAX_TOKENS = 64;
 const GPU_LAYERS = 99;
@@ -42,20 +48,22 @@ const downloadModel = async (onProgress: (progress: number) => void): Promise<st
     return result.uri;
 };
 
-const runCompletion = async (context: LlamaContext, systemPrompt: string, userMessage: string, maxTokens: number): Promise<string> => {
-    const result = await context.completion({
+const runCompletion = async (params: RunCompletionParams): Promise<string> => {
+    const result = await params.context.completion({
         messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userMessage }
+            { role: 'system', content: params.systemPrompt },
+            { role: 'user', content: params.userMessage }
         ],
-        n_predict: maxTokens,
+        n_predict: params.maxTokens,
         stop: STOP_TOKENS,
-        ...GENERATION_CONFIG
+        ...GENERATION_CONFIG,
+        ...(isDefined(params.temperature) ? { temperature: params.temperature } : {})
     });
 
     return result.text.trim();
 };
 
+// eslint-disable-next-line max-lines-per-function -- LLM hook requires model lifecycle, generation mutex, and state management
 export const useLlamaLlm = (): LlmInterface => {
     const contextRef = useRef<LlamaContext | null>(null);
     const isLoadingRef = useRef(false);
@@ -130,7 +138,13 @@ export const useLlamaLlm = (): LlmInterface => {
         setError(null);
 
         try {
-            return await runCompletion(contextRef.current, systemPrompt, userMessage, options?.maxNewTokens ?? DEFAULT_MAX_TOKENS);
+            return await runCompletion({
+                context: contextRef.current,
+                systemPrompt,
+                userMessage,
+                maxTokens: options?.maxNewTokens ?? DEFAULT_MAX_TOKENS,
+                temperature: options?.temperature
+            });
         } catch (err: unknown) {
             setError(getErrorMessage(err));
             throw err;

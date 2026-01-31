@@ -41,13 +41,34 @@ export class TagRepository {
     }
 
     async updateById(id: number, input: TagUpdateEntityInterface): Promise<TagEntityInterface> {
+        const newTitle = input.title;
+        const titleChanged = isDefined(newTitle);
+
         const [tag] = await this.db
             .update(TagEntityTable)
-            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+            .set({
+                ...input,
+                ...(titleChanged && { titleSearch: newTitle.toLowerCase(), titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            })
             .where(eq(TagEntityTable.id, id))
             .returning();
 
         return tag;
+    }
+
+    findAll() {
+        return this.db.query.TagEntityTable.findMany();
+    }
+
+    async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
+        await this.db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(TagEntityTable.id, id));
+    }
+
+    async clearTranslation(id: number): Promise<void> {
+        await this.db
+            .update(TagEntityTable)
+            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+            .where(eq(TagEntityTable.id, id));
     }
 
     async deleteById(id: number): Promise<void> {
