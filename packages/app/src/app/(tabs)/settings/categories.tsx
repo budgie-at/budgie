@@ -1,7 +1,6 @@
 /* jscpd:ignore-start */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -21,7 +20,6 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Categories() {
     const { t } = useLingui();
-    const router = useRouter();
     const { openCategorySelector } = useCategorySelectorModal();
     const { openCategoryForm } = useCategoryFormModal();
 
@@ -62,7 +60,7 @@ export default function Categories() {
     };
 
     const handleOpenCategory = (category: CategoryEntityInterface) => {
-        router.push({ pathname: '/category-edit', params: { id: category.id.toString() } });
+        void openCategoryForm({ category });
     };
 
     const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
