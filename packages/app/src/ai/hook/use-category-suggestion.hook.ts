@@ -14,7 +14,6 @@ import { useLlm } from './use-llm.hook';
 interface UseCategorySuggestionParams {
     transactionTitle: string;
     mccCategoryId: number | null;
-    amount: number;
     comment: string;
     enabled: boolean;
 }
@@ -28,9 +27,9 @@ interface UseCategorySuggestionReturn {
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseCategorySuggestionReturn => {
-    const { transactionTitle, mccCategoryId, amount, comment, enabled } = params;
+    const { transactionTitle, mccCategoryId, comment, enabled } = params;
 
-    const { categories } = useAllCategoriesQuery();
+    const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const systemPrompt = buildCategorySuggestionPrompt(categories);
@@ -42,7 +41,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
     const hasTriggeredRef = useRef(false);
 
     useEffect(() => {
-        if (!enabled || !llm.isReady || isMccLoading || hasTriggeredRef.current) {
+        if (!enabled || !llm.isReady || isMccLoading || isCategoriesLoading || hasTriggeredRef.current) {
             return;
         }
 
@@ -54,8 +53,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
             try {
                 const context = buildTransactionContext({
                     title: transactionTitle,
-                    mccDescription: mccCategory?.shortDescription ?? null,
-                    amount,
+                    mccDescription: mccCategory?.fullDescription ?? null,
                     comment
                 });
 
@@ -83,9 +81,9 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
         };
 
         void suggest();
-    }, [enabled, llm.isReady, isMccLoading]);
+    }, [enabled, llm.isReady, isMccLoading, isCategoriesLoading]);
 
-    const isWaitingForLlm = enabled && (!llm.isReady || isMccLoading) && internalStatus === 'idle';
+    const isWaitingForLlm = enabled && (!llm.isReady || isMccLoading || isCategoriesLoading) && internalStatus === 'idle';
     const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
 
     return { status, suggestedCategory };

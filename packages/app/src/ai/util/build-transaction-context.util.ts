@@ -1,30 +1,27 @@
-import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 interface TransactionContextInterface {
     title: string | null;
     mccDescription: string | null;
-    amount: number;
     comment: string | null;
 }
 
 export const buildTransactionContext = (data: TransactionContextInterface): string => {
     const parts: string[] = [];
 
+    /* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
     if (isNotEmptyString(data.title)) {
-        parts.push(data.title);
+        parts.push(`Transaction: ${data.title}`);
     }
 
     if (isNotEmptyString(data.mccDescription)) {
-        parts.push(data.mccDescription.toLowerCase());
-    }
-
-    if (isPositiveNumber(data.amount)) {
-        parts.push(String(data.amount));
+        parts.push(`Type: ${data.mccDescription}`);
     }
 
     if (isNotEmptyString(data.comment)) {
-        parts.push(data.comment);
+        parts.push(`Note: ${data.comment}`);
     }
 
-    return parts.join(' ');
+    return parts.join(' | ');
+    /* eslint-enable lingui/no-unlocalized-strings */
 };
