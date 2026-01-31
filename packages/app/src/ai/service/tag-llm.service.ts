@@ -19,7 +19,7 @@ interface TagLlmErrorHandler {
     (tag: TagEntityInterface, error: unknown): void;
 }
 
-const TRANSLATION_TEMPERATURE = 0.4;
+const TRANSLATION_TEMPERATURE = 0.7;
 const MAX_SUGGESTIONS = 3;
 
 /* eslint-disable lingui/no-unlocalized-strings */
