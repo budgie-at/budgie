@@ -8,12 +8,13 @@ import { Input } from '../../../@generic/component/input/input';
 interface Props {
     readonly value: string;
     readonly onChange: (value: string) => void;
+    readonly onBlur?: () => void;
     readonly animationDelay?: number;
 }
 
 const DEFAULT_ANIMATION_DELAY = 100;
 
-export const CategoryTitleInput = ({ value, onChange, animationDelay = DEFAULT_ANIMATION_DELAY }: Props) => {
+export const CategoryTitleInput = ({ value, onChange, onBlur, animationDelay = DEFAULT_ANIMATION_DELAY }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -23,6 +24,7 @@ export const CategoryTitleInput = ({ value, onChange, animationDelay = DEFAULT_A
                     size="lg"
                     value={value}
                     onChangeText={onChange}
+                    onBlur={onBlur}
                     maxLength={CATEGORY_TITLE_MAX_LENGTH}
                     placeholder={t`e.g. Groceries, Entertainment`}
                     autoCapitalize="words"

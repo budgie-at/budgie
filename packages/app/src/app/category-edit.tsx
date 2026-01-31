@@ -35,6 +35,7 @@ export default function CategoryEditModal() {
     const [titleTags, setTitleTags] = useState<string | null>(null);
 
     const iconSelectorRef = useRef<BottomSheetInterface | null>(null);
+    const lastRegeneratedTitle = useRef<string>('');
 
     const categoryId = Number(id);
     const isSaveDisabled = !isNotEmptyString(title);
@@ -49,6 +50,7 @@ export default function CategoryEditModal() {
                 setIcon(loadedCategory.icon);
                 setTitleEn(loadedCategory.titleEn);
                 setTitleTags(loadedCategory.titleTags);
+                lastRegeneratedTitle.current = loadedCategory.title;
             }
         };
 
@@ -69,6 +71,16 @@ export default function CategoryEditModal() {
         if (isDefined(result)) {
             setTitleEn(result.titleEn);
             setTitleTags(result.titleTags);
+            lastRegeneratedTitle.current = title;
+        }
+    };
+
+    const handleTitleBlur = () => {
+        const titleChanged = title !== lastRegeneratedTitle.current;
+        const hasValidTitle = isNotEmptyString(title);
+
+        if (titleChanged && hasValidTitle && !isRegenerating) {
+            void handleRegenerate();
         }
     };
 
@@ -125,7 +137,7 @@ export default function CategoryEditModal() {
             <View className="flex-1">
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
-                <CategoryTitleInput value={title} onChange={setTitle} />
+                <CategoryTitleInput value={title} onChange={setTitle} onBlur={handleTitleBlur} />
 
                 <CategoryAiFields titleEn={titleEn} titleTags={titleTags} isRegenerating={isRegenerating} onRegenerate={handleRegenerate} />
             </View>
