@@ -125,7 +125,7 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr ""
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:69
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
 msgid "AI-Generated Metadata"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr "Konto konnte nicht archiviert werden. Bitte versuchen Sie es später ern
 msgid "Could not create category"
 msgstr "Kategorie konnte nicht erstellt werden"
 
-#: src/tag/components/tag-form/tag-form.tsx:110
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Could not create tag"
 msgstr "Tag konnte nicht erstellt werden"
 
@@ -409,7 +409,7 @@ msgstr "Transaktion konnte nicht gelöscht werden."
 msgid "Could not merge category"
 msgstr "Kategorie konnte nicht zusammengeführt werden"
 
-#: src/tag/components/tag-form/tag-form.tsx:90
+#: src/tag/components/tag-form/tag-form.tsx:93
 msgid "Could not merge tag"
 msgstr "Tag konnte nicht zusammengeführt werden"
 
@@ -429,7 +429,7 @@ msgstr "Konto konnte nicht wiederhergestellt werden."
 msgid "Could not save category"
 msgstr ""
 
-#: src/tag/components/tag-form/tag-form.tsx:110
+#: src/tag/components/tag-form/tag-form.tsx:113
 msgid "Could not save tag"
 msgstr ""
 
@@ -482,7 +482,7 @@ msgstr "Erstellen Sie benutzerdefinierte Tags in den Einstellungen, um Ihre Tran
 msgid "Create one to get started."
 msgstr "Erstellen Sie eines, um zu beginnen."
 
-#: src/tag/components/tag-form/tag-form.tsx:60
+#: src/tag/components/tag-form/tag-form.tsx:63
 msgid "Create Tag"
 msgstr "Tag erstellen"
 
@@ -596,7 +596,7 @@ msgstr "Fertig"
 msgid "Dutch (Netherlands)"
 msgstr "Niederländisch (Niederlande)"
 
-#: src/tag/components/tag-form/tag-form.tsx:126
+#: src/tag/components/tag-form/tag-form.tsx:129
 msgid "e.g. Business, Personal, Vacation"
 msgstr ""
 
@@ -620,7 +620,7 @@ msgstr "Ausgabe bearbeiten"
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
-#: src/tag/components/tag-form/tag-form.tsx:60
+#: src/tag/components/tag-form/tag-form.tsx:63
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
@@ -661,7 +661,7 @@ msgstr "Englisch (Vereinigtes Königreich)"
 msgid "English (United States)"
 msgstr "Englisch (Vereinigte Staaten)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:82
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
 msgid "English Translation"
 msgstr ""
 
@@ -963,11 +963,11 @@ msgstr "CSV-Spalten zuordnen"
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:143
 msgid "Merge into another category"
 msgstr "In eine andere Kategorie zusammenführen"
 
-#: src/tag/components/tag-form/tag-form.tsx:147
+#: src/tag/components/tag-form/tag-form.tsx:151
 msgid "Merge into another tag"
 msgstr "In einen anderen Tag zusammenführen"
 
@@ -1091,8 +1091,8 @@ msgstr "Noch keine Transaktionen"
 msgid "None selected"
 msgstr "Nichts ausgewählt"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:36
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:37
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
 msgid "Not generated"
 msgstr ""
 
@@ -1161,8 +1161,8 @@ msgstr "Bitte versuchen Sie es erneut"
 #: src/app/(tabs)/settings/tags.tsx:53
 #: src/category/components/category-form/category-form.tsx:99
 #: src/category/components/category-form/category-form.tsx:120
-#: src/tag/components/tag-form/tag-form.tsx:90
-#: src/tag/components/tag-form/tag-form.tsx:111
+#: src/tag/components/tag-form/tag-form.tsx:93
+#: src/tag/components/tag-form/tag-form.tsx:114
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
 
@@ -1264,7 +1264,7 @@ msgstr "Währungen durchsuchen..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:94
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
 msgid "Search Keywords"
 msgstr ""
 
@@ -1302,7 +1302,7 @@ msgstr "Wählen Sie eine Kategorie zum Zusammenführen"
 msgid "Select a contact"
 msgstr "Wählen Sie einen Kontakt"
 
-#: src/tag/components/tag-form/tag-form.tsx:73
+#: src/tag/components/tag-form/tag-form.tsx:76
 msgid "Select a tag to merge into"
 msgstr "Wählen Sie einen Tag zum Zusammenführen"
 
@@ -1464,7 +1464,7 @@ msgstr "Verlauf wird synchronisiert..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/tag/components/tag-form/tag-form.tsx:119
+#: src/tag/components/tag-form/tag-form.tsx:122
 msgid "Tag Name"
 msgstr "Tag-Name"
 

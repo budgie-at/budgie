@@ -18,6 +18,7 @@ interface UseAiTranslationFieldsParams {
     currentTitle: string;
     regenerate: RegenerateFn;
     isRegenerating: boolean;
+    isModelReady: boolean;
 }
 
 interface UseAiTranslationFieldsReturn {
@@ -29,7 +30,7 @@ interface UseAiTranslationFieldsReturn {
 }
 
 export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): UseAiTranslationFieldsReturn => {
-    const { entity, entityId, currentTitle, regenerate, isRegenerating } = params;
+    const { entity, entityId, currentTitle, regenerate, isRegenerating, isModelReady } = params;
 
     const [titleEn, setTitleEn] = useState<string | null>(entity?.titleEn ?? null);
     const [titleTags, setTitleTags] = useState<string | null>(entity?.titleTags ?? null);
@@ -39,6 +40,10 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
     const isGenerateDisabled = !isNotEmptyString(currentTitle);
 
     const handleRegenerate = async (): Promise<void> => {
+        if (!isModelReady) {
+            return;
+        }
+
         const result = await regenerate(entityId, currentTitle);
 
         if (isDefined(result)) {
@@ -52,7 +57,7 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         const titleChanged = currentTitle !== lastRegeneratedTitle.current;
         const hasValidTitle = isNotEmptyString(currentTitle);
 
-        if (titleChanged && hasValidTitle && !isRegenerating) {
+        if (titleChanged && hasValidTitle && !isRegenerating && isModelReady) {
             void handleRegenerate();
         }
     };

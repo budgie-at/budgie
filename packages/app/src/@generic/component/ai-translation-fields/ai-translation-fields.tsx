@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { type ReactNode, useEffect } from 'react';
+import { Pressable, type StyleProp, Text, View, type ViewStyle } from 'react-native';
 import Animated, {
     Easing,
     FadeInUp,
@@ -14,6 +14,13 @@ import Animated, {
 
 import { Icon } from '../icon/icon';
 
+interface ModelStatusInterface {
+    readonly isReady: boolean;
+    readonly isInitializing: boolean;
+    readonly downloadProgress: number;
+    readonly error: string | null;
+}
+
 interface Props {
     readonly titleEn: string | null;
     readonly titleTags: string | null;
@@ -21,6 +28,7 @@ interface Props {
     readonly disabled?: boolean;
     readonly onRegenerate: () => void;
     readonly animationDelay?: number;
+    readonly modelStatus: ModelStatusInterface;
 }
 
 const FIELD_DELAY_OFFSET = 100;
@@ -28,8 +36,74 @@ const DEFAULT_ANIMATION_DELAY = 200;
 const FULL_ROTATION = 360;
 const ROTATION_DURATION = 1000;
 
+const getStatusBadgeText = (status: ModelStatusInterface, t: ReturnType<typeof useLingui>['t']): string | null => {
+    if (status.error !== null) {
+        return t`Unavailable`;
+    }
+
+    if (status.isInitializing) {
+        return t`Loading…`;
+    }
+
+    const downloadPercent = Math.round(status.downloadProgress * 100);
+
+    if (status.downloadProgress < 1) {
+        return t`${downloadPercent}%`;
+    }
+
+    return null;
+};
+
+interface HeaderRightParams {
+    readonly isReady: boolean;
+    readonly statusBadge: string | null;
+    readonly disabled: boolean;
+    readonly isRegenerating: boolean;
+    readonly onRegenerate: () => void;
+    readonly rotatingStyle: StyleProp<ViewStyle>;
+}
+
+const getHeaderRight = (params: HeaderRightParams): ReactNode => {
+    const { isReady, statusBadge, disabled, isRegenerating, onRegenerate, rotatingStyle } = params;
+
+    if (!isReady) {
+        if (statusBadge === null) {
+            return null;
+        }
+
+        return (
+            <Animated.View
+                entering={FadeInUp.duration(DEFAULT_ANIMATION_DELAY)}
+                className="bg-tertiary-background rounded-full px-sm py-xxs"
+            >
+                <Text className="text-xxs text-secondary-foreground font-medium">{statusBadge}</Text>
+            </Animated.View>
+        );
+    }
+
+    if (disabled) {
+        return null;
+    }
+
+    return (
+        <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
+            <Animated.View style={rotatingStyle}>
+                <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
+            </Animated.View>
+        </Pressable>
+    );
+};
+
 export const AiTranslationFields = (props: Props) => {
-    const { titleEn, titleTags, isRegenerating, disabled = false, onRegenerate, animationDelay = DEFAULT_ANIMATION_DELAY } = props;
+    const {
+        titleEn,
+        titleTags,
+        isRegenerating,
+        disabled = false,
+        onRegenerate,
+        animationDelay = DEFAULT_ANIMATION_DELAY,
+        modelStatus
+    } = props;
     const { t } = useLingui();
     const rotation = useSharedValue(0);
 
@@ -52,13 +126,18 @@ export const AiTranslationFields = (props: Props) => {
         transform: [{ rotate: `${rotation.value}deg` }]
     }));
 
-    const regenerateButton = disabled ? null : (
-        <Pressable onPress={onRegenerate} disabled={isRegenerating} hitSlop={12}>
-            <Animated.View style={rotatingStyle}>
-                <Icon icon={UserIconNameEnum.RefreshCw} size={16} className="text-primary" />
-            </Animated.View>
-        </Pressable>
-    );
+    const fieldOpacity = modelStatus.isReady ? '' : 'opacity-40';
+
+    const statusBadge = getStatusBadgeText(modelStatus, t);
+
+    const headerRight = getHeaderRight({
+        isReady: modelStatus.isReady,
+        statusBadge,
+        disabled,
+        isRegenerating,
+        onRegenerate,
+        rotatingStyle
+    });
 
     return (
         <View className="px-3xl pt-xl">
@@ -68,13 +147,13 @@ export const AiTranslationFields = (props: Props) => {
                     <Text className="text-xs text-secondary-foreground ml-sm uppercase font-medium flex-1">
                         <Trans>AI-Generated Metadata</Trans>
                     </Text>
-                    {regenerateButton}
+                    {headerRight}
                 </View>
 
                 {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
                 <Animated.View
                     entering={FadeInUp.delay(englishDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className="flex-row items-center px-xl py-lg border-b border-secondary-corner"
+                    className={`flex-row items-center px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
                 >
                     <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
                     <View className="ml-lg flex-1">
@@ -87,7 +166,10 @@ export const AiTranslationFields = (props: Props) => {
                     </View>
                 </Animated.View>
 
-                <Animated.View entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)} className="flex-row px-xl py-lg">
+                <Animated.View
+                    entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
+                    className={`flex-row px-xl py-lg ${fieldOpacity}`}
+                >
                     <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
                     <View className="ml-lg flex-1">
                         <Text className="text-xxs text-secondary-foreground uppercase">

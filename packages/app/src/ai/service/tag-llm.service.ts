@@ -19,6 +19,7 @@ interface TagLlmErrorHandler {
     (tag: TagEntityInterface, error: unknown): void;
 }
 
+const TRANSLATION_TEMPERATURE = 0.4;
 const MAX_SUGGESTIONS = 3;
 
 /* eslint-disable lingui/no-unlocalized-strings */
@@ -99,10 +100,10 @@ export class TagLlmService {
 
     /* jscpd:ignore-start - Shared LLM service pattern with CategoryLlmService */
     private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
-        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title);
+        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTitleEn = titleEn.trim().toLowerCase();
 
-        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn);
+        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTags = tags.trim().toLowerCase();
 
         return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
@@ -129,12 +130,7 @@ If nothing matches at all: 0`;
         /* eslint-enable lingui/no-unlocalized-strings */
     }
 
-    private buildTransactionContext(
-        title: string,
-        categoryName: string | null,
-        mccDescription: string | null,
-        comment: string
-    ): string {
+    private buildTransactionContext(title: string, categoryName: string | null, mccDescription: string | null, comment: string): string {
         const parts: string[] = [];
         const hasTitle = isNotEmptyString(title);
 
