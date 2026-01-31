@@ -1,8 +1,9 @@
 import { CategoryEntityInterface } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
 import { LlmInterface } from '../context/llm.context';
 
 export interface CategoryTranslationResult {
@@ -21,45 +22,8 @@ interface CategoryLlmErrorHandler {
     (category: CategoryEntityInterface, error: unknown): void;
 }
 
-const TRANSLATION_TEMPERATURE = 0.7;
 const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
-
-/* eslint-disable lingui/no-unlocalized-strings */
-const TRANSLATION_SYSTEM_PROMPT = `Translate to English. Return ONLY the translation, 1-3 words.
-
-Examples:
-бухло -> alcohol
-Дитина -> children
-квартира -> apartment
-їжа -> food
-ІЖА -> food
-такси -> taxi
-подарунки -> gifts
-розваги -> entertainment
-здоров'я -> health
-зарплата -> salary
-фріланс -> freelance
-дивіденди -> dividends
-відсотки -> interest
-ТРАНСПОРТ -> transport
-Кава -> coffee`;
-
-const TAG_GENERATION_SYSTEM_PROMPT = `Generate search keywords. Return ONLY comma-separated English words.
-
-Examples:
-food -> food, groceries, meals, eating, restaurant, dining, supermarket
-transport -> transport, taxi, uber, bus, metro, ride, commute, lyft
-children -> children, kids, baby, childcare, toys, school, daycare
-alcohol -> alcohol, drinks, booze, liquor, beer, wine, bar, pub
-entertainment -> entertainment, movies, games, cinema, theater, concert
-health -> health, medical, doctor, pharmacy, hospital, medicine
-salary -> salary, wages, paycheck, income, employment, job, work
-freelance -> freelance, consulting, gig, contract, self-employed, client
-dividends -> dividends, stocks, shares, investment, portfolio, returns
-coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
-
-/* eslint-enable lingui/no-unlocalized-strings */
 
 export class CategoryLlmService {
     constructor(private readonly llm: LlmInterface) {}
@@ -90,7 +54,7 @@ export class CategoryLlmService {
         const { transactionTitle, mccDescription, comment, categories } = params;
 
         const userCategories = this.filterUserCategories(categories);
-        if (userCategories.length === 0) {
+        if (isEmptyArray(userCategories)) {
             return [];
         }
 
@@ -176,20 +140,21 @@ RULES:
 
     private getCategoryLabel(category: CategoryEntityInterface): string {
         const title = category.titleEn ?? category.title;
+
+        if (!isNotEmptyString(category.titleTags)) {
+            return title;
+        }
+
         const tags = this.getFirstTags(category.titleTags);
 
-        if (tags.length === 0) {
+        if (isEmptyArray(tags)) {
             return title;
         }
 
         return `${title} (${tags.join(', ')})`;
     }
 
-    private getFirstTags(titleTags: string | null): string[] {
-        if (!isNotEmptyString(titleTags)) {
-            return [];
-        }
-
+    private getFirstTags(titleTags: string): string[] {
         return titleTags
             .split(',')
             .map(tag => tag.trim())

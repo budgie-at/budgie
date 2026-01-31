@@ -8,11 +8,9 @@ export const RegenerateCategories = () => {
     const { t } = useLingui();
     const { regenerateAll, isRegenerating } = useRegenerateAllCategories();
 
-    const handleRegenerate = () => void regenerateAll();
-
     return (
         <SettingsCard
-            onPress={handleRegenerate}
+            onPress={regenerateAll}
             isLoading={isRegenerating}
             title={t`Regenerate AI Data`}
             description={t`Regenerate translations and search keywords for all categories and tags`}

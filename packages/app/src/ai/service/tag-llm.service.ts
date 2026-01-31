@@ -1,8 +1,9 @@
 import { TagEntityInterface } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
+import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
 import { LlmInterface } from '../context/llm.context';
 
 import { CategoryTranslationResult } from './category-llm.service';
@@ -19,44 +20,7 @@ interface TagLlmErrorHandler {
     (tag: TagEntityInterface, error: unknown): void;
 }
 
-const TRANSLATION_TEMPERATURE = 0.7;
 const MAX_SUGGESTIONS = 3;
-
-/* eslint-disable lingui/no-unlocalized-strings */
-const TRANSLATION_SYSTEM_PROMPT = `Translate to English. Return ONLY the translation, 1-3 words.
-
-Examples:
-бухло -> alcohol
-Дитина -> children
-квартира -> apartment
-їжа -> food
-ІЖА -> food
-такси -> taxi
-подарунки -> gifts
-розваги -> entertainment
-здоров'я -> health
-зарплата -> salary
-фріланс -> freelance
-дивіденди -> dividends
-відсотки -> interest
-ТРАНСПОРТ -> transport
-Кава -> coffee`;
-
-const TAG_GENERATION_SYSTEM_PROMPT = `Generate search keywords. Return ONLY comma-separated English words.
-
-Examples:
-food -> food, groceries, meals, eating, restaurant, dining, supermarket
-transport -> transport, taxi, uber, bus, metro, ride, commute, lyft
-children -> children, kids, baby, childcare, toys, school, daycare
-alcohol -> alcohol, drinks, booze, liquor, beer, wine, bar, pub
-entertainment -> entertainment, movies, games, cinema, theater, concert
-health -> health, medical, doctor, pharmacy, hospital, medicine
-salary -> salary, wages, paycheck, income, employment, job, work
-freelance -> freelance, consulting, gig, contract, self-employed, client
-dividends -> dividends, stocks, shares, investment, portfolio, returns
-coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
-
-/* eslint-enable lingui/no-unlocalized-strings */
 
 export class TagLlmService {
     constructor(private readonly llm: LlmInterface) {}
@@ -86,7 +50,7 @@ export class TagLlmService {
     async suggestTags(params: TagSuggestionParams): Promise<TagEntityInterface[]> {
         const { transactionTitle, categoryName, mccDescription, comment, tags } = params;
 
-        if (tags.length === 0) {
+        if (isEmptyArray(tags)) {
             return [];
         }
 

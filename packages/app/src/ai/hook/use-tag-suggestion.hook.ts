@@ -7,6 +7,7 @@ import { useGetCategoryByIdQuery } from '../../category/query/use-get-category-b
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '../interface/suggestion.interface';
 import { TagLlmService } from '../service/tag-llm.service';
 
 interface UseTagSuggestionParams {
@@ -18,15 +19,7 @@ interface UseTagSuggestionParams {
     enabled: boolean;
 }
 
-type InternalStatus = 'idle' | 'loading' | 'success' | 'error';
-type TagSuggestionStatus = 'idle' | 'initializing' | 'loading' | 'success' | 'error';
-
-interface UseTagSuggestionReturn {
-    status: TagSuggestionStatus;
-    suggestedTags: TagEntityInterface[];
-}
-
-export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggestionReturn => {
+export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { llm } = useLlmContext();
@@ -34,15 +27,16 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggesti
     const { category, isLoading: isCategoryLoading } = useGetCategoryByIdQuery(categoryId);
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const [internalStatus, setInternalStatus] = useState<InternalStatus>('idle');
+    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [suggestedTags, setSuggestedTags] = useState<TagEntityInterface[]>([]);
 
     const hasTriggeredRef = useRef(false);
 
     const hasTagsLoaded = isNotEmptyArray(allTags);
+    const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
     useEffect(() => {
-        if (!enabled || !llm.isReady || isCategoryLoading || isMccLoading || isTagsLoading || !hasTagsLoaded || hasTriggeredRef.current) {
+        if (!isReady || hasTriggeredRef.current || !isNotEmptyArray(allTags)) {
             return;
         }
 
@@ -73,11 +67,10 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseTagSuggesti
         };
 
         void suggest();
-    }, [enabled, llm.isReady, isCategoryLoading, isMccLoading, isTagsLoading, hasTagsLoaded]);
+    }, [isReady]);
 
-    const isWaitingForLlm =
-        enabled && (!llm.isReady || isCategoryLoading || isMccLoading || isTagsLoading || !hasTagsLoaded) && internalStatus === 'idle';
-    const status: TagSuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
+    const isInitializing = enabled && !isReady && internalStatus === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
 
-    return { status, suggestedTags };
+    return { status, suggestions: suggestedTags };
 };
