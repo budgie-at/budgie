@@ -76,11 +76,21 @@ packages/
 ### Type Guards and Validation
 
 **Prefer `@rnw-community/shared` type guards over manual checks:**
-- `isDefined(x)` instead of `x !== null && x !== undefined`
+- `isDefined(x)` instead of `x !== null && x !== undefined` or `x !== null`
 - `isNumber(x)` instead of `typeof x === 'number'`
 - `isNotEmptyArray(x)` instead of `Array.isArray(x) && x.length > 0`
+- `isEmptyArray(x)` instead of `x.length === 0`
 - `isNotEmptyString(x)` instead of `typeof x === 'string' && x.length > 0`
-- `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0`
+- `isPositiveNumber(x)` instead of `typeof x === 'number' && x > 0` or `x > 0`
+
+**Use `isDefined` for ref checks too:**
+```typescript
+// Good
+if (isDefined(timerRef.current)) { clearTimeout(timerRef.current); }
+
+// Bad
+if (timerRef.current !== null) { clearTimeout(timerRef.current); }
+```
 
 **Prefer `.filter(isDefined)` over manual type guard filters:**
 ```typescript
