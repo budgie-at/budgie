@@ -20,7 +20,7 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
-import { CategorySuggestionPill } from '../category-suggestion-pill/category-suggestion-pill';
+import { CategorySuggestionBubble } from '../category-suggestion-bubble/category-suggestion-bubble';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 export interface TransactionFieldIconsRef {
@@ -33,14 +33,13 @@ interface Props {
     readonly transactionType: TransactionTypeEnum;
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
-    readonly amount: number;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
 }
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, transactionTitle, mccCategoryId, amount, onCommentPress, onDatePress } = props;
+    const { ref, variant, transactionType, transactionTitle, mccCategoryId, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -82,6 +81,7 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
+    const showCategorySuggestion = !isTransfer && !isPositiveNumber(categoryId) && isPositiveNumber(mccCategoryId);
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -124,6 +124,15 @@ export const TransactionFieldIcons = (props: Props) => {
 
             {isTransfer ? null : (
                 <View className="flex-1 items-center">
+                    {showCategorySuggestion && (
+                        <CategorySuggestionBubble
+                            transactionTitle={transactionTitle}
+                            mccCategoryId={mccCategoryId}
+                            amount={0}
+                            comment={comment}
+                            onApply={handleApplySuggestion}
+                        />
+                    )}
                     <TransactionFieldIcon
                         ref={categoryIconRef}
                         icon={category?.icon ?? UserIconNameEnum.Folder}
@@ -133,16 +142,6 @@ export const TransactionFieldIcons = (props: Props) => {
                         onPress={handleCategoryPress}
                         animationDelay={CATEGORY_ANIMATION_DELAY}
                     />
-                    {!isPositiveNumber(categoryId) && isPositiveNumber(mccCategoryId) && (
-                        <CategorySuggestionPill
-                            transactionTitle={transactionTitle}
-                            mccCategoryId={mccCategoryId}
-                            amount={amount}
-                            comment={comment}
-                            variant={variant}
-                            onApply={handleApplySuggestion}
-                        />
-                    )}
                 </View>
             )}
         </View>
