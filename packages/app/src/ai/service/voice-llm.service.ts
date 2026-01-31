@@ -17,22 +17,27 @@ export interface GroupedVoiceTransactionInterface {
     currency: CurrencyEnum | null;
     account: AccountWithInstrumentEntityInterface | null;
     comment: string;
+    aiContext: string;
 }
 
-export const groupVoiceTransactions = (transactions: AITransactionInterface[]): GroupedVoiceTransactionInterface | null => {
+export const groupVoiceTransactions = (
+    transactions: AITransactionInterface[],
+    originalText: string
+): GroupedVoiceTransactionInterface | null => {
     if (!isNotEmptyArray(transactions)) {
         return null;
     }
 
     const totalAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
-    const comments = transactions.map(transaction => transaction.comment).join(', ');
+    const aiContext = transactions.map(transaction => transaction.comment).join(', ');
     const [firstTransaction] = transactions;
 
     return {
         amount: totalAmount,
         currency: firstTransaction.currency,
         account: firstTransaction.account,
-        comment: comments
+        comment: originalText,
+        aiContext
     };
 };
 
