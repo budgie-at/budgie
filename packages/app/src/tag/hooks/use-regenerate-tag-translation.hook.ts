@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../ai/context/llm.context';
-import { CategoryLlmService, CategoryTranslationResult } from '../../ai/service/category-llm.service';
+import { CategoryTranslationResult } from '../../ai/service/category-llm.service';
+import { TagLlmService } from '../../ai/service/tag-llm.service';
 
 interface UseRegenerateTagTranslationReturn {
     regenerate: (tagId: number, title: string) => Promise<CategoryTranslationResult | null>;
@@ -28,9 +29,9 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
         setError(null);
 
         try {
-            const service = new CategoryLlmService(llm);
+            const service = new TagLlmService(llm);
 
-            return await service.regenerateOneTag(tagId, title);
+            return await service.regenerateOne(tagId, title);
         } catch (regenerateError: unknown) {
             setError(getErrorMessage(regenerateError));
 

@@ -1,24 +1,21 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { tagRepository } from '../../@generic/drizzle/db/db';
 import { LlmInterface } from '../context/llm.context';
 
-export interface CategoryTranslationResult {
-    titleEn: string;
-    titleTags: string;
-}
+import { CategoryTranslationResult } from './category-llm.service';
 
-interface CategorySuggestionParams {
+interface TagSuggestionParams {
     transactionTitle: string;
     mccDescription: string | null;
     comment: string;
-    categories: CategoryEntityInterface[];
+    tags: TagEntityInterface[];
 }
 
-interface CategoryLlmErrorHandler {
-    (category: CategoryEntityInterface, error: unknown): void;
+interface TagLlmErrorHandler {
+    (tag: TagEntityInterface, error: unknown): void;
 }
 
 const MAX_TAGS = 3;
@@ -60,45 +57,44 @@ coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
 
 /* eslint-enable lingui/no-unlocalized-strings */
 
-export class CategoryLlmService {
+export class TagLlmService {
     constructor(private readonly llm: LlmInterface) {}
 
-    async regenerateOne(categoryId: number, title: string): Promise<CategoryTranslationResult> {
+    async regenerateOne(tagId: number, title: string): Promise<CategoryTranslationResult> {
         const result = await this.generateTranslationAndTags(title);
-        await this.saveTranslation(categoryId, result);
+        await this.saveTranslation(tagId, result);
 
         return result;
     }
 
-    async regenerateAll(onError?: CategoryLlmErrorHandler): Promise<void> {
-        const categories = await categoryRepository.findAllNonSystem();
+    async regenerateAll(onError?: TagLlmErrorHandler): Promise<void> {
+        const tags = await tagRepository.findAll();
 
         /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
-        for (const category of categories) {
+        for (const tag of tags) {
             try {
-                const result = await this.generateTranslationAndTags(category.title);
-                await this.saveTranslation(category.id, result);
+                const result = await this.generateTranslationAndTags(tag.title);
+                await this.saveTranslation(tag.id, result);
             } catch (error: unknown) {
-                onError?.(category, error);
+                onError?.(tag, error);
             }
         }
         /* eslint-enable no-await-in-loop */
     }
 
-    async suggestCategories(params: CategorySuggestionParams): Promise<CategoryEntityInterface[]> {
-        const { transactionTitle, mccDescription, comment, categories } = params;
+    async suggestTags(params: TagSuggestionParams): Promise<TagEntityInterface[]> {
+        const { transactionTitle, mccDescription, comment, tags } = params;
 
-        const userCategories = this.filterUserCategories(categories);
-        if (userCategories.length === 0) {
+        if (tags.length === 0) {
             return [];
         }
 
-        const systemPrompt = this.buildSuggestionPrompt(userCategories);
+        const systemPrompt = this.buildSuggestionPrompt(tags);
         const context = this.buildTransactionContext(transactionTitle, mccDescription, comment);
         const response = await this.llm.generate(systemPrompt, context);
-        const categoryIds = this.parseSuggestionResponse(response, categories);
+        const tagIds = this.parseSuggestionResponse(response, tags);
 
-        return categoryIds.map(id => categories.find(category => category.id === id)).filter(isDefined);
+        return tagIds.map(id => tags.find(tag => tag.id === id)).filter(isDefined);
     }
 
     private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
@@ -111,28 +107,24 @@ export class CategoryLlmService {
         return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
     }
 
-    private async saveTranslation(categoryId: number, result: CategoryTranslationResult): Promise<void> {
-        await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
+    private async saveTranslation(tagId: number, result: CategoryTranslationResult): Promise<void> {
+        await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
     }
 
-    private filterUserCategories(categories: CategoryEntityInterface[]): CategoryEntityInterface[] {
-        return categories.filter(category => !category.isSystemCategory && !category.isDefault);
-    }
-
-    private buildSuggestionPrompt(userCategories: CategoryEntityInterface[]): string {
-        const categoryList = userCategories.map(category => `${category.id}=${this.getCategoryLabel(category)}`).join(', ');
+    private buildSuggestionPrompt(tags: TagEntityInterface[]): string {
+        const tagList = tags.map(tag => `${tag.id}=${this.getTagLabel(tag)}`).join(', ');
 
         /* eslint-disable lingui/no-unlocalized-strings */
-        return `Match the transaction to categories. Return up to 3 category IDs, best match first.
+        return `Match the transaction to tags. Return up to 3 tag IDs, best match first.
 
-CATEGORIES: ${categoryList}
+TAGS: ${tagList}
 
 EXAMPLES:
-Transaction: McDonalds | Type: Fast Food Restaurant -> 292
-Transaction: Uber | Type: Taxicabs -> 364,288
+Transaction: McDonalds | Type: Fast Food Restaurant -> 12
+Transaction: Uber | Type: Taxicabs -> 5,8
 
 RULES:
-- Return comma-separated numbers (e.g., 292 or 292,387)
+- Return comma-separated numbers (e.g., 12 or 12,5)
 - Best match first, then alternatives
 - Maximum 3 IDs
 - If no match, return 0`;
@@ -161,21 +153,21 @@ RULES:
         /* eslint-enable lingui/no-unlocalized-strings */
     }
 
-    private parseSuggestionResponse(response: string, categories: Pick<CategoryEntityInterface, 'id'>[]): number[] {
+    private parseSuggestionResponse(response: string, tags: Pick<TagEntityInterface, 'id'>[]): number[] {
         const trimmed = response.trim();
 
         return trimmed
             .split(',')
             .map(part => parseInt(part.trim(), 10))
             .filter(id => !isNaN(id) && id !== 0)
-            .map(id => (categories.some(category => category.id === id) ? id : null))
+            .map(id => (tags.some(tag => tag.id === id) ? id : null))
             .filter(isDefined)
             .slice(0, MAX_SUGGESTIONS);
     }
 
-    private getCategoryLabel(category: CategoryEntityInterface): string {
-        const title = category.titleEn ?? category.title;
-        const tags = this.getFirstTags(category.titleTags);
+    private getTagLabel(tag: TagEntityInterface): string {
+        const title = tag.titleEn ?? tag.title;
+        const tags = this.getFirstTags(tag.titleTags);
 
         if (tags.length === 0) {
             return title;
