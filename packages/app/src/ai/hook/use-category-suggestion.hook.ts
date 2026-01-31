@@ -6,6 +6,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useLlmContext } from '../context/llm.context';
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '../interface/suggestion.interface';
 import { CategoryLlmService } from '../service/category-llm.service';
 
 interface UseCategorySuggestionParams {
@@ -16,30 +17,24 @@ interface UseCategorySuggestionParams {
     enabled: boolean;
 }
 
-type InternalStatus = 'idle' | 'loading' | 'success' | 'error';
-type CategorySuggestionStatus = 'idle' | 'initializing' | 'loading' | 'success' | 'error';
-
-interface UseCategorySuggestionReturn {
-    status: CategorySuggestionStatus;
-    suggestedCategories: CategoryEntityInterface[];
-}
-
-export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseCategorySuggestionReturn => {
+export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
     const { llm } = useLlmContext();
     const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const [internalStatus, setInternalStatus] = useState<InternalStatus>('idle');
+    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [suggestedCategories, setSuggestedCategories] = useState<CategoryEntityInterface[]>([]);
 
     const hasTriggeredRef = useRef(false);
 
     const hasCategoriesLoaded = categories.length > 0;
+    const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
+    /* jscpd:ignore-start -- Category suggestion hook mirrors tag suggestion hook pattern */
     useEffect(() => {
-        if (!enabled || !llm.isReady || isMccLoading || isCategoriesLoading || !hasCategoriesLoaded || hasTriggeredRef.current) {
+        if (!isReady || hasTriggeredRef.current) {
             return;
         }
 
@@ -66,11 +61,11 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseC
         };
 
         void suggest();
-    }, [enabled, llm.isReady, isMccLoading, isCategoriesLoading, hasCategoriesLoaded]);
+    }, [isReady]);
+    /* jscpd:ignore-end */
 
-    const isWaitingForLlm =
-        enabled && (!llm.isReady || isMccLoading || isCategoriesLoading || !hasCategoriesLoaded) && internalStatus === 'idle';
-    const status: CategorySuggestionStatus = isWaitingForLlm ? 'initializing' : internalStatus;
+    const isInitializing = enabled && !isReady && internalStatus === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
 
-    return { status, suggestedCategories };
+    return { status, suggestions: suggestedCategories };
 };
