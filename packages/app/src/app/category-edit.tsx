@@ -3,13 +3,14 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../@generic/component/button/button';
 import { IconSelectorBottomSheet } from '../@generic/component/icon-selector-bottom-sheet/icon-selector-bottom-sheet';
+import { ModalPage } from '../@generic/component/page/modal-page';
+import { PageHeader } from '../@generic/component/page-header/page-header';
 import { categoryRepository } from '../@generic/drizzle/db/db';
 import { BottomSheetInterface } from '../@generic/interface/bottom-sheet.interface';
 import { CategoryAiFields } from '../category/components/category-ai-fields/category-ai-fields';
@@ -18,10 +19,6 @@ import { CategoryTitleInput } from '../category/components/category-title-input/
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useRegenerateCategoryTranslation } from '../category/hooks/use-regenerate-category-translation.hook';
 import { categoryService } from '../category/service/category.service';
-
-const TITLE_INPUT_DELAY = 100;
-const AI_FIELDS_DELAY = 200;
-const ACTIONS_DELAY = 400;
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Category edit modal with form state management
 export default function CategoryEditModal() {
@@ -120,38 +117,23 @@ export default function CategoryEditModal() {
     };
 
     if (!isDefined(category)) {
-        return <View className="flex-1 bg-primary-reverse rounded-t-3xl" />;
+        return <ModalPage header={<PageHeader title={t`Edit Category`} onGoBack={handleCancel} />} />;
     }
 
     return (
-        <View className="flex-1 bg-primary-reverse rounded-t-3xl">
+        <ModalPage header={<PageHeader title={t`Edit Category`} onGoBack={handleCancel} />}>
             <ScrollView className="flex-1" contentContainerClassName="pb-3xl" keyboardShouldPersistTaps="handled">
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
-                <CategoryTitleInput value={title} onChange={setTitle} animationDelay={TITLE_INPUT_DELAY} />
+                <CategoryTitleInput value={title} onChange={setTitle} />
 
-                <CategoryAiFields
-                    titleEn={titleEn}
-                    titleTags={titleTags}
-                    isRegenerating={isRegenerating}
-                    onRegenerate={handleRegenerate}
-                    animationDelay={AI_FIELDS_DELAY}
-                />
+                <CategoryAiFields titleEn={titleEn} titleTags={titleTags} isRegenerating={isRegenerating} onRegenerate={handleRegenerate} />
             </ScrollView>
 
-            <Animated.View
-                entering={FadeInUp.delay(ACTIONS_DELAY).duration(200)}
-                className="px-3xl pb-3xl gap-y-md border-t border-secondary-corner pt-xl"
-            >
+            <View className="px-3xl pb-3xl gap-y-md border-t border-secondary-corner pt-xl">
                 <View className="flex-row gap-x-md">
                     <Button className="flex-1" variant="ghost" onPress={handleCancel} content={<Trans>Cancel</Trans>} />
-                    <Button
-                        className="flex-1"
-                        variant="cta"
-                        onPress={handleSave}
-                        disabled={isSaveDisabled}
-                        content={<Trans>Save</Trans>}
-                    />
+                    <Button className="flex-1" variant="cta" onPress={handleSave} disabled={isSaveDisabled} content={<Trans>Save</Trans>} />
                 </View>
 
                 <Button
@@ -161,9 +143,9 @@ export default function CategoryEditModal() {
                     onPress={handleMerge}
                     content={<Trans>Merge into another category</Trans>}
                 />
-            </Animated.View>
+            </View>
 
             <IconSelectorBottomSheet ref={iconSelectorRef} variant="default" selectedIcon={icon} onSelect={handleIconSelect} />
-        </View>
+        </ModalPage>
     );
 }
