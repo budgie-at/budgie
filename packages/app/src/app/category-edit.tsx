@@ -2,7 +2,7 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -122,20 +122,15 @@ export default function CategoryEditModal() {
 
     return (
         <ModalPage header={<PageHeader title={t`Edit Category`} onGoBack={handleCancel} />}>
-            <ScrollView className="flex-1" contentContainerClassName="pb-3xl" keyboardShouldPersistTaps="handled">
+            <View className="flex-1">
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
                 <CategoryTitleInput value={title} onChange={setTitle} />
 
                 <CategoryAiFields titleEn={titleEn} titleTags={titleTags} isRegenerating={isRegenerating} onRegenerate={handleRegenerate} />
-            </ScrollView>
+            </View>
 
-            <View className="px-3xl pb-3xl gap-y-md border-t border-secondary-corner pt-xl">
-                <View className="flex-row gap-x-md">
-                    <Button className="flex-1" variant="ghost" onPress={handleCancel} content={<Trans>Cancel</Trans>} />
-                    <Button className="flex-1" variant="cta" onPress={handleSave} disabled={isSaveDisabled} content={<Trans>Save</Trans>} />
-                </View>
-
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -143,6 +138,11 @@ export default function CategoryEditModal() {
                     onPress={handleMerge}
                     content={<Trans>Merge into another category</Trans>}
                 />
+
+                <View className="flex-row gap-x-md">
+                    <Button className="flex-1" variant="ghost" onPress={handleCancel} content={<Trans>Cancel</Trans>} />
+                    <Button className="flex-1" variant="cta" onPress={handleSave} disabled={isSaveDisabled} content={<Trans>Save</Trans>} />
+                </View>
             </View>
 
             <IconSelectorBottomSheet ref={iconSelectorRef} variant="default" selectedIcon={icon} onSelect={handleIconSelect} />
