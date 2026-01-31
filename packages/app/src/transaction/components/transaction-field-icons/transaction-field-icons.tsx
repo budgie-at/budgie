@@ -4,7 +4,7 @@ import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -20,7 +20,6 @@ import {
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
 import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
-import { CategorySuggestionBubble } from '../category-suggestion-bubble/category-suggestion-bubble';
 import { TransactionFieldIcon, TransactionFieldIconRef } from '../transaction-field-icon/transaction-field-icon';
 
 export interface TransactionFieldIconsRef {
@@ -31,15 +30,13 @@ interface Props {
     readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
-    readonly transactionTitle: string;
-    readonly mccCategoryId: number | null;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
 }
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, transactionTitle, mccCategoryId, onCommentPress, onDatePress } = props;
+    const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -76,12 +73,7 @@ export const TransactionFieldIcons = (props: Props) => {
         }
     };
 
-    const handleApplySuggestion = (suggestedCategoryId: number) => {
-        setValue('entries.0.categoryId', suggestedCategoryId);
-    };
-
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
-    const showCategorySuggestion = !isTransfer && !isPositiveNumber(categoryId) && isPositiveNumber(mccCategoryId);
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -123,25 +115,15 @@ export const TransactionFieldIcons = (props: Props) => {
             )}
 
             {isTransfer ? null : (
-                <View className="flex-1 items-center">
-                    {showCategorySuggestion && (
-                        <CategorySuggestionBubble
-                            transactionTitle={transactionTitle}
-                            mccCategoryId={mccCategoryId}
-                            comment={comment}
-                            onApply={handleApplySuggestion}
-                        />
-                    )}
-                    <TransactionFieldIcon
-                        ref={categoryIconRef}
-                        icon={category?.icon ?? UserIconNameEnum.Folder}
-                        label={t`Category`}
-                        value={category?.title}
-                        variant={variant}
-                        onPress={handleCategoryPress}
-                        animationDelay={CATEGORY_ANIMATION_DELAY}
-                    />
-                </View>
+                <TransactionFieldIcon
+                    ref={categoryIconRef}
+                    icon={category?.icon ?? UserIconNameEnum.Folder}
+                    label={t`Category`}
+                    value={category?.title}
+                    variant={variant}
+                    onPress={handleCategoryPress}
+                    animationDelay={CATEGORY_ANIMATION_DELAY}
+                />
             )}
         </View>
     );
