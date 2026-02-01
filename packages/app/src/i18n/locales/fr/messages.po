@@ -31,11 +31,11 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} au-dessus du budget"
 
@@ -125,7 +125,7 @@ msgstr "Ajouter une note..."
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:192
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:190
 msgid "Add item"
 msgstr "Ajouter un élément"
 
@@ -368,7 +368,7 @@ msgstr "Commentaire"
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:204
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
 msgid "Confirm Split"
 msgstr "Confirmer la répartition"
 
@@ -1343,6 +1343,10 @@ msgstr "Sélectionner les comptes à synchroniser :"
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
 msgstr "Tout sélectionner"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
+msgid "Select all categories"
+msgstr "Sélectionner toutes les catégories"
 
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"

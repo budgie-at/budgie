@@ -31,11 +31,11 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} залишилось розподілити"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
 
@@ -125,7 +125,7 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:192
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:190
 msgid "Add item"
 msgstr "Додати запис"
 
@@ -368,7 +368,7 @@ msgstr "Коментар"
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:204
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
 msgid "Confirm Split"
 msgstr "Підтвердити розділення"
 
@@ -1343,6 +1343,10 @@ msgstr "Виберіть рахунки для синхронізації:"
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
 msgstr "Вибрати все"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
+msgid "Select all categories"
+msgstr "Оберіть усі категорії"
 
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"
