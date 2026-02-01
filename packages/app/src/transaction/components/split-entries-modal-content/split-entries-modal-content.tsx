@@ -1,5 +1,5 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { Plural, Trans } from '@lingui/react/macro';
 import { useCallback, useRef, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 
@@ -158,7 +158,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const listHeader = (
         <View className="flex-row items-center justify-between px-xl pb-lg">
             <Text className="text-sm font-medium text-secondary-foreground">
-                <Trans>{itemCount} items</Trans>
+                <Plural value={itemCount} one="# item" other="# items" />
             </Text>
             <Text className="text-md font-semibold text-primary">{formattedTotal}</Text>
         </View>
