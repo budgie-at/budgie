@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import Animated, { Easing, FadeInUp, cancelAnimation, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { AiTranslationFieldsHeaderRight } from '../ai-translation-fields-header-right/ai-translation-fields-header-right';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 interface ModelStatusInterface {
@@ -31,7 +32,6 @@ const DEFAULT_ANIMATION_DELAY = 200;
 const FULL_ROTATION = 360;
 const ROTATION_DURATION = 1000;
 
- 
 export const AiTranslationFields = (props: Props) => {
     const {
         titleEn,
@@ -88,7 +88,7 @@ export const AiTranslationFields = (props: Props) => {
                     entering={FadeInUp.delay(animationDelay).duration(DEFAULT_ANIMATION_DELAY)}
                     className={`px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
                 >
-                    <Pressable className="flex-row items-center" onPress={onTitleEnPress} disabled={isTitleEnPressDisabled}>
+                    <HapticPressable className="flex-row items-center" onPress={onTitleEnPress} disabled={isTitleEnPressDisabled}>
                         <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
                         <View className="ml-lg flex-1">
                             <Text className="text-xxs text-secondary-foreground uppercase">
@@ -98,14 +98,14 @@ export const AiTranslationFields = (props: Props) => {
                                 {englishValue}
                             </Text>
                         </View>
-                    </Pressable>
+                    </HapticPressable>
                 </Animated.View>
 
                 <Animated.View
                     entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
                     className={`px-xl py-lg ${fieldOpacity}`}
                 >
-                    <Pressable className="flex-row items-center" onPress={onTitleTagsPress} disabled={isTitleTagsPressDisabled}>
+                    <HapticPressable className="flex-row items-center" onPress={onTitleTagsPress} disabled={isTitleTagsPressDisabled}>
                         <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
                         <View className="ml-lg flex-1">
                             <Text className="text-xxs text-secondary-foreground uppercase">
@@ -113,7 +113,7 @@ export const AiTranslationFields = (props: Props) => {
                             </Text>
                             <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
                         </View>
-                    </Pressable>
+                    </HapticPressable>
                 </Animated.View>
                 {/* jscpd:ignore-end */}
             </View>
