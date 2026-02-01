@@ -41,7 +41,7 @@ export const SplitEntryRow = (props: Props) => {
 
     const categoryIcon = hasCategorySelected && category ? category.icon : UserIconNameEnum.Circle;
     const categoryTitle = hasCategorySelected && category ? category.title : t`Select category`;
-    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-tertiary';
+    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
     return (
         <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
