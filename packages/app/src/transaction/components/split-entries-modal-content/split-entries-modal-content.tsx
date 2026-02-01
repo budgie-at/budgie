@@ -2,7 +2,7 @@ import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIco
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -33,13 +33,7 @@ interface EntryWithLocalId extends TransactionEntryCreateInputInterface {
     readonly localId: string;
 }
 
-let nextLocalId = 0;
-
-const generateLocalId = (): string => {
-    nextLocalId += 1;
-
-    return `entry-${Date.now()}-${nextLocalId}`;
-};
+const generateLocalId = (): string => `entry-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 const addLocalId = (entry: TransactionEntryCreateInputInterface): EntryWithLocalId => ({
     ...entry,
@@ -82,16 +76,18 @@ export const SplitEntriesModalContent = (props: Props) => {
     const [entries, setEntries] = useState<EntryWithLocalId[]>(() => initialEntries.map(addLocalId));
     const [autoFocusIndex, setAutoFocusIndex] = useState(-1);
 
-    const entriesRef = useRef(entries);
     const previouslyFullySplitRef = useRef(false);
+    const isInitialRenderRef = useRef(true);
 
-    const notifyChange = useCallback(
-        (updated: EntryWithLocalId[]) => {
-            entriesRef.current = updated;
-            onEntriesChange(updated.map(stripLocalId));
-        },
-        [onEntriesChange]
-    );
+    useEffect(() => {
+        if (isInitialRenderRef.current) {
+            isInitialRenderRef.current = false;
+
+            return;
+        }
+
+        onEntriesChange(entries.map(stripLocalId));
+    }, [entries, onEntriesChange]);
 
     const entriesTotal = entries.reduce((sum, entry) => sum + entry.amount, 0);
     const remainingAmount = totalAmount - entriesTotal;
@@ -113,12 +109,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     }, [isFullySplit, hapticNotification]);
 
     const handleAmountChange = (index: number, amount: number) => {
-        setEntries(previous => {
-            const updated = previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, amount } : entry));
-            notifyChange(updated);
-
-            return updated;
-        });
+        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, amount } : entry)));
     };
 
     const handleCategoryPress = async (index: number) => {
@@ -126,35 +117,21 @@ export const SplitEntriesModalContent = (props: Props) => {
         const selectedCategoryId = await openCategorySelector({ initialCategoryId: currentCategoryId, variant });
 
         if (isDefined(selectedCategoryId)) {
-            setEntries(previous => {
-                const updated = previous.map((entry, entryIndex) =>
-                    entryIndex === index ? { ...entry, categoryId: selectedCategoryId } : entry
-                );
-                notifyChange(updated);
-
-                return updated;
-            });
+            setEntries(previous =>
+                previous.map((entry, entryIndex) => (entryIndex === index ? { ...entry, categoryId: selectedCategoryId } : entry))
+            );
         }
     };
 
     const handleAddEntry = () => {
         const newEntry = createEmptyEntry(entryType, accountId);
-        setEntries(previous => {
-            const updated = [...previous, newEntry];
-            setAutoFocusIndex(updated.length - 1);
-            notifyChange(updated);
-
-            return updated;
-        });
+        setEntries(previous => [...previous, newEntry]);
+        setAutoFocusIndex(entries.length);
     };
 
     const handleRemoveEntry = (index: number) => {
-        setEntries(previous => {
-            const updated = previous.filter((_, entryIndex) => entryIndex !== index);
-            notifyChange(updated);
-
-            return updated;
-        });
+        setEntries(previous => previous.filter((_, entryIndex) => entryIndex !== index));
+        setAutoFocusIndex(-1);
     };
 
     const renderItem = ({ item, index }: { item: EntryWithLocalId; index: number }) => {

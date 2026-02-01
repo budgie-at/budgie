@@ -1,5 +1,5 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
@@ -164,7 +164,7 @@ export const CategoryForm = (props: Props) => {
             </KeyboardAwareScrollView>
 
             <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={<Trans>Merge into another category</Trans>} /> : null}
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={t`Merge into another category`} /> : null}
 
                 <View className="flex-row gap-x-md">
                     <ModalFormCancelButton onPress={onCancel} />

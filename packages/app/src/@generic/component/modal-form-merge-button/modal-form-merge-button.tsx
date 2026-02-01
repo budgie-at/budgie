@@ -1,10 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { ReactNode } from 'react';
 
 import { Button } from '../button/button';
 
 interface Props {
-    readonly content: ReactNode;
+    readonly content: string;
     readonly onPress: () => void;
 }
 

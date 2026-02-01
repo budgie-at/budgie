@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { CategoryTranslationResult } from '../../ai/service/category-llm.service';
+import { TranslationResult } from '../../ai/service/base-llm.service';
 
 interface AiTranslationEntity {
     title: string;
@@ -10,7 +10,7 @@ interface AiTranslationEntity {
     titleTags: string | null;
 }
 
-type RegenerateFn = (entityId: number, title: string) => Promise<CategoryTranslationResult | null>;
+type RegenerateFn = (entityId: number, title: string) => Promise<TranslationResult | null>;
 
 interface UseAiTranslationFieldsParams {
     entity: AiTranslationEntity | null;

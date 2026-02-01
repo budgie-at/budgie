@@ -1,0 +1,70 @@
+import { useEffect, useRef, useState } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
+
+import { SuggestionStatus } from '../../ai/interface/suggestion-status.type';
+
+const LOADING_DELAY_MS = 400;
+
+interface UseSuggestionLoadingStateParams {
+    readonly status: SuggestionStatus;
+    readonly hasResults: boolean;
+    readonly enabled: boolean;
+}
+
+interface UseSuggestionLoadingStateReturn {
+    readonly showLoading: boolean;
+    readonly showContent: boolean;
+    readonly hasSelected: boolean;
+    readonly markSelected: () => void;
+}
+
+export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParams): UseSuggestionLoadingStateReturn => {
+    const { status, hasResults, enabled } = params;
+
+    const [showLoading, setShowLoading] = useState(false);
+    const [hasSelected, setHasSelected] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const wasProcessingRef = useRef(false);
+
+    const isProcessing = status === 'initializing' || status === 'loading';
+    const isReady = status === 'success' && hasResults;
+
+    useEffect(() => {
+        if (isDefined(timerRef.current)) {
+            clearTimeout(timerRef.current);
+            timerRef.current = null;
+        }
+
+        if (isProcessing && !wasProcessingRef.current) {
+            wasProcessingRef.current = true;
+            timerRef.current = setTimeout(() => {
+                setShowLoading(true);
+                timerRef.current = null;
+            }, LOADING_DELAY_MS);
+        }
+
+        if (!isProcessing && wasProcessingRef.current) {
+            wasProcessingRef.current = false;
+            timerRef.current = setTimeout(() => {
+                setShowLoading(false);
+                timerRef.current = null;
+            }, 0);
+        }
+
+        return () => {
+            if (isDefined(timerRef.current)) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, [isProcessing]);
+
+    const showLoadingIndicator = showLoading && !isReady;
+    const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
+
+    const markSelected = () => {
+        setHasSelected(true);
+    };
+
+    return { showLoading: showLoadingIndicator, showContent, hasSelected, markSelected };
+};

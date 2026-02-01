@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../ai/context/llm.context';
-import { CategoryLlmService, CategoryTranslationResult } from '../../ai/service/category-llm.service';
+import { TranslationResult } from '../../ai/service/base-llm.service';
+import { CategoryLlmService } from '../../ai/service/category-llm.service';
 
 interface UseRegenerateCategoryTranslationReturn {
-    regenerate: (categoryId: number, title: string) => Promise<CategoryTranslationResult | null>;
+    regenerate: (categoryId: number, title: string) => Promise<TranslationResult | null>;
     isRegenerating: boolean;
     error: string | null;
 }
@@ -17,7 +18,7 @@ export const useRegenerateCategoryTranslation = (): UseRegenerateCategoryTransla
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const regenerate = async (categoryId: number, title: string): Promise<CategoryTranslationResult | null> => {
+    const regenerate = async (categoryId: number, title: string): Promise<TranslationResult | null> => {
         if (!llm.isReady) {
             setError(t`LLM not ready`);
 
