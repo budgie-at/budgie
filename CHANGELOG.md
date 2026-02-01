@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.24.0](https://github.com/budgie-at/budgie/compare/v2.23.0...v2.24.0) (2026-02-01)
+
+### Features
+
+- **app:** use native confirm dialog for transaction deletion ([7cc18ef](https://github.com/budgie-at/budgie/commit/7cc18ef6fcc3deea52545ea4441c3508f0f74fe4)), closes [#297](https://github.com/budgie-at/budgie/issues/297)
+
 # [2.23.0](https://github.com/budgie-at/budgie/compare/v2.22.0...v2.23.0) (2026-01-31)
 
 ### Bug Fixes
