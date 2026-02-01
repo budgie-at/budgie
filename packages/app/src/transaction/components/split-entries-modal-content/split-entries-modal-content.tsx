@@ -206,6 +206,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     return (
         <View className="flex-1">
             <FlatList
+                className="flex-1"
                 data={entries}
                 keyExtractor={keyExtractor}
                 renderItem={renderItem}
