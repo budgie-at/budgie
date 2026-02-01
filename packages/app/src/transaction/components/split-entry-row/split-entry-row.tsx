@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -39,8 +39,8 @@ export const SplitEntryRow = (props: Props) => {
     const hasCategorySelected = isPositiveNumber(categoryId);
     const { category } = useGetCategoryByIdQuery(categoryId);
 
-    const categoryIcon = hasCategorySelected && category ? category.icon : UserIconNameEnum.Circle;
-    const categoryTitle = hasCategorySelected && category ? category.title : t`Select category`;
+    const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
+    const categoryTitle = hasCategorySelected && isDefined(category) ? category.title : t`Select category`;
     const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
 
     return (

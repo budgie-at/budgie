@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
@@ -9,6 +9,7 @@ import { useSplitEntriesModal } from '../transaction/context/split-entries-modal
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 export default function SplitEntriesModal() {
+    const router = useRouter();
     const { currentParams, resolveSplitEntries } = useSplitEntriesModal();
     const { backgroundColor } = useFormsheetListStyles();
 
@@ -32,6 +33,12 @@ export default function SplitEntriesModal() {
         // eslint-disable-next-line react-hooks/exhaustive-deps -- Resolve on unmount only
         []
     );
+
+    useEffect(() => {
+        if (!currentParams) {
+            router.back();
+        }
+    }, [currentParams, router]);
 
     if (!currentParams) {
         return null;

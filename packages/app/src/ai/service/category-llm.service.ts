@@ -4,7 +4,7 @@ import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
 
-import { BaseLlmService, TranslationResult } from './base-llm.service';
+import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
 interface CategorySuggestionParams {
     transactionTitle: string;
@@ -21,7 +21,7 @@ const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
 export class CategoryLlmService extends BaseLlmService {
-    async regenerateOne(categoryId: number, title: string): Promise<TranslationResult> {
+    async regenerateOne(categoryId: number, title: string): Promise<TranslationResultInterface> {
         const result = await this.generateTranslationAndTags(title);
         await this.saveTranslation(categoryId, result);
 
@@ -59,7 +59,7 @@ export class CategoryLlmService extends BaseLlmService {
         return categoryIds.map(id => categories.find(category => category.id === id)).filter(isDefined);
     }
 
-    private async saveTranslation(categoryId: number, result: TranslationResult): Promise<void> {
+    private async saveTranslation(categoryId: number, result: TranslationResultInterface): Promise<void> {
         await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
     }
 

@@ -4,7 +4,7 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
 
-import { BaseLlmService, TranslationResult } from './base-llm.service';
+import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
 interface TagSuggestionParams {
     transactionTitle: string;
@@ -21,7 +21,7 @@ interface TagLlmErrorHandler {
 const MAX_SUGGESTIONS = 3;
 
 export class TagLlmService extends BaseLlmService {
-    async regenerateOne(tagId: number, title: string): Promise<TranslationResult> {
+    async regenerateOne(tagId: number, title: string): Promise<TranslationResultInterface> {
         const result = await this.generateTranslationAndTags(title);
         await this.saveTranslation(tagId, result);
 
@@ -58,7 +58,7 @@ export class TagLlmService extends BaseLlmService {
         return tagIds.map(id => tags.find(tag => tag.id === id)).filter(isDefined);
     }
 
-    private async saveTranslation(tagId: number, result: TranslationResult): Promise<void> {
+    private async saveTranslation(tagId: number, result: TranslationResultInterface): Promise<void> {
         await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
     }
 

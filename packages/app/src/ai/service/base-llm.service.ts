@@ -3,7 +3,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
 import { LlmInterface } from '../context/llm.context';
 
-export interface TranslationResult {
+export interface TranslationResultInterface {
     titleEn: string;
     titleTags: string;
 }
@@ -11,7 +11,7 @@ export interface TranslationResult {
 export class BaseLlmService {
     constructor(protected readonly llm: LlmInterface) {}
 
-    protected async generateTranslationAndTags(title: string): Promise<TranslationResult> {
+    protected async generateTranslationAndTags(title: string): Promise<TranslationResultInterface> {
         const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTitleEn = titleEn.trim().toLowerCase();
 
