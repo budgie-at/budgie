@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import Animated, { Easing, FadeInUp, cancelAnimation, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { AiTranslationFieldsHeaderRight } from '../ai-translation-fields-header-right/ai-translation-fields-header-right';
@@ -20,6 +20,8 @@ interface Props {
     readonly isRegenerating: boolean;
     readonly disabled?: boolean;
     readonly onRegenerate: () => void;
+    readonly onTitleEnPress?: () => void;
+    readonly onTitleTagsPress?: () => void;
     readonly animationDelay?: number;
     readonly modelStatus: ModelStatusInterface;
 }
@@ -29,6 +31,7 @@ const DEFAULT_ANIMATION_DELAY = 200;
 const FULL_ROTATION = 360;
 const ROTATION_DURATION = 1000;
 
+ 
 export const AiTranslationFields = (props: Props) => {
     const {
         titleEn,
@@ -36,6 +39,8 @@ export const AiTranslationFields = (props: Props) => {
         isRegenerating,
         disabled = false,
         onRegenerate,
+        onTitleEnPress,
+        onTitleTagsPress,
         animationDelay = DEFAULT_ANIMATION_DELAY,
         modelStatus
     } = props;
@@ -57,6 +62,8 @@ export const AiTranslationFields = (props: Props) => {
     }, [isRegenerating, rotation]);
 
     const fieldOpacity = modelStatus.isReady ? '' : 'opacity-40';
+    const isTitleEnPressDisabled = !onTitleEnPress || !modelStatus.isReady || disabled;
+    const isTitleTagsPressDisabled = !onTitleTagsPress || !modelStatus.isReady || disabled;
 
     return (
         <View className="px-3xl pt-xl">
@@ -79,30 +86,34 @@ export const AiTranslationFields = (props: Props) => {
                 {/* jscpd:ignore-start -- Intentionally similar field rows with different icons/labels */}
                 <Animated.View
                     entering={FadeInUp.delay(animationDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className={`flex-row items-center px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
+                    className={`px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
                 >
-                    <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
-                    <View className="ml-lg flex-1">
-                        <Text className="text-xxs text-secondary-foreground uppercase">
-                            <Trans>English Translation</Trans>
-                        </Text>
-                        <Text className="text-sm text-primary font-medium" numberOfLines={1}>
-                            {englishValue}
-                        </Text>
-                    </View>
+                    <Pressable className="flex-row items-center" onPress={onTitleEnPress} disabled={isTitleEnPressDisabled}>
+                        <Icon icon={UserIconNameEnum.Globe} size={18} className="text-secondary-foreground" />
+                        <View className="ml-lg flex-1">
+                            <Text className="text-xxs text-secondary-foreground uppercase">
+                                <Trans>English Translation</Trans>
+                            </Text>
+                            <Text className="text-sm text-primary font-medium" numberOfLines={1}>
+                                {englishValue}
+                            </Text>
+                        </View>
+                    </Pressable>
                 </Animated.View>
 
                 <Animated.View
                     entering={FadeInUp.delay(tagsDelay).duration(DEFAULT_ANIMATION_DELAY)}
-                    className={`flex-row px-xl py-lg ${fieldOpacity}`}
+                    className={`px-xl py-lg ${fieldOpacity}`}
                 >
-                    <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
-                    <View className="ml-lg flex-1">
-                        <Text className="text-xxs text-secondary-foreground uppercase">
-                            <Trans>Search Keywords</Trans>
-                        </Text>
-                        <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
-                    </View>
+                    <Pressable className="flex-row items-center" onPress={onTitleTagsPress} disabled={isTitleTagsPressDisabled}>
+                        <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground mt-xs" />
+                        <View className="ml-lg flex-1">
+                            <Text className="text-xxs text-secondary-foreground uppercase">
+                                <Trans>Search Keywords</Trans>
+                            </Text>
+                            <Text className="text-sm text-primary font-medium">{tagsValue}</Text>
+                        </View>
+                    </Pressable>
                 </Animated.View>
                 {/* jscpd:ignore-end */}
             </View>
