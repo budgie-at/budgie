@@ -18,7 +18,36 @@ const MAX_ICONS = 100;
 
 const keyExtractor = (item: FlatListDataItem<UserIcon>, index: number) => (item.isEmpty ? `empty-${index}` : item.name);
 
-const filterIcons = (search: string): FlatListDataItem<UserIcon>[] => {
+const sortIconsByKeywords = (icons: UserIcon[], keywords: string[]): UserIcon[] => {
+    if (keywords.length === 0) {
+        return icons;
+    }
+
+    const keywordsLower = keywords.map(keyword => keyword.toLowerCase());
+
+    const matchesKeyword = (icon: UserIcon): boolean => icon.tags.some(tag => keywordsLower.some(keyword => tag.includes(keyword)));
+
+    const matched: UserIcon[] = [];
+    const unmatched: UserIcon[] = [];
+
+    for (const icon of icons) {
+        if (matchesKeyword(icon)) {
+            matched.push(icon);
+        } else {
+            unmatched.push(icon);
+        }
+    }
+
+    return [...matched, ...unmatched];
+};
+
+const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserIcon>[] => {
+    if (search.length === 0) {
+        const sorted = sortIconsByKeywords(USER_ICONS_LIST, keywords);
+
+        return padFlatListData(sorted.slice(0, MAX_ICONS), NUM_COLUMNS);
+    }
+
     const searchLower = search.toLowerCase();
     const filtered = USER_ICONS_LIST.filter(
         ({ name, tags }) => name.toLowerCase().includes(searchLower) || tags.some(tag => tag.includes(searchLower))
@@ -33,8 +62,8 @@ export default function IconSelectorModal() {
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 
-    const { selectedIcon, variant = 'default' } = currentParams ?? {};
-    const data = filterIcons(search);
+    const { selectedIcon, variant = 'default', keywords = [] } = currentParams ?? {};
+    const data = filterIcons(search, keywords);
     const containerStyle = { flex: 1, backgroundColor };
 
     const handleSelect = (icon: UserIconNameEnum) => {
