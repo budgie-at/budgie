@@ -18,6 +18,7 @@ import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useLlmContext } from '../../../ai/context/llm.context';
+import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
@@ -39,11 +40,12 @@ interface Props {
 
 const TITLE_ANIMATION_DELAY = 100;
 
-// eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { openTagsSelector } = useTagsSelectorModal();
+    const { openNoteInput } = useNoteInputModal();
     const { regenerate, isRegenerating } = useRegenerateTagTranslation();
     const { llm } = useLlmContext();
 
@@ -51,7 +53,7 @@ export const TagForm = (props: Props) => {
 
     const isEditing = isDefined(tag?.id);
 
-    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+    const { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
         entity: tag ?? null,
         entityId: tag?.id ?? 0,
         currentTitle: title,
@@ -62,6 +64,20 @@ export const TagForm = (props: Props) => {
 
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
+
+    const handleTitleEnPress = async () => {
+        const result = await openNoteInput({ initialValue: titleEn ?? '' });
+        if (isDefined(result)) {
+            setTitleEn(result);
+        }
+    };
+
+    const handleTitleTagsPress = async () => {
+        const result = await openNoteInput({ initialValue: titleTags ?? '' });
+        if (isDefined(result)) {
+            setTitleTags(result);
+        }
+    };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
@@ -144,6 +160,8 @@ export const TagForm = (props: Props) => {
                     isRegenerating={isRegenerating}
                     disabled={isGenerateDisabled}
                     onRegenerate={handleRegenerate}
+                    onTitleEnPress={handleTitleEnPress}
+                    onTitleTagsPress={handleTitleTagsPress}
                     modelStatus={llm}
                 />
             </KeyboardAwareScrollView>
