@@ -16,6 +16,7 @@ import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useLlmContext } from '../../../ai/context/llm.context';
+import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
@@ -42,6 +43,7 @@ export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const { openCategorySelector } = useCategorySelectorModal();
+    const { openNoteInput } = useNoteInputModal();
     const { openIconSelector } = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const { llm } = useLlmContext();
@@ -50,7 +52,7 @@ export const CategoryForm = (props: Props) => {
 
     const isEditing = isDefined(category?.id);
 
-    const { titleEn, titleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
+    const { titleEn, titleTags, setTitleEn, setTitleTags, isGenerateDisabled, handleRegenerate, handleTitleBlur } = useAiTranslationFields({
         entity: category ?? null,
         entityId: category?.id ?? 0,
         currentTitle: title,
@@ -62,8 +64,27 @@ export const CategoryForm = (props: Props) => {
     const isSaveDisabled = !isNotEmptyString(title);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
 
+    /* jscpd:ignore-start -- Same note-input handlers used in tag-form */
+    const handleTitleEnPress = async () => {
+        const result = await openNoteInput({ initialValue: titleEn ?? '' });
+        if (isDefined(result)) {
+            setTitleEn(result);
+        }
+    };
+
+    const handleTitleTagsPress = async () => {
+        const result = await openNoteInput({ initialValue: titleTags ?? '' });
+        if (isDefined(result)) {
+            setTitleTags(result);
+        }
+    };
+    /* jscpd:ignore-end */
+
     const handleIconPress = async () => {
-        const selectedIcon = await openIconSelector({ selectedIcon: icon });
+        const keywordSource = [titleEn, titleTags].filter(isNotEmptyString).join(' ');
+        const keywords = keywordSource.split(/[,\s]+/u).filter(isNotEmptyString);
+
+        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords });
 
         if (isDefined(selectedIcon)) {
             setValue('icon', selectedIcon);
@@ -136,6 +157,8 @@ export const CategoryForm = (props: Props) => {
                     isRegenerating={isRegenerating}
                     disabled={isGenerateDisabled}
                     onRegenerate={handleRegenerate}
+                    onTitleEnPress={handleTitleEnPress}
+                    onTitleTagsPress={handleTitleTagsPress}
                     modelStatus={llm}
                 />
             </KeyboardAwareScrollView>
