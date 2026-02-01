@@ -4,7 +4,7 @@ import { ClassValue } from 'clsx';
 import { ComponentProps, ReactNode } from 'react';
 import { Text } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
@@ -53,10 +53,13 @@ const textVariants = cva<{
 export const Button = (props: Props) => {
     const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
 
-    const pressHandler = disabled ? emptyFn : onPress;
-
     return (
-        <HapticPressable onPress={pressHandler} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
+        <HapticPressable
+            onPress={onPress}
+            disabled={disabled}
+            className={cn(buttonVariants({ disabled, size, variant }), className)}
+            {...rest}
+        >
             {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
             {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
