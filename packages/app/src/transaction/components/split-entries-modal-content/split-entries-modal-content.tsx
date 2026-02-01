@@ -97,8 +97,9 @@ export const SplitEntriesModalContent = (props: Props) => {
     const canDelete = entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && entry.amount > 0);
+    const allEntriesHaveAmount = entries.every(entry => entry.amount > 0);
     const hasMissingCategories = isFullySplit && !allEntriesValid;
-    const canAddEntry = remainingAmount > 0 && allEntriesValid;
+    const canAddEntry = remainingAmount > 0 && allEntriesHaveAmount;
     const canConfirm = isFullySplit && allEntriesValid;
 
     useEffect(() => {
