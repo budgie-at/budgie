@@ -66,6 +66,8 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
         }
     }, [exceedsDebtBalance, form, t]);
 
+    const initialSplitMode = transaction.entries.length > 2;
+
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
@@ -82,6 +84,7 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
                 <TransferQuickForm
                     variant="default"
                     initialDestinationAmount={initialDestinationAmount}
+                    initialSplitMode={initialSplitMode}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
                 />
