@@ -104,7 +104,7 @@ export const SimpleQuickForm = (props: Props) => {
                       {
                           accountId,
                           categoryId: currentCategoryId,
-                          amount: currentAmount,
+                          amount: 0,
                           type: entryType,
                           mccCategoryId: null,
                           externalId: null
