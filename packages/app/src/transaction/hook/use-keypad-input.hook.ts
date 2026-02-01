@@ -14,7 +14,7 @@ interface KeypadHandlers {
     readonly onLongBackspace: () => void;
 }
 
-export interface UseKeypadInputResult {
+interface UseKeypadInputResult {
     readonly displayValue: string;
     readonly numericValue: number;
     readonly handlers: KeypadHandlers;

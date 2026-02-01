@@ -8,16 +8,14 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
-import { useSplitEntries } from '../../hook/use-split-entries.hook';
-import { useSplitKeypadSync } from '../../hook/use-split-keypad-sync.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
-import { SplitEntryList } from '../split-entry-list/split-entry-list';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
 import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -39,7 +37,6 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
-    readonly initialSplitMode?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -60,7 +57,6 @@ export const SimpleQuickForm = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         aiContext = '',
-        initialSplitMode = false,
         buildEntries,
         onSubmit,
         onCancel
@@ -70,15 +66,16 @@ export const SimpleQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers } = useQuickFormAmount({ accountFieldName });
+    const { openSplitEntries } = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
-    const split = useSplitEntries({ entryType, accountFieldName, initialSplitMode });
-
-    const splitKeypad = useSplitKeypadSync(split);
 
     const comment = useWatch({ control, name: 'comment' });
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
     const tagIds = useWatch({ control, name: 'tagIds' });
+    const entries = useWatch({ control, name: 'entries' });
+
+    const splitEntryCount = entries.length;
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
@@ -92,11 +89,46 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
+    const handleSplitPress = async () => {
+        const currentEntries = getValues('entries');
+        const accountId = getValues(accountFieldName) ?? 0;
+        const currentAmount = getValues('amount');
+        const currentCategoryId = getValues('entries.0.categoryId') ?? 0;
+
+        const initialEntries =
+            currentEntries.length > 1
+                ? currentEntries
+                : [
+                      {
+                          accountId,
+                          categoryId: currentCategoryId,
+                          amount: currentAmount,
+                          type: entryType,
+                          mccCategoryId: null,
+                          externalId: null
+                      }
+                  ];
+
+        const result = await openSplitEntries({
+            entries: initialEntries,
+            variant,
+            entryType,
+            currencySymbol
+        });
+
+        if (isDefined(result)) {
+            setValue('entries', result, { shouldValidate: false });
+            const totalAmount = result.reduce((sum, entry) => sum + entry.amount, 0);
+            setValue('amount', totalAmount);
+        }
+    };
+
+    const isSplitActive = splitEntryCount > 1;
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showCategorySuggestions = !hasCategorySelected && hasContext && !split.isSplitMode;
-    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !split.isSplitMode;
+    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive;
+    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -113,19 +145,21 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        const entries = buildEntries({ accountId, categoryId: formCategoryId, amount });
+        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount });
 
-        setValue('entries', entries, { shouldValidate: false });
+        setValue('entries', builtEntries, { shouldValidate: false });
 
         onSubmit();
     };
 
     const handleSplitConfirm = () => {
         const accountId = getValues(accountFieldName) ?? 0;
-        const allEntriesValid = split.entries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
+        const currentEntries = getValues('entries');
+        const allEntriesValid = currentEntries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
+        const totalAmount = currentEntries.reduce((sum, entry) => sum + entry.amount, 0);
 
         const isValid = validateAndShake([
-            { isValid: split.totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
+            { isValid: totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: allEntriesValid },
             { isValid: accountId > 0 }
         ]);
@@ -134,13 +168,15 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        setValue('amount', split.totalAmount);
+        setValue('amount', totalAmount);
 
         onSubmit();
     };
 
+    const handleSplitIconPress = () => void handleSplitPress();
+
     const handleConfirm = () => {
-        if (split.isSplitMode) {
+        if (isSplitActive) {
             handleSplitConfirm();
 
             return;
@@ -149,32 +185,11 @@ export const SimpleQuickForm = (props: Props) => {
         handleNormalConfirm();
     };
 
-    const splitTotalDisplay = split.totalAmount === 0 ? '0' : split.totalAmount.toString();
-    const activeDisplayValue = split.isSplitMode ? splitTotalDisplay : displayValue;
-
-    const activeKeypadHandlers = split.isSplitMode ? splitKeypad.handlers : keypadHandlers;
-
     return (
         <View className="flex-1">
-            <TransactionAmountDisplay
-                ref={amountDisplayRef}
-                amount={activeDisplayValue}
-                currencySymbol={currencySymbol}
-                variant={variant}
-            />
+            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
 
-            {split.isSplitMode ? (
-                <SplitEntryList
-                    entries={split.entries}
-                    entryIds={split.entryIds}
-                    activeEntryIndex={split.activeEntryIndex}
-                    currencySymbol={currencySymbol}
-                    onSelectEntry={split.setActiveEntryIndex}
-                    onAddEntry={split.addEntry}
-                />
-            ) : null}
-
-            {!split.isSplitMode && showTagSuggestions ? (
+            {!isSplitActive && showTagSuggestions ? (
                 <TagSuggestionsRow
                     transactionTitle={transactionTitle}
                     categoryId={categoryId}
@@ -186,7 +201,7 @@ export const SimpleQuickForm = (props: Props) => {
                 />
             ) : null}
 
-            {!split.isSplitMode && !showTagSuggestions ? (
+            {!isSplitActive && !showTagSuggestions ? (
                 <CategorySuggestionsRow
                     transactionTitle={transactionTitle}
                     mccCategoryId={mccCategoryId}
@@ -201,8 +216,8 @@ export const SimpleQuickForm = (props: Props) => {
                 ref={fieldIconsRef}
                 variant={variant}
                 transactionType={transactionType}
-                isSplitMode={split.isSplitMode}
-                onToggleSplit={split.toggleSplitMode}
+                splitEntryCount={splitEntryCount}
+                onSplitPress={handleSplitIconPress}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />
@@ -213,10 +228,10 @@ export const SimpleQuickForm = (props: Props) => {
 
             <TransactionKeypad
                 variant={variant}
-                onDigit={activeKeypadHandlers.onDigit}
-                onDecimal={activeKeypadHandlers.onDecimal}
-                onBackspace={activeKeypadHandlers.onBackspace}
-                onLongBackspace={activeKeypadHandlers.onLongBackspace}
+                onDigit={keypadHandlers.onDigit}
+                onDecimal={keypadHandlers.onDecimal}
+                onBackspace={keypadHandlers.onBackspace}
+                onLongBackspace={keypadHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
             />

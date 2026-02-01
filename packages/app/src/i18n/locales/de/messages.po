@@ -31,7 +31,7 @@ msgstr "{accountTitle} wird in Ihrer Hauptansicht wiederhergestellt."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} Spalten verfügbar"
 
-#: src/transaction/components/split-entry-list/split-entry-list.tsx:31
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:137
 msgid "{itemCount} items"
 msgstr "{itemCount} Einträge"
 
@@ -44,6 +44,10 @@ msgstr "{percentage}% der Ausgaben"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+msgid "{splitEntryCount} items"
+msgstr "{splitEntryCount} Einträge"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -117,7 +121,7 @@ msgstr "Notiz hinzufügen..."
 msgid "Add Account"
 msgstr "Konto hinzufügen"
 
-#: src/transaction/components/split-entry-list/split-entry-list.tsx:59
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:167
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
 
@@ -620,11 +624,11 @@ msgstr "z. B. Sparkonto"
 msgid "Edit Category"
 msgstr "Kategorie bearbeiten"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:73
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Ausgabe bearbeiten"
 
-#: src/app/(main)/transactions/[id]/income.tsx:73
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Edit Income"
 msgstr "Einnahme bearbeiten"
 
@@ -632,7 +636,7 @@ msgstr "Einnahme bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:78
+#: src/app/(main)/transactions/[id]/transfer.tsx:76
 msgid "Edit Transfer"
 msgstr "Überweisung bearbeiten"
 
@@ -1112,10 +1116,6 @@ msgstr "nicht gesetzt"
 msgid "Note"
 msgstr "Notiz"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
-msgid "On"
-msgstr "An"
-
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
 msgstr "Öffnen Sie Monobank, um Ihren Token zu erhalten"
@@ -1207,7 +1207,7 @@ msgstr "Neu berechnen"
 msgid "Recalculate Balances"
 msgstr "Salden neu berechnen"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:150
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
@@ -1338,6 +1338,10 @@ msgstr "Konten zum Synchronisieren auswählen:"
 msgid "Select All"
 msgstr "Alle auswählen"
 
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:41
+msgid "Select category"
+msgstr "Kategorie wählen"
+
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:31
 msgid "Select column..."
 msgstr "Spalte auswählen..."
@@ -1354,7 +1358,7 @@ msgstr "Wählen Sie den Kontotyp"
 msgid "Selected"
 msgstr "Ausgewählt"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:149
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
 msgid "Sending {fromCode}"
 msgstr "Senden {fromCode}"
 
@@ -1414,7 +1418,7 @@ msgstr "Ausgaben nach Tag"
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
 msgid "Split"
 msgstr "Aufteilen"
 
@@ -1567,7 +1571,7 @@ msgid "To Currency"
 msgstr "In Währung"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:83
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
 msgid "Today"
 msgstr "Heute"
 
@@ -1658,10 +1662,6 @@ msgstr "Nicht kategorisiert"
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
-msgid "Unsplit"
-msgstr "Zusammenfassen"
-
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"
@@ -1707,7 +1707,7 @@ msgstr "Wann soll es zurückgegeben werden?"
 msgid "Who owes you?"
 msgstr "Wer schuldet Ihnen Geld?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:85
 msgid "Yesterday"
 msgstr "Gestern"
 

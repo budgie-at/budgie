@@ -53,7 +53,6 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
     const sourceAccount = sourceEntry.account;
     const sourceInstrumentId = sourceAccount.instrumentId;
     const mccCategoryId = sourceEntry.mccCategoryId ?? null;
-    const initialSplitMode = transaction.entries.length > 1;
 
     const handleOpenConvert = () =>
         void openConvertToTransfer({
@@ -86,7 +85,6 @@ const UpdateIncomeForm = ({ transaction, transactionId }: UpdateIncomeFormProps)
                     accountFieldName="toAccountId"
                     transactionTitle={transaction.title}
                     mccCategoryId={mccCategoryId}
-                    initialSplitMode={initialSplitMode}
                     buildEntries={buildIncomeEntry}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
