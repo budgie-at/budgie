@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.25.0](https://github.com/budgie-at/budgie/compare/v2.24.1...v2.25.0) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** use HapticPressable instead of Pressable in AI translation fields ([6d7ffb2](https://github.com/budgie-at/budgie/commit/6d7ffb25e73b71dceebf509283bd482a9d18d845))
+
+### Features
+
+- **app:** editable AI translation fields and icon selector keyword sorting ([737e559](https://github.com/budgie-at/budgie/commit/737e5592896eef1de908530577c9c85600044267))
+
 ## [2.24.1](https://github.com/budgie-at/budgie/compare/v2.24.0...v2.24.1) (2026-02-01)
 
 ### Bug Fixes
