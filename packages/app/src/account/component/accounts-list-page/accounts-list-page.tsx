@@ -1,7 +1,7 @@
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
-import { ListRenderItemInfo } from '@react-native/virtualized-lists/Lists/VirtualizedList';
+import { LegendList } from '@legendapp/list';
 import { ReactElement, ReactNode } from 'react';
-import { FlatList } from 'react-native';
+import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -19,6 +19,15 @@ interface Props<T extends AccountType> {
     readonly children: ReactNode;
 }
 
+const ESTIMATED_ITEM_SIZE = 60;
+const LIST_STYLE = { flex: 1 };
+const CONTENT_CONTAINER_STYLE = { gap: 12 };
+
+const keyExtractor = (item: AccountType) => item.id.toString();
+
+const HEADER_SPACER_STYLE = { height: 80 };
+
+const listHeader = <View style={HEADER_SPACER_STYLE} />;
 const listFooter = <MenuSpacer />;
 
 export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
@@ -26,16 +35,21 @@ export const AccountsListPage = <T extends AccountType>(props: Props<T>) => {
 
     const handleGoBack = () => void goBackOrReplace('/settings');
 
-    const renderAccount = ({ item }: ListRenderItemInfo<T>) => renderCard(item);
+    const renderAccount = ({ item }: { item: T }) => renderCard(item);
 
     return (
-        <Page header={<PageHeader onGoBack={handleGoBack} title={title} />}>
+        <Page withBlur header={<PageHeader onGoBack={handleGoBack} title={title} />}>
             {isNotEmptyArray(accounts) ? (
-                <FlatList
-                    contentContainerClassName="gap-y-xl pt-5xl"
-                    className="flex-1"
+                <LegendList
+                    style={LIST_STYLE}
+                    contentContainerStyle={CONTENT_CONTAINER_STYLE}
+                    ListHeaderComponent={listHeader}
                     data={accounts}
                     renderItem={renderAccount}
+                    keyExtractor={keyExtractor}
+                    estimatedItemSize={ESTIMATED_ITEM_SIZE}
+                    recycleItems
+                    showsVerticalScrollIndicator={false}
                     ListFooterComponent={listFooter}
                 />
             ) : (

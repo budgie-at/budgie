@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -32,29 +32,27 @@ export const SearchablePage = <T extends IdInterface>({
     emptyState,
     onGoBack,
     children
-}: Props<T>) => (
-    <Page
-        header={
-            <PageHeader
-                onGoBack={onGoBack}
-                title={title}
-                bottom={
-                    <TextInput
-                        value={search}
-                        onChangeText={onSearchChange}
-                        placeholder={searchPlaceholder}
-                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                }
+}: Props<T>) => {
+    const searchFooter = (
+        <View className="px-xl pb-lg">
+            <TextInput
+                value={search}
+                onChangeText={onSearchChange}
+                placeholder={searchPlaceholder}
+                className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
             />
-        }
-    >
-        {isNotEmptyArray(data) ? (
-            <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard}>
-                {children}
-            </SearchablePageList>
-        ) : (
-            emptyState
-        )}
-    </Page>
-);
+        </View>
+    );
+
+    return (
+        <Page withBlur header={<PageHeader onGoBack={onGoBack} title={title} />} footer={searchFooter}>
+            {isNotEmptyArray(data) ? (
+                <SearchablePageList onDelete={onDelete} data={data} renderCard={renderCard}>
+                    {children}
+                </SearchablePageList>
+            ) : (
+                emptyState
+            )}
+        </Page>
+    );
+};
