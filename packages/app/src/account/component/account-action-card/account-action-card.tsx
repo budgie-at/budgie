@@ -1,14 +1,13 @@
 /* jscpd:ignore-start */
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -34,31 +33,22 @@ export const AccountActionCard = (props: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
-    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
 
-    const handleAction = async () => {
-        const confirmed = await openConfirmAction({
-            variant: 'positive',
-            icon: actionIcon,
-            title: confirmTitle,
-            description: confirmDescription,
-            buttonText: actionButtonText
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            updateConfirmActionParams({ isLoading: true });
-            await onAction();
-        } catch {
-            Toast.show({
-                type: 'error',
-                text1: errorText,
-                text2: t`Something went wrong. Please try again later.`
-            });
-        }
+    const handleAction = () => {
+        Alert.alert(confirmTitle, confirmDescription, [
+            { text: t`Cancel`, style: 'cancel' },
+            {
+                text: actionButtonText,
+                onPress: () =>
+                    void onAction().catch(() => {
+                        Toast.show({
+                            type: 'error',
+                            text1: errorText,
+                            text2: t`Something went wrong. Please try again later.`
+                        });
+                    })
+            }
+        ]);
     };
 
     return (
