@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.26.0](https://github.com/budgie-at/budgie/compare/v2.25.0...v2.26.0) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** fix search bar positioning in searchable pages ([9aa19e3](https://github.com/budgie-at/budgie/commit/9aa19e31fb33da532b649a3b25a10961f7f3af58))
+- **app:** use theme-aware semi-transparent background with rounded corners for keyboard search ([7ace3d0](https://github.com/budgie-at/budgie/commit/7ace3d03e6b8e8a9cd6459d8452aaa1b619499cd))
+
+### Features
+
+- **app:** add keyboard-sticky search input with background ([d42980b](https://github.com/budgie-at/budgie/commit/d42980b01463fa08933755e705538b20b611ee42))
+- **app:** improve settings entity pages UI/UX ([35f5b79](https://github.com/budgie-at/budgie/commit/35f5b799ee8e49d1c9395837bf6233a040c953bb))
+- **app:** show solid background behind search input when keyboard opens ([f740fb0](https://github.com/budgie-at/budgie/commit/f740fb0b4461d95fa0b5334ae3c86afc9a930c0a))
+
+# [2.25.0](https://github.com/budgie-at/budgie/compare/v2.24.1...v2.25.0) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** use HapticPressable instead of Pressable in AI translation fields ([6d7ffb2](https://github.com/budgie-at/budgie/commit/6d7ffb25e73b71dceebf509283bd482a9d18d845))
+
+### Features
+
+- **app:** editable AI translation fields and icon selector keyword sorting ([737e559](https://github.com/budgie-at/budgie/commit/737e5592896eef1de908530577c9c85600044267))
+
 ## [2.24.1](https://github.com/budgie-at/budgie/compare/v2.24.0...v2.24.1) (2026-02-01)
 
 ### Bug Fixes

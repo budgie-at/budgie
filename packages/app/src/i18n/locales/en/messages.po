@@ -17,11 +17,11 @@ msgstr ""
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} accounts"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:58
+#: src/account/component/archived-account-card/archived-account-card.tsx:50
 msgid "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
 msgstr "{accountTitle} and its transactions will be permanently deleted. Transfers will be converted to income/expense on other accounts. This cannot be undone."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:37
+#: src/account/component/archived-account-card/archived-account-card.tsx:31
 msgid "{accountTitle} will be restored to your main view and included in totals."
 msgstr "{accountTitle} will be restored to your main view and included in totals."
 
@@ -127,7 +127,7 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
@@ -260,6 +260,9 @@ msgstr "Budgie"
 #: src/@generic/component/bottom-sheet-form-footer/bottom-sheet-form-footer.tsx:22
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:10
+#: src/account/component/account-action-card/account-action-card.tsx:39
+#: src/account/component/archived-account-card/archived-account-card.tsx:32
+#: src/account/component/archived-account-card/archived-account-card.tsx:52
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
@@ -385,11 +388,11 @@ msgstr "Could not activate account."
 msgid "Could not archive account. Please try again later"
 msgstr "Could not archive account. Please try again later"
 
-#: src/category/components/category-form/category-form.tsx:120
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/tag/components/tag-form/tag-form.tsx:114
+#: src/tag/components/tag-form/tag-form.tsx:130
 msgid "Could not create tag"
 msgstr "Could not create tag"
 
@@ -397,7 +400,7 @@ msgstr "Could not create tag"
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:70
+#: src/account/component/archived-account-card/archived-account-card.tsx:60
 msgid "Could not delete account."
 msgstr "Could not delete account."
 
@@ -405,11 +408,11 @@ msgstr "Could not delete account."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/category/components/category-form/category-form.tsx:100
+#: src/category/components/category-form/category-form.tsx:121
 msgid "Could not merge category"
 msgstr "Could not merge category"
 
-#: src/tag/components/tag-form/tag-form.tsx:94
+#: src/tag/components/tag-form/tag-form.tsx:110
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
 
@@ -421,15 +424,15 @@ msgstr "Could not reassign category"
 msgid "Could not reassign tag"
 msgstr "Could not reassign tag"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:49
+#: src/account/component/archived-account-card/archived-account-card.tsx:39
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/category/components/category-form/category-form.tsx:120
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not save category"
 msgstr "Could not save category"
 
-#: src/tag/components/tag-form/tag-form.tsx:114
+#: src/tag/components/tag-form/tag-form.tsx:130
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
@@ -465,7 +468,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form/category-form.tsx:63
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -482,7 +485,7 @@ msgstr "Create custom tags in Settings to label and filter your transactions"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/tag/components/tag-form/tag-form.tsx:64
+#: src/tag/components/tag-form/tag-form.tsx:66
 msgid "Create Tag"
 msgstr "Create Tag"
 
@@ -557,7 +560,7 @@ msgstr "Default Account"
 msgid "Delete"
 msgstr "Delete"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:57
+#: src/account/component/archived-account-card/archived-account-card.tsx:49
 msgid "Delete Account Permanently?"
 msgstr "Delete Account Permanently?"
 
@@ -569,7 +572,7 @@ msgstr "Delete all transactions and settings"
 msgid "Delete data"
 msgstr "Delete data"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:59
+#: src/account/component/archived-account-card/archived-account-card.tsx:54
 msgid "Delete Permanently"
 msgstr "Delete Permanently"
 
@@ -593,7 +596,7 @@ msgstr "Done"
 msgid "Dutch (Netherlands)"
 msgstr "Dutch (Netherlands)"
 
-#: src/tag/components/tag-form/tag-form.tsx:130
+#: src/tag/components/tag-form/tag-form.tsx:146
 msgid "e.g. Business, Personal, Vacation"
 msgstr "e.g. Business, Personal, Vacation"
 
@@ -605,7 +608,7 @@ msgstr "e.g. Groceries, Entertainment"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/category/components/category-form/category-form.tsx:63
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Edit Category"
 msgstr "Edit Category"
 
@@ -617,7 +620,7 @@ msgstr "Edit Expense"
 msgid "Edit Income"
 msgstr "Edit Income"
 
-#: src/tag/components/tag-form/tag-form.tsx:64
+#: src/tag/components/tag-form/tag-form.tsx:66
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
@@ -658,7 +661,7 @@ msgstr "English (United Kingdom)"
 msgid "English (United States)"
 msgstr "English (United States)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:95
 msgid "English Translation"
 msgstr "English Translation"
 
@@ -960,11 +963,11 @@ msgstr "Map CSV Columns"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
-#: src/category/components/category-form/category-form.tsx:144
+#: src/category/components/category-form/category-form.tsx:167
 msgid "Merge into another category"
 msgstr "Merge into another category"
 
-#: src/tag/components/tag-form/tag-form.tsx:152
+#: src/tag/components/tag-form/tag-form.tsx:170
 msgid "Merge into another tag"
 msgstr "Merge into another tag"
 
@@ -1044,7 +1047,7 @@ msgstr "No currencies found"
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
 
-#: src/app/icon-selector.tsx:66
+#: src/app/icon-selector.tsx:95
 msgid "No icons found"
 msgstr "No icons found"
 
@@ -1088,8 +1091,8 @@ msgstr "No transactions yet"
 msgid "None selected"
 msgstr "None selected"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:50
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:51
 msgid "Not generated"
 msgstr "Not generated"
 
@@ -1156,10 +1159,10 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:100
 #: src/category/components/category-form/category-form.tsx:121
-#: src/tag/components/tag-form/tag-form.tsx:94
-#: src/tag/components/tag-form/tag-form.tsx:115
+#: src/category/components/category-form/category-form.tsx:142
+#: src/tag/components/tag-form/tag-form.tsx:110
+#: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -1204,11 +1207,11 @@ msgstr "Regenerate AI Data"
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Regenerate translations and search keywords for all categories and tags"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:38
+#: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
 msgstr "Restore"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx:36
+#: src/account/component/archived-account-card/archived-account-card.tsx:31
 msgid "Restore Account?"
 msgstr "Restore Account?"
 
@@ -1257,11 +1260,11 @@ msgstr "Search contacts..."
 msgid "Search currencies..."
 msgstr "Search currencies..."
 
-#: src/app/icon-selector.tsx:75
+#: src/app/icon-selector.tsx:104
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Search icons (e.g., money, travel, food)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:112
 msgid "Search Keywords"
 msgstr "Search Keywords"
 
@@ -1291,7 +1294,7 @@ msgstr "Security"
 msgid "Select"
 msgstr "Select"
 
-#: src/category/components/category-form/category-form.tsx:84
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
 
@@ -1299,7 +1302,7 @@ msgstr "Select a category to merge into"
 msgid "Select a contact"
 msgstr "Select a contact"
 
-#: src/tag/components/tag-form/tag-form.tsx:77
+#: src/tag/components/tag-form/tag-form.tsx:93
 msgid "Select a tag to merge into"
 msgstr "Select a tag to merge into"
 
@@ -1373,9 +1376,9 @@ msgstr "Something went wrong"
 msgid "Something went wrong."
 msgstr "Something went wrong."
 
-#: src/account/component/account-action-card/account-action-card.tsx:59
-#: src/account/component/archived-account-card/archived-account-card.tsx:49
-#: src/account/component/archived-account-card/archived-account-card.tsx:70
+#: src/account/component/account-action-card/account-action-card.tsx:47
+#: src/account/component/archived-account-card/archived-account-card.tsx:40
+#: src/account/component/archived-account-card/archived-account-card.tsx:61
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
@@ -1461,7 +1464,7 @@ msgstr "Syncing history..."
 msgid "Tag"
 msgstr "Tag"
 
-#: src/tag/components/tag-form/tag-form.tsx:123
+#: src/tag/components/tag-form/tag-form.tsx:139
 msgid "Tag Name"
 msgstr "Tag Name"
 
@@ -1598,7 +1601,7 @@ msgstr "Transfer"
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
-#: src/app/icon-selector.tsx:66
+#: src/app/icon-selector.tsx:95
 #: src/category/components/category-select-content/category-select-content.tsx:54
 #: src/i18n/components/language-selector-bottom-sheet/language-selector-bottom-sheet.tsx:29
 msgid "Try a different search term"
