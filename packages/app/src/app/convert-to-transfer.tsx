@@ -7,7 +7,7 @@ export default function ConvertToTransferModal() {
     const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
 
     const handleSuccess = () => {
-        resolveConvertToTransfer(true);
+        resolveConvertToTransfer(true, { skipBack: true });
     };
 
     const handleCancel = () => {

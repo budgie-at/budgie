@@ -9,9 +9,13 @@ export interface ConvertToTransferModalParams {
     readonly excludeAccountId: number;
 }
 
+interface ResolveOptions {
+    readonly skipBack?: boolean;
+}
+
 interface ConvertToTransferModalContextInterface {
     openConvertToTransfer: (params: ConvertToTransferModalParams) => Promise<boolean>;
-    resolveConvertToTransfer: (result: boolean) => void;
+    resolveConvertToTransfer: (result: boolean, options?: ResolveOptions) => void;
     currentParams: ConvertToTransferModalParams | null;
 }
 
