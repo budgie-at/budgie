@@ -10,6 +10,7 @@ import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
+import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
 import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -102,6 +103,8 @@ export const SimpleQuickForm = (props: Props) => {
     return (
         <View className="flex-1">
             <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+
+            <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
 
             {showTagSuggestions ? (
                 <TagSuggestionsRow
