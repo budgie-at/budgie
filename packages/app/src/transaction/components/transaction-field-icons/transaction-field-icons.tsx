@@ -31,15 +31,15 @@ interface Props {
     readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
-    readonly isSplitMode?: boolean;
+    readonly splitEntryCount?: number;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
-    readonly onToggleSplit?: () => void;
+    readonly onSplitPress?: () => void;
 }
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, isSplitMode = false, onCommentPress, onDatePress, onToggleSplit } = props;
+    const { ref, variant, transactionType, splitEntryCount = 0, onCommentPress, onDatePress, onSplitPress } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -77,7 +77,8 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
-    const hideCategoryAndTags = isTransfer || isSplitMode;
+    const isSplitActive = splitEntryCount > 1;
+    const hideCategoryAndTags = isTransfer || isSplitActive;
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -87,19 +88,18 @@ export const TransactionFieldIcons = (props: Props) => {
     const tagsValue = getTagsDisplayValue(tags);
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
 
-    const showSplitToggle = isDefined(onToggleSplit);
-    const splitLabel = isSplitMode ? t`Unsplit` : t`Split`;
-    const splitValue = isSplitMode ? t`On` : void 0;
+    const showSplitIcon = isDefined(onSplitPress);
+    const splitValue = isSplitActive ? t`${splitEntryCount} items` : void 0;
 
     return (
         <View className="flex-row py-lg">
-            {showSplitToggle ? (
+            {showSplitIcon ? (
                 <TransactionFieldIcon
                     icon={UserIconNameEnum.Split}
-                    label={splitLabel}
+                    label={t`Split`}
                     value={splitValue}
                     variant={variant}
-                    onPress={onToggleSplit}
+                    onPress={onSplitPress}
                     animationDelay={SPLIT_ANIMATION_DELAY}
                 />
             ) : null}
