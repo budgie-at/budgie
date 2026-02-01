@@ -1,15 +1,23 @@
-import { TransactionCreateInputInterface, TransactionEntryCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useRef } from 'react';
+import {
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
+import { useEffect, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
+import { useSplitEntries } from '../../hook/use-split-entries.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
+import { SplitEntryList } from '../split-entry-list/split-entry-list';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
 import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -36,6 +44,12 @@ interface Props {
     readonly onCancel: () => void;
 }
 
+const EXPENSE_ENTRY_TYPE = TransactionEntryTypeEnum.CREDIT;
+const INCOME_ENTRY_TYPE = TransactionEntryTypeEnum.DEBIT;
+
+const getEntryTypeForTransaction = (transactionType: TransactionTypeEnum): TransactionEntryTypeEnum =>
+    transactionType === TransactionTypeEnum.EXPENSE ? EXPENSE_ENTRY_TYPE : INCOME_ENTRY_TYPE;
+
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const SimpleQuickForm = (props: Props) => {
     const {
@@ -54,6 +68,26 @@ export const SimpleQuickForm = (props: Props) => {
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
     const { displayValue, currencySymbol, keypadHandlers } = useQuickFormAmount({ accountFieldName });
+
+    const entryType = getEntryTypeForTransaction(transactionType);
+    const split = useSplitEntries({ entryType, accountFieldName });
+
+    const splitKeypad = useKeypadInput({
+        initialValue: 0,
+        onChange: (value: number) => {
+            split.updateEntryAmount(split.activeEntryIndex, value);
+        }
+    });
+
+    const previousActiveEntryIndex = useRef(split.activeEntryIndex);
+
+    useEffect(() => {
+        if (previousActiveEntryIndex.current !== split.activeEntryIndex) {
+            const entryAmount = split.entries[split.activeEntryIndex]?.amount ?? 0;
+            splitKeypad.setFromNumeric(entryAmount);
+            previousActiveEntryIndex.current = split.activeEntryIndex;
+        }
+    }, [split.activeEntryIndex, split.entries, splitKeypad]);
 
     const comment = useWatch({ control, name: 'comment' });
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
@@ -74,17 +108,21 @@ export const SimpleQuickForm = (props: Props) => {
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showCategorySuggestions = !hasCategorySelected && hasContext;
-    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext;
+    const showCategorySuggestions = !hasCategorySelected && hasContext && !split.isSplitMode;
+    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !split.isSplitMode;
 
-    const handleConfirm = () => {
+    const handleSelectSplitEntry = (index: number) => {
+        split.setActiveEntryIndex(index);
+    };
+
+    const handleNormalConfirm = () => {
         const amount = getValues('amount');
-        const categoryId = getValues('entries.0.categoryId') ?? 0;
+        const formCategoryId = getValues('entries.0.categoryId') ?? 0;
         const accountId = getValues(accountFieldName) ?? 0;
 
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
-            { isValid: categoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
+            { isValid: formCategoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
             { isValid: accountId > 0 }
         ]);
 
@@ -92,18 +130,67 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        const entries = buildEntries({ accountId, categoryId, amount });
+        const entries = buildEntries({ accountId, categoryId: formCategoryId, amount });
 
         setValue('entries', entries, { shouldValidate: false });
 
         onSubmit();
     };
 
+    const handleSplitConfirm = () => {
+        const accountId = getValues(accountFieldName) ?? 0;
+        const allEntriesValid = split.entries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
+
+        const isValid = validateAndShake([
+            { isValid: split.totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
+            { isValid: allEntriesValid },
+            { isValid: accountId > 0 }
+        ]);
+
+        if (!isValid) {
+            return;
+        }
+
+        setValue('amount', split.totalAmount);
+
+        onSubmit();
+    };
+
+    const handleConfirm = () => {
+        if (split.isSplitMode) {
+            handleSplitConfirm();
+
+            return;
+        }
+
+        handleNormalConfirm();
+    };
+
+    const splitTotalDisplay = split.totalAmount === 0 ? '0' : split.totalAmount.toString();
+    const activeDisplayValue = split.isSplitMode ? splitTotalDisplay : displayValue;
+
+    const activeKeypadHandlers = split.isSplitMode ? splitKeypad.handlers : keypadHandlers;
+
     return (
         <View className="flex-1">
-            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+            <TransactionAmountDisplay
+                ref={amountDisplayRef}
+                amount={activeDisplayValue}
+                currencySymbol={currencySymbol}
+                variant={variant}
+            />
 
-            {showTagSuggestions ? (
+            {split.isSplitMode ? (
+                <SplitEntryList
+                    entries={split.entries}
+                    activeEntryIndex={split.activeEntryIndex}
+                    currencySymbol={currencySymbol}
+                    onSelectEntry={handleSelectSplitEntry}
+                    onAddEntry={split.addEntry}
+                />
+            ) : null}
+
+            {!split.isSplitMode && showTagSuggestions ? (
                 <TagSuggestionsRow
                     transactionTitle={transactionTitle}
                     categoryId={categoryId}
@@ -113,7 +200,9 @@ export const SimpleQuickForm = (props: Props) => {
                     enabled={showTagSuggestions}
                     onSelect={handleSelectTag}
                 />
-            ) : (
+            ) : null}
+
+            {!split.isSplitMode && !showTagSuggestions ? (
                 <CategorySuggestionsRow
                     transactionTitle={transactionTitle}
                     mccCategoryId={mccCategoryId}
@@ -122,12 +211,14 @@ export const SimpleQuickForm = (props: Props) => {
                     enabled={showCategorySuggestions}
                     onSelect={handleSelectCategory}
                 />
-            )}
+            ) : null}
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}
                 variant={variant}
                 transactionType={transactionType}
+                isSplitMode={split.isSplitMode}
+                onToggleSplit={split.toggleSplitMode}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />
@@ -138,10 +229,10 @@ export const SimpleQuickForm = (props: Props) => {
 
             <TransactionKeypad
                 variant={variant}
-                onDigit={keypadHandlers.onDigit}
-                onDecimal={keypadHandlers.onDecimal}
-                onBackspace={keypadHandlers.onBackspace}
-                onLongBackspace={keypadHandlers.onLongBackspace}
+                onDigit={activeKeypadHandlers.onDigit}
+                onDecimal={activeKeypadHandlers.onDecimal}
+                onBackspace={activeKeypadHandlers.onBackspace}
+                onLongBackspace={activeKeypadHandlers.onLongBackspace}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}
             />
