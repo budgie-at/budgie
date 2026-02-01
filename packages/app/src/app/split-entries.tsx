@@ -39,6 +39,7 @@ export default function SplitEntriesModal() {
                 variant={currentParams.variant}
                 entryType={currentParams.entryType}
                 currencySymbol={currentParams.currencySymbol}
+                totalAmount={currentParams.totalAmount}
                 onEntriesChange={handleEntriesChange}
             />
             <FormSheetSpacer />
