@@ -231,7 +231,7 @@ export const SimpleQuickForm = (props: Props) => {
         <View className="flex-1">
             <View className="flex-1">
                 <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
-                <View className="absolute bottom-0 left-0 right-0">
+                <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
                     {renderSuggestionRow()}
                 </View>
