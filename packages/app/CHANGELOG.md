@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.27.0](https://github.com/budgie-at/budgie/compare/v2.26.0...v2.27.0) (2026-02-01)
+
+### Features
+
+- **app:** display MCC short and full description in transaction edit form ([0fd7113](https://github.com/budgie-at/budgie/commit/0fd7113e66e29658ac329fedd6d907dde1b01097)), closes [#301](https://github.com/budgie-at/budgie/issues/301)
+- **app:** enhance MCC pill visibility with primary color accent ([f0882c2](https://github.com/budgie-at/budgie/commit/f0882c2d3edddd52bf3be51ea3b65a3368de8bc0))
+- **app:** move MCC info block higher with negative margin ([b468a13](https://github.com/budgie-at/budgie/commit/b468a13090e1f815c663a03916b2c871bafd5b1d))
+- **app:** show transaction title with expandable MCC info ([a50eb02](https://github.com/budgie-at/budgie/commit/a50eb025dc1542dd170d4099fa0fc1356ff95e1f))
+- **app:** simplify MccInfoRow with minimalistic pill design ([9c4ac1f](https://github.com/budgie-at/budgie/commit/9c4ac1fd022c63285fa9409e5f0aa383427821b8))
+
 # [2.26.0](https://github.com/budgie-at/budgie/compare/v2.25.0...v2.26.0) (2026-02-01)
 
 ### Bug Fixes
