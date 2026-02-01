@@ -9,7 +9,6 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
@@ -194,7 +193,6 @@ export const SplitEntriesModalContent = (props: Props) => {
                     </HapticPressable>
                 </Animated.View>
             ) : null}
-            <FormSheetSpacer />
         </View>
     );
 
