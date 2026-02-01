@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { TextInput, View } from 'react-native';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
@@ -40,6 +41,7 @@ export const SearchablePage = <T extends IdInterface>({
     const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - 15;
     const searchBlurStyle = { bottom: searchInputBottom - 100, zIndex: 10 };
     const searchInputStyle = { bottom: searchInputBottom, zIndex: 20 };
+    const keyboardOffset = { closed: 0, opened: searchInputBottom - 4 };
 
     return (
         <View className="flex-1">
@@ -56,14 +58,16 @@ export const SearchablePage = <T extends IdInterface>({
             <View className="absolute inset-x-0 h-[150px]" style={searchBlurStyle}>
                 <BlurGradient position="bottom" />
             </View>
-            <View className="absolute inset-x-0 px-xl" style={searchInputStyle}>
-                <TextInput
-                    value={search}
-                    onChangeText={onSearchChange}
-                    placeholder={searchPlaceholder}
-                    className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                />
-            </View>
+            <KeyboardStickyView offset={keyboardOffset} style={searchInputStyle} className="absolute inset-x-0">
+                <View className="px-xl pb-md pt-md bg-background">
+                    <TextInput
+                        value={search}
+                        onChangeText={onSearchChange}
+                        placeholder={searchPlaceholder}
+                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
+                    />
+                </View>
+            </KeyboardStickyView>
         </View>
     );
 };
