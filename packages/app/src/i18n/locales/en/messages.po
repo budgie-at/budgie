@@ -127,7 +127,7 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
 msgid "AI-Generated Metadata"
 msgstr "AI-Generated Metadata"
 
@@ -206,11 +206,8 @@ msgstr "Archived Accounts"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Are you sure you want to delete all your data? This action cannot be undone."
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:53
-msgid "Are you sure you want to delete this transaction?"
-msgstr "Are you sure you want to delete this transaction?"
-
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
@@ -266,6 +263,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -555,6 +553,7 @@ msgid "Default Account"
 msgstr "Default Account"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:50
 msgid "Delete"
 msgstr "Delete"
 
@@ -574,11 +573,7 @@ msgstr "Delete data"
 msgid "Delete Permanently"
 msgstr "Delete Permanently"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
-msgid "Delete transaction"
-msgstr "Delete transaction"
-
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:78
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:76
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
 
@@ -663,7 +658,7 @@ msgstr "English (United Kingdom)"
 msgid "English (United States)"
 msgstr "English (United States)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
 msgid "English Translation"
 msgstr "English Translation"
 
@@ -1093,8 +1088,8 @@ msgstr "No transactions yet"
 msgid "None selected"
 msgstr "None selected"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
 msgid "Not generated"
 msgstr "Not generated"
 
@@ -1201,11 +1196,11 @@ msgstr "Recalculate Balances"
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
 msgid "Regenerate AI Data"
 msgstr "Regenerate AI Data"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Regenerate translations and search keywords for all categories and tags"
 
@@ -1266,7 +1261,7 @@ msgstr "Search currencies..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Search icons (e.g., money, travel, food)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
 msgid "Search Keywords"
 msgstr "Search Keywords"
 
@@ -1500,7 +1495,7 @@ msgstr ""
 " 💡 You can restore it anytime from Settings → Archived Accounts"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:54
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
