@@ -33,11 +33,11 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} left to assign"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} over budget"
 
@@ -127,7 +127,7 @@ msgstr "Add a note..."
 msgid "Add Account"
 msgstr "Add Account"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:192
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:190
 msgid "Add item"
 msgstr "Add item"
 
@@ -370,7 +370,7 @@ msgstr "Comment"
 msgid "Confirm PIN"
 msgstr "Confirm PIN"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:204
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
 msgid "Confirm Split"
 msgstr "Confirm Split"
 
@@ -1345,6 +1345,10 @@ msgstr "Select accounts to sync:"
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
 msgstr "Select All"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
+msgid "Select all categories"
+msgstr "Select all categories"
 
 #: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"

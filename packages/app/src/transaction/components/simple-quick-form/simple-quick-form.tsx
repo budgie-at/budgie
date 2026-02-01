@@ -16,6 +16,7 @@ import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
+import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -194,11 +195,13 @@ export const SimpleQuickForm = (props: Props) => {
         handleNormalConfirm();
     };
 
-    return (
-        <View className="flex-1">
-            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+    const renderSuggestionRow = () => {
+        if (isSplitActive) {
+            return <SuggestionRowSpacer />;
+        }
 
-            {!isSplitActive && showTagSuggestions ? (
+        if (showTagSuggestions) {
+            return (
                 <TagSuggestionsRow
                     transactionTitle={transactionTitle}
                     categoryId={categoryId}
@@ -208,18 +211,26 @@ export const SimpleQuickForm = (props: Props) => {
                     enabled={showTagSuggestions}
                     onSelect={handleSelectTag}
                 />
-            ) : null}
+            );
+        }
 
-            {!isSplitActive && !showTagSuggestions ? (
-                <CategorySuggestionsRow
-                    transactionTitle={transactionTitle}
-                    mccCategoryId={mccCategoryId}
-                    comment={comment}
-                    aiContext={aiContext}
-                    enabled={showCategorySuggestions}
-                    onSelect={handleSelectCategory}
-                />
-            ) : null}
+        return (
+            <CategorySuggestionsRow
+                transactionTitle={transactionTitle}
+                mccCategoryId={mccCategoryId}
+                comment={comment}
+                aiContext={aiContext}
+                enabled={showCategorySuggestions}
+                onSelect={handleSelectCategory}
+            />
+        );
+    };
+
+    return (
+        <View className="flex-1">
+            <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
+
+            {renderSuggestionRow()}
 
             <TransactionFieldIcons
                 ref={fieldIconsRef}
