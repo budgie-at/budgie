@@ -1,6 +1,6 @@
 import { ExtendedStackNavigationOptions } from 'expo-router/build/layouts/StackClient';
 
-const SHEET_DETENT = 0.5;
+const SHEET_DETENT = 0.3;
 const SHEET_CORNER_RADIUS = 24;
 
 export const SPLIT_ENTRIES_MODAL_OPTIONS: ExtendedStackNavigationOptions = {
