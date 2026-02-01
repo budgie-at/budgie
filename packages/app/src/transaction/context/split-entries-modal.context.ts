@@ -11,6 +11,7 @@ export interface SplitEntriesModalParams {
     readonly variant: ColorPaletteVariant;
     readonly entryType: TransactionEntryTypeEnum;
     readonly currencySymbol: string;
+    readonly totalAmount: number;
 }
 
 export type SplitEntriesModalResult = TransactionEntryCreateInputInterface[] | null;

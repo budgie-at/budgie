@@ -11,6 +11,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:175
+msgid "-{formattedRemaining} over"
+msgstr "-{formattedRemaining} excedido"
+
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} cuentas"
@@ -31,7 +35,11 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:177
+msgid "{formattedRemaining} left"
+msgstr "{formattedRemaining} restante"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:185
 msgid "{itemCount} items"
 msgstr "{itemCount} elementos"
 
@@ -45,7 +53,7 @@ msgstr "{percentage}% de gastos"
 msgid "{percentage}% of income"
 msgstr "{percentage}% de ingresos"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:96
 msgid "{splitEntryCount} items"
 msgstr "{splitEntryCount} elementos"
 
@@ -57,7 +65,7 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:185
 msgid "1 item"
 msgstr "1 elemento"
 
@@ -125,7 +133,7 @@ msgstr "Agregar una nota..."
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:173
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:202
 msgid "Add item"
 msgstr "Agregar elemento"
 
@@ -301,7 +309,7 @@ msgstr "Categorías ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:140
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:158
 msgid "Category"
 msgstr "Categoría"
 
@@ -546,7 +554,7 @@ msgstr "Gestión de datos"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:124
 msgid "Date"
 msgstr "Fecha"
 
@@ -1116,7 +1124,7 @@ msgstr "No generado"
 msgid "not set"
 msgstr "no establecido"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:118
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:133
 msgid "Note"
 msgstr "Nota"
 
@@ -1422,7 +1430,7 @@ msgstr "Gastos por etiqueta"
 msgid "Spent"
 msgstr "Gastado"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:113
 msgid "Split"
 msgstr "Dividir"
 
@@ -1493,7 +1501,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:128
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:144
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1575,7 +1583,7 @@ msgid "To Currency"
 msgstr "Moneda destino"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Today"
 msgstr "Hoy"
 
@@ -1711,7 +1719,7 @@ msgstr "¿Cuándo debería ser devuelto?"
 msgid "Who owes you?"
 msgstr "¿Quién te debe dinero?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:85
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:89
 msgid "Yesterday"
 msgstr "Ayer"
 
