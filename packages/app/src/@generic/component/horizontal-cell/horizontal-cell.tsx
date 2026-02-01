@@ -33,10 +33,10 @@ const cardVariants = cva<{
 });
 
 export const HorizontalCell = (props: Props) => {
-    const { onPress, className, children, right, left, size = 'md', align = 'middle', contentClassName, ...rest } = props;
+    const { onPress, className, children, right, left, size = 'md', align = 'middle', contentClassName, testID, ...rest } = props;
 
     return (
-        <Card onPress={onPress} className={cn(cardVariants({ size, align }), className)} size={size} {...rest}>
+        <Card testID={testID} onPress={onPress} className={cn(cardVariants({ size, align }), className)} size={size} {...rest}>
             {left}
 
             <View className={cn('flex-1', contentClassName)}>{children}</View>
