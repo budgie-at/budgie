@@ -31,6 +31,10 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
+#: src/transaction/components/split-entry-list/split-entry-list.tsx:31
+msgid "{itemCount} items"
+msgstr "{itemCount} записів"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
@@ -113,6 +117,10 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
+#: src/transaction/components/split-entry-list/split-entry-list.tsx:59
+msgid "Add item"
+msgstr "Додати запис"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
@@ -125,7 +133,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
 msgid "AI-Generated Metadata"
 msgstr "Метадані, згенеровані ШІ"
 
@@ -285,7 +293,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:140
 msgid "Category"
 msgstr "Категорія"
 
@@ -530,7 +538,7 @@ msgstr "Управління даними"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
 msgid "Date"
 msgstr "Дата"
 
@@ -612,11 +620,11 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:73
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -624,7 +632,7 @@ msgstr "Редагувати дохід"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:78
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -661,7 +669,7 @@ msgstr "Англійська (Велика Британія)"
 msgid "English (United States)"
 msgstr "Англійська (США)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
 msgid "English Translation"
 msgstr "Англійський переклад"
 
@@ -1091,8 +1099,8 @@ msgstr "Поки немає транзакцій"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
 msgid "Not generated"
 msgstr "Не згенеровано"
 
@@ -1100,9 +1108,13 @@ msgstr "Не згенеровано"
 msgid "not set"
 msgstr "не встановлено"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:118
 msgid "Note"
 msgstr "Нотатка"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+msgid "On"
+msgstr "Увімк."
 
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
@@ -1195,15 +1207,15 @@ msgstr "Перерахувати"
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:150
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
 msgid "Regenerate AI Data"
 msgstr "Перегенерувати дані ШІ"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Перегенерувати переклади та пошукові ключові слова для всіх категорій і тегів"
 
@@ -1264,7 +1276,7 @@ msgstr "Пошук валют..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
 msgid "Search Keywords"
 msgstr "Пошукові ключові слова"
 
@@ -1342,7 +1354,7 @@ msgstr "Оберіть тип рахунку"
 msgid "Selected"
 msgstr "Вибрано"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:149
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
@@ -1401,6 +1413,10 @@ msgstr "Витрати за тегами"
 #: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Витрачено"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+msgid "Split"
+msgstr "Розділити"
 
 #: src/app/(tabs)/settings/import.tsx:149
 msgid "Start Import"
@@ -1469,7 +1485,7 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:128
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1551,7 +1567,7 @@ msgid "To Currency"
 msgstr "Валюта на"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:83
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -1642,6 +1658,10 @@ msgstr "Без категорії"
 msgid "Unknown"
 msgstr "Невідомо"
 
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+msgid "Unsplit"
+msgstr "Об'єднати"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Актуальний"
@@ -1687,7 +1707,7 @@ msgstr "Коли це потрібно повернути?"
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
 msgid "Yesterday"
 msgstr "Вчора"
 
