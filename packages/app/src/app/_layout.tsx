@@ -21,7 +21,9 @@ import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-moda
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
+import { RULE_EDIT_MODAL_OPTIONS } from '../@generic/constant/rule-edit-modal-options.constant';
 import { SELECTOR_MODAL_OPTIONS } from '../@generic/constant/selector-modal-options.constant';
+import { SUGGEST_RULE_MODAL_OPTIONS } from '../@generic/constant/suggest-rule-modal-options.constant';
 import { DB_NAME } from '../@generic/drizzle/constant/db-name.constant';
 import { db } from '../@generic/drizzle/db/db';
 import { useResetDb } from '../@generic/drizzle/hook/use-reset-db.hook';
@@ -39,6 +41,8 @@ import { CategoryFormModalProvider } from '../category/provider/category-form-mo
 import { CategorySelectorModalProvider } from '../category/provider/category-selector-modal.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { i18nGetOSLocale } from '../i18n/util/i18n.util';
+import { RuleFormModalProvider } from '../rule/provider/rule-form-modal.provider';
+import { SuggestRuleModalProvider } from '../rule/provider/suggest-rule-modal.provider';
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { TagFormModalProvider } from '../tag/provider/tag-form-modal.provider';
@@ -89,79 +93,109 @@ export default function RootLayout() {
                                                     <IconSelectorModalProvider>
                                                         <ConfirmActionModalProvider>
                                                             <CategoryFormModalProvider>
-                                                                <CategorySelectorModalProvider>
-                                                                    <AccountSelectorModalProvider>
-                                                                        <TagFormModalProvider>
-                                                                            <TagsSelectorModalProvider>
-                                                                                <DatePickerModalProvider>
-                                                                                    <NoteInputModalProvider>
-                                                                                        <ConvertToTransferModalProvider>
-                                                                                            <Stack
-                                                                                                screenOptions={DEFAULT_STACK_OPTIONS}
-                                                                                                screenLayout={ScreenLayout}
-                                                                                            >
-                                                                                                <Stack.Screen name="(tabs)" />
-                                                                                                <Stack.Screen name="(main)/pin" />
-                                                                                                <Stack.Screen name="(main)/create-account" />
-                                                                                                <Stack.Screen name="(main)/account/[id]/details" />
-                                                                                                <Stack.Screen name="(main)/account/[id]/update" />
-                                                                                                <Stack.Screen name="(main)/create-transaction/expense" />
-                                                                                                <Stack.Screen name="(main)/create-transaction/income" />
-                                                                                                <Stack.Screen name="(main)/create-transaction/transfer" />
-                                                                                                <Stack.Screen name="(main)/transactions/[id]/expense" />
-                                                                                                <Stack.Screen name="(main)/transactions/[id]/income" />
-                                                                                                <Stack.Screen name="(main)/transactions/[id]/transfer" />
-                                                                                                <Stack.Screen name="(main)/analytics/transactions" />
-                                                                                                <Stack.Screen
-                                                                                                    name="category-selector"
-                                                                                                    options={SELECTOR_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="account-selector"
-                                                                                                    options={SELECTOR_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="tags-selector"
-                                                                                                    options={SELECTOR_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="category-form"
-                                                                                                    options={CATEGORY_EDIT_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="tag-form"
-                                                                                                    options={CATEGORY_EDIT_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="confirm-action"
-                                                                                                    options={CONFIRM_ACTION_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="date-picker"
-                                                                                                    options={DATE_PICKER_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="note-input"
-                                                                                                    options={NOTE_INPUT_MODAL_OPTIONS}
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="convert-to-transfer"
-                                                                                                    options={
-                                                                                                        CONVERT_TO_TRANSFER_MODAL_OPTIONS
-                                                                                                    }
-                                                                                                />
-                                                                                                <Stack.Screen
-                                                                                                    name="icon-selector"
-                                                                                                    options={ICON_SELECTOR_MODAL_OPTIONS}
-                                                                                                />
-                                                                                            </Stack>
-                                                                                        </ConvertToTransferModalProvider>
-                                                                                    </NoteInputModalProvider>
-                                                                                </DatePickerModalProvider>
-                                                                            </TagsSelectorModalProvider>
-                                                                        </TagFormModalProvider>
-                                                                    </AccountSelectorModalProvider>
-                                                                </CategorySelectorModalProvider>
+                                                                <RuleFormModalProvider>
+                                                                    <SuggestRuleModalProvider>
+                                                                        <CategorySelectorModalProvider>
+                                                                            <AccountSelectorModalProvider>
+                                                                                <TagFormModalProvider>
+                                                                                    <TagsSelectorModalProvider>
+                                                                                        <DatePickerModalProvider>
+                                                                                            <NoteInputModalProvider>
+                                                                                                <ConvertToTransferModalProvider>
+                                                                                                    <Stack
+                                                                                                        screenOptions={
+                                                                                                            DEFAULT_STACK_OPTIONS
+                                                                                                        }
+                                                                                                        screenLayout={ScreenLayout}
+                                                                                                    >
+                                                                                                        <Stack.Screen name="(tabs)" />
+                                                                                                        <Stack.Screen name="(main)/pin" />
+                                                                                                        <Stack.Screen name="(main)/create-account" />
+                                                                                                        <Stack.Screen name="(main)/account/[id]/details" />
+                                                                                                        <Stack.Screen name="(main)/account/[id]/update" />
+                                                                                                        <Stack.Screen name="(main)/create-transaction/expense" />
+                                                                                                        <Stack.Screen name="(main)/create-transaction/income" />
+                                                                                                        <Stack.Screen name="(main)/create-transaction/transfer" />
+                                                                                                        <Stack.Screen name="(main)/transactions/[id]/expense" />
+                                                                                                        <Stack.Screen name="(main)/transactions/[id]/income" />
+                                                                                                        <Stack.Screen name="(main)/transactions/[id]/transfer" />
+                                                                                                        <Stack.Screen name="(main)/analytics/transactions" />
+                                                                                                        <Stack.Screen
+                                                                                                            name="category-selector"
+                                                                                                            options={SELECTOR_MODAL_OPTIONS}
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="account-selector"
+                                                                                                            options={SELECTOR_MODAL_OPTIONS}
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="tags-selector"
+                                                                                                            options={SELECTOR_MODAL_OPTIONS}
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="rule-form"
+                                                                                                            options={
+                                                                                                                RULE_EDIT_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="suggest-rule-modal"
+                                                                                                            options={
+                                                                                                                SUGGEST_RULE_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="category-form"
+                                                                                                            options={
+                                                                                                                CATEGORY_EDIT_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="tag-form"
+                                                                                                            options={
+                                                                                                                CATEGORY_EDIT_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="confirm-action"
+                                                                                                            options={
+                                                                                                                CONFIRM_ACTION_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="date-picker"
+                                                                                                            options={
+                                                                                                                DATE_PICKER_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="note-input"
+                                                                                                            options={
+                                                                                                                NOTE_INPUT_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="convert-to-transfer"
+                                                                                                            options={
+                                                                                                                CONVERT_TO_TRANSFER_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <Stack.Screen
+                                                                                                            name="icon-selector"
+                                                                                                            options={
+                                                                                                                ICON_SELECTOR_MODAL_OPTIONS
+                                                                                                            }
+                                                                                                        />
+                                                                                                    </Stack>
+                                                                                                </ConvertToTransferModalProvider>
+                                                                                            </NoteInputModalProvider>
+                                                                                        </DatePickerModalProvider>
+                                                                                    </TagsSelectorModalProvider>
+                                                                                </TagFormModalProvider>
+                                                                            </AccountSelectorModalProvider>
+                                                                        </CategorySelectorModalProvider>
+                                                                    </SuggestRuleModalProvider>
+                                                                </RuleFormModalProvider>
                                                             </CategoryFormModalProvider>
                                                         </ConfirmActionModalProvider>
                                                     </IconSelectorModalProvider>

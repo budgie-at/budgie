@@ -1,0 +1,16 @@
+appId: ${APP_ID}
+---
+
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Input'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Input'
+- waitForAnimationToEnd
+- inputText: ${CATEGORY_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'CategoryPickerBottomSheet.Card.0'
+- tapOn:
+    id: 'CategoryPickerBottomSheet.Card.0'

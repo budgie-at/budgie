@@ -1,0 +1,15 @@
+appId: ${APP_ID}
+---
+# Select an account by searching in the bottom sheet
+# Requires: ACCOUNT_NAME env variable
+# Assumes: Account selector bottom sheet is already open
+
+- tapOn:
+    id: 'AccountPickerBottomSheet.Input'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible: ${ACCOUNT_NAME}
+    timeout: 3000
+- tapOn:
+    text: ${ACCOUNT_NAME}
+    index: 1

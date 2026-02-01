@@ -1,11 +1,17 @@
-import { TransactionCreateInputInterface, TransactionEntryCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface,
+    TransactionTypeEnum,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { SuggestRuleSectionWrapper } from '../../../rule/components/suggest-rule-section-wrapper/suggest-rule-section-wrapper';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
@@ -32,6 +38,8 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
+    readonly transaction?: TransactionWithRelationsEntityInterface;
+    readonly transactionInput?: TransactionCreateInputInterface;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -46,6 +54,8 @@ export const SimpleQuickForm = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         aiContext = '',
+        transaction,
+        transactionInput,
         buildEntries,
         onSubmit,
         onCancel
@@ -77,6 +87,28 @@ export const SimpleQuickForm = (props: Props) => {
     const hasTagsSelected = isNotEmptyArray(tagIds);
     const showCategorySuggestions = !hasCategorySelected && hasContext;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext;
+    const isEditingExistingTransaction = isDefined(transaction) && isDefined(transactionInput);
+
+    const suggestionsRow = showTagSuggestions ? (
+        <TagSuggestionsRow
+            transactionTitle={transactionTitle}
+            categoryId={categoryId}
+            mccCategoryId={mccCategoryId}
+            comment={comment}
+            aiContext={aiContext}
+            enabled={showTagSuggestions}
+            onSelect={handleSelectTag}
+        />
+    ) : (
+        <CategorySuggestionsRow
+            transactionTitle={transactionTitle}
+            mccCategoryId={mccCategoryId}
+            comment={comment}
+            aiContext={aiContext}
+            enabled={showCategorySuggestions}
+            onSelect={handleSelectCategory}
+        />
+    );
 
     const handleConfirm = () => {
         const amount = getValues('amount');
@@ -106,25 +138,12 @@ export const SimpleQuickForm = (props: Props) => {
 
             <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
 
-            {showTagSuggestions ? (
-                <TagSuggestionsRow
-                    transactionTitle={transactionTitle}
-                    categoryId={categoryId}
-                    mccCategoryId={mccCategoryId}
-                    comment={comment}
-                    aiContext={aiContext}
-                    enabled={showTagSuggestions}
-                    onSelect={handleSelectTag}
-                />
+            {isEditingExistingTransaction ? (
+                <SuggestRuleSectionWrapper transaction={transaction} transactionInput={transactionInput} control={control}>
+                    {suggestionsRow}
+                </SuggestRuleSectionWrapper>
             ) : (
-                <CategorySuggestionsRow
-                    transactionTitle={transactionTitle}
-                    mccCategoryId={mccCategoryId}
-                    comment={comment}
-                    aiContext={aiContext}
-                    enabled={showCategorySuggestions}
-                    onSelect={handleSelectCategory}
-                />
+                suggestionsRow
             )}
 
             <TransactionFieldIcons

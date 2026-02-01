@@ -9,6 +9,7 @@ import { Icon } from '../icon/icon';
 
 interface Props extends Omit<ComponentProps<typeof HorizontalCell>, 'children'> {
     readonly title?: string;
+    readonly testID?: string;
     readonly description?: string;
     readonly disabled?: boolean;
     readonly singleLine?: boolean;
