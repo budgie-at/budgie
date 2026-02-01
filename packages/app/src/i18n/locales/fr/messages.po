@@ -31,9 +31,9 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
-msgid "{itemCount, plural, one {# item} other {# items}}"
-msgstr "{itemCount, plural, one {# élément} other {# éléments}}"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+msgid "{itemCount} items"
+msgstr "{itemCount} éléments"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -56,6 +56,10 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 #: src/transaction/components/conversion-row/conversion-row.tsx:31
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+msgid "1 item"
+msgstr "1 élément"
 
 #: src/app/(tabs)/settings/index.tsx:56
 msgid "100% Offline & Private"
@@ -121,7 +125,7 @@ msgstr "Ajouter une note..."
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:173
 msgid "Add item"
 msgstr "Ajouter un élément"
 
