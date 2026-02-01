@@ -204,11 +204,8 @@ msgstr "Archivierte Konten"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:53
-msgid "Are you sure you want to delete this transaction?"
-msgstr "Sind Sie sicher, dass Sie diese Transaktion löschen möchten?"
-
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -264,6 +261,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -553,6 +551,7 @@ msgid "Default Account"
 msgstr "Standardkonto"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:50
 msgid "Delete"
 msgstr "Löschen"
 
@@ -572,11 +571,7 @@ msgstr "Daten löschen"
 msgid "Delete Permanently"
 msgstr "Dauerhaft löschen"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
-msgid "Delete transaction"
-msgstr "Transaktion löschen"
-
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:78
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:76
 msgid "Delete Transaction"
 msgstr "Transaktion löschen"
 
@@ -962,10 +957,6 @@ msgstr "CSV-Spalten zuordnen"
 #: src/app/(tabs)/settings/import.tsx:157
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
-
-#: src/transaction/components/mcc-info-row/mcc-info-row.tsx:22
-msgid "MCC:"
-msgstr "MCC:"
 
 #: src/category/components/category-form/category-form.tsx:144
 msgid "Merge into another category"
@@ -1502,7 +1493,7 @@ msgstr ""
 " 💡 Sie können es jederzeit über Einstellungen → Archivierte Konten wiederherstellen"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:54
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
