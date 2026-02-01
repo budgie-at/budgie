@@ -1,18 +1,18 @@
 import { ReactNode } from 'react';
-import { TextInput, View } from 'react-native';
-import { KeyboardStickyView, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
-import Animated, { useAnimatedStyle, useDerivedValue } from 'react-native-reanimated';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useThemeContext } from '../../../theme/context/theme.context';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { IdInterface } from '../../interface/id.interface';
 import { BlurGradient } from '../blur-gradient/blur-gradient';
+import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
 import { Page } from '../page/page';
 import { PageHeader } from '../page-header/page-header';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
+
+import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
 
 interface Props<T extends IdInterface> {
     title: string;
@@ -40,20 +40,8 @@ export const SearchablePage = <T extends IdInterface>({
     children
 }: Props<T>) => {
     const { bottom } = useSafeAreaInsets();
-    const { isDarkColorSchema } = useThemeContext();
-    const pageBackgroundColor = isDarkColorSchema ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)';
-    const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - 15;
-    const searchBlurStyle = { bottom: searchInputBottom - 100, zIndex: 10 };
-    const searchInputStyle = { bottom: searchInputBottom, zIndex: 20, overflow: 'visible' as const };
-    const keyboardOffset = { closed: 0, opened: searchInputBottom - 4 };
-
-    const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
-    const isKeyboardOpen = useDerivedValue(() => Math.abs(keyboardHeight.value) > 0);
-    const keyboardBackgroundStyle = useAnimatedStyle(() => ({
-        backgroundColor: pageBackgroundColor,
-        borderCurve: 'continuous' as const,
-        opacity: isKeyboardOpen.value ? 1 : 0
-    }));
+    const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - SEARCH_INPUT_VERTICAL_OFFSET;
+    const searchBlurStyle = { bottom: searchInputBottom - SEARCH_BLUR_OFFSET, zIndex: SEARCH_BLUR_Z_INDEX };
 
     return (
         <View className="flex-1">
@@ -70,21 +58,13 @@ export const SearchablePage = <T extends IdInterface>({
             <View className="absolute inset-x-0 h-[150px]" style={searchBlurStyle}>
                 <BlurGradient position="bottom" />
             </View>
-            <KeyboardStickyView offset={keyboardOffset} style={searchInputStyle} className="absolute inset-x-0">
-                <View className="px-xl pt-md overflow-visible">
-                    <Animated.View
-                        className="absolute inset-x-0 top-0 -bottom-[200px] rounded-t-5xl"
-                        style={keyboardBackgroundStyle}
-                        pointerEvents="none"
-                    />
-                    <TextInput
-                        value={search}
-                        onChangeText={onSearchChange}
-                        placeholder={searchPlaceholder}
-                        className="text-primary placeholder:text-secondary-foreground h-[44px] px-xl bg-secondary-background rounded-5xl border border-secondary-corner"
-                    />
-                </View>
-            </KeyboardStickyView>
+            <KeyboardStickySearchInput
+                search={search}
+                placeholder={searchPlaceholder}
+                onSearchChange={onSearchChange}
+                inputBottom={searchInputBottom}
+                keyboardGap={SEARCH_KEYBOARD_GAP}
+            />
         </View>
     );
 };
