@@ -149,7 +149,7 @@ export const TransactionFieldIcons = (props: Props) => {
             />
 
             {hideCategoryAndTags ? null : (
-                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents}>
+                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents} className="flex-1">
                     <TransactionFieldIcon
                         icon={UserIconNameEnum.Tag}
                         label={t`Tags`}
@@ -162,7 +162,7 @@ export const TransactionFieldIcons = (props: Props) => {
             )}
 
             {hideCategoryAndTags ? null : (
-                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents}>
+                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents} className="flex-1">
                     <TransactionFieldIcon
                         ref={categoryIconRef}
                         icon={category?.icon ?? UserIconNameEnum.Folder}
