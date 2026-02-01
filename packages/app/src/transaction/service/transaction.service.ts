@@ -4,6 +4,7 @@ import {
     ExternalSourceEnum,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
+    TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
@@ -103,7 +104,8 @@ class TransactionService {
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: toAmount,
                         externalId: toEntry.externalId ?? null
-                    }
+                    },
+                    ...this.buildAdditionalEntries(input.entries, fromEntry, toEntry, transaction.id)
                 ],
                 tx
             );
@@ -312,6 +314,27 @@ class TransactionService {
 
             return updated;
         });
+    }
+    /* jscpd:ignore-end */
+
+    /* jscpd:ignore-start */
+    private buildAdditionalEntries(
+        entries: TransactionEntryCreateInputInterface[],
+        fromEntry: TransactionEntryCreateInputInterface,
+        toEntry: TransactionEntryCreateInputInterface,
+        transactionId: number
+    ): TransactionEntryCreateEntityInterface[] {
+        return entries
+            .filter(entry => entry !== fromEntry && entry !== toEntry)
+            .map(entry => ({
+                transactionId,
+                accountId: entry.accountId,
+                categoryId: entry.categoryId,
+                mccCategoryId: entry.mccCategoryId,
+                type: entry.type,
+                amount: convertToMicroUnits(entry.amount),
+                externalId: entry.externalId ?? null
+            }));
     }
     /* jscpd:ignore-end */
 
