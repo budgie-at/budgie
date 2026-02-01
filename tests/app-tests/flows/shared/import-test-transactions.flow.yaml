@@ -1,45 +1,32 @@
 appId: ${APP_ID}
 ---
-# Shared flow: Import test transactions from CSV file
-# Prerequisites: test-transactions.csv must be pushed to simulator before running
 
-# Navigate to Settings tab
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible: 'Settings'
-    timeout: 3000
 
-# Wait for settings content to load, then scroll to Import CSV card
 - waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: 'Settings.ImportCsvCard'
     direction: DOWN
-    timeout: 10000
 - tapOn:
     id: 'Settings.ImportCsvCard'
 
-# Wait for file picker and select the CSV file (iOS hides .csv extension)
 - tapOn:
     id: ${CSV_DISPLAY_NAME}, csv
 
-# Wait for import screen to load
 - extendedWaitUntil:
     visible:
       id: 'ImportScreen.Page'
-    timeout: 5000
 
-# Select Budgie preset (auto-maps columns)
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
 
-# Submit import
 - tapOn:
     id: 'ImportScreen.SubmitButton'
 
-# Wait for import to complete and return to settings
 - extendedWaitUntil:
     visible:
       id: 'TabBar.Transactions'
-    timeout: 30000

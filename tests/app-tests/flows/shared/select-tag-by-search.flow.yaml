@@ -1,11 +1,6 @@
 appId: ${APP_ID}
 ---
-# Select a tag by searching in the bottom sheet
-# Requires: TAG_NAME env variable
-# Assumes: Tag selector bottom sheet is already open
 
-# Note: Rule form uses RuleActionBottomSheetSelector which doesn't have search
-# Wait for the bottom sheet to appear and tap on the tag
 - waitForAnimationToEnd
 - tapOn:
     text: ${TAG_NAME}

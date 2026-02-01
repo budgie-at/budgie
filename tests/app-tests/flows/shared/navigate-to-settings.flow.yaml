@@ -1,8 +1,7 @@
 appId: ${APP_ID}
 ---
-# Navigate to Settings tab
+
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible: 'Settings'
-    timeout: 3000

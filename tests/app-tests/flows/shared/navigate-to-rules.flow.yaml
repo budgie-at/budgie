@@ -1,20 +1,15 @@
 appId: ${APP_ID}
 ---
-# Navigate to Home first to ensure consistent state
 - tapOn:
     id: 'TabBar.Home'
 - extendedWaitUntil:
     visible: 'TOTAL BALANCE'
-    timeout: 3000
 
-# Navigate to Settings tab
 - tapOn:
     id: 'TabBar.Settings'
 - extendedWaitUntil:
     visible: 'Settings'
-    timeout: 3000
 
-# Wait for settings to load, scroll to top first, then find Manage Rules
 - waitForAnimationToEnd
 - swipe:
     direction: DOWN
@@ -24,10 +19,8 @@ appId: ${APP_ID}
     element:
       id: 'SettingsPage.ManageRulesCard'
     direction: DOWN
-    timeout: 10000
 - tapOn:
     id: 'SettingsPage.ManageRulesCard'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
-    timeout: 10000
