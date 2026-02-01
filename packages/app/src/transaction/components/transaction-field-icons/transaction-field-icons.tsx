@@ -3,8 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import { RefObject, useImperativeHandle, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
+import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -32,6 +33,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
     readonly splitEntryCount?: number;
+    readonly isAmountPositive?: boolean;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
     readonly onSplitPress?: () => void;
@@ -39,7 +41,16 @@ interface Props {
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, splitEntryCount = 0, onCommentPress, onDatePress, onSplitPress } = props;
+    const {
+        ref,
+        variant,
+        transactionType,
+        splitEntryCount = 0,
+        isAmountPositive = false,
+        onCommentPress,
+        onDatePress,
+        onSplitPress
+    } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -78,7 +89,8 @@ export const TransactionFieldIcons = (props: Props) => {
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
     const isSplitActive = splitEntryCount > 1;
-    const hideCategoryAndTags = isTransfer || isSplitActive;
+    const hideCategoryAndTags = isTransfer;
+    const disableCategoryAndTags = isSplitActive;
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -90,18 +102,32 @@ export const TransactionFieldIcons = (props: Props) => {
 
     const showSplitIcon = isDefined(onSplitPress);
     const splitValue = isSplitActive ? t`${splitEntryCount} items` : void 0;
+    const splitEnabled = isAmountPositive || isSplitActive;
+
+    const splitOpacityStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(splitEnabled ? 1 : 0.3, { duration: 200 })
+    }));
+
+    const disabledStyle = { opacity: 0.3 };
+    const categoryTagPress = disableCategoryAndTags ? emptyFn : handleCategoryPress;
+    const tagsPress = disableCategoryAndTags ? emptyFn : handleTagsPress;
+    const splitPointerEvents = splitEnabled ? 'auto' : 'none';
+    const disabledWrapperStyle = disableCategoryAndTags ? disabledStyle : void 0;
+    const disabledPointerEvents = disableCategoryAndTags ? 'none' : 'auto';
 
     return (
         <View className="flex-row py-lg">
             {showSplitIcon ? (
-                <TransactionFieldIcon
-                    icon={UserIconNameEnum.Split}
-                    label={t`Split`}
-                    value={splitValue}
-                    variant={variant}
-                    onPress={onSplitPress}
-                    animationDelay={SPLIT_ANIMATION_DELAY}
-                />
+                <Animated.View style={splitOpacityStyle} pointerEvents={splitPointerEvents} className="flex-1">
+                    <TransactionFieldIcon
+                        icon={UserIconNameEnum.Split}
+                        label={t`Split`}
+                        value={splitValue}
+                        variant={variant}
+                        onPress={onSplitPress}
+                        animationDelay={SPLIT_ANIMATION_DELAY}
+                    />
+                </Animated.View>
             ) : null}
 
             <TransactionFieldIcon
@@ -123,26 +149,30 @@ export const TransactionFieldIcons = (props: Props) => {
             />
 
             {hideCategoryAndTags ? null : (
-                <TransactionFieldIcon
-                    icon={UserIconNameEnum.Tag}
-                    label={t`Tags`}
-                    value={tagsValue}
-                    variant={variant}
-                    onPress={handleTagsPress}
-                    animationDelay={TAGS_ANIMATION_DELAY}
-                />
+                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents}>
+                    <TransactionFieldIcon
+                        icon={UserIconNameEnum.Tag}
+                        label={t`Tags`}
+                        value={tagsValue}
+                        variant={variant}
+                        onPress={tagsPress}
+                        animationDelay={TAGS_ANIMATION_DELAY}
+                    />
+                </View>
             )}
 
             {hideCategoryAndTags ? null : (
-                <TransactionFieldIcon
-                    ref={categoryIconRef}
-                    icon={category?.icon ?? UserIconNameEnum.Folder}
-                    label={t`Category`}
-                    value={category?.title}
-                    variant={variant}
-                    onPress={handleCategoryPress}
-                    animationDelay={CATEGORY_ANIMATION_DELAY}
-                />
+                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents}>
+                    <TransactionFieldIcon
+                        ref={categoryIconRef}
+                        icon={category?.icon ?? UserIconNameEnum.Folder}
+                        label={t`Category`}
+                        value={category?.title}
+                        variant={variant}
+                        onPress={categoryTagPress}
+                        animationDelay={CATEGORY_ANIMATION_DELAY}
+                    />
+                </View>
             )}
         </View>
     );
