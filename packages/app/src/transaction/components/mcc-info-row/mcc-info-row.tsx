@@ -1,10 +1,7 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
 
 interface Props {
@@ -13,7 +10,6 @@ interface Props {
 }
 
 export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
-    const [isExpanded, setIsExpanded] = useState(false);
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
     const hasTitle = isNotEmptyString(transactionTitle);
@@ -23,28 +19,15 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
         return null;
     }
 
-    const handlePress = () => {
-        if (hasMcc) {
-            setIsExpanded(previous => !previous);
-        }
-    };
-
-    const chevronIcon = isExpanded ? UserIconNameEnum.ChevronUp : UserIconNameEnum.ChevronDown;
-
     return (
-        <Pressable className="items-center py-sm" onPress={handlePress}>
-            {hasTitle ? <Text className="text-sm text-secondary-foreground font-medium">{transactionTitle}</Text> : null}
+        <View className="items-center py-md mx-xl">
+            {hasTitle ? <Text className="text-sm text-secondary-foreground font-medium mb-xs">{transactionTitle}</Text> : null}
 
             {hasMcc ? (
-                <View className="flex-row items-center gap-xxs mt-xxs">
-                    <View className="rounded-sm py-xxs px-sm bg-secondary-background/50 border border-secondary-corner">
-                        <Text className="text-secondary-foreground text-xxs font-medium">{mccCategory.shortDescription}</Text>
-                    </View>
-                    <Icon className="text-tertiary-foreground" icon={chevronIcon} size={12} />
+                <View className="rounded-full py-xs px-md bg-secondary-background/30">
+                    <Text className="text-tertiary-foreground text-xxs">{mccCategory.shortDescription}</Text>
                 </View>
             ) : null}
-
-            {isExpanded && hasMcc ? <Text className="text-xxs text-tertiary-foreground mt-xs">{mccCategory.fullDescription}</Text> : null}
-        </Pressable>
+        </View>
     );
 };
