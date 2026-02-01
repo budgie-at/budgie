@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.24.1](https://github.com/budgie-at/budgie/compare/v2.24.0...v2.24.1) (2026-02-01)
+
+### Bug Fixes
+
+- **app:** use account currency in debt balance statistics ([6b2d190](https://github.com/budgie-at/budgie/commit/6b2d19097fbfd9ccae28f2c6f1be05d74507b944)), closes [#296](https://github.com/budgie-at/budgie/issues/296)
+
 # [2.24.0](https://github.com/budgie-at/budgie/compare/v2.23.0...v2.24.0) (2026-02-01)
 
 ### Features
