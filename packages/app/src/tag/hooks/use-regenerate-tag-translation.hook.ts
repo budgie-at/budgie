@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { useLlmContext } from '../../ai/context/llm.context';
-import { CategoryTranslationResult } from '../../ai/service/category-llm.service';
+import { TranslationResult } from '../../ai/service/base-llm.service';
 import { TagLlmService } from '../../ai/service/tag-llm.service';
 
 interface UseRegenerateTagTranslationReturn {
-    regenerate: (tagId: number, title: string) => Promise<CategoryTranslationResult | null>;
+    regenerate: (tagId: number, title: string) => Promise<TranslationResult | null>;
     isRegenerating: boolean;
     error: string | null;
 }
@@ -19,7 +19,7 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
     const [error, setError] = useState<string | null>(null);
 
     /* jscpd:ignore-start - Mirrors category regeneration hook pattern */
-    const regenerate = async (tagId: number, title: string): Promise<CategoryTranslationResult | null> => {
+    const regenerate = async (tagId: number, title: string): Promise<TranslationResult | null> => {
         if (!llm.isReady) {
             setError(t`LLM not ready`);
 

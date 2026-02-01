@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
@@ -12,7 +12,7 @@ export default function SplitEntriesModal() {
     const { currentParams, resolveSplitEntries } = useSplitEntriesModal();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const screenOptions = useMemo(() => ({ contentStyle: { backgroundColor } }), [backgroundColor]);
+    const screenOptions = { contentStyle: { backgroundColor } };
     const containerStyle = { flex: 1, backgroundColor };
 
     const entriesRef = useRef<TransactionEntryCreateInputInterface[]>(currentParams?.entries ?? []);
@@ -21,9 +21,9 @@ export default function SplitEntriesModal() {
         entriesRef.current = entries;
     };
 
-    const handleConfirm = useCallback(() => {
+    const handleConfirm = () => {
         resolveSplitEntries(entriesRef.current);
-    }, [resolveSplitEntries]);
+    };
 
     useEffect(
         () => () => {
