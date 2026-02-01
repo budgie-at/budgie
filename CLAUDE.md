@@ -62,6 +62,7 @@ packages/
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
 15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
+16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
 
 ### Naming Conventions
 
