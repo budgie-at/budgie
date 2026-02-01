@@ -5,7 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -108,12 +108,7 @@ export const TransactionFieldIcons = (props: Props) => {
         opacity: withTiming(splitEnabled ? 1 : 0.3, { duration: 200 })
     }));
 
-    const disabledStyle = { opacity: 0.3 };
-    const categoryTagPress = disableCategoryAndTags ? emptyFn : handleCategoryPress;
-    const tagsPress = disableCategoryAndTags ? emptyFn : handleTagsPress;
     const splitPointerEvents = splitEnabled ? 'auto' : 'none';
-    const disabledWrapperStyle = disableCategoryAndTags ? disabledStyle : void 0;
-    const disabledPointerEvents = disableCategoryAndTags ? 'none' : 'auto';
 
     return (
         <View className="flex-row py-lg">
@@ -149,30 +144,28 @@ export const TransactionFieldIcons = (props: Props) => {
             />
 
             {hideCategoryAndTags ? null : (
-                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents} className="flex-1">
-                    <TransactionFieldIcon
-                        icon={UserIconNameEnum.Tag}
-                        label={t`Tags`}
-                        value={tagsValue}
-                        variant={variant}
-                        onPress={tagsPress}
-                        animationDelay={TAGS_ANIMATION_DELAY}
-                    />
-                </View>
+                <TransactionFieldIcon
+                    icon={UserIconNameEnum.Tag}
+                    label={t`Tags`}
+                    value={tagsValue}
+                    variant={variant}
+                    disabled={disableCategoryAndTags}
+                    onPress={handleTagsPress}
+                    animationDelay={TAGS_ANIMATION_DELAY}
+                />
             )}
 
             {hideCategoryAndTags ? null : (
-                <View style={disabledWrapperStyle} pointerEvents={disabledPointerEvents} className="flex-1">
-                    <TransactionFieldIcon
-                        ref={categoryIconRef}
-                        icon={category?.icon ?? UserIconNameEnum.Folder}
-                        label={t`Category`}
-                        value={category?.title}
-                        variant={variant}
-                        onPress={categoryTagPress}
-                        animationDelay={CATEGORY_ANIMATION_DELAY}
-                    />
-                </View>
+                <TransactionFieldIcon
+                    ref={categoryIconRef}
+                    icon={category?.icon ?? UserIconNameEnum.Folder}
+                    label={t`Category`}
+                    value={category?.title}
+                    variant={variant}
+                    disabled={disableCategoryAndTags}
+                    onPress={handleCategoryPress}
+                    animationDelay={CATEGORY_ANIMATION_DELAY}
+                />
             )}
         </View>
     );
