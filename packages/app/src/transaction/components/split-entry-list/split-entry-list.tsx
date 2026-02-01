@@ -10,6 +10,7 @@ import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 interface Props {
     readonly entries: TransactionEntryCreateInputInterface[];
+    readonly entryIds: string[];
     readonly activeEntryIndex: number;
     readonly currencySymbol: string;
     readonly onSelectEntry: (index: number) => void;
@@ -20,7 +21,7 @@ const MAX_LIST_HEIGHT = 240;
 const scrollViewStyle = { maxHeight: MAX_LIST_HEIGHT };
 
 export const SplitEntryList = (props: Props) => {
-    const { entries, activeEntryIndex, currencySymbol, onSelectEntry, onAddEntry } = props;
+    const { entries, entryIds, activeEntryIndex, currencySymbol, onSelectEntry, onAddEntry } = props;
 
     const itemCount = entries.length;
 
@@ -41,7 +42,7 @@ export const SplitEntryList = (props: Props) => {
 
                     return (
                         <SplitEntryCard
-                            key={index}
+                            key={entryIds[index]}
                             categoryId={categoryId}
                             amount={entry.amount}
                             currencySymbol={currencySymbol}
