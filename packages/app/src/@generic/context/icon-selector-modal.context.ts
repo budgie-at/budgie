@@ -8,6 +8,7 @@ import { ColorPaletteVariant } from '../type/color-palette-variant.type';
 export interface IconSelectorModalParams {
     readonly selectedIcon?: UserIconNameEnum;
     readonly variant?: ColorPaletteVariant;
+    readonly keywords?: string[];
 }
 
 export type IconSelectorResult = UserIconNameEnum | null;
