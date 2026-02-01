@@ -1,14 +1,19 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import { useCallback, useRef, useState } from 'react';
+import { NotificationFeedbackType } from 'expo-haptics';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
+import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -22,6 +27,7 @@ interface Props {
     readonly currencySymbol: string;
     readonly totalAmount: number;
     readonly onEntriesChange: (entries: TransactionEntryCreateInputInterface[]) => void;
+    readonly onConfirm: () => void;
 }
 
 interface EntryWithLocalId extends TransactionEntryCreateInputInterface {
@@ -63,21 +69,22 @@ const stripLocalId = (entry: EntryWithLocalId): TransactionEntryCreateInputInter
 const keyExtractor = (item: EntryWithLocalId) => item.localId;
 
 const ADD_ICON_SIZE = 20;
-const CHECK_ICON_SIZE = 14;
-const disabledFooterStyle = { opacity: 0.3 };
+const ANIMATION_DURATION = 200;
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Modal content orchestrating entries list and category selection
 export const SplitEntriesModalContent = (props: Props) => {
-    const { initialEntries, variant, entryType, currencySymbol, totalAmount, onEntriesChange } = props;
+    const { initialEntries, variant, entryType, currencySymbol, totalAmount, onEntriesChange, onConfirm } = props;
 
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const { openCategorySelector } = useCategorySelectorModal();
+    const [hapticNotification] = useVibration();
 
     const [entries, setEntries] = useState<EntryWithLocalId[]>(() => initialEntries.map(addLocalId));
     const [autoFocusIndex, setAutoFocusIndex] = useState(-1);
 
     const entriesRef = useRef(entries);
+    const previouslyFullySplitRef = useRef(false);
 
     const notifyChange = useCallback(
         (updated: EntryWithLocalId[]) => {
@@ -93,9 +100,17 @@ export const SplitEntriesModalContent = (props: Props) => {
     const isOverBudget = remainingAmount < 0;
     const canAddEntry = remainingAmount > 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
-    const itemCount = entries.length;
     const canDelete = entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
+    const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && entry.amount > 0);
+    const canConfirm = isFullySplit && allEntriesValid;
+
+    useEffect(() => {
+        if (isFullySplit && !previouslyFullySplitRef.current) {
+            hapticNotification(NotificationFeedbackType.Success);
+        }
+        previouslyFullySplitRef.current = isFullySplit;
+    }, [isFullySplit, hapticNotification]);
 
     const handleAmountChange = (index: number, amount: number) => {
         setEntries(previous => {
@@ -164,54 +179,46 @@ export const SplitEntriesModalContent = (props: Props) => {
         );
     };
 
-    const remainingStatusElement = isFullySplit ? (
-        <Animated.View entering={FadeIn.duration(300)} className="flex-row items-center gap-x-xs">
-            <Icon icon={UserIconNameEnum.Check} size={CHECK_ICON_SIZE} className="text-success" />
-            <Text className="text-md font-semibold text-success">{formatDigits(0, currencySymbol)}</Text>
-        </Animated.View>
-    ) : (
-        <Text className={`text-md font-semibold ${isOverBudget ? 'text-destructive' : 'text-secondary-foreground'}`}>
-            {isOverBudget ? <Trans>-{formattedRemaining} over</Trans> : <Trans>{formattedRemaining} left</Trans>}
-        </Text>
-    );
-
-    const listHeader = (
-        <View className="flex-row items-center justify-between px-xl pb-lg">
-            <Text className="text-sm font-medium text-secondary-foreground">
-                {itemCount === 1 ? <Trans>1 item</Trans> : <Trans>{itemCount} items</Trans>}
-            </Text>
-            {remainingStatusElement}
+    const listFooter = (
+        <View>
+            {canAddEntry ? (
+                <Animated.View entering={FadeIn.duration(ANIMATION_DURATION)} exiting={FadeOut.duration(ANIMATION_DURATION)}>
+                    <HapticPressable
+                        className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
+                        onPress={handleAddEntry}
+                    >
+                        <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-primary" />
+                        <Text className="text-sm font-semibold text-primary">
+                            <Trans>Add item</Trans>
+                        </Text>
+                    </HapticPressable>
+                </Animated.View>
+            ) : null}
+            <FormSheetSpacer />
         </View>
     );
 
-    const addButtonDisabledStyle = canAddEntry ? void 0 : disabledFooterStyle;
-    const addButtonPointerEvents = canAddEntry ? 'auto' : 'none';
-
-    const listFooter = (
-        <HapticPressable
-            className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
-            style={addButtonDisabledStyle}
-            pointerEvents={addButtonPointerEvents}
-            onPress={handleAddEntry}
-        >
-            <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-primary" />
-            <Text className="text-sm font-semibold text-primary">
-                <Trans>Add item</Trans>
-            </Text>
-        </HapticPressable>
-    );
+    const remainingButtonLabel = isOverBudget ? t`${formattedRemaining} over budget` : t`${formattedRemaining} left to assign`;
+    const remainingButtonVariant = isOverBudget ? 'destructive' : 'secondary';
+    const confirmButtonVariant = isFullySplit ? variant : remainingButtonVariant;
+    const confirmButtonLabel = isFullySplit ? t`Confirm Split` : remainingButtonLabel;
 
     return (
-        <FlatList
-            data={entries}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            contentContainerClassName="px-xl pt-3xl pb-xl"
-            ListHeaderComponent={listHeader}
-            ListFooterComponent={listFooter}
-            ItemSeparatorComponent={ListItemSeparator}
-        />
+        <View className="flex-1">
+            <FlatList
+                data={entries}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                contentContainerClassName="px-xl pt-3xl pb-xl"
+                ListFooterComponent={listFooter}
+                ItemSeparatorComponent={ListItemSeparator}
+            />
+
+            <View className="px-xl pb-xl">
+                <Button content={confirmButtonLabel} variant={confirmButtonVariant} size="md" disabled={!canConfirm} onPress={onConfirm} />
+            </View>
+        </View>
     );
 };

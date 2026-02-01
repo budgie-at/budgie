@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
 import { useSplitEntriesModal } from '../transaction/context/split-entries-modal.context';
@@ -20,9 +19,13 @@ export default function SplitEntriesModal() {
         entriesRef.current = entries;
     };
 
+    const handleConfirm = useCallback(() => {
+        resolveSplitEntries(entriesRef.current);
+    }, [resolveSplitEntries]);
+
     useEffect(
         () => () => {
-            resolveSplitEntries(entriesRef.current, { skipBack: true });
+            resolveSplitEntries(null, { skipBack: true });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps -- Resolve on unmount only
         []
@@ -41,8 +44,8 @@ export default function SplitEntriesModal() {
                 currencySymbol={currentParams.currencySymbol}
                 totalAmount={currentParams.totalAmount}
                 onEntriesChange={handleEntriesChange}
+                onConfirm={handleConfirm}
             />
-            <FormSheetSpacer />
         </View>
     );
 }

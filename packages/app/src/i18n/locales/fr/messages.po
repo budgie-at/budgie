@@ -11,10 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
-msgid "-{formattedRemaining} over"
-msgstr "-{formattedRemaining} au-dessus"
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} comptes"
@@ -35,13 +31,13 @@ msgstr "{accountTitle} sera restauré dans votre vue principale."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} colonnes disponibles"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
-msgid "{formattedRemaining} left"
-msgstr "{formattedRemaining} restant"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+msgid "{formattedRemaining} left to assign"
+msgstr "{formattedRemaining} à attribuer"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:181
-msgid "{itemCount} items"
-msgstr "{itemCount} éléments"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+msgid "{formattedRemaining} over budget"
+msgstr "{formattedRemaining} au-dessus du budget"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -65,10 +61,6 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:181
-msgid "1 item"
-msgstr "1 élément"
-
 #: src/app/(tabs)/settings/index.tsx:56
 msgid "100% Offline & Private"
 msgstr "100 % hors ligne et privé"
@@ -78,7 +70,7 @@ msgid "About"
 msgstr "À propos"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:40
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:50
 msgid "Account"
 msgstr "Compte"
 
@@ -133,7 +125,7 @@ msgstr "Ajouter une note..."
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:199
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:192
 msgid "Add item"
 msgstr "Ajouter un élément"
 
@@ -310,7 +302,7 @@ msgstr "Catégories ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:162
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:161
 msgid "Category"
 msgstr "Catégorie"
 
@@ -375,6 +367,10 @@ msgstr "Commentaire"
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Confirmer le code PIN"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:204
+msgid "Confirm Split"
+msgstr "Confirmer la répartition"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:83
 msgid "Connect Monobank"
@@ -1312,7 +1308,7 @@ msgstr "Sécurisez votre application avec un code PIN et Face ID"
 msgid "Security"
 msgstr "Sécurité"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:51
 msgid "Select"
 msgstr "Sélectionner"
 
@@ -1336,7 +1332,7 @@ msgstr "Sélectionnez une étiquette pour fusionner"
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:66
 msgid "Select account"
 msgstr "Sélectionner un compte"
 
@@ -1668,7 +1664,7 @@ msgstr "Ukrainien"
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:27
 msgid "Unknown"
 msgstr "Inconnu"
 

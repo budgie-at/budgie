@@ -11,10 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
-msgid "-{formattedRemaining} over"
-msgstr "-{formattedRemaining} понад"
-
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -35,13 +31,13 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
-msgid "{formattedRemaining} left"
-msgstr "{formattedRemaining} залишок"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+msgid "{formattedRemaining} left to assign"
+msgstr "{formattedRemaining} залишилось розподілити"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:181
-msgid "{itemCount} items"
-msgstr "{itemCount} записів"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:201
+msgid "{formattedRemaining} over budget"
+msgstr "{formattedRemaining} понад бюджет"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -65,10 +61,6 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:181
-msgid "1 item"
-msgstr "1 запис"
-
 #: src/app/(tabs)/settings/index.tsx:56
 msgid "100% Offline & Private"
 msgstr "100% офлайн і приватно"
@@ -78,7 +70,7 @@ msgid "About"
 msgstr "Про застосунок"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:40
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:50
 msgid "Account"
 msgstr "Рахунок"
 
@@ -133,7 +125,7 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:199
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:192
 msgid "Add item"
 msgstr "Додати запис"
 
@@ -310,7 +302,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:162
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:161
 msgid "Category"
 msgstr "Категорія"
 
@@ -375,6 +367,10 @@ msgstr "Коментар"
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Підтвердити PIN-код"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:204
+msgid "Confirm Split"
+msgstr "Підтвердити розділення"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:83
 msgid "Connect Monobank"
@@ -1312,7 +1308,7 @@ msgstr "Захистіть свій додаток за допомогою PIN-�
 msgid "Security"
 msgstr "Безпека"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:51
 msgid "Select"
 msgstr "Вибрати"
 
@@ -1336,7 +1332,7 @@ msgstr "Виберіть тег для об'єднання"
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:66
 msgid "Select account"
 msgstr "Виберіть рахунок"
 
@@ -1668,7 +1664,7 @@ msgstr "Українська"
 msgid "Uncategorized"
 msgstr "Без категорії"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:27
 msgid "Unknown"
 msgstr "Невідомо"
 

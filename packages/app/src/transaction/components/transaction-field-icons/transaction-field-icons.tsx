@@ -90,7 +90,7 @@ export const TransactionFieldIcons = (props: Props) => {
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
     const isSplitActive = splitEntryCount > 1;
     const hideCategoryAndTags = isTransfer;
-    const disableCategoryAndTags = isSplitActive;
+    const disableCategory = isSplitActive;
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -149,7 +149,6 @@ export const TransactionFieldIcons = (props: Props) => {
                     label={t`Tags`}
                     value={tagsValue}
                     variant={variant}
-                    disabled={disableCategoryAndTags}
                     onPress={handleTagsPress}
                     animationDelay={TAGS_ANIMATION_DELAY}
                 />
@@ -162,7 +161,7 @@ export const TransactionFieldIcons = (props: Props) => {
                     label={t`Category`}
                     value={category?.title}
                     variant={variant}
-                    disabled={disableCategoryAndTags}
+                    disabled={disableCategory}
                     onPress={handleCategoryPress}
                     animationDelay={CATEGORY_ANIMATION_DELAY}
                 />

@@ -17,7 +17,7 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
-import { TransactionAccountRow } from '../transaction-account-row/transaction-account-row';
+import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -81,6 +81,7 @@ export const SimpleQuickForm = (props: Props) => {
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
+    const accountRowRef = useRef<TransactionAccountRowRef>(null);
 
     const handleSelectCategory = (selectedCategoryId: number) => {
         setValue('entries.0.categoryId', selectedCategoryId);
@@ -120,9 +121,14 @@ export const SimpleQuickForm = (props: Props) => {
         });
 
         if (isDefined(result)) {
-            setValue('entries', result, { shouldValidate: false });
-            const totalAmount = result.reduce((sum, entry) => sum + entry.amount, 0);
-            setValue('amount', totalAmount);
+            const hasMultipleEntries = result.length > 1;
+            const hasSingleEntryWithAmount = result.length === 1 && result[0].amount > 0;
+
+            if (hasMultipleEntries || hasSingleEntryWithAmount) {
+                setValue('entries', result, { shouldValidate: false });
+                const totalAmount = result.reduce((sum, entry) => sum + entry.amount, 0);
+                setValue('amount', totalAmount);
+            }
         }
     };
 
@@ -141,7 +147,7 @@ export const SimpleQuickForm = (props: Props) => {
         const isValid = validateAndShake([
             { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: formCategoryId > 0, shake: () => fieldIconsRef.current?.shakeCategory() },
-            { isValid: accountId > 0 }
+            { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
 
         if (!isValid) {
@@ -164,7 +170,7 @@ export const SimpleQuickForm = (props: Props) => {
         const isValid = validateAndShake([
             { isValid: totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
             { isValid: allEntriesValid },
-            { isValid: accountId > 0 }
+            { isValid: accountId > 0, shake: () => accountRowRef.current?.shake() }
         ]);
 
         if (!isValid) {
@@ -227,7 +233,7 @@ export const SimpleQuickForm = (props: Props) => {
             />
 
             <View className="mb-xl">
-                <TransactionAccountRow variant={variant} fieldName={accountFieldName} />
+                <TransactionAccountRow ref={accountRowRef} variant={variant} fieldName={accountFieldName} />
             </View>
 
             <TransactionKeypad
