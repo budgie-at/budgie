@@ -31,9 +31,9 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:137
-msgid "{itemCount} items"
-msgstr "{itemCount} elementos"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
+msgid "{itemCount, plural, one {# item} other {# items}}"
+msgstr "{itemCount, plural, one {# elemento} other {# elementos}}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -121,7 +121,7 @@ msgstr "Agregar una nota..."
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:167
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
 msgid "Add item"
 msgstr "Agregar elemento"
 
@@ -1338,7 +1338,7 @@ msgstr "Seleccionar cuentas para sincronizar:"
 msgid "Select All"
 msgstr "Seleccionar todo"
 
-#: src/transaction/components/split-entry-row/split-entry-row.tsx:41
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"
 msgstr "Seleccionar categoría"
 

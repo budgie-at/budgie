@@ -31,9 +31,9 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:137
-msgid "{itemCount} items"
-msgstr "{itemCount} записів"
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:161
+msgid "{itemCount, plural, one {# item} other {# items}}"
+msgstr "{itemCount, plural, one {# запис} few {# записи} other {# записів}}"
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
@@ -121,7 +121,7 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:167
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:174
 msgid "Add item"
 msgstr "Додати запис"
 
@@ -1338,7 +1338,7 @@ msgstr "Виберіть рахунки для синхронізації:"
 msgid "Select All"
 msgstr "Вибрати все"
 
-#: src/transaction/components/split-entry-row/split-entry-row.tsx:41
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
 msgid "Select category"
 msgstr "Обрати категорію"
 
