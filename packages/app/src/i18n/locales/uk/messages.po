@@ -11,6 +11,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:175
+msgid "-{formattedRemaining} over"
+msgstr "-{formattedRemaining} перевищено"
+
 #: src/account/component/accounts-group/accounts-group.tsx:68
 msgid "{accountsCount} accounts"
 msgstr "{accountsCount} рахунків"
@@ -31,7 +35,11 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:177
+msgid "{formattedRemaining} left"
+msgstr "{formattedRemaining} залишилось"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:185
 msgid "{itemCount} items"
 msgstr "{itemCount} записів"
 
@@ -45,7 +53,7 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:96
 msgid "{splitEntryCount} items"
 msgstr "{splitEntryCount} записів"
 
@@ -57,7 +65,7 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:160
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:185
 msgid "1 item"
 msgstr "1 запис"
 
@@ -125,7 +133,7 @@ msgstr "Додати нотатку..."
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:173
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:202
 msgid "Add item"
 msgstr "Додати запис"
 
@@ -301,7 +309,7 @@ msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:140
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:158
 msgid "Category"
 msgstr "Категорія"
 
@@ -546,7 +554,7 @@ msgstr "Управління даними"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:124
 msgid "Date"
 msgstr "Дата"
 
@@ -1116,7 +1124,7 @@ msgstr "Не згенеровано"
 msgid "not set"
 msgstr "не встановлено"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:118
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:133
 msgid "Note"
 msgstr "Нотатка"
 
@@ -1422,7 +1430,7 @@ msgstr "Витрати за тегами"
 msgid "Spent"
 msgstr "Витрачено"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:113
 msgid "Split"
 msgstr "Розділити"
 
@@ -1493,7 +1501,7 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:128
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:144
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1575,7 +1583,7 @@ msgid "To Currency"
 msgstr "Валюта на"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:88
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -1711,7 +1719,7 @@ msgstr "Коли це потрібно повернути?"
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:85
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:89
 msgid "Yesterday"
 msgstr "Вчора"
 
