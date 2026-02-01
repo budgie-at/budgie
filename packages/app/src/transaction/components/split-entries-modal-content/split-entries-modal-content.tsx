@@ -23,16 +23,15 @@ interface Props {
 }
 
 interface EntryWithLocalId extends TransactionEntryCreateInputInterface {
-    readonly localId: number;
+    readonly localId: string;
 }
 
-let nextLocalId = 1;
+let nextLocalId = 0;
 
-const generateLocalId = (): number => {
-    const id = nextLocalId;
+const generateLocalId = (): string => {
     nextLocalId += 1;
 
-    return id;
+    return `entry-${Date.now()}-${nextLocalId}`;
 };
 
 const addLocalId = (entry: TransactionEntryCreateInputInterface): EntryWithLocalId => ({
@@ -59,7 +58,7 @@ const stripLocalId = (entry: EntryWithLocalId): TransactionEntryCreateInputInter
     externalId: entry.externalId
 });
 
-const keyExtractor = (item: EntryWithLocalId) => item.localId.toString();
+const keyExtractor = (item: EntryWithLocalId) => item.localId;
 
 const ADD_ICON_SIZE = 20;
 
