@@ -1,0 +1,64 @@
+appId: ${APP_ID}
+---
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 3000
+
+- tapOn:
+    id: 'CreateTransactionTrigger'
+- extendedWaitUntil:
+    visible:
+      id: 'ActionItem.0'
+    timeout: 2000
+- waitForAnimationToEnd
+
+- tapOn:
+    text: 'Expense'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: 'New Expense'
+    timeout: 5000
+
+- tapOn:
+    id: 'TransactionForm.AmountInput'
+- inputText: ${AMOUNT}
+
+- tapOn:
+    id: 'TransactionForm.AccountSelector'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.AccountSearchInput'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.AccountSearchInput'
+- inputText: ${ACCOUNT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionForm.Account'
+    timeout: 5000
+- tapOn:
+    id: 'TransactionForm.Account'
+
+- tapOn: 'Select category'
+- runFlow:
+    file: ./select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- swipe:
+    from:
+      id: 'TransactionForm.CategorySelector'
+    direction: UP
+
+- tapOn: 'Add a note...'
+- inputText: ${TITLE}
+
+- tapOn: 'Add Expense'
+
+- extendedWaitUntil:
+    visible: 'Transactions'
+    timeout: 5000

@@ -23,11 +23,13 @@ export const useModalResolver = <TParams, TResult>(route: string): UseModalResol
         });
 
     const resolve = (result: TResult, options?: ResolveOptions) => {
+        const hasOpenModal = resolverRef.current !== null;
+
         resolverRef.current?.(result);
         resolverRef.current = null;
         setCurrentParams(null);
 
-        if (!options?.skipBack) {
+        if (hasOpenModal && !options?.skipBack) {
             router.back();
         }
     };

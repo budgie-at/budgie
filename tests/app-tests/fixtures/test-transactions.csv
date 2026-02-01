@@ -1,0 +1,5 @@
+externalId,toAccount,category,operatedAt,toAmount,toCurrency,comment
+001,Test Account,Other,01/15/2024 10:00:00,-25.00,USD,Grocery Store Purchase
+002,Test Account,Other,01/16/2024 11:00:00,-30.00,USD,Grocery Store Weekly
+003,Test Account,Other,01/17/2024 12:00:00,-15.00,USD,Coffee Shop
+004,Test Account,Other,01/18/2024 13:00:00,-45.00,USD,Grocery Store Monthly

@@ -1,0 +1,67 @@
+appId: ${APP_ID}
+env:
+  TEST_ID: '17'
+  CATEGORY_NAME: Shopping
+  CSV_DISPLAY_NAME: test17-suggested-rule
+---
+
+- runFlow:
+    file: ../shared/enter-app.flow.yaml
+
+- runFlow:
+    file: ../shared/import-test-transactions.flow.yaml
+    env:
+      CSV_DISPLAY_NAME: ${CSV_DISPLAY_NAME}
+
+- tapOn:
+    id: 'TabBar.Transactions'
+- waitForAnimationToEnd
+
+- swipe:
+    direction: DOWN
+    duration: 500
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionList.Card.1'
+- tapOn:
+    id: 'TransactionList.Card.1'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionForm.CategorySelector'
+- runFlow:
+    file: ../shared/select-category-by-search.flow.yaml
+    env:
+      CATEGORY_NAME: ${CATEGORY_NAME}
+
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.AddRuleButton'
+
+- tapOn:
+    id: 'SuggestRule.AddRuleButton'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible:
+      id: 'SuggestRule.BottomSheet'
+
+- tapOn:
+    id: 'SuggestRule.ConditionChip.COMMENT'
+
+- tapOn:
+    id: 'SuggestRule.CreateRuleButton'
+- waitForAnimationToEnd
+
+- tapOn:
+    id: 'TransactionForm.SubmitButton'
+- waitForAnimationToEnd
+
+- runFlow:
+    file: ../shared/navigate-to-rules.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'RulesPage.RuleCard.0'

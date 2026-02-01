@@ -18,6 +18,7 @@ interface Props {
     readonly size?: CardSizeType;
     readonly onPress?: OnEventFn;
     readonly variant?: ColorPaletteVariant;
+    readonly testID?: string;
 }
 
 const cardVariants = cva<{ size: Record<CardSizeType, ClassValue>; variant: Record<ColorPaletteVariant, ClassValue> }>(

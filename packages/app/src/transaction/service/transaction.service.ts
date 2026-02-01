@@ -19,6 +19,7 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 
 class TransactionService {
@@ -327,12 +328,11 @@ class TransactionService {
         return { fromEntry, toEntry };
     }
 
-    private processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        return db.transaction(async tx => {
-            const transactions = await transactionRepository.bulkCreate(batch, tx);
+    private async processBatch(batch: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
+        const transactions = await db.transaction(async tx => {
+            const createdTransactions = await transactionRepository.bulkCreate(batch, tx);
 
-            // HINT: This will work if bulkCreate will preserve the order of the inputs.
-            const batchEntries = transactions.flatMap((transaction, index) =>
+            const batchEntries = createdTransactions.flatMap((transaction, index) =>
                 batch[index].entries.map(entry => ({
                     transactionId: transaction.id,
                     accountId: entry.accountId,
@@ -344,15 +344,20 @@ class TransactionService {
                 }))
             );
 
-            const batchTags = transactions.flatMap((transaction, index) =>
+            const batchTags = createdTransactions.flatMap((transaction, index) =>
                 batch[index].tagIds.map(tagId => ({ transactionId: transaction.id, tagId }))
             );
 
             await transactionEntryRepository.bulkCreate(batchEntries, tx);
             await transactionTagsRepository.bulkCreate(batchTags, tx);
 
-            return transactions;
+            return createdTransactions;
         });
+
+        const transactionIds = transactions.map(transaction => transaction.id);
+        await ruleEngineService.applyRulesToTransactions(transactionIds, batch);
+
+        return transactions;
     }
 
     private async upsertEntriesAndTags(transactionId: number, input: TransactionCreateInputInterface, tx: Transaction): Promise<void> {

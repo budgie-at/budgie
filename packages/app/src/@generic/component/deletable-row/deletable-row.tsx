@@ -9,13 +9,14 @@ import { DeletableRowAction } from './deletable-row-action';
 
 interface Props {
     readonly onDelete: (id: number) => void;
+    readonly deleteActionTestID?: string;
     readonly children: ReactNode;
     readonly id: number;
 }
 
 const Swipable = styled(ReanimatedSwipeable, { containerClassName: 'containerStyle' });
 
-export const DeletableRow = ({ children, onDelete, id }: Props) => {
+export const DeletableRow = ({ children, onDelete, id, deleteActionTestID }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
@@ -33,7 +34,9 @@ export const DeletableRow = ({ children, onDelete, id }: Props) => {
             }
         ]);
 
-    const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => <DeletableRowAction drag={drag} onPress={confirm} />;
+    const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
+        <DeletableRowAction testID={deleteActionTestID} drag={drag} onPress={confirm} />
+    );
 
     return (
         <Swipable ref={ref} friction={2} enableTrackpadTwoFingerGesture rightThreshold={40} renderRightActions={renderRightActions}>
