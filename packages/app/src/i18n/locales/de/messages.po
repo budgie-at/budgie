@@ -125,7 +125,7 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
 msgid "AI-Generated Metadata"
 msgstr "KI-generierte Metadaten"
 
@@ -661,7 +661,7 @@ msgstr "Englisch (Vereinigtes Königreich)"
 msgid "English (United States)"
 msgstr "Englisch (Vereinigte Staaten)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
 msgid "English Translation"
 msgstr "Englische Übersetzung"
 
@@ -963,6 +963,10 @@ msgstr "CSV-Spalten zuordnen"
 msgid "Match each field to a column from your CSV file"
 msgstr "Ordnen Sie jedes Feld einer Spalte aus Ihrer CSV-Datei zu"
 
+#: src/transaction/components/mcc-info-row/mcc-info-row.tsx:22
+msgid "MCC:"
+msgstr "MCC:"
+
 #: src/category/components/category-form/category-form.tsx:144
 msgid "Merge into another category"
 msgstr "In eine andere Kategorie zusammenführen"
@@ -1091,8 +1095,8 @@ msgstr "Noch keine Transaktionen"
 msgid "None selected"
 msgstr "Nichts ausgewählt"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
 msgid "Not generated"
 msgstr "Nicht generiert"
 
@@ -1199,11 +1203,11 @@ msgstr "Salden neu berechnen"
 msgid "Receiving {toCode}"
 msgstr "Empfang {toCode}"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
 msgid "Regenerate AI Data"
 msgstr "KI-Daten neu generieren"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Übersetzungen und Suchbegriffe für alle Kategorien und Tags neu generieren"
 
@@ -1264,7 +1268,7 @@ msgstr "Währungen durchsuchen..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
 msgid "Search Keywords"
 msgstr "Suchbegriffe"
 
