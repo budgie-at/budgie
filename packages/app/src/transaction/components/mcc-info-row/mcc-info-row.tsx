@@ -24,8 +24,8 @@ export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
             {hasTitle ? <Text className="text-sm text-secondary-foreground font-medium mb-xs">{transactionTitle}</Text> : null}
 
             {hasMcc ? (
-                <View className="rounded-full py-xs px-md bg-secondary-background/30">
-                    <Text className="text-tertiary-foreground text-xxs">{mccCategory.shortDescription}</Text>
+                <View className="rounded-full py-xs px-md bg-primary/10 border border-primary/20">
+                    <Text className="text-primary/80 text-xs font-medium">{mccCategory.shortDescription}</Text>
                 </View>
             ) : null}
         </View>
