@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode, createContext, use, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { EmptyFn, emptyFn } from '@rnw-community/shared';
 
@@ -9,7 +9,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
 
 const TransactionActionsMenuContext = createContext<EmptyFn>(emptyFn);
 
@@ -25,7 +24,6 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>({ x: 0, y: 0, width: 0, height: 0 });
     const triggerRef = useRef<View>(null);
-    const { openConfirmAction } = useConfirmActionModal();
 
     const handleToggleMenu = () => {
         if (isMenuOpen) {
@@ -44,20 +42,20 @@ export const TransactionActionsMenu = ({ onDelete, children }: Props) => {
         setIsMenuOpen(false);
     };
 
-    const handleDeletePress = async () => {
+    const handleDeletePress = () => {
         handleCloseMenu();
 
-        const confirmed = await openConfirmAction({
-            variant: 'destructive',
-            icon: UserIconNameEnum.Info,
-            title: t`Are you sure you want to delete this transaction?`,
-            description: t`This action cannot be undone.`,
-            buttonText: t`Delete transaction`
-        });
-
-        if (confirmed) {
-            await onDelete();
-        }
+        void Alert.alert(t`Are you sure?`, t`This action cannot be undone.`, [
+            {
+                text: t`Delete`,
+                onPress: () => void onDelete(),
+                style: 'destructive'
+            },
+            {
+                text: t`Cancel`,
+                style: 'cancel'
+            }
+        ]);
     };
 
     return (

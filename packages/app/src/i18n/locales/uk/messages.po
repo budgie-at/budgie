@@ -125,7 +125,7 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
 msgid "AI-Generated Metadata"
 msgstr "Метадані, згенеровані ШІ"
 
@@ -204,11 +204,8 @@ msgstr "Архівовані рахунки"
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:53
-msgid "Are you sure you want to delete this transaction?"
-msgstr "Ви впевнені, що хочете видалити цю транзакцію?"
-
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
@@ -264,6 +261,7 @@ msgstr "Budgie"
 #: src/app/(tabs)/settings/import.tsx:255
 #: src/app/confirm-action.tsx:43
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -553,6 +551,7 @@ msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:25
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:50
 msgid "Delete"
 msgstr "Видалити"
 
@@ -572,11 +571,7 @@ msgstr "Видалити дані"
 msgid "Delete Permanently"
 msgstr "Видалити назавжди"
 
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
-msgid "Delete transaction"
-msgstr "Видалити транзакцію"
-
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:78
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:76
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
 
@@ -661,7 +656,7 @@ msgstr "Англійська (Велика Британія)"
 msgid "English (United States)"
 msgstr "Англійська (США)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
 msgid "English Translation"
 msgstr "Англійський переклад"
 
@@ -1091,8 +1086,8 @@ msgstr "Поки немає транзакцій"
 msgid "None selected"
 msgstr "Нічого не вибрано"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
 msgid "Not generated"
 msgstr "Не згенеровано"
 
@@ -1199,11 +1194,11 @@ msgstr "Перерахувати баланси"
 msgid "Receiving {toCode}"
 msgstr "Отримання {toCode}"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
 msgid "Regenerate AI Data"
 msgstr "Перегенерувати дані ШІ"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Перегенерувати переклади та пошукові ключові слова для всіх категорій і тегів"
 
@@ -1264,7 +1259,7 @@ msgstr "Пошук валют..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
 msgid "Search Keywords"
 msgstr "Пошукові ключові слова"
 
@@ -1498,7 +1493,7 @@ msgstr ""
 " 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:54
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
