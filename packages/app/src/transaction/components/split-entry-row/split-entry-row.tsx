@@ -67,10 +67,11 @@ export const SplitEntryRow = (props: Props) => {
                     <AmountInput
                         value={amount}
                         onChangeValue={handleAmountChange}
-                        inputClassName="text-right text-sm font-semibold w-20"
+                        inputClassName="text-right text-sm font-semibold"
                         borderless
                         autoFocus={autoFocus}
                         selectTextOnFocus
+                        style={{ width: 80 }}
                     />
                 </View>
 
