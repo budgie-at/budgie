@@ -16,6 +16,7 @@ import {
     CATEGORY_ANIMATION_DELAY,
     DATE_ANIMATION_DELAY,
     NOTE_ANIMATION_DELAY,
+    SPLIT_ANIMATION_DELAY,
     TAGS_ANIMATION_DELAY
 } from '../../constant/transaction-field-animation-delay.constant';
 import { formatOperatedAt } from '../../utils/format-operated-at.util';
@@ -30,13 +31,15 @@ interface Props {
     readonly ref?: RefObject<TransactionFieldIconsRef | null>;
     readonly variant: ColorPaletteVariant;
     readonly transactionType: TransactionTypeEnum;
+    readonly isSplitMode?: boolean;
     readonly onCommentPress: () => void;
     readonly onDatePress: () => void;
+    readonly onToggleSplit?: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export const TransactionFieldIcons = (props: Props) => {
-    const { ref, variant, transactionType, onCommentPress, onDatePress } = props;
+    const { ref, variant, transactionType, isSplitMode = false, onCommentPress, onDatePress, onToggleSplit } = props;
     const { t } = useLingui();
     const { intl } = useI18nContext();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
@@ -83,8 +86,23 @@ export const TransactionFieldIcons = (props: Props) => {
     const tagsValue = getTagsDisplayValue(tags);
     const noteValue = isNotEmptyString(comment) ? comment : void 0;
 
+    const showSplitToggle = isDefined(onToggleSplit);
+    const splitLabel = isSplitMode ? t`Unsplit` : t`Split`;
+    const splitValue = isSplitMode ? t`On` : void 0;
+
     return (
         <View className="flex-row py-lg">
+            {showSplitToggle ? (
+                <TransactionFieldIcon
+                    icon={UserIconNameEnum.Split}
+                    label={splitLabel}
+                    value={splitValue}
+                    variant={variant}
+                    onPress={onToggleSplit}
+                    animationDelay={SPLIT_ANIMATION_DELAY}
+                />
+            ) : null}
+
             <TransactionFieldIcon
                 icon={UserIconNameEnum.Calendar}
                 label={t`Date`}
