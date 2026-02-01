@@ -5,6 +5,7 @@ import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 interface UseSplitEntriesConfig {
     readonly entryType: TransactionEntryTypeEnum;
     readonly accountFieldName: 'fromAccountId' | 'toAccountId';
+    readonly initialSplitMode?: boolean;
 }
 
 interface UseSplitEntriesReturn {
@@ -29,11 +30,15 @@ const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId: number
     externalId: null
 });
 
-export const useSplitEntries = ({ entryType, accountFieldName }: UseSplitEntriesConfig): UseSplitEntriesReturn => {
+export const useSplitEntries = ({
+    entryType,
+    accountFieldName,
+    initialSplitMode = false
+}: UseSplitEntriesConfig): UseSplitEntriesReturn => {
     const { getValues, setValue, control } = useFormContext<TransactionCreateInputInterface>();
     const { append, remove, update } = useFieldArray<TransactionCreateInputInterface, 'entries'>({ name: 'entries' });
 
-    const [isSplitMode, setIsSplitMode] = useState(false);
+    const [isSplitMode, setIsSplitMode] = useState(initialSplitMode);
     const [activeEntryIndex, setActiveEntryIndex] = useState(0);
 
     const watchedEntries = useWatch({ control, name: 'entries' });

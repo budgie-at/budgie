@@ -39,6 +39,7 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
+    readonly initialSplitMode?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -59,6 +60,7 @@ export const SimpleQuickForm = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         aiContext = '',
+        initialSplitMode = false,
         buildEntries,
         onSubmit,
         onCancel
@@ -70,7 +72,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { displayValue, currencySymbol, keypadHandlers } = useQuickFormAmount({ accountFieldName });
 
     const entryType = getEntryTypeForTransaction(transactionType);
-    const split = useSplitEntries({ entryType, accountFieldName });
+    const split = useSplitEntries({ entryType, accountFieldName, initialSplitMode });
 
     const splitKeypad = useKeypadInput({
         initialValue: 0,
