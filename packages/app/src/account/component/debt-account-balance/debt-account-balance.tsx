@@ -12,14 +12,14 @@ interface Props {
 }
 
 export const DebtAccountBalance = ({ balance, instrumentSymbol, targetAmount }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const percentage = Number((targetAmount > 0 ? (balance / targetAmount) * 100 : 0).toFixed(2));
     const barStyle: ViewStyle = { width: `${percentage}%` };
 
-    const formattedBalance = formatDigits(balance, defaultInstrument.symbol);
-    const formattedAmountToReturn = formatDigits(targetAmount, defaultInstrument.symbol);
+    const formattedBalance = formatDigits(balance, instrumentSymbol);
+    const formattedAmountToReturn = formatDigits(targetAmount, instrumentSymbol);
 
     return (
         <View className="p-5xl border border-warning-corner bg-warning-background gap-y-md rounded-3xl">
