@@ -33,7 +33,7 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/transaction/components/split-entry-list/split-entry-list.tsx:31
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:137
 msgid "{itemCount} items"
 msgstr "{itemCount} items"
 
@@ -46,6 +46,10 @@ msgstr "{percentage}% of expenses"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+msgid "{splitEntryCount} items"
+msgstr "{splitEntryCount} items"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -119,7 +123,7 @@ msgstr "Add a note..."
 msgid "Add Account"
 msgstr "Add Account"
 
-#: src/transaction/components/split-entry-list/split-entry-list.tsx:59
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:167
 msgid "Add item"
 msgstr "Add item"
 
@@ -622,11 +626,11 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:73
+#: src/app/(main)/transactions/[id]/expense.tsx:72
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:73
+#: src/app/(main)/transactions/[id]/income.tsx:72
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -634,7 +638,7 @@ msgstr "Edit Income"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:78
+#: src/app/(main)/transactions/[id]/transfer.tsx:76
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -1114,10 +1118,6 @@ msgstr "not set"
 msgid "Note"
 msgstr "Note"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
-msgid "On"
-msgstr "On"
-
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
@@ -1209,7 +1209,7 @@ msgstr "Recalculate"
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:150
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
@@ -1340,6 +1340,10 @@ msgstr "Select accounts to sync:"
 msgid "Select All"
 msgstr "Select All"
 
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:41
+msgid "Select category"
+msgstr "Select category"
+
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:31
 msgid "Select column..."
 msgstr "Select column..."
@@ -1356,7 +1360,7 @@ msgstr "Select the type of account"
 msgid "Selected"
 msgstr "Selected"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:149
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
@@ -1416,7 +1420,7 @@ msgstr "Spending by Tag"
 msgid "Spent"
 msgstr "Spent"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
 msgid "Split"
 msgstr "Split"
 
@@ -1569,7 +1573,7 @@ msgid "To Currency"
 msgstr "To Currency"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:83
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
 msgid "Today"
 msgstr "Today"
 
@@ -1660,10 +1664,6 @@ msgstr "Uncategorized"
 msgid "Unknown"
 msgstr "Unknown"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
-msgid "Unsplit"
-msgstr "Unsplit"
-
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Up to date"
@@ -1709,7 +1709,7 @@ msgstr "When should it be returned?"
 msgid "Who owes you?"
 msgstr "Who owes you?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:85
 msgid "Yesterday"
 msgstr "Yesterday"
 
