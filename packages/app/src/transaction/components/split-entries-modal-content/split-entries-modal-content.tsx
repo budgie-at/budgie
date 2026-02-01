@@ -1,12 +1,13 @@
 import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { useCallback, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -57,6 +58,10 @@ const stripLocalId = (entry: EntryWithLocalId): TransactionEntryCreateInputInter
     mccCategoryId: entry.mccCategoryId,
     externalId: entry.externalId
 });
+
+const keyExtractor = (item: EntryWithLocalId) => item.localId.toString();
+
+const ADD_ICON_SIZE = 20;
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Modal content orchestrating entries list and category selection
 export const SplitEntriesModalContent = (props: Props) => {
@@ -130,43 +135,58 @@ export const SplitEntriesModalContent = (props: Props) => {
         });
     };
 
-    return (
-        <View className="flex-1 px-lg pt-lg">
-            <View className="flex-row items-center justify-between mb-md">
-                <Text className="text-xs font-medium text-tertiary">
-                    <Trans>{itemCount} items</Trans>
-                </Text>
-                <Text className="text-sm font-semibold text-primary">{formattedTotal}</Text>
-            </View>
+    const renderItem = ({ item, index }: { item: EntryWithLocalId; index: number }) => {
+        const handleCategory = () => void handleCategoryPress(index);
+        const handleDelete = () => void handleRemoveEntry(index);
+        const handleAmount = (amount: number) => void handleAmountChange(index, amount);
 
-            <ScrollView className="gap-y-xs mb-sm" keyboardShouldPersistTaps="handled">
-                {entries.map((entry, index) => {
-                    const handleCategory = () => void handleCategoryPress(index);
-                    const handleDelete = () => void handleRemoveEntry(index);
+        return (
+            <SplitEntryRow
+                categoryId={item.categoryId ?? 0}
+                amount={item.amount}
+                currencySymbol={currencySymbol}
+                variant={variant}
+                canDelete={canDelete}
+                autoFocus={index === autoFocusIndex}
+                onAmountChange={handleAmount}
+                onCategoryPress={handleCategory}
+                onDelete={handleDelete}
+            />
+        );
+    };
 
-                    return (
-                        <SplitEntryRow
-                            key={entry.localId}
-                            categoryId={entry.categoryId ?? 0}
-                            amount={entry.amount}
-                            currencySymbol={currencySymbol}
-                            index={index}
-                            canDelete={canDelete}
-                            autoFocus={index === autoFocusIndex}
-                            onAmountChange={handleAmountChange}
-                            onCategoryPress={handleCategory}
-                            onDelete={handleDelete}
-                        />
-                    );
-                })}
-            </ScrollView>
-
-            <HapticPressable className="flex-row items-center justify-center gap-x-sm py-sm mb-sm" onPress={handleAddEntry}>
-                <Icon icon={UserIconNameEnum.Plus} size={16} className="text-primary" />
-                <Text className="text-sm font-medium text-primary">
-                    <Trans>Add item</Trans>
-                </Text>
-            </HapticPressable>
+    const listHeader = (
+        <View className="flex-row items-center justify-between px-xl pb-lg">
+            <Text className="text-sm font-medium text-tertiary">
+                <Trans>{itemCount} items</Trans>
+            </Text>
+            <Text className="text-md font-semibold text-primary">{formattedTotal}</Text>
         </View>
+    );
+
+    const listFooter = (
+        <HapticPressable
+            className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
+            onPress={handleAddEntry}
+        >
+            <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-tertiary" />
+            <Text className="text-sm font-semibold text-tertiary">
+                <Trans>Add item</Trans>
+            </Text>
+        </HapticPressable>
+    );
+
+    return (
+        <FlatList
+            data={entries}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            contentContainerClassName="px-xl pt-3xl pb-xl"
+            ListHeaderComponent={listHeader}
+            ListFooterComponent={listFooter}
+            ItemSeparatorComponent={ListItemSeparator}
+        />
     );
 };
