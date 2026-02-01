@@ -16,10 +16,10 @@ interface Props<T extends IdInterface> {
 
 const ESTIMATED_ITEM_SIZE = 60;
 const LIST_STYLE = { flex: 1 };
-const CONTENT_CONTAINER_STYLE = { gap: 12, paddingBottom: 200 };
+const CONTENT_CONTAINER_STYLE = { gap: 12, paddingBottom: 220 };
 
 const HEADER_SPACER_STYLE = { height: 80 };
-const FOOTER_SPACER_STYLE = { height: 300 };
+const FOOTER_SPACER_STYLE = { height: 330 };
 
 const keyExtractor = (item: IdInterface) => item.id.toString();
 
