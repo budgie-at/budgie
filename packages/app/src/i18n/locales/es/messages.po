@@ -31,6 +31,10 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
+#: src/transaction/components/split-entry-list/split-entry-list.tsx:31
+msgid "{itemCount} items"
+msgstr "{itemCount} elementos"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
@@ -113,6 +117,10 @@ msgstr "Agregar una nota..."
 msgid "Add Account"
 msgstr "Añadir Cuenta"
 
+#: src/transaction/components/split-entry-list/split-entry-list.tsx:59
+msgid "Add item"
+msgstr "Agregar elemento"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
@@ -125,7 +133,7 @@ msgstr "Ajuste"
 msgid "AI"
 msgstr "IA"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:148
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:67
 msgid "AI-Generated Metadata"
 msgstr "Metadatos generados por IA"
 
@@ -285,7 +293,7 @@ msgstr "Categorías ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:140
 msgid "Category"
 msgstr "Categoría"
 
@@ -530,7 +538,7 @@ msgstr "Gestión de datos"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
 msgid "Date"
 msgstr "Fecha"
 
@@ -612,11 +620,11 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Edit Category"
 msgstr "Editar categoría"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:73
 msgid "Edit Expense"
 msgstr "Editar gasto"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:73
 msgid "Edit Income"
 msgstr "Editar ingreso"
 
@@ -624,7 +632,7 @@ msgstr "Editar ingreso"
 msgid "Edit Tag"
 msgstr "Editar etiqueta"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:78
 msgid "Edit Transfer"
 msgstr "Editar transferencia"
 
@@ -661,7 +669,7 @@ msgstr "Inglés (Reino Unido)"
 msgid "English (United States)"
 msgstr "Inglés (Estados Unidos)"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:161
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:87
 msgid "English Translation"
 msgstr "Traducción al inglés"
 
@@ -1091,8 +1099,8 @@ msgstr "Aún no hay transacciones"
 msgid "None selected"
 msgstr "Ninguna seleccionada"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:110
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:111
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:45
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:46
 msgid "Not generated"
 msgstr "No generado"
 
@@ -1100,9 +1108,13 @@ msgstr "No generado"
 msgid "not set"
 msgstr "no establecido"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:118
 msgid "Note"
 msgstr "Nota"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:92
+msgid "On"
+msgstr "Activado"
 
 #: src/sync/component/get-token-card/get-token-card.tsx:32
 msgid "Open Monobank to get your token"
@@ -1195,15 +1207,15 @@ msgstr "Recalcular"
 msgid "Recalculate Balances"
 msgstr "Recalcular saldos"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:150
 msgid "Receiving {toCode}"
 msgstr "Recibiendo {toCode}"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:17
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
 msgid "Regenerate AI Data"
 msgstr "Regenerar datos de IA"
 
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:18
+#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
 msgid "Regenerate translations and search keywords for all categories and tags"
 msgstr "Regenerar traducciones y palabras clave de búsqueda para todas las categorías y etiquetas"
 
@@ -1264,7 +1276,7 @@ msgstr "Buscar monedas..."
 msgid "Search icons (e.g., money, travel, food)..."
 msgstr "Buscar iconos (ej. dinero, viajes, comida)..."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:176
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:102
 msgid "Search Keywords"
 msgstr "Palabras clave de búsqueda"
 
@@ -1342,7 +1354,7 @@ msgstr "Selecciona el tipo de cuenta"
 msgid "Selected"
 msgstr "Seleccionado"
 
-#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:112
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:149
 msgid "Sending {fromCode}"
 msgstr "Enviando {fromCode}"
 
@@ -1401,6 +1413,10 @@ msgstr "Gastos por etiqueta"
 #: src/app/(tabs)/analytics.tsx:60
 msgid "Spent"
 msgstr "Gastado"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+msgid "Split"
+msgstr "Dividir"
 
 #: src/app/(tabs)/settings/import.tsx:149
 msgid "Start Import"
@@ -1469,7 +1485,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:128
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1551,7 +1567,7 @@ msgid "To Currency"
 msgstr "Moneda destino"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:83
 msgid "Today"
 msgstr "Hoy"
 
@@ -1642,6 +1658,10 @@ msgstr "Sin categoría"
 msgid "Unknown"
 msgstr "Desconocido"
 
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:91
+msgid "Unsplit"
+msgstr "Unificar"
+
 #: src/sync/component/account-bank-sync-card/account-bank-sync-card.tsx:50
 msgid "Up to date"
 msgstr "Actualizado"
@@ -1687,7 +1707,7 @@ msgstr "¿Cuándo debería ser devuelto?"
 msgid "Who owes you?"
 msgstr "¿Quién te debe dinero?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:84
 msgid "Yesterday"
 msgstr "Ayer"
 
