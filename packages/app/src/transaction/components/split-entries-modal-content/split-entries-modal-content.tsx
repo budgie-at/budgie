@@ -97,11 +97,12 @@ export const SplitEntriesModalContent = (props: Props) => {
     const remainingAmount = totalAmount - entriesTotal;
     const isFullySplit = remainingAmount === 0 && entriesTotal > 0;
     const isOverBudget = remainingAmount < 0;
-    const canAddEntry = remainingAmount > 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
     const canDelete = entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && entry.amount > 0);
+    const hasMissingCategories = isFullySplit && !allEntriesValid;
+    const canAddEntry = remainingAmount > 0 && allEntriesValid;
     const canConfirm = isFullySplit && allEntriesValid;
 
     useEffect(() => {
@@ -137,9 +138,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     };
 
     const handleAddEntry = () => {
-        const currentTotal = entriesRef.current.reduce((sum, entry) => sum + entry.amount, 0);
-        const prefillAmount = Math.max(0, totalAmount - currentTotal);
-        const newEntry = createEmptyEntry(entryType, accountId, prefillAmount);
+        const newEntry = createEmptyEntry(entryType, accountId);
         setEntries(previous => {
             const updated = [...previous, newEntry];
             setAutoFocusIndex(updated.length - 1);
@@ -197,9 +196,11 @@ export const SplitEntriesModalContent = (props: Props) => {
     );
 
     const remainingButtonLabel = isOverBudget ? t`${formattedRemaining} over budget` : t`${formattedRemaining} left to assign`;
-    const remainingButtonVariant = isOverBudget ? 'destructive' : 'secondary';
-    const confirmButtonVariant = isFullySplit ? variant : remainingButtonVariant;
-    const confirmButtonLabel = isFullySplit ? t`Confirm Split` : remainingButtonLabel;
+    const remainingButtonVariant: ColorPaletteVariant = isOverBudget ? 'destructive' : 'secondary';
+    const splitButtonLabel = hasMissingCategories ? t`Select all categories` : t`Confirm Split`;
+    const splitButtonVariant = hasMissingCategories ? 'secondary' : variant;
+    const confirmButtonVariant = isFullySplit ? splitButtonVariant : remainingButtonVariant;
+    const confirmButtonLabel = isFullySplit ? splitButtonLabel : remainingButtonLabel;
 
     return (
         <View className="flex-1">
