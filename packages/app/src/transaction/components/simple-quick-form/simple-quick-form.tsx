@@ -15,10 +15,9 @@ import { useSplitEntriesModal } from '../../context/split-entries-modal.context'
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
-import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
+import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
-import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
+import { SuggestionRowSwitcher } from '../suggestion-row-switcher/suggestion-row-switcher';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
@@ -128,7 +127,7 @@ export const SimpleQuickForm = (props: Props) => {
 
             if (hasMultipleEntries || hasSingleEntryWithAmount) {
                 setValue('entries', result, { shouldValidate: false });
-                const totalAmount = result.reduce((sum, entry) => sum + entry.amount, 0);
+                const totalAmount = sumEntryAmounts(result);
                 setValue('amount', totalAmount);
             }
         }
@@ -167,7 +166,7 @@ export const SimpleQuickForm = (props: Props) => {
         const accountId = getValues(accountFieldName) ?? 0;
         const currentEntries = getValues('entries');
         const allEntriesValid = currentEntries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
-        const totalAmount = currentEntries.reduce((sum, entry) => sum + entry.amount, 0);
+        const totalAmount = sumEntryAmounts(currentEntries);
 
         const isValid = validateAndShake([
             { isValid: totalAmount > 0, shake: () => amountDisplayRef.current?.shake() },
@@ -196,44 +195,24 @@ export const SimpleQuickForm = (props: Props) => {
         handleNormalConfirm();
     };
 
-    const renderSuggestionRow = () => {
-        if (isSplitActive) {
-            return <SuggestionRowSpacer />;
-        }
-
-        if (showTagSuggestions) {
-            return (
-                <TagSuggestionsRow
-                    transactionTitle={transactionTitle}
-                    categoryId={categoryId}
-                    mccCategoryId={mccCategoryId}
-                    comment={comment}
-                    aiContext={aiContext}
-                    enabled={showTagSuggestions}
-                    onSelect={handleSelectTag}
-                />
-            );
-        }
-
-        return (
-            <CategorySuggestionsRow
-                transactionTitle={transactionTitle}
-                mccCategoryId={mccCategoryId}
-                comment={comment}
-                aiContext={aiContext}
-                enabled={showCategorySuggestions}
-                onSelect={handleSelectCategory}
-            />
-        );
-    };
-
     return (
         <View className="flex-1">
             <View className="flex-1">
                 <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                    {renderSuggestionRow()}
+                    <SuggestionRowSwitcher
+                        isSplitActive={isSplitActive}
+                        showTagSuggestions={showTagSuggestions}
+                        showCategorySuggestions={showCategorySuggestions}
+                        transactionTitle={transactionTitle}
+                        categoryId={categoryId}
+                        mccCategoryId={mccCategoryId}
+                        comment={comment}
+                        aiContext={aiContext}
+                        onSelectTag={handleSelectTag}
+                        onSelectCategory={handleSelectCategory}
+                    />
                 </View>
             </View>
 
