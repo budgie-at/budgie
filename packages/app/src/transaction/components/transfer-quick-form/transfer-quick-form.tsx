@@ -1,4 +1,5 @@
-import { TransactionCreateInputInterface, TransactionTypeEnum } from '@budgie/contracts';
+/* eslint-disable max-lines -- Transfer form with split mode integration requires extended file length */
+import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
@@ -13,10 +14,12 @@ import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
+import { useSplitEntries } from '../../hook/use-split-entries.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
+import { SplitEntryList } from '../split-entry-list/split-entry-list';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
@@ -48,6 +51,27 @@ export const TransferQuickForm = (props: Props) => {
     const initialAmount = getValues('amount');
     const conversion = useCurrencyConversion();
 
+    // jscpd:ignore-start
+    const split = useSplitEntries({ entryType: TransactionEntryTypeEnum.CREDIT, accountFieldName: 'fromAccountId' });
+
+    const splitKeypad = useKeypadInput({
+        initialValue: 0,
+        onChange: (value: number) => {
+            split.updateEntryAmount(split.activeEntryIndex, value);
+        }
+    });
+
+    const previousActiveEntryIndex = useRef(split.activeEntryIndex);
+
+    useEffect(() => {
+        if (previousActiveEntryIndex.current !== split.activeEntryIndex) {
+            const entryAmount = split.entries[split.activeEntryIndex]?.amount ?? 0;
+            splitKeypad.setFromNumeric(entryAmount);
+            previousActiveEntryIndex.current = split.activeEntryIndex;
+        }
+    }, [split.activeEntryIndex, split.entries, splitKeypad]);
+    // jscpd:ignore-end
+
     const handleSourceAmountChange = (value: number) => {
         setValue('amount', value);
     };
@@ -61,7 +85,19 @@ export const TransferQuickForm = (props: Props) => {
         initialValue: initialDestinationAmount ?? 0
     });
 
-    const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
+    const getActiveKeypad = () => {
+        if (split.isSplitMode) {
+            return splitKeypad;
+        }
+
+        if (isEditingDestination) {
+            return destinationKeypad;
+        }
+
+        return sourceKeypad;
+    };
+
+    const activeKeypad = getActiveKeypad();
     const activeHandlers = activeKeypad.handlers;
 
     const fromInstrumentId = fromAccount?.instrumentId ?? 0;
@@ -132,7 +168,12 @@ export const TransferQuickForm = (props: Props) => {
         }
     };
 
-    const handleConfirm = () => {
+    const handleSelectSplitEntry = (index: number) => {
+        split.setActiveEntryIndex(index);
+    };
+
+    // jscpd:ignore-start
+    const handleNormalConfirm = () => {
         if (isEditingDestination) {
             finishDestinationEditing();
 
@@ -169,25 +210,93 @@ export const TransferQuickForm = (props: Props) => {
         onSubmit();
     };
 
+    const handleSplitConfirm = () => {
+        const amount = getValues('amount');
+        const from = fromAccountId ?? 0;
+        const to = toAccountId ?? 0;
+
+        const allEntriesValid = split.entries.every(entry => entry.amount > 0 && isPositiveNumber(entry.categoryId));
+
+        const isValid = validateAndShake([
+            { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
+            { isValid: from > 0, shake: () => transferAccountsRef.current?.shakeFrom() },
+            { isValid: to > 0, shake: () => transferAccountsRef.current?.shakeTo() },
+            { isValid: allEntriesValid }
+        ]);
+
+        if (!isValid) {
+            return;
+        }
+
+        if (conversion.isCrossCurrency) {
+            setValue('exchangeRate', conversion.exchangeRate);
+        }
+
+        const transferEntries = buildTransferEntries({
+            fromAccountId: from,
+            toAccountId: to,
+            amount,
+            categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+        });
+
+        const feeEntries = split.entries;
+        const totalAmount = amount + split.totalAmount;
+
+        setValue('amount', totalAmount);
+        setValue('entries', [...transferEntries, ...feeEntries], { shouldValidate: false });
+
+        onSubmit();
+    };
+
+    // jscpd:ignore-end
+    const handleConfirm = () => {
+        if (split.isSplitMode) {
+            handleSplitConfirm();
+
+            return;
+        }
+
+        handleNormalConfirm();
+    };
+
+    const splitTotalDisplay = split.totalAmount === 0 ? '0' : split.totalAmount.toString();
+    const activeDisplayAmount = split.isSplitMode ? splitTotalDisplay : display.displayAmount;
+    const secondaryAmount = split.isSplitMode ? void 0 : display.secondaryAmountText;
+    const amountLabel = split.isSplitMode ? void 0 : display.amountLabel;
+    const labelFlipped = split.isSplitMode ? void 0 : isEditingDestination;
+    const showCrossCurrencyControls = !split.isSplitMode && conversion.isCrossCurrency;
+
     return (
         <View className="flex-1">
             <TransactionAmountDisplay
                 ref={amountDisplayRef}
-                amount={display.displayAmount}
+                amount={activeDisplayAmount}
                 currencySymbol={display.displaySymbol}
                 variant={variant}
-                secondaryAmount={display.secondaryAmountText}
-                label={display.amountLabel}
-                isLabelFlipped={isEditingDestination}
-                {...(conversion.isCrossCurrency && {
+                secondaryAmount={secondaryAmount}
+                label={amountLabel}
+                isLabelFlipped={labelFlipped}
+                {...(showCrossCurrencyControls && {
                     onLabelPress: handleConversionRowPress,
                     onSecondaryAmountPress: handleConversionRowPress
                 })}
             />
 
+            {split.isSplitMode ? (
+                <SplitEntryList
+                    entries={split.entries}
+                    activeEntryIndex={split.activeEntryIndex}
+                    currencySymbol={display.displaySymbol}
+                    onSelectEntry={handleSelectSplitEntry}
+                    onAddEntry={split.addEntry}
+                />
+            ) : null}
+
             <TransactionFieldIcons
                 variant={variant}
                 transactionType={TransactionTypeEnum.TRANSFER}
+                isSplitMode={split.isSplitMode}
+                onToggleSplit={split.toggleSplitMode}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
             />
@@ -196,7 +305,7 @@ export const TransferQuickForm = (props: Props) => {
                 <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
             </View>
 
-            {conversion.isCrossCurrency ? (
+            {showCrossCurrencyControls ? (
                 <View className="mb-sm">
                     <ConversionRow
                         destinationAmount={display.conversionRowProps.destinationAmount}
