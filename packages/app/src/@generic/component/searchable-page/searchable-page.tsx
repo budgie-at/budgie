@@ -41,7 +41,7 @@ export const SearchablePage = <T extends IdInterface>({
 }: Props<T>) => {
     const { bottom } = useSafeAreaInsets();
     const { isDarkColorSchema } = useThemeContext();
-    const backgroundColor = isDarkColorSchema ? '#000000' : '#ffffff';
+    const pageBackgroundColor = isDarkColorSchema ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)';
     const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - 15;
     const searchBlurStyle = { bottom: searchInputBottom - 100, zIndex: 10 };
     const searchInputStyle = { bottom: searchInputBottom, zIndex: 20, overflow: 'visible' as const };
@@ -50,12 +50,8 @@ export const SearchablePage = <T extends IdInterface>({
     const { height: keyboardHeight } = useReanimatedKeyboardAnimation();
     const isKeyboardOpen = useDerivedValue(() => Math.abs(keyboardHeight.value) > 0);
     const keyboardBackgroundStyle = useAnimatedStyle(() => ({
-        position: 'absolute' as const,
-        top: 0,
-        bottom: -200,
-        left: -20,
-        right: -20,
-        backgroundColor,
+        backgroundColor: pageBackgroundColor,
+        borderCurve: 'continuous' as const,
         opacity: isKeyboardOpen.value ? 1 : 0
     }));
 
@@ -76,7 +72,11 @@ export const SearchablePage = <T extends IdInterface>({
             </View>
             <KeyboardStickyView offset={keyboardOffset} style={searchInputStyle} className="absolute inset-x-0">
                 <View className="px-xl pt-md overflow-visible">
-                    <Animated.View style={keyboardBackgroundStyle} pointerEvents="none" />
+                    <Animated.View
+                        className="absolute inset-x-0 top-0 -bottom-[200px] rounded-t-5xl"
+                        style={keyboardBackgroundStyle}
+                        pointerEvents="none"
+                    />
                     <TextInput
                         value={search}
                         onChangeText={onSearchChange}
