@@ -157,7 +157,7 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     const listHeader = (
         <View className="flex-row items-center justify-between px-xl pb-lg">
-            <Text className="text-sm font-medium text-tertiary">
+            <Text className="text-sm font-medium text-secondary-foreground">
                 <Trans>{itemCount} items</Trans>
             </Text>
             <Text className="text-md font-semibold text-primary">{formattedTotal}</Text>
@@ -169,8 +169,8 @@ export const SplitEntriesModalContent = (props: Props) => {
             className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
             onPress={handleAddEntry}
         >
-            <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-tertiary" />
-            <Text className="text-sm font-semibold text-tertiary">
+            <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-primary" />
+            <Text className="text-sm font-semibold text-primary">
                 <Trans>Add item</Trans>
             </Text>
         </HapticPressable>
