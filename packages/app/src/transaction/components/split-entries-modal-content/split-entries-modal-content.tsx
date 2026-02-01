@@ -2,6 +2,7 @@ import { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum, UserIco
 import { Trans } from '@lingui/react/macro';
 import { useCallback, useRef, useState } from 'react';
 import { FlatList, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -19,6 +20,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly entryType: TransactionEntryTypeEnum;
     readonly currencySymbol: string;
+    readonly totalAmount: number;
     readonly onEntriesChange: (entries: TransactionEntryCreateInputInterface[]) => void;
 }
 
@@ -39,10 +41,10 @@ const addLocalId = (entry: TransactionEntryCreateInputInterface): EntryWithLocal
     localId: generateLocalId()
 });
 
-const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId: number): EntryWithLocalId => ({
+const createEmptyEntry = (entryType: TransactionEntryTypeEnum, accountId: number, initialAmount = 0): EntryWithLocalId => ({
     accountId,
     categoryId: 0,
-    amount: 0,
+    amount: initialAmount,
     type: entryType,
     mccCategoryId: null,
     externalId: null,
@@ -61,10 +63,12 @@ const stripLocalId = (entry: EntryWithLocalId): TransactionEntryCreateInputInter
 const keyExtractor = (item: EntryWithLocalId) => item.localId;
 
 const ADD_ICON_SIZE = 20;
+const CHECK_ICON_SIZE = 14;
+const disabledFooterStyle = { opacity: 0.3 };
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Modal content orchestrating entries list and category selection
 export const SplitEntriesModalContent = (props: Props) => {
-    const { initialEntries, variant, entryType, currencySymbol, onEntriesChange } = props;
+    const { initialEntries, variant, entryType, currencySymbol, totalAmount, onEntriesChange } = props;
 
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -83,8 +87,12 @@ export const SplitEntriesModalContent = (props: Props) => {
         [onEntriesChange]
     );
 
-    const totalAmount = entries.reduce((sum, entry) => sum + entry.amount, 0);
-    const formattedTotal = formatDigits(totalAmount, currencySymbol);
+    const entriesTotal = entries.reduce((sum, entry) => sum + entry.amount, 0);
+    const remainingAmount = totalAmount - entriesTotal;
+    const isFullySplit = remainingAmount === 0 && entriesTotal > 0;
+    const isOverBudget = remainingAmount < 0;
+    const canAddEntry = remainingAmount > 0;
+    const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
     const itemCount = entries.length;
     const canDelete = entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
@@ -115,7 +123,9 @@ export const SplitEntriesModalContent = (props: Props) => {
     };
 
     const handleAddEntry = () => {
-        const newEntry = createEmptyEntry(entryType, accountId);
+        const currentTotal = entriesRef.current.reduce((sum, entry) => sum + entry.amount, 0);
+        const prefillAmount = Math.max(0, totalAmount - currentTotal);
+        const newEntry = createEmptyEntry(entryType, accountId, prefillAmount);
         setEntries(previous => {
             const updated = [...previous, newEntry];
             setAutoFocusIndex(updated.length - 1);
@@ -154,18 +164,34 @@ export const SplitEntriesModalContent = (props: Props) => {
         );
     };
 
+    const remainingStatusElement = isFullySplit ? (
+        <Animated.View entering={FadeIn.duration(300)} className="flex-row items-center gap-x-xs">
+            <Icon icon={UserIconNameEnum.Check} size={CHECK_ICON_SIZE} className="text-success" />
+            <Text className="text-md font-semibold text-success">{formatDigits(0, currencySymbol)}</Text>
+        </Animated.View>
+    ) : (
+        <Text className={`text-md font-semibold ${isOverBudget ? 'text-destructive' : 'text-secondary-foreground'}`}>
+            {isOverBudget ? <Trans>-{formattedRemaining} over</Trans> : <Trans>{formattedRemaining} left</Trans>}
+        </Text>
+    );
+
     const listHeader = (
         <View className="flex-row items-center justify-between px-xl pb-lg">
             <Text className="text-sm font-medium text-secondary-foreground">
                 {itemCount === 1 ? <Trans>1 item</Trans> : <Trans>{itemCount} items</Trans>}
             </Text>
-            <Text className="text-md font-semibold text-primary">{formattedTotal}</Text>
+            {remainingStatusElement}
         </View>
     );
+
+    const addButtonDisabledStyle = canAddEntry ? void 0 : disabledFooterStyle;
+    const addButtonPointerEvents = canAddEntry ? 'auto' : 'none';
 
     const listFooter = (
         <HapticPressable
             className="flex-row items-center justify-center gap-x-md py-xl mt-md rounded-3xl border-2 border-dashed border-secondary-corner"
+            style={addButtonDisabledStyle}
+            pointerEvents={addButtonPointerEvents}
             onPress={handleAddEntry}
         >
             <Icon icon={UserIconNameEnum.Plus} size={ADD_ICON_SIZE} className="text-primary" />

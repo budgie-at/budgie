@@ -74,8 +74,10 @@ export const SimpleQuickForm = (props: Props) => {
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
+    const amount = useWatch({ control, name: 'amount' });
 
     const splitEntryCount = entries.length;
+    const isAmountPositive = amount > 0;
 
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
     const fieldIconsRef = useRef<TransactionFieldIconsRef>(null);
@@ -113,7 +115,8 @@ export const SimpleQuickForm = (props: Props) => {
             entries: initialEntries,
             variant,
             entryType,
-            currencySymbol
+            currencySymbol,
+            totalAmount: currentAmount
         });
 
         if (isDefined(result)) {
@@ -217,6 +220,7 @@ export const SimpleQuickForm = (props: Props) => {
                 variant={variant}
                 transactionType={transactionType}
                 splitEntryCount={splitEntryCount}
+                isAmountPositive={isAmountPositive}
                 onSplitPress={handleSplitIconPress}
                 onCommentPress={handleCommentPress}
                 onDatePress={handleDatePress}
