@@ -77,6 +77,7 @@ export const TransactionFieldIcons = (props: Props) => {
     };
 
     const isTransfer = transactionType === TransactionTypeEnum.TRANSFER;
+    const hideCategoryAndTags = isTransfer || isSplitMode;
     const formattedDate = formatOperatedAt({
         date: operatedAt,
         today: t`Today`,
@@ -121,7 +122,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 animationDelay={NOTE_ANIMATION_DELAY}
             />
 
-            {isTransfer ? null : (
+            {hideCategoryAndTags ? null : (
                 <TransactionFieldIcon
                     icon={UserIconNameEnum.Tag}
                     label={t`Tags`}
@@ -132,7 +133,7 @@ export const TransactionFieldIcons = (props: Props) => {
                 />
             )}
 
-            {isTransfer ? null : (
+            {hideCategoryAndTags ? null : (
                 <TransactionFieldIcon
                     ref={categoryIconRef}
                     icon={category?.icon ?? UserIconNameEnum.Folder}
