@@ -4,18 +4,18 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { useSplitEntries } from '../../hook/use-split-entries.hook';
+import { useSplitKeypadSync } from '../../hook/use-split-keypad-sync.hook';
 import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
 import { SplitEntryList } from '../split-entry-list/split-entry-list';
 import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
@@ -74,22 +74,7 @@ export const SimpleQuickForm = (props: Props) => {
     const entryType = getEntryTypeForTransaction(transactionType);
     const split = useSplitEntries({ entryType, accountFieldName, initialSplitMode });
 
-    const splitKeypad = useKeypadInput({
-        initialValue: 0,
-        onChange: (value: number) => {
-            split.updateEntryAmount(split.activeEntryIndex, value);
-        }
-    });
-
-    const previousActiveEntryIndex = useRef(split.activeEntryIndex);
-
-    useEffect(() => {
-        if (previousActiveEntryIndex.current !== split.activeEntryIndex) {
-            const entryAmount = split.entries[split.activeEntryIndex]?.amount ?? 0;
-            splitKeypad.setFromNumeric(entryAmount);
-            previousActiveEntryIndex.current = split.activeEntryIndex;
-        }
-    }, [split.activeEntryIndex, split.entries, splitKeypad]);
+    const splitKeypad = useSplitKeypadSync(split);
 
     const comment = useWatch({ control, name: 'comment' });
     const categoryId = useWatch({ control, name: 'entries.0.categoryId' });
@@ -112,10 +97,6 @@ export const SimpleQuickForm = (props: Props) => {
     const hasTagsSelected = isNotEmptyArray(tagIds);
     const showCategorySuggestions = !hasCategorySelected && hasContext && !split.isSplitMode;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !split.isSplitMode;
-
-    const handleSelectSplitEntry = (index: number) => {
-        split.setActiveEntryIndex(index);
-    };
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -185,9 +166,10 @@ export const SimpleQuickForm = (props: Props) => {
             {split.isSplitMode ? (
                 <SplitEntryList
                     entries={split.entries}
+                    entryIds={split.entryIds}
                     activeEntryIndex={split.activeEntryIndex}
                     currencySymbol={currencySymbol}
-                    onSelectEntry={handleSelectSplitEntry}
+                    onSelectEntry={split.setActiveEntryIndex}
                     onAddEntry={split.addEntry}
                 />
             ) : null}

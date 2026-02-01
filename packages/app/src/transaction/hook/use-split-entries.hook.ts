@@ -8,10 +8,11 @@ interface UseSplitEntriesConfig {
     readonly initialSplitMode?: boolean;
 }
 
-interface UseSplitEntriesReturn {
+export interface UseSplitEntriesReturn {
     readonly isSplitMode: boolean;
     readonly activeEntryIndex: number;
     readonly entries: TransactionEntryCreateInputInterface[];
+    readonly entryIds: string[];
     readonly toggleSplitMode: () => void;
     readonly setActiveEntryIndex: (index: number) => void;
     readonly addEntry: () => void;
@@ -35,8 +36,8 @@ export const useSplitEntries = ({
     accountFieldName,
     initialSplitMode = false
 }: UseSplitEntriesConfig): UseSplitEntriesReturn => {
-    const { getValues, setValue, control } = useFormContext<TransactionCreateInputInterface>();
-    const { append, remove, update } = useFieldArray<TransactionCreateInputInterface, 'entries'>({ name: 'entries' });
+    const { getValues, control } = useFormContext<TransactionCreateInputInterface>();
+    const { fields, append, remove, update, replace } = useFieldArray<TransactionCreateInputInterface, 'entries'>({ name: 'entries' });
 
     const [isSplitMode, setIsSplitMode] = useState(initialSplitMode);
     const [activeEntryIndex, setActiveEntryIndex] = useState(0);
@@ -44,6 +45,7 @@ export const useSplitEntries = ({
     const watchedEntries = useWatch({ control, name: 'entries' });
 
     const entries: TransactionEntryCreateInputInterface[] = watchedEntries;
+    const entryIds = fields.map(field => field.id);
 
     const totalAmount = entries.reduce((sum, entry) => sum + entry.amount, 0);
 
@@ -60,7 +62,7 @@ export const useSplitEntries = ({
                 mccCategoryId: null,
                 externalId: null
             };
-            setValue('entries', [firstEntry]);
+            replace([firstEntry]);
             setActiveEntryIndex(0);
         }
         setIsSplitMode(previous => !previous);
@@ -83,17 +85,20 @@ export const useSplitEntries = ({
     };
 
     const updateEntryAmount = (index: number, amount: number) => {
-        update(index, { ...entries[index], amount });
+        const currentEntry = getValues(`entries.${index}`);
+        update(index, { ...currentEntry, amount });
     };
 
     const updateEntryCategory = (index: number, categoryId: number) => {
-        update(index, { ...entries[index], categoryId });
+        const currentEntry = getValues(`entries.${index}`);
+        update(index, { ...currentEntry, categoryId });
     };
 
     return {
         isSplitMode,
         activeEntryIndex,
         entries,
+        entryIds,
         toggleSplitMode,
         setActiveEntryIndex,
         addEntry,

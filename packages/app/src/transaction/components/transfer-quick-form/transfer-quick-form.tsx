@@ -15,6 +15,7 @@ import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { useSplitEntries } from '../../hook/use-split-entries.hook';
+import { useSplitKeypadSync } from '../../hook/use-split-keypad-sync.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { buildTransferEntries } from '../../utils/build-transfer-entries.util';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
@@ -52,26 +53,8 @@ export const TransferQuickForm = (props: Props) => {
     const initialAmount = getValues('amount');
     const conversion = useCurrencyConversion();
 
-    // jscpd:ignore-start
     const split = useSplitEntries({ entryType: TransactionEntryTypeEnum.CREDIT, accountFieldName: 'fromAccountId', initialSplitMode });
-
-    const splitKeypad = useKeypadInput({
-        initialValue: 0,
-        onChange: (value: number) => {
-            split.updateEntryAmount(split.activeEntryIndex, value);
-        }
-    });
-
-    const previousActiveEntryIndex = useRef(split.activeEntryIndex);
-
-    useEffect(() => {
-        if (previousActiveEntryIndex.current !== split.activeEntryIndex) {
-            const entryAmount = split.entries[split.activeEntryIndex]?.amount ?? 0;
-            splitKeypad.setFromNumeric(entryAmount);
-            previousActiveEntryIndex.current = split.activeEntryIndex;
-        }
-    }, [split.activeEntryIndex, split.entries, splitKeypad]);
-    // jscpd:ignore-end
+    const splitKeypad = useSplitKeypadSync(split);
 
     const handleSourceAmountChange = (value: number) => {
         setValue('amount', value);
@@ -167,10 +150,6 @@ export const TransferQuickForm = (props: Props) => {
             destinationKeypad.setFromNumeric(conversion.destinationAmount);
             setIsEditingDestination(true);
         }
-    };
-
-    const handleSelectSplitEntry = (index: number) => {
-        split.setActiveEntryIndex(index);
     };
 
     // jscpd:ignore-start
@@ -286,9 +265,10 @@ export const TransferQuickForm = (props: Props) => {
             {split.isSplitMode ? (
                 <SplitEntryList
                     entries={split.entries}
+                    entryIds={split.entryIds}
                     activeEntryIndex={split.activeEntryIndex}
                     currencySymbol={display.displaySymbol}
-                    onSelectEntry={handleSelectSplitEntry}
+                    onSelectEntry={split.setActiveEntryIndex}
                     onAddEntry={split.addEntry}
                 />
             ) : null}
