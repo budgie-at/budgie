@@ -1,10 +1,14 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 
 const TIME_WINDOW_MINUTES = 30;
+const AMOUNT_BASED_TIME_WINDOW_MINUTES = 180;
 const AMOUNT_TOLERANCE_PERCENT = 0.15;
 const DEFAULT_LIMIT = 5;
+const MINUTES_IN_DAY = 24 * 60 - 1;
 
 interface GetSuggestionsParamsInterface {
     currentTime: Date;
@@ -14,33 +18,39 @@ interface GetSuggestionsParamsInterface {
     categoryId?: number;
 }
 
+interface TimeWindowInterface {
+    weekday: number;
+    timeWindowStartMinutes: number;
+    timeWindowEndMinutes: number;
+}
+
+const calculateTimeWindow = (currentTime: Date, hasAmount: boolean): TimeWindowInterface => {
+    const weekday = currentTime.getDay();
+    const currentTimeMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+    const timeWindow = hasAmount ? AMOUNT_BASED_TIME_WINDOW_MINUTES : TIME_WINDOW_MINUTES;
+
+    return {
+        weekday,
+        timeWindowStartMinutes: Math.max(0, currentTimeMinutes - timeWindow),
+        timeWindowEndMinutes: Math.min(MINUTES_IN_DAY, currentTimeMinutes + timeWindow)
+    };
+};
+
 class RepeatedTransactionService {
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const { currentTime, type, accountId, amount, categoryId } = params;
-
-        const weekday = currentTime.getDay();
-        const hours = currentTime.getHours();
-        const minutes = currentTime.getMinutes();
-        const currentTimeMinutes = hours * 60 + minutes;
-
-        const timeWindowStartMinutes = Math.max(0, currentTimeMinutes - TIME_WINDOW_MINUTES);
-        const timeWindowEndMinutes = Math.min(24 * 60 - 1, currentTimeMinutes + TIME_WINDOW_MINUTES);
+        const hasAmount = isPositiveNumber(amount);
+        const timeWindow = calculateTimeWindow(currentTime, hasAmount);
 
         const patterns = await transactionPatternRepository.findRepeatedPatterns({
-            weekday,
-            timeWindowStartMinutes,
-            timeWindowEndMinutes,
+            ...timeWindow,
             type,
             accountId,
             categoryId,
             limit: DEFAULT_LIMIT
         });
 
-        if (amount !== undefined && amount > 0) {
-            return this.filterByAmount(patterns, amount);
-        }
-
-        return patterns;
+        return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
     }
 
     private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {

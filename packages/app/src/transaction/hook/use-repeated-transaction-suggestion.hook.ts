@@ -1,12 +1,14 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
-import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { SuggestionInternalStatus } from '../../ai/interface/suggestion-internal-status.type';
 import { SuggestionStatus } from '../../ai/interface/suggestion-status.type';
 import { UseSuggestionReturnInterface } from '../../ai/interface/use-suggestion-return.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
+
+const DEBOUNCE_MS = 300;
 
 interface UseRepeatedTransactionSuggestionParams {
     enabled: boolean;
@@ -16,6 +18,9 @@ interface UseRepeatedTransactionSuggestionParams {
     categoryId: number;
 }
 
+const getOptionalAmount = (amount: number): number | undefined => (isPositiveNumber(amount) ? amount : undefined); // eslint-disable-line no-undefined
+const getOptionalCategoryId = (categoryId: number): number | undefined => (isPositiveNumber(categoryId) ? categoryId : undefined); // eslint-disable-line no-undefined
+
 export const useRepeatedTransactionSuggestion = (
     params: UseRepeatedTransactionSuggestionParams
 ): UseSuggestionReturnInterface<RepeatedTransactionPatternInterface> => {
@@ -24,28 +29,44 @@ export const useRepeatedTransactionSuggestion = (
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [suggestions, setSuggestions] = useState<RepeatedTransactionPatternInterface[]>([]);
 
-    const hasTriggeredRef = useRef(false);
     const currentTimeRef = useRef(new Date());
+    const lastFetchedAmountRef = useRef<number | null>(null);
+    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
 
     useEffect(() => {
-        if (!isReady || hasTriggeredRef.current) {
-            return;
+        const clearDebounceTimer = (): void => {
+            if (isDefined(debounceTimerRef.current)) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+
+        if (!isReady) {
+            return emptyFn;
         }
 
-        hasTriggeredRef.current = true;
+        const isInitialFetch = lastFetchedAmountRef.current === null;
+        const hasAmountChanged = isPositiveNumber(amount) && lastFetchedAmountRef.current !== amount;
+        const shouldFetch = isInitialFetch || hasAmountChanged;
+
+        if (!shouldFetch) {
+            return emptyFn;
+        }
+
+        clearDebounceTimer();
 
         const fetchSuggestions = async (): Promise<void> => {
             setInternalStatus('loading');
+            lastFetchedAmountRef.current = amount;
 
             try {
                 const results = await repeatedTransactionService.getSuggestions({
                     currentTime: currentTimeRef.current,
                     type,
-                    accountId: isPositiveNumber(accountId) ? accountId : undefined,
-                    amount: isPositiveNumber(amount) ? amount : undefined,
-                    categoryId: isPositiveNumber(categoryId) ? categoryId : undefined
+                    accountId,
+                    amount: getOptionalAmount(amount),
+                    categoryId: getOptionalCategoryId(categoryId)
                 });
 
                 setSuggestions(results);
@@ -55,7 +76,13 @@ export const useRepeatedTransactionSuggestion = (
             }
         };
 
-        void fetchSuggestions();
+        if (isInitialFetch) {
+            void fetchSuggestions();
+        } else {
+            debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
+        }
+
+        return clearDebounceTimer;
     }, [isReady, type, accountId, amount, categoryId]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
