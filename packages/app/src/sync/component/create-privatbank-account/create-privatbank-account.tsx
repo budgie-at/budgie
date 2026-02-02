@@ -11,7 +11,6 @@ import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/f
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { useLlmContext } from '../../../ai/context/llm.context';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { privatbankSyncExecuteImport, privatbankSyncImportPreview } from '../../service/privatbank-sync.service';
@@ -23,7 +22,6 @@ type SetupStep = 'file' | 'accounts';
 
 export const CreatePrivatbankAccount = () => {
     const { t } = useLingui();
-    const { llm } = useLlmContext();
 
     /* jscpd:ignore-start */
     const [step, setStep] = useState<SetupStep>('file');
@@ -81,7 +79,7 @@ export const CreatePrivatbankAccount = () => {
 
         setIsLoading(true);
         try {
-            await privatbankSyncExecuteImport(fileBuffer, [...selectedAccounts], llm);
+            await privatbankSyncExecuteImport(fileBuffer, [...selectedAccounts]);
             router.replace('/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
