@@ -62,7 +62,9 @@ const importAccountTransactions = async (
     }
 
     const transactionInputs = newTransactions.map((transaction: BankTransactionInterface) => {
-        const mccCategoryId = isDefined(transaction.category) ? (categoryToMccCategoryIdMap.get(transaction.category) ?? null) : null;
+        const mccCategoryId = isNotEmptyString(transaction.category)
+            ? (categoryToMccCategoryIdMap.get(transaction.category) ?? null)
+            : null;
 
         return mapBankTransactionToCreateInput(transaction, account.id, mccCategoryId, PROVIDER);
     });
