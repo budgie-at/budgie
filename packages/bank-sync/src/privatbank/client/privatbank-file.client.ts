@@ -9,7 +9,7 @@ import type { PrivatbankRowInterface } from '../interface/privatbank-row.interfa
 export class PrivatbankFileClient {
     private readonly rows: PrivatbankRowInterface[];
 
-    constructor(buffer: ArrayBuffer) {
+    constructor(buffer: Uint8Array) {
         this.rows = parsePrivatbankXlsx(buffer);
     }
 

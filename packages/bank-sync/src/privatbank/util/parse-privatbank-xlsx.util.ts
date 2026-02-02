@@ -51,8 +51,8 @@ const mapRawRowToPrivatbankRow = (row: unknown[]): PrivatbankRowInterface => ({
     balanceCurrency: String(row[PRIVATBANK_BALANCE_CURRENCY_COLUMN_INDEX])
 });
 
-const extractDataRows = (buffer: ArrayBuffer): unknown[][] => {
-    const workbook = read(buffer, { type: 'array' });
+const extractDataRows = (buffer: Uint8Array): unknown[][] => {
+    const workbook = read(buffer, { type: 'buffer' });
     const [firstSheetName] = workbook.SheetNames;
 
     if (!firstSheetName) {
@@ -70,7 +70,7 @@ const extractDataRows = (buffer: ArrayBuffer): unknown[][] => {
     return dataRows;
 };
 
-export const parsePrivatbankXlsx = (buffer: ArrayBuffer): PrivatbankRowInterface[] => {
+export const parsePrivatbankXlsx = (buffer: Uint8Array): PrivatbankRowInterface[] => {
     try {
         return extractDataRows(buffer).map(mapRawRowToPrivatbankRow);
     } catch (error) {

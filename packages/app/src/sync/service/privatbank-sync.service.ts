@@ -71,7 +71,7 @@ const importAccountTransactions = async (
     await transactionService.bulkCreate(transactionInputs);
 };
 
-export const privatbankSyncImportPreview = async (fileBuffer: ArrayBuffer): Promise<BankAccountPreviewInterface[]> => {
+export const privatbankSyncImportPreview = async (fileBuffer: Uint8Array): Promise<BankAccountPreviewInterface[]> => {
     const client = new PrivatbankFileClient(fileBuffer);
     const bankAccounts = client.getAccounts();
 
@@ -83,7 +83,7 @@ export const privatbankSyncImportPreview = async (fileBuffer: ArrayBuffer): Prom
 };
 
 export const privatbankSyncExecuteImport = async (
-    fileBuffer: ArrayBuffer,
+    fileBuffer: Uint8Array,
     selectedAccountIds: string[],
     llm: LlmInterface
 ): Promise<void> => {
