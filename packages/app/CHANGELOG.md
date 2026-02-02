@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.28.0](https://github.com/budgie-at/budgie/compare/v2.27.0...v2.28.0) (2026-02-02)
+
+### Bug Fixes
+
+- **app:** address code review issues for split entry feature ([8327a16](https://github.com/budgie-at/budgie/commit/8327a160fc9d0fa0ba4d269a7dcb8160fd13eef5))
+- **app:** allow adding split entries before selecting categories ([ca11eca](https://github.com/budgie-at/budgie/commit/ca11ecab5b49d5687751c814c67ea02931679704))
+- **app:** equal spacing for field icons with flex-1 on tag/category wrappers ([659937f](https://github.com/budgie-at/budgie/commit/659937f437e64607e9d78f56c46094cd48d905e8))
+- **app:** equalize spacing between MCC info row and suggestion row ([5515cee](https://github.com/budgie-at/budgie/commit/5515cee1e31f06e0691bb9345c1908263bbfaef6))
+- **app:** fix 5 QA bugs in split entries and improve split modal UX ([3197134](https://github.com/budgie-at/budgie/commit/31971344b91b832840574bc2f2ae7c3820522571))
+- **app:** fix confirm button not visible in split entries form sheet ([8b3cda7](https://github.com/budgie-at/budgie/commit/8b3cda7c8062a8c636e674293483bf97dc2bcb4a))
+- **app:** fix formSheet background gap and reduce split entries detent to 30% ([91b326c](https://github.com/budgie-at/budgie/commit/91b326c4ded3fa8e46d53e547941973ae6bb28a9))
+- **app:** improve split entries validation, amount display and keypad stability ([9a8a915](https://github.com/budgie-at/budgie/commit/9a8a915471cd0526ae6973f30b98998ebb2dfea2))
+- **app:** improve text visibility on dark theme in split entries modal ([8b5f377](https://github.com/budgie-at/budgie/commit/8b5f37703e1fefd4ae63fda8a41e0cc7f47c69c6))
+- **app:** move disabled state into TransactionFieldIcon to fix unequal spacing ([06f71df](https://github.com/budgie-at/budgie/commit/06f71dff0d78cdca4a8316c07c71ed11e3aaec24))
+- **app:** remove FormSheetSpacer from split entries modal ([d7b13c4](https://github.com/budgie-at/budgie/commit/d7b13c4b95aee08d346f6ed00144b5df2e0c8949))
+- **app:** replace Plural macro with conditional Trans for Hermes compat ([7eeb54d](https://github.com/budgie-at/budgie/commit/7eeb54d0cedfe5198fd84e82d363cfb29ff591fc))
+- **app:** replace w-20 class with inline style in split entry row ([fec7233](https://github.com/budgie-at/budgie/commit/fec723358b14626ef22c6a2d21bb794b2b0ec655))
+- **app:** start split entries with zero amount instead of full amount ([8b1a3c9](https://github.com/budgie-at/budgie/commit/8b1a3c9c4cc233c669626b717525b66cfa83deac))
+- **app:** use inline styles instead of NativeWind classes for AmountInput ([0ee0549](https://github.com/budgie-at/budgie/commit/0ee0549d557465f1bc7cde9d135bd7f7d35bdd6c))
+- **app:** use Plural macro for proper item count pluralization ([c30ee51](https://github.com/budgie-at/budgie/commit/c30ee514ae59c38d425c7e58f641b698122e51fe))
+- **app:** use unique string IDs for split entry list keys ([de4fffe](https://github.com/budgie-at/budgie/commit/de4fffea2e025f355d9b72b6264eb8ae8a567d7b))
+
+### Features
+
+- **app:** add expandable detent to split entries sheet (30% → 70%) ([e4948a3](https://github.com/budgie-at/budgie/commit/e4948a33ed3dd17e7f5fe6317990e9cb44434b30))
+- **app:** add split mode toggle to TransactionFieldIcons ([f62f356](https://github.com/budgie-at/budgie/commit/f62f3568d4ca506636f41c49b81ba3317799782f))
+- **app:** add SplitEntryCard component for split entry display ([c9121b8](https://github.com/budgie-at/budgie/commit/c9121b816544b8e2cb080186640bb3c37c34082c))
+- **app:** add SplitEntryList component for managing split entries ([cab905d](https://github.com/budgie-at/budgie/commit/cab905d053a6bf6df4fe20e9947c4e460af37902))
+- **app:** add useSplitEntries hook for multi-entry transaction management ([5da235e](https://github.com/budgie-at/budgie/commit/5da235ef69c73c2064437676e212f4c785f1708a))
+- **app:** improve split entries modal layout and visual design ([b97ed3b](https://github.com/budgie-at/budgie/commit/b97ed3b7f1cbe6915262aeb52d7fb4cd9bf2d844))
+- **app:** improve split entries UX with remaining budget and animated icons ([1969f92](https://github.com/budgie-at/budgie/commit/1969f92f1c21baf8df6283b8fb0826d788c3da3c))
+- **app:** integrate split mode into SimpleQuickForm for expense/income ([e0aa7b3](https://github.com/budgie-at/budgie/commit/e0aa7b30019dbac7e87bad5ab6856b71f12e86dd))
+- **app:** integrate split mode into TransferQuickForm for fees/commissions ([77eebd3](https://github.com/budgie-at/budgie/commit/77eebd3605e0527c352789896aea5f0029a0b55d))
+- **app:** load multi-entry data in edit transaction forms ([8b28490](https://github.com/budgie-at/budgie/commit/8b28490b06bd1ef1ec28d4401a6c80d68d71cf8e))
+- **app:** redesign split entries modal with native inputs and dismiss-to-confirm ([4cc2f47](https://github.com/budgie-at/budgie/commit/4cc2f47c656da4a62b157d9f63ad92c1d1e9e2d1))
+- **app:** support additional fee entries in transfer service ([8f6bb73](https://github.com/budgie-at/budgie/commit/8f6bb73d44d27de7908bc550f24233b22080ca3b))
+
 # [2.27.0](https://github.com/budgie-at/budgie/compare/v2.26.0...v2.27.0) (2026-02-01)
 
 ### Features
