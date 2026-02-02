@@ -14,7 +14,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { privatbankSyncExecuteImport, privatbankSyncImportPreview } from '../../service/privatbank-sync.service';
-import { readFileAsUint8Array } from '../../util/read-file-as-array-buffer.util';
+import { readFileAsUint8Array } from '../../util/read-file-as-uint8-array.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 

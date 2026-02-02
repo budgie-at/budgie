@@ -26,6 +26,11 @@ const createParseError = (message: string, originalError?: unknown): BankSyncErr
 
 const parsePrivatbankDate = (dateString: string): Date => {
     const [datePart, timePart] = dateString.split(' ');
+
+    if (!datePart || !timePart) {
+        throw createParseError(`Invalid Privatbank date format: "${dateString}"`);
+    }
+
     const [day, month, year] = datePart.split('.');
     const [hours, minutes, seconds] = timePart.split(':');
 
