@@ -752,6 +752,10 @@ msgstr "Exportar base de datos"
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
+#: src/sync/component/file-upload-step/file-upload-step.tsx:23
+msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
+msgstr "Exporte sus transacciones como XLSX desde la app Privatbank24: Menú → Extractos → Exportar a Excel."
+
 #: src/app/(tabs)/settings/import.tsx:212
 msgid "External ID"
 msgstr "ID externo"
@@ -857,6 +861,11 @@ msgstr "Ocultar saldos de cuentas y patrimonio neto al tomar capturas de pantall
 msgid "History synced"
 msgstr "Historial sincronizado"
 
+#: src/app/(main)/create-account/index.tsx:55
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:110
+msgid "Import accounts and transactions from Privatbank XLSX export"
+msgstr "Importar cuentas y transacciones desde exportación XLSX de Privatbank"
+
 #: src/import/components/import-csv/import-csv.tsx:38
 msgid "Import CSV"
 msgstr "Importar CSV"
@@ -867,9 +876,17 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
+msgid "Import failed"
+msgstr "Error de importación"
+
 #: src/app/(tabs)/settings/import.tsx:141
 msgid "Import Failed"
 msgstr "Importación fallida"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
+msgid "Import Privatbank"
+msgstr "Importar Privatbank"
 
 #: src/import/components/import-csv/import-csv.tsx:39
 msgid "Import transactions from a CSV file"
@@ -907,6 +924,10 @@ msgstr "Ingresos por etiqueta"
 #: src/auth/hook/use-pin-setup.hook.tsx:38
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:69
+msgid "Invalid file"
+msgstr "Archivo inválido"
 
 #: src/app/(tabs)/settings/import.tsx:247
 msgid "Is Planned"
@@ -1180,6 +1201,10 @@ msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
 msgid "Privacy"
 msgstr "Privacidad"
 
+#: src/app/(main)/create-account/index.tsx:56
+msgid "Privatbank"
+msgstr "Privatbank"
+
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
 msgstr "Vuelve a ingresar tu PIN para confirmar"
@@ -1328,9 +1353,17 @@ msgstr "Seleccionar todo"
 msgid "Select column..."
 msgstr "Seleccionar columna..."
 
+#: src/sync/component/file-upload-step/file-upload-step.tsx:32
+msgid "Select File"
+msgstr "Seleccionar archivo"
+
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:25
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
+
+#: src/sync/component/file-upload-step/file-upload-step.tsx:28
+msgid "Select the exported XLSX file:"
+msgstr "Seleccione el archivo XLSX exportado:"
 
 #: src/account/component/account-type-bottom-sheet/account-type-bottom-sheet.tsx:52
 msgid "Select the type of account"
