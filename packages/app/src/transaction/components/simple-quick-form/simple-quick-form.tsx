@@ -1,4 +1,5 @@
 import {
+    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -93,6 +94,13 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
+    const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
+        setValue('entries.0.categoryId', pattern.categoryId);
+        setValue('tagIds', pattern.tagIds);
+        setValue('amount', pattern.averageAmount);
+        setValue('title', pattern.title);
+    };
+
     const handleSplitPress = async () => {
         const currentEntries = getValues('entries');
         const accountId = getValues(accountFieldName) ?? 0;
@@ -137,7 +145,9 @@ export const SimpleQuickForm = (props: Props) => {
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive;
+    const accountId = useWatch({ control, name: accountFieldName }) ?? 0;
+    const showRepeatedSuggestions = !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
+    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive && !showRepeatedSuggestions;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     const handleNormalConfirm = () => {
@@ -205,6 +215,10 @@ export const SimpleQuickForm = (props: Props) => {
                         isSplitActive={isSplitActive}
                         showTagSuggestions={showTagSuggestions}
                         showCategorySuggestions={showCategorySuggestions}
+                        showRepeatedSuggestions={showRepeatedSuggestions}
+                        transactionType={transactionType}
+                        accountId={accountId}
+                        amount={amount}
                         transactionTitle={transactionTitle}
                         categoryId={categoryId}
                         mccCategoryId={mccCategoryId}
@@ -212,6 +226,7 @@ export const SimpleQuickForm = (props: Props) => {
                         aiContext={aiContext}
                         onSelectTag={handleSelectTag}
                         onSelectCategory={handleSelectCategory}
+                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
                     />
                 </View>
             </View>
