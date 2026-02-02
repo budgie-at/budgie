@@ -157,14 +157,14 @@ export const TransferQuickForm = (props: Props) => {
             setValue('exchangeRate', conversion.exchangeRate);
         }
 
-        const entries = buildTransferEntries({
+        const transferEntries = buildTransferEntries({
             fromAccountId: from,
             toAccountId: to,
             amount,
             categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
         });
 
-        setValue('entries', entries, { shouldValidate: false });
+        setValue('entries', transferEntries, { shouldValidate: false });
 
         onSubmit();
     };

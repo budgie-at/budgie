@@ -1,12 +1,10 @@
 import { TagEntityInterface } from '@budgie/contracts';
 
-import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
-import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
-import { LlmInterface } from '../context/llm.context';
 
-import { CategoryTranslationResult } from './category-llm.service';
+import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
 interface TagSuggestionParams {
     transactionTitle: string;
@@ -22,10 +20,8 @@ interface TagLlmErrorHandler {
 
 const MAX_SUGGESTIONS = 3;
 
-export class TagLlmService {
-    constructor(private readonly llm: LlmInterface) {}
-
-    async regenerateOne(tagId: number, title: string): Promise<CategoryTranslationResult> {
+export class TagLlmService extends BaseLlmService {
+    async regenerateOne(tagId: number, title: string): Promise<TranslationResultInterface> {
         const result = await this.generateTranslationAndTags(title);
         await this.saveTranslation(tagId, result);
 
@@ -55,25 +51,14 @@ export class TagLlmService {
         }
 
         const systemPrompt = this.buildSuggestionPrompt(tags);
-        const context = this.buildTransactionContext(transactionTitle, categoryName, mccDescription, comment);
+        const context = this.buildTransactionContext(transactionTitle, mccDescription, comment, categoryName);
         const response = await this.llm.generate(systemPrompt, context);
-        const tagIds = this.parseSuggestionResponse(response, tags);
+        const tagIds = this.parseSuggestionResponse(response, tags, MAX_SUGGESTIONS);
 
         return tagIds.map(id => tags.find(tag => tag.id === id)).filter(isDefined);
     }
 
-    /* jscpd:ignore-start - Shared LLM service pattern with CategoryLlmService */
-    private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
-        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
-        const trimmedTitleEn = titleEn.trim().toLowerCase();
-
-        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn, { temperature: TRANSLATION_TEMPERATURE });
-        const trimmedTags = tags.trim().toLowerCase();
-
-        return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
-    }
-
-    private async saveTranslation(tagId: number, result: CategoryTranslationResult): Promise<void> {
+    private async saveTranslation(tagId: number, result: TranslationResultInterface): Promise<void> {
         await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
     }
 
@@ -93,44 +78,4 @@ Example: ${exampleId},${exampleId2},${exampleId3}
 If nothing matches at all: 0`;
         /* eslint-enable lingui/no-unlocalized-strings */
     }
-
-    private buildTransactionContext(title: string, categoryName: string | null, mccDescription: string | null, comment: string): string {
-        const parts: string[] = [];
-        const hasTitle = isNotEmptyString(title);
-
-        /* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
-        if (hasTitle) {
-            parts.push(`Transaction: ${title}`);
-        }
-
-        if (isNotEmptyString(categoryName)) {
-            parts.push(`Category: ${categoryName}`);
-        }
-
-        if (isNotEmptyString(mccDescription)) {
-            parts.push(`Type: ${mccDescription}`);
-        }
-
-        if (isNotEmptyString(comment)) {
-            const commentLabel = hasTitle ? 'Note' : 'Transaction';
-            parts.push(`${commentLabel}: ${comment}`);
-        }
-
-        return parts.join(' | ');
-        /* eslint-enable lingui/no-unlocalized-strings */
-    }
-
-    private parseSuggestionResponse(response: string, tags: Pick<TagEntityInterface, 'id'>[]): number[] {
-        const trimmed = response.trim();
-
-        return trimmed
-            .split(',')
-            .map(part => parseInt(part.trim(), 10))
-            .filter(id => !isNaN(id) && id !== 0)
-            .map(id => (tags.some(tag => tag.id === id) ? id : null))
-            .filter(isDefined)
-            .slice(0, MAX_SUGGESTIONS);
-    }
-
-    /* jscpd:ignore-end */
 }
