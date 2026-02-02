@@ -19,11 +19,9 @@ const generateMonobankTitle = (bankAccount: BankAccountInterface): string => {
     if (isNotEmptyArray(bankAccount.maskedPan)) {
         const lastFourDigits = bankAccount.maskedPan[0].slice(-4);
 
-         
         return `${bankName} ${cardType} •${lastFourDigits}`;
     }
 
-     
     return `${bankName} ${cardType} ${bankAccount.currencyCode}`;
 };
 
@@ -33,11 +31,9 @@ const generateDefaultBankTitle = (bankAccount: BankAccountInterface): string => 
     if (isNotEmptyArray(bankAccount.maskedPan)) {
         const lastFourDigits = bankAccount.maskedPan[0].slice(-4);
 
-         
         return `${bankName} •${lastFourDigits}`;
     }
 
-     
     return `${bankName} ${bankAccount.currencyCode}`;
 };
 
