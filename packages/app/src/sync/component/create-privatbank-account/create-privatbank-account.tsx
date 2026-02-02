@@ -15,7 +15,7 @@ import { useLlmContext } from '../../../ai/context/llm.context';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { privatbankSyncExecuteImport, privatbankSyncImportPreview } from '../../service/privatbank-sync.service';
-import { readFileAsArrayBuffer } from '../../util/read-file-as-array-buffer.util';
+import { readFileAsUint8Array } from '../../util/read-file-as-array-buffer.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
@@ -30,7 +30,7 @@ export const CreatePrivatbankAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [accountPreviews, setAccountPreviews] = useState<BankAccountPreviewInterface[]>([]);
     const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
-    const [fileBuffer, setFileBuffer] = useState<ArrayBuffer | null>(null);
+    const [fileBuffer, setFileBuffer] = useState<Uint8Array | null>(null);
     /* jscpd:ignore-end */
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -47,7 +47,7 @@ export const CreatePrivatbankAccount = () => {
                 return;
             }
 
-            const buffer = await readFileAsArrayBuffer(uri);
+            const buffer = await readFileAsUint8Array(uri);
             const previews = await privatbankSyncImportPreview(buffer);
             setFileBuffer(buffer);
             setAccountPreviews(previews);
