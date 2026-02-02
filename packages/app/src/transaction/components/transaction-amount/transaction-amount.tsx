@@ -2,7 +2,7 @@ import { TransactionWithRelationsEntityInterface, UserIconNameEnum } from '@budg
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
@@ -11,6 +11,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -24,8 +25,10 @@ export const TransactionAmount = ({ transaction }: Props) => {
     const type = getTransactionType(transaction);
     const { decimalPlaces } = useSettingsContext();
 
-    const fromEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
-    const toEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
+    const fromEntries = transaction.entries.filter(entry => entry.accountId === transaction.fromAccountId);
+    const toEntries = transaction.entries.filter(entry => entry.accountId === transaction.toAccountId);
+    const fromEntry = isNotEmptyArray(fromEntries) ? { ...fromEntries[0], amount: sumEntryAmounts(fromEntries) } : null;
+    const toEntry = isNotEmptyArray(toEntries) ? { ...toEntries[0], amount: sumEntryAmounts(toEntries) } : null;
 
     const formatDigits = useFormatDigits(decimalPlaces);
 
