@@ -51,6 +51,12 @@ export default function Index() {
                     route={`/create-account/${BankProviderEnum.MONOBANK}`}
                     bankProvider={BankProviderEnum.MONOBANK}
                 />
+                <CreateBankSyncCard
+                    description={t`Import accounts and transactions from Privatbank XLSX export`}
+                    title={t`Privatbank`}
+                    route={`/create-account/${BankProviderEnum.PRIVATBANK}`}
+                    bankProvider={BankProviderEnum.PRIVATBANK}
+                />
             </ScrollView>
         </Page>
     );
