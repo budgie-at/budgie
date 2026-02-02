@@ -6,6 +6,7 @@ import { CreateBankAccount } from '../../../account/component/create-bank-accoun
 import { CreateCashAccount } from '../../../account/component/create-cash-account/create-cash-account';
 import { CreateDebtAccount } from '../../../account/component/create-debt-account/create-debt-account';
 import { CreateMonobankAccount } from '../../../sync/component/create-monobank-account/create-monobank-account';
+import { CreatePrivatbankAccount } from '../../../sync/component/create-privatbank-account/create-privatbank-account';
 
 type AccountRouteType = AccountTypeEnum | 'monobank';
 
@@ -21,6 +22,8 @@ export default function CreateAccountType() {
             return <CreateDebtAccount />;
         case BankProviderEnum.MONOBANK:
             return <CreateMonobankAccount />;
+        case BankProviderEnum.PRIVATBANK:
+            return <CreatePrivatbankAccount />;
         default:
             return <Redirect href="/" />;
     }

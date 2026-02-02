@@ -1,7 +1,7 @@
 import { BankAccountInterface } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
@@ -19,9 +19,11 @@ export const getOrCreateBankAccount = async (
         return existingByExternalId[0];
     }
 
-    const existingByIban = await accountRepository.findByIbans([bankAccount.iban ?? '']);
-    if (isNotEmptyArray(existingByIban)) {
-        return existingByIban[0];
+    if (isNotEmptyString(bankAccount.iban)) {
+        const existingByIban = await accountRepository.findByIbans([bankAccount.iban]);
+        if (isNotEmptyArray(existingByIban)) {
+            return existingByIban[0];
+        }
     }
 
     const instruments = await instrumentRepository.getAll();
@@ -33,5 +35,11 @@ export const getOrCreateBankAccount = async (
 
     const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id, provider);
 
-    return Object.values(await accountService.bulkCreate([input]))[0];
+    const [createdAccount] = Object.values(await accountService.bulkCreate([input]));
+    if (!isDefined(createdAccount)) {
+        // eslint-disable-next-line lingui/no-unlocalized-strings
+        throw new Error('Failed to create bank account');
+    }
+
+    return createdAccount;
 };
