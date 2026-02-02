@@ -8,7 +8,6 @@ import {
     ExchangeRateRepository,
     InstrumentRepository,
     MccCategoryRepository,
-    MccGroupRepository,
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
@@ -64,5 +63,4 @@ export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
-export const mccGroupRepository = new MccGroupRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
