@@ -5,7 +5,6 @@ import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { bankSyncRepository } from '../../@generic/drizzle/db/db';
-import { LlmInterface } from '../../ai/context/llm.context';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -49,12 +48,12 @@ const createBankSyncRecord = async (accountId: number): Promise<void> => {
 const importAccountTransactions = async (
     client: PrivatbankFileClient,
     bankAccount: BankAccountInterface,
-    categoryToMccCategoryIdMap: Map<string, number | null>
+    categoryToMccCategoryIdMap: Map<string, number | null>,
+    existingExternalIds: Set<string>
 ): Promise<void> => {
     const account = await getOrCreateBankAccount(bankAccount, PROVIDER);
     await createBankSyncRecord(account.id);
 
-    const existingExternalIds = await transactionService.findByExternalSource(PROVIDER);
     const transactions = client.getTransactions(bankAccount.id);
     const newTransactions = transactions.filter(transaction => !existingExternalIds.has(transaction.id));
 
@@ -82,11 +81,7 @@ export const privatbankSyncImportPreview = async (fileBuffer: Uint8Array): Promi
     return mapBankAccountsToPreview(bankAccounts, PROVIDER);
 };
 
-export const privatbankSyncExecuteImport = async (
-    fileBuffer: Uint8Array,
-    selectedAccountIds: string[],
-    llm: LlmInterface
-): Promise<void> => {
+export const privatbankSyncExecuteImport = async (fileBuffer: Uint8Array, selectedAccountIds: string[]): Promise<void> => {
     const client = new PrivatbankFileClient(fileBuffer);
     const bankAccounts = client.getAccounts();
     const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
@@ -96,9 +91,12 @@ export const privatbankSyncExecuteImport = async (
     }
 
     const uniqueCategories = collectUniqueCategories(client, selectedAccountIds);
-    const categoryToMccCategoryIdMap = await privatbankCategoryMatcherMatch(llm, uniqueCategories);
+    const [categoryToMccCategoryIdMap, existingExternalIds] = await Promise.all([
+        privatbankCategoryMatcherMatch(uniqueCategories),
+        transactionService.findByExternalSource(PROVIDER)
+    ]);
 
     for (const bankAccount of selectedBankAccounts) {
-        await importAccountTransactions(client, bankAccount, categoryToMccCategoryIdMap);
+        await importAccountTransactions(client, bankAccount, categoryToMccCategoryIdMap, existingExternalIds);
     }
 };

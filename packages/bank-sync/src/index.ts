@@ -19,6 +19,7 @@ export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
 
+export { PRIVATBANK_CATEGORY_TO_MCC_GROUP_TYPE } from './privatbank/constant/privatbank-category-to-mcc-group.constant';
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
 export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
