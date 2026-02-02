@@ -83,6 +83,19 @@ export const privatbankSyncImportPreview = async (fileBuffer: Uint8Array): Promi
     return mapBankAccountsToPreview(bankAccounts, PROVIDER);
 };
 
+const executeImport = async (client: PrivatbankFileClient, bankAccounts: BankAccountInterface[]): Promise<void> => {
+    const accountIds = bankAccounts.map(account => account.id);
+    const uniqueCategories = collectUniqueCategories(client, accountIds);
+    const [categoryToMccCategoryIdMap, existingExternalIds] = await Promise.all([
+        privatbankCategoryMatcherMatch(uniqueCategories),
+        transactionService.findByExternalSource(PROVIDER)
+    ]);
+
+    for (const bankAccount of bankAccounts) {
+        await importAccountTransactions(client, bankAccount, categoryToMccCategoryIdMap, existingExternalIds);
+    }
+};
+
 export const privatbankSyncExecuteImport = async (fileBuffer: Uint8Array, selectedAccountIds: string[]): Promise<void> => {
     const client = new PrivatbankFileClient(fileBuffer);
     const bankAccounts = client.getAccounts();
@@ -92,13 +105,16 @@ export const privatbankSyncExecuteImport = async (fileBuffer: Uint8Array, select
         return;
     }
 
-    const uniqueCategories = collectUniqueCategories(client, selectedAccountIds);
-    const [categoryToMccCategoryIdMap, existingExternalIds] = await Promise.all([
-        privatbankCategoryMatcherMatch(uniqueCategories),
-        transactionService.findByExternalSource(PROVIDER)
-    ]);
+    await executeImport(client, selectedBankAccounts);
+};
 
-    for (const bankAccount of selectedBankAccounts) {
-        await importAccountTransactions(client, bankAccount, categoryToMccCategoryIdMap, existingExternalIds);
+export const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise<void> => {
+    const client = new PrivatbankFileClient(fileBuffer);
+    const bankAccounts = client.getAccounts();
+
+    if (!isNotEmptyArray(bankAccounts)) {
+        return;
     }
+
+    await executeImport(client, bankAccounts);
 };
