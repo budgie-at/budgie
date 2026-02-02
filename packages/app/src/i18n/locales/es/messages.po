@@ -31,6 +31,14 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
+msgid "{formattedRemaining} left to assign"
+msgstr "{formattedRemaining} por asignar"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:198
+msgid "{formattedRemaining} over budget"
+msgstr "{formattedRemaining} por encima del presupuesto"
+
 #: src/category/components/category-statistics-card/category-statistics-card.tsx:57
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of expenses"
@@ -40,6 +48,10 @@ msgstr "{percentage}% de gastos"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx:55
 msgid "{percentage}% of income"
 msgstr "{percentage}% de ingresos"
+
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:104
+msgid "{splitEntryCount} items"
+msgstr "{splitEntryCount} elementos"
 
 #: src/@generic/component/currency-selector/currency-selector.tsx:63
 msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
@@ -58,7 +70,7 @@ msgid "About"
 msgstr "Acerca de"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx:94
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:40
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:50
 msgid "Account"
 msgstr "Cuenta"
 
@@ -112,6 +124,10 @@ msgstr "Agregar una nota..."
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:33
 msgid "Add Account"
 msgstr "Añadir Cuenta"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:190
+msgid "Add item"
+msgstr "Agregar elemento"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx:25
 msgid "Add your first account to start tracking your finances"
@@ -286,7 +302,7 @@ msgstr "Categorías ({selectedCategoriesCount})"
 
 #: src/app/(tabs)/settings/categories.tsx:31
 #: src/app/(tabs)/settings/import.tsx:180
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:121
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:161
 msgid "Category"
 msgstr "Categoría"
 
@@ -351,6 +367,10 @@ msgstr "Comentario"
 #: src/auth/util/get-pin-setup-meta.util.ts:57
 msgid "Confirm PIN"
 msgstr "Confirmar PIN"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
+msgid "Confirm Split"
+msgstr "Confirmar división"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:83
 msgid "Connect Monobank"
@@ -531,7 +551,7 @@ msgstr "Gestión de datos"
 #: src/@generic/component/date-filter/date-filter.tsx:48
 #: src/@generic/component/date-filter/date-filter.tsx:69
 #: src/app/(tabs)/settings/import.tsx:188
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:90
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:130
 msgid "Date"
 msgstr "Fecha"
 
@@ -1094,11 +1114,11 @@ msgstr "Ninguna seleccionada"
 msgid "Not generated"
 msgstr "No generado"
 
-#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:51
+#: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx:54
 msgid "not set"
 msgstr "no establecido"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:99
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:139
 msgid "Note"
 msgstr "Nota"
 
@@ -1288,7 +1308,7 @@ msgstr "Protege tu aplicación con PIN y Face ID"
 msgid "Security"
 msgstr "Seguridad"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:41
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:51
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -1312,7 +1332,7 @@ msgstr "Selecciona una etiqueta para fusionar"
 msgid "Select a valid column"
 msgstr "Selecciona una columna válida"
 
-#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:56
+#: src/transaction/components/transaction-account-row/transaction-account-row.tsx:66
 msgid "Select account"
 msgstr "Seleccionar cuenta"
 
@@ -1323,6 +1343,14 @@ msgstr "Seleccionar cuentas para sincronizar:"
 #: src/transaction/components/transaction-filter-controls/transaction-filter-controls.tsx:24
 msgid "Select All"
 msgstr "Seleccionar todo"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:200
+msgid "Select all categories"
+msgstr "Seleccionar todas las categorías"
+
+#: src/transaction/components/split-entry-row/split-entry-row.tsx:43
+msgid "Select category"
+msgstr "Seleccionar categoría"
 
 #: src/import/components/import-column-mapper/import-column-mapper.tsx:31
 msgid "Select column..."
@@ -1400,6 +1428,10 @@ msgstr "Gastos por etiqueta"
 msgid "Spent"
 msgstr "Gastado"
 
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:119
+msgid "Split"
+msgstr "Dividir"
+
 #: src/app/(tabs)/settings/import.tsx:149
 msgid "Start Import"
 msgstr "Iniciar importación"
@@ -1467,7 +1499,7 @@ msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
 #: src/app/(tabs)/settings/tags.tsx:73
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:109
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:149
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:28
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx:63
 msgid "Tags"
@@ -1549,7 +1581,7 @@ msgid "To Currency"
 msgstr "Moneda destino"
 
 #: src/@generic/constant/date-period.constant.ts:7
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:79
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:96
 msgid "Today"
 msgstr "Hoy"
 
@@ -1636,7 +1668,7 @@ msgstr "Ucraniano"
 msgid "Uncategorized"
 msgstr "Sin categoría"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:26
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx:27
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -1685,7 +1717,7 @@ msgstr "¿Cuándo debería ser devuelto?"
 msgid "Who owes you?"
 msgstr "¿Quién te debe dinero?"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:80
+#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx:97
 msgid "Yesterday"
 msgstr "Ayer"
 

@@ -54,7 +54,12 @@ export const Button = (props: Props) => {
     const { content, className, onPress, disabled, leftIcon, rightIcon, variant = 'ghost', size = 'md', ...rest } = props;
 
     return (
-        <HapticPressable onPress={onPress} className={cn(buttonVariants({ disabled, size, variant }), className)} {...rest}>
+        <HapticPressable
+            onPress={onPress}
+            disabled={disabled}
+            className={cn(buttonVariants({ disabled, size, variant }), className)}
+            {...rest}
+        >
             {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
             {isDefined(content) && <Text className={textVariants({ variant })}>{content}</Text>}
