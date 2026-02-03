@@ -1,4 +1,5 @@
-import { BankProviderEnum, MONOBANK_AUTH_URL } from '@budgie/bank-sync';
+import { MONOBANK_AUTH_URL } from '@budgie/bank-sync';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { Modal, Text, View } from 'react-native';
@@ -30,7 +31,7 @@ export const GetTokenCard = () => {
                 title={t`Get API Token`}
                 onPress={handleOpenWebView}
                 description={t`Open Monobank to get your token`}
-                left={<BankLogo bankProvider={BankProviderEnum.MONOBANK} />}
+                left={<BankLogo bankProvider={ExternalSourceEnum.MONOBANK} />}
             />
 
             <Modal animationType="slide" visible={isWebViewVisible} onRequestClose={handleCloseWebView}>
