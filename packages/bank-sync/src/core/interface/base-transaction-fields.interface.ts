@@ -17,4 +17,5 @@ export interface BaseTransactionFieldsInterface {
     readonly counterIban?: string;
     readonly counterName?: string;
     readonly comment?: string;
+    readonly category?: string;
 }
