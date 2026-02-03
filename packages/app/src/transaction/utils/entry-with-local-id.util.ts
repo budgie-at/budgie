@@ -2,7 +2,6 @@ import { generateLocalId } from './generate-local-id.util';
 
 import type { TransactionEntryCreateInputInterface, TransactionEntryTypeEnum } from '@budgie/contracts';
 
-
 export interface EntryWithLocalIdInterface extends TransactionEntryCreateInputInterface {
     readonly localId: string;
 }

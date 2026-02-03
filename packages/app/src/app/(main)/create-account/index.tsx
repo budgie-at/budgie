@@ -1,5 +1,4 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
-import { AccountTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
@@ -48,8 +47,14 @@ export default function Index() {
                 <CreateBankSyncCard
                     description={t`Auto-sync accounts and transactions from Monobank`}
                     title={t`Monobank`}
-                    route={`/create-account/${BankProviderEnum.MONOBANK}`}
-                    bankProvider={BankProviderEnum.MONOBANK}
+                    route={`/create-account/${ExternalSourceEnum.MONOBANK}`}
+                    bankProvider={ExternalSourceEnum.MONOBANK}
+                />
+                <CreateBankSyncCard
+                    description={t`Import accounts and transactions from Privatbank XLSX export`}
+                    title={t`Privatbank`}
+                    route={`/create-account/${ExternalSourceEnum.PRIVATBANK}`}
+                    bankProvider={ExternalSourceEnum.PRIVATBANK}
                 />
             </ScrollView>
         </Page>
