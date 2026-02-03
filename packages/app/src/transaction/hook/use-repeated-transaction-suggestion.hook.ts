@@ -62,8 +62,8 @@ export const useRepeatedTransactionSuggestion = (
                     currentTime: currentTimeRef.current,
                     type,
                     accountId,
-                    amount: isPositiveNumber(amount) ? amount : undefined, // eslint-disable-line no-undefined
-                    categoryId: isPositiveNumber(categoryId) ? categoryId : undefined // eslint-disable-line no-undefined
+                    ...(isPositiveNumber(amount) && { amount }),
+                    ...(isPositiveNumber(categoryId) && { categoryId })
                 });
 
                 setSuggestions(results);
