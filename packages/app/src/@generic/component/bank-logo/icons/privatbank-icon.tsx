@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 import Svg, { Path } from 'react-native-svg';
 
 interface Props {
