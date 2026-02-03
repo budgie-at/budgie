@@ -209,12 +209,12 @@ export class AccountBalanceRepository {
                                         ELSE 0
                                     END
                                 )
-                                FROM transaction_entries
-                                WHERE account_id = a.id
-                                  AND deleted_at IS NULL
-                                  AND (
-                                      (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id) IS NULL
-                                      OR created_at > (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id)
+                                FROM transaction_entries te
+                                WHERE te.account_id = a.id
+                                  AND te.deleted_at IS NULL
+                                  AND te.created_at > COALESCE(
+                                      (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id),
+                                      '1970-01-01'
                                   )
                             ), 0)
                         )
