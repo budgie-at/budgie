@@ -35,7 +35,7 @@ digraph review_pr {
     node [shape=box];
 
     start [label="PR URL/Number" shape=ellipse];
-    
+
     subgraph cluster_fetch {
         label="1. PARALLEL Fetch Context";
         style=dashed;
@@ -46,19 +46,21 @@ digraph review_pr {
 
     analyze [label="2. Parse scope & extract keywords"];
 
-    subgraph cluster_explore {
-        label="3. PARALLEL Codebase Exploration (Task tool)";
+    subgraph cluster_skills {
+        label="3. PARALLEL Skill-Based Reviews (6 agents)";
         style=dashed;
-        patterns [label="Patterns Agent\n- Existing conventions\n- Naming standards\n- File organization"];
-        api [label="API-Core Agent\n- Entities/DTOs\n- Services/Resolvers\n- DataLoaders\n- Validation"];
-        web [label="Web-Client Agent\n- Components\n- Composables\n- Translations\n- Validation"];
-        contracts [label="Contracts Agent\n- Shared interfaces\n- Enums\n- Type consistency"];
+        react [label="React Best Practices"];
+        rn [label="React Native Best Practices"];
+        composition [label="Composition Patterns"];
+        native_ui [label="Native UI Design"];
+        frontend [label="Frontend Design"];
+        vercel_rn [label="Vercel RN Skills"];
     }
 
-    consistency [label="4. Consistency Analysis\n- Naming conventions\n- Code patterns\n- Architecture alignment"];
-    
+    merge [label="4. Merge & Deduplicate Issues"];
+
     issues_cat [label="5. Categorize Issues\n- P0: Critical (blocks merge)\n- P1: High (before merge)\n- P2: Medium (follow-up)"];
-    
+
     gist [label="6. Create private gist"];
     done [label="Return gist URL" shape=ellipse];
 
@@ -68,15 +70,19 @@ digraph review_pr {
     pr -> analyze;
     issues -> analyze;
     comments -> analyze;
-    analyze -> patterns;
-    analyze -> api;
-    analyze -> web;
-    analyze -> contracts;
-    patterns -> consistency;
-    api -> consistency;
-    web -> consistency;
-    contracts -> consistency;
-    consistency -> issues_cat -> gist -> done;
+    analyze -> react;
+    analyze -> rn;
+    analyze -> composition;
+    analyze -> native_ui;
+    analyze -> frontend;
+    analyze -> vercel_rn;
+    react -> merge;
+    rn -> merge;
+    composition -> merge;
+    native_ui -> merge;
+    frontend -> merge;
+    vercel_rn -> merge;
+    merge -> issues_cat -> gist -> done;
 }
 ```
 
@@ -106,75 +112,170 @@ From PR body and commits, identify:
 - **Referenced issues**: Requirements and acceptance criteria
 - **QA feedback**: Bug reports from comments
 
-### 3. Launch Parallel Exploration Agents
+### 3. Launch Parallel Skill-Based Review Agents
 
 **CRITICAL**: Use a SINGLE message with MULTIPLE Task tool calls for true parallelism.
 
-#### Agent 1: Existing Patterns Analysis
+Launch these specialized review agents in parallel, each applying domain-specific best practices:
+
+#### Agent 1: React Best Practices Review
 
 ```
-Explore the codebase to understand existing patterns for consistency comparison.
-
-Focus on:
-1. Component organization in affected modules
-2. File naming conventions (kebab-case, suffixes)
-3. Interface/type naming (*Interface, *Enum suffixes)
-4. Composable patterns (use-* prefix)
-5. Constant patterns (get-*.constant.ts)
-6. Validation schema patterns (Zod)
-7. Translation key structure
-8. Similar features already implemented
-
-Report the established conventions that the PR should follow.
-```
-
-#### Agent 2: API-Core Analysis
-
-```
-Analyze the API changes in the PR for the <feature> feature.
+Review the PR changes against React best practices from the vercel-react-best-practices skill.
 
 Check:
-1. Entity structure - columns, relations, constraints
-2. DTO completeness - all fields exposed correctly
-3. Service patterns - @Transactional, @Log decorators
-4. Resolver structure - guards, pipes, access control
-5. DataLoader implementation - REQUEST scope, batching
-6. Validation - class-validator constraints
-7. CQRS patterns - commands, events, sagas
-8. Migration safety - up/down consistency
+1. Component composition patterns
+2. State management (useState, useReducer)
+3. Effect cleanup and dependencies
+4. Memoization (useMemo, useCallback, React.memo)
+5. Key prop usage in lists
+6. Prop drilling vs context
+7. Error boundaries
+8. Suspense and lazy loading
 
-Compare against existing patterns in similar modules.
+Report violations with file paths and line numbers.
 ```
 
-#### Agent 3: Web-Client Analysis
+#### Agent 2: React Native Best Practices Review
 
 ```
-Analyze the web-client changes in the PR for the <feature> feature.
+Review the PR changes against React Native best practices from the react-native-best-practices skill.
 
 Check:
-1. Component structure - hierarchy, naming
-2. Composable patterns - return types, reactivity
-3. Validation schemas - Zod patterns, error messages
-4. Translation completeness - all strings in en.json
-5. Form handling - v-model, validation state
-6. State management - Pinia patterns if used
-7. GraphQL fragments - completeness, nesting
-8. Styling - BEM naming, CSS variables
+1. FPS and performance (avoid JS thread blocking)
+2. FlashList vs FlatList usage
+3. Native driver animations
+4. Bridge overhead minimization
+5. Memory leaks (cleanup, subscriptions)
+6. Image optimization
+7. Hermes-specific optimizations
+8. Bundle size impact
 
-Compare against existing patterns in @rule-entry, @generic, @procedures.
+Report violations with file paths and line numbers.
 ```
 
-#### Agent 4: Contracts Analysis
+#### Agent 3: Composition Patterns Review
 
 ```
-Analyze api-contracts changes for the <feature> feature.
+Review the PR changes against React composition patterns from the vercel-composition-patterns skill.
 
 Check:
-1. Interface naming - *Interface suffix
-2. Enum naming - *Enum suffix
-3. Type exports - proper barrel exports
-4. Consistency - web and API using same types
-5. Optional vs required fields alignment
+1. Boolean prop proliferation
+2. Compound component patterns
+3. Render props usage
+4. Context provider design
+5. Slot patterns
+6. Inversion of control
+7. Component API flexibility
+8. Reusability vs specificity
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 4: Native UI Design Review
+
+```
+Review the PR changes against Native UI design guidelines from the building-native-ui skill.
+
+Check:
+1. Expo Router patterns
+2. Navigation structure
+3. Animation implementation
+4. Native tabs configuration
+5. Component styling patterns
+6. Layout consistency
+7. Platform-specific handling
+8. Accessibility considerations
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 5: Frontend Design Review
+
+```
+Review the PR changes against frontend design guidelines from the frontend-design skill.
+
+Check:
+1. Visual hierarchy
+2. Spacing and typography
+3. Color usage and theming
+4. Responsive design patterns
+5. Interactive states (hover, press, focus)
+6. Loading and error states
+7. Empty states
+8. Design system consistency
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 6: Vercel React Native Skills Review
+
+```
+Review the PR changes against Vercel React Native skills from the vercel-react-native-skills skill.
+
+Check:
+1. List virtualization
+2. Animation performance
+3. Native module integration
+4. Gesture handling
+5. Image caching
+6. Network request patterns
+7. Offline support
+8. Platform-specific code organization
+
+Report violations with file paths and line numbers.
+```
+
+### Parallel Skill Review Diagram
+
+```dot
+digraph skill_review {
+    rankdir=TB;
+    node [shape=box];
+
+    pr_files [label="PR Changed Files" shape=ellipse];
+
+    subgraph cluster_parallel {
+        label="PARALLEL Skill-Based Reviews (Task tool)";
+        style=dashed;
+        react [label="React Best Practices\n(vercel-react-best-practices)"];
+        rn [label="React Native Best Practices\n(react-native-best-practices)"];
+        composition [label="Composition Patterns\n(vercel-composition-patterns)"];
+        native_ui [label="Native UI Design\n(building-native-ui)"];
+        frontend [label="Frontend Design\n(frontend-design)"];
+        vercel_rn [label="Vercel RN Skills\n(vercel-react-native-skills)"];
+    }
+
+    merge [label="Merge & Deduplicate Issues"];
+    categorize [label="Categorize by Severity\n(P0/P1/P2)"];
+
+    pr_files -> react;
+    pr_files -> rn;
+    pr_files -> composition;
+    pr_files -> native_ui;
+    pr_files -> frontend;
+    pr_files -> vercel_rn;
+    react -> merge;
+    rn -> merge;
+    composition -> merge;
+    native_ui -> merge;
+    frontend -> merge;
+    vercel_rn -> merge;
+    merge -> categorize;
+}
+```
+
+### Example Parallel Task Invocation
+
+```
+Use a SINGLE message with 6 Task tool calls:
+
+Task 1: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-best-practices skill..." }
+Task 2: { subagent_type: "superpowers:code-reviewer", prompt: "Review against react-native-best-practices skill..." }
+Task 3: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-composition-patterns skill..." }
+Task 4: { subagent_type: "superpowers:code-reviewer", prompt: "Review against building-native-ui skill..." }
+Task 5: { subagent_type: "superpowers:code-reviewer", prompt: "Review against frontend-design skill..." }
+Task 6: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-native-skills skill..." }
 ```
 
 ### 4. Consistency Analysis
@@ -401,19 +502,21 @@ gh gist create -d "PR #<NUM>: <Title> - Review" analysis.md
 ## Example Invocation
 
 ```
-User: /review-pr 17162
+User: /review-pr 305
 
 Claude:
-1. Fetches PR #17162 details (title, body, files, commits)
-2. Fetches issue #15549 (referenced in PR body)
-3. Parses: Schedule configuration for rule entries, 100 files
-4. Launches 4 parallel agents:
-   - Patterns: Discovers @rule-entry conventions
-   - API: Reviews entities, services, resolvers
-   - Web: Reviews components, composables, translations
-   - Contracts: Reviews interfaces, enums
-5. Consistency analysis: Finds 9 issues
-6. Categorizes: 3 P0, 6 P1, 3 P2
+1. Fetches PR #305 details (title, body, files, commits)
+2. Fetches referenced issues from PR body
+3. Parses scope: PrivatBank XLSX import, 47 files changed
+4. Launches 6 PARALLEL skill-based review agents:
+   - React Best Practices: Checks hooks, memoization, effects
+   - React Native Best Practices: Checks performance, lists, animations
+   - Composition Patterns: Checks component API design
+   - Native UI Design: Checks navigation, styling, accessibility
+   - Frontend Design: Checks visual hierarchy, theming
+   - Vercel RN Skills: Checks platform-specific patterns
+5. Merges and deduplicates issues from all agents
+6. Categorizes: 2 P0, 5 P1, 8 P2
 7. Creates gist with full analysis
 8. Returns: https://gist.github.com/...
 ```
