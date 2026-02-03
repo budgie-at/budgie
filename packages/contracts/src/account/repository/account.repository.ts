@@ -107,18 +107,30 @@ export class AccountRepository {
     }
 
     async findByIds(ids: number[]): Promise<AccountEntityInterface[]> {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt))
         });
     }
 
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
+        if (!isNotEmptyArray(externalIds)) {
+            return [];
+        }
+
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
         });
     }
 
     async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
+        if (!isNotEmptyArray(ibans)) {
+            return [];
+        }
+
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
         });

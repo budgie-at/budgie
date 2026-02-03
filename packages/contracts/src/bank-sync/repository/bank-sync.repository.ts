@@ -1,5 +1,7 @@
 import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { DB, TX } from '../../@generic/type/db.type';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -104,7 +106,7 @@ export class BankSyncRepository {
 
     async recordError(id: number, error: string, tx?: TX): Promise<void> {
         const bankSync = await this.getById(id);
-        if (bankSync) {
+        if (isDefined(bankSync)) {
             await (tx ?? this.db)
                 .update(BankSyncEntityTable)
                 .set({
