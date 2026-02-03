@@ -1,4 +1,5 @@
 import {
+    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -11,6 +12,7 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -66,7 +68,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
-    const { displayValue, currencySymbol, keypadHandlers } = useQuickFormAmount({ accountFieldName });
+    const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
     const { openSplitEntries } = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
@@ -76,6 +78,7 @@ export const SimpleQuickForm = (props: Props) => {
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
     const amount = useWatch({ control, name: 'amount' });
+    const accountId = useWatch({ control, name: accountFieldName }) ?? 0;
 
     const splitEntryCount = entries.length;
     const isAmountPositive = amount > 0;
@@ -91,6 +94,19 @@ export const SimpleQuickForm = (props: Props) => {
     const handleSelectTag = (selectedTagId: number) => {
         const currentTagIds = getValues('tagIds');
         setValue('tagIds', [...currentTagIds, selectedTagId]);
+    };
+
+    const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
+        const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+
+        setValue('entries.0.categoryId', pattern.categoryId);
+        setValue('tagIds', pattern.tagIds);
+        setValue('amount', displayAmount);
+        setFromNumeric(displayAmount);
+        setValue('title', pattern.title);
+        if (isNotEmptyString(pattern.comment)) {
+            setValue('comment', pattern.comment);
+        }
     };
 
     const handleSplitPress = async () => {
@@ -137,7 +153,8 @@ export const SimpleQuickForm = (props: Props) => {
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive;
+    const showRepeatedSuggestions = !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
+    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive && !showRepeatedSuggestions;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     const handleNormalConfirm = () => {
@@ -205,6 +222,10 @@ export const SimpleQuickForm = (props: Props) => {
                         isSplitActive={isSplitActive}
                         showTagSuggestions={showTagSuggestions}
                         showCategorySuggestions={showCategorySuggestions}
+                        showRepeatedSuggestions={showRepeatedSuggestions}
+                        transactionType={transactionType}
+                        accountId={accountId}
+                        amount={amount}
                         transactionTitle={transactionTitle}
                         categoryId={categoryId}
                         mccCategoryId={mccCategoryId}
@@ -212,6 +233,7 @@ export const SimpleQuickForm = (props: Props) => {
                         aiContext={aiContext}
                         onSelectTag={handleSelectTag}
                         onSelectCategory={handleSelectCategory}
+                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
                     />
                 </View>
             </View>

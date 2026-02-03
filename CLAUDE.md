@@ -63,6 +63,11 @@ packages/
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
 15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
+17. **Use existing utility functions** - Use `convertFromMicroUnits()` for amount conversion instead of manual `/ PRECISION`
+18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
+19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
+20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
+21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
 
 ### Naming Conventions
 
@@ -132,6 +137,49 @@ type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 ```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
+
+**Microunits conversion:**
+```typescript
+// Good - use utility function
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+
+// Bad - manual division
+import { PRECISION } from '@budgie/contracts';
+const displayAmount = pattern.averageAmount / PRECISION;
+```
+
+**Optional params with spread syntax:**
+```typescript
+// Good - spread syntax (no eslint-disable needed)
+const params = {
+    type,
+    accountId,
+    ...(isPositiveNumber(amount) && { amount }),
+    ...(isPositiveNumber(categoryId) && { categoryId })
+};
+
+// Bad - ternary with undefined requires eslint-disable
+const params = {
+    type,
+    accountId,
+    amount: isPositiveNumber(amount) ? amount : undefined, // eslint-disable-line no-undefined
+    categoryId: isPositiveNumber(categoryId) ? categoryId : undefined // eslint-disable-line no-undefined
+};
+```
+
+**Contracts package file organization:**
+```
+transaction/
+├── interface/
+│   ├── pattern-row.interface.ts         # Repository-specific interfaces
+│   ├── valid-pattern-row.interface.ts
+│   └── transaction-pattern-query.interface.ts
+├── type-guard/
+│   └── is-valid-pattern-row.type-guard.ts  # Type guards in separate folder
+└── repository/
+    └── transaction-pattern.repository.ts   # Clean repository, imports from above
+```
 
 ### i18n (Lingui) Usage
 

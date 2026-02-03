@@ -12,6 +12,7 @@ import {
     StatisticsRepository,
     TagRepository,
     TransactionEntryRepository,
+    TransactionPatternRepository,
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
@@ -64,3 +65,4 @@ export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
+export const transactionPatternRepository = new TransactionPatternRepository(db);
