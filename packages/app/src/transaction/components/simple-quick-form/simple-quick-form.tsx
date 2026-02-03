@@ -99,6 +99,9 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', pattern.tagIds);
         setValue('amount', pattern.averageAmount);
         setValue('title', pattern.title);
+        if (isNotEmptyString(pattern.comment)) {
+            setValue('comment', pattern.comment);
+        }
     };
 
     const handleSplitPress = async () => {
