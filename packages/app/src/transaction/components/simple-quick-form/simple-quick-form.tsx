@@ -67,7 +67,7 @@ export const SimpleQuickForm = (props: Props) => {
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
-    const { displayValue, currencySymbol, keypadHandlers } = useQuickFormAmount({ accountFieldName });
+    const { displayValue, currencySymbol, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
     const { openSplitEntries } = useSplitEntriesModal();
 
     const entryType = getEntryTypeForTransaction(transactionType);
@@ -98,6 +98,7 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('entries.0.categoryId', pattern.categoryId);
         setValue('tagIds', pattern.tagIds);
         setValue('amount', pattern.averageAmount);
+        setFromNumeric(pattern.averageAmount);
         setValue('title', pattern.title);
         if (isNotEmptyString(pattern.comment)) {
             setValue('comment', pattern.comment);
