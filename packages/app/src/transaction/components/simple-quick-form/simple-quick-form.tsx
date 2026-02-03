@@ -1,4 +1,5 @@
 import {
+    PRECISION,
     RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
@@ -95,10 +96,12 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
+        const displayAmount = pattern.averageAmount / PRECISION;
+
         setValue('entries.0.categoryId', pattern.categoryId);
         setValue('tagIds', pattern.tagIds);
-        setValue('amount', pattern.averageAmount);
-        setFromNumeric(pattern.averageAmount);
+        setValue('amount', displayAmount);
+        setFromNumeric(displayAmount);
         setValue('title', pattern.title);
         if (isNotEmptyString(pattern.comment)) {
             setValue('comment', pattern.comment);
