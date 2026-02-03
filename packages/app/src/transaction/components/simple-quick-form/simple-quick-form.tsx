@@ -1,5 +1,4 @@
 import {
-    PRECISION,
     RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
@@ -13,6 +12,7 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -78,6 +78,7 @@ export const SimpleQuickForm = (props: Props) => {
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
     const amount = useWatch({ control, name: 'amount' });
+    const accountId = useWatch({ control, name: accountFieldName }) ?? 0;
 
     const splitEntryCount = entries.length;
     const isAmountPositive = amount > 0;
@@ -96,7 +97,7 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
-        const displayAmount = pattern.averageAmount / PRECISION;
+        const displayAmount = convertFromMicroUnits(pattern.averageAmount);
 
         setValue('entries.0.categoryId', pattern.categoryId);
         setValue('tagIds', pattern.tagIds);
@@ -152,7 +153,6 @@ export const SimpleQuickForm = (props: Props) => {
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const accountId = useWatch({ control, name: accountFieldName }) ?? 0;
     const showRepeatedSuggestions = !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
     const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive && !showRepeatedSuggestions;
     const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;

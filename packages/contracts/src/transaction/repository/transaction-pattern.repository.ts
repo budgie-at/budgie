@@ -1,8 +1,7 @@
 import { SQL, and, desc, eq, gte, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -11,34 +10,11 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
-
-interface PatternRowInterface {
-    readonly categoryId: number | null;
-    readonly categoryTitle: string | null;
-    readonly categoryIcon: UserIconNameEnum | null;
-    readonly title: string;
-    readonly comment: string | null;
-    readonly averageAmount: number;
-    readonly occurrenceCount: number;
-    readonly lastOccurrence: number;
-}
-
-interface ValidPatternRowInterface {
-    readonly categoryId: number;
-    readonly categoryTitle: string;
-    readonly categoryIcon: UserIconNameEnum;
-    readonly title: string;
-    readonly comment: string | null;
-    readonly averageAmount: number;
-    readonly occurrenceCount: number;
-    readonly lastOccurrence: number;
-}
-
-const isValidPatternRow = (row: PatternRowInterface): row is ValidPatternRowInterface =>
-    isDefined(row.categoryId) && isDefined(row.categoryTitle) && isDefined(row.categoryIcon);
+import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard';
 
 const DEFAULT_LIMIT = 10;
 const MIN_OCCURRENCES = 2;
