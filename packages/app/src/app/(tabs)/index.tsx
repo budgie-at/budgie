@@ -41,7 +41,7 @@ export default function HomePage() {
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => {
         if (isBankProviderSection(section)) {
-            return <BankProviderSectionHeader provider={section.provider} syncStatus={section.syncStatus} />;
+            return <BankProviderSectionHeader provider={section.provider} />;
         }
 
         return <AccountSectionHeader type={section.type} />;
