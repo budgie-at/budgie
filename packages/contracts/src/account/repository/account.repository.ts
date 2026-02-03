@@ -96,6 +96,12 @@ export class AccountRepository {
         });
     }
 
+    async findByIds(ids: number[]): Promise<AccountEntityInterface[]> {
+        return await this.db.query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt))
+        });
+    }
+
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
         return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
