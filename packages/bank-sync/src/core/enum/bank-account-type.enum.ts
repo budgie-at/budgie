@@ -9,5 +9,6 @@ export enum BankAccountTypeEnum {
     CHECKING = 'CHECKING',
     SAVINGS = 'SAVINGS',
     CREDIT = 'CREDIT',
+    CARD = 'CARD',
     UNKNOWN = 'UNKNOWN'
 }
