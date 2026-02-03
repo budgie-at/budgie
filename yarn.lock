@@ -1356,7 +1356,7 @@ __metadata:
     react-native-keyboard-controller: "npm:1.18.5"
     react-native-reanimated: "npm:~4.1.1"
     react-native-safe-area-context: "npm:~5.6.0"
-    react-native-screens: "npm:4.20.0"
+    react-native-screens: "npm:4.22.0"
     react-native-svg: "npm:15.12.1"
     react-native-toast-message: "npm:^2.3.3"
     react-native-ui-datepicker: "npm:^3.1.2"
@@ -17866,16 +17866,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:4.20.0":
-  version: 4.20.0
-  resolution: "react-native-screens@npm:4.20.0"
+"react-native-screens@npm:4.22.0":
+  version: 4.22.0
+  resolution: "react-native-screens@npm:4.22.0"
   dependencies:
     react-freeze: "npm:^1.0.0"
     warn-once: "npm:^0.1.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/949b92bbd27403608df78216421d55ab2c0af352baed4e31a2fe3b7f00b5b16117ff491c0e14ae51c8048e43e345438df37e42397ebbb5047cc3289f10b5d72d
+  checksum: 10/42be14f2de0bfe7b76e3e8fccffa8843fc558cda70aa182c8cb7ed2697826a684cd83abb0a8647dbd1e01a0710960a120b706f01502a4206819d6f54ef3d3fce
   languageName: node
   linkType: hard
 
