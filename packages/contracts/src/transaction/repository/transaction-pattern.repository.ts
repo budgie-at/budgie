@@ -2,6 +2,7 @@ import { SQL, and, desc, eq, gte, isNotNull, isNull, lte, ne, sql } from 'drizzl
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
 import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -15,27 +16,23 @@ import { TransactionPatternQueryInterface } from '../interface/transaction-patte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 interface PatternRowInterface {
-    categoryId: number | null;
-    categoryTitle: string | null;
-    categoryIcon: string | null;
-    title: string;
-    averageAmount: number;
-    occurrenceCount: number;
-    lastOccurrence: number;
+    readonly categoryId: number | null;
+    readonly categoryTitle: string | null;
+    readonly categoryIcon: UserIconNameEnum | null;
+    readonly title: string;
+    readonly averageAmount: number;
+    readonly occurrenceCount: number;
+    readonly lastOccurrence: number;
 }
 
 interface ValidPatternRowInterface {
-    categoryId: number;
-    categoryTitle: string;
-    categoryIcon: string;
-    title: string;
-    averageAmount: number;
-    occurrenceCount: number;
-    lastOccurrence: number;
-}
-
-interface TagRowInterface {
-    tagId: number;
+    readonly categoryId: number;
+    readonly categoryTitle: string;
+    readonly categoryIcon: UserIconNameEnum;
+    readonly title: string;
+    readonly averageAmount: number;
+    readonly occurrenceCount: number;
+    readonly lastOccurrence: number;
 }
 
 const isValidPatternRow = (row: PatternRowInterface): row is ValidPatternRowInterface =>
@@ -52,14 +49,6 @@ export class TransactionPatternRepository {
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
 
         return this.enrichPatternsWithTags(patternRows);
-    }
-
-    async findByTimeWindow(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        return this.findRepeatedPatterns(query);
-    }
-
-    async findSimilarByAmount(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        return this.findRepeatedPatterns(query);
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
@@ -140,7 +129,7 @@ export class TransactionPatternRepository {
         return validRows.map((row, index) => ({
             categoryId: row.categoryId,
             categoryTitle: row.categoryTitle,
-            categoryIcon: row.categoryIcon as RepeatedTransactionPatternInterface['categoryIcon'],
+            categoryIcon: row.categoryIcon,
             tagIds: tagResults[index],
             title: row.title,
             averageAmount: row.averageAmount,
@@ -168,7 +157,7 @@ export class TransactionPatternRepository {
             .orderBy(desc(sql`COUNT(${TransactionTagsEntityTable.tagId})`))
             .limit(5);
 
-        return (tagRows as TagRowInterface[]).map(row => row.tagId);
+        return tagRows.map(row => row.tagId);
     }
 
     private getEntryTypeForTransactionType(type: TransactionTypeEnum): TransactionEntryTypeEnum {
