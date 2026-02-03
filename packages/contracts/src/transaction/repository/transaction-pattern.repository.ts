@@ -20,6 +20,7 @@ interface PatternRowInterface {
     readonly categoryTitle: string | null;
     readonly categoryIcon: UserIconNameEnum | null;
     readonly title: string;
+    readonly comment: string | null;
     readonly averageAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: number;
@@ -30,6 +31,7 @@ interface ValidPatternRowInterface {
     readonly categoryTitle: string;
     readonly categoryIcon: UserIconNameEnum;
     readonly title: string;
+    readonly comment: string | null;
     readonly averageAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: number;
@@ -102,6 +104,7 @@ export class TransactionPatternRepository {
                 categoryTitle: CategoryEntityTable.title,
                 categoryIcon: CategoryEntityTable.icon,
                 title: TransactionEntityTable.title,
+                comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
                 averageAmount: sql<number>`CAST(AVG(${TransactionEntryEntityTable.amount}) AS INTEGER)`.as('averageAmount'),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('occurrenceCount'),
                 lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence')
@@ -132,6 +135,7 @@ export class TransactionPatternRepository {
             categoryIcon: row.categoryIcon,
             tagIds: tagResults[index],
             title: row.title,
+            comment: row.comment,
             averageAmount: row.averageAmount,
             occurrenceCount: row.occurrenceCount,
             lastOccurrence: new Date(row.lastOccurrence * 1000)
