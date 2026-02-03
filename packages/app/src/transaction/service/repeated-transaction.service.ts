@@ -3,31 +3,32 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
-
-const TIME_WINDOW_MINUTES = 30;
-const AMOUNT_BASED_TIME_WINDOW_MINUTES = 180;
-const AMOUNT_TOLERANCE_PERCENT = 0.15;
-const DEFAULT_LIMIT = 5;
-const MINUTES_IN_DAY = 24 * 60 - 1;
+import {
+    MINUTES_IN_DAY,
+    REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES,
+    REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
+    REPEATED_TRANSACTION_DEFAULT_LIMIT,
+    REPEATED_TRANSACTION_TIME_WINDOW_MINUTES
+} from '../constant/repeated-transaction.constant';
 
 interface GetSuggestionsParamsInterface {
-    currentTime: Date;
-    type: TransactionTypeEnum;
-    accountId?: number;
-    amount?: number;
-    categoryId?: number;
+    readonly currentTime: Date;
+    readonly type: TransactionTypeEnum;
+    readonly accountId?: number;
+    readonly amount?: number;
+    readonly categoryId?: number;
 }
 
 interface TimeWindowInterface {
-    weekday: number;
-    timeWindowStartMinutes: number;
-    timeWindowEndMinutes: number;
+    readonly weekday: number;
+    readonly timeWindowStartMinutes: number;
+    readonly timeWindowEndMinutes: number;
 }
 
 const calculateTimeWindow = (currentTime: Date, hasAmount: boolean): TimeWindowInterface => {
     const weekday = currentTime.getDay();
     const currentTimeMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    const timeWindow = hasAmount ? AMOUNT_BASED_TIME_WINDOW_MINUTES : TIME_WINDOW_MINUTES;
+    const timeWindow = hasAmount ? REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES : REPEATED_TRANSACTION_TIME_WINDOW_MINUTES;
 
     return {
         weekday,
@@ -47,14 +48,14 @@ class RepeatedTransactionService {
             type,
             accountId,
             categoryId,
-            limit: DEFAULT_LIMIT
+            limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         });
 
         return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
     }
 
     private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
-        const tolerance = targetAmount * AMOUNT_TOLERANCE_PERCENT;
+        const tolerance = targetAmount * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
         const minAmount = targetAmount - tolerance;
         const maxAmount = targetAmount + tolerance;
 

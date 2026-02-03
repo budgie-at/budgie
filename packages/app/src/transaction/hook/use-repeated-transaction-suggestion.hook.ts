@@ -11,15 +11,12 @@ import { repeatedTransactionService } from '../service/repeated-transaction.serv
 const DEBOUNCE_MS = 300;
 
 interface UseRepeatedTransactionSuggestionParams {
-    enabled: boolean;
-    type: TransactionTypeEnum;
-    accountId: number;
-    amount: number;
-    categoryId: number;
+    readonly enabled: boolean;
+    readonly type: TransactionTypeEnum;
+    readonly accountId: number;
+    readonly amount: number;
+    readonly categoryId: number;
 }
-
-const getOptionalAmount = (amount: number): number | undefined => (isPositiveNumber(amount) ? amount : undefined); // eslint-disable-line no-undefined
-const getOptionalCategoryId = (categoryId: number): number | undefined => (isPositiveNumber(categoryId) ? categoryId : undefined); // eslint-disable-line no-undefined
 
 export const useRepeatedTransactionSuggestion = (
     params: UseRepeatedTransactionSuggestionParams
@@ -65,8 +62,8 @@ export const useRepeatedTransactionSuggestion = (
                     currentTime: currentTimeRef.current,
                     type,
                     accountId,
-                    amount: getOptionalAmount(amount),
-                    categoryId: getOptionalCategoryId(categoryId)
+                    amount: isPositiveNumber(amount) ? amount : undefined, // eslint-disable-line no-undefined
+                    categoryId: isPositiveNumber(categoryId) ? categoryId : undefined // eslint-disable-line no-undefined
                 });
 
                 setSuggestions(results);
