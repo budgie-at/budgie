@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.29.0](https://github.com/budgie-at/budgie/compare/v2.28.0...v2.29.0) (2026-02-03)
+
+### Bug Fixes
+
+- **app,contracts:** address PR review warnings ([f104013](https://github.com/budgie-at/budgie/commit/f104013761ea2b81b974d4de15e2defc9cf5a085))
+- **app:** address human PR review comments ([c3818de](https://github.com/budgie-at/budgie/commit/c3818de9200c2aeb41f28f2637696dd43a57beaa))
+- **app:** fix bank provider total and update bank logos ([9185eb0](https://github.com/budgie-at/budgie/commit/9185eb0d347a17c205765c91982e30f3cfc64604))
+- **app:** make bank account title generation provider-aware ([5b6a3b5](https://github.com/budgie-at/budgie/commit/5b6a3b59b157eba5ab6c5c83ba4a8b3ea54eabb7))
+- **app:** quick import only syncs enabled PrivatBank accounts ([0d58ba1](https://github.com/budgie-at/budgie/commit/0d58ba10fabf68d23f25056ebfa95477bd57d26e))
+- **bank-sync:** add error handling and fix currency code mapping in Privatbank provider ([223e32c](https://github.com/budgie-at/budgie/commit/223e32c872b79b3d30176a977e0c0ef44d0ca62d))
+- **bank-sync:** address code review findings for PrivatBank import ([c63f1fc](https://github.com/budgie-at/budgie/commit/c63f1fc779268cc7a6718e3df08068ae8bc6405a))
+- **bank-sync:** replace Node.js crypto with pure JS FNV-1a hash for Hermes ([bdfced0](https://github.com/budgie-at/budgie/commit/bdfced06012be76b687433dcd8e5de427523b6f2))
+- **bank-sync:** use Uint8Array instead of ArrayBuffer for Hermes compatibility ([ab61400](https://github.com/budgie-at/budgie/commit/ab61400659b12aa01901cc1c6870c481dc2907b1))
+
+### Features
+
+- **app:** add long-press quick XLSX import on PrivatBank account cards ([e76b95b](https://github.com/budgie-at/budgie/commit/e76b95b22ac6e65d17fef2d398585f1ea2faafb0))
+- **app:** add Privatbank sync service and LLM category matcher ([e43bf25](https://github.com/budgie-at/budgie/commit/e43bf25eabd0b7b3d1f587d5a08723db515ea527))
+- **app:** add Privatbank XLSX import UI and navigation ([c302ead](https://github.com/budgie-at/budgie/commit/c302ead5f211de3de5cbeb92ff02af9b734ae2e1))
+- **app:** group bank-synced accounts by provider on home page ([4af806f](https://github.com/budgie-at/budgie/commit/4af806f5ee14ed253a18d8d11e4a473be27d6942))
+- **bank-sync:** add missing PrivatBank transfer categories to MCC group mapping ([590a22a](https://github.com/budgie-at/budgie/commit/590a22a93d6222576e772a774fc86a0e996aa413))
+- **bank-sync:** add Privatbank XLSX file provider ([cf0d107](https://github.com/budgie-at/budgie/commit/cf0d107b0a23709ac41bd87a1482e76d38c97886))
+- **bank-sync:** expand PrivatBank category-to-MCC-group mapping ([ca19ac1](https://github.com/budgie-at/budgie/commit/ca19ac17834ed861b5217272c5a07d4c068500cf))
+
+### Performance Improvements
+
+- **app:** replace LLM category matcher with static map and optimize import ([d0b45ef](https://github.com/budgie-at/budgie/commit/d0b45ef5f72ffcd33279bcf1d4e449c41fcc4eb4))
+
 # [2.28.0](https://github.com/budgie-at/budgie/compare/v2.27.0...v2.28.0) (2026-02-02)
 
 ### Bug Fixes
