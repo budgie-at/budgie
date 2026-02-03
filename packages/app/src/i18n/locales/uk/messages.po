@@ -386,7 +386,7 @@ msgstr "Не вдалося активувати рахунок."
 msgid "Could not archive account. Please try again later"
 msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
-#: src/category/components/category-form/category-form.tsx:141
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
@@ -406,7 +406,7 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:122
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
 
@@ -426,7 +426,7 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form/category-form.tsx:141
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Could not save category"
 msgstr "Не вдалося зберегти категорію"
 
@@ -466,7 +466,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:66
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -606,7 +606,7 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:66
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
@@ -862,7 +862,7 @@ msgid "History synced"
 msgstr "Історію синхронізовано"
 
 #: src/app/(main)/create-account/index.tsx:55
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:110
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Імпорт рахунків та транзакцій з XLSX-експорту Приватбанку"
 
@@ -876,7 +876,7 @@ msgstr "Імпортувати CSV"
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
@@ -884,7 +884,7 @@ msgstr "Помилка імпорту"
 msgid "Import Failed"
 msgstr "Імпорт не вдався"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:97
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
 
@@ -925,7 +925,7 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:69
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Невірний файл"
 
@@ -982,7 +982,7 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/category/components/category-form/category-form.tsx:167
+#: src/category/components/category-form/category-form.tsx:171
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
 
@@ -998,6 +998,7 @@ msgstr "Позичені або надані гроші"
 msgid "Money you owe or are owed"
 msgstr "Гроші, які ви винні або вам винні"
 
+#: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Monobank"
 msgstr "Монобанк"
@@ -1178,8 +1179,8 @@ msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:121
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:143
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1204,6 +1205,10 @@ msgstr "Конфіденційність"
 #: src/app/(main)/create-account/index.tsx:56
 msgid "Privatbank"
 msgstr "Приватбанк"
+
+#: src/account/constant/bank-provider-title.constant.ts:7
+msgid "PrivatBank"
+msgstr "ПриватБанк"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
@@ -1317,7 +1322,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/category/components/category-form/category-form.tsx:105
+#: src/category/components/category-form/category-form.tsx:106
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
 

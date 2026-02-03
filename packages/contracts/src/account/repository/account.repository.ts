@@ -75,6 +75,16 @@ export class AccountRepository {
         });
     }
 
+    findAllWithBankSync() {
+        return this.db.query.AccountEntityTable.findMany({
+            where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),
+            with: {
+                [AccountAssociationEnum.INSTRUMENT]: true,
+                [AccountAssociationEnum.BANK_SYNC]: true
+            }
+        });
+    }
+
     getAllInactive() {
         return this.db.query.AccountEntityTable.findMany({
             where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt), eq(AccountEntityTable.isActive, false)),

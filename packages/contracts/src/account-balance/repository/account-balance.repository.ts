@@ -2,7 +2,9 @@ import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -154,6 +156,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
+    // jscpd:ignore-start
     getTotalByAccountType(defaultInstrumentId: number, accountType: string) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
@@ -176,6 +179,39 @@ export class AccountBalanceRepository {
                 0
             )
         `;
+
+        return this.db
+            .select({
+                total: totalSubquerySql
+            })
+            .from(TransactionEntryEntityTable)
+            .limit(1);
+    }
+
+    getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+        const exchangeRateSql = sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
+
+        const totalSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
+                    )
+                    FROM ${AccountEntityTable}
+                    INNER JOIN ${BankSyncEntityTable} ON ${BankSyncEntityTable.accountId} = ${AccountEntityTable.id}
+                    WHERE ${BankSyncEntityTable.provider} = ${provider}
+                      AND ${AccountEntityTable.isActive} = 1
+                      AND ${AccountEntityTable.deletedAt} IS NULL
+                ),
+                0
+            )
+        `;
+        // jscpd:ignore-end
 
         return this.db
             .select({
