@@ -47,7 +47,7 @@ digraph review_pr {
     analyze [label="2. Parse scope & extract keywords"];
 
     subgraph cluster_skills {
-        label="3. PARALLEL Skill-Based Reviews (6 agents)";
+        label="3. PARALLEL Skill-Based Reviews (10 agents)";
         style=dashed;
         react [label="React Best Practices"];
         rn [label="React Native Best Practices"];
@@ -55,6 +55,10 @@ digraph review_pr {
         native_ui [label="Native UI Design"];
         frontend [label="Frontend Design"];
         vercel_rn [label="Vercel RN Skills"];
+        expo_deploy [label="Expo Deployment"];
+        expo_dev [label="Expo Dev Client"];
+        data_fetch [label="Native Data Fetching"];
+        expo_upgrade [label="Expo Upgrade Compat"];
     }
 
     merge [label="4. Merge & Deduplicate Issues"];
@@ -76,12 +80,20 @@ digraph review_pr {
     analyze -> native_ui;
     analyze -> frontend;
     analyze -> vercel_rn;
+    analyze -> expo_deploy;
+    analyze -> expo_dev;
+    analyze -> data_fetch;
+    analyze -> expo_upgrade;
     react -> merge;
     rn -> merge;
     composition -> merge;
     native_ui -> merge;
     frontend -> merge;
     vercel_rn -> merge;
+    expo_deploy -> merge;
+    expo_dev -> merge;
+    data_fetch -> merge;
+    expo_upgrade -> merge;
     merge -> issues_cat -> gist -> done;
 }
 ```
@@ -226,6 +238,78 @@ Check:
 Report violations with file paths and line numbers.
 ```
 
+#### Agent 7: Expo Deployment Review
+
+```
+Review the PR changes against Expo deployment guidelines from the expo-deployment skill.
+
+Check:
+1. EAS Build configuration
+2. App store deployment readiness
+3. Environment variables handling
+4. OTA update compatibility
+5. Native module compatibility
+6. Build profiles configuration
+7. Submission credentials
+8. Release channel management
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 8: Expo Dev Client Review
+
+```
+Review the PR changes against Expo dev client guidelines from the expo-dev-client skill.
+
+Check:
+1. Development build configuration
+2. Custom native module integration
+3. Debug vs release behavior
+4. TestFlight/Internal distribution setup
+5. Local development workflow
+6. Native dependency management
+7. Build caching strategies
+8. Development plugin usage
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 9: Native Data Fetching Review
+
+```
+Review the PR changes against native data fetching guidelines from the native-data-fetching skill.
+
+Check:
+1. Fetch API usage patterns
+2. Error handling and retries
+3. Caching strategies
+4. Offline support implementation
+5. Request cancellation
+6. Loading state management
+7. Optimistic updates
+8. Background refresh patterns
+
+Report violations with file paths and line numbers.
+```
+
+#### Agent 10: Expo Upgrade Compatibility Review
+
+```
+Review the PR changes against Expo upgrade guidelines from the upgrading-expo skill.
+
+Check:
+1. SDK version compatibility
+2. Deprecated API usage
+3. Breaking change impact
+4. Native module version alignment
+5. Config plugin compatibility
+6. Dependency version conflicts
+7. Migration path requirements
+8. Testing requirements post-upgrade
+
+Report violations with file paths and line numbers.
+```
+
 ### Parallel Skill Review Diagram
 
 ```dot
@@ -236,14 +320,18 @@ digraph skill_review {
     pr_files [label="PR Changed Files" shape=ellipse];
 
     subgraph cluster_parallel {
-        label="PARALLEL Skill-Based Reviews (Task tool)";
+        label="PARALLEL Skill-Based Reviews (10 agents)";
         style=dashed;
-        react [label="React Best Practices\n(vercel-react-best-practices)"];
-        rn [label="React Native Best Practices\n(react-native-best-practices)"];
-        composition [label="Composition Patterns\n(vercel-composition-patterns)"];
-        native_ui [label="Native UI Design\n(building-native-ui)"];
-        frontend [label="Frontend Design\n(frontend-design)"];
-        vercel_rn [label="Vercel RN Skills\n(vercel-react-native-skills)"];
+        react [label="React Best Practices"];
+        rn [label="React Native Best Practices"];
+        composition [label="Composition Patterns"];
+        native_ui [label="Native UI Design"];
+        frontend [label="Frontend Design"];
+        vercel_rn [label="Vercel RN Skills"];
+        expo_deploy [label="Expo Deployment"];
+        expo_dev [label="Expo Dev Client"];
+        data_fetch [label="Native Data Fetching"];
+        expo_upgrade [label="Expo Upgrade Compat"];
     }
 
     merge [label="Merge & Deduplicate Issues"];
@@ -255,12 +343,20 @@ digraph skill_review {
     pr_files -> native_ui;
     pr_files -> frontend;
     pr_files -> vercel_rn;
+    pr_files -> expo_deploy;
+    pr_files -> expo_dev;
+    pr_files -> data_fetch;
+    pr_files -> expo_upgrade;
     react -> merge;
     rn -> merge;
     composition -> merge;
     native_ui -> merge;
     frontend -> merge;
     vercel_rn -> merge;
+    expo_deploy -> merge;
+    expo_dev -> merge;
+    data_fetch -> merge;
+    expo_upgrade -> merge;
     merge -> categorize;
 }
 ```
@@ -268,14 +364,18 @@ digraph skill_review {
 ### Example Parallel Task Invocation
 
 ```
-Use a SINGLE message with 6 Task tool calls:
+Use a SINGLE message with 10 Task tool calls:
 
-Task 1: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-best-practices skill..." }
-Task 2: { subagent_type: "superpowers:code-reviewer", prompt: "Review against react-native-best-practices skill..." }
-Task 3: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-composition-patterns skill..." }
-Task 4: { subagent_type: "superpowers:code-reviewer", prompt: "Review against building-native-ui skill..." }
-Task 5: { subagent_type: "superpowers:code-reviewer", prompt: "Review against frontend-design skill..." }
-Task 6: { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-native-skills skill..." }
+Task 1:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-best-practices skill..." }
+Task 2:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against react-native-best-practices skill..." }
+Task 3:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-composition-patterns skill..." }
+Task 4:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against building-native-ui skill..." }
+Task 5:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against frontend-design skill..." }
+Task 6:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against vercel-react-native-skills skill..." }
+Task 7:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against expo-deployment skill..." }
+Task 8:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against expo-dev-client skill..." }
+Task 9:  { subagent_type: "superpowers:code-reviewer", prompt: "Review against native-data-fetching skill..." }
+Task 10: { subagent_type: "superpowers:code-reviewer", prompt: "Review against upgrading-expo skill..." }
 ```
 
 ### 4. Consistency Analysis
@@ -508,13 +608,17 @@ Claude:
 1. Fetches PR #305 details (title, body, files, commits)
 2. Fetches referenced issues from PR body
 3. Parses scope: PrivatBank XLSX import, 47 files changed
-4. Launches 6 PARALLEL skill-based review agents:
+4. Launches 10 PARALLEL skill-based review agents:
    - React Best Practices: Checks hooks, memoization, effects
    - React Native Best Practices: Checks performance, lists, animations
    - Composition Patterns: Checks component API design
    - Native UI Design: Checks navigation, styling, accessibility
    - Frontend Design: Checks visual hierarchy, theming
    - Vercel RN Skills: Checks platform-specific patterns
+   - Expo Deployment: Checks EAS config, OTA updates
+   - Expo Dev Client: Checks dev build, native modules
+   - Native Data Fetching: Checks API calls, caching, offline
+   - Expo Upgrade Compat: Checks SDK compatibility, deprecations
 5. Merges and deduplicates issues from all agents
 6. Categorizes: 2 P0, 5 P1, 8 P2
 7. Creates gist with full analysis
