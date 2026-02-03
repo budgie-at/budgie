@@ -203,6 +203,10 @@ export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sel
 export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/transfer-asset-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
+export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
+export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
+
+export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
 
 export { isIncomeTransaction } from './transaction/type-guard/is-income-transaction.type-guard';
 export { isExpenseTransaction } from './transaction/type-guard/is-expense-transaction.type-guard';
