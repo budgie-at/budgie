@@ -3,13 +3,8 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
-import { LlmInterface } from '../context/llm.context';
 
-export interface CategoryTranslationResult {
-    titleEn: string;
-    titleTags: string;
-}
+import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
 interface CategorySuggestionParams {
     transactionTitle: string;
@@ -25,10 +20,8 @@ interface CategoryLlmErrorHandler {
 const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
-export class CategoryLlmService {
-    constructor(private readonly llm: LlmInterface) {}
-
-    async regenerateOne(categoryId: number, title: string): Promise<CategoryTranslationResult> {
+export class CategoryLlmService extends BaseLlmService {
+    async regenerateOne(categoryId: number, title: string): Promise<TranslationResultInterface> {
         const result = await this.generateTranslationAndTags(title);
         await this.saveTranslation(categoryId, result);
 
@@ -61,22 +54,12 @@ export class CategoryLlmService {
         const systemPrompt = this.buildSuggestionPrompt(userCategories);
         const context = this.buildTransactionContext(transactionTitle, mccDescription, comment);
         const response = await this.llm.generate(systemPrompt, context);
-        const categoryIds = this.parseSuggestionResponse(response, categories);
+        const categoryIds = this.parseSuggestionResponse(response, categories, MAX_SUGGESTIONS);
 
         return categoryIds.map(id => categories.find(category => category.id === id)).filter(isDefined);
     }
 
-    private async generateTranslationAndTags(title: string): Promise<CategoryTranslationResult> {
-        const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
-        const trimmedTitleEn = titleEn.trim().toLowerCase();
-
-        const tags = await this.llm.generate(TAG_GENERATION_SYSTEM_PROMPT, trimmedTitleEn, { temperature: TRANSLATION_TEMPERATURE });
-        const trimmedTags = tags.trim().toLowerCase();
-
-        return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
-    }
-
-    private async saveTranslation(categoryId: number, result: CategoryTranslationResult): Promise<void> {
+    private async saveTranslation(categoryId: number, result: TranslationResultInterface): Promise<void> {
         await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
     }
 
@@ -102,40 +85,6 @@ RULES:
 - Maximum 3 IDs
 - If no match, return 0`;
         /* eslint-enable lingui/no-unlocalized-strings */
-    }
-
-    private buildTransactionContext(title: string, mccDescription: string | null, comment: string): string {
-        const parts: string[] = [];
-        const hasTitle = isNotEmptyString(title);
-
-        /* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
-        if (hasTitle) {
-            parts.push(`Transaction: ${title}`);
-        }
-
-        if (isNotEmptyString(mccDescription)) {
-            parts.push(`Type: ${mccDescription}`);
-        }
-
-        if (isNotEmptyString(comment)) {
-            const commentLabel = hasTitle ? 'Note' : 'Transaction';
-            parts.push(`${commentLabel}: ${comment}`);
-        }
-
-        return parts.join(' | ');
-        /* eslint-enable lingui/no-unlocalized-strings */
-    }
-
-    private parseSuggestionResponse(response: string, categories: Pick<CategoryEntityInterface, 'id'>[]): number[] {
-        const trimmed = response.trim();
-
-        return trimmed
-            .split(',')
-            .map(part => parseInt(part.trim(), 10))
-            .filter(id => !isNaN(id) && id !== 0)
-            .map(id => (categories.some(category => category.id === id) ? id : null))
-            .filter(isDefined)
-            .slice(0, MAX_SUGGESTIONS);
     }
 
     private getCategoryLabel(category: CategoryEntityInterface): string {
