@@ -18,3 +18,13 @@ export type { BankSyncedDataInterface } from './core/interface/bank-synced-data.
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';
+
+export { PRIVATBANK_CATEGORY_TO_MCC_CODE } from './privatbank/constant/privatbank-category-to-mcc-code.constant';
+export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
+export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
+export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
+export { privatbankCurrencyCodeMapper } from './privatbank/mapper/privatbank-currency-code.mapper';
+export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.util';
+export { extractCardEnding } from './privatbank/util/extract-card-ending.util';
+export { generatePrivatbankExternalId } from './privatbank/util/generate-privatbank-external-id.util';
+export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
