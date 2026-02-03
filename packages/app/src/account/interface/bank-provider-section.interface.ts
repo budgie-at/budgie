@@ -1,9 +1,6 @@
-import { AccountWithBankSyncEntityInterface, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
 
-interface AccountRowInterface {
-    readonly left: AccountWithBankSyncEntityInterface;
-    readonly right?: AccountWithBankSyncEntityInterface;
-}
+import { AccountRowInterface } from './account-row.interface';
 
 interface BankProviderSectionInterface {
     readonly kind: 'bankProvider';
