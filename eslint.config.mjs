@@ -316,7 +316,8 @@ export default defineConfig(
                     ignoreNames: [
                         { regex: { pattern: 'className', flags: 'i' } },
                         { regex: { pattern: 'icon', flags: 'i' } },
-                        { regex: { pattern: 'sizes', flags: 'i' } }
+                        { regex: { pattern: 'sizes', flags: 'i' } },
+                        { regex: { pattern: '^d$', flags: '' } }
                     ],
                     ignoreFunctions: ['format', 'cva']
                 }
