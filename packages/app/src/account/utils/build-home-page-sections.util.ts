@@ -3,11 +3,12 @@ import { AccountTypeEnum, AccountWithBankSyncEntityInterface, BankSyncStatusEnum
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
+import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { AccountRowInterface } from '../interface/account-row.interface';
 import { BankProviderSectionWithStatusInterface } from '../interface/bank-provider-section.interface';
 
 interface AccountTypeSectionInterface {
-    readonly kind: 'accountType';
+    readonly kind: HomeSectionKindEnum.ACCOUNT_TYPE;
     readonly type: AccountTypeEnum;
     readonly data: AccountRowInterface[];
 }
@@ -71,7 +72,7 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
     const accountTypeSections: AccountTypeSectionInterface[] = typedObjectEntries(accountGroups)
         .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
         .map(([type, groupAccounts]) => ({
-            kind: 'accountType' as const,
+            kind: HomeSectionKindEnum.ACCOUNT_TYPE,
             type,
             data: pairAccountsIntoRows(groupAccounts ?? [])
         }));
@@ -79,7 +80,7 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
     const providerSections: BankProviderSectionWithStatusInterface[] = typedObjectEntries(providerGroups)
         .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
         .map(([provider, groupAccounts]) => ({
-            kind: 'bankProvider' as const,
+            kind: HomeSectionKindEnum.BANK_PROVIDER,
             provider,
             syncStatus: getProviderSyncStatus(groupAccounts ?? []),
             data: pairAccountsIntoRows(groupAccounts ?? [])
