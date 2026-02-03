@@ -1,10 +1,10 @@
+/* eslint-disable max-lines -- Repository with complex SQL aggregation queries */
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { BankSyncEntityTable } from '../../bank-sync/table/bank-sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
@@ -189,24 +189,64 @@ export class AccountBalanceRepository {
     }
 
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
-        const instrumentIdRef = sql.raw('accounts.instrument_id');
-        const exchangeRateSql = sql`COALESCE(
-            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
-            1.0
-        )`;
-
         const totalSubquerySql = sql<number>`
             COALESCE(
                 (
                     SELECT SUM(
-                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
+                        (
+                            COALESCE((
+                                SELECT amount
+                                FROM account_balances
+                                WHERE account_id = a.id
+                                LIMIT 1
+                            ), 0)
+                            +
+                            COALESCE((
+                                SELECT SUM(
+                                    CASE
+                                        WHEN type = ${TransactionEntryTypeEnum.CREDIT} THEN -amount
+                                        WHEN type = ${TransactionEntryTypeEnum.DEBIT} THEN amount
+                                        ELSE 0
+                                    END
+                                )
+                                FROM transaction_entries
+                                WHERE account_id = a.id
+                                  AND deleted_at IS NULL
+                                  AND (
+                                      (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id) IS NULL
+                                      OR created_at > (SELECT MAX(updated_at) FROM account_balances WHERE account_id = a.id)
+                                  )
+                            ), 0)
+                        )
+                        *
+                        COALESCE(
+                            (
+                                SELECT rate * 1.0
+                                FROM exchange_rates
+                                WHERE base_instrument_id = a.instrument_id
+                                  AND quote_instrument_id = ${defaultInstrumentId}
+                                  AND deleted_at IS NULL
+                                ORDER BY created_at DESC
+                                LIMIT 1
+                            ),
+                            (
+                                SELECT 1.0 / rate
+                                FROM exchange_rates
+                                WHERE base_instrument_id = ${defaultInstrumentId}
+                                  AND quote_instrument_id = a.instrument_id
+                                  AND deleted_at IS NULL
+                                ORDER BY created_at DESC
+                                LIMIT 1
+                            ),
+                            1.0
+                        )
                     )
-                    FROM ${AccountEntityTable}
-                    INNER JOIN ${BankSyncEntityTable} ON ${BankSyncEntityTable.accountId} = ${AccountEntityTable.id}
-                    WHERE ${BankSyncEntityTable.provider} = ${provider}
-                      AND ${AccountEntityTable.isActive} = 1
-                      AND ${AccountEntityTable.deletedAt} IS NULL
+                    FROM accounts a
+                    INNER JOIN bank_syncs bs ON bs.account_id = a.id
+                    WHERE bs.provider = ${provider}
+                      AND bs.deleted_at IS NULL
+                      AND a.is_active = 1
+                      AND a.deleted_at IS NULL
                 ),
                 0
             )
