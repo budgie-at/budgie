@@ -4,7 +4,7 @@ import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { bankSyncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository } from '../../@generic/drizzle/db/db';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
 import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
@@ -108,6 +108,18 @@ export const privatbankSyncExecuteImport = async (fileBuffer: Uint8Array, select
     await executeImport(client, selectedBankAccounts);
 };
 
+const getEnabledExternalIds = async (): Promise<Set<string>> => {
+    const enabledSyncs = await bankSyncRepository.getEnabledByProvider(PROVIDER);
+    if (!isNotEmptyArray(enabledSyncs)) {
+        return new Set();
+    }
+
+    const accountIds = enabledSyncs.map(sync => sync.accountId);
+    const accounts = await accountRepository.findByIds(accountIds);
+
+    return new Set(accounts.map(account => account.externalId).filter(isDefined));
+};
+
 export const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise<void> => {
     const client = new PrivatbankFileClient(fileBuffer);
     const bankAccounts = client.getAccounts();
@@ -116,5 +128,15 @@ export const privatbankSyncQuickImport = async (fileBuffer: Uint8Array): Promise
         return;
     }
 
-    await executeImport(client, bankAccounts);
+    const enabledExternalIds = await getEnabledExternalIds();
+    if (enabledExternalIds.size === 0) {
+        return;
+    }
+
+    const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
+    if (!isNotEmptyArray(enabledBankAccounts)) {
+        return;
+    }
+
+    await executeImport(client, enabledBankAccounts);
 };
