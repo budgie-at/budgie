@@ -42,7 +42,9 @@ export const RepeatedTransactionSuggestionPillItem = (props: Props) => {
                     {pattern.title}
                 </Text>
                 <View className="bg-secondary-background rounded-full px-xs py-xxs">
-                    <Text className="text-xs text-secondary-foreground">{pattern.occurrenceCount}x</Text>
+                    <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
+                        {pattern.categoryTitle}
+                    </Text>
                 </View>
             </HapticPressable>
         </Animated.View>
