@@ -386,7 +386,7 @@ msgstr "Impossible d'activer le compte."
 msgid "Could not archive account. Please try again later"
 msgstr "Impossible d'archiver le compte. Veuillez réessayer plus tard"
 
-#: src/category/components/category-form/category-form.tsx:141
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Could not create category"
 msgstr "Impossible de créer la catégorie"
 
@@ -406,7 +406,7 @@ msgstr "Impossible de supprimer le compte."
 msgid "Could not delete transaction."
 msgstr "Impossible de supprimer la transaction."
 
-#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:122
 msgid "Could not merge category"
 msgstr "Impossible de fusionner la catégorie"
 
@@ -426,7 +426,7 @@ msgstr "Impossible de réassigner l'étiquette"
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/category/components/category-form/category-form.tsx:141
+#: src/category/components/category-form/category-form.tsx:142
 msgid "Could not save category"
 msgstr "Impossible d'enregistrer la catégorie"
 
@@ -466,7 +466,7 @@ msgstr "Créer et organiser les étiquettes de transaction"
 msgid "Create Categories"
 msgstr "Créer des catégories"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:66
 msgid "Create Category"
 msgstr "Créer une catégorie"
 
@@ -606,7 +606,7 @@ msgstr "p. ex. Courses, Divertissement"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/category/components/category-form/category-form.tsx:65
+#: src/category/components/category-form/category-form.tsx:66
 msgid "Edit Category"
 msgstr "Modifier la catégorie"
 
@@ -862,7 +862,7 @@ msgid "History synced"
 msgstr "Historique synchronisé"
 
 #: src/app/(main)/create-account/index.tsx:55
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:110
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Importer les comptes et transactions depuis l'export XLSX de Privatbank"
 
@@ -876,7 +876,7 @@ msgstr "Importer CSV"
 msgid "Import Database"
 msgstr "Importer la base de données"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Échec de l'importation"
 
@@ -884,7 +884,7 @@ msgstr "Échec de l'importation"
 msgid "Import Failed"
 msgstr "Importation échouée"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:97
 msgid "Import Privatbank"
 msgstr "Importer Privatbank"
 
@@ -925,7 +925,7 @@ msgstr "Revenus par étiquette"
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:69
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Fichier invalide"
 
@@ -982,7 +982,7 @@ msgstr "Mapper les colonnes CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
-#: src/category/components/category-form/category-form.tsx:167
+#: src/category/components/category-form/category-form.tsx:171
 msgid "Merge into another category"
 msgstr "Fusionner avec une autre catégorie"
 
@@ -998,6 +998,7 @@ msgstr "Argent prêté ou emprunté"
 msgid "Money you owe or are owed"
 msgstr "Argent que vous devez ou qu'on vous doit"
 
+#: src/account/constant/bank-provider-title.constant.ts:6
 #: src/app/(main)/create-account/index.tsx:50
 msgid "Monobank"
 msgstr "Monobank"
@@ -1178,8 +1179,8 @@ msgstr "Veuillez réessayer"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:121
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:143
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1204,6 +1205,10 @@ msgstr "Confidentialité"
 #: src/app/(main)/create-account/index.tsx:56
 msgid "Privatbank"
 msgstr "Privatbank"
+
+#: src/account/constant/bank-provider-title.constant.ts:7
+msgid "PrivatBank"
+msgstr "PrivatBank"
 
 #: src/auth/util/get-pin-setup-meta.util.ts:58
 msgid "Re-enter your PIN to confirm"
@@ -1317,7 +1322,7 @@ msgstr "Sécurité"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: src/category/components/category-form/category-form.tsx:105
+#: src/category/components/category-form/category-form.tsx:106
 msgid "Select a category to merge into"
 msgstr "Sélectionnez une catégorie pour fusionner"
 

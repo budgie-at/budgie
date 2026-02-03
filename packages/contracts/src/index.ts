@@ -28,6 +28,7 @@ export type { DebtAccountCreateInputInterface } from './account/input/debt-accou
 
 export type { AccountEntityInterface } from './account/entity/account-entity.interface';
 export type { AccountWithInstrumentEntityInterface } from './account/entity/account-with-instrument-entity.interface';
+export type { AccountWithBankSyncEntityInterface } from './account/entity/account-with-bank-sync-entity.interface';
 
 export type { AccountFilterInterface } from './account/interface/account-filter.interface';
 
