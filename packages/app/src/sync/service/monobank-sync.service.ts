@@ -6,19 +6,19 @@ import * as TaskManager from 'expo-task-manager';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { accountRepository, bankSyncRepository, instrumentRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, bankSyncRepository, mccCategoryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { FIFTEEN_MINUTES_IN_SECONDS, TWO_MINUTES_IN_SECONDS } from '../../account/constant/minutes-in-seconds.constant';
-import { accountService } from '../../account/service/account.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { BankAccountPreviewInterface } from '../interface/bank-account-preview.interface';
-import { generateBankAccountTitle, mapBankAccountToCreateInput } from '../util/map-bank-account-to-create-input.util';
+import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util';
+import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
-import type { AccountEntityInterface, LiabilityAccountCreateInputInterface } from '@budgie/contracts';
+import type { AccountEntityInterface } from '@budgie/contracts';
 
 const FORWARD_SYNC_STALE_THRESHOLD_MS = TWO_MINUTES_IN_SECONDS * 1000;
 
@@ -33,23 +33,7 @@ class AppMonobankSyncService {
             return [];
         }
 
-        const existingAccounts = await accountRepository.findByExternalIds(bankAccounts.map(acc => acc.id));
-        const existingMap = new Map(existingAccounts.map(acc => [acc.externalId, acc]));
-        const existingSyncs = await bankSyncRepository.getByProvider(this.provider);
-        const syncedAccountIds = new Set(existingSyncs.map(sync => sync.accountId));
-
-        return bankAccounts.map(bankAccount => {
-            const existingAccount = existingMap.get(bankAccount.id);
-
-            return {
-                externalId: bankAccount.id,
-                title: generateBankAccountTitle(bankAccount),
-                currencyCode: bankAccount.currencyCode,
-                iban: bankAccount.iban ?? null,
-                existingAccountId: existingAccount?.id ?? null,
-                hasBankSync: isDefined(existingAccount) && syncedAccountIds.has(existingAccount.id)
-            };
-        });
+        return mapBankAccountsToPreview(bankAccounts, this.provider);
     }
 
     async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
@@ -106,25 +90,7 @@ class AppMonobankSyncService {
     }
 
     private async getOrCreateAccount(bankAccount: BankAccountInterface): Promise<AccountEntityInterface> {
-        const existingByExternalId = await accountRepository.findByExternalIds([bankAccount.id]);
-        if (isNotEmptyArray(existingByExternalId)) {
-            return existingByExternalId[0];
-        }
-
-        const existingByIban = await accountRepository.findByIbans([bankAccount.iban ?? '']);
-        if (isNotEmptyArray(existingByIban)) {
-            return existingByIban[0];
-        }
-
-        const instruments = await instrumentRepository.getAll();
-        const instrument = instruments.find(inst => inst.code === bankAccount.currencyCode);
-        if (!isDefined(instrument)) {
-            throw new Error(`Instrument not found for currency: ${bankAccount.currencyCode}`);
-        }
-
-        const input: LiabilityAccountCreateInputInterface = mapBankAccountToCreateInput(bankAccount, instrument.id, this.provider);
-
-        return Object.values(await accountService.bulkCreate([input]))[0];
+        return getOrCreateBankAccount(bankAccount, this.provider);
     }
 
     private async createOrUpdateBankSync(accountId: number, token: string): Promise<void> {
