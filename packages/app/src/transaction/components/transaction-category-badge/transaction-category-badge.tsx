@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { getTransactionEntryLabel } from '../../utils/get-transaction-entry-label.util';
@@ -33,7 +34,9 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
                         <View className={wrapperClassName}>
                             <Text className={textClassName}>
                                 {getTransactionEntryLabel(entry, unknownLabel)}{' '}
-                                <Text className="text-primary/70">{formatDigits(entry.amount, defaultInstrument.symbol)}</Text>
+                                <Text className="text-primary/70">
+                                    {formatDigits(convertFromMicroUnits(entry.amount), defaultInstrument.symbol)}
+                                </Text>
                             </Text>
                         </View>
                         {isDefined(entry.mccCategory) && isDefined(entry.category) ? (

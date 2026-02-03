@@ -1,5 +1,4 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Href, router } from 'expo-router';
 
 import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
@@ -9,7 +8,7 @@ interface Props {
     readonly title: string;
     readonly icon?: UserIconNameEnum;
     readonly description: string;
-    readonly bankProvider: BankProviderEnum;
+    readonly bankProvider: ExternalSourceEnum;
     readonly route: Href;
 }
 

@@ -3,12 +3,8 @@ import { AccountTypeEnum, AccountWithBankSyncEntityInterface, BankSyncStatusEnum
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { typedObjectEntries } from '../../@generic/utils/typed-object-entries.util';
+import { AccountRowInterface } from '../interface/account-row.interface';
 import { BankProviderSectionWithStatusInterface } from '../interface/bank-provider-section.interface';
-
-interface AccountRowInterface {
-    readonly left: AccountWithBankSyncEntityInterface;
-    readonly right?: AccountWithBankSyncEntityInterface;
-}
 
 interface AccountTypeSectionInterface {
     readonly kind: 'accountType';

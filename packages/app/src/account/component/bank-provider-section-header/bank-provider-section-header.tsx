@@ -1,4 +1,3 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -30,7 +29,7 @@ export const BankProviderSectionHeader = ({ provider }: Props) => {
     return (
         <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
             <View className="flex-row items-center gap-sm">
-                <BankLogo bankProvider={provider as unknown as BankProviderEnum} size={20} />
+                <BankLogo bankProvider={provider} size={20} />
                 <Text className="text-xs uppercase text-secondary-foreground">{title}</Text>
             </View>
             <Text className="text-xs text-secondary-foreground">{formattedTotal}</Text>

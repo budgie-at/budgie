@@ -1,5 +1,5 @@
 import * as DocumentPicker from 'expo-document-picker';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
@@ -18,7 +18,7 @@ export const usePrivatbankQuickImport = (): PrivatbankQuickImportResult => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleQuickImport = useCallback(() => {
+    const handleQuickImport = () => {
         const execute = async (): Promise<void> => {
             setIsLoading(true);
             setError(null);
@@ -43,11 +43,11 @@ export const usePrivatbankQuickImport = (): PrivatbankQuickImportResult => {
             .finally(() => {
                 setIsLoading(false);
             });
-    }, []);
+    };
 
-    const clearError = useCallback(() => {
+    const clearError = () => {
         setError(null);
-    }, []);
+    };
 
     return { isLoading, error, handleQuickImport, clearError };
 };
