@@ -1,39 +1,40 @@
-import { BankProviderEnum } from '@budgie/bank-sync';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { Image } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { ReactElement } from 'react';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
 
+import { MonobankIcon } from './icons/monobank-icon';
+import { PrivatbankIcon } from './icons/privatbank-icon';
+
 interface Props {
-    readonly bankProvider: BankProviderEnum;
+    readonly bankProvider: ExternalSourceEnum;
+    readonly size?: number;
     readonly variant?: ColorPaletteVariant;
 }
-
-const getLogo = (bank: Props['bankProvider']) => {
-    switch (bank) {
-        case BankProviderEnum.MONOBANK:
-            // TODO: Is this the best way for the assets? Should we introduce a better approach?
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            return require('../../../../assets/icons/monobank.jpeg') as number;
-        default:
-            return null;
-    }
-};
 
 const iconVariant = cva('', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const BankLogo = ({ bankProvider, variant = 'default' }: Props) => {
-    const logo = getLogo(bankProvider);
+const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement | null => {
+    switch (provider) {
+        case ExternalSourceEnum.MONOBANK:
+            return <MonobankIcon size={size} />;
+        case ExternalSourceEnum.PRIVATBANK:
+            return <PrivatbankIcon size={size} />;
+        default:
+            return null;
+    }
+};
 
-    if (isDefined(logo)) {
-        return <Image className="rounded-xl bg-black items-center justify-center w-13 h-13" source={logo} />;
+export const BankLogo = ({ bankProvider, size = 32, variant = 'default' }: Props) => {
+    const icon = getBankIcon(bankProvider, size);
+
+    if (icon !== null) {
+        return icon;
     }
 
     return (
