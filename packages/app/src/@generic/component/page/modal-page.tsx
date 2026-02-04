@@ -1,12 +1,8 @@
 import { ComponentProps } from 'react';
 import { Edge } from 'react-native-safe-area-context';
 
-import { cn } from '../../utils/cn.util';
-
 import { Page } from './page';
 
-const safeEdges: Edge[] = ['bottom'];
+const safeEdges: Edge[] = ['top', 'bottom'];
 
-export const ModalPage = ({ className, ...rest }: ComponentProps<typeof Page>) => (
-    <Page {...rest} className={cn('pt-3xl', className)} safeEdges={safeEdges} />
-);
+export const ModalPage = (props: ComponentProps<typeof Page>) => <Page {...props} safeEdges={safeEdges} />;
