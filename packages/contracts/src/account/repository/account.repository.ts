@@ -1,8 +1,13 @@
-import { and, count, desc, eq, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
+import { subDays } from 'date-fns';
+import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB, TX } from '../../@generic/type/db.type';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -145,6 +150,41 @@ export class AccountRepository {
 
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(AccountEntityTable);
+    }
+
+    async findMostActiveByInstrumentAndType(
+        instrumentId: number,
+        transactionType: TransactionTypeEnum,
+        days = 30
+    ): Promise<AccountEntityInterface | undefined> {
+        const cutoffDate = subDays(new Date(), days);
+        const entryType =
+            transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+
+        const result = await this.db
+            .select({
+                account: AccountEntityTable,
+                transactionCount: count(TransactionEntryEntityTable.id)
+            })
+            .from(AccountEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+            .where(
+                and(
+                    eq(AccountEntityTable.isActive, true),
+                    isNull(AccountEntityTable.deletedAt),
+                    eq(AccountEntityTable.instrumentId, instrumentId),
+                    eq(TransactionEntityTable.type, transactionType),
+                    isNull(TransactionEntityTable.deletedAt),
+                    eq(TransactionEntryEntityTable.type, entryType),
+                    gte(TransactionEntityTable.operatedAt, cutoffDate)
+                )
+            )
+            .groupBy(AccountEntityTable.id)
+            .orderBy(desc(count(TransactionEntryEntityTable.id)))
+            .limit(1);
+
+        return result[0]?.account;
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {

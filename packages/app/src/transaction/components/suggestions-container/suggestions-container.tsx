@@ -1,46 +1,54 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { CategorySuggestionsRow } from '../category-suggestions-row/category-suggestions-row';
-import { RepeatedTransactionSuggestionsRow } from '../repeated-transaction-suggestions-row/repeated-transaction-suggestions-row';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
-import { TagSuggestionsRow } from '../tag-suggestions-row/tag-suggestions-row';
+
+import { CategorySuggestionRow } from './category-suggestion-row';
+import { PatternSuggestionRow } from './pattern-suggestion-row';
+import { TagSuggestionRow } from './tag-suggestion-row';
 
 interface Props {
+    readonly isNewTransaction: boolean;
     readonly isSplitActive: boolean;
-    readonly showTagSuggestions: boolean;
-    readonly showCategorySuggestions: boolean;
-    readonly showRepeatedSuggestions: boolean;
     readonly transactionType: TransactionTypeEnum;
-    readonly accountId: number;
-    readonly amount: number;
     readonly transactionTitle: string;
     readonly categoryId: number | null;
     readonly mccCategoryId: number | null;
     readonly comment: string;
     readonly aiContext: string;
-    readonly onSelectTag: (tagId: number) => void;
+    readonly accountId: number;
+    readonly amount: number;
+    readonly hasTagsSelected: boolean;
     readonly onSelectCategory: (categoryId: number) => void;
+    readonly onSelectTag: (tagId: number) => void;
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-export const SuggestionRowSwitcher = (props: Props) => {
+// eslint-disable-next-line max-statements -- Conditional rendering requires multiple visibility checks
+export const SuggestionsContainer = (props: Props) => {
     const {
+        isNewTransaction,
         isSplitActive,
-        showTagSuggestions,
-        showCategorySuggestions,
-        showRepeatedSuggestions,
         transactionType,
-        accountId,
-        amount,
         transactionTitle,
         categoryId,
         mccCategoryId,
         comment,
         aiContext,
-        onSelectTag,
+        accountId,
+        amount,
+        hasTagsSelected,
         onSelectCategory,
+        onSelectTag,
         onSelectRepeatedPattern
     } = props;
+
+    const safeCategoryId = categoryId ?? 0;
+    const hasCategorySelected = safeCategoryId > 0;
+    const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
+
+    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
+    const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
+    const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
@@ -48,9 +56,9 @@ export const SuggestionRowSwitcher = (props: Props) => {
 
     if (showTagSuggestions) {
         return (
-            <TagSuggestionsRow
+            <TagSuggestionRow
                 transactionTitle={transactionTitle}
-                categoryId={categoryId ?? 0}
+                categoryId={safeCategoryId}
                 mccCategoryId={mccCategoryId}
                 comment={comment}
                 aiContext={aiContext}
@@ -62,19 +70,23 @@ export const SuggestionRowSwitcher = (props: Props) => {
 
     if (showRepeatedSuggestions) {
         return (
-            <RepeatedTransactionSuggestionsRow
-                enabled={showRepeatedSuggestions}
-                type={transactionType}
+            <PatternSuggestionRow
+                transactionType={transactionType}
                 accountId={accountId}
                 amount={amount}
-                categoryId={categoryId ?? 0}
+                categoryId={safeCategoryId}
+                enabled={showRepeatedSuggestions}
                 onSelect={onSelectRepeatedPattern}
             />
         );
     }
 
+    if (isNewTransaction) {
+        return <SuggestionRowSpacer />;
+    }
+
     return (
-        <CategorySuggestionsRow
+        <CategorySuggestionRow
             transactionTitle={transactionTitle}
             mccCategoryId={mccCategoryId}
             comment={comment}

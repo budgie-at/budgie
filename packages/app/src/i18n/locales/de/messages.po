@@ -216,7 +216,7 @@ msgstr "Konto archivieren?"
 msgid "Archived Accounts"
 msgstr "Archivierte Konten"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:18
+#: src/settings/components/truncate-data/truncate-data.tsx:20
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Sind Sie sicher, dass Sie alle Ihre Daten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -275,10 +275,14 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
 #: src/account/component/account-action-card/account-action-card.tsx:39
+#: src/account/component/archive-account/archive-account.tsx:26
 #: src/account/component/archived-account-card/archived-account-card.tsx:32
 #: src/account/component/archived-account-card/archived-account-card.tsx:52
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/confirm-action.tsx:43
+#: src/app/convert-to-transfer.tsx:74
+#: src/import/components/import-database/import-database.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
@@ -343,12 +347,12 @@ msgstr "Löschen"
 msgid "Clear All"
 msgstr "Alle löschen"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:17
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Alle Daten löschen"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:40
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Zwischengespeicherte Salden löschen und aus Transaktionen neu berechnen"
 
@@ -384,27 +388,26 @@ msgstr "Kontakt (optional)"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
-#: src/app/convert-to-transfer.tsx:77
-#: src/app/convert-to-transfer.tsx:113
+#: src/app/convert-to-transfer.tsx:73
+msgid "Convert"
+msgstr "Umwandeln"
+
+#: src/app/convert-to-transfer.tsx:109
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "In Überweisung umwandeln"
 
-#: src/app/convert-to-transfer.tsx:75
+#: src/app/convert-to-transfer.tsx:71
 msgid "Convert to Transfer?"
 msgstr "In Überweisung umwandeln?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
 msgstr "Konto konnte nicht aktiviert werden."
-
-#: src/account/component/archive-account/archive-account.tsx:41
-msgid "Could not archive account. Please try again later"
-msgstr "Konto konnte nicht archiviert werden. Bitte versuchen Sie es später erneut"
 
 #: src/category/components/category-form/category-form.tsx:142
 msgid "Could not create category"
@@ -582,11 +585,11 @@ msgstr "Löschen"
 msgid "Delete Account Permanently?"
 msgstr "Konto dauerhaft löschen?"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:49
 msgid "Delete all transactions and settings"
 msgstr "Alle Transaktionen und Einstellungen löschen"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:21
 msgid "Delete data"
 msgstr "Daten löschen"
 
@@ -722,8 +725,8 @@ msgstr "Geben Sie Ihre PIN ein"
 
 #: src/app/(tabs)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
-#: src/import/components/import-database/import-database.tsx:50
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:32
+#: src/import/components/import-database/import-database.tsx:49
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
 msgid "Error"
 msgstr "Fehler"
 
@@ -788,6 +791,10 @@ msgstr "Face ID"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:37
+msgid "Failed to clear data"
+msgstr "Daten konnten nicht gelöscht werden"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
@@ -890,9 +897,9 @@ msgstr "Konten und Transaktionen aus Privatbank XLSX-Export importieren"
 msgid "Import CSV"
 msgstr "CSV importieren"
 
-#: src/import/components/import-database/import-database.tsx:38
-#: src/import/components/import-database/import-database.tsx:40
-#: src/import/components/import-database/import-database.tsx:58
+#: src/import/components/import-database/import-database.tsx:35
+#: src/import/components/import-database/import-database.tsx:37
+#: src/import/components/import-database/import-database.tsx:57
 msgid "Import Database"
 msgstr "Datenbank importieren"
 
@@ -912,7 +919,7 @@ msgstr "Privatbank importieren"
 msgid "Import transactions from a CSV file"
 msgstr "Transaktionen aus einer CSV-Datei importieren"
 
-#: src/import/components/import-database/import-database.tsx:39
+#: src/import/components/import-database/import-database.tsx:36
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt. Die App wird nach dem Import neu gestartet. Diese Aktion kann nicht rückgängig gemacht werden."
 
@@ -1158,7 +1165,7 @@ msgstr "Übersicht"
 
 #: src/account/constant/debt-section-kind-label.constant.ts:8
 msgid "Owed to you"
-msgstr ""
+msgstr "Ihnen geschuldet"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Owes you"
@@ -1197,7 +1204,7 @@ msgstr "PINs stimmen nicht überein"
 msgid "Please enter your Monobank API token"
 msgstr "Bitte geben Sie Ihren Monobank API-Token ein"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Please try again"
 msgstr "Bitte versuchen Sie es erneut"
 
@@ -1238,12 +1245,12 @@ msgstr "PrivatBank"
 msgid "Re-enter your PIN to confirm"
 msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
 msgstr "Neu berechnen"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Salden neu berechnen"
 
@@ -1267,7 +1274,7 @@ msgstr "Wiederherstellen"
 msgid "Restore Account?"
 msgstr "Konto wiederherstellen?"
 
-#: src/import/components/import-database/import-database.tsx:59
+#: src/import/components/import-database/import-database.tsx:58
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
@@ -1435,7 +1442,7 @@ msgid "Show this account on the main page"
 msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:40
+#: src/account/component/archive-account/archive-account.tsx:41
 #: src/ai/component/voice-input-error/voice-input-error.tsx:29
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
@@ -1560,14 +1567,8 @@ msgid "Target balance"
 msgstr "Zielsaldo"
 
 #: src/account/component/archive-account/archive-account.tsx:24
-msgid ""
-"This account will be hidden from your main view and won't be included in totals. \n"
-"\n"
-" 💡 You can restore it anytime from Settings → Archived Accounts"
-msgstr ""
-"Dieses Konto wird aus Ihrer Hauptansicht ausgeblendet und nicht in den Gesamtsummen berücksichtigt.\n"
-"\n"
-" 💡 Sie können es jederzeit über Einstellungen → Archivierte Konten wiederherstellen"
+msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
+msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Gesamtsummen berücksichtigt. Sie können es jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
@@ -1590,15 +1591,15 @@ msgstr "Dieser Tag hat Transaktionen. Wählen Sie einen anderen Tag, um sie neu 
 msgid "This Week"
 msgstr "Diese Woche"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Dadurch werden alle zwischengespeicherten Kontostände gelöscht und anhand Ihrer Transaktionen neu berechnet. Dies kann einen Moment dauern."
 
-#: src/app/convert-to-transfer.tsx:63
+#: src/app/convert-to-transfer.tsx:61
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Dies wandelt die Ausgabe in eine Überweisung zwischen Konten um."
 
-#: src/app/convert-to-transfer.tsx:64
+#: src/app/convert-to-transfer.tsx:62
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Dadurch wird das Einkommen in eine Überweisung zwischen Konten umgewandelt."
 
@@ -1769,7 +1770,7 @@ msgstr "Sie haben Geld gegeben"
 
 #: src/account/constant/debt-section-kind-label.constant.ts:7
 msgid "You owe"
-msgstr ""
+msgstr "Sie schulden"
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
