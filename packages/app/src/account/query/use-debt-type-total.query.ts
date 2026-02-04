@@ -7,7 +7,7 @@ import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useDebtTypeTotalQuery = (debtType: AccountDebtTypeEnum) => {
     const { defaultInstrument } = useSettingsContext();
-    const { data } = useLiveQuery(accountBalanceRepository.getTotalByDebtType(defaultInstrument.id, debtType), [
+    const { data } = useLiveQuery(accountBalanceRepository.getTotalRemainingDebtByType(defaultInstrument.id, debtType), [
         defaultInstrument.id,
         debtType
     ]);
