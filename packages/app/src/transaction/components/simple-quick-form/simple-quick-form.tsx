@@ -41,6 +41,7 @@ interface Props {
     readonly transactionTitle: string;
     readonly mccCategoryId: number | null;
     readonly aiContext?: string;
+    readonly isNewTransaction?: boolean;
     readonly buildEntries: (params: BuildEntryParams) => TransactionEntryCreateInputInterface[];
     readonly onSubmit: () => void;
     readonly onCancel: () => void;
@@ -61,6 +62,7 @@ export const SimpleQuickForm = (props: Props) => {
         transactionTitle,
         mccCategoryId,
         aiContext = '',
+        isNewTransaction = false,
         buildEntries,
         onSubmit,
         onCancel
@@ -115,10 +117,7 @@ export const SimpleQuickForm = (props: Props) => {
             setValue(accountFieldName, pattern.accountId);
         } else {
             try {
-                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(
-                    pattern.instrumentId,
-                    transactionType
-                );
+                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
                 if (isDefined(fallbackAccount)) {
                     setValue(accountFieldName, fallbackAccount.id);
                 }
@@ -172,9 +171,13 @@ export const SimpleQuickForm = (props: Props) => {
     const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
     const hasCategorySelected = isPositiveNumber(categoryId);
     const hasTagsSelected = isNotEmptyArray(tagIds);
-    const showRepeatedSuggestions = !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
-    const showCategorySuggestions = !hasCategorySelected && hasContext && !isSplitActive && !showRepeatedSuggestions;
-    const showTagSuggestions = hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
+
+    // Pattern suggestions only for NEW transactions (no category selected yet)
+    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
+
+    // AI suggestions for EXISTING transactions (have context like mccCategoryId, comment, etc.)
+    const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
+    const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
