@@ -23,7 +23,7 @@ export const SuggestionPillContent = ({ icon, title, badge }: Props) => (
         </Text>
         {isNotEmptyString(badge) ? (
             <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
-                · {badge}
+                {badge}
             </Text>
         ) : null}
     </>
