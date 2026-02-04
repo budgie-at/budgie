@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.32.0](https://github.com/budgie-at/budgie/compare/v2.31.0...v2.32.0) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** address PR review - use Tailwind className for shadow ([e3ee891](https://github.com/budgie-at/budgie/commit/e3ee8914a68a3488aef2bcec62f992d9d9270d63))
+- **app:** reduce gap between icon and text in suggestion pill ([35e0276](https://github.com/budgie-at/budgie/commit/35e027646f5348bfbf040e4705a7de9c1010009f))
+- **app:** remove dot separator from suggestion pill badge ([e73f675](https://github.com/budgie-at/budgie/commit/e73f675325331c2fa827eb1f2d9e8a6e378f71ab))
+- **app:** return spacer for new transactions without pattern suggestions ([7ed6a34](https://github.com/budgie-at/budgie/commit/7ed6a34e70d75a07ff4c0514857148c918061a10))
+- **app:** separate AI suggestions for existing vs pattern suggestions for new transactions ([ca65572](https://github.com/budgie-at/budgie/commit/ca65572e886924a2fccf271c6aae9e2bc02173dc))
+- **app:** show pattern suggestions for new transactions and redesign pill UI ([32e2b65](https://github.com/budgie-at/budgie/commit/32e2b65e8cdc67dcbc1c3ecf1fe45e4a89bc073e))
+- **contracts,app:** address PR review issues ([28a85f8](https://github.com/budgie-at/budgie/commit/28a85f82242143d85ce0836afc81d57c3f2272e2))
+- **contracts:** reduce interface duplication with extends ([cb273c8](https://github.com/budgie-at/budgie/commit/cb273c8de1c3a93db5c78f2f7ece490f85d231dd))
+- **contracts:** revert incorrect timestamp conversion ([b839420](https://github.com/budgie-at/budgie/commit/b839420a5cc630a364d3f5731427993af0c4c2fc))
+
+### Features
+
+- **app:** smart account selection for transaction suggestions ([c36caaf](https://github.com/budgie-at/budgie/commit/c36caafd01e131d474eec1f3b885c916b36e9495))
+- **contracts:** add account fields to pattern interfaces ([167a5ce](https://github.com/budgie-at/budgie/commit/167a5cee28e1b2da251c4e14dc15a2a6cfb9d3fd))
+- **contracts:** add findMostActiveByInstrumentAndType method ([bdc59a7](https://github.com/budgie-at/budgie/commit/bdc59a707a3286835f6cce8e85cab3209f01dda7))
+
 # [2.31.0](https://github.com/budgie-at/budgie/compare/v2.30.1...v2.31.0) (2026-02-04)
 
 ### Bug Fixes
