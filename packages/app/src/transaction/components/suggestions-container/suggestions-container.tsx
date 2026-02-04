@@ -46,7 +46,7 @@ export const SuggestionsContainer = (props: Props) => {
     const hasCategorySelected = safeCategoryId > 0;
     const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
 
-    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive && accountId > 0;
+    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
     const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
