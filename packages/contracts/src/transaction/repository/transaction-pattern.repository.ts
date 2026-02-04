@@ -96,7 +96,7 @@ export class TransactionPatternRepository {
             .where(and(...conditions))
             .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
             .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
-            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
+            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`), desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
             .limit(limit);
     }
 
