@@ -13,7 +13,12 @@ interface AccountTypeSectionInterface {
     readonly data: AccountRowInterface[];
 }
 
-export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionWithStatusInterface;
+export interface DebtSectionInterface {
+    readonly kind: HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU;
+    readonly data: AccountRowInterface[];
+}
+
+export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionWithStatusInterface | DebtSectionInterface;
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>>;
 type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
