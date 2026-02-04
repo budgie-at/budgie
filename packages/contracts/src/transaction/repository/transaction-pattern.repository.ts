@@ -83,7 +83,11 @@ export class TransactionPatternRepository {
                 comment: sql<string | null>`MAX(${TransactionEntityTable.comment})`.as('comment'),
                 averageAmount: sql<number>`CAST(AVG(${TransactionEntryEntityTable.amount}) AS INTEGER)`.as('averageAmount'),
                 occurrenceCount: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`.as('occurrenceCount'),
-                lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence')
+                lastOccurrence: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('lastOccurrence'),
+                accountId: AccountEntityTable.id,
+                instrumentId: AccountEntityTable.instrumentId,
+                accountIsActive: AccountEntityTable.isActive,
+                accountDeletedAt: sql<number | null>`${AccountEntityTable.deletedAt}`.as('accountDeletedAt')
             })
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -114,7 +118,11 @@ export class TransactionPatternRepository {
             comment: row.comment,
             averageAmount: row.averageAmount,
             occurrenceCount: row.occurrenceCount,
-            lastOccurrence: new Date(row.lastOccurrence * 1000)
+            lastOccurrence: new Date(row.lastOccurrence * 1000),
+            accountId: row.accountId,
+            instrumentId: row.instrumentId,
+            accountIsActive: row.accountIsActive,
+            accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
         }));
     }
 
