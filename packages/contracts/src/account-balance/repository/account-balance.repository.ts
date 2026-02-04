@@ -188,6 +188,38 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
+    getTotalByDebtType(defaultInstrumentId: number, debtType: string) {
+        const instrumentIdRef = sql.raw('accounts.instrument_id');
+        const exchangeRateSql = sql`COALESCE(
+            ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
+            1.0
+        )`;
+
+        const totalSubquerySql = sql<number>`
+            COALESCE(
+                (
+                    SELECT SUM(
+                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
+                    )
+                    FROM ${AccountEntityTable}
+                    WHERE ${AccountEntityTable.type} = 'DEBT'
+                      AND ${AccountEntityTable.debtType} = ${debtType}
+                      AND ${AccountEntityTable.isActive} = 1
+                      AND ${AccountEntityTable.deletedAt} IS NULL
+                ),
+                0
+            )
+        `;
+
+        return this.db
+            .select({
+                total: totalSubquerySql
+            })
+            .from(TransactionEntryEntityTable)
+            .limit(1);
+    }
+
     getTotalByBankProvider(defaultInstrumentId: number, provider: ExternalSourceEnum) {
         const totalSubquerySql = sql<number>`
             COALESCE(
