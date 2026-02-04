@@ -1,19 +1,19 @@
 import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { FormSheetSpacer } from '../../../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { useFormsheetListStyles } from '../../../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useLlmContext } from '../../../ai/context/llm.context';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
@@ -42,7 +42,6 @@ interface Props {
 export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { backgroundColor } = useFormsheetListStyles();
     const { openCategorySelector } = useCategorySelectorModal();
     const { openNoteInput } = useNoteInputModal();
     const { openIconSelector } = useIconSelectorModal();
@@ -144,12 +143,8 @@ export const CategoryForm = (props: Props) => {
         }
     });
 
-    const containerStyle = { flex: 1, backgroundColor };
-
     return (
-        <View style={containerStyle}>
-            <Text className="text-primary text-center text-lg font-semibold pt-lg pb-md">{headerTitle}</Text>
-
+        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} bounces={false}>
                 <CategoryIconDisplay icon={icon} onPress={handleIconPress} />
 
@@ -166,19 +161,19 @@ export const CategoryForm = (props: Props) => {
                     onTitleTagsPress={handleTitleTagsPress}
                     modelStatus={llm}
                 />
-
-                <View className="px-3xl pb-3xl gap-y-md pt-xl">
-                    {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={t`Merge into another category`} /> : null}
-
-                    <View className="flex-row gap-x-md">
-                        <ModalFormCancelButton onPress={onCancel} />
-                        <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
-                    </View>
-                </View>
                 {/* jscpd:ignore-end */}
-
-                <FormSheetSpacer />
             </KeyboardAwareScrollView>
-        </View>
+
+            {/* jscpd:ignore-start */}
+            <View className="px-3xl pb-3xl gap-y-md pt-xl">
+                {isEditing ? <ModalFormMergeButton onPress={handleMerge} content={t`Merge into another category`} /> : null}
+
+                <View className="flex-row gap-x-md">
+                    <ModalFormCancelButton onPress={onCancel} />
+                    <ModalFormSaveButton onPress={handleFormSubmit} disabled={isSaveDisabled} />
+                </View>
+            </View>
+            {/* jscpd:ignore-end */}
+        </ModalPage>
     );
 };
