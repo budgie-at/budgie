@@ -11,6 +11,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
@@ -96,7 +97,7 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
-    const handleSelectRepeatedPattern = (pattern: RepeatedTransactionPatternInterface) => {
+    const handleSelectRepeatedPattern = async (pattern: RepeatedTransactionPatternInterface): Promise<void> => {
         const displayAmount = convertFromMicroUnits(pattern.averageAmount);
 
         setValue('entries.0.categoryId', pattern.categoryId);
@@ -106,6 +107,17 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('title', pattern.title);
         if (isNotEmptyString(pattern.comment)) {
             setValue('comment', pattern.comment);
+        }
+
+        const isAccountUsable = pattern.accountIsActive && !isDefined(pattern.accountDeletedAt);
+
+        if (isAccountUsable) {
+            setValue(accountFieldName, pattern.accountId);
+        } else {
+            const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
+            if (isDefined(fallbackAccount)) {
+                setValue(accountFieldName, fallbackAccount.id);
+            }
         }
     };
 
