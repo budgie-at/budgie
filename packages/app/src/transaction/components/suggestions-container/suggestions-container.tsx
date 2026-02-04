@@ -23,6 +23,7 @@ interface Props {
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
+// eslint-disable-next-line max-statements -- Conditional rendering requires multiple visibility checks
 export const SuggestionsContainer = (props: Props) => {
     const {
         isNewTransaction,
@@ -78,6 +79,10 @@ export const SuggestionsContainer = (props: Props) => {
                 onSelect={onSelectRepeatedPattern}
             />
         );
+    }
+
+    if (isNewTransaction) {
+        return <SuggestionRowSpacer />;
     }
 
     return (
