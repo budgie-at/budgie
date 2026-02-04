@@ -1,4 +1,4 @@
-import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -55,9 +55,10 @@ class RepeatedTransactionService {
     }
 
     private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
-        const tolerance = targetAmount * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
-        const minAmount = targetAmount - tolerance;
-        const maxAmount = targetAmount + tolerance;
+        const targetAmountMicrounits = targetAmount * PRECISION;
+        const tolerance = targetAmountMicrounits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
+        const minAmount = targetAmountMicrounits - tolerance;
+        const maxAmount = targetAmountMicrounits + tolerance;
 
         return patterns.filter(pattern => pattern.averageAmount >= minAmount && pattern.averageAmount <= maxAmount);
     }
