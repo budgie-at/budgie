@@ -9,4 +9,8 @@ export interface ValidPatternRowInterface {
     readonly averageAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: number;
+    readonly accountId: number;
+    readonly instrumentId: number;
+    readonly accountIsActive: boolean;
+    readonly accountDeletedAt: number | null;
 }
