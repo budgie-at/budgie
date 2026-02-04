@@ -9,7 +9,7 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -18,10 +18,9 @@ import { useSplitEntriesModal } from '../../context/split-entries-modal.context'
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
-import { useSuggestionVisibility } from '../../hook/use-suggestion-visibility.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { SuggestionRowRenderer } from '../suggestion-row-renderer/suggestion-row-renderer';
+import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
@@ -169,17 +168,7 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const isSplitActive = splitEntryCount > 1;
-
-    const { showRepeatedSuggestions, showCategorySuggestions, showTagSuggestions } = useSuggestionVisibility({
-        isNewTransaction,
-        isSplitActive,
-        categoryId,
-        tagIds,
-        accountId,
-        mccCategoryId,
-        comment,
-        aiContext
-    });
+    const hasTagsSelected = isNotEmptyArray(tagIds);
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -242,11 +231,9 @@ export const SimpleQuickForm = (props: Props) => {
                 <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                    <SuggestionRowRenderer
+                    <SuggestionsContainer
+                        isNewTransaction={isNewTransaction}
                         isSplitActive={isSplitActive}
-                        showTagSuggestions={showTagSuggestions}
-                        showCategorySuggestions={showCategorySuggestions}
-                        showRepeatedSuggestions={showRepeatedSuggestions}
                         transactionType={transactionType}
                         transactionTitle={transactionTitle}
                         categoryId={categoryId}
@@ -255,8 +242,9 @@ export const SimpleQuickForm = (props: Props) => {
                         aiContext={aiContext}
                         accountId={accountId}
                         amount={amount}
-                        onSelectTag={handleSelectTag}
+                        hasTagsSelected={hasTagsSelected}
                         onSelectCategory={handleSelectCategory}
+                        onSelectTag={handleSelectTag}
                         onSelectRepeatedPattern={handleSelectRepeatedPattern}
                     />
                 </View>
