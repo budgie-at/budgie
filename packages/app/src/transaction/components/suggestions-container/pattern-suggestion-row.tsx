@@ -2,9 +2,8 @@ import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgi
 
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
 import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
+import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
 import { SuggestionRow } from '../suggestion-row/suggestion-row';
-
-import { PatternPillContent } from './pattern-pill-content';
 
 interface Props {
     readonly transactionType: TransactionTypeEnum;
@@ -38,7 +37,7 @@ export const PatternSuggestionRow = (props: Props) => {
             maxWidth="max-w-48"
             onPress={onPillSelect}
         >
-            <PatternPillContent pattern={pattern} />
+            <SuggestionPillContent icon={pattern.categoryIcon} title={pattern.title} badge={pattern.categoryTitle} />
         </SuggestionPill>
     );
 

@@ -2,9 +2,8 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
 import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
+import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
 import { SuggestionRow } from '../suggestion-row/suggestion-row';
-
-import { CategoryPillContent } from './category-pill-content';
 
 interface Props {
     readonly transactionTitle: string;
@@ -33,6 +32,7 @@ export const CategorySuggestionRow = (props: Props) => {
         onSelect(category.id);
     };
 
+    /* jscpd:ignore-start */
     const renderPill = (category: CategoryEntityInterface, index: number, onPillSelect: () => void) => (
         <SuggestionPill
             key={category.id}
@@ -41,9 +41,10 @@ export const CategorySuggestionRow = (props: Props) => {
             staggerDelay={STAGGER_DELAY}
             onPress={onPillSelect}
         >
-            <CategoryPillContent category={category} />
+            <SuggestionPillContent icon={category.icon} title={category.title} />
         </SuggestionPill>
     );
 
     return <SuggestionRow suggestions={suggestions} status={status} enabled={enabled} renderPill={renderPill} onSelect={handleSelect} />;
+    /* jscpd:ignore-end */
 };
