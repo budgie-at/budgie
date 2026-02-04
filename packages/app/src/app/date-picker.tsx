@@ -12,7 +12,7 @@ export default function DatePickerModal() {
     const containerStyle = { flex: 1, backgroundColor };
 
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SingleDatePicker date={initialDate} onChange={resolveDatePicker} />
         </View>
     );

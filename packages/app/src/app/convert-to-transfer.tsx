@@ -1,14 +1,15 @@
 /* jscpd:ignore-start */
-import { TransactionTypeEnum, TransferTransactionCreateInputSchema, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { PageHeader } from '../@generic/component/page-header/page-header';
-import { useConfirmActionModal } from '../@generic/context/confirm-action-modal.context';
+import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
@@ -24,7 +25,7 @@ import type { TransactionCreateInputInterface } from '@budgie/contracts';
 export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
-    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const convertExpenseMutation = useConvertExpenseToTransferMutation();
     const convertIncomeMutation = useConvertIncomeToTransferMutation();
@@ -35,7 +36,6 @@ export default function ConvertToTransferModal() {
     const sourceAmount = currentParams?.sourceAmount ?? 0;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
-    const confirmVariant = isExpense ? 'default' : 'positive';
     const colorVariant = isExpense ? 'default' : 'positive';
 
     const fromAccountId = isExpense ? excludeAccountId : 0;
@@ -69,12 +69,11 @@ export default function ConvertToTransferModal() {
 
     // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleSubmit = async () => {
-        const confirmed = await openConfirmAction({
-            variant: confirmVariant,
-            icon: UserIconNameEnum.ArrowRightLeft,
+        const confirmed = await confirmAlert({
             title: t`Convert to Transfer?`,
-            description,
-            buttonText: t`Convert to Transfer`
+            message: description,
+            confirmText: t`Convert to Transfer`,
+            cancelText: t`Cancel`
         });
 
         if (!confirmed) {
@@ -82,7 +81,7 @@ export default function ConvertToTransferModal() {
         }
 
         try {
-            updateConfirmActionParams({ isLoading: true });
+            setIsSubmitting(true);
 
             const formValues = form.getValues();
             const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
@@ -105,13 +104,15 @@ export default function ConvertToTransferModal() {
             router.replace(transferRoute);
         } catch {
             Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <FormProvider {...form}>
             <ModalPage header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}>
-                <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
+                <TransferQuickForm variant={colorVariant} isSubmitting={isSubmitting} onSubmit={handleSubmit} onCancel={handleCancel} />
             </ModalPage>
         </FormProvider>
     );

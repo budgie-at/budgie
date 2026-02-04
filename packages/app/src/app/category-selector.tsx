@@ -49,7 +49,7 @@ export default function CategorySelectorModal() {
 
     /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
-        <View style={containerStyle}>
+        <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}

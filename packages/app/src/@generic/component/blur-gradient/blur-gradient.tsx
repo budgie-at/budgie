@@ -51,7 +51,7 @@ export const BlurGradient = (props: Props) => {
                     style={StyleSheet.absoluteFill}
                     maskElement={<LinearGradient colors={gradientColors} locations={config.locations} style={StyleSheet.absoluteFill} />}
                 >
-                    <BlurView style={StyleSheet.absoluteFill} intensity={50} tint={blurTint} experimentalBlurMethod="dimezisBlurView" />
+                    <BlurView style={StyleSheet.absoluteFill} intensity={50} tint={blurTint} blurMethod="dimezisBlurView" />
                 </MaskedView>
             </View>
             {children}
