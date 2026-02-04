@@ -114,9 +114,16 @@ export const SimpleQuickForm = (props: Props) => {
         if (isAccountUsable) {
             setValue(accountFieldName, pattern.accountId);
         } else {
-            const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
-            if (isDefined(fallbackAccount)) {
-                setValue(accountFieldName, fallbackAccount.id);
+            try {
+                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(
+                    pattern.instrumentId,
+                    transactionType
+                );
+                if (isDefined(fallbackAccount)) {
+                    setValue(accountFieldName, fallbackAccount.id);
+                }
+            } catch {
+                /* empty */
             }
         }
     };
