@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { FormSheetSpacer } from '../@generic/component/form-sheet-spacer/form-sheet-spacer';
 import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../@generic/component/icon/icon';
 import { Input } from '../@generic/component/input/input';
@@ -49,8 +48,6 @@ export default function NoteInputModal() {
                     <Icon icon={UserIconNameEnum.Check} size={22} className="text-black" />
                 </HapticPressable>
             </View>
-
-            <FormSheetSpacer />
         </View>
     );
 }
