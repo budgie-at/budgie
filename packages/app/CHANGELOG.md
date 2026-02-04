@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.32.1](https://github.com/budgie-at/budgie/compare/v2.32.0...v2.32.1) (2026-02-04)
+
+### Bug Fixes
+
+- **app:** change category/tag forms to modal presentation ([50ae65c](https://github.com/budgie-at/budgie/commit/50ae65c68420b009ba32df4746678af57032f0f6))
+- **app:** migrate category form to ModalPage component ([b39e7f0](https://github.com/budgie-at/budgie/commit/b39e7f0f6375c95f7c9a0c7346a04d8e5941b1e6))
+- **app:** use fixed top padding for modal pages ([29706e1](https://github.com/budgie-at/budgie/commit/29706e19f600a907cddbf910257d28c50236534b))
+
 # [2.32.0](https://github.com/budgie-at/budgie/compare/v2.31.0...v2.32.0) (2026-02-04)
 
 ### Bug Fixes
