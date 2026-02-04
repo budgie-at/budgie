@@ -34,7 +34,7 @@ export const PatternSuggestionRow = (props: Props) => {
             index={index}
             animationDuration={ANIMATION_DURATION}
             staggerDelay={STAGGER_DELAY}
-            maxWidth="max-w-48"
+            maxWidth="max-w-56"
             onPress={onPillSelect}
         >
             <SuggestionPillContent icon={pattern.categoryIcon} title={pattern.title} badge={pattern.categoryTitle} />
