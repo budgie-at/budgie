@@ -1,4 +1,10 @@
-import { AccountTypeEnum, AccountWithBankSyncEntityInterface, BankSyncStatusEnum, ExternalSourceEnum } from '@budgie/contracts';
+import {
+    AccountDebtTypeEnum,
+    AccountTypeEnum,
+    AccountWithBankSyncEntityInterface,
+    BankSyncStatusEnum,
+    ExternalSourceEnum
+} from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -13,7 +19,12 @@ interface AccountTypeSectionInterface {
     readonly data: AccountRowInterface[];
 }
 
-export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionWithStatusInterface;
+export interface DebtSectionInterface {
+    readonly kind: HomeSectionKindEnum.DEBT_YOU_OWE | HomeSectionKindEnum.DEBT_OWED_TO_YOU;
+    readonly data: AccountRowInterface[];
+}
+
+export type HomeSectionInterface = AccountTypeSectionInterface | BankProviderSectionWithStatusInterface | DebtSectionInterface;
 
 type AccountGroups = Partial<Record<AccountTypeEnum, AccountWithBankSyncEntityInterface[]>>;
 type ProviderGroups = Partial<Record<ExternalSourceEnum, AccountWithBankSyncEntityInterface[]>>;
@@ -45,11 +56,20 @@ const getProviderSyncStatus = (accounts: AccountWithBankSyncEntityInterface[]): 
     return BankSyncStatusEnum.IDLE;
 };
 
+// eslint-disable-next-line max-statements -- Section builder with multiple filter and transform operations
 export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterface[]): HomeSectionInterface[] => {
     const nonBankSyncAccounts = accounts.filter(account => account.type !== AccountTypeEnum.BANK_SYNC);
     const bankSyncAccounts = accounts.filter(account => account.type === AccountTypeEnum.BANK_SYNC);
 
-    const accountGroups = nonBankSyncAccounts.reduce<AccountGroups>(
+    const nonDebtAccounts = nonBankSyncAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
+    const debtYouOweAccounts = nonBankSyncAccounts.filter(
+        account => account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.BORROW
+    );
+    const debtOwedToYouAccounts = nonBankSyncAccounts.filter(
+        account => account.type === AccountTypeEnum.DEBT && account.debtType === AccountDebtTypeEnum.LENT
+    );
+
+    const accountGroups = nonDebtAccounts.reduce<AccountGroups>(
         (accumulator, account) => ({
             ...accumulator,
             [account.type]: [...(accumulator[account.type] ?? []), account]
@@ -77,6 +97,22 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
             data: pairAccountsIntoRows(groupAccounts ?? [])
         }));
 
+    const debtSections: DebtSectionInterface[] = [];
+
+    if (isNotEmptyArray(debtYouOweAccounts)) {
+        debtSections.push({
+            kind: HomeSectionKindEnum.DEBT_YOU_OWE,
+            data: pairAccountsIntoRows(debtYouOweAccounts)
+        });
+    }
+
+    if (isNotEmptyArray(debtOwedToYouAccounts)) {
+        debtSections.push({
+            kind: HomeSectionKindEnum.DEBT_OWED_TO_YOU,
+            data: pairAccountsIntoRows(debtOwedToYouAccounts)
+        });
+    }
+
     const providerSections: BankProviderSectionWithStatusInterface[] = typedObjectEntries(providerGroups)
         .filter(([, groupAccounts]) => isNotEmptyArray(groupAccounts))
         .map(([provider, groupAccounts]) => ({
@@ -86,5 +122,5 @@ export const buildHomePageSections = (accounts: AccountWithBankSyncEntityInterfa
             data: pairAccountsIntoRows(groupAccounts ?? [])
         }));
 
-    return [...accountTypeSections, ...providerSections];
+    return [...accountTypeSections, ...debtSections, ...providerSections];
 };
