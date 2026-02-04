@@ -216,7 +216,7 @@ msgstr "Архівувати рахунок?"
 msgid "Archived Accounts"
 msgstr "Архівовані рахунки"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:18
+#: src/settings/components/truncate-data/truncate-data.tsx:20
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
@@ -275,10 +275,14 @@ msgstr "Budgie"
 #: src/@generic/component/deletable-row/deletable-row.tsx:30
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx:12
 #: src/account/component/account-action-card/account-action-card.tsx:39
+#: src/account/component/archive-account/archive-account.tsx:26
 #: src/account/component/archived-account-card/archived-account-card.tsx:32
 #: src/account/component/archived-account-card/archived-account-card.tsx:52
 #: src/app/(tabs)/settings/import.tsx:255
-#: src/app/confirm-action.tsx:43
+#: src/app/convert-to-transfer.tsx:74
+#: src/import/components/import-database/import-database.tsx:38
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/truncate-data/truncate-data.tsx:22
 #: src/sync/component/bank-sync-token-section/bank-sync-token-section.tsx:75
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:55
 msgid "Cancel"
@@ -343,12 +347,12 @@ msgstr "Очистити"
 msgid "Clear All"
 msgstr "Очистити все"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:17
-#: src/settings/components/truncate-data/truncate-data.tsx:34
+#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:48
 msgid "Clear All Data"
 msgstr "Очистити всі дані"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:40
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:43
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
@@ -384,27 +388,26 @@ msgstr "Контакт (необов'язково)"
 msgid "Continue"
 msgstr "Продовжити"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Conversion failed"
 msgstr "Помилка конвертації"
 
-#: src/app/convert-to-transfer.tsx:77
-#: src/app/convert-to-transfer.tsx:113
+#: src/app/convert-to-transfer.tsx:73
+msgid "Convert"
+msgstr "Конвертувати"
+
+#: src/app/convert-to-transfer.tsx:109
 #: src/transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item.tsx:22
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
 
-#: src/app/convert-to-transfer.tsx:75
+#: src/app/convert-to-transfer.tsx:71
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx:27
 msgid "Could not activate account."
 msgstr "Не вдалося активувати рахунок."
-
-#: src/account/component/archive-account/archive-account.tsx:41
-msgid "Could not archive account. Please try again later"
-msgstr "Не вдалося архівувати обліковий запис. Спробуйте пізніше"
 
 #: src/category/components/category-form/category-form.tsx:142
 msgid "Could not create category"
@@ -582,11 +585,11 @@ msgstr "Видалити"
 msgid "Delete Account Permanently?"
 msgstr "Видалити рахунок назавжди?"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:35
+#: src/settings/components/truncate-data/truncate-data.tsx:49
 msgid "Delete all transactions and settings"
 msgstr "Видалити всі транзакції та налаштування"
 
-#: src/settings/components/truncate-data/truncate-data.tsx:19
+#: src/settings/components/truncate-data/truncate-data.tsx:21
 msgid "Delete data"
 msgstr "Видалити дані"
 
@@ -722,8 +725,8 @@ msgstr "Введіть свій PIN-код"
 
 #: src/app/(tabs)/settings/import.tsx:110
 #: src/import/components/import-csv/import-csv.tsx:30
-#: src/import/components/import-database/import-database.tsx:50
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:32
+#: src/import/components/import-database/import-database.tsx:49
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:33
 msgid "Error"
 msgstr "Помилка"
 
@@ -788,6 +791,10 @@ msgstr "Face ID"
 #: src/settings/components/security-settings/pin-enabled-card.tsx:66
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
+
+#: src/settings/components/truncate-data/truncate-data.tsx:37
+msgid "Failed to clear data"
+msgstr "Не вдалося очистити дані"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx:47
 msgid "Failed to fetch accounts"
@@ -890,9 +897,9 @@ msgstr "Імпорт рахунків та транзакцій з XLSX-експ
 msgid "Import CSV"
 msgstr "Імпортувати CSV"
 
-#: src/import/components/import-database/import-database.tsx:38
-#: src/import/components/import-database/import-database.tsx:40
-#: src/import/components/import-database/import-database.tsx:58
+#: src/import/components/import-database/import-database.tsx:35
+#: src/import/components/import-database/import-database.tsx:37
+#: src/import/components/import-database/import-database.tsx:57
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
@@ -912,7 +919,7 @@ msgstr "Імпорт Приватбанку"
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
-#: src/import/components/import-database/import-database.tsx:39
+#: src/import/components/import-database/import-database.tsx:36
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
@@ -1158,7 +1165,7 @@ msgstr "Огляд"
 
 #: src/account/constant/debt-section-kind-label.constant.ts:8
 msgid "Owed to you"
-msgstr ""
+msgstr "Вам винні"
 
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Owes you"
@@ -1197,7 +1204,7 @@ msgstr "PIN-коди не збігаються"
 msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
-#: src/app/convert-to-transfer.tsx:107
+#: src/app/convert-to-transfer.tsx:103
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -1238,12 +1245,12 @@ msgstr "ПриватБанк"
 msgid "Re-enter your PIN to confirm"
 msgstr "Введіть свій PIN-код ще раз для підтвердження"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:21
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
 msgid "Recalculate"
 msgstr "Перерахувати"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:39
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:18
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:42
 msgid "Recalculate Balances"
 msgstr "Перерахувати баланси"
 
@@ -1267,7 +1274,7 @@ msgstr "Відновити"
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
 
-#: src/import/components/import-database/import-database.tsx:59
+#: src/import/components/import-database/import-database.tsx:58
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
@@ -1435,7 +1442,7 @@ msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
 #: src/@generic/hook/use-show-error.hook.ts:12
-#: src/account/component/archive-account/archive-account.tsx:40
+#: src/account/component/archive-account/archive-account.tsx:41
 #: src/ai/component/voice-input-error/voice-input-error.tsx:29
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
@@ -1560,14 +1567,8 @@ msgid "Target balance"
 msgstr "Цільовий баланс"
 
 #: src/account/component/archive-account/archive-account.tsx:24
-msgid ""
-"This account will be hidden from your main view and won't be included in totals. \n"
-"\n"
-" 💡 You can restore it anytime from Settings → Archived Accounts"
-msgstr ""
-"Цей рахунок буде прихований з вашого головного перегляду і не буде включено до підсумків.\n"
-"\n"
-" 💡 Ви можете відновити його будь-коли з Налаштування → Архівовані рахунки"
+msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
+msgstr "Цей рахунок буде приховано з головного екрану і не враховуватиметься в загальних підсумках. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx:23
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx:48
@@ -1590,15 +1591,15 @@ msgstr "Цей тег має транзакції. Виберіть інший �
 msgid "This Week"
 msgstr "Цього тижня"
 
-#: src/settings/components/recalculate-balances/recalculate-balances.tsx:20
+#: src/settings/components/recalculate-balances/recalculate-balances.tsx:19
 msgid "This will clear all cached account balances and recalculate them from your transactions. This may take a moment."
 msgstr "Це очистить всі кешовані баланси рахунків і перерахує їх на основі ваших транзакцій. Це може зайняти деякий час."
 
-#: src/app/convert-to-transfer.tsx:63
+#: src/app/convert-to-transfer.tsx:61
 msgid "This will convert the expense to a transfer between accounts."
 msgstr "Це конвертує витрату у переказ між рахунками."
 
-#: src/app/convert-to-transfer.tsx:64
+#: src/app/convert-to-transfer.tsx:62
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
 
@@ -1769,7 +1770,7 @@ msgstr "Ви дали гроші"
 
 #: src/account/constant/debt-section-kind-label.constant.ts:7
 msgid "You owe"
-msgstr ""
+msgstr "Ви винні"
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
