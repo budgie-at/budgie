@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.31.0](https://github.com/budgie-at/budgie/compare/v2.30.1...v2.31.0) (2026-02-04)
+
+### Bug Fixes
+
+- **contracts:** calculate remaining debt instead of current balance in getTotalRemainingDebtByType ([60330ad](https://github.com/budgie-at/budgie/commit/60330ad1d7902f25634dd85edfa5103ff7c944f6))
+- **contracts:** use enum types instead of string literals in getTotalRemainingDebtByType ([f55857f](https://github.com/budgie-at/budgie/commit/f55857fe4b49a2ee97d7b16ddf10d4773739ecc1))
+
+### Features
+
+- **app:** add debt section kind label constants ([4ee8ab2](https://github.com/budgie-at/budgie/commit/4ee8ab22500dc5da5127ab3aff6c2bef853d5667))
+- **app:** add debt section kinds to HomeSectionKindEnum ([119c9f6](https://github.com/budgie-at/budgie/commit/119c9f6951cd0364e649b51da7f8251fd483896e))
+- **app:** add DebtSectionHeader component ([478c0ee](https://github.com/budgie-at/budgie/commit/478c0ee230c3fc2c5b810a985f60ec6be03cca21))
+- **app:** add DebtSectionInterface and update home page for debt sections ([3324901](https://github.com/budgie-at/budgie/commit/33249016557dcf7ac6aecc06f1c7f551c7d94aae))
+- **app:** add useDebtTypeTotalQuery hook ([aa1c0c0](https://github.com/budgie-at/budgie/commit/aa1c0c068ac211bec35d4279820833e0376f80eb))
+- **app:** split debt accounts by debtType in buildHomePageSections ([3543b45](https://github.com/budgie-at/budgie/commit/3543b455a055430e579f3c9fdd3f116eb0449716))
+- **contracts:** add getTotalByDebtType repository method ([cdd3a75](https://github.com/budgie-at/budgie/commit/cdd3a75e190c4fb8f7395e2b06a541a66c00d4ab))
+
 ## [2.30.1](https://github.com/budgie-at/budgie/compare/v2.30.0...v2.30.1) (2026-02-04)
 
 **Note:** Version bump only for package @budgie-at/root
