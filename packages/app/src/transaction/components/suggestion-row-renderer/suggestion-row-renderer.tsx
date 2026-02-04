@@ -11,32 +11,32 @@ interface Props {
     readonly showCategorySuggestions: boolean;
     readonly showRepeatedSuggestions: boolean;
     readonly transactionType: TransactionTypeEnum;
-    readonly accountId: number;
-    readonly amount: number;
     readonly transactionTitle: string;
     readonly categoryId: number | null;
     readonly mccCategoryId: number | null;
     readonly comment: string;
     readonly aiContext: string;
+    readonly accountId: number;
+    readonly amount: number;
     readonly onSelectTag: (tagId: number) => void;
     readonly onSelectCategory: (categoryId: number) => void;
     readonly onSelectRepeatedPattern: (pattern: RepeatedTransactionPatternInterface) => void;
 }
 
-export const SuggestionRowSwitcher = (props: Props) => {
+export const SuggestionRowRenderer = (props: Props) => {
     const {
         isSplitActive,
         showTagSuggestions,
         showCategorySuggestions,
         showRepeatedSuggestions,
         transactionType,
-        accountId,
-        amount,
         transactionTitle,
         categoryId,
         mccCategoryId,
         comment,
         aiContext,
+        accountId,
+        amount,
         onSelectTag,
         onSelectCategory,
         onSelectRepeatedPattern

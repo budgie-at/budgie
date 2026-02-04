@@ -1,11 +1,8 @@
-import { ScrollView, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
 import { useSuggestionLoadingState } from '../../hook/use-suggestion-loading-state.hook';
-import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
+import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
 import { TagSuggestionPillItem } from '../tag-suggestion-pill-item/tag-suggestion-pill-item';
 
 interface Props {
@@ -44,15 +41,8 @@ export const TagSuggestionsRow = (props: Props) => {
         onSelect(tagId);
     };
 
-    const pillsContent = showLoading ? (
-        <View className="flex-1" />
-    ) : (
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="flex-1"
-            contentContainerClassName="flex-grow justify-end gap-sm"
-        >
+    return (
+        <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
             {suggestedTags.map((tag, index) => (
                 <TagSuggestionPillItem
                     key={tag.id}
@@ -63,21 +53,6 @@ export const TagSuggestionsRow = (props: Props) => {
                     onSelect={handleSelect}
                 />
             ))}
-        </ScrollView>
-    );
-
-    return (
-        <View className="h-10 items-end justify-center overflow-hidden">
-            {showContent ? (
-                <Animated.View
-                    entering={FadeIn.duration(ANIMATION_DURATION)}
-                    exiting={FadeOut.duration(ANIMATION_DURATION)}
-                    className="flex-row items-center overflow-hidden"
-                >
-                    {pillsContent}
-                    <SuggestionLoadingIndicator isAnimating={showLoading} />
-                </Animated.View>
-            ) : null}
-        </View>
+        </SuggestionRowLayout>
     );
 };

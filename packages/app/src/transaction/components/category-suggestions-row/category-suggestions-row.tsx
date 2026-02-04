@@ -1,12 +1,9 @@
-import { ScrollView, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useCategorySuggestion } from '../../../ai/hook/use-category-suggestion.hook';
 import { useSuggestionLoadingState } from '../../hook/use-suggestion-loading-state.hook';
 import { CategorySuggestionPillItem } from '../category-suggestion-pill-item/category-suggestion-pill-item';
-import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
+import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
 
 interface Props {
     readonly transactionTitle: string;
@@ -42,16 +39,8 @@ export const CategorySuggestionsRow = (props: Props) => {
         onSelect(categoryId);
     };
 
-    /* jscpd:ignore-start - Shared suggestion row layout, differs by pill item type */
-    const pillsContent = showLoading ? (
-        <View className="flex-1" />
-    ) : (
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="flex-1"
-            contentContainerClassName="flex-grow justify-end gap-sm"
-        >
+    return (
+        <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
             {suggestedCategories.map((category, index) => (
                 <CategorySuggestionPillItem
                     key={category.id}
@@ -62,22 +51,6 @@ export const CategorySuggestionsRow = (props: Props) => {
                     onSelect={handleSelect}
                 />
             ))}
-        </ScrollView>
+        </SuggestionRowLayout>
     );
-
-    return (
-        <View className="h-10 items-end justify-center overflow-hidden">
-            {showContent ? (
-                <Animated.View
-                    entering={FadeIn.duration(ANIMATION_DURATION)}
-                    exiting={FadeOut.duration(ANIMATION_DURATION)}
-                    className="flex-row items-center overflow-hidden"
-                >
-                    {pillsContent}
-                    <SuggestionLoadingIndicator isAnimating={showLoading} />
-                </Animated.View>
-            ) : null}
-        </View>
-    );
-    /* jscpd:ignore-end */
 };

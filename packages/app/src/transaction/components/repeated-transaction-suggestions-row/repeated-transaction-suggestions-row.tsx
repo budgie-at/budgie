@@ -1,13 +1,11 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { ScrollView, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
 import { useSuggestionLoadingState } from '../../hook/use-suggestion-loading-state.hook';
 import { RepeatedTransactionSuggestionPillItem } from '../repeated-transaction-suggestion-pill-item/repeated-transaction-suggestion-pill-item';
-import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
+import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
 
 interface Props {
     readonly enabled: boolean;
@@ -43,16 +41,8 @@ export const RepeatedTransactionSuggestionsRow = (props: Props) => {
         onSelect(pattern);
     };
 
-    /* jscpd:ignore-start -- Shared suggestion row layout pattern, differs by pill item type */
-    const pillsContent = showLoading ? (
-        <View className="flex-1" />
-    ) : (
-        <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="flex-1"
-            contentContainerClassName="flex-grow justify-end gap-sm"
-        >
+    return (
+        <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
             {suggestions.map((pattern, index) => (
                 <RepeatedTransactionSuggestionPillItem
                     key={`${pattern.categoryId}-${pattern.title}`}
@@ -63,22 +53,6 @@ export const RepeatedTransactionSuggestionsRow = (props: Props) => {
                     onSelect={handleSelect}
                 />
             ))}
-        </ScrollView>
+        </SuggestionRowLayout>
     );
-
-    return (
-        <View className="h-10 items-end justify-center overflow-hidden">
-            {showContent ? (
-                <Animated.View
-                    entering={FadeIn.duration(ANIMATION_DURATION)}
-                    exiting={FadeOut.duration(ANIMATION_DURATION)}
-                    className="flex-row items-center overflow-hidden"
-                >
-                    {pillsContent}
-                    <SuggestionLoadingIndicator isAnimating={showLoading} />
-                </Animated.View>
-            ) : null}
-        </View>
-    );
-    /* jscpd:ignore-end */
 };

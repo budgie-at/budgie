@@ -1,0 +1,50 @@
+import { useEffect, useRef, useState } from 'react';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
+
+import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
+import { SuggestionStatus } from '../interface/suggestion-status.type';
+import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
+
+interface UseSuggestionBaseParams<T> {
+    enabled: boolean;
+    isReady: boolean;
+    fetchSuggestions: () => Promise<T[]>;
+}
+
+export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionReturnInterface<T> => {
+    const { enabled, isReady, fetchSuggestions } = params;
+
+    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
+    const [suggestions, setSuggestions] = useState<T[]>([]);
+
+    const hasTriggeredRef = useRef(false);
+
+    useEffect(() => {
+        if (!isReady || hasTriggeredRef.current) {
+            return;
+        }
+
+        hasTriggeredRef.current = true;
+
+        const suggest = async (): Promise<void> => {
+            setInternalStatus('loading');
+
+            try {
+                const results = await fetchSuggestions();
+
+                setSuggestions(results);
+                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+            } catch {
+                setInternalStatus('error');
+            }
+        };
+
+        void suggest();
+    }, [isReady, fetchSuggestions]);
+
+    const isInitializing = enabled && !isReady && internalStatus === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
+
+    return { status, suggestions };
+};

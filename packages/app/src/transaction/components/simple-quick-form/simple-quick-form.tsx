@@ -9,7 +9,7 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
@@ -18,9 +18,10 @@ import { useSplitEntriesModal } from '../../context/split-entries-modal.context'
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
+import { useSuggestionVisibility } from '../../hook/use-suggestion-visibility.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
-import { SuggestionRowSwitcher } from '../suggestion-row-switcher/suggestion-row-switcher';
+import { SuggestionRowRenderer } from '../suggestion-row-renderer/suggestion-row-renderer';
 import { TransactionAccountRow, TransactionAccountRowRef } from '../transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionFieldIcons, TransactionFieldIconsRef } from '../transaction-field-icons/transaction-field-icons';
@@ -168,16 +169,17 @@ export const SimpleQuickForm = (props: Props) => {
     };
 
     const isSplitActive = splitEntryCount > 1;
-    const hasContext = isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
-    const hasCategorySelected = isPositiveNumber(categoryId);
-    const hasTagsSelected = isNotEmptyArray(tagIds);
 
-    // Pattern suggestions only for NEW transactions (no category selected yet)
-    const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive && isPositiveNumber(accountId);
-
-    // AI suggestions for EXISTING transactions (have context like mccCategoryId, comment, etc.)
-    const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
-    const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
+    const { showRepeatedSuggestions, showCategorySuggestions, showTagSuggestions } = useSuggestionVisibility({
+        isNewTransaction,
+        isSplitActive,
+        categoryId,
+        tagIds,
+        accountId,
+        mccCategoryId,
+        comment,
+        aiContext
+    });
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -240,19 +242,19 @@ export const SimpleQuickForm = (props: Props) => {
                 <TransactionAmountDisplay ref={amountDisplayRef} amount={displayValue} currencySymbol={currencySymbol} variant={variant} />
                 <View className="absolute bottom-0 left-0 right-0 gap-md">
                     <MccInfoRow transactionTitle={transactionTitle} mccCategoryId={mccCategoryId} />
-                    <SuggestionRowSwitcher
+                    <SuggestionRowRenderer
                         isSplitActive={isSplitActive}
                         showTagSuggestions={showTagSuggestions}
                         showCategorySuggestions={showCategorySuggestions}
                         showRepeatedSuggestions={showRepeatedSuggestions}
                         transactionType={transactionType}
-                        accountId={accountId}
-                        amount={amount}
                         transactionTitle={transactionTitle}
                         categoryId={categoryId}
                         mccCategoryId={mccCategoryId}
                         comment={comment}
                         aiContext={aiContext}
+                        accountId={accountId}
+                        amount={amount}
                         onSelectTag={handleSelectTag}
                         onSelectCategory={handleSelectCategory}
                         onSelectRepeatedPattern={handleSelectRepeatedPattern}
