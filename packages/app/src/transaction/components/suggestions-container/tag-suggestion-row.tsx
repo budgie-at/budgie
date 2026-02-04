@@ -1,10 +1,9 @@
-import { TagEntityInterface } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
 import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
+import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
 import { SuggestionRow } from '../suggestion-row/suggestion-row';
-
-import { TagPillContent } from './tag-pill-content';
 
 interface Props {
     readonly transactionTitle: string;
@@ -43,7 +42,7 @@ export const TagSuggestionRow = (props: Props) => {
             staggerDelay={STAGGER_DELAY}
             onPress={onPillSelect}
         >
-            <TagPillContent tag={tag} />
+            <SuggestionPillContent icon={UserIconNameEnum.Hash} title={tag.title} />
         </SuggestionPill>
     );
 
