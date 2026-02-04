@@ -1156,6 +1156,10 @@ msgstr "Organisation"
 msgid "Overview"
 msgstr "Aperçu"
 
+#: src/account/constant/debt-section-kind-label.constant.ts:8
+msgid "Owed to you"
+msgstr ""
+
 #: src/@generic/component/contact-selector/contact-selector.tsx:37
 msgid "Owes you"
 msgstr "Vous doit"
@@ -1762,6 +1766,10 @@ msgstr "Hier"
 #: src/account/constant/account-debt-type-description.constant.ts:6
 msgid "You gave money"
 msgstr "Vous avez donné de l'argent"
+
+#: src/account/constant/debt-section-kind-label.constant.ts:7
+msgid "You owe"
+msgstr ""
 
 #: src/account/constant/account-debt-type-description.constant.ts:7
 msgid "You received money"
