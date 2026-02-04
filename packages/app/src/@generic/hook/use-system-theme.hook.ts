@@ -4,7 +4,7 @@ import { Appearance, ColorSchemeName } from 'react-native';
 import { useAppState } from './use-app-state.hook';
 
 export const useSystemTheme = (): ColorSchemeName => {
-    const [systemScheme, setSystemScheme] = useState<ColorSchemeName>(Appearance.getColorScheme());
+    const [systemScheme, setSystemScheme] = useState<ColorSchemeName>(Appearance.getColorScheme() ?? 'light');
 
     useEffect(() => {
         const appearanceSubscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -12,7 +12,7 @@ export const useSystemTheme = (): ColorSchemeName => {
         });
 
         // eslint-disable-next-line react-hooks/set-state-in-effect
-        setSystemScheme(Appearance.getColorScheme());
+        setSystemScheme(Appearance.getColorScheme() ?? 'light');
 
         return () => {
             appearanceSubscription.remove();
@@ -20,7 +20,7 @@ export const useSystemTheme = (): ColorSchemeName => {
     }, []);
     useAppState(isActive => {
         if (isActive) {
-            setSystemScheme(Appearance.getColorScheme());
+            setSystemScheme(Appearance.getColorScheme() ?? 'light');
         }
     });
 
