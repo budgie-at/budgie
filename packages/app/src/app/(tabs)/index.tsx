@@ -14,10 +14,24 @@ import { AccountGridItem } from '../../account/component/account-grid-item/accou
 import { AccountSectionHeader } from '../../account/component/account-section-header/account-section-header';
 import { AccountsEmptyState } from '../../account/component/accounts-empty-state/accounts-empty-state';
 import { BankProviderSectionHeader } from '../../account/component/bank-provider-section-header/bank-provider-section-header';
+import { DebtSectionHeader } from '../../account/component/debt-section-header/debt-section-header';
 import { AccountRowInterface } from '../../account/interface/account-row.interface';
 import { useAccountsWithBankSyncQuery } from '../../account/query/use-accounts-with-bank-sync.query';
 import { isBankProviderSection } from '../../account/type-guard/is-bank-provider-section.type-guard';
+import { isDebtSection } from '../../account/type-guard/is-debt-section.type-guard';
 import { HomeSectionInterface, buildHomePageSections } from '../../account/utils/build-home-page-sections.util';
+
+const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum => {
+    if (isBankProviderSection(section)) {
+        return AccountTypeEnum.BANK_SYNC;
+    }
+
+    if (isDebtSection(section)) {
+        return AccountTypeEnum.DEBT;
+    }
+
+    return section.type;
+};
 
 export default function HomePage() {
     const { accounts } = useAccountsWithBankSyncQuery();
@@ -40,11 +54,15 @@ export default function HomePage() {
             return <BankProviderSectionHeader provider={section.provider} />;
         }
 
+        if (isDebtSection(section)) {
+            return <DebtSectionHeader sectionKind={section.kind} />;
+        }
+
         return <AccountSectionHeader type={section.type} />;
     };
 
     const renderItem = ({ item, section }: { item: AccountRowInterface; section: HomeSectionInterface }) => {
-        const accountType = isBankProviderSection(section) ? AccountTypeEnum.BANK_SYNC : section.type;
+        const accountType = getSectionAccountType(section);
 
         return (
             <View className="flex-row mb-3">
