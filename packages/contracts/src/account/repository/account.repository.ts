@@ -1,14 +1,13 @@
-import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 import { subDays } from 'date-fns';
+import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
-import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
-
 import { DB, TX } from '../../@generic/type/db.type';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -160,9 +159,7 @@ export class AccountRepository {
     ): Promise<AccountEntityInterface | undefined> {
         const cutoffDate = subDays(new Date(), days);
         const entryType =
-            transactionType === TransactionTypeEnum.EXPENSE
-                ? TransactionEntryTypeEnum.CREDIT
-                : TransactionEntryTypeEnum.DEBIT;
+            transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
 
         const result = await this.db
             .select({
