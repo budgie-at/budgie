@@ -188,7 +188,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    getTotalByDebtType(defaultInstrumentId: number, debtType: string) {
+    getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: string) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
@@ -196,11 +196,15 @@ export class AccountBalanceRepository {
             1.0
         )`;
 
+        const remainingDebtSql = sql<number>`
+            MAX(${AccountEntityTable.targetBalance} - (${this.getAccountBalanceWithTransactionsSql()}), 0)
+        `;
+
         const totalSubquerySql = sql<number>`
             COALESCE(
                 (
                     SELECT SUM(
-                        (${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}
+                        (${remainingDebtSql}) * ${exchangeRateSql}
                     )
                     FROM ${AccountEntityTable}
                     WHERE ${AccountEntityTable.type} = 'DEBT'
