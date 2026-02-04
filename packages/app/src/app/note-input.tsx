@@ -22,8 +22,8 @@ export default function NoteInputModal() {
     };
 
     return (
-        <View style={containerStyle}>
-            <View className="flex-row items-center gap-md px-xl py-lg">
+        <View style={containerStyle} collapsable={false}>
+            <View collapsable={false} className="flex-row items-center gap-md px-xl py-lg">
                 <View className="flex-1">
                     <Input
                         value={value}
