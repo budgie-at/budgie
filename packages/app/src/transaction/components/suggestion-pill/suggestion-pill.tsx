@@ -32,7 +32,7 @@ export const SuggestionPill = (props: Props) => {
             layout={LinearTransition.duration(animationDuration)}
         >
             <HapticPressable
-                className={`flex-row items-center gap-xs px-sm py-xs bg-ghost-background rounded-xl ${maxWidth}`}
+                className={`flex-row items-center gap-xxs px-sm py-xs bg-ghost-background rounded-xl ${maxWidth}`}
                 style={styles.pill}
                 onPress={onPress}
             >
