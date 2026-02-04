@@ -158,6 +158,7 @@ export class AccountRepository {
         days = 30
     ): Promise<AccountEntityInterface | undefined> {
         const cutoffDate = subDays(new Date(), days);
+        const cutoffTimestamp = Math.floor(cutoffDate.getTime() / 1000);
         const entryType =
             transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
 
@@ -177,7 +178,7 @@ export class AccountRepository {
                     eq(TransactionEntityTable.type, transactionType),
                     isNull(TransactionEntityTable.deletedAt),
                     eq(TransactionEntryEntityTable.type, entryType),
-                    gte(TransactionEntityTable.operatedAt, cutoffDate)
+                    gte(TransactionEntityTable.operatedAt, cutoffTimestamp)
                 )
             )
             .groupBy(AccountEntityTable.id)
