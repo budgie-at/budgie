@@ -10,4 +10,8 @@ export interface RepeatedTransactionPatternInterface {
     readonly averageAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: Date;
+    readonly accountId: number;
+    readonly instrumentId: number;
+    readonly accountIsActive: boolean;
+    readonly accountDeletedAt: Date | null;
 }
