@@ -7,6 +7,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 const BANK_PROVIDER_TITLE: Record<BankProviderEnum, string> = {
     [BankProviderEnum.MONOBANK]: 'Monobank',
     [BankProviderEnum.PRIVATBANK]: 'Privatbank',
+    [BankProviderEnum.ERSTE]: 'Erste',
     [BankProviderEnum.REVOLUT]: 'Revolut',
     [BankProviderEnum.WISE]: 'Wise'
 };

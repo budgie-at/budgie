@@ -409,7 +409,7 @@ msgstr "¿Convertir a transferencia?"
 msgid "Could not activate account."
 msgstr "No se pudo activar la cuenta."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not create category"
 msgstr "No se pudo crear la categoría"
 
@@ -429,7 +429,7 @@ msgstr "No se pudo eliminar la cuenta."
 msgid "Could not delete transaction."
 msgstr "No se pudo eliminar la transacción."
 
-#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:121
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
 
@@ -449,7 +449,7 @@ msgstr "No se pudo reasignar la etiqueta"
 msgid "Could not restore account."
 msgstr "No se pudo restaurar la cuenta."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not save category"
 msgstr "No se pudo guardar la categoría"
 
@@ -489,7 +489,7 @@ msgstr "Crear y organizar etiquetas de transacciones"
 msgid "Create Categories"
 msgstr "Crear categorías"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Create Category"
 msgstr "Crear categoría"
 
@@ -629,7 +629,7 @@ msgstr "p. ej. Compras, Entretenimiento"
 msgid "e.g. Savings Account"
 msgstr "ej. Cuenta de ahorros"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Edit Category"
 msgstr "Editar categoría"
 
@@ -888,6 +888,10 @@ msgstr "Ocultar saldos de cuentas y patrimonio neto al tomar capturas de pantall
 msgid "History synced"
 msgstr "Historial sincronizado"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:100
+msgid "Import accounts and transactions from Erste Bank PDF statement"
+msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:54
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import accounts and transactions from Privatbank XLSX export"
@@ -903,6 +907,11 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:99
+msgid "Import Erste Bank"
+msgstr "Importar Erste Bank"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:86
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Error de importación"
@@ -952,6 +961,7 @@ msgstr "Ingresos por etiqueta"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:58
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Archivo inválido"
@@ -1009,7 +1019,7 @@ msgstr "Asignar columnas CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Asigna cada campo a una columna de tu archivo CSV"
 
-#: src/category/components/category-form/category-form.tsx:171
+#: src/category/components/category-form/category-form.tsx:169
 msgid "Merge into another category"
 msgstr "Fusionar con otra categoría"
 
@@ -1210,8 +1220,8 @@ msgstr "Por favor, inténtelo de nuevo"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:122
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:142
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1353,7 +1363,7 @@ msgstr "Seguridad"
 msgid "Select"
 msgstr "Seleccionar"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Select a category to merge into"
 msgstr "Selecciona una categoría para fusionar"
 

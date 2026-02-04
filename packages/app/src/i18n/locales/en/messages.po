@@ -411,7 +411,7 @@ msgstr "Convert to Transfer?"
 msgid "Could not activate account."
 msgstr "Could not activate account."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not create category"
 msgstr "Could not create category"
 
@@ -431,7 +431,7 @@ msgstr "Could not delete account."
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
-#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:121
 msgid "Could not merge category"
 msgstr "Could not merge category"
 
@@ -451,7 +451,7 @@ msgstr "Could not reassign tag"
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not save category"
 msgstr "Could not save category"
 
@@ -491,7 +491,7 @@ msgstr "Create and organize transaction tags"
 msgid "Create Categories"
 msgstr "Create Categories"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Create Category"
 msgstr "Create Category"
 
@@ -631,7 +631,7 @@ msgstr "e.g. Groceries, Entertainment"
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Edit Category"
 msgstr "Edit Category"
 
@@ -890,6 +890,10 @@ msgstr "Hide account balances and net worth when taking screenshots"
 msgid "History synced"
 msgstr "History synced"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:100
+msgid "Import accounts and transactions from Erste Bank PDF statement"
+msgstr "Import accounts and transactions from Erste Bank PDF statement"
+
 #: src/app/(main)/create-account/index.tsx:54
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import accounts and transactions from Privatbank XLSX export"
@@ -905,6 +909,11 @@ msgstr "Import CSV"
 msgid "Import Database"
 msgstr "Import Database"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:99
+msgid "Import Erste Bank"
+msgstr "Import Erste Bank"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:86
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Import failed"
@@ -954,6 +963,7 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:58
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Invalid file"
@@ -1011,7 +1021,7 @@ msgstr "Map CSV Columns"
 msgid "Match each field to a column from your CSV file"
 msgstr "Match each field to a column from your CSV file"
 
-#: src/category/components/category-form/category-form.tsx:171
+#: src/category/components/category-form/category-form.tsx:169
 msgid "Merge into another category"
 msgstr "Merge into another category"
 
@@ -1212,8 +1222,8 @@ msgstr "Please try again"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:122
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:142
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1355,7 +1365,7 @@ msgstr "Security"
 msgid "Select"
 msgstr "Select"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Select a category to merge into"
 msgstr "Select a category to merge into"
 
