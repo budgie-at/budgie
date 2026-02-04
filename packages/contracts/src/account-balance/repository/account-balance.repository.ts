@@ -3,6 +3,8 @@ import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB, TX } from '../../@generic/type/db.type';
 import { getDirectExchangeRateSql, getInverseExchangeRateSql } from '../../@generic/util/get-exchange-rate-sql.util';
+import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -188,7 +190,7 @@ export class AccountBalanceRepository {
             .limit(1);
     }
 
-    getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: string) {
+    getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
         const instrumentIdRef = sql.raw('accounts.instrument_id');
         const exchangeRateSql = sql`COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
@@ -207,7 +209,7 @@ export class AccountBalanceRepository {
                         (${remainingDebtSql}) * ${exchangeRateSql}
                     )
                     FROM ${AccountEntityTable}
-                    WHERE ${AccountEntityTable.type} = 'DEBT'
+                    WHERE ${AccountEntityTable.type} = ${AccountTypeEnum.DEBT}
                       AND ${AccountEntityTable.debtType} = ${debtType}
                       AND ${AccountEntityTable.isActive} = 1
                       AND ${AccountEntityTable.deletedAt} IS NULL
