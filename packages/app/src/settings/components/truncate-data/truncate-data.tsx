@@ -1,31 +1,45 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 
-import { useConfirmActionModal } from '../../../@generic/context/confirm-action-modal.context';
+import { getErrorMessage } from '@rnw-community/shared';
+
 import { bankSyncRepository } from '../../../@generic/drizzle/db/db';
 import { appService } from '../../../@generic/service/app.service';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const TruncateData = () => {
     const { t } = useLingui();
-    const { openConfirmAction, updateConfirmActionParams } = useConfirmActionModal();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleTruncate = async () => {
-        const confirmed = await openConfirmAction({
-            variant: 'destructive',
-            icon: UserIconNameEnum.OctagonAlert,
+        const confirmed = await confirmAlert({
             title: t`Clear All Data`,
-            description: t`Are you sure you want to delete all your data? This action cannot be undone.`,
-            buttonText: t`Delete data`
+            message: t`Are you sure you want to delete all your data? This action cannot be undone.`,
+            confirmText: t`Delete data`,
+            cancelText: t`Cancel`,
+            isDestructive: true
         });
 
         if (!confirmed) {
             return;
         }
 
-        updateConfirmActionParams({ isLoading: true });
-        await appService.truncateData();
-        await bankSyncRepository.truncate();
+        setIsLoading(true);
+        try {
+            await appService.truncateData();
+            await bankSyncRepository.truncate();
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t`Failed to clear data`,
+                text2: getErrorMessage(error)
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -35,6 +49,7 @@ export const TruncateData = () => {
             description={t`Delete all transactions and settings`}
             icon={UserIconNameEnum.Trash2}
             variant="destructive"
+            isLoading={isLoading}
         />
     );
 };
