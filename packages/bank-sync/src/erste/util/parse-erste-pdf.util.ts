@@ -1,4 +1,4 @@
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
 import { BankSyncErrorCodeEnum } from '../../core/enum/bank-sync-error-code.enum';
@@ -134,11 +134,11 @@ const parseTransactionLine = (line: string): TransactionParseStateInterface | nu
         return null;
     }
 
-    const [, description, dateCode, amount, debitMarker] = match;
+    const [, reference, dateCode, amount, debitMarker] = match;
 
     return {
-        currentDescription: description.trim(),
-        currentDetails: [],
+        currentReference: reference.trim(),
+        currentContinuationLines: [],
         currentDate: dateCode,
         currentAmount: amount,
         currentIsDebit: debitMarker === '-'
@@ -147,11 +147,14 @@ const parseTransactionLine = (line: string): TransactionParseStateInterface | nu
 
 const createTransaction = (state: TransactionParseStateInterface, statementDate: Date): ErsteRowInterface => {
     const amount = parseErsteAmount(state.currentAmount, state.currentIsDebit);
+    const description = isNotEmptyArray(state.currentContinuationLines) ? state.currentContinuationLines[0] : state.currentReference;
+    const details = state.currentContinuationLines.slice(1).join(' ').trim();
 
     return {
         date: parseErsteValueDate(state.currentDate, statementDate),
-        description: state.currentDescription,
-        details: state.currentDetails.join(' ').trim(),
+        reference: state.currentReference,
+        description,
+        details,
         amount,
         isCredit: !state.currentIsDebit
     };
@@ -179,7 +182,7 @@ const processLine = (
         const trimmed = line.trim();
 
         if (isNotEmptyString(trimmed)) {
-            currentState.currentDetails.push(trimmed);
+            currentState.currentContinuationLines.push(trimmed);
         }
     }
 
