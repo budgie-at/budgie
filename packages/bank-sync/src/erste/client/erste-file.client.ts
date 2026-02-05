@@ -1,6 +1,6 @@
 import { ersteAccountMapper } from '../mapper/erste-account.mapper';
 import { ersteTransactionMapper } from '../mapper/erste-transaction.mapper';
-import { parseErstePdf } from '../util/parse-erste-pdf.util';
+import { parseErsteText } from '../util/parse-erste-pdf.util';
 
 import type { BankAccountInterface } from '../../core/interface/bank-account.interface';
 import type { BankTransactionInterface } from '../../core/interface/bank-transaction.interface';
@@ -9,8 +9,8 @@ import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.in
 export class ErsteFileClient {
     private parsedData: ErsteParsedDataInterface | null = null;
 
-    async parse(buffer: Uint8Array): Promise<void> {
-        this.parsedData = await parseErstePdf(buffer);
+    parse(text: string): void {
+        this.parsedData = parseErsteText(text);
     }
 
     getAccounts(): BankAccountInterface[] {
