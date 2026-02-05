@@ -15,7 +15,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 /* jscpd:ignore-end */
 import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
-import { ersteSyncExecuteImport, ersteSyncImportPreview } from '../../service/erste-sync.service';
+import { ersteSyncService } from '../../service/erste-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
@@ -48,7 +48,7 @@ export const CreateErsteAccount = () => {
                 return;
             }
 
-            const previews = await ersteSyncImportPreview(uri);
+            const previews = await ersteSyncService.importPreview(uri);
             setFilePath(uri);
             setAccountPreviews(previews);
             setSelectedAccounts(new Set(previews.filter(preview => preview.hasBankSync).map(preview => preview.externalId)));
@@ -79,7 +79,7 @@ export const CreateErsteAccount = () => {
 
         setIsLoading(true);
         try {
-            await ersteSyncExecuteImport(filePath, [...selectedAccounts]);
+            await ersteSyncService.executeImportForSelectedAccounts(filePath, [...selectedAccounts]);
             router.replace('/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
