@@ -11,6 +11,7 @@ import { parseErsteStatementDate, parseErsteValueDate } from './parse-erste-date
 import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
+import type { TransactionParseStateInterface } from '../interface/transaction-parse-state.interface';
 
 const createParseError = (message: string, originalError?: unknown): BankSyncError =>
     new BankSyncError(BankSyncErrorCodeEnum.INVALID_RESPONSE, message, BankProviderEnum.ERSTE, originalError);
@@ -126,15 +127,7 @@ const isContinuationLine = (line: string): boolean => {
     return line.startsWith(' ') && !isTransactionLine(line);
 };
 
-interface TransactionParseState {
-    currentDescription: string;
-    currentDetails: string[];
-    currentDate: string;
-    currentAmount: string;
-    currentIsDebit: boolean;
-}
-
-const parseTransactionLine = (line: string): TransactionParseState | null => {
+const parseTransactionLine = (line: string): TransactionParseStateInterface | null => {
     const match = line.trim().match(/^(.+?)\s{2,}(\d{4})\s+([\d.,]+)(-)?$/u);
 
     if (!match) {
@@ -152,7 +145,7 @@ const parseTransactionLine = (line: string): TransactionParseState | null => {
     };
 };
 
-const createTransaction = (state: TransactionParseState, statementDate: Date): ErsteRowInterface => {
+const createTransaction = (state: TransactionParseStateInterface, statementDate: Date): ErsteRowInterface => {
     const amount = parseErsteAmount(state.currentAmount, state.currentIsDebit);
 
     return {
@@ -166,10 +159,10 @@ const createTransaction = (state: TransactionParseState, statementDate: Date): E
 
 const processLine = (
     line: string,
-    currentState: TransactionParseState | null,
+    currentState: TransactionParseStateInterface | null,
     transactions: ErsteRowInterface[],
     statementDate: Date
-): TransactionParseState | null => {
+): TransactionParseStateInterface | null => {
     if (isSkippableLine(line)) {
         return currentState;
     }
@@ -196,7 +189,7 @@ const processLine = (
 const parseTransactions = (text: string, statementDate: Date): ErsteRowInterface[] => {
     const lines = text.split('\n');
     const transactions: ErsteRowInterface[] = [];
-    let currentState: TransactionParseState | null = null;
+    let currentState: TransactionParseStateInterface | null = null;
 
     for (const line of lines) {
         currentState = processLine(line, currentState, transactions, statementDate);
