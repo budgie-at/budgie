@@ -1,6 +1,6 @@
 export interface TransactionParseStateInterface {
-    readonly currentDescription: string;
-    readonly currentDetails: string[];
+    readonly currentReference: string;
+    readonly currentContinuationLines: string[];
     readonly currentDate: string;
     readonly currentAmount: string;
     readonly currentIsDebit: boolean;
