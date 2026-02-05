@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
@@ -9,9 +9,11 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 interface Props {
     readonly isLoading: boolean;
     readonly onSelectFile: () => void;
+    readonly instructionText: string;
+    readonly selectFileText: string;
 }
 
-export const FileUploadStep = ({ isLoading, onSelectFile }: Props) => {
+export const FileUploadStep = ({ isLoading, onSelectFile, instructionText, selectFileText }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -20,13 +22,11 @@ export const FileUploadStep = ({ isLoading, onSelectFile }: Props) => {
                 left={<CircleIcon icon={UserIconNameEnum.Info} variant="warning" size={15} iconSize={15} />}
                 size="lg"
                 variant="warning"
-                title={t`Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel.`}
+                title={instructionText}
             />
 
             <View className="gap-y-md">
-                <Text className="text-primary text-muted-foreground text-sm px-md">
-                    <Trans>Select the exported XLSX file:</Trans>
-                </Text>
+                <Text className="text-primary text-muted-foreground text-sm px-md">{selectFileText}</Text>
             </View>
 
             <Button onPress={onSelectFile} disabled={isLoading} content={t`Select File`} leftIcon={UserIconNameEnum.Upload} />
