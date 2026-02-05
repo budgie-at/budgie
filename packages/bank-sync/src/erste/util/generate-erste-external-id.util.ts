@@ -40,4 +40,4 @@ const fnv1aHash = (input: string): string => {
 /* jscpd:ignore-end */
 
 export const generateErsteExternalId = (row: ErsteRowInterface, iban: string): string =>
-    fnv1aHash(`${row.date.toISOString()}|${iban}|${row.amount}|${row.description}`).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
+    fnv1aHash(`${row.date.toISOString()}|${iban}|${row.amount}|${row.reference}`).slice(0, ERSTE_EXTERNAL_ID_LENGTH);
