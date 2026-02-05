@@ -2,6 +2,8 @@ import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
 import { filterTranscriptionTokens } from '../util/filter-transcription-tokens.util';
@@ -63,7 +65,7 @@ export const useStt = (): UseSttReturn => {
     };
 
     const startStream = () => {
-        void (async () => {
+        const initializeStream = async (): Promise<void> => {
             await cleanupStream();
             resetState();
 
@@ -71,7 +73,9 @@ export const useStt = (): UseSttReturn => {
 
             streamPromiseRef.current = stt.stream({ language: locale.languageCode as SpeechToTextLanguage }).catch(() => '');
             setStatus('streaming');
-        })();
+        };
+
+        initializeStream().catch(emptyFn);
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -109,10 +113,12 @@ export const useStt = (): UseSttReturn => {
     };
 
     const cancelStream = () => {
-        void (async () => {
+        const terminateStream = async (): Promise<void> => {
             await cleanupStream();
             resetState();
-        })();
+        };
+
+        terminateStream().catch(emptyFn);
     };
 
     return {
