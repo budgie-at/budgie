@@ -409,7 +409,7 @@ msgstr "Конвертувати у переказ?"
 msgid "Could not activate account."
 msgstr "Не вдалося активувати рахунок."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not create category"
 msgstr "Не вдалося створити категорію"
 
@@ -429,7 +429,7 @@ msgstr "Не вдалося видалити рахунок."
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
-#: src/category/components/category-form/category-form.tsx:122
+#: src/category/components/category-form/category-form.tsx:121
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
 
@@ -449,7 +449,7 @@ msgstr "Не вдалося перепризначити тег"
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/category/components/category-form/category-form.tsx:142
+#: src/category/components/category-form/category-form.tsx:141
 msgid "Could not save category"
 msgstr "Не вдалося зберегти категорію"
 
@@ -489,7 +489,7 @@ msgstr "Створіть та організуйте теги транзакці
 msgid "Create Categories"
 msgstr "Створити категорії"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Create Category"
 msgstr "Створити категорію"
 
@@ -613,6 +613,10 @@ msgstr "Вимкнути блокування"
 msgid "Done"
 msgstr "Готово"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:108
+msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
+msgstr "Завантажте виписку з рахунку у форматі PDF з George (онлайн-банкінг Erste Bank): Рахунок → Виписки → Завантажити PDF."
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Нідерландська (Нідерланди)"
@@ -629,7 +633,7 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/category/components/category-form/category-form.tsx:66
+#: src/category/components/category-form/category-form.tsx:65
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
@@ -734,6 +738,10 @@ msgstr "Помилка"
 msgid "Errors"
 msgstr "Помилки"
 
+#: src/app/(main)/create-account/index.tsx:61
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:25
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
@@ -775,7 +783,7 @@ msgstr "Експортувати базу даних"
 msgid "Export Failed"
 msgstr "Помилка експорту"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:23
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:108
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
 msgstr "Експортуйте транзакції як XLSX з додатку Приватбанк24: Меню → Виписки → Експорт в Excel."
 
@@ -888,6 +896,11 @@ msgstr "Приховувати баланси рахунків та загаль
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
+#: src/app/(main)/create-account/index.tsx:60
+#: src/sync/component/create-erste-account/create-erste-account.tsx:98
+msgid "Import accounts and transactions from Erste Bank PDF statement"
+msgstr "Імпорт рахунків та транзакцій з PDF-виписки Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:54
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import accounts and transactions from Privatbank XLSX export"
@@ -903,6 +916,11 @@ msgstr "Імпортувати CSV"
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:97
+msgid "Import Erste Bank"
+msgstr "Імпортувати Erste Bank"
+
+#: src/sync/component/create-erste-account/create-erste-account.tsx:84
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Помилка імпорту"
@@ -952,6 +970,7 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:56
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Невірний файл"
@@ -1009,7 +1028,7 @@ msgstr "Зіставлення стовпців CSV"
 msgid "Match each field to a column from your CSV file"
 msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
-#: src/category/components/category-form/category-form.tsx:171
+#: src/category/components/category-form/category-form.tsx:169
 msgid "Merge into another category"
 msgstr "Об'єднати з іншою категорією"
 
@@ -1210,8 +1229,8 @@ msgstr "Будь ласка, спробуйте ще раз"
 
 #: src/app/(tabs)/settings/categories.tsx:52
 #: src/app/(tabs)/settings/tags.tsx:53
-#: src/category/components/category-form/category-form.tsx:122
-#: src/category/components/category-form/category-form.tsx:143
+#: src/category/components/category-form/category-form.tsx:121
+#: src/category/components/category-form/category-form.tsx:142
 #: src/tag/components/tag-form/tag-form.tsx:110
 #: src/tag/components/tag-form/tag-form.tsx:131
 msgid "Please try again later"
@@ -1353,7 +1372,7 @@ msgstr "Безпека"
 msgid "Select"
 msgstr "Вибрати"
 
-#: src/category/components/category-form/category-form.tsx:106
+#: src/category/components/category-form/category-form.tsx:105
 msgid "Select a category to merge into"
 msgstr "Виберіть категорію для об'єднання"
 
@@ -1405,7 +1424,11 @@ msgstr "Обрати файл"
 msgid "Select Import Preset"
 msgstr "Вибрати шаблон імпорту"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:28
+#: src/sync/component/create-erste-account/create-erste-account.tsx:109
+msgid "Select the downloaded PDF file:"
+msgstr "Виберіть завантажений PDF-файл:"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
 msgid "Select the exported XLSX file:"
 msgstr "Оберіть експортований XLSX-файл:"
 

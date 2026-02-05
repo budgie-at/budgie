@@ -53,7 +53,7 @@ packages/
 4. **Never disable ESLint without approval** - NEVER add `eslint-disable` comments without explicit user approval
 5. **Single const declarations** - Each variable gets its own `const` declaration
 6. **Use `emptyFn` for no-op callbacks** - Use `emptyFn` from `@rnw-community/shared` instead of `() => void 0`
-7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()` 
+7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per folder** - Each component file lives in its own folder
 10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
@@ -68,6 +68,10 @@ packages/
 19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
+22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
+23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
+24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
+25. **Class method ordering** - Public methods come before private methods in class definitions
 
 ### Naming Conventions
 
@@ -105,6 +109,16 @@ items.map(transform).filter(isDefined)
 
 // Bad
 items.map(transform).filter((item): item is ItemType => item !== null)
+```
+
+**Only use `.filter(isDefined)` when nulls are possible:**
+```typescript
+// Good - when transform can return null
+items.map(item => item.optionalField).filter(isDefined)
+
+// Bad - unnecessary filter when array type doesn't allow null
+const numbers: number[] = [1, 2, 3];
+numbers.filter(isDefined)  // Unnecessary, array can't have nulls
 ```
 
 **Prefer Zod for complex object validation:**
