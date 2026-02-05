@@ -5,6 +5,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import {
     MINUTES_IN_DAY,
+    MONTHLY_PATTERN_DAY_WINDOW,
     REPEATED_TRANSACTION_AMOUNT_BASED_TIME_WINDOW_MINUTES,
     REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT,
     REPEATED_TRANSACTION_DEFAULT_LIMIT,
@@ -25,6 +26,16 @@ interface TimeWindowInterface {
     readonly timeWindowEndMinutes: number;
 }
 
+interface MonthlyWindowInterface {
+    readonly dayOfMonth: number;
+    readonly dayWindowSize: number;
+}
+
+interface AmountBoundsInterface {
+    readonly amountMin: number;
+    readonly amountMax: number;
+}
+
 const calculateTimeWindow = (currentTime: Date, hasAmount: boolean): TimeWindowInterface => {
     const weekday = currentTime.getDay();
     const currentTimeMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
@@ -37,30 +48,68 @@ const calculateTimeWindow = (currentTime: Date, hasAmount: boolean): TimeWindowI
     };
 };
 
+const calculateMonthlyWindow = (currentTime: Date): MonthlyWindowInterface => ({
+    dayOfMonth: currentTime.getDate(),
+    dayWindowSize: MONTHLY_PATTERN_DAY_WINDOW
+});
+
+const calculateAmountBounds = (amount: number): AmountBoundsInterface => ({
+    amountMin: Math.round(amount * PRECISION * (1 - REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT)),
+    amountMax: Math.round(amount * PRECISION * (1 + REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT))
+});
+
 class RepeatedTransactionService {
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const hasAmount = isPositiveNumber(amount);
         const timeWindow = calculateTimeWindow(currentTime, hasAmount);
+        const monthlyWindow = calculateMonthlyWindow(currentTime);
+        const amountBounds = hasAmount ? calculateAmountBounds(amount) : {};
 
-        const patterns = await transactionPatternRepository.findRepeatedPatterns({
-            ...timeWindow,
-            type,
-            accountId,
-            categoryId,
-            limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-        });
+        const [weeklyPatterns, monthlyPatterns] = await Promise.all([
+            transactionPatternRepository.findRepeatedPatterns({
+                ...timeWindow,
+                ...amountBounds,
+                type,
+                ...(isPositiveNumber(accountId) && { accountId }),
+                ...(isPositiveNumber(categoryId) && { categoryId }),
+                limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
+            }),
+            transactionPatternRepository.findMonthlyPatterns({
+                ...monthlyWindow,
+                ...amountBounds,
+                type,
+                ...(isPositiveNumber(accountId) && { accountId }),
+                limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
+            })
+        ]);
 
-        return hasAmount ? this.filterByAmount(patterns, amount) : patterns;
+        return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns);
     }
 
-    private filterByAmount(patterns: RepeatedTransactionPatternInterface[], targetAmount: number): RepeatedTransactionPatternInterface[] {
-        const targetAmountMicrounits = targetAmount * PRECISION;
-        const tolerance = targetAmountMicrounits * REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT;
-        const minAmount = targetAmountMicrounits - tolerance;
-        const maxAmount = targetAmountMicrounits + tolerance;
+    private mergeAndDeduplicate(
+        weeklyPatterns: RepeatedTransactionPatternInterface[],
+        monthlyPatterns: RepeatedTransactionPatternInterface[]
+    ): RepeatedTransactionPatternInterface[] {
+        const patternMap = new Map<string, RepeatedTransactionPatternInterface>();
 
-        return patterns.filter(pattern => pattern.averageAmount >= minAmount && pattern.averageAmount <= maxAmount);
+        for (const pattern of weeklyPatterns) {
+            const key = `${pattern.categoryId}-${pattern.title}`;
+            patternMap.set(key, pattern);
+        }
+
+        for (const pattern of monthlyPatterns) {
+            const key = `${pattern.categoryId}-${pattern.title}`;
+            const existing = patternMap.get(key);
+
+            if (!existing || pattern.occurrenceCount > existing.occurrenceCount) {
+                patternMap.set(key, pattern);
+            }
+        }
+
+        return [...patternMap.values()]
+            .sort((first, second) => second.occurrenceCount - first.occurrenceCount)
+            .slice(0, REPEATED_TRANSACTION_DEFAULT_LIMIT);
     }
 }
 
