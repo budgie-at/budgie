@@ -124,11 +124,12 @@ class TransferConsolidationService {
             );
 
             const allTags = [...incomeTransactionTags, ...expenseTransactionTags];
-            if (isNotEmptyArray(allTags)) {
+            const uniqueTagIds = [...new Set(allTags.map(tag => tag.tagId))];
+            if (isNotEmptyArray(uniqueTagIds)) {
                 await transactionTagsRepository.bulkCreate(
-                    allTags.map(tag => ({
+                    uniqueTagIds.map(tagId => ({
                         transactionId: candidate.transfer_transaction_id,
-                        tagId: tag.tagId
+                        tagId
                     })),
                     tx
                 );
