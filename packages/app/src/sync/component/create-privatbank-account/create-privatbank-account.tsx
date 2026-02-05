@@ -20,6 +20,7 @@ import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
 type SetupStep = 'file' | 'accounts';
 
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component
 export const CreatePrivatbankAccount = () => {
     const { t } = useLingui();
 
@@ -101,7 +102,14 @@ export const CreatePrivatbankAccount = () => {
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    {step === 'file' && <FileUploadStep isLoading={isLoading} onSelectFile={handleSelectFile} />}
+                    {step === 'file' && (
+                        <FileUploadStep
+                            isLoading={isLoading}
+                            onSelectFile={handleSelectFile}
+                            instructionText={t`Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel.`}
+                            selectFileText={t`Select the exported XLSX file:`}
+                        />
+                    )}
 
                     {step === 'accounts' && (
                         <AccountSelectionStep

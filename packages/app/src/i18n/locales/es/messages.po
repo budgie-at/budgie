@@ -613,6 +613,10 @@ msgstr "Desactivar bloqueo"
 msgid "Done"
 msgstr "Listo"
 
+#: src/sync/component/create-erste-account/create-erste-account.tsx:108
+msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
+msgstr "Descarga tu extracto de cuenta en PDF desde George (banca online de Erste Bank): Cuenta → Extractos → Descargar PDF."
+
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
 msgstr "Neerlandés (Países Bajos)"
@@ -779,7 +783,7 @@ msgstr "Exportar base de datos"
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:23
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:108
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
 msgstr "Exporte sus transacciones como XLSX desde la app Privatbank24: Menú → Extractos → Exportar a Excel."
 
@@ -893,7 +897,7 @@ msgid "History synced"
 msgstr "Historial sincronizado"
 
 #: src/app/(main)/create-account/index.tsx:60
-#: src/sync/component/create-erste-account/create-erste-account.tsx:100
+#: src/sync/component/create-erste-account/create-erste-account.tsx:98
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
 
@@ -912,11 +916,11 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:99
+#: src/sync/component/create-erste-account/create-erste-account.tsx:97
 msgid "Import Erste Bank"
 msgstr "Importar Erste Bank"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:86
+#: src/sync/component/create-erste-account/create-erste-account.tsx:84
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
 msgid "Import failed"
 msgstr "Error de importación"
@@ -966,7 +970,7 @@ msgstr "Ingresos por etiqueta"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:58
+#: src/sync/component/create-erste-account/create-erste-account.tsx:56
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
 msgid "Invalid file"
 msgstr "Archivo inválido"
@@ -1420,7 +1424,11 @@ msgstr "Seleccionar archivo"
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
 
-#: src/sync/component/file-upload-step/file-upload-step.tsx:28
+#: src/sync/component/create-erste-account/create-erste-account.tsx:109
+msgid "Select the downloaded PDF file:"
+msgstr "Selecciona el archivo PDF descargado:"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
 msgid "Select the exported XLSX file:"
 msgstr "Seleccione el archivo XLSX exportado:"
 
