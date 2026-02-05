@@ -31,7 +31,6 @@ export class CategoryLlmService extends BaseLlmService {
     async regenerateAll(onError?: CategoryLlmErrorHandler): Promise<void> {
         const categories = await categoryRepository.findAllNonSystem();
 
-        /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
         for (const category of categories) {
             try {
                 const result = await this.generateTranslationAndTags(category.title);
@@ -40,7 +39,6 @@ export class CategoryLlmService extends BaseLlmService {
                 onError?.(category, error);
             }
         }
-        /* eslint-enable no-await-in-loop */
     }
 
     async suggestCategories(params: CategorySuggestionParams): Promise<CategoryEntityInterface[]> {

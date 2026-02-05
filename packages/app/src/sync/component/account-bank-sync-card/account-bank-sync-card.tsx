@@ -11,6 +11,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountBankSync } from '../../hook/use-account-bank-sync.hook';
 import { monobankSyncService } from '../../service/monobank-sync.service';
 import { BankSyncTokenSection } from '../bank-sync-token-section/bank-sync-token-section';
+import { ResyncBankSyncAccount } from '../resync-bank-sync-account/resync-bank-sync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
 interface Props {
@@ -59,14 +60,17 @@ export const AccountBankSyncCard = ({ accountId }: Props) => {
 
     return (
         <Card className="p-4xl gap-y-lg">
-            <View className="flex-row items-center justify-between">
-                <View className="flex-1 mr-md">
+            <View className="flex-row items-center justify-between gap-2">
+                <ResyncBankSyncAccount accountId={accountId} />
+                <View className="content-center items-center">
                     <Text className="text-primary font-semibold text-base">
                         <Trans>Bank Sync</Trans>
                     </Text>
                     <Text className={statusTextVariants({ status: bankSync.status })}>{getStatusLabel()}</Text>
                 </View>
-                <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                <View className="content-center">
+                    <ThemedSwitch value={bankSync.enabled} onValueChange={handleToggle} />
+                </View>
             </View>
 
             <View className="gap-y-sm border-t border-secondary-corner pt-lg">

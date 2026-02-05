@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 import { BankAccountInterface, BankTransactionInterface, PrivatbankFileClient } from '@budgie/bank-sync';
 import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
 

@@ -46,6 +46,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
     }
 
+    async softDeleteById(id: number, tx?: TX): Promise<void> {
+        await (tx ?? this.db).update(TransactionEntityTable).set({ deletedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
+    }
+
     async create(input: TransactionCreateEntityInterface, tx?: TX): Promise<TransactionEntityInterface> {
         const [transaction] = await this.bulkCreate([input], tx);
 
@@ -204,6 +208,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .update(TransactionEntityTable)
             .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
             .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
+    }
+
+    async unconsolidateTransfersByAccountIds(accountIds: number[], tx?: TX): Promise<void> {
+        for (const accountId of accountIds) {
+            await this.convertTransfersFromAccountToIncome(accountId, tx);
+            await this.convertTransfersToAccountToExpense(accountId, tx);
+        }
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {

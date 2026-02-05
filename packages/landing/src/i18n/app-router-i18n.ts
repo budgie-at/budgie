@@ -9,7 +9,7 @@ type SupportedLocales = (typeof locales)[number];
 
 export const allMessages: Record<SupportedLocales, Messages> = {};
 for (const locale of locales) {
-    // eslint-disable-next-line no-await-in-loop,@typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     allMessages[locale] = (await import(`./locales/${locale}/messages`)).messages as Messages;
 }
 

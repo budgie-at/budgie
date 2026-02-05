@@ -6,9 +6,11 @@ import {
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
+    TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -130,6 +132,40 @@ class TransactionService {
             await accountBalanceIncrementalService.updateAllBalances(true, tx);
 
             return transaction;
+        });
+    }
+
+    async update(input: TransactionCreateInputInterface): Promise<void> {
+        await db.transaction(async tx => {
+            for (const entry of input.entries) {
+                if (!isDefined(entry) || !isDefined(entry.externalId)) {
+                    return;
+                }
+
+                const [updatedEntry] = await tx
+                    .update(TransactionEntryEntityTable)
+                    .set({
+                        amount: convertToMicroUnits(entry.amount),
+                        exchangeRate: entry.exchangeRate,
+                        toIban: entry.toIban
+                    })
+                    .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
+                    .returning({ transactionId: TransactionEntryEntityTable.transactionId });
+
+                if (!isDefined(updatedEntry)) {
+                    return;
+                }
+
+                await transactionRepository.updateById(
+                    updatedEntry.transactionId,
+                    {
+                        title: input.title,
+                        comment: input.comment,
+                        operatedAt: input.operatedAt
+                    },
+                    tx
+                );
+            }
         });
     }
 

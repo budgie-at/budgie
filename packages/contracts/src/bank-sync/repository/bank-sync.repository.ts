@@ -117,6 +117,24 @@ export class BankSyncRepository {
         }
     }
 
+    async resetForResync(accountId: number, tx?: TX): Promise<void> {
+        const now = new Date();
+        await (tx ?? this.db)
+            .update(BankSyncEntityTable)
+            .set({
+                mode: BankSyncModeEnum.BACKWARD,
+                status: BankSyncStatusEnum.IDLE,
+                backwardSyncFromAt: now,
+                backwardSyncedAt: null,
+                forwardSyncFromAt: now,
+                forwardSyncedAt: null,
+                transactionCount: 0,
+                errorCount: 0,
+                lastError: null
+            })
+            .where(eq(BankSyncEntityTable.accountId, accountId));
+    }
+
     async truncate(tx?: TX): Promise<void> {
         await (tx ?? this.db).delete(BankSyncEntityTable);
     }

@@ -31,7 +31,6 @@ export class TagLlmService extends BaseLlmService {
     async regenerateAll(onError?: TagLlmErrorHandler): Promise<void> {
         const tags = await tagRepository.findAll();
 
-        /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
         for (const tag of tags) {
             try {
                 const result = await this.generateTranslationAndTags(tag.title);
@@ -40,7 +39,6 @@ export class TagLlmService extends BaseLlmService {
                 onError?.(tag, error);
             }
         }
-        /* eslint-enable no-await-in-loop */
     }
 
     async suggestTags(params: TagSuggestionParams): Promise<TagEntityInterface[]> {

@@ -13,6 +13,7 @@ import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { accountService } from '../../service/account.service';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
+import { IbanField } from '../iban-field/iban-field';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
@@ -47,6 +48,7 @@ export const CreateLiabilityAccount = ({ type, title }: Props) => {
         <CreateAccountScreen title={title} control={control} variant={variant} instrumentSymbol={instrument.symbol} onSubmit={handleSubmit}>
             <FormLayoutGroup>
                 <AccountDetailsField variant={variant} control={control} />
+                <IbanField control={control} />
                 <CreateAccountCurrencyField control={control} />
                 <IncludeInNetWorthField control={control} />
             </FormLayoutGroup>
