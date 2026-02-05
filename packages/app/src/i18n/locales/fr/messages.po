@@ -734,6 +734,10 @@ msgstr "Erreur"
 msgid "Errors"
 msgstr "Erreurs"
 
+#: src/app/(main)/create-account/index.tsx:61
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:25
 msgid "Everyday transactions and spending"
 msgstr "Transactions et dépenses quotidiennes"
@@ -888,6 +892,7 @@ msgstr "Masquer les soldes des comptes et la valeur nette lors des captures d'é
 msgid "History synced"
 msgstr "Historique synchronisé"
 
+#: src/app/(main)/create-account/index.tsx:60
 #: src/sync/component/create-erste-account/create-erste-account.tsx:100
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importer les comptes et transactions depuis le relevé PDF Erste Bank"
