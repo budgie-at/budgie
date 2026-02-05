@@ -124,7 +124,7 @@ const isContinuationLine = (line: string): boolean => {
         return false;
     }
 
-    return line.startsWith(' ') && !isTransactionLine(line);
+    return !isTransactionLine(line);
 };
 
 const parseTransactionLine = (line: string): TransactionParseStateInterface | null => {
