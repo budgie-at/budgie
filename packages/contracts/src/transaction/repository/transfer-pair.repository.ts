@@ -14,7 +14,6 @@ export class TransferPairRepository {
     async findCandidates(): Promise<TransferPairCandidateInterface[]> {
         const sql = `
             WITH forward_matched AS (
-                -- Forward matching: expense.to_iban -> income account IBAN
                 SELECT
                     expense_entry.id as expense_entry_id,
                     expense_entry.transaction_id as expense_transaction_id,
@@ -48,8 +47,6 @@ export class TransferPairRepository {
                     AND expense_entry.account_id != income_account.id
             ),
             reverse_matched AS (
-                -- Reverse matching: income.to_iban -> expense account IBAN
-                -- Used for cross-currency FOP transfers where expense.to_iban points to final destination
                 SELECT
                     expense_entry.id as expense_entry_id,
                     expense_entry.transaction_id as expense_transaction_id,
@@ -83,7 +80,6 @@ export class TransferPairRepository {
                     AND income_entry.account_id != expense_account.id
             ),
             iban_matched_entries AS (
-                -- Combine forward and reverse matches, prefer forward matches
                 SELECT * FROM forward_matched
                 UNION
                 SELECT * FROM reverse_matched
@@ -94,8 +90,6 @@ export class TransferPairRepository {
                 )
             ),
             amount_based_matched AS (
-                -- Fallback: same-currency exact amount match when no IBAN available
-                -- Used for Private account transfers where counterIban is not provided
                 SELECT
                     expense_entry.id as expense_entry_id,
                     expense_entry.transaction_id as expense_transaction_id,
@@ -167,14 +161,11 @@ export class TransferPairRepository {
                 INNER JOIN accounts expense_account ON tf.expense_account_id = expense_account.id
                 INNER JOIN accounts income_account ON tf.income_account_id = income_account.id
                 WHERE
-                    -- Time constraint: within 12 hours (43200 seconds)
                     ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER)) <= ${TRANSFER_TIME_WINDOW_SECONDS}
                     AND (
-                        -- Same currency: exact amount match
                         (expense_account.instrument_id = income_account.instrument_id
                          AND tf.expense_entry_amount = tf.income_entry_amount)
                         OR
-                        -- Different currency: within 5% after exchange rate conversion (divide by rate to get base currency)
                         (expense_account.instrument_id != income_account.instrument_id
                          AND tf.expense_entry_exchange_rate > 0
                          AND tf.income_entry_exchange_rate > 0
