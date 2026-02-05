@@ -15,13 +15,7 @@ import {
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { THIRTY_MINUTES_IN_SECONDS } from '../constant/time.constant';
 import { TRANSFER_CONSOLIDATION_TASK } from '../constant/transfer-consolidation-task.constant';
-
-interface ConsolidationResultInterface {
-    found: number;
-    consolidated: number;
-    transitiveFound: number;
-    transitiveAttached: number;
-}
+import { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 
 class TransferConsolidationService {
     private isRunning = false;
