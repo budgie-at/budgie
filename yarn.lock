@@ -1330,7 +1330,7 @@ __metadata:
     expo-linking: "npm:~8.0.11"
     expo-local-authentication: "npm:~17.0.8"
     expo-localization: "npm:~17.0.8"
-    expo-pdf-text-extract: "npm:^1.0.0"
+    expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
     expo-router: "npm:~6.0.23"
     expo-screen-capture: "npm:~8.0.9"
     expo-secure-store: "npm:~15.0.8"
@@ -10819,7 +10819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-pdf-text-extract@npm:^1.0.0":
+"expo-pdf-text-extract@npm:1.0.0":
   version: 1.0.0
   resolution: "expo-pdf-text-extract@npm:1.0.0"
   peerDependencies:
@@ -10827,6 +10827,17 @@ __metadata:
     react: ">=18.0.0"
     react-native: ">=0.72.0"
   checksum: 10/3d827cb7a90b0c9a4dad65a5b84ae26889c1f3b0acf8ccd0036184190144a59c16d94262b291f50cefff5511b33750f3ad947d3944cff67d820093ca010e9d41
+  languageName: node
+  linkType: hard
+
+"expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch":
+  version: 1.0.0
+  resolution: "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch::version=1.0.0&hash=cb1605"
+  peerDependencies:
+    expo: ">=49.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.72.0"
+  checksum: 10/be381b00c2e1eb6fe49f13a6b3d1f99bd73f7ea88ba78c47df7fbfaa803fd1aa3ec48dbea27bb3ac4268d013779f8f111d1606be5154de8dcb0abdb0cbbf0a5a
   languageName: node
   linkType: hard
 
