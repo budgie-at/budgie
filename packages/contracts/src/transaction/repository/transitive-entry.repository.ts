@@ -72,6 +72,8 @@ export class TransitiveEntryRepository {
                     AND (
                         (tee.instrument_id = oic.orphan_income_instrument_id AND ABS(tee.amount) = oic.orphan_income_amount)
                         OR (tee.instrument_id != oic.orphan_income_instrument_id
+                            AND tee.exchange_rate > 0
+                            AND oic.orphan_income_exchange_rate > 0
                             AND ABS(ABS(tee.amount) / tee.exchange_rate - oic.orphan_income_amount / oic.orphan_income_exchange_rate)
                                 < (ABS(tee.amount) / tee.exchange_rate * 0.05))
                     )
