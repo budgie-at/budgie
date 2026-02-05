@@ -21,6 +21,7 @@ import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
 type SetupStep = 'file' | 'accounts';
 
+// eslint-disable-next-line max-lines-per-function -- Form orchestration component
 export const CreateErsteAccount = () => {
     const { t } = useLingui();
 
@@ -101,7 +102,14 @@ export const CreateErsteAccount = () => {
         >
             <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 <FormLayoutGroup>
-                    {step === 'file' && <FileUploadStep isLoading={isLoading} onSelectFile={handleSelectFile} />}
+                    {step === 'file' && (
+                        <FileUploadStep
+                            isLoading={isLoading}
+                            onSelectFile={handleSelectFile}
+                            instructionText={t`Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF.`}
+                            selectFileText={t`Select the downloaded PDF file:`}
+                        />
+                    )}
 
                     {step === 'accounts' && (
                         <AccountSelectionStep
