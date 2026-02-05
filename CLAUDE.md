@@ -138,6 +138,20 @@ type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
 
+**Check object property values, not just object existence:**
+```typescript
+// Good - check if date range has actual values before using
+const hasDateRange = isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to));
+if (hasDateRange) {
+    conditions.push(this.buildDateCondition(filters.date));
+}
+
+// Bad - object exists but may have all null properties
+if (isDefined(filters.date)) {
+    conditions.push(this.buildDateCondition(filters.date)); // Returns undefined if both from/to are null!
+}
+```
+
 **Microunits conversion:**
 ```typescript
 // Good - use utility function
