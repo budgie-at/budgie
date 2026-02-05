@@ -11,12 +11,6 @@
             "default": "./dist/esm/index.js",
             "react-native": "./dist/esm/index.js"
         },
-        "./erste": {
-            "types": "./dist/esm/erste.d.ts",
-            "import": "./dist/esm/erste.js",
-            "default": "./dist/esm/erste.js",
-            "react-native": "./dist/esm/erste.js"
-        },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
