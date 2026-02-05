@@ -37,6 +37,7 @@ class TransferConsolidationService {
         });
     }
 
+    // eslint-disable-next-line max-statements -- Service orchestration method coordinating multiple async operations
     async consolidate(): Promise<ConsolidationResultInterface> {
         if (this.isRunning) {
             return { found: 0, consolidated: 0, transitiveFound: 0, transitiveAttached: 0 };
@@ -50,6 +51,11 @@ class TransferConsolidationService {
 
             const transitiveCandidates = await transitiveEntryRepository.findCandidates();
             const transitiveAttached = await this.processTransitiveCandidates(transitiveCandidates);
+
+            const hasChanges = consolidated > 0 || transitiveAttached > 0;
+            if (hasChanges) {
+                await accountBalanceIncrementalService.updateAllBalances(true);
+            }
 
             return {
                 found: pairCandidates.length,
@@ -72,7 +78,6 @@ class TransferConsolidationService {
             if (success) {
                 consolidated += 1;
             }
-            await accountBalanceIncrementalService.updateAllBalances(true);
         }
 
         return consolidated;
@@ -86,7 +91,6 @@ class TransferConsolidationService {
             if (success) {
                 attached += 1;
             }
-            await accountBalanceIncrementalService.updateAllBalances(true);
         }
 
         return attached;
