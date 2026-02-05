@@ -1,4 +1,4 @@
-import { SQL, and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -133,8 +133,12 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     /* jscpd:ignore-end */
 
     private buildStatisticsFilterWhere(filters: StatisticsFilterInterface) {
-        const conditions: SQL[] = [
-            ...(isDefined(filters.date) ? [this.buildDateCondition(filters.date)] : []),
+        const dateCondition =
+            isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to))
+                ? this.buildDateCondition(filters.date)
+                : null;
+        const conditions = [
+            ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
             ...(isNotEmptyArray(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
         ].filter(isDefined);
