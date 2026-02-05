@@ -734,6 +734,10 @@ msgstr "Fehler"
 msgid "Errors"
 msgstr "Fehler"
 
+#: src/app/(main)/create-account/index.tsx:61
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:25
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
@@ -888,6 +892,7 @@ msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 msgid "History synced"
 msgstr "Verlauf synchronisiert"
 
+#: src/app/(main)/create-account/index.tsx:60
 #: src/sync/component/create-erste-account/create-erste-account.tsx:100
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Konten und Transaktionen aus Erste Bank PDF-Kontoauszug importieren"

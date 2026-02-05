@@ -1,5 +1,3 @@
-import { PDFParse } from 'pdf-parse';
-
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BankProviderEnum } from '../../core/enum/bank-provider.enum';
@@ -228,14 +226,8 @@ const extractAccountInfo = (text: string): ErsteAccountInfoInterface => {
     };
 };
 
-export const parseErstePdf = async (buffer: Uint8Array): Promise<ErsteParsedDataInterface> => {
+export const parseErsteText = (text: string): ErsteParsedDataInterface => {
     try {
-        const parser = new PDFParse({ data: buffer });
-        const textResult = await parser.getText();
-        const { text } = textResult;
-
-        await parser.destroy();
-
         const account = extractAccountInfo(text);
         const transactions = parseTransactions(text, account.statementDate);
 
@@ -245,6 +237,6 @@ export const parseErstePdf = async (buffer: Uint8Array): Promise<ErsteParsedData
             throw error;
         }
 
-        throw createParseError('Failed to parse Erste PDF file', error);
+        throw createParseError('Failed to parse Erste PDF text', error);
     }
 };

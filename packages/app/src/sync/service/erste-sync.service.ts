@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
-import { BankAccountInterface, ErsteFileClient } from '@budgie/bank-sync';
 import { BankSyncModeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { extractText } from 'expo-pdf-text-extract';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -11,7 +11,21 @@ import { getOrCreateBankAccount } from '../util/get-or-create-bank-account.util'
 import { mapBankAccountsToPreview } from '../util/map-bank-accounts-to-preview.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
+import type { BankAccountInterface, BankTransactionInterface } from '@budgie/bank-sync';
+
 const PROVIDER = ExternalSourceEnum.ERSTE;
+
+interface ErsteFileClientInterface {
+    parse(text: string): void;
+    getAccounts(): BankAccountInterface[];
+    getTransactions(): BankTransactionInterface[];
+}
+
+const getErsteFileClient = async (): Promise<ErsteFileClientInterface> => {
+    const module = await import('@budgie/bank-sync/erste');
+
+    return new module.ErsteFileClient();
+};
 
 /* jscpd:ignore-start */
 const createBankSyncRecord = async (accountId: number): Promise<void> => {
@@ -31,7 +45,7 @@ const createBankSyncRecord = async (accountId: number): Promise<void> => {
 /* jscpd:ignore-end */
 
 const importAccountTransactions = async (
-    client: ErsteFileClient,
+    client: ErsteFileClientInterface,
     bankAccount: BankAccountInterface,
     existingExternalIds: Set<string>
 ): Promise<void> => {
@@ -50,9 +64,10 @@ const importAccountTransactions = async (
     await transactionService.bulkCreate(transactionInputs);
 };
 
-export const ersteSyncImportPreview = async (fileBuffer: Uint8Array): Promise<BankAccountPreviewInterface[]> => {
-    const client = new ErsteFileClient();
-    await client.parse(fileBuffer);
+export const ersteSyncImportPreview = async (filePath: string): Promise<BankAccountPreviewInterface[]> => {
+    const text = await extractText(filePath);
+    const client = await getErsteFileClient();
+    client.parse(text);
     const bankAccounts = client.getAccounts();
 
     if (!isNotEmptyArray(bankAccounts)) {
@@ -62,7 +77,7 @@ export const ersteSyncImportPreview = async (fileBuffer: Uint8Array): Promise<Ba
     return mapBankAccountsToPreview(bankAccounts, PROVIDER);
 };
 
-const executeImport = async (client: ErsteFileClient, bankAccounts: BankAccountInterface[]): Promise<void> => {
+const executeImport = async (client: ErsteFileClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> => {
     const existingExternalIds = await transactionService.findByExternalSource(PROVIDER);
 
     for (const bankAccount of bankAccounts) {
@@ -71,9 +86,10 @@ const executeImport = async (client: ErsteFileClient, bankAccounts: BankAccountI
 };
 
 /* jscpd:ignore-start */
-export const ersteSyncExecuteImport = async (fileBuffer: Uint8Array, selectedAccountIds: string[]): Promise<void> => {
-    const client = new ErsteFileClient();
-    await client.parse(fileBuffer);
+export const ersteSyncExecuteImport = async (filePath: string, selectedAccountIds: string[]): Promise<void> => {
+    const text = await extractText(filePath);
+    const client = await getErsteFileClient();
+    client.parse(text);
     const bankAccounts = client.getAccounts();
     const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 

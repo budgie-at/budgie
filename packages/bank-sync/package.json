@@ -11,6 +11,12 @@
             "default": "./dist/esm/index.js",
             "react-native": "./dist/esm/index.js"
         },
+        "./erste": {
+            "types": "./dist/esm/erste.d.ts",
+            "import": "./dist/esm/erste.js",
+            "default": "./dist/esm/erste.js",
+            "react-native": "./dist/esm/erste.js"
+        },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
@@ -31,7 +37,6 @@
         "@rnw-community/shared": "^1.8.2",
         "date-fns": "^4.1.0",
         "ky": "^1.14.1",
-        "pdf-parse": "^2.4.5",
         "xlsx": "^0.18.5"
     }
 }

@@ -16,7 +16,6 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
 import { BankAccountPreviewInterface } from '../../interface/bank-account-preview.interface';
 import { ersteSyncExecuteImport, ersteSyncImportPreview } from '../../service/erste-sync.service';
-import { readFileAsUint8Array } from '../../util/read-file-as-uint8-array.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { FileUploadStep } from '../file-upload-step/file-upload-step';
 
@@ -30,7 +29,7 @@ export const CreateErsteAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [accountPreviews, setAccountPreviews] = useState<BankAccountPreviewInterface[]>([]);
     const [selectedAccounts, setSelectedAccounts] = useState<Set<string>>(new Set());
-    const [fileBuffer, setFileBuffer] = useState<Uint8Array | null>(null);
+    const [filePath, setFilePath] = useState<string | null>(null);
     /* jscpd:ignore-end */
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -48,9 +47,8 @@ export const CreateErsteAccount = () => {
                 return;
             }
 
-            const buffer = await readFileAsUint8Array(uri);
-            const previews = await ersteSyncImportPreview(buffer);
-            setFileBuffer(buffer);
+            const previews = await ersteSyncImportPreview(uri);
+            setFilePath(uri);
             setAccountPreviews(previews);
             setSelectedAccounts(new Set(previews.filter(preview => preview.hasBankSync).map(preview => preview.externalId)));
             setStep('accounts');
@@ -74,13 +72,13 @@ export const CreateErsteAccount = () => {
     };
 
     const handleSetupSync = async () => {
-        if (!isDefined(fileBuffer)) {
+        if (!isDefined(filePath)) {
             return;
         }
 
         setIsLoading(true);
         try {
-            await ersteSyncExecuteImport(fileBuffer, [...selectedAccounts]);
+            await ersteSyncExecuteImport(filePath, [...selectedAccounts]);
             router.replace('/');
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Import failed`, text2: getErrorMessage(error) });
