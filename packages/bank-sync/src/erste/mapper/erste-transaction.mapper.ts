@@ -27,5 +27,5 @@ export const ersteTransactionMapper = (row: ErsteRowInterface, iban: string): Ba
     cashbackAmount: 0,
     balance: 0,
     hold: false,
-    category: row.details
+    category: ''
 });
