@@ -138,33 +138,29 @@ class TransactionService {
     async update(input: TransactionCreateInputInterface): Promise<void> {
         await db.transaction(async tx => {
             for (const entry of input.entries) {
-                if (!isDefined(entry) || !isDefined(entry.externalId)) {
-                    return;
+                if (isDefined(entry) && isDefined(entry.externalId)) {
+                    const [updatedEntry] = await tx
+                        .update(TransactionEntryEntityTable)
+                        .set({
+                            amount: convertToMicroUnits(entry.amount),
+                            exchangeRate: entry.exchangeRate,
+                            toIban: entry.toIban
+                        })
+                        .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
+                        .returning({ transactionId: TransactionEntryEntityTable.transactionId });
+
+                    if (isDefined(updatedEntry)) {
+                        await transactionRepository.updateById(
+                            updatedEntry.transactionId,
+                            {
+                                title: input.title,
+                                comment: input.comment,
+                                operatedAt: input.operatedAt
+                            },
+                            tx
+                        );
+                    }
                 }
-
-                const [updatedEntry] = await tx
-                    .update(TransactionEntryEntityTable)
-                    .set({
-                        amount: convertToMicroUnits(entry.amount),
-                        exchangeRate: entry.exchangeRate,
-                        toIban: entry.toIban
-                    })
-                    .where(eq(TransactionEntryEntityTable.externalId, entry.externalId))
-                    .returning({ transactionId: TransactionEntryEntityTable.transactionId });
-
-                if (!isDefined(updatedEntry)) {
-                    return;
-                }
-
-                await transactionRepository.updateById(
-                    updatedEntry.transactionId,
-                    {
-                        title: input.title,
-                        comment: input.comment,
-                        operatedAt: input.operatedAt
-                    },
-                    tx
-                );
             }
         });
     }
