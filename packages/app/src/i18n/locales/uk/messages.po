@@ -734,6 +734,10 @@ msgstr "Помилка"
 msgid "Errors"
 msgstr "Помилки"
 
+#: src/app/(main)/create-account/index.tsx:61
+msgid "Erste Bank"
+msgstr "Erste Bank"
+
 #: src/app/(main)/create-account/index.tsx:25
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
@@ -888,6 +892,7 @@ msgstr "Приховувати баланси рахунків та загаль
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
+#: src/app/(main)/create-account/index.tsx:60
 #: src/sync/component/create-erste-account/create-erste-account.tsx:100
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Імпорт рахунків та транзакцій з PDF-виписки Erste Bank"
