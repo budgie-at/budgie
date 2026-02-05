@@ -1,4 +1,9 @@
 import { DB } from '../../@generic/type/db.type';
+import {
+    CROSS_CURRENCY_TOLERANCE,
+    FINANCIAL_SERVICES_MCC_GROUP_ID,
+    TRANSFER_TIME_WINDOW_SECONDS
+} from '../constant/transfer-matching.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransferPairCandidateInterface } from '../interface/transfer-pair-candidate.interface';
 
@@ -27,7 +32,7 @@ export class TransferPairRepository {
                 FROM transaction_entries expense_entry
                 INNER JOIN mcc_categories expense_mcc ON
                     expense_entry.mcc_category_id = expense_mcc.id
-                    AND expense_mcc.mcc_group_id = 10
+                    AND expense_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 INNER JOIN accounts income_account ON
                     expense_entry.to_iban IS NOT NULL
                     AND income_account.iban IS NOT NULL
@@ -38,7 +43,7 @@ export class TransferPairRepository {
                     AND income_entry.id != expense_entry.id
                 INNER JOIN mcc_categories income_mcc ON
                     income_entry.mcc_category_id = income_mcc.id
-                    AND income_mcc.mcc_group_id = 10
+                    AND income_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 WHERE expense_entry.deleted_at IS NULL
                     AND expense_entry.account_id != income_account.id
             ),
@@ -62,7 +67,7 @@ export class TransferPairRepository {
                 FROM transaction_entries income_entry
                 INNER JOIN mcc_categories income_mcc ON
                     income_entry.mcc_category_id = income_mcc.id
-                    AND income_mcc.mcc_group_id = 10
+                    AND income_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 INNER JOIN accounts expense_account ON
                     income_entry.to_iban IS NOT NULL
                     AND expense_account.iban IS NOT NULL
@@ -73,7 +78,7 @@ export class TransferPairRepository {
                     AND expense_entry.id != income_entry.id
                 INNER JOIN mcc_categories expense_mcc ON
                     expense_entry.mcc_category_id = expense_mcc.id
-                    AND expense_mcc.mcc_group_id = 10
+                    AND expense_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 WHERE income_entry.deleted_at IS NULL
                     AND income_entry.account_id != expense_account.id
             ),
@@ -108,7 +113,7 @@ export class TransferPairRepository {
                 FROM transaction_entries expense_entry
                 INNER JOIN mcc_categories expense_mcc ON
                     expense_entry.mcc_category_id = expense_mcc.id
-                    AND expense_mcc.mcc_group_id = 10
+                    AND expense_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 INNER JOIN accounts expense_account ON
                     expense_entry.account_id = expense_account.id
                 INNER JOIN transaction_entries income_entry ON
@@ -118,7 +123,7 @@ export class TransferPairRepository {
                     AND income_entry.account_id != expense_entry.account_id
                 INNER JOIN mcc_categories income_mcc ON
                     income_entry.mcc_category_id = income_mcc.id
-                    AND income_mcc.mcc_group_id = 10
+                    AND income_mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 INNER JOIN accounts income_account ON
                     income_entry.account_id = income_account.id
                     AND income_account.instrument_id = expense_account.instrument_id
@@ -163,7 +168,7 @@ export class TransferPairRepository {
                 INNER JOIN accounts income_account ON tf.income_account_id = income_account.id
                 WHERE
                     -- Time constraint: within 12 hours (43200 seconds)
-                    ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER)) <= 43200
+                    ABS(CAST(tf.income_operated_at AS INTEGER) - CAST(tf.expense_operated_at AS INTEGER)) <= ${TRANSFER_TIME_WINDOW_SECONDS}
                     AND (
                         -- Same currency: exact amount match
                         (expense_account.instrument_id = income_account.instrument_id
@@ -173,7 +178,7 @@ export class TransferPairRepository {
                         (expense_account.instrument_id != income_account.instrument_id
                          AND tf.expense_entry_exchange_rate > 0
                          AND tf.income_entry_exchange_rate > 0
-                         AND ABS(tf.expense_entry_amount / tf.expense_entry_exchange_rate - tf.income_entry_amount / tf.income_entry_exchange_rate) < (tf.expense_entry_amount / tf.expense_entry_exchange_rate * 0.05))
+                         AND ABS(tf.expense_entry_amount / tf.expense_entry_exchange_rate - tf.income_entry_amount / tf.income_entry_exchange_rate) < (tf.expense_entry_amount / tf.expense_entry_exchange_rate * ${CROSS_CURRENCY_TOLERANCE}))
                     )
             ),
             ranked_pairs AS (

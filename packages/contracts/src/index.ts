@@ -152,6 +152,10 @@ export { TransactionTypeEnum } from './transaction/enum/transaction-type.enum';
 export { TransactionAssociationEnum } from './transaction/enum/transaction-association.enum';
 
 export { DEFAULT_TRANSACTION_FILTER } from './transaction/constant/default-transaction-filter.constant';
+export { FINANCIAL_SERVICES_MCC_GROUP_ID } from './transaction/constant/transfer-matching.constant';
+export { TRANSFER_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-matching.constant';
+export { TRANSITIVE_TIME_WINDOW_SECONDS } from './transaction/constant/transfer-matching.constant';
+export { CROSS_CURRENCY_TOLERANCE } from './transaction/constant/transfer-matching.constant';
 
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';

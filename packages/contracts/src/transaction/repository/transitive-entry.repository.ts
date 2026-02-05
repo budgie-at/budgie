@@ -1,4 +1,9 @@
 import { DB } from '../../@generic/type/db.type';
+import {
+    CROSS_CURRENCY_TOLERANCE,
+    FINANCIAL_SERVICES_MCC_GROUP_ID,
+    TRANSITIVE_TIME_WINDOW_SECONDS
+} from '../constant/transfer-matching.constant';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransitiveEntryCandidateInterface } from '../interface/transitive-entry-candidate.interface';
 
@@ -40,7 +45,7 @@ export class TransitiveEntryRepository {
                 INNER JOIN transactions t ON te.transaction_id = t.id
                     AND t.type = '${TransactionTypeEnum.INCOME}' AND t.deleted_at IS NULL
                 INNER JOIN accounts a ON te.account_id = a.id
-                INNER JOIN mcc_categories mcc ON te.mcc_category_id = mcc.id AND mcc.mcc_group_id = 10
+                INNER JOIN mcc_categories mcc ON te.mcc_category_id = mcc.id AND mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 WHERE te.deleted_at IS NULL
             ),
             orphan_expense_candidates AS (
@@ -52,7 +57,7 @@ export class TransitiveEntryRepository {
                 INNER JOIN transactions t ON te.transaction_id = t.id
                     AND t.type = '${TransactionTypeEnum.EXPENSE}' AND t.deleted_at IS NULL
                 INNER JOIN accounts a ON te.account_id = a.id
-                INNER JOIN mcc_categories mcc ON te.mcc_category_id = mcc.id AND mcc.mcc_group_id = 10
+                INNER JOIN mcc_categories mcc ON te.mcc_category_id = mcc.id AND mcc.mcc_group_id = ${FINANCIAL_SERVICES_MCC_GROUP_ID}
                 WHERE te.deleted_at IS NULL
             ),
             transitive_matches AS (
@@ -68,18 +73,18 @@ export class TransitiveEntryRepository {
                 INNER JOIN transfer_income_entries tie ON tie.transaction_id = tee.transaction_id
                 INNER JOIN orphan_income_candidates oic ON oic.orphan_income_account_id != tee.account_id
                     AND oic.orphan_income_account_id != tie.account_id
-                    AND ABS(CAST(oic.orphan_income_operated_at AS INTEGER) - CAST(tee.operated_at AS INTEGER)) <= 300
+                    AND ABS(CAST(oic.orphan_income_operated_at AS INTEGER) - CAST(tee.operated_at AS INTEGER)) <= ${TRANSITIVE_TIME_WINDOW_SECONDS}
                     AND (
                         (tee.instrument_id = oic.orphan_income_instrument_id AND ABS(tee.amount) = oic.orphan_income_amount)
                         OR (tee.instrument_id != oic.orphan_income_instrument_id
                             AND tee.exchange_rate > 0
                             AND oic.orphan_income_exchange_rate > 0
                             AND ABS(ABS(tee.amount) / tee.exchange_rate - oic.orphan_income_amount / oic.orphan_income_exchange_rate)
-                                < (ABS(tee.amount) / tee.exchange_rate * 0.05))
+                                < (ABS(tee.amount) / tee.exchange_rate * ${CROSS_CURRENCY_TOLERANCE}))
                     )
                 INNER JOIN orphan_expense_candidates oec ON oec.orphan_expense_account_id = oic.orphan_income_account_id
                     AND oec.orphan_expense_amount = oic.orphan_income_amount
-                    AND ABS(CAST(oec.orphan_expense_operated_at AS INTEGER) - CAST(oic.orphan_income_operated_at AS INTEGER)) <= 300
+                    AND ABS(CAST(oec.orphan_expense_operated_at AS INTEGER) - CAST(oic.orphan_income_operated_at AS INTEGER)) <= ${TRANSITIVE_TIME_WINDOW_SECONDS}
                     AND ((oec.orphan_expense_to_iban IS NOT NULL AND oec.orphan_expense_to_iban = tie.account_iban)
                         OR (oec.orphan_expense_instrument_id = tie.instrument_id AND oec.orphan_expense_amount = tie.amount))
                 WHERE oic.orphan_income_account_id = oec.orphan_expense_account_id
