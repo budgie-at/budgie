@@ -65,7 +65,7 @@ const isTransactionLine = (line: string): boolean => {
         return false;
     }
 
-    const match = trimmed.match(/^(.+?)\s{2,}(\d{4})\s+([\d.,]+)(-)?$/u);
+    const match = trimmed.match(/^(.+?)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
 
     return isDefined(match);
 };
@@ -128,7 +128,7 @@ const isContinuationLine = (line: string): boolean => {
 };
 
 const parseTransactionLine = (line: string): TransactionParseStateInterface | null => {
-    const match = line.trim().match(/^(.+?)\s{2,}(\d{4})\s+([\d.,]+)(-)?$/u);
+    const match = line.trim().match(/^(.+?)\s+(\d{4})\s+([\d.,]+)(-)?$/u);
 
     if (!match) {
         return null;
