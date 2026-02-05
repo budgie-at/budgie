@@ -1313,7 +1313,7 @@ __metadata:
     drizzle-kit: "npm:^0.31.7"
     drizzle-orm: "npm:^0.44.7"
     eas-build-cache-provider: "npm:^16.4.2"
-    expo: "npm:^54.0.32"
+    expo: "npm:~54.0.33"
     expo-asset: "npm:~12.0.12"
     expo-background-task: "npm:~1.0.10"
     expo-blur: "npm:^15.0.8"
@@ -1330,7 +1330,8 @@ __metadata:
     expo-linking: "npm:~8.0.11"
     expo-local-authentication: "npm:~17.0.8"
     expo-localization: "npm:~17.0.8"
-    expo-router: "npm:~6.0.22"
+    expo-pdf-text-extract: "patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch"
+    expo-router: "npm:~6.0.23"
     expo-screen-capture: "npm:~8.0.9"
     expo-secure-store: "npm:~15.0.8"
     expo-sharing: "npm:^14.0.8"
@@ -2366,9 +2367,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:54.0.22":
-  version: 54.0.22
-  resolution: "@expo/cli@npm:54.0.22"
+"@expo/cli@npm:54.0.23":
+  version: 54.0.23
+  resolution: "@expo/cli@npm:54.0.23"
   dependencies:
     "@0no-co/graphql.web": "npm:^1.0.8"
     "@expo/code-signing-certificates": "npm:^0.0.6"
@@ -2444,7 +2445,7 @@ __metadata:
       optional: true
   bin:
     expo-internal: build/bin/cli
-  checksum: 10/c20c89f5737e1f5b055567d6b560a920ea52ed17cab73fd5ab59d8f1640c62f7a9915d9d69eb0c5ebc85bd04505e3ac32ba329ab8f1e15da8a9fcd6c6dd8d808
+  checksum: 10/9a41c55aa7f628ad44048c9f41cd8d7f4f73a8bfc01adaa956ddaae87d332ae979eadb52bdab894ef5b1c9b5722486ccdb999057d8b9eed392c827f476feb79f
   languageName: node
   linkType: hard
 
@@ -10818,9 +10819,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-router@npm:~6.0.22":
-  version: 6.0.22
-  resolution: "expo-router@npm:6.0.22"
+"expo-pdf-text-extract@npm:1.0.0":
+  version: 1.0.0
+  resolution: "expo-pdf-text-extract@npm:1.0.0"
+  peerDependencies:
+    expo: ">=49.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.72.0"
+  checksum: 10/3d827cb7a90b0c9a4dad65a5b84ae26889c1f3b0acf8ccd0036184190144a59c16d94262b291f50cefff5511b33750f3ad947d3944cff67d820093ca010e9d41
+  languageName: node
+  linkType: hard
+
+"expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch":
+  version: 1.0.0
+  resolution: "expo-pdf-text-extract@patch:expo-pdf-text-extract@npm%3A1.0.0#~/.yarn/patches/expo-pdf-text-extract-npm-1.0.0-ccd4c59e1f.patch::version=1.0.0&hash=cb1605"
+  peerDependencies:
+    expo: ">=49.0.0"
+    react: ">=18.0.0"
+    react-native: ">=0.72.0"
+  checksum: 10/be381b00c2e1eb6fe49f13a6b3d1f99bd73f7ea88ba78c47df7fbfaa803fd1aa3ec48dbea27bb3ac4268d013779f8f111d1606be5154de8dcb0abdb0cbbf0a5a
+  languageName: node
+  linkType: hard
+
+"expo-router@npm:~6.0.23":
+  version: 6.0.23
+  resolution: "expo-router@npm:6.0.23"
   dependencies:
     "@expo/metro-runtime": "npm:^6.1.2"
     "@expo/schema-utils": "npm:^0.1.8"
@@ -10860,7 +10883,7 @@ __metadata:
     react-native-safe-area-context: ">= 5.4.0"
     react-native-screens: "*"
     react-native-web: "*"
-    react-server-dom-webpack: ~19.0.3 || ~19.1.4 || ~19.2.3
+    react-server-dom-webpack: ~19.0.4 || ~19.1.5 || ~19.2.4
   peerDependenciesMeta:
     "@react-navigation/drawer":
       optional: true
@@ -10876,7 +10899,7 @@ __metadata:
       optional: true
     react-server-dom-webpack:
       optional: true
-  checksum: 10/cc25d9fc6728c85aaf21e7c5034fcb584fcabe9fa3819d83077adf38d0708af5719dbd99b9cd2123b54fec1cb93bed4d17bfb008bf6795778b6d4938328f53b6
+  checksum: 10/37b92fb8adc038ff5813298235a66bd22ac9a6002d5f016f3ceefa3f96e59910de6e069f0a27b9c23f6b2b40171a6589d31ad944cfe85171a4484937e981676d
   languageName: node
   linkType: hard
 
@@ -11012,12 +11035,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^54.0.32":
-  version: 54.0.32
-  resolution: "expo@npm:54.0.32"
+"expo@npm:~54.0.33":
+  version: 54.0.33
+  resolution: "expo@npm:54.0.33"
   dependencies:
     "@babel/runtime": "npm:^7.20.0"
-    "@expo/cli": "npm:54.0.22"
+    "@expo/cli": "npm:54.0.23"
     "@expo/config": "npm:~12.0.13"
     "@expo/config-plugins": "npm:~54.0.4"
     "@expo/devtools": "npm:0.1.8"
@@ -11054,7 +11077,7 @@ __metadata:
     expo: bin/cli
     expo-modules-autolinking: bin/autolinking
     fingerprint: bin/fingerprint
-  checksum: 10/78c9b88b98bcf424c00ffdd399b77e6fbf34f2c26a3d420e731bfccd9cdfb54e95f27b539d071155c4144ae7157e2700f9d22d4b2816974b20f8fcf0675bbb05
+  checksum: 10/ed672f78333cf50545ea1cca8181506604150cca01a8aae782da30ddcba185d68f2d48f2ca10dee575a7abbc7913cca3f4c3d34d98373b0e9706b344030fa929
   languageName: node
   linkType: hard
 
