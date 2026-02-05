@@ -33,7 +33,7 @@ export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
     private accountsMap: Record<string, AccountEntityInterface> = {};
     private categoriesMap: Record<string, CategoryEntityInterface> = {};
-    private fallbackCategory: CategoryEntityInterface = {} as CategoryEntityInterface;
+    private fallbackCategory: CategoryEntityInterface | undefined;
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
