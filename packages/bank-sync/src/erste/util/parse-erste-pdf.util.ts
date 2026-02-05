@@ -6,7 +6,8 @@ import { BankSyncError } from '../../core/error/bank-sync.error';
 import { ERSTE_ACCOUNT_NUMBER_REGEX, ERSTE_IBAN_REGEX } from '../constant/erste.constant';
 
 import { parseErsteAmount } from './parse-erste-amount.util';
-import { parseErsteStatementDate, parseErsteValueDate } from './parse-erste-date.util';
+import { parseErsteStatementDate } from './parse-erste-statement-date.util';
+import { parseErsteValueDate } from './parse-erste-value-date.util';
 
 import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';

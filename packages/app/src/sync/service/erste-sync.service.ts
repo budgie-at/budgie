@@ -21,82 +21,88 @@ interface ErsteFileClientInterface {
     getTransactions(): BankTransactionInterface[];
 }
 
-const getErsteFileClient = async (): Promise<ErsteFileClientInterface> => {
-    const module = await import('@budgie/bank-sync/erste');
+class ErsteSyncService {
+    async importPreview(filePath: string): Promise<BankAccountPreviewInterface[]> {
+        const text = await extractText(filePath);
+        const client = await this.getErsteFileClient();
+        client.parse(text);
+        const bankAccounts = client.getAccounts();
 
-    return new module.ErsteFileClient();
-};
+        if (!isNotEmptyArray(bankAccounts)) {
+            return [];
+        }
 
-/* jscpd:ignore-start */
-const createBankSyncRecord = async (accountId: number): Promise<void> => {
-    const existingSync = await bankSyncRepository.getByAccountId(accountId);
-    if (isDefined(existingSync)) {
-        return;
+        return mapBankAccountsToPreview(bankAccounts, PROVIDER);
     }
 
-    await bankSyncRepository.create({
-        token: '',
-        accountId,
-        provider: PROVIDER,
-        enabled: true,
-        mode: BankSyncModeEnum.FORWARD
-    });
-};
-/* jscpd:ignore-end */
+    /* jscpd:ignore-start */
+    async executeImportForSelectedAccounts(filePath: string, selectedAccountIds: string[]): Promise<void> {
+        const text = await extractText(filePath);
+        const client = await this.getErsteFileClient();
+        client.parse(text);
+        const bankAccounts = client.getAccounts();
+        const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 
-const importAccountTransactions = async (
-    client: ErsteFileClientInterface,
-    bankAccount: BankAccountInterface,
-    existingExternalIds: Set<string>
-): Promise<void> => {
-    const account = await getOrCreateBankAccount(bankAccount, PROVIDER);
-    await createBankSyncRecord(account.id);
+        if (!isNotEmptyArray(selectedBankAccounts)) {
+            return;
+        }
 
-    const transactions = client.getTransactions();
-    const newTransactions = transactions.filter(transaction => !existingExternalIds.has(transaction.id));
+        await this.executeImport(client, selectedBankAccounts);
+    }
+    /* jscpd:ignore-end */
 
-    if (!isNotEmptyArray(newTransactions)) {
-        return;
+    private async getErsteFileClient(): Promise<ErsteFileClientInterface> {
+        const module = await import('@budgie/bank-sync');
+
+        return new module.ErsteFileClient();
     }
 
-    const transactionInputs = newTransactions.map(transaction => mapBankTransactionToCreateInput(transaction, account.id, null, PROVIDER));
+    /* jscpd:ignore-start */
+    private async createBankSyncRecord(accountId: number): Promise<void> {
+        const existingSync = await bankSyncRepository.getByAccountId(accountId);
+        if (isDefined(existingSync)) {
+            return;
+        }
 
-    await transactionService.bulkCreate(transactionInputs);
-};
+        await bankSyncRepository.create({
+            token: '',
+            accountId,
+            provider: PROVIDER,
+            enabled: true,
+            mode: BankSyncModeEnum.FORWARD
+        });
+    }
+    /* jscpd:ignore-end */
 
-export const ersteSyncImportPreview = async (filePath: string): Promise<BankAccountPreviewInterface[]> => {
-    const text = await extractText(filePath);
-    const client = await getErsteFileClient();
-    client.parse(text);
-    const bankAccounts = client.getAccounts();
+    private async importAccountTransactions(
+        client: ErsteFileClientInterface,
+        bankAccount: BankAccountInterface,
+        existingExternalIds: Set<string>
+    ): Promise<void> {
+        const account = await getOrCreateBankAccount(bankAccount, PROVIDER);
+        await this.createBankSyncRecord(account.id);
 
-    if (!isNotEmptyArray(bankAccounts)) {
-        return [];
+        const transactions = client.getTransactions();
+        const newTransactions = transactions.filter(transaction => !existingExternalIds.has(transaction.id));
+
+        if (!isNotEmptyArray(newTransactions)) {
+            return;
+        }
+
+        const transactionInputs = newTransactions.map(transaction =>
+            mapBankTransactionToCreateInput(transaction, account.id, null, PROVIDER)
+        );
+
+        await transactionService.bulkCreate(transactionInputs);
     }
 
-    return mapBankAccountsToPreview(bankAccounts, PROVIDER);
-};
+    private async executeImport(client: ErsteFileClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> {
+        const existingExternalIds = await transactionService.findByExternalSource(PROVIDER);
 
-const executeImport = async (client: ErsteFileClientInterface, bankAccounts: BankAccountInterface[]): Promise<void> => {
-    const existingExternalIds = await transactionService.findByExternalSource(PROVIDER);
-
-    for (const bankAccount of bankAccounts) {
-        await importAccountTransactions(client, bankAccount, existingExternalIds);
+        for (const bankAccount of bankAccounts) {
+            await this.importAccountTransactions(client, bankAccount, existingExternalIds);
+        }
     }
-};
+}
 
-/* jscpd:ignore-start */
-export const ersteSyncExecuteImport = async (filePath: string, selectedAccountIds: string[]): Promise<void> => {
-    const text = await extractText(filePath);
-    const client = await getErsteFileClient();
-    client.parse(text);
-    const bankAccounts = client.getAccounts();
-    const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
-
-    if (!isNotEmptyArray(selectedBankAccounts)) {
-        return;
-    }
-
-    await executeImport(client, selectedBankAccounts);
-};
-/* jscpd:ignore-end */
+export const ersteSyncService = new ErsteSyncService();
