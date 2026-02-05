@@ -12,8 +12,7 @@ import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util
 import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
-import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-convert-expense-to-transfer.mutation';
-import { useConvertIncomeToTransferMutation } from '../transaction/hooks/use-convert-income-to-transfer.mutation';
+import { useConvertToTransferMutation } from '../transaction/hooks/use-convert-to-transfer.mutation';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
 
@@ -25,8 +24,7 @@ export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const { currentParams, resolveConvertToTransfer } = useConvertToTransferModal();
 
-    const convertExpenseMutation = useConvertExpenseToTransferMutation();
-    const convertIncomeMutation = useConvertIncomeToTransferMutation();
+    const convertToTransferMutation = useConvertToTransferMutation();
 
     const transactionId = currentParams?.transactionId ?? 0;
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
@@ -65,7 +63,6 @@ export default function ConvertToTransferModal() {
         resolveConvertToTransfer(false);
     };
 
-    // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleSubmit = async () => {
         const confirmed = await confirmAlert({
             title: t`Convert to Transfer?`,
@@ -83,13 +80,13 @@ export default function ConvertToTransferModal() {
             const formValues = form.getValues();
             const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
             const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
-            const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
 
-            if (isExpense) {
-                await convertExpenseMutation(convertParams);
-            } else {
-                await convertIncomeMutation(convertParams);
-            }
+            await convertToTransferMutation({
+                id: transactionId,
+                accountId: selectedAccountId,
+                customExchangeRate: customRate,
+                sourceType: transactionType
+            });
 
             resolveConvertToTransfer(true, { skipBack: true });
             const transferRoute = `/transactions/${transactionId}/transfer` as const;
