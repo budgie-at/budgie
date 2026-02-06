@@ -15,6 +15,7 @@ export interface LlmInterface {
     downloadProgress: number;
     error: string | null;
     generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
+    embedding: (text: string) => Promise<number[]>;
     interrupt: () => void;
 }
 

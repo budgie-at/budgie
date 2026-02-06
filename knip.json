@@ -19,6 +19,10 @@
         "packages/app/src/category/enum/system-category-id.enum.ts",
         "packages/app/src/ai/provider/llm.provider.tsx",
         "packages/app/src/ai/hook/use-llama-llm.hook.ts",
+        "packages/app/src/ai/hook/use-embedding-sync.hook.ts",
+        "packages/app/src/ai/service/embedding-llm.service.ts",
+        "packages/app/src/ai/util/serialize-embedding.util.ts",
+        "packages/app/src/ai/constant/embedding.constant.ts",
         "packages/app/src/ai/context/llm.context.ts"
     ],
     "ignoreDependencies": [

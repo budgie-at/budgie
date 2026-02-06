@@ -16,6 +16,7 @@ import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
+import { EmbeddingStatus } from '../../../settings/components/embedding-status/embedding-status';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { RegenerateCategories } from '../../../settings/components/regenerate-categories/regenerate-categories';
@@ -130,6 +131,7 @@ export default function SettingsPage() {
                         <ExportDatabase />
                         <RecalculateBalances />
                         <RegenerateCategories />
+                        <EmbeddingStatus />
                         <TruncateData />
                     </SettingsGroup>
 

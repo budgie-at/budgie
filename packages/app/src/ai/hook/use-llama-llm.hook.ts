@@ -98,7 +98,8 @@ export const useLlamaLlm = (): LlmInterface => {
                     model: modelPath,
                     n_ctx: CONTEXT_SIZE,
                     n_gpu_layers: GPU_LAYERS,
-                    use_mlock: true
+                    use_mlock: true,
+                    embedding: true
                 });
 
                 if (!isMounted()) {
@@ -170,10 +171,24 @@ export const useLlamaLlm = (): LlmInterface => {
         return currentGeneration;
     };
 
+    const embedding = async (text: string): Promise<number[]> => {
+        if (!isDefined(contextRef.current)) {
+            return [];
+        }
+
+        try {
+            const result = await contextRef.current.embedding(text);
+
+            return result.embedding;
+        } catch {
+            return [];
+        }
+    };
+
     const interrupt = (): void => {
         void contextRef.current?.stopCompletion();
         setIsGenerating(false);
     };
 
-    return { isReady, isInitializing, isGenerating, downloadProgress, error, generate, interrupt };
+    return { isReady, isInitializing, isGenerating, downloadProgress, error, generate, embedding, interrupt };
 };

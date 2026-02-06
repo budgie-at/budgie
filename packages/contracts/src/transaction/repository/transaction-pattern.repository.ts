@@ -1,4 +1,4 @@
-import { SQL, and, desc, eq, gte, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, gte, inArray, isNotNull, isNull, lte, ne, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -6,6 +6,7 @@ import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { EmbeddingPatternQueryInterface } from '../../title-embedding/interface/embedding-pattern-query.interface';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
@@ -35,6 +36,15 @@ export class TransactionPatternRepository {
         const conditions = this.buildMonthlyPatternConditions(query);
         const havingConditions = this.buildMonthlyHavingConditions(query);
         const patternRows = await this.executeMonthlyPatternQuery(conditions, havingConditions, query.limit ?? DEFAULT_LIMIT);
+
+        return this.enrichPatternsWithTags(patternRows);
+    }
+
+    async findPatternsByTitles(query: EmbeddingPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const conditions = this.buildEmbeddingPatternConditions(query);
+        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= 1`;
+        const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
+        const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
 
         return this.enrichPatternsWithTags(patternRows);
     }
@@ -84,7 +94,7 @@ export class TransactionPatternRepository {
         return this.executeBasePatternQuery(conditions, havingCondition, orderBy, limit);
     }
 
-    private buildMonthlyPatternConditions(query: MonthlyPatternQueryInterface): SQL[] {
+    private buildCommonPatternConditions(query: Pick<MonthlyPatternQueryInterface, 'type' | 'accountId' | 'amountMin' | 'amountMax'>): SQL[] {
         const entryType = this.getEntryTypeForTransactionType(query.type);
 
         const conditions: SQL[] = [
@@ -100,6 +110,17 @@ export class TransactionPatternRepository {
         if (isPositiveNumber(query.accountId)) {
             conditions.push(eq(TransactionEntryEntityTable.accountId, query.accountId));
         }
+
+        return conditions;
+    }
+
+    private buildMonthlyPatternConditions(query: MonthlyPatternQueryInterface): SQL[] {
+        return this.buildCommonPatternConditions(query);
+    }
+
+    private buildEmbeddingPatternConditions(query: EmbeddingPatternQueryInterface): SQL[] {
+        const conditions = this.buildCommonPatternConditions(query);
+        conditions.push(inArray(TransactionEntityTable.title, query.titles));
 
         return conditions;
     }
