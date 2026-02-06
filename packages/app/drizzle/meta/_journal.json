@@ -71,6 +71,13 @@
       "when": 1769881598629,
       "tag": "0009_fine_molten_man",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1770326221087,
+      "tag": "0010_light_loa",
+      "breakpoints": true
     }
   ]
 }
