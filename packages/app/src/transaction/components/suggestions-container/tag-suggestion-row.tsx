@@ -21,7 +21,7 @@ const STAGGER_DELAY = 60;
 export const TagSuggestionRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
-    const { suggestions, status, source } = useTagSuggestion({
+    const { suggestions, status } = useTagSuggestion({
         transactionTitle,
         categoryId,
         mccCategoryId,
@@ -42,7 +42,7 @@ export const TagSuggestionRow = (props: Props) => {
             staggerDelay={STAGGER_DELAY}
             onPress={onPillSelect}
         >
-            <SuggestionPillContent icon={UserIconNameEnum.Hash} title={tag.title} badge={source ?? ''} />
+            <SuggestionPillContent icon={UserIconNameEnum.Hash} title={tag.title} />
         </SuggestionPill>
     );
 

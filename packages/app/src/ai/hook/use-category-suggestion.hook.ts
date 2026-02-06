@@ -34,9 +34,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment);
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
-        const results = await embeddingSuggestionService.suggestCategories(context, llm, categories);
 
-        return { results, source: 'vector' as const };
+        return embeddingSuggestionService.suggestCategories(context, llm, categories);
     };
 
     return useSuggestionBase({

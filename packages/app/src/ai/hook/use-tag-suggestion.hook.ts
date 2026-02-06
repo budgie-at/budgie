@@ -33,7 +33,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
     const fetchSuggestions = async () => {
         if (!isNotEmptyArray(allTags)) {
-            return { results: [] as TagEntityInterface[], source: 'vector' as const };
+            return [];
         }
 
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
@@ -42,9 +42,8 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, { categoryName });
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
-        const results = await embeddingSuggestionService.suggestTags(context, llm, allTags);
 
-        return { results, source: 'vector' as const };
+        return embeddingSuggestionService.suggestTags(context, llm, allTags);
     };
 
     return useSuggestionBase({
