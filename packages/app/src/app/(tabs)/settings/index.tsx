@@ -14,12 +14,11 @@ import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
+import { AiDataCard } from '../../../settings/components/ai-data-card/ai-data-card';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
-import { EmbeddingStatus } from '../../../settings/components/embedding-status/embedding-status';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
-import { RegenerateCategories } from '../../../settings/components/regenerate-categories/regenerate-categories';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -82,6 +81,10 @@ export default function SettingsPage() {
                         <DefaultAccountSelector />
                     </SettingsGroup>
 
+                    <SettingsGroup title={t`AI`}>
+                        <AiDataCard />
+                    </SettingsGroup>
+
                     <SettingsGroup title={t`Organization`}>
                         <SettingsCard
                             onPress={handleNavigateToCategories}
@@ -130,7 +133,6 @@ export default function SettingsPage() {
                         <ImportDatabase />
                         <ExportDatabase />
                         <RecalculateBalances />
-                        <RegenerateCategories />
                         <TruncateData />
                     </SettingsGroup>
 
@@ -143,7 +145,6 @@ export default function SettingsPage() {
                             icon={UserIconNameEnum.Database}
                             variant="ghost"
                         />
-                        <EmbeddingStatus />
                     </SettingsGroup>
 
                     <MenuSpacer />
