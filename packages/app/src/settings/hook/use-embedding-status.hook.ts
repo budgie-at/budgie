@@ -5,28 +5,28 @@ import { useLlmContext } from '../../ai/context/llm.context';
 
 interface EmbeddingStatusInterface {
     readonly embeddedCount: number;
-    readonly totalUniqueTitles: number;
+    readonly totalUniqueContexts: number;
     readonly isLlmReady: boolean;
 }
 
 export const useEmbeddingStatus = (): EmbeddingStatusInterface => {
     const { llm } = useLlmContext();
     const [embeddedCount, setEmbeddedCount] = useState(0);
-    const [totalUniqueTitles, setTotalUniqueTitles] = useState(0);
+    const [totalUniqueContexts, setTotalUniqueContexts] = useState(0);
 
     useEffect(() => {
         const fetchStatus = async (): Promise<void> => {
             const [embedded, total] = await Promise.all([
                 titleEmbeddingRepository.countAll(),
-                titleEmbeddingRepository.countDistinctTransactionTitles()
+                titleEmbeddingRepository.countDistinctTransactionContexts()
             ]);
 
             setEmbeddedCount(embedded);
-            setTotalUniqueTitles(total);
+            setTotalUniqueContexts(total);
         };
 
         void fetchStatus();
     }, []);
 
-    return { embeddedCount, totalUniqueTitles, isLlmReady: llm.isReady };
+    return { embeddedCount, totalUniqueContexts, isLlmReady: llm.isReady };
 };
