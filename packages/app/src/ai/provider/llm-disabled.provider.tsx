@@ -16,6 +16,7 @@ const disabledLlm: LlmInterface = {
     downloadProgress: 0,
     error: null,
     generate: () => Promise.reject(new Error('AI is disabled')),
+    embedding: () => Promise.resolve([]),
     interrupt: emptyFn
 };
 

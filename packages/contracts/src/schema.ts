@@ -18,6 +18,7 @@ export { SettingsEntityTable } from './settings/table/settings-entity.table';
 export { SettingsEntityRelations } from './settings/relations/settings-entity.relations';
 export { TagEntityTable } from './tag/table/tag-entity.table';
 export { TagEntityRelations } from './tag/relations/tag-entity.relations';
+export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionEntityRelations } from './transaction/relations/transaction-entity.relations';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';

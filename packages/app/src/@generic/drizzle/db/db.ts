@@ -12,6 +12,7 @@ import {
     StatisticsRepository,
     TagRepository,
     TransactionEntryRepository,
+    TitleEmbeddingRepository,
     TransactionPatternRepository,
     TransactionRepository,
     TransactionTagsRepository
@@ -66,3 +67,4 @@ export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
+export const titleEmbeddingRepository = new TitleEmbeddingRepository(db);

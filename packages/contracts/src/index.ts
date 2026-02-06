@@ -265,3 +265,12 @@ export { SettingsRepository } from './settings/repository/settings.repository';
 export { StatisticsRepository } from './statistics/repository/statistics.repository';
 
 export type { StatisticsFilterInterface } from './statistics/interface/statistics-filter.interface';
+
+export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embedding-entity.table';
+
+export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embedding-entity.schema';
+
+export type { TitleEmbeddingEntityInterface } from './title-embedding/interface/title-embedding-entity.interface';
+export type { EmbeddingPatternQueryInterface } from './title-embedding/interface/embedding-pattern-query.interface';
+
+export { TitleEmbeddingRepository } from './title-embedding/repository/title-embedding.repository';
