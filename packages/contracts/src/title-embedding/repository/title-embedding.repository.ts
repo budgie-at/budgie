@@ -56,7 +56,7 @@ export class TitleEmbeddingRepository {
         return results.map(row => row.context);
     }
 
-    async findTransactionData(limit: number): Promise<UnembeddedTransactionDataInterface[]> {
+    async findTransactionData(limit: number, offset = 0): Promise<UnembeddedTransactionDataInterface[]> {
         const results = await this.db
             .select({
                 title: TransactionEntityTable.title,
@@ -72,7 +72,8 @@ export class TitleEmbeddingRepository {
             .where(isNull(TransactionEntityTable.deletedAt))
             .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
-            .limit(limit);
+            .limit(limit)
+            .offset(offset);
 
         return results.map(row => ({
             title: row.title,
