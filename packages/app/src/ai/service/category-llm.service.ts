@@ -3,6 +3,7 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
@@ -52,7 +53,7 @@ export class CategoryLlmService extends BaseLlmService {
         }
 
         const systemPrompt = this.buildSuggestionPrompt(userCategories);
-        const context = this.buildTransactionContext(transactionTitle, mccDescription, comment);
+        const context = buildTransactionContext(transactionTitle, mccDescription, comment);
         const response = await this.llm.generate(systemPrompt, context);
         const categoryIds = this.parseSuggestionResponse(response, categories, MAX_SUGGESTIONS);
 
