@@ -131,7 +131,6 @@ export default function SettingsPage() {
                         <ExportDatabase />
                         <RecalculateBalances />
                         <RegenerateCategories />
-                        <EmbeddingStatus />
                         <TruncateData />
                     </SettingsGroup>
 
@@ -144,6 +143,7 @@ export default function SettingsPage() {
                             icon={UserIconNameEnum.Database}
                             variant="ghost"
                         />
+                        <EmbeddingStatus />
                     </SettingsGroup>
 
                     <MenuSpacer />
