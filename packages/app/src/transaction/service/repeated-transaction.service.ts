@@ -3,6 +3,7 @@ import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } f
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { embeddingPatternService } from '../../ai/service/embedding-pattern.service';
 import {
     MINUTES_IN_DAY,
     MONTHLY_PATTERN_DAY_WINDOW,
@@ -66,7 +67,7 @@ class RepeatedTransactionService {
         const monthlyWindow = calculateMonthlyWindow(currentTime);
         const amountBounds = hasAmount ? calculateAmountBounds(amount) : {};
 
-        const [weeklyPatterns, monthlyPatterns] = await Promise.all([
+        const [weeklyPatterns, monthlyPatterns, embeddingPatterns] = await Promise.all([
             transactionPatternRepository.findRepeatedPatterns({
                 ...timeWindow,
                 ...amountBounds,
@@ -81,15 +82,24 @@ class RepeatedTransactionService {
                 type,
                 ...(isPositiveNumber(accountId) && { accountId }),
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-            })
+            }),
+            embeddingPatternService
+                .findSimilarPatterns({
+                    type,
+                    ...(isPositiveNumber(accountId) && { accountId }),
+                    ...amountBounds,
+                    limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
+                })
+                .catch(() => [])
         ]);
 
-        return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns);
+        return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns, embeddingPatterns);
     }
 
     private mergeAndDeduplicate(
         weeklyPatterns: RepeatedTransactionPatternInterface[],
-        monthlyPatterns: RepeatedTransactionPatternInterface[]
+        monthlyPatterns: RepeatedTransactionPatternInterface[],
+        embeddingPatterns: RepeatedTransactionPatternInterface[]
     ): RepeatedTransactionPatternInterface[] {
         const patternMap = new Map<string, RepeatedTransactionPatternInterface>();
 
@@ -98,7 +108,7 @@ class RepeatedTransactionService {
             patternMap.set(key, pattern);
         }
 
-        for (const pattern of monthlyPatterns) {
+        for (const pattern of [...monthlyPatterns, ...embeddingPatterns]) {
             const key = `${pattern.categoryId}-${pattern.title}`;
             const existing = patternMap.get(key);
 
