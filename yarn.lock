@@ -1287,6 +1287,7 @@ __metadata:
   resolution: "@budgie-at/app@workspace:packages/app"
   dependencies:
     "@babel/core": "npm:^7.28.6"
+    "@budgie/ai": "workspace:^"
     "@budgie/bank-sync": "workspace:*"
     "@budgie/contracts": "workspace:^"
     "@expo/fingerprint": "npm:~0.15.4"
@@ -1451,7 +1452,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@budgie/ai@workspace:packages/ai":
+"@budgie/ai@workspace:^, @budgie/ai@workspace:packages/ai":
   version: 0.0.0-use.local
   resolution: "@budgie/ai@workspace:packages/ai"
   dependencies:
