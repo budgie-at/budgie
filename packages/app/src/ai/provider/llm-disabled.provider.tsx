@@ -1,9 +1,10 @@
 /* eslint-disable lingui/no-unlocalized-strings */
+import { LlmInterface } from '@budgie/ai';
 import { ReactNode } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { LlmContext, LlmContextInterface, LlmInterface } from '../context/llm.context';
+import { LlmContext, LlmContextInterface } from '../context/llm.context';
 
 interface Props {
     readonly children: ReactNode;

@@ -1,8 +1,8 @@
+import { SuggestionStatus } from '@budgie/ai';
 import { ReactNode } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { SuggestionStatus } from '../../../ai/interface/suggestion-status.type';
 import { useSuggestionLoadingState } from '../../hook/use-suggestion-loading-state.hook';
 import { SuggestionRowLayout } from '../suggestion-row-layout/suggestion-row-layout';
 

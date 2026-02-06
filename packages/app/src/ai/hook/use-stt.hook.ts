@@ -1,10 +1,10 @@
+import { filterTranscriptionTokens } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { SpeechToTextLanguage } from 'react-native-executorch';
 
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
 import { useLlmContext } from '../context/llm.context';
-import { filterTranscriptionTokens } from '../util/filter-transcription-tokens.util';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 

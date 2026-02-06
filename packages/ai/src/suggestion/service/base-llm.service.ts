@@ -1,12 +1,8 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
-import { LlmInterface } from '../context/llm.context';
-
-export interface TranslationResultInterface {
-    titleEn: string;
-    titleTags: string;
-}
+import { TranslationResultInterface } from '../interface/translation-result.interface';
 
 export class BaseLlmService {
     constructor(protected readonly llm: LlmInterface) {}

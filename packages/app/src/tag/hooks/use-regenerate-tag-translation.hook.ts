@@ -1,11 +1,11 @@
+import { TagLlmService, TranslationResultInterface } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { tagRepository } from '../../@generic/drizzle/db/db';
 import { useLlmContext } from '../../ai/context/llm.context';
-import { TranslationResultInterface } from '../../ai/service/base-llm.service';
-import { TagLlmService } from '../../ai/service/tag-llm.service';
 
 interface UseRegenerateTagTranslationReturn {
     regenerate: (tagId: number, title: string) => Promise<TranslationResultInterface | null>;
@@ -31,8 +31,10 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
 
         try {
             const service = new TagLlmService(llm);
+            const result = await service.translate(title);
+            await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
 
-            return await service.regenerateOne(tagId, title);
+            return result;
         } catch (regenerateError: unknown) {
             setError(getErrorMessage(regenerateError));
 

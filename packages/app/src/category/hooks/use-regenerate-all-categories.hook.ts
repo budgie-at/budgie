@@ -1,12 +1,12 @@
+import { CategoryLlmService, TagLlmService } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
 import { useLlmContext } from '../../ai/context/llm.context';
-import { CategoryLlmService } from '../../ai/service/category-llm.service';
-import { TagLlmService } from '../../ai/service/tag-llm.service';
 
 interface UseRegenerateAllCategoriesReturn {
     regenerateAll: () => Promise<void>;
@@ -17,6 +17,7 @@ export const useRegenerateAllCategories = (): UseRegenerateAllCategoriesReturn =
     const { llm } = useLlmContext();
     const [isRegenerating, setIsRegenerating] = useState(false);
 
+    // eslint-disable-next-line max-statements -- Orchestrates sequential category and tag translation
     const regenerateAll = async (): Promise<void> => {
         if (!llm.isReady || isRegenerating) {
             return;
@@ -26,10 +27,22 @@ export const useRegenerateAllCategories = (): UseRegenerateAllCategoriesReturn =
 
         try {
             const categoryService = new CategoryLlmService(llm);
-            await categoryService.regenerateAll();
+            const categories = await categoryRepository.findAllNonSystem();
+
+            /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
+            for (const category of categories) {
+                const result = await categoryService.translate(category.title);
+                await categoryRepository.updateTranslation(category.id, result.titleEn, result.titleTags);
+            }
 
             const tagService = new TagLlmService(llm);
-            await tagService.regenerateAll();
+            const tags = await tagRepository.findAll();
+
+            for (const tag of tags) {
+                const result = await tagService.translate(tag.title);
+                await tagRepository.updateTranslation(tag.id, result.titleEn, result.titleTags);
+            }
+            /* eslint-enable no-await-in-loop */
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',

@@ -1,9 +1,9 @@
+import { EmbeddingPatternService } from '@budgie/ai';
 import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
-import { embeddingPatternService } from '../../ai/service/embedding-pattern.service';
+import { titleEmbeddingRepository, transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import {
     MINUTES_IN_DAY,
     MONTHLY_PATTERN_DAY_WINDOW,
@@ -58,6 +58,8 @@ const calculateAmountBounds = (amount: number): AmountBoundsInterface => ({
     amountMin: Math.round(amount * PRECISION * (1 - REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT)),
     amountMax: Math.round(amount * PRECISION * (1 + REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT))
 });
+
+const embeddingPatternService = new EmbeddingPatternService(titleEmbeddingRepository, transactionPatternRepository);
 
 class RepeatedTransactionService {
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {

@@ -1,14 +1,10 @@
+import { EMBEDDING_BATCH_LIMIT, EmbeddingService, LlmInterface, buildTransactionContext, serializeEmbedding } from '@budgie/ai';
 import { UnembeddedTransactionDataInterface } from '@budgie/contracts';
 import { useEffect, useRef } from 'react';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
-import { EMBEDDING_BATCH_LIMIT } from '../constant/embedding.constant';
-import { LlmInterface } from '../context/llm.context';
-import { EmbeddingLlmService } from '../service/embedding-llm.service';
-import { buildTransactionContext } from '../util/build-transaction-context.util';
-import { serializeEmbedding } from '../util/serialize-embedding.util';
 
 interface TransactionContextDataInterface {
     readonly title: string;
@@ -71,7 +67,7 @@ export const useEmbeddingSync = (llm: LlmInterface): void => {
                     return;
                 }
 
-                const service = new EmbeddingLlmService(llm);
+                const service = new EmbeddingService(llm);
                 const contextStrings = unembeddedContexts.map(item => item.context);
                 const embeddings = await service.generateEmbeddings(contextStrings);
 

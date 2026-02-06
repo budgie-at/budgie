@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const TRANSLATION_SYSTEM_PROMPT = `Translate to English. Return ONLY the translation, 1-3 words.
 
 Examples:
@@ -33,4 +32,3 @@ dividends -> dividends, stocks, shares, investment, portfolio, returns
 coffee -> coffee, cafe, espresso, latte, starbucks, barista`;
 
 export const TRANSLATION_TEMPERATURE = 0.7;
-/* eslint-enable lingui/no-unlocalized-strings */

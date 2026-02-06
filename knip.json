@@ -6,6 +6,7 @@
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "packages/contracts/babel.config.js",
+        "packages/ai/babel.config.js",
         "packages/bank-sync/babel.config.js",
         "jest.config.js",
         "metro.config.js",
@@ -20,9 +21,6 @@
         "packages/app/src/ai/provider/llm.provider.tsx",
         "packages/app/src/ai/hook/use-llama-llm.hook.ts",
         "packages/app/src/ai/hook/use-embedding-sync.hook.ts",
-        "packages/app/src/ai/service/embedding-llm.service.ts",
-        "packages/app/src/ai/util/serialize-embedding.util.ts",
-        "packages/app/src/ai/constant/embedding.constant.ts",
         "packages/app/src/ai/context/llm.context.ts"
     ],
     "ignoreDependencies": [

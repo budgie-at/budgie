@@ -1,8 +1,7 @@
+import { SuggestionStatus } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
-
-import { SuggestionStatus } from '../../ai/interface/suggestion-status.type';
 
 const LOADING_DELAY_MS = 400;
 

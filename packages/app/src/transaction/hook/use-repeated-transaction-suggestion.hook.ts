@@ -1,11 +1,9 @@
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { SuggestionInternalStatus } from '../../ai/interface/suggestion-internal-status.type';
-import { SuggestionStatus } from '../../ai/interface/suggestion-status.type';
-import { UseSuggestionReturnInterface } from '../../ai/interface/use-suggestion-return.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
 const DEBOUNCE_MS = 300;

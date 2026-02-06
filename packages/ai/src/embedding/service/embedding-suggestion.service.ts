@@ -2,19 +2,21 @@ import { CategoryEntityInterface, TagEntityInterface, TitleEmbeddingEntityInterf
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
     EMBEDDING_SIMILARITY_THRESHOLD,
     EMBEDDING_TAG_SUGGESTION_LIMIT
-} from '../constant/embedding.constant';
-import { LlmInterface } from '../context/llm.context';
-import { cosineSimilarity } from '../util/cosine-similarity.util';
-import { deserializeEmbedding } from '../util/deserialize-embedding.util';
+} from '../../@generic/constant/embedding.constant';
+import { LlmInterface } from '../../@generic/interface/llm.interface';
+import { cosineSimilarity } from '../../@generic/util/cosine-similarity.util';
+import { deserializeEmbedding } from '../../@generic/util/deserialize-embedding.util';
+import { EmbeddingRepositoryInterface } from '../interface/embedding-repository.interface';
 
-import { EmbeddingLlmService } from './embedding-llm.service';
+import { EmbeddingService } from './embedding.service';
 
-class EmbeddingSuggestionService {
+export class EmbeddingSuggestionService {
+    constructor(private readonly repository: EmbeddingRepositoryInterface) {}
+
     async suggestCategories(context: string, llm: LlmInterface, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface[]> {
         const similarContexts = await this.findSimilarContexts(context, llm);
 
@@ -22,7 +24,7 @@ class EmbeddingSuggestionService {
             return [];
         }
 
-        const categoryCounts = await titleEmbeddingRepository.findCategoriesByContexts(similarContexts);
+        const categoryCounts = await this.repository.findCategoriesByContexts(similarContexts);
 
         return categoryCounts
             .map(row => categories.find(category => category.id === row.categoryId))
@@ -37,7 +39,7 @@ class EmbeddingSuggestionService {
             return [];
         }
 
-        const tagCounts = await titleEmbeddingRepository.findTagsByContexts(similarContexts);
+        const tagCounts = await this.repository.findTagsByContexts(similarContexts);
 
         return tagCounts
             .map(row => allTags.find(tag => tag.id === row.tagId))
@@ -46,14 +48,14 @@ class EmbeddingSuggestionService {
     }
 
     private async findSimilarContexts(context: string, llm: LlmInterface): Promise<string[]> {
-        const service = new EmbeddingLlmService(llm);
+        const service = new EmbeddingService(llm);
         const queryEmbedding = await service.generateEmbedding(context);
 
         if (!isDefined(queryEmbedding)) {
             return [];
         }
 
-        const allEmbeddings = await titleEmbeddingRepository.findAll();
+        const allEmbeddings = await this.repository.findAll();
 
         if (!isNotEmptyArray(allEmbeddings)) {
             return [];
@@ -77,5 +79,3 @@ class EmbeddingSuggestionService {
         return similarContexts;
     }
 }
-
-export const embeddingSuggestionService = new EmbeddingSuggestionService();
