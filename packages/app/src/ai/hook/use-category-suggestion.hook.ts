@@ -1,4 +1,10 @@
-import { CategoryLlmService, EmbeddingSuggestionService, UseSuggestionReturnInterface, buildTransactionContext } from '@budgie/ai';
+import {
+    CategoryLlmService,
+    EmbeddingSuggestionService,
+    SuggestionSource,
+    UseSuggestionReturnInterface,
+    buildTransactionContext
+} from '@budgie/ai';
 import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -18,6 +24,11 @@ interface UseCategorySuggestionParams {
     enabled: boolean;
 }
 
+interface FetchResultInterface {
+    readonly results: CategoryEntityInterface[];
+    readonly source: SuggestionSource;
+}
+
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
@@ -28,7 +39,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const hasCategoriesLoaded = categories.length > 0;
     const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
-    const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
+    const fetchSuggestions = async (): Promise<FetchResultInterface> => {
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment);
@@ -37,17 +48,18 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
         const embeddingResults = await embeddingSuggestionService.suggestCategories(context, llm, categories);
 
         if (isNotEmptyArray(embeddingResults)) {
-            return embeddingResults;
+            return { results: embeddingResults, source: 'vector' };
         }
 
         const service = new CategoryLlmService(llm);
-
-        return service.suggestCategories({
+        const llmResults = await service.suggestCategories({
             transactionTitle,
             mccDescription,
             comment: suggestionComment,
             categories
         });
+
+        return { results: llmResults, source: 'llm' };
     };
 
     return useSuggestionBase({

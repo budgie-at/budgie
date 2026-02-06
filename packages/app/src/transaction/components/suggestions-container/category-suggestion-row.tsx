@@ -20,7 +20,7 @@ const STAGGER_DELAY = 60;
 export const CategorySuggestionRow = (props: Props) => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
 
-    const { suggestions, status } = useCategorySuggestion({
+    const { suggestions, status, source } = useCategorySuggestion({
         transactionTitle,
         mccCategoryId,
         comment,
@@ -41,7 +41,7 @@ export const CategorySuggestionRow = (props: Props) => {
             staggerDelay={STAGGER_DELAY}
             onPress={onPillSelect}
         >
-            <SuggestionPillContent icon={category.icon} title={category.title} />
+            <SuggestionPillContent icon={category.icon} title={category.title} badge={source ?? ''} />
         </SuggestionPill>
     );
 

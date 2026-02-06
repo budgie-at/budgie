@@ -31,6 +31,7 @@ export { buildTransactionContext } from './embedding/util/build-transaction-cont
 
 // suggestion - interfaces
 export type { SuggestionInternalStatus } from './suggestion/interface/suggestion-internal-status.type';
+export type { SuggestionSource } from './suggestion/interface/suggestion-source.type';
 export type { SuggestionStatus } from './suggestion/interface/suggestion-status.type';
 export type { TranslationResultInterface } from './suggestion/interface/translation-result.interface';
 export type { UseSuggestionReturnInterface } from './suggestion/interface/use-suggestion-return.interface';

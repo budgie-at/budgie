@@ -1,12 +1,17 @@
-import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
+import { SuggestionInternalStatus, SuggestionSource, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+interface FetchSuggestionsResultInterface<T> {
+    readonly results: T[];
+    readonly source: SuggestionSource;
+}
+
 interface UseSuggestionBaseParams<T> {
     enabled: boolean;
     isReady: boolean;
-    fetchSuggestions: () => Promise<T[]>;
+    fetchSuggestions: () => Promise<FetchSuggestionsResultInterface<T>>;
 }
 
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionReturnInterface<T> => {
@@ -14,6 +19,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
 
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [suggestions, setSuggestions] = useState<T[]>([]);
+    const [source, setSource] = useState<SuggestionSource | null>(null);
 
     const hasTriggeredRef = useRef(false);
 
@@ -28,10 +34,11 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
             setInternalStatus('loading');
 
             try {
-                const results = await fetchSuggestions();
+                const fetchResult = await fetchSuggestions();
 
-                setSuggestions(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+                setSuggestions(fetchResult.results);
+                setSource(fetchResult.source);
+                setInternalStatus(isNotEmptyArray(fetchResult.results) ? 'success' : 'error');
             } catch {
                 setInternalStatus('error');
             }
@@ -43,5 +50,5 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
 
-    return { status, suggestions };
+    return { status, suggestions, source };
 };
