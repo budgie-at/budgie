@@ -1,39 +1,33 @@
-import {
-    EmbeddingContextResultInterface,
-    RepeatedTransactionPatternInterface,
-    TitleEmbeddingEntityInterface,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { titleEmbeddingRepository, transactionPatternRepository } from '../../@generic/drizzle/db/db';
-import { EMBEDDING_RECENT_TITLE_COUNT, EMBEDDING_SIMILARITY_THRESHOLD } from '../constant/embedding.constant';
-import { cosineSimilarity } from '../util/cosine-similarity.util';
-import { deserializeEmbedding } from '../util/deserialize-embedding.util';
-
-interface FindSimilarPatternsParamsInterface {
-    readonly type: TransactionTypeEnum;
-    readonly accountId?: number;
-    readonly amountMin?: number;
-    readonly amountMax?: number;
-    readonly limit?: number;
-}
+import { EMBEDDING_RECENT_TITLE_COUNT, EMBEDDING_SIMILARITY_THRESHOLD } from '../../@generic/constant/embedding.constant';
+import { cosineSimilarity } from '../../@generic/util/cosine-similarity.util';
+import { deserializeEmbedding } from '../../@generic/util/deserialize-embedding.util';
+import { EmbeddingPatternRepositoryInterface } from '../interface/embedding-pattern-repository.interface';
+import { FindSimilarPatternsParamsInterface } from '../interface/find-similar-patterns-params.interface';
+import { TransactionPatternRepositoryInterface } from '../interface/transaction-pattern-repository.interface';
 
 interface ContextEmbeddingDataInterface {
     readonly title: string;
     readonly embedding: Float32Array;
 }
 
-class EmbeddingPatternService {
+export class EmbeddingPatternService {
+    constructor(
+        private readonly embeddingRepository: EmbeddingPatternRepositoryInterface,
+        private readonly patternRepository: TransactionPatternRepositoryInterface
+    ) {}
+
     async findSimilarPatterns(params: FindSimilarPatternsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const allEmbeddings = await titleEmbeddingRepository.findAll();
+        const allEmbeddings = await this.embeddingRepository.findAll();
 
         if (!isNotEmptyArray(allEmbeddings)) {
             return [];
         }
 
-        const recentContexts = await titleEmbeddingRepository.findRecentContexts(EMBEDDING_RECENT_TITLE_COUNT);
+        const recentContexts = await this.embeddingRepository.findRecentContexts(EMBEDDING_RECENT_TITLE_COUNT);
 
         if (!isNotEmptyArray(recentContexts)) {
             return [];
@@ -45,7 +39,7 @@ class EmbeddingPatternService {
             return [];
         }
 
-        return transactionPatternRepository.findPatternsByTitles({
+        return this.patternRepository.findPatternsByTitles({
             titles: similarTitles,
             type: params.type,
             ...(isDefined(params.accountId) && { accountId: params.accountId }),
@@ -55,7 +49,10 @@ class EmbeddingPatternService {
         });
     }
 
-    private findSimilarTitles(recentContexts: EmbeddingContextResultInterface[], allEmbeddings: TitleEmbeddingEntityInterface[]): string[] {
+    private findSimilarTitles(
+        recentContexts: { context: string }[],
+        allEmbeddings: { title: string; context: string; embedding: Buffer }[]
+    ): string[] {
         const embeddingDataByContext = this.buildEmbeddingDataMap(allEmbeddings);
         const similarTitleSet = new Set<string>();
 
@@ -70,7 +67,9 @@ class EmbeddingPatternService {
         return [...similarTitleSet];
     }
 
-    private buildEmbeddingDataMap(allEmbeddings: TitleEmbeddingEntityInterface[]): Map<string, ContextEmbeddingDataInterface> {
+    private buildEmbeddingDataMap(
+        allEmbeddings: { title: string; context: string; embedding: Buffer }[]
+    ): Map<string, ContextEmbeddingDataInterface> {
         const embeddingDataByContext = new Map<string, ContextEmbeddingDataInterface>();
 
         for (const row of allEmbeddings) {
@@ -96,5 +95,3 @@ class EmbeddingPatternService {
         }
     }
 }
-
-export const embeddingPatternService = new EmbeddingPatternService();

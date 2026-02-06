@@ -1,15 +1,13 @@
+import { EmbeddingSuggestionService, TagLlmService, UseSuggestionReturnInterface, buildTransactionContext } from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { useGetCategoryByIdQuery } from '../../category/query/use-get-category-by-id.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { TagLlmService } from '../service/tag-llm.service';
-import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
@@ -43,6 +41,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         const categoryName = category?.titleEn ?? category?.title ?? null;
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, categoryName);
 
+        const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
         const embeddingResults = await embeddingSuggestionService.suggestTags(context, llm, allTags);
 
         if (isNotEmptyArray(embeddingResults)) {
