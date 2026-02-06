@@ -1,4 +1,4 @@
-import { and, count, desc, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -11,6 +11,12 @@ import { EmbeddingContextResultInterface } from '../interface/embedding-context-
 import { TitleEmbeddingEntityInterface } from '../interface/title-embedding-entity.interface';
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
+
+const hasEmbeddableContext = or(
+    ne(TransactionEntityTable.title, ''),
+    ne(TransactionEntityTable.comment, ''),
+    isNotNull(MccCategoryEntityTable.fullDescription)
+);
 
 export class TitleEmbeddingRepository {
     constructor(private readonly db: DB) {}
@@ -48,7 +54,7 @@ export class TitleEmbeddingRepository {
                 and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
             )
             .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .where(isNull(TransactionEntityTable.deletedAt))
+            .where(and(isNull(TransactionEntityTable.deletedAt), hasEmbeddableContext))
             .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription);
 
         return rows.length;
@@ -77,7 +83,7 @@ export class TitleEmbeddingRepository {
                 and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
             )
             .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .where(isNull(TransactionEntityTable.deletedAt))
+            .where(and(isNull(TransactionEntityTable.deletedAt), hasEmbeddableContext))
             .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(limit)
