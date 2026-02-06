@@ -1,4 +1,10 @@
-import { EmbeddingSuggestionService, TagLlmService, UseSuggestionReturnInterface, buildTransactionContext } from '@budgie/ai';
+import {
+    EmbeddingSuggestionService,
+    SuggestionSource,
+    TagLlmService,
+    UseSuggestionReturnInterface,
+    buildTransactionContext
+} from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -20,6 +26,11 @@ interface UseTagSuggestionParams {
     enabled: boolean;
 }
 
+interface FetchResultInterface {
+    readonly results: TagEntityInterface[];
+    readonly source: SuggestionSource;
+}
+
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
@@ -31,9 +42,9 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
     const hasTagsLoaded = isNotEmptyArray(allTags);
     const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
-    const fetchSuggestions = async (): Promise<TagEntityInterface[]> => {
+    const fetchSuggestions = async (): Promise<FetchResultInterface> => {
         if (!isNotEmptyArray(allTags)) {
-            return [];
+            return { results: [], source: 'llm' };
         }
 
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
@@ -45,18 +56,19 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         const embeddingResults = await embeddingSuggestionService.suggestTags(context, llm, allTags);
 
         if (isNotEmptyArray(embeddingResults)) {
-            return embeddingResults;
+            return { results: embeddingResults, source: 'vector' };
         }
 
         const service = new TagLlmService(llm);
-
-        return service.suggestTags({
+        const llmResults = await service.suggestTags({
             transactionTitle,
             categoryName,
             mccDescription,
             comment: suggestionComment,
             tags: allTags
         });
+
+        return { results: llmResults, source: 'llm' };
     };
 
     return useSuggestionBase({
