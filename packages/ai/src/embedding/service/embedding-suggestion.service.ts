@@ -1,18 +1,15 @@
-import { CategoryEntityInterface, TagEntityInterface, TitleEmbeddingEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import {
-    EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
-    EMBEDDING_SIMILARITY_THRESHOLD,
-    EMBEDDING_TAG_SUGGESTION_LIMIT
-} from '../../@generic/constant/embedding.constant';
+import { EMBEDDING_CATEGORY_SUGGESTION_LIMIT, EMBEDDING_TAG_SUGGESTION_LIMIT } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
-import { cosineSimilarity } from '../../@generic/util/cosine-similarity.util';
-import { deserializeEmbedding } from '../../@generic/util/deserialize-embedding.util';
+import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingRepositoryInterface } from '../interface/embedding-repository.interface';
 
 import { EmbeddingService } from './embedding.service';
+
+const VEC_SEARCH_LIMIT = 20;
 
 export class EmbeddingSuggestionService {
     constructor(private readonly repository: EmbeddingRepositoryInterface) {}
@@ -55,27 +52,9 @@ export class EmbeddingSuggestionService {
             return [];
         }
 
-        const allEmbeddings = await this.repository.findAll();
+        const serialized = serializeEmbedding(queryEmbedding);
+        const results = this.repository.findSimilarContexts(serialized, VEC_SEARCH_LIMIT);
 
-        if (!isNotEmptyArray(allEmbeddings)) {
-            return [];
-        }
-
-        return this.collectSimilarContexts(queryEmbedding, allEmbeddings);
-    }
-
-    private collectSimilarContexts(queryEmbedding: Float32Array, allEmbeddings: TitleEmbeddingEntityInterface[]): string[] {
-        const similarContexts: string[] = [];
-
-        for (const row of allEmbeddings) {
-            const rowEmbedding = deserializeEmbedding(row.embedding);
-            const similarity = cosineSimilarity(queryEmbedding, rowEmbedding);
-
-            if (similarity >= EMBEDDING_SIMILARITY_THRESHOLD) {
-                similarContexts.push(row.context);
-            }
-        }
-
-        return similarContexts;
+        return results.map(row => row.context);
     }
 }
