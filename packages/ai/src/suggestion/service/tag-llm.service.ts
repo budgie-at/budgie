@@ -30,7 +30,7 @@ export class TagLlmService extends BaseLlmService {
         }
 
         const systemPrompt = this.buildSuggestionPrompt(tags);
-        const context = buildTransactionContext(transactionTitle, mccDescription, comment, categoryName);
+        const context = buildTransactionContext(transactionTitle, mccDescription, comment, { categoryName });
         const response = await this.llm.generate(systemPrompt, context);
         const tagIds = this.parseSuggestionResponse(response, tags, MAX_SUGGESTIONS);
 

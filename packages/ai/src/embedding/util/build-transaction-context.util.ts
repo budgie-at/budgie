@@ -1,10 +1,12 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionContextNamesInterface } from '../interface/transaction-context-names.interface';
+
 export const buildTransactionContext = (
     title: string,
     mccDescription: string | null,
     comment: string,
-    categoryName?: string | null
+    names?: TransactionContextNamesInterface
 ): string => {
     const parts: string[] = [];
     const hasTitle = isNotEmptyString(title);
@@ -13,8 +15,12 @@ export const buildTransactionContext = (
         parts.push(`Transaction: ${title}`);
     }
 
-    if (isNotEmptyString(categoryName)) {
-        parts.push(`Category: ${categoryName}`);
+    if (isNotEmptyString(names?.categoryName)) {
+        parts.push(`Category: ${names.categoryName}`);
+    }
+
+    if (isNotEmptyString(names?.tagNames)) {
+        parts.push(`Tags: ${names.tagNames}`);
     }
 
     if (isNotEmptyString(mccDescription)) {
