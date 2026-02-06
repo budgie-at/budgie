@@ -1,9 +1,9 @@
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EMBEDDING_BATCH_LIMIT } from '../constant/embedding.constant';
-import { LlmInterface } from '../context/llm.context';
+import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
+import { LlmInterface } from '../../@generic/interface/llm.interface';
 
-export class EmbeddingLlmService {
+export class EmbeddingService {
     constructor(private readonly llm: LlmInterface) {}
 
     async generateEmbedding(text: string): Promise<Float32Array | null> {

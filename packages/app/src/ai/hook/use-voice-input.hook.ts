@@ -1,8 +1,7 @@
+import { AITransactionInterface } from '@budgie/ai';
 import { useRef, useState } from 'react';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
-import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';

@@ -1,10 +1,7 @@
+import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
-
-import { SuggestionInternalStatus } from '../interface/suggestion-internal-status.type';
-import { SuggestionStatus } from '../interface/suggestion-status.type';
-import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
 
 interface UseSuggestionBaseParams<T> {
     enabled: boolean;
