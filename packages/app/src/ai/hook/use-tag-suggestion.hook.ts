@@ -7,7 +7,9 @@ import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
 import { useLlmContext } from '../context/llm.context';
 import { UseSuggestionReturnInterface } from '../interface/use-suggestion-return.interface';
+import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 import { TagLlmService } from '../service/tag-llm.service';
+import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
@@ -36,10 +38,18 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
             return [];
         }
 
-        const service = new TagLlmService(llm);
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const categoryName = category?.titleEn ?? category?.title ?? null;
+        const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, categoryName);
+
+        const embeddingResults = await embeddingSuggestionService.suggestTags(context, llm, allTags);
+
+        if (isNotEmptyArray(embeddingResults)) {
+            return embeddingResults;
+        }
+
+        const service = new TagLlmService(llm);
 
         return service.suggestTags({
             transactionTitle,
