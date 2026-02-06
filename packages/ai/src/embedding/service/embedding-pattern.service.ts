@@ -2,17 +2,12 @@ import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EMBEDDING_RECENT_TITLE_COUNT, EMBEDDING_SIMILARITY_THRESHOLD } from '../../@generic/constant/embedding.constant';
-import { cosineSimilarity } from '../../@generic/util/cosine-similarity.util';
-import { deserializeEmbedding } from '../../@generic/util/deserialize-embedding.util';
+import { EMBEDDING_RECENT_TITLE_COUNT } from '../../@generic/constant/embedding.constant';
 import { EmbeddingPatternRepositoryInterface } from '../interface/embedding-pattern-repository.interface';
 import { FindSimilarPatternsParamsInterface } from '../interface/find-similar-patterns-params.interface';
 import { TransactionPatternRepositoryInterface } from '../interface/transaction-pattern-repository.interface';
 
-interface ContextEmbeddingDataInterface {
-    readonly title: string;
-    readonly embedding: Float32Array;
-}
+const VEC_PATTERN_SEARCH_LIMIT = 10;
 
 export class EmbeddingPatternService {
     constructor(
@@ -21,19 +16,19 @@ export class EmbeddingPatternService {
     ) {}
 
     async findSimilarPatterns(params: FindSimilarPatternsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const allEmbeddings = await this.embeddingRepository.findAll();
-
-        if (!isNotEmptyArray(allEmbeddings)) {
-            return [];
-        }
-
         const recentContexts = await this.embeddingRepository.findRecentContexts(EMBEDDING_RECENT_TITLE_COUNT);
 
         if (!isNotEmptyArray(recentContexts)) {
             return [];
         }
 
-        const similarTitles = this.findSimilarTitles(recentContexts, allEmbeddings);
+        const contextEmbeddings = await this.buildContextEmbeddings(recentContexts);
+
+        if (!isNotEmptyArray(contextEmbeddings)) {
+            return [];
+        }
+
+        const similarTitles = this.embeddingRepository.findSimilarTitlesByContexts(contextEmbeddings, VEC_PATTERN_SEARCH_LIMIT);
 
         if (!isNotEmptyArray(similarTitles)) {
             return [];
@@ -49,49 +44,17 @@ export class EmbeddingPatternService {
         });
     }
 
-    private findSimilarTitles(
-        recentContexts: { context: string }[],
-        allEmbeddings: { title: string; context: string; embedding: Uint8Array }[]
-    ): string[] {
-        const embeddingDataByContext = this.buildEmbeddingDataMap(allEmbeddings);
-        const similarTitleSet = new Set<string>();
+    private async buildContextEmbeddings(recentContexts: { context: string }[]): Promise<{ context: string; embedding: Uint8Array }[]> {
+        const results: { context: string; embedding: Uint8Array }[] = [];
 
         for (const recent of recentContexts) {
-            const recentData = embeddingDataByContext.get(recent.context);
+            const embedding = await this.embeddingRepository.findEmbeddingByContext(recent.context); // eslint-disable-line no-await-in-loop -- Sequential DB lookups for each recent context
 
-            if (isDefined(recentData)) {
-                this.collectSimilarTitles(recent.context, recentData.embedding, embeddingDataByContext, similarTitleSet);
+            if (isDefined(embedding)) {
+                results.push({ context: recent.context, embedding });
             }
         }
 
-        return [...similarTitleSet];
-    }
-
-    private buildEmbeddingDataMap(
-        allEmbeddings: { title: string; context: string; embedding: Uint8Array }[]
-    ): Map<string, ContextEmbeddingDataInterface> {
-        const embeddingDataByContext = new Map<string, ContextEmbeddingDataInterface>();
-
-        for (const row of allEmbeddings) {
-            embeddingDataByContext.set(row.context, {
-                title: row.title,
-                embedding: deserializeEmbedding(row.embedding)
-            });
-        }
-
-        return embeddingDataByContext;
-    }
-
-    private collectSimilarTitles(
-        recentContext: string,
-        recentEmbedding: Float32Array,
-        embeddingDataByContext: Map<string, ContextEmbeddingDataInterface>,
-        similarTitleSet: Set<string>
-    ): void {
-        for (const [context, data] of embeddingDataByContext) {
-            if (context !== recentContext && cosineSimilarity(recentEmbedding, data.embedding) >= EMBEDDING_SIMILARITY_THRESHOLD) {
-                similarTitleSet.add(data.title);
-            }
-        }
+        return results;
     }
 }

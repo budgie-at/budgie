@@ -31,6 +31,10 @@ msgstr "{accountTitle} se restaurará en tu vista principal."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columnas disponibles"
 
+#: src/settings/components/ai-data-card/ai-data-card.tsx:13
+msgid "{embeddedCount} of {totalContexts} contexts embedded"
+msgstr "{embeddedCount} de {totalContexts} contextos incorporados"
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx:130
 msgid "{formattedRemaining} left to assign"
 msgstr "{formattedRemaining} por asignar"
@@ -65,7 +69,7 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Sin conexión y privado"
 
-#: src/app/(tabs)/settings/index.tsx:136
+#: src/app/(tabs)/settings/index.tsx:139
 msgid "About"
 msgstr "Acerca de"
 
@@ -137,15 +141,20 @@ msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 msgid "Adjustment"
 msgstr "Ajuste"
 
+#: src/app/(tabs)/settings/index.tsx:84
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx:37
 msgid "AI"
 msgstr "IA"
+
+#: src/settings/hook/use-ai-data-preparation.hook.ts:187
+msgid "AI data preparation failed"
+msgstr "La preparación de datos de IA falló"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
 msgstr "Metadatos generados por IA"
 
-#: src/app/(tabs)/settings/index.tsx:141
+#: src/app/(tabs)/settings/index.tsx:144
 msgid ""
 "AI-powered budgeting app with complete privacy. All data processing happens locally on your device.\n"
 "Version {appVersion}"
@@ -187,7 +196,7 @@ msgstr "Token de API"
 msgid "App Lock"
 msgstr "Bloqueo de aplicación"
 
-#: src/app/(tabs)/settings/index.tsx:115
+#: src/app/(tabs)/settings/index.tsx:119
 msgid "Appearance"
 msgstr "Apariencia"
 
@@ -212,7 +221,7 @@ msgid "Archive Account?"
 msgstr "¿Archivar cuenta?"
 
 #: src/app/(tabs)/settings/archived.tsx:17
-#: src/app/(tabs)/settings/index.tsx:101
+#: src/app/(tabs)/settings/index.tsx:105
 msgid "Archived Accounts"
 msgstr "Cuentas archivadas"
 
@@ -267,7 +276,7 @@ msgstr "Autenticación biométrica"
 msgid "Borrowed"
 msgstr "Prestado"
 
-#: src/app/(tabs)/settings/index.tsx:139
+#: src/app/(tabs)/settings/index.tsx:142
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -481,7 +490,7 @@ msgstr "Crear cuentas"
 msgid "Create and copy the personal token"
 msgstr "Crear y copiar el token personal"
 
-#: src/app/(tabs)/settings/index.tsx:95
+#: src/app/(tabs)/settings/index.tsx:99
 msgid "Create and organize transaction tags"
 msgstr "Crear y organizar etiquetas de transacciones"
 
@@ -547,7 +556,7 @@ msgstr "Las categorías personalizadas que crees aparecerán aquí"
 msgid "Dark Mode"
 msgstr "Modo oscuro"
 
-#: src/app/(tabs)/settings/index.tsx:126
+#: src/app/(tabs)/settings/index.tsx:130
 msgid "Data management"
 msgstr "Gestión de datos"
 
@@ -610,10 +619,11 @@ msgid "Disable App Lock"
 msgstr "Desactivar bloqueo"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
+#: src/settings/hook/use-ai-data-preparation.hook.ts:183
 msgid "Done"
 msgstr "Listo"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:108
+#: src/sync/component/create-erste-account/create-erste-account.tsx:109
 msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
 msgstr "Descarga tu extracto de cuenta en PDF desde George (banca online de Erste Bank): Cuenta → Extractos → Descargar PDF."
 
@@ -783,7 +793,7 @@ msgstr "Exportar base de datos"
 msgid "Export Failed"
 msgstr "Exportación fallida"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:108
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
 msgid "Export your transactions as XLSX from the Privatbank24 app: Menu → Statements → Export to Excel."
 msgstr "Exporte sus transacciones como XLSX desde la app Privatbank24: Menú → Extractos → Exportar a Excel."
 
@@ -811,10 +821,6 @@ msgstr "No se pudieron obtener las cuentas"
 #: src/@generic/hook/use-contacts.hook.ts:59
 msgid "Failed to load contacts."
 msgstr "Error al cargar los contactos."
-
-#: src/category/hooks/use-regenerate-all-categories.hook.ts:36
-msgid "Failed to regenerate category translations"
-msgstr "No se pudieron regenerar las traducciones de categorías"
 
 #: src/auth/hook/use-pin-setup.hook.tsx:86
 msgid "Failed to save PIN. Please try again."
@@ -876,6 +882,10 @@ msgstr "Moneda origen"
 msgid "General"
 msgstr "General"
 
+#: src/settings/hook/use-ai-data-preparation.hook.ts:176
+msgid "Generating embeddings..."
+msgstr "Generando embeddings..."
+
 #: src/i18n/constant/languages.constant.ts:26
 msgid "German"
 msgstr "Alemán"
@@ -897,12 +907,12 @@ msgid "History synced"
 msgstr "Historial sincronizado"
 
 #: src/app/(main)/create-account/index.tsx:60
-#: src/sync/component/create-erste-account/create-erste-account.tsx:98
+#: src/sync/component/create-erste-account/create-erste-account.tsx:99
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importar cuentas y transacciones desde extracto PDF de Erste Bank"
 
 #: src/app/(main)/create-account/index.tsx:54
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:99
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Importar cuentas y transacciones desde exportación XLSX de Privatbank"
 
@@ -916,12 +926,12 @@ msgstr "Importar CSV"
 msgid "Import Database"
 msgstr "Importar base de datos"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:97
+#: src/sync/component/create-erste-account/create-erste-account.tsx:98
 msgid "Import Erste Bank"
 msgstr "Importar Erste Bank"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:84
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:85
+#: src/sync/component/create-erste-account/create-erste-account.tsx:85
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:86
 msgid "Import failed"
 msgstr "Error de importación"
 
@@ -929,7 +939,7 @@ msgstr "Error de importación"
 msgid "Import Failed"
 msgstr "Importación fallida"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:97
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:98
 msgid "Import Privatbank"
 msgstr "Importar Privatbank"
 
@@ -942,7 +952,7 @@ msgid "Importing a database will replace all current data. The app will restart 
 msgstr "Importar una base de datos reemplazará todos los datos actuales. La aplicación se reiniciará después de la importación. Esta acción no se puede deshacer."
 
 #: src/app/(tabs)/settings/inactive.tsx:17
-#: src/app/(tabs)/settings/index.tsx:108
+#: src/app/(tabs)/settings/index.tsx:112
 msgid "Inactive Accounts"
 msgstr "Cuentas inactivas"
 
@@ -970,8 +980,8 @@ msgstr "Ingresos por etiqueta"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:56
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:55
+#: src/sync/component/create-erste-account/create-erste-account.tsx:57
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:56
 msgid "Invalid file"
 msgstr "Archivo inválido"
 
@@ -1012,11 +1022,11 @@ msgstr "Modelo de IA no disponible"
 msgid "Main Currency"
 msgstr "Moneda principal"
 
-#: src/app/(tabs)/settings/index.tsx:87
+#: src/app/(tabs)/settings/index.tsx:91
 msgid "Manage Categories"
 msgstr "Gestionar categorías"
 
-#: src/app/(tabs)/settings/index.tsx:94
+#: src/app/(tabs)/settings/index.tsx:98
 msgid "Manage Tags"
 msgstr "Gestionar etiquetas"
 
@@ -1174,7 +1184,7 @@ msgstr "Nota"
 msgid "Open Monobank to get your token"
 msgstr "Abra Monobank para obtener su token"
 
-#: src/app/(tabs)/settings/index.tsx:84
+#: src/app/(tabs)/settings/index.tsx:88
 msgid "Organization"
 msgstr "Organización"
 
@@ -1244,6 +1254,10 @@ msgstr "Polaco (Polonia)"
 msgid "Portuguese (Portugal)"
 msgstr "Portugués (Portugal)"
 
+#: src/settings/components/ai-data-card/ai-data-card.tsx:20
+msgid "Prepare AI Data"
+msgstr "Preparar datos de IA"
+
 #: src/import/components/import-preset-selector/import-preset-selector.tsx:28
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Preset aplicado. Ajusta las columnas abajo si es necesario."
@@ -1276,14 +1290,6 @@ msgstr "Recalcular saldos"
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx:113
 msgid "Receiving {toCode}"
 msgstr "Recibiendo {toCode}"
-
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:15
-msgid "Regenerate AI Data"
-msgstr "Regenerar datos de IA"
-
-#: src/settings/components/regenerate-categories/regenerate-categories.tsx:16
-msgid "Regenerate translations and search keywords for all categories and tags"
-msgstr "Regenerar traducciones y palabras clave de búsqueda para todas las categorías y etiquetas"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx:34
 msgid "Restore"
@@ -1424,11 +1430,11 @@ msgstr "Seleccionar archivo"
 msgid "Select Import Preset"
 msgstr "Seleccionar preset de importación"
 
-#: src/sync/component/create-erste-account/create-erste-account.tsx:109
+#: src/sync/component/create-erste-account/create-erste-account.tsx:110
 msgid "Select the downloaded PDF file:"
 msgstr "Selecciona el archivo PDF descargado:"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:109
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:110
 msgid "Select the exported XLSX file:"
 msgstr "Seleccione el archivo XLSX exportado:"
 
@@ -1452,11 +1458,11 @@ msgstr "Establecer fecha de devolución"
 msgid "Settings"
 msgstr "Configuración"
 
-#: src/app/(tabs)/settings/index.tsx:119
+#: src/app/(tabs)/settings/index.tsx:123
 msgid "Show $1,234.56 instead of $1,235"
 msgstr "Mostrar $1.234,56 en lugar de $1.235"
 
-#: src/app/(tabs)/settings/index.tsx:118
+#: src/app/(tabs)/settings/index.tsx:122
 msgid "Show Cents"
 msgstr "Mostrar centavos"
 
@@ -1694,6 +1700,14 @@ msgstr "Error de transcripción"
 msgid "Transfer"
 msgstr "Transferencia"
 
+#: src/settings/hook/use-ai-data-preparation.hook.ts:156
+msgid "Translating categories..."
+msgstr "Traduciendo categorías..."
+
+#: src/settings/hook/use-ai-data-preparation.hook.ts:166
+msgid "Translating tags..."
+msgstr "Traduciendo etiquetas..."
+
 #: src/@generic/component/contact-selector-bottom-sheet/contact-selector-bottom-sheet.tsx:55
 #: src/@generic/component/currency-selector-bottom-sheet/currency-selector-bottom-sheet.tsx:57
 #: src/account/component/account-select-content/account-select-content.tsx:42
@@ -1759,15 +1773,15 @@ msgstr "Usa Face ID para desbloquear tu aplicación de forma rápida y segura"
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Usa Touch ID para desbloquear tu aplicación de forma rápida y segura"
 
-#: src/app/(tabs)/settings/index.tsx:109
+#: src/app/(tabs)/settings/index.tsx:113
 msgid "View and activate hidden accounts"
 msgstr "Ver y activar cuentas ocultas"
 
-#: src/app/(tabs)/settings/index.tsx:88
+#: src/app/(tabs)/settings/index.tsx:92
 msgid "View and delete custom categories"
 msgstr "Ver y eliminar categorías personalizadas"
 
-#: src/app/(tabs)/settings/index.tsx:102
+#: src/app/(tabs)/settings/index.tsx:106
 msgid "View and restore archived accounts"
 msgstr "Ver y restaurar cuentas archivadas"
 
