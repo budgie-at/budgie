@@ -43,7 +43,7 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
             comment,
             amount,
             type,
-            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0 })
+            entries: buildExpenseEntry({ accountId: 0, categoryId, amount: 0, mccCategoryId: null })
         })
     });
 

@@ -32,6 +32,7 @@ interface BuildEntryParams {
     readonly accountId: number;
     readonly categoryId: number;
     readonly amount: number;
+    readonly mccCategoryId: number | null;
 }
 
 interface Props {
@@ -185,7 +186,7 @@ export const SimpleQuickForm = (props: Props) => {
             return;
         }
 
-        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount });
+        const builtEntries = buildEntries({ accountId, categoryId: formCategoryId, amount, mccCategoryId });
 
         setValue('entries', builtEntries, { shouldValidate: false });
 
