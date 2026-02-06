@@ -1,1 +1,1 @@
-export type SuggestionSource = 'vector' | 'llm';
+export type SuggestionSource = 'vector';
