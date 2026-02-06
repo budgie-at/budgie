@@ -1,3 +1,4 @@
+import { AITransactionInterface, ExtractedVoiceTransactionInterface, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
 import { AccountWithInstrumentEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
@@ -5,9 +6,6 @@ import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useLlmContext } from '../context/llm.context';
-import { AITransactionInterface } from '../interface/ai-transaction.interface';
-import { ExtractedVoiceTransaction, VoiceLlmService } from '../service/voice-llm.service';
-import { findAccountByCurrency } from '../util/find-account-by-currency.util';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -22,7 +20,7 @@ interface UseLlmCategorizationReturnInterface {
 }
 
 const mapExtractedToTransactions = (
-    extracted: ExtractedVoiceTransaction[],
+    extracted: ExtractedVoiceTransactionInterface[],
     accounts: AccountWithInstrumentEntityInterface[]
 ): AITransactionInterface[] =>
     extracted.map(item => ({

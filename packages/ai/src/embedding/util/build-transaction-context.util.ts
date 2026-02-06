@@ -1,6 +1,5 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
-/* eslint-disable lingui/no-unlocalized-strings -- LLM prompt labels */
 export const buildTransactionContext = (
     title: string,
     mccDescription: string | null,
@@ -29,4 +28,3 @@ export const buildTransactionContext = (
 
     return parts.join(' | ');
 };
-/* eslint-enable lingui/no-unlocalized-strings */

@@ -1,11 +1,10 @@
+import { GenerateOptionsInterface, LlmInterface } from '@budgie/ai';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
-
-import { GenerateOptionsInterface, LlmInterface } from '../context/llm.context';
 
 interface RunCompletionParams {
     context: LlamaContext;

@@ -1451,6 +1451,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@budgie/ai@workspace:packages/ai":
+  version: 0.0.0-use.local
+  resolution: "@budgie/ai@workspace:packages/ai"
+  dependencies:
+    "@budgie/contracts": "workspace:^"
+    "@rnw-community/shared": "npm:^1.8.2"
+    zod: "npm:^4.1.12"
+  languageName: unknown
+  linkType: soft
+
 "@budgie/bank-sync@workspace:*, @budgie/bank-sync@workspace:packages/bank-sync":
   version: 0.0.0-use.local
   resolution: "@budgie/bank-sync@workspace:packages/bank-sync"

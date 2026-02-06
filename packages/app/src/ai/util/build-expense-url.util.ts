@@ -1,8 +1,7 @@
+import { GroupedVoiceTransactionInterface } from '@budgie/ai';
 import { Href } from 'expo-router';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
-
-import { GroupedVoiceTransactionInterface } from '../service/voice-llm.service';
 
 export const buildExpenseUrl = (transaction: GroupedVoiceTransactionInterface, defaultAccountId: number | undefined): Href => {
     const params = new URLSearchParams();
