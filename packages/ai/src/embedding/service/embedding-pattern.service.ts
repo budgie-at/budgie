@@ -51,7 +51,7 @@ export class EmbeddingPatternService {
 
     private findSimilarTitles(
         recentContexts: { context: string }[],
-        allEmbeddings: { title: string; context: string; embedding: Buffer }[]
+        allEmbeddings: { title: string; context: string; embedding: Uint8Array }[]
     ): string[] {
         const embeddingDataByContext = this.buildEmbeddingDataMap(allEmbeddings);
         const similarTitleSet = new Set<string>();
@@ -68,7 +68,7 @@ export class EmbeddingPatternService {
     }
 
     private buildEmbeddingDataMap(
-        allEmbeddings: { title: string; context: string; embedding: Buffer }[]
+        allEmbeddings: { title: string; context: string; embedding: Uint8Array }[]
     ): Map<string, ContextEmbeddingDataInterface> {
         const embeddingDataByContext = new Map<string, ContextEmbeddingDataInterface>();
 
