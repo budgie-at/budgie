@@ -66,6 +66,8 @@ const processBatch = async (service: EmbeddingService, offset: number): Promise<
     return transactionData.length === EMBEDDING_BATCH_LIMIT;
 };
 
+const MAX_CONSECUTIVE_FAILURES = 3;
+
 export const useEmbeddingSync = (llm: LlmInterface): void => {
     const isSyncingRef = useRef(false);
 
@@ -81,9 +83,15 @@ export const useEmbeddingSync = (llm: LlmInterface): void => {
                 const service = new EmbeddingService(llm);
                 let offset = 0;
                 let hasMore = true;
+                let consecutiveFailures = 0;
 
-                while (hasMore) {
-                    hasMore = await processBatch(service, offset); // eslint-disable-line no-await-in-loop -- Sequential batch processing to avoid overwhelming the device
+                while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
+                    try {
+                        hasMore = await processBatch(service, offset); // eslint-disable-line no-await-in-loop -- Sequential batch processing to avoid overwhelming the device
+                        consecutiveFailures = 0;
+                    } catch {
+                        consecutiveFailures += 1;
+                    }
                     offset += EMBEDDING_BATCH_LIMIT;
                 }
             } finally {
