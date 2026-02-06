@@ -19,7 +19,7 @@ export class TitleEmbeddingRepository {
         return this.db.select().from(TitleEmbeddingEntityTable).where(isNull(TitleEmbeddingEntityTable.deletedAt));
     }
 
-    async upsert(title: string, context: string, embedding: Buffer, dimensions: number): Promise<void> {
+    async upsert(title: string, context: string, embedding: Uint8Array, dimensions: number): Promise<void> {
         await this.db
             .insert(TitleEmbeddingEntityTable)
             .values({ title, context, embedding, dimensions })
