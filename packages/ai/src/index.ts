@@ -43,9 +43,7 @@ export {
 // suggestion - services
 export { BaseLlmService } from './suggestion/service/base-llm.service';
 export { CategoryLlmService } from './suggestion/service/category-llm.service';
-export type { CategorySuggestionParamsInterface } from './suggestion/service/category-llm.service';
 export { TagLlmService } from './suggestion/service/tag-llm.service';
-export type { TagSuggestionParamsInterface } from './suggestion/service/tag-llm.service';
 
 // voice - interfaces
 export type { AITransactionInterface } from './voice/interface/ai-transaction.interface';
