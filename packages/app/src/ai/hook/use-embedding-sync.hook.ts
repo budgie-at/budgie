@@ -43,6 +43,29 @@ const storeEmbeddings = async (
     }
 };
 
+const processBatch = async (service: EmbeddingService, offset: number): Promise<boolean> => {
+    const [transactionData, allContexts] = await Promise.all([
+        titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, offset),
+        titleEmbeddingRepository.findAllContexts()
+    ]);
+
+    if (!isNotEmptyArray(transactionData)) {
+        return false;
+    }
+
+    const contextData = buildContextData(transactionData);
+    const existingContexts = new Set(allContexts);
+    const unembeddedContexts = filterUnembeddedContexts(contextData, existingContexts);
+
+    if (isNotEmptyArray(unembeddedContexts)) {
+        const contextStrings = unembeddedContexts.map(item => item.context);
+        const embeddings = await service.generateEmbeddings(contextStrings);
+        await storeEmbeddings(unembeddedContexts, embeddings);
+    }
+
+    return transactionData.length === EMBEDDING_BATCH_LIMIT;
+};
+
 export const useEmbeddingSync = (llm: LlmInterface): void => {
     const isSyncingRef = useRef(false);
 
@@ -55,23 +78,14 @@ export const useEmbeddingSync = (llm: LlmInterface): void => {
             isSyncingRef.current = true;
 
             try {
-                const [transactionData, allContexts] = await Promise.all([
-                    titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT),
-                    titleEmbeddingRepository.findAllContexts()
-                ]);
-
-                const contextData = buildContextData(transactionData);
-                const unembeddedContexts = filterUnembeddedContexts(contextData, new Set(allContexts));
-
-                if (!isNotEmptyArray(unembeddedContexts)) {
-                    return;
-                }
-
                 const service = new EmbeddingService(llm);
-                const contextStrings = unembeddedContexts.map(item => item.context);
-                const embeddings = await service.generateEmbeddings(contextStrings);
+                let offset = 0;
+                let hasMore = true;
 
-                await storeEmbeddings(unembeddedContexts, embeddings);
+                while (hasMore) {
+                    hasMore = await processBatch(service, offset); // eslint-disable-line no-await-in-loop -- Sequential batch processing to avoid overwhelming the device
+                    offset += EMBEDDING_BATCH_LIMIT;
+                }
             } finally {
                 isSyncingRef.current = false;
             }
