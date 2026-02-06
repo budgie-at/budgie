@@ -83,5 +83,5 @@ export const useRepeatedTransactionSuggestion = (
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
 
-    return { status, suggestions, source: null };
+    return { status, suggestions };
 };
