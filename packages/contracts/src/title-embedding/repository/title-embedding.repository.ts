@@ -38,14 +38,22 @@ export class TitleEmbeddingRepository {
         return result.count;
     }
 
-    async countDistinctTransactionTitles(): Promise<number> {
-        const [result] = await this.db
-            .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.title})` })
+    /* jscpd:ignore-start -- Same join/group pattern as findTransactionData for context counting */
+    async countDistinctTransactionContexts(): Promise<number> {
+        const rows = await this.db
+            .select({ _: sql<number>`1` })
             .from(TransactionEntityTable)
-            .where(isNull(TransactionEntityTable.deletedAt));
+            .leftJoin(
+                TransactionEntryEntityTable,
+                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
+            )
+            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+            .where(isNull(TransactionEntityTable.deletedAt))
+            .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription);
 
-        return result.count;
+        return rows.length;
     }
+    /* jscpd:ignore-end */
 
     async findAllContexts(): Promise<string[]> {
         const results = await this.db
