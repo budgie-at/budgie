@@ -1,4 +1,4 @@
-import { count, eq, inArray, like } from 'drizzle-orm';
+import { count, eq, inArray, isNull, like } from 'drizzle-orm';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -58,6 +58,12 @@ export class TagRepository {
 
     findAll() {
         return this.db.query.TagEntityTable.findMany();
+    }
+
+    findWithoutTags() {
+        return this.db.query.TagEntityTable.findMany({
+            where: isNull(TagEntityTable.tagsGeneratedAt)
+        });
     }
 
     async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {

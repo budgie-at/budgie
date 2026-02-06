@@ -3,13 +3,15 @@ import { and, count, desc, eq, inArray, isNotNull, isNull, ne, or, sql } from 'd
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
+import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
+import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { EmbeddingContextResultInterface } from '../interface/embedding-context-result.interface';
-import { TitleEmbeddingEntityInterface } from '../interface/title-embedding-entity.interface';
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
+import { VecSearchResultInterface } from '../interface/vec-search-result.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
 
 const hasEmbeddableContext = or(
@@ -21,18 +23,55 @@ const hasEmbeddableContext = or(
 export class TitleEmbeddingRepository {
     constructor(private readonly db: DB) {}
 
-    async findAll(): Promise<TitleEmbeddingEntityInterface[]> {
-        return this.db.select().from(TitleEmbeddingEntityTable).where(isNull(TitleEmbeddingEntityTable.deletedAt));
+    findSimilarContexts(queryEmbedding: Uint8Array, limit: number): EmbeddingContextResultInterface[] {
+        return this.db.all<VecSearchResultInterface>(sql`
+            SELECT te.context, te.title
+            FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ${queryEmbedding} ORDER BY distance LIMIT ${limit}) vec
+            JOIN title_embeddings te ON te.id = vec.rowid
+            WHERE te.deleted_at IS NULL
+        `);
+    }
+
+    findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): string[] {
+        const titleSet = new Set<string>();
+
+        for (const { context, embedding } of contextEmbeddings) {
+            const results = this.db.all<VecSearchResultInterface>(sql`
+                SELECT te.context, te.title
+                FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ${embedding} ORDER BY distance LIMIT ${limit}) vec
+                JOIN title_embeddings te ON te.id = vec.rowid
+                WHERE te.deleted_at IS NULL AND te.context != ${context}
+            `);
+
+            for (const row of results) {
+                titleSet.add(row.title);
+            }
+        }
+
+        return [...titleSet];
+    }
+
+    async findEmbeddingByContext(context: string): Promise<Uint8Array | null> {
+        const results = await this.db
+            .select({ embedding: TitleEmbeddingEntityTable.embedding })
+            .from(TitleEmbeddingEntityTable)
+            .where(and(eq(TitleEmbeddingEntityTable.context, context), isNull(TitleEmbeddingEntityTable.deletedAt)))
+            .limit(1);
+
+        return isNotEmptyArray(results) ? results[0].embedding : null;
     }
 
     async upsert(title: string, context: string, embedding: Uint8Array, dimensions: number): Promise<void> {
-        await this.db
+        const [row] = await this.db
             .insert(TitleEmbeddingEntityTable)
             .values({ title, context, embedding, dimensions })
             .onConflictDoUpdate({
                 target: TitleEmbeddingEntityTable.context,
                 set: { title, embedding, dimensions, updatedAt: new Date() }
-            });
+            })
+            .returning({ id: TitleEmbeddingEntityTable.id });
+
+        this.db.run(sql`INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) VALUES (${row.id}, ${embedding})`);
     }
 
     async countAll(): Promise<number> {
@@ -75,7 +114,9 @@ export class TitleEmbeddingRepository {
             .select({
                 title: TransactionEntityTable.title,
                 comment: TransactionEntityTable.comment,
-                mccFullDescription: MccCategoryEntityTable.fullDescription
+                mccFullDescription: MccCategoryEntityTable.fullDescription,
+                categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
+                tagTitlesEn: sql<string | null>`GROUP_CONCAT(DISTINCT COALESCE(${TagEntityTable.titleEn}, ${TagEntityTable.title}))`
             })
             .from(TransactionEntityTable)
             .leftJoin(
@@ -83,6 +124,9 @@ export class TitleEmbeddingRepository {
                 and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
             )
             .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+            .leftJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+            .leftJoin(TagEntityTable, eq(TagEntityTable.id, TransactionTagsEntityTable.tagId))
             .where(and(isNull(TransactionEntityTable.deletedAt), hasEmbeddableContext))
             .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
@@ -92,7 +136,9 @@ export class TitleEmbeddingRepository {
         return results.map(row => ({
             title: row.title,
             comment: row.comment,
-            mccFullDescription: row.mccFullDescription ?? null
+            mccFullDescription: row.mccFullDescription ?? null,
+            categoryTitleEn: row.categoryTitleEn ?? null,
+            tagTitlesEn: row.tagTitlesEn ?? null
         }));
     }
 
@@ -166,5 +212,6 @@ export class TitleEmbeddingRepository {
 
     async truncate(): Promise<void> {
         await this.db.delete(TitleEmbeddingEntityTable);
+        this.db.run(sql`DELETE FROM title_embedding_vec`);
     }
 }

@@ -19,7 +19,7 @@ import {
 } from '@budgie/contracts';
 import { DB_NAME } from '../constant/db-name.constant';
 import * as schema from './schema';
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import * as SecureStore from 'expo-secure-store';
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 
@@ -38,6 +38,14 @@ const dbInit = () => {
 
     global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
+
+    const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+
+    if (isDefined(extension)) {
+        global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+    }
+
+    global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[384])'); // eslint-disable-line lingui/no-unlocalized-strings
 
     return global.__expoSqliteDb__;
 };

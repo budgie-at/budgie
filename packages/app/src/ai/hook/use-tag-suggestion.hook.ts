@@ -50,7 +50,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const categoryName = category?.titleEn ?? category?.title ?? null;
-        const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, categoryName);
+        const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, { categoryName });
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
         const embeddingResults = await embeddingSuggestionService.suggestTags(context, llm, allTags);

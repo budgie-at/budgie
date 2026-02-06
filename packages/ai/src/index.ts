@@ -6,13 +6,10 @@ export {
     EMBEDDING_BATCH_LIMIT,
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
     EMBEDDING_RECENT_TITLE_COUNT,
-    EMBEDDING_SIMILARITY_THRESHOLD,
     EMBEDDING_TAG_SUGGESTION_LIMIT
 } from './@generic/constant/embedding.constant';
 
 // @generic - utils
-export { cosineSimilarity } from './@generic/util/cosine-similarity.util';
-export { deserializeEmbedding } from './@generic/util/deserialize-embedding.util';
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
 
 // embedding - interfaces
