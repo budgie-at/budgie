@@ -1,12 +1,51 @@
+import { UnembeddedTransactionDataInterface } from '@budgie/contracts';
 import { useEffect, useRef } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 import { EMBEDDING_BATCH_LIMIT } from '../constant/embedding.constant';
 import { LlmInterface } from '../context/llm.context';
 import { EmbeddingLlmService } from '../service/embedding-llm.service';
+import { buildTransactionContext } from '../util/build-transaction-context.util';
 import { serializeEmbedding } from '../util/serialize-embedding.util';
+
+interface TransactionContextDataInterface {
+    readonly title: string;
+    readonly context: string;
+}
+
+const buildContextData = (transactionData: UnembeddedTransactionDataInterface[]): TransactionContextDataInterface[] =>
+    transactionData
+        .map(row => {
+            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
+
+            if (!isNotEmptyString(context)) {
+                return null;
+            }
+
+            return { title: row.title, context };
+        })
+        .filter(isDefined);
+
+const filterUnembeddedContexts = (
+    contextData: TransactionContextDataInterface[],
+    existingContexts: Set<string>
+): TransactionContextDataInterface[] => contextData.filter(item => !existingContexts.has(item.context));
+
+const storeEmbeddings = async (
+    unembeddedContexts: TransactionContextDataInterface[],
+    embeddings: Map<string, Float32Array>
+): Promise<void> => {
+    for (const item of unembeddedContexts) {
+        const embeddingVector = embeddings.get(item.context);
+
+        if (isDefined(embeddingVector)) {
+            const serialized = serializeEmbedding(embeddingVector);
+            await titleEmbeddingRepository.upsert(item.title, item.context, serialized, embeddingVector.length); // eslint-disable-line no-await-in-loop -- Sequential DB writes for upsert consistency
+        }
+    }
+};
 
 export const useEmbeddingSync = (llm: LlmInterface): void => {
     const isSyncingRef = useRef(false);
@@ -20,19 +59,23 @@ export const useEmbeddingSync = (llm: LlmInterface): void => {
             isSyncingRef.current = true;
 
             try {
-                const unembeddedTitles = await titleEmbeddingRepository.findUnembeddedTitles(EMBEDDING_BATCH_LIMIT);
+                const [transactionData, allContexts] = await Promise.all([
+                    titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT),
+                    titleEmbeddingRepository.findAllContexts()
+                ]);
 
-                if (!isNotEmptyArray(unembeddedTitles)) {
+                const contextData = buildContextData(transactionData);
+                const unembeddedContexts = filterUnembeddedContexts(contextData, new Set(allContexts));
+
+                if (!isNotEmptyArray(unembeddedContexts)) {
                     return;
                 }
 
                 const service = new EmbeddingLlmService(llm);
-                const embeddings = await service.generateEmbeddings(unembeddedTitles);
+                const contextStrings = unembeddedContexts.map(item => item.context);
+                const embeddings = await service.generateEmbeddings(contextStrings);
 
-                for (const [title, embeddingVector] of embeddings) {
-                    const serialized = serializeEmbedding(embeddingVector);
-                    await titleEmbeddingRepository.upsert(title, serialized, embeddingVector.length); // eslint-disable-line no-await-in-loop -- Sequential DB writes for upsert consistency
-                }
+                await storeEmbeddings(unembeddedContexts, embeddings);
             } finally {
                 isSyncingRef.current = false;
             }

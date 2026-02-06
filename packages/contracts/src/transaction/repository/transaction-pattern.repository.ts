@@ -94,7 +94,9 @@ export class TransactionPatternRepository {
         return this.executeBasePatternQuery(conditions, havingCondition, orderBy, limit);
     }
 
-    private buildCommonPatternConditions(query: Pick<MonthlyPatternQueryInterface, 'type' | 'accountId' | 'amountMin' | 'amountMax'>): SQL[] {
+    private buildCommonPatternConditions(
+        query: Pick<MonthlyPatternQueryInterface, 'type' | 'accountId' | 'amountMin' | 'amountMax'>
+    ): SQL[] {
         const entryType = this.getEntryTypeForTransactionType(query.type);
 
         const conditions: SQL[] = [

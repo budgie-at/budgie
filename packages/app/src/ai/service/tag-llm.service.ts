@@ -3,6 +3,7 @@ import { TagEntityInterface } from '@budgie/contracts';
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { tagRepository } from '../../@generic/drizzle/db/db';
+import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
 
@@ -51,7 +52,7 @@ export class TagLlmService extends BaseLlmService {
         }
 
         const systemPrompt = this.buildSuggestionPrompt(tags);
-        const context = this.buildTransactionContext(transactionTitle, mccDescription, comment, categoryName);
+        const context = buildTransactionContext(transactionTitle, mccDescription, comment, categoryName);
         const response = await this.llm.generate(systemPrompt, context);
         const tagIds = this.parseSuggestionResponse(response, tags, MAX_SUGGESTIONS);
 

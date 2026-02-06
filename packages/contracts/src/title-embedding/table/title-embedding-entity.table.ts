@@ -5,7 +5,8 @@ import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity
 export const TitleEmbeddingEntityTable = sqliteTable(
     'title_embeddings',
     withBaseEntityTableColumns({
-        title: text().notNull().unique(),
+        title: text().notNull(),
+        context: text().notNull().unique(),
         embedding: blob({ mode: 'buffer' }).notNull(),
         dimensions: int({ mode: 'number' }).notNull()
     })

@@ -1,10 +1,15 @@
-import { SQL, and, count, desc, isNull, ne, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
+import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { EmbeddingContextResultInterface } from '../interface/embedding-context-result.interface';
 import { TitleEmbeddingEntityInterface } from '../interface/title-embedding-entity.interface';
+import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
 
 export class TitleEmbeddingRepository {
@@ -14,13 +19,13 @@ export class TitleEmbeddingRepository {
         return this.db.select().from(TitleEmbeddingEntityTable).where(isNull(TitleEmbeddingEntityTable.deletedAt));
     }
 
-    async upsert(title: string, embedding: Buffer, dimensions: number): Promise<void> {
+    async upsert(title: string, context: string, embedding: Buffer, dimensions: number): Promise<void> {
         await this.db
             .insert(TitleEmbeddingEntityTable)
-            .values({ title, embedding, dimensions })
+            .values({ title, context, embedding, dimensions })
             .onConflictDoUpdate({
-                target: TitleEmbeddingEntityTable.title,
-                set: { embedding, dimensions, updatedAt: new Date() }
+                target: TitleEmbeddingEntityTable.context,
+                set: { title, embedding, dimensions, updatedAt: new Date() }
             });
     }
 
@@ -42,39 +47,106 @@ export class TitleEmbeddingRepository {
         return result.count;
     }
 
-    async findUnembeddedTitles(limit: number): Promise<string[]> {
-        const embeddedTitles = await this.db
-            .select({ title: TitleEmbeddingEntityTable.title })
+    async findAllContexts(): Promise<string[]> {
+        const results = await this.db
+            .select({ context: TitleEmbeddingEntityTable.context })
             .from(TitleEmbeddingEntityTable)
             .where(isNull(TitleEmbeddingEntityTable.deletedAt));
 
-        const embeddedTitleList = embeddedTitles.map(row => row.title);
-
-        const conditions: SQL[] = [isNull(TransactionEntityTable.deletedAt), ne(TransactionEntityTable.title, '')];
-
-        if (isNotEmptyArray(embeddedTitleList)) {
-            conditions.push(notInArray(TransactionEntityTable.title, embeddedTitleList));
-        }
-
-        const results = await this.db
-            .selectDistinct({ title: TransactionEntityTable.title })
-            .from(TransactionEntityTable)
-            .where(and(...conditions))
-            .limit(limit);
-
-        return results.map(row => row.title);
+        return results.map(row => row.context);
     }
 
-    async findRecentTitles(limit: number): Promise<string[]> {
+    async findTransactionData(limit: number): Promise<UnembeddedTransactionDataInterface[]> {
         const results = await this.db
-            .select({ title: TransactionEntityTable.title })
+            .select({
+                title: TransactionEntityTable.title,
+                comment: TransactionEntityTable.comment,
+                mccFullDescription: MccCategoryEntityTable.fullDescription
+            })
             .from(TransactionEntityTable)
-            .where(and(isNull(TransactionEntityTable.deletedAt), ne(TransactionEntityTable.title, '')))
-            .groupBy(TransactionEntityTable.title)
+            .leftJoin(
+                TransactionEntryEntityTable,
+                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
+            )
+            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
+            .where(isNull(TransactionEntityTable.deletedAt))
+            .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(limit);
 
-        return results.map(row => row.title);
+        return results.map(row => ({
+            title: row.title,
+            comment: row.comment,
+            mccFullDescription: row.mccFullDescription ?? null
+        }));
+    }
+
+    async findRecentContexts(limit: number): Promise<EmbeddingContextResultInterface[]> {
+        const results = await this.db
+            .select({
+                title: TitleEmbeddingEntityTable.title,
+                context: TitleEmbeddingEntityTable.context
+            })
+            .from(TitleEmbeddingEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
+            .where(and(isNull(TitleEmbeddingEntityTable.deletedAt), isNull(TransactionEntityTable.deletedAt)))
+            .groupBy(TitleEmbeddingEntityTable.context, TitleEmbeddingEntityTable.title)
+            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
+            .limit(limit);
+
+        return results;
+    }
+
+    async findCategoriesByContexts(contexts: string[]): Promise<{ categoryId: number; count: number }[]> {
+        if (!isNotEmptyArray(contexts)) {
+            return [];
+        }
+
+        return this.db
+            .select({
+                categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`,
+                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`
+            })
+            .from(TitleEmbeddingEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
+            .innerJoin(
+                TransactionEntryEntityTable,
+                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
+            )
+            .where(
+                and(
+                    inArray(TitleEmbeddingEntityTable.context, contexts),
+                    isNull(TitleEmbeddingEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.deletedAt),
+                    isNotNull(TransactionEntryEntityTable.categoryId)
+                )
+            )
+            .groupBy(TransactionEntryEntityTable.categoryId)
+            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`));
+    }
+
+    async findTagsByContexts(contexts: string[]): Promise<{ tagId: number; count: number }[]> {
+        if (!isNotEmptyArray(contexts)) {
+            return [];
+        }
+
+        return this.db
+            .select({
+                tagId: sql<number>`${TransactionTagsEntityTable.tagId}`,
+                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`
+            })
+            .from(TitleEmbeddingEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
+            .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+            .where(
+                and(
+                    inArray(TitleEmbeddingEntityTable.context, contexts),
+                    isNull(TitleEmbeddingEntityTable.deletedAt),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            )
+            .groupBy(TransactionTagsEntityTable.tagId)
+            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`));
     }
 
     async truncate(): Promise<void> {
