@@ -2,49 +2,27 @@ import { CategoryEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { buildTransactionContext } from '../util/build-transaction-context.util';
+import { buildTransactionContext } from '../../embedding/util/build-transaction-context.util';
+import { TranslationResultInterface } from '../interface/translation-result.interface';
 
-import { BaseLlmService, TranslationResultInterface } from './base-llm.service';
+import { BaseLlmService } from './base-llm.service';
 
-interface CategorySuggestionParams {
+export interface CategorySuggestionParamsInterface {
     transactionTitle: string;
     mccDescription: string | null;
     comment: string;
     categories: CategoryEntityInterface[];
 }
 
-interface CategoryLlmErrorHandler {
-    (category: CategoryEntityInterface, error: unknown): void;
-}
-
 const MAX_TAGS = 3;
 const MAX_SUGGESTIONS = 3;
 
 export class CategoryLlmService extends BaseLlmService {
-    async regenerateOne(categoryId: number, title: string): Promise<TranslationResultInterface> {
-        const result = await this.generateTranslationAndTags(title);
-        await this.saveTranslation(categoryId, result);
-
-        return result;
+    async translate(title: string): Promise<TranslationResultInterface> {
+        return this.generateTranslationAndTags(title);
     }
 
-    async regenerateAll(onError?: CategoryLlmErrorHandler): Promise<void> {
-        const categories = await categoryRepository.findAllNonSystem();
-
-        /* eslint-disable no-await-in-loop -- Sequential processing to avoid overwhelming LLM */
-        for (const category of categories) {
-            try {
-                const result = await this.generateTranslationAndTags(category.title);
-                await this.saveTranslation(category.id, result);
-            } catch (error: unknown) {
-                onError?.(category, error);
-            }
-        }
-        /* eslint-enable no-await-in-loop */
-    }
-
-    async suggestCategories(params: CategorySuggestionParams): Promise<CategoryEntityInterface[]> {
+    async suggestCategories(params: CategorySuggestionParamsInterface): Promise<CategoryEntityInterface[]> {
         const { transactionTitle, mccDescription, comment, categories } = params;
 
         const userCategories = this.filterUserCategories(categories);
@@ -60,10 +38,6 @@ export class CategoryLlmService extends BaseLlmService {
         return categoryIds.map(id => categories.find(category => category.id === id)).filter(isDefined);
     }
 
-    private async saveTranslation(categoryId: number, result: TranslationResultInterface): Promise<void> {
-        await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
-    }
-
     private filterUserCategories(categories: CategoryEntityInterface[]): CategoryEntityInterface[] {
         return categories.filter(category => !category.isSystemCategory && !category.isDefault);
     }
@@ -71,7 +45,6 @@ export class CategoryLlmService extends BaseLlmService {
     private buildSuggestionPrompt(userCategories: CategoryEntityInterface[]): string {
         const categoryList = userCategories.map(category => `${category.id}=${this.getCategoryLabel(category)}`).join(', ');
 
-        /* eslint-disable lingui/no-unlocalized-strings */
         return `Match the transaction to categories. Return up to 3 category IDs, best match first.
 
 CATEGORIES: ${categoryList}
@@ -85,7 +58,6 @@ RULES:
 - Best match first, then alternatives
 - Maximum 3 IDs
 - If no match, return 0`;
-        /* eslint-enable lingui/no-unlocalized-strings */
     }
 
     private getCategoryLabel(category: CategoryEntityInterface): string {

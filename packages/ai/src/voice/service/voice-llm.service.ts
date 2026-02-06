@@ -3,11 +3,11 @@ import { z } from 'zod';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_TRANSLATION_PROMPT } from '../constant/voice-prompt.constant';
-import { LlmInterface } from '../context/llm.context';
 import { AITransactionInterface } from '../interface/ai-transaction.interface';
 
-export interface ExtractedVoiceTransaction {
+export interface ExtractedVoiceTransactionInterface {
     description: string;
     amount: number;
     currency: CurrencyEnum | null;
@@ -55,7 +55,7 @@ const CURRENCY_ENUM_VALUES = new Set<string>(Object.values(CurrencyEnum));
 export class VoiceLlmService {
     constructor(private readonly llm: LlmInterface) {}
 
-    async extractTransactions(text: string): Promise<ExtractedVoiceTransaction[]> {
+    async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
         const translatedText = await this.translateToEnglish(text);
         const response = await this.llm.generate(ITEM_EXTRACTION_PROMPT, translatedText);
 
@@ -68,7 +68,7 @@ export class VoiceLlmService {
         return translated.trim();
     }
 
-    private parseExtractionResponse(response: string): ExtractedVoiceTransaction[] {
+    private parseExtractionResponse(response: string): ExtractedVoiceTransactionInterface[] {
         const jsonStr = this.fixMalformedJson(response);
 
         try {
@@ -95,7 +95,7 @@ export class VoiceLlmService {
         return [];
     }
 
-    private mapToTransaction(item: ExtractedItemType): ExtractedVoiceTransaction {
+    private mapToTransaction(item: ExtractedItemType): ExtractedVoiceTransactionInterface {
         return {
             description: item.description,
             amount: item.amount,

@@ -1,4 +1,3 @@
-/* eslint-disable lingui/no-unlocalized-strings */
 export const VOICE_TRANSLATION_PROMPT = `Translate expense input to English. Keep numbers and currencies exactly as-is. Return ONLY the translation.
 
 Examples:
@@ -26,4 +25,3 @@ Examples:
 "lunch at restaurant 350 uah" -> [{"description":"lunch at restaurant","amount":350,"currency":"UAH"}]
 "groceries 890, gas 1200 uah" -> [{"description":"groceries","amount":890,"currency":null},{"description":"gas","amount":1200,"currency":"UAH"}]
 "coffee 50, taxi 120, lunch 350" -> [{"description":"coffee","amount":50,"currency":null},{"description":"taxi","amount":120,"currency":null},{"description":"lunch","amount":350,"currency":null}]`;
-/* eslint-enable lingui/no-unlocalized-strings */
