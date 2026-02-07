@@ -39,10 +39,16 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
 
-    const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
+    try {
+        const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
 
-    if (isDefined(extension)) {
-        global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+        if (isDefined(extension)) {
+            global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
+        }
+    } catch {
+        // eslint-disable-next-line no-console
+        console.log('Failed to load sqlite-vec extension'); // eslint-disable-line lingui/no-unlocalized-strings
     }
 
     return global.__expoSqliteDb__;
