@@ -45,8 +45,6 @@ const dbInit = () => {
         global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
     }
 
-    initPostMigration(global.__expoSqliteDb__);
-
     return global.__expoSqliteDb__;
 };
 
