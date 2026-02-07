@@ -1,6 +1,6 @@
-import { and, count, desc, eq, inArray, isNotNull, isNull, ne, or, sql } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { DB } from '../../@generic/type/db.type';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -13,6 +13,8 @@ import { EmbeddingContextResultInterface } from '../interface/embedding-context-
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
 import { VecSearchResultInterface } from '../interface/vec-search-result.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
+
+const EMBEDDING_DIMENSIONS = 384;
 
 const hasEmbeddableContext = or(
     ne(TransactionEntityTable.title, ''),
@@ -51,27 +53,45 @@ export class TitleEmbeddingRepository {
         return [...titleSet];
     }
 
-    async findEmbeddingByContext(context: string): Promise<Uint8Array | null> {
-        const results = await this.db
-            .select({ embedding: TitleEmbeddingEntityTable.embedding })
-            .from(TitleEmbeddingEntityTable)
-            .where(and(eq(TitleEmbeddingEntityTable.context, context), isNull(TitleEmbeddingEntityTable.deletedAt)))
-            .limit(1);
+    async findEmbeddingsByContexts(contexts: string[]): Promise<Map<string, Uint8Array>> {
+        const resultMap = new Map<string, Uint8Array>();
 
-        return isNotEmptyArray(results) ? results[0].embedding : null;
+        if (!isNotEmptyArray(contexts)) {
+            return resultMap;
+        }
+
+        const results = await this.db
+            .select({
+                context: TitleEmbeddingEntityTable.context,
+                embedding: TitleEmbeddingEntityTable.embedding
+            })
+            .from(TitleEmbeddingEntityTable)
+            .where(and(inArray(TitleEmbeddingEntityTable.context, contexts), isNull(TitleEmbeddingEntityTable.deletedAt)));
+
+        for (const row of results) {
+            resultMap.set(row.context, row.embedding);
+        }
+
+        return resultMap;
     }
 
     async upsert(title: string, context: string, embedding: Uint8Array, dimensions: number): Promise<void> {
-        const [row] = await this.db
-            .insert(TitleEmbeddingEntityTable)
-            .values({ title, context, embedding, dimensions })
-            .onConflictDoUpdate({
-                target: TitleEmbeddingEntityTable.context,
-                set: { title, embedding, dimensions, updatedAt: new Date() }
-            })
-            .returning({ id: TitleEmbeddingEntityTable.id });
+        if (dimensions !== EMBEDDING_DIMENSIONS) {
+            return;
+        }
 
-        this.db.run(sql`INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) VALUES (${row.id}, ${embedding})`);
+        await this.db.transaction(async tx => {
+            const [row] = await tx
+                .insert(TitleEmbeddingEntityTable)
+                .values({ title, context, embedding, dimensions })
+                .onConflictDoUpdate({
+                    target: TitleEmbeddingEntityTable.context,
+                    set: { title, embedding, dimensions, updatedAt: new Date() }
+                })
+                .returning({ id: TitleEmbeddingEntityTable.id });
+
+            tx.run(sql`INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) VALUES (${row.id}, ${embedding})`);
+        });
     }
 
     async countAll(): Promise<number> {
@@ -83,22 +103,24 @@ export class TitleEmbeddingRepository {
         return result.count;
     }
 
-    /* jscpd:ignore-start -- Same join/group pattern as findTransactionData for context counting */
     async countDistinctTransactionContexts(): Promise<number> {
-        const rows = await this.db
-            .select({ _: sql<number>`1` })
-            .from(TransactionEntityTable)
-            .leftJoin(
-                TransactionEntryEntityTable,
-                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
+        const [result] = this.db.all<{ count: number }>(sql`
+            SELECT COUNT(*) as count FROM (
+                SELECT 1
+                FROM ${TransactionEntityTable}
+                LEFT JOIN ${TransactionEntryEntityTable}
+                    ON ${TransactionEntryEntityTable.transactionId} = ${TransactionEntityTable.id}
+                    AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                LEFT JOIN ${MccCategoryEntityTable}
+                    ON ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId}
+                WHERE ${TransactionEntityTable.deletedAt} IS NULL
+                    AND (${TransactionEntityTable.title} != '' OR ${TransactionEntityTable.comment} != '' OR ${MccCategoryEntityTable.fullDescription} IS NOT NULL)
+                GROUP BY ${TransactionEntityTable.title}, ${TransactionEntityTable.comment}, ${MccCategoryEntityTable.fullDescription}
             )
-            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .where(and(isNull(TransactionEntityTable.deletedAt), hasEmbeddableContext))
-            .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription);
+        `);
 
-        return rows.length;
+        return result.count;
     }
-    /* jscpd:ignore-end */
 
     async findAllContexts(): Promise<string[]> {
         const results = await this.db
@@ -109,14 +131,17 @@ export class TitleEmbeddingRepository {
         return results.map(row => row.context);
     }
 
-    async findTransactionData(limit: number, offset = 0): Promise<UnembeddedTransactionDataInterface[]> {
-        const results = await this.db
+    async findTransactionData(limit: number, cursor?: number): Promise<UnembeddedTransactionDataInterface[]> {
+        const cursorCondition = isDefined(cursor) ? lt(sql`MAX(${TransactionEntityTable.operatedAt})`, cursor) : null;
+
+        let query = this.db
             .select({
                 title: TransactionEntityTable.title,
                 comment: TransactionEntityTable.comment,
                 mccFullDescription: MccCategoryEntityTable.fullDescription,
                 categoryTitleEn: sql<string | null>`MAX(COALESCE(${CategoryEntityTable.titleEn}, ${CategoryEntityTable.title}))`,
-                tagTitlesEn: sql<string | null>`GROUP_CONCAT(DISTINCT COALESCE(${TagEntityTable.titleEn}, ${TagEntityTable.title}))`
+                tagTitlesEn: sql<string | null>`GROUP_CONCAT(DISTINCT COALESCE(${TagEntityTable.titleEn}, ${TagEntityTable.title}))`,
+                maxOperatedAt: sql<number>`MAX(${TransactionEntityTable.operatedAt})`.as('maxOperatedAt')
             })
             .from(TransactionEntityTable)
             .leftJoin(
@@ -131,14 +156,21 @@ export class TitleEmbeddingRepository {
             .groupBy(TransactionEntityTable.title, TransactionEntityTable.comment, MccCategoryEntityTable.fullDescription)
             .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
             .limit(limit)
-            .offset(offset);
+            .$dynamic();
+
+        if (isDefined(cursorCondition)) {
+            query = query.having(cursorCondition);
+        }
+
+        const results = await query;
 
         return results.map(row => ({
             title: row.title,
             comment: row.comment,
             mccFullDescription: row.mccFullDescription ?? null,
             categoryTitleEn: row.categoryTitleEn ?? null,
-            tagTitlesEn: row.tagTitlesEn ?? null
+            tagTitlesEn: row.tagTitlesEn ?? null,
+            maxOperatedAt: row.maxOperatedAt
         }));
     }
 
@@ -210,8 +242,17 @@ export class TitleEmbeddingRepository {
             .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`));
     }
 
+    async softDeleteByTitle(title: string): Promise<void> {
+        await this.db
+            .update(TitleEmbeddingEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(and(eq(TitleEmbeddingEntityTable.title, title), isNull(TitleEmbeddingEntityTable.deletedAt)));
+    }
+
     async truncate(): Promise<void> {
-        await this.db.delete(TitleEmbeddingEntityTable);
-        this.db.run(sql`DELETE FROM title_embedding_vec`);
+        await this.db.transaction(async tx => {
+            await tx.delete(TitleEmbeddingEntityTable);
+            tx.run(sql`DELETE FROM title_embedding_vec`);
+        });
     }
 }
