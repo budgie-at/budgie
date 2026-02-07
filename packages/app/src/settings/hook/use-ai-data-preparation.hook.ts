@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
+import { yieldToUI } from '../../@generic/utils/yield-to-ui/yield-to-ui.util';
 import { useLlmContext } from '../../ai/context/llm.context';
 
 interface TransactionContextDataInterface {
@@ -28,6 +29,9 @@ interface UseAiDataPreparationReturn {
     readonly phaseLabel: string;
     readonly embeddedCount: number;
     readonly totalContexts: number;
+    readonly isLlmReady: boolean;
+    readonly isLlmInitializing: boolean;
+    readonly llmDownloadProgress: number;
 }
 
 interface ProgressCallbackInterface {
@@ -71,13 +75,14 @@ const storeEmbeddingBatch = async (
             existingContexts.add(item.context);
             callbacks.onStep();
             callbacks.onEmbeddingStored(existingContexts.size);
+            await yieldToUI(); // eslint-disable-line no-await-in-loop -- Yield to render progress updates
         }
     }
 };
 
 const MAX_CONSECUTIVE_FAILURES = 3;
 
-// eslint-disable-next-line max-statements -- Batch processing with error recovery requires multiple state variables
+// eslint-disable-next-line max-statements -- Batch processing with error recovery
 const processEmbeddingBatches = async (
     llm: LlmInterface,
     existingContexts: Set<string>,
@@ -88,7 +93,7 @@ const processEmbeddingBatches = async (
     let hasMore = true;
     let consecutiveFailures = 0;
 
-    /* eslint-disable no-await-in-loop -- Sequential batch processing to avoid overwhelming the device */
+    /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
         try {
             const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, cursor);
@@ -116,6 +121,7 @@ const processEmbeddingBatches = async (
     /* eslint-enable no-await-in-loop */
 };
 
+// eslint-disable-next-line max-lines-per-function -- Multi-phase orchestration with LLM state management
 export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const { llm } = useLlmContext();
     const [isRunning, setIsRunning] = useState(false);
@@ -137,13 +143,20 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
     // eslint-disable-next-line max-statements -- Multi-phase sequential orchestration
     const start = async (): Promise<void> => {
-        if (!llm.isReady || isRunningRef.current) {
+        if (isRunningRef.current) {
+            return;
+        }
+
+        if (!llm.isReady) {
+            Toast.show({ type: 'info', text1: t`AI model is loading, please wait...` });
+
             return;
         }
 
         isRunningRef.current = true;
         setIsRunning(true);
         setProgress(0);
+        await yieldToUI();
 
         try {
             const categories = await categoryRepository.findWithoutTags();
@@ -157,6 +170,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setTotalContexts(totalDistinctContexts);
             setEmbeddedCount(existingContexts.size);
+            await yieldToUI();
 
             let completedSteps = 0;
             const updateProgress = () => {
@@ -168,21 +182,26 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             /* eslint-disable no-await-in-loop -- Sequential LLM processing */
             setPhaseLabel(t`Translating categories...`);
+            await yieldToUI();
             for (const category of categories) {
                 const result = await translationService.translate(category.title);
                 await categoryRepository.updateTranslation(category.id, result.titleEn, result.titleTags);
                 updateProgress();
+                await yieldToUI();
             }
 
             setPhaseLabel(t`Translating tags...`);
+            await yieldToUI();
             for (const tag of tags) {
                 const result = await translationService.translate(tag.title);
                 await tagRepository.updateTranslation(tag.id, result.titleEn, result.titleTags);
                 updateProgress();
+                await yieldToUI();
             }
             /* eslint-enable no-await-in-loop */
 
             setPhaseLabel(t`Generating embeddings...`);
+            await yieldToUI();
             await processEmbeddingBatches(llm, existingContexts, {
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => void setEmbeddedCount(count)
@@ -203,5 +222,15 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         }
     };
 
-    return { start, isRunning, progress, phaseLabel, embeddedCount, totalContexts };
+    return {
+        start,
+        isRunning,
+        progress,
+        phaseLabel,
+        embeddedCount,
+        totalContexts,
+        isLlmReady: llm.isReady,
+        isLlmInitializing: llm.isInitializing,
+        llmDownloadProgress: llm.downloadProgress
+    };
 };
