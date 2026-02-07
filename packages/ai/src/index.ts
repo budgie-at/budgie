@@ -5,8 +5,11 @@ export type { GenerateOptionsInterface, LlmInterface } from './@generic/interfac
 export {
     EMBEDDING_BATCH_LIMIT,
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
+    EMBEDDING_CONTEXT_MAX_LENGTH,
     EMBEDDING_RECENT_TITLE_COUNT,
-    EMBEDDING_TAG_SUGGESTION_LIMIT
+    EMBEDDING_TAG_SUGGESTION_LIMIT,
+    EMBEDDING_VEC_PATTERN_SEARCH_LIMIT,
+    EMBEDDING_VEC_SEARCH_LIMIT
 } from './@generic/constant/embedding.constant';
 
 // @generic - utils

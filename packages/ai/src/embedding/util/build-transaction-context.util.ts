@@ -1,5 +1,6 @@
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { EMBEDDING_CONTEXT_MAX_LENGTH } from '../../@generic/constant/embedding.constant';
 import { TransactionContextNamesInterface } from '../interface/transaction-context-names.interface';
 
 export const buildTransactionContext = (
@@ -32,5 +33,7 @@ export const buildTransactionContext = (
         parts.push(`${commentLabel}: ${comment}`);
     }
 
-    return parts.join(' | ');
+    const context = parts.join(' | ');
+
+    return context.length > EMBEDDING_CONTEXT_MAX_LENGTH ? context.slice(0, EMBEDDING_CONTEXT_MAX_LENGTH) : context;
 };

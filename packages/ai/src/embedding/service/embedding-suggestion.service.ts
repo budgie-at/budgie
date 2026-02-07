@@ -2,14 +2,16 @@ import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EMBEDDING_CATEGORY_SUGGESTION_LIMIT, EMBEDDING_TAG_SUGGESTION_LIMIT } from '../../@generic/constant/embedding.constant';
+import {
+    EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
+    EMBEDDING_TAG_SUGGESTION_LIMIT,
+    EMBEDDING_VEC_SEARCH_LIMIT
+} from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
 import { EmbeddingRepositoryInterface } from '../interface/embedding-repository.interface';
 
 import { EmbeddingService } from './embedding.service';
-
-const VEC_SEARCH_LIMIT = 20;
 
 export class EmbeddingSuggestionService {
     constructor(private readonly repository: EmbeddingRepositoryInterface) {}
@@ -53,7 +55,7 @@ export class EmbeddingSuggestionService {
         }
 
         const serialized = serializeEmbedding(queryEmbedding);
-        const results = this.repository.findSimilarContexts(serialized, VEC_SEARCH_LIMIT);
+        const results = this.repository.findSimilarContexts(serialized, EMBEDDING_VEC_SEARCH_LIMIT);
 
         return results.map(row => row.context);
     }

@@ -38,10 +38,7 @@ interface ProgressCallbackInterface {
 const buildContextData = (transactionData: UnembeddedTransactionDataInterface[]): TransactionContextDataInterface[] =>
     transactionData
         .map(row => {
-            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment, {
-                categoryName: row.categoryTitleEn,
-                tagNames: row.tagTitlesEn
-            });
+            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
 
             if (!isNotEmptyString(context)) {
                 return null;
@@ -84,14 +81,14 @@ const processEmbeddingBatches = async (
     callbacks: ProgressCallbackInterface
 ): Promise<void> => {
     const embeddingService = new EmbeddingService(llm);
-    let offset = 0;
+    let cursor: number | undefined;
     let hasMore = true;
     let consecutiveFailures = 0;
 
     /* eslint-disable no-await-in-loop -- Sequential batch processing to avoid overwhelming the device */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
         try {
-            const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, offset);
+            const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, cursor);
 
             if (!isNotEmptyArray(transactionData)) {
                 break;
@@ -108,7 +105,7 @@ const processEmbeddingBatches = async (
 
             hasMore = transactionData.length === EMBEDDING_BATCH_LIMIT;
             consecutiveFailures = 0;
-            offset += EMBEDDING_BATCH_LIMIT;
+            cursor = transactionData[transactionData.length - 1].maxOperatedAt;
         } catch {
             consecutiveFailures += 1;
         }

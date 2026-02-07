@@ -42,7 +42,7 @@ export class TransactionPatternRepository {
 
     async findPatternsByTitles(query: EmbeddingPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const conditions = this.buildEmbeddingPatternConditions(query);
-        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= 1`;
+        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`;
         const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
         const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
 
@@ -191,46 +191,78 @@ export class TransactionPatternRepository {
         }
 
         const validRows = patternRows.filter(isValidPatternRow);
-        const tagPromises = validRows.map(row => this.findMostCommonTagsForPattern(row.categoryId, row.title));
-        const tagResults = await Promise.all(tagPromises);
+        const tagMap = await this.findTagsForPatterns(validRows);
 
-        return validRows.map((row, index) => ({
-            categoryId: row.categoryId,
-            categoryTitle: row.categoryTitle,
-            categoryIcon: row.categoryIcon,
-            tagIds: tagResults[index],
-            title: row.title,
-            comment: row.comment,
-            averageAmount: row.averageAmount,
-            occurrenceCount: row.occurrenceCount,
-            lastOccurrence: new Date(row.lastOccurrence * 1000),
-            accountId: row.accountId,
-            instrumentId: row.instrumentId,
-            accountIsActive: row.accountIsActive,
-            accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
-        }));
+        return validRows.map(row => {
+            const patternKey = `${row.categoryId}-${row.title}`;
+
+            return {
+                categoryId: row.categoryId,
+                categoryTitle: row.categoryTitle,
+                categoryIcon: row.categoryIcon,
+                tagIds: tagMap.get(patternKey) ?? [],
+                title: row.title,
+                comment: row.comment,
+                averageAmount: row.averageAmount,
+                occurrenceCount: row.occurrenceCount,
+                lastOccurrence: new Date(row.lastOccurrence * 1000),
+                accountId: row.accountId,
+                instrumentId: row.instrumentId,
+                accountIsActive: row.accountIsActive,
+                accountDeletedAt: row.accountDeletedAt === null ? null : new Date(row.accountDeletedAt * 1000)
+            };
+        });
     }
 
-    private async findMostCommonTagsForPattern(categoryId: number, title: string): Promise<number[]> {
+    // eslint-disable-next-line max-statements -- Batched tag query replacing N+1 pattern
+    private async findTagsForPatterns(patterns: { categoryId: number; title: string }[]): Promise<Map<string, number[]>> {
+        const tagMap = new Map<string, number[]>();
+
+        if (!isNotEmptyArray(patterns)) {
+            return tagMap;
+        }
+
+        const titles = [...new Set(patterns.map(pattern => pattern.title))];
+        const categoryIds = [...new Set(patterns.map(pattern => pattern.categoryId))];
+
         const tagRows = await this.db
             .select({
-                tagId: TransactionTagsEntityTable.tagId
+                categoryId: TransactionEntryEntityTable.categoryId,
+                title: TransactionEntityTable.title,
+                tagId: TransactionTagsEntityTable.tagId,
+                tagCount: sql<number>`COUNT(${TransactionTagsEntityTable.tagId})`.as('tagCount')
             })
             .from(TransactionTagsEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .where(
                 and(
-                    eq(TransactionEntryEntityTable.categoryId, categoryId),
-                    eq(TransactionEntityTable.title, title),
+                    inArray(TransactionEntryEntityTable.categoryId, categoryIds),
+                    inArray(TransactionEntityTable.title, titles),
                     isNull(TransactionEntityTable.deletedAt)
                 )
             )
-            .groupBy(TransactionTagsEntityTable.tagId)
-            .orderBy(desc(sql`COUNT(${TransactionTagsEntityTable.tagId})`))
-            .limit(5);
+            .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title, TransactionTagsEntityTable.tagId)
+            .orderBy(
+                TransactionEntryEntityTable.categoryId,
+                TransactionEntityTable.title,
+                desc(sql`COUNT(${TransactionTagsEntityTable.tagId})`)
+            );
 
-        return tagRows.map(row => row.tagId);
+        const patternKeys = new Set(patterns.map(pattern => `${pattern.categoryId}-${pattern.title}`));
+        const maxTagsPerPattern = 5;
+
+        for (const row of tagRows) {
+            const key = `${row.categoryId}-${row.title}`;
+            const existing = tagMap.get(key) ?? [];
+
+            if (patternKeys.has(key) && existing.length < maxTagsPerPattern) {
+                existing.push(row.tagId);
+                tagMap.set(key, existing);
+            }
+        }
+
+        return tagMap;
     }
 
     private getEntryTypeForTransactionType(type: TransactionTypeEnum): TransactionEntryTypeEnum {

@@ -47,6 +47,13 @@ const dbInit = () => {
 
     global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[384])'); // eslint-disable-line lingui/no-unlocalized-strings
 
+    global.__expoSqliteDb__.execSync(
+        'CREATE INDEX IF NOT EXISTS idx_transaction_entries_transaction_id ON transaction_entries(transaction_id)'
+    ); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transactions_title ON transactions(title)'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_category_id ON transaction_entries(category_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_account_id ON transaction_entries(account_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+
     return global.__expoSqliteDb__;
 };
 
