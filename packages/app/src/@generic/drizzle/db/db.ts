@@ -45,7 +45,11 @@ const dbInit = () => {
         global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
     }
 
-    global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[384])'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('DROP TABLE IF EXISTS title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync(
+        'INSERT OR IGNORE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
+    );
 
     global.__expoSqliteDb__.execSync(
         'CREATE INDEX IF NOT EXISTS idx_transaction_entries_transaction_id ON transaction_entries(transaction_id)'
@@ -53,6 +57,7 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transactions_title ON transactions(title)'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_category_id ON transaction_entries(category_id)'); // eslint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_account_id ON transaction_entries(account_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_title_embeddings_title ON title_embeddings(title)'); // eslint-disable-line lingui/no-unlocalized-strings
 
     return global.__expoSqliteDb__;
 };

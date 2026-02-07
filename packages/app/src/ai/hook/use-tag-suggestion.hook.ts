@@ -12,12 +12,12 @@ import { useLlmContext } from '../context/llm.context';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseTagSuggestionParams {
-    transactionTitle: string;
-    categoryId: number;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly categoryId: number;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
@@ -31,7 +31,7 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
     const hasTagsLoaded = isNotEmptyArray(allTags);
     const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
-    const fetchSuggestions = async () => {
+    const fetchSuggestions = async (): Promise<TagEntityInterface[]> => {
         if (!isNotEmptyArray(allTags)) {
             return [];
         }
