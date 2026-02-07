@@ -27,6 +27,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const hasCategoriesLoaded = categories.length > 0;
     const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
+    console.log('[AI-DEBUG] useCategorySuggestion:', { enabled, llmReady: llm.isReady, isMccLoading, isCategoriesLoading, hasCategoriesLoaded, isReady, transactionTitle, mccCategoryId }); // eslint-disable-line no-console -- Temporary debug
 
     const fetchSuggestions = async () => {
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
