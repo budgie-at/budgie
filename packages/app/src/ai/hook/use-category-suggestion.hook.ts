@@ -11,11 +11,11 @@ import { useLlmContext } from '../context/llm.context';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
-    transactionTitle: string;
-    mccCategoryId: number | null;
-    comment: string;
-    aiContext: string;
-    enabled: boolean;
+    readonly transactionTitle: string;
+    readonly mccCategoryId: number | null;
+    readonly comment: string;
+    readonly aiContext: string;
+    readonly enabled: boolean;
 }
 
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
@@ -27,9 +27,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const hasCategoriesLoaded = categories.length > 0;
     const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
-    console.log('[AI-DEBUG] useCategorySuggestion:', { enabled, llmReady: llm.isReady, isMccLoading, isCategoriesLoading, hasCategoriesLoaded, isReady, transactionTitle, mccCategoryId }); // eslint-disable-line no-console -- Temporary debug
 
-    const fetchSuggestions = async () => {
+    const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment);
