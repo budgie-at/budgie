@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 interface Props {
     readonly progress: number;
@@ -8,8 +9,14 @@ interface Props {
 }
 
 export const AiProgressBar = ({ progress, phaseLabel, isActive }: Props) => {
+    const progressValue = useSharedValue(0);
+
+    useEffect(() => {
+        progressValue.value = progress;
+    }, [progress, progressValue]);
+
     const widthStyle = useAnimatedStyle(() => ({
-        width: withTiming(`${progress}%`, { duration: 300 })
+        width: withTiming(`${progressValue.value}%`, { duration: 300 })
     }));
 
     if (!isActive) {

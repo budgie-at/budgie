@@ -2,12 +2,10 @@ import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { EMBEDDING_RECENT_TITLE_COUNT } from '../../@generic/constant/embedding.constant';
+import { EMBEDDING_RECENT_TITLE_COUNT, EMBEDDING_VEC_PATTERN_SEARCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { EmbeddingPatternRepositoryInterface } from '../interface/embedding-pattern-repository.interface';
 import { FindSimilarPatternsParamsInterface } from '../interface/find-similar-patterns-params.interface';
 import { TransactionPatternRepositoryInterface } from '../interface/transaction-pattern-repository.interface';
-
-const VEC_PATTERN_SEARCH_LIMIT = 10;
 
 export class EmbeddingPatternService {
     constructor(
@@ -28,7 +26,7 @@ export class EmbeddingPatternService {
             return [];
         }
 
-        const similarTitles = this.embeddingRepository.findSimilarTitlesByContexts(contextEmbeddings, VEC_PATTERN_SEARCH_LIMIT);
+        const similarTitles = this.embeddingRepository.findSimilarTitlesByContexts(contextEmbeddings, EMBEDDING_VEC_PATTERN_SEARCH_LIMIT);
 
         if (!isNotEmptyArray(similarTitles)) {
             return [];
@@ -45,16 +43,19 @@ export class EmbeddingPatternService {
     }
 
     private async buildContextEmbeddings(recentContexts: { context: string }[]): Promise<{ context: string; embedding: Uint8Array }[]> {
-        const results: { context: string; embedding: Uint8Array }[] = [];
+        const contexts = recentContexts.map(recent => recent.context);
+        const embeddingMap = await this.embeddingRepository.findEmbeddingsByContexts(contexts);
 
-        for (const recent of recentContexts) {
-            const embedding = await this.embeddingRepository.findEmbeddingByContext(recent.context); // eslint-disable-line no-await-in-loop -- Sequential DB lookups for each recent context
+        return recentContexts
+            .map(recent => {
+                const embedding = embeddingMap.get(recent.context);
 
-            if (isDefined(embedding)) {
-                results.push({ context: recent.context, embedding });
-            }
-        }
+                if (!isDefined(embedding)) {
+                    return null;
+                }
 
-        return results;
+                return { context: recent.context, embedding };
+            })
+            .filter(isDefined);
     }
 }
