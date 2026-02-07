@@ -17,18 +17,26 @@ export class EmbeddingSuggestionService {
     constructor(private readonly repository: EmbeddingRepositoryInterface) {}
 
     async suggestCategories(context: string, llm: LlmInterface, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface[]> {
+        console.log('[AI-DEBUG] suggestCategories called with context:', context); // eslint-disable-line no-console -- Temporary debug
         const similarContexts = await this.findSimilarContexts(context, llm);
+        console.log('[AI-DEBUG] similarContexts:', similarContexts.length, similarContexts.slice(0, 3)); // eslint-disable-line no-console -- Temporary debug
 
         if (!isNotEmptyArray(similarContexts)) {
+            console.log('[AI-DEBUG] No similar contexts found — returning empty'); // eslint-disable-line no-console -- Temporary debug
+
             return [];
         }
 
         const categoryCounts = await this.repository.findCategoriesByContexts(similarContexts);
+        console.log('[AI-DEBUG] categoryCounts:', categoryCounts); // eslint-disable-line no-console -- Temporary debug
 
-        return categoryCounts
+        const result = categoryCounts
             .map(row => categories.find(category => category.id === row.categoryId))
             .filter(isDefined)
             .slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
+        console.log('[AI-DEBUG] final categories:', result.map(c => c.title)); // eslint-disable-line no-console -- Temporary debug
+
+        return result;
     }
 
     async suggestTags(context: string, llm: LlmInterface, allTags: TagEntityInterface[]): Promise<TagEntityInterface[]> {
@@ -49,6 +57,7 @@ export class EmbeddingSuggestionService {
     private async findSimilarContexts(context: string, llm: LlmInterface): Promise<string[]> {
         const service = new EmbeddingService(llm);
         const queryEmbedding = await service.generateEmbedding(context);
+        console.log('[AI-DEBUG] queryEmbedding generated:', isDefined(queryEmbedding), queryEmbedding?.length); // eslint-disable-line no-console -- Temporary debug
 
         if (!isDefined(queryEmbedding)) {
             return [];
@@ -56,6 +65,7 @@ export class EmbeddingSuggestionService {
 
         const serialized = serializeEmbedding(queryEmbedding);
         const results = this.repository.findSimilarContexts(serialized, EMBEDDING_VEC_SEARCH_LIMIT);
+        console.log('[AI-DEBUG] vec search results:', results.length, results.slice(0, 3)); // eslint-disable-line no-console -- Temporary debug
 
         return results.map(row => row.context);
     }
