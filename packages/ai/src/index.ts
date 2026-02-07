@@ -40,9 +40,7 @@ export {
 } from './suggestion/constant/translation-prompt.constant';
 
 // suggestion - services
-export { BaseLlmService } from './suggestion/service/base-llm.service';
-export { CategoryLlmService } from './suggestion/service/category-llm.service';
-export { TagLlmService } from './suggestion/service/tag-llm.service';
+export { TranslationLlmService } from './suggestion/service/translation-llm.service';
 
 // voice - interfaces
 export type { AITransactionInterface } from './voice/interface/ai-transaction.interface';
