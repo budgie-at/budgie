@@ -45,21 +45,41 @@ const dbInit = () => {
         global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
     }
 
-    global.__expoSqliteDb__.execSync('DROP TABLE IF EXISTS title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync(
-        'INSERT OR IGNORE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
-    );
-
-    global.__expoSqliteDb__.execSync(
-        'CREATE INDEX IF NOT EXISTS idx_transaction_entries_transaction_id ON transaction_entries(transaction_id)'
-    ); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transactions_title ON transactions(title)'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_category_id ON transaction_entries(category_id)'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_account_id ON transaction_entries(account_id)'); // eslint-disable-line lingui/no-unlocalized-strings
-    global.__expoSqliteDb__.execSync('CREATE INDEX IF NOT EXISTS idx_title_embeddings_title ON title_embeddings(title)'); // eslint-disable-line lingui/no-unlocalized-strings
+    initPostMigration(global.__expoSqliteDb__);
 
     return global.__expoSqliteDb__;
+};
+
+const hasTable = (sqliteDb: SQLite.SQLiteDatabase, tableName: string): boolean => {
+    const [result] = sqliteDb.getAllSync<{ count: number }>( // eslint-disable-line lingui/no-unlocalized-strings
+        `SELECT COUNT(*) as count FROM sqlite_master WHERE type='table' AND name='${tableName}'` // eslint-disable-line lingui/no-unlocalized-strings
+    );
+
+    return result.count > 0;
+};
+
+export const initPostMigration = (sqliteDb: SQLite.SQLiteDatabase): void => {
+    if (hasTable(sqliteDb, 'transaction_entries')) {
+        // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_transaction_id ON transaction_entries(transaction_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_category_id ON transaction_entries(category_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_account_id ON transaction_entries(account_id)'); // eslint-disable-line lingui/no-unlocalized-strings
+    }
+
+    if (hasTable(sqliteDb, 'transactions')) {
+        // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transactions_title ON transactions(title)'); // eslint-disable-line lingui/no-unlocalized-strings
+    }
+
+    if (hasTable(sqliteDb, 'title_embeddings')) {
+        // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('DROP TABLE IF EXISTS title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync('CREATE VIRTUAL TABLE title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
+        sqliteDb.execSync(
+            'INSERT OR IGNORE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
+        );
+        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_title_embeddings_title ON title_embeddings(title)'); // eslint-disable-line lingui/no-unlocalized-strings
+    }
 };
 
 export let expoDb = dbInit();
