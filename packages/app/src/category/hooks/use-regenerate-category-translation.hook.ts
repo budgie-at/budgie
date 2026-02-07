@@ -1,4 +1,4 @@
-import { CategoryLlmService, TranslationResultInterface } from '@budgie/ai';
+import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
@@ -29,7 +29,7 @@ export const useRegenerateCategoryTranslation = (): UseRegenerateCategoryTransla
         setError(null);
 
         try {
-            const service = new CategoryLlmService(llm);
+            const service = new TranslationLlmService(llm);
             const result = await service.translate(title);
             await categoryRepository.updateTranslation(categoryId, result.titleEn, result.titleTags);
 

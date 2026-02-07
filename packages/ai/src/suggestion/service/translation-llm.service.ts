@@ -2,10 +2,10 @@ import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
 import { TranslationResultInterface } from '../interface/translation-result.interface';
 
-export class BaseLlmService {
-    constructor(protected readonly llm: LlmInterface) {}
+export class TranslationLlmService {
+    constructor(private readonly llm: LlmInterface) {}
 
-    protected async generateTranslationAndTags(title: string): Promise<TranslationResultInterface> {
+    async translate(title: string): Promise<TranslationResultInterface> {
         const titleEn = await this.llm.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
         const trimmedTitleEn = titleEn.trim().toLowerCase();
 
