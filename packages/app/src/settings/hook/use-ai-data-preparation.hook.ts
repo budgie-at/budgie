@@ -127,12 +127,9 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
     useEffect(() => {
         const loadCounts = async (): Promise<void> => {
-            const [embedded, total] = await Promise.all([
-                titleEmbeddingRepository.countAll(),
-                titleEmbeddingRepository.countDistinctTransactionContexts()
-            ]);
+            const embedded = await titleEmbeddingRepository.countAll();
             setEmbeddedCount(embedded);
-            setTotalContexts(total);
+            setTotalContexts(embedded);
         };
 
         void loadCounts();
@@ -193,6 +190,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setProgress(100);
             setPhaseLabel(t`Done`);
+            setTotalContexts(existingContexts.size);
         } catch (error: unknown) {
             Toast.show({
                 type: 'error',
