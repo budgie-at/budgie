@@ -52,7 +52,6 @@ export const SuggestionsContainer = (props: Props) => {
     const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
     const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
-    console.log('[AI-DEBUG] SuggestionsContainer:', { isNewTransaction, hasCategorySelected, hasContext, isSplitActive, hasTagsSelected, showRepeatedSuggestions, showCategorySuggestions, showTagSuggestions, categoryId, mccCategoryId, transactionTitle, accountId }); // eslint-disable-line no-console -- Temporary debug
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
