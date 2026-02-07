@@ -8,7 +8,7 @@ import {
 } from '@budgie/ai';
 import { UnembeddedTransactionDataInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -38,7 +38,10 @@ interface ProgressCallbackInterface {
 const buildContextData = (transactionData: UnembeddedTransactionDataInterface[]): TransactionContextDataInterface[] =>
     transactionData
         .map(row => {
-            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
+            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment, {
+                categoryName: row.categoryTitleEn,
+                tagNames: row.tagTitlesEn
+            });
 
             if (!isNotEmptyString(context)) {
                 return null;
@@ -121,6 +124,19 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
     const [embeddedCount, setEmbeddedCount] = useState(0);
     const [totalContexts, setTotalContexts] = useState(0);
     const isRunningRef = useRef(false);
+
+    useEffect(() => {
+        const loadCounts = async (): Promise<void> => {
+            const [embedded, total] = await Promise.all([
+                titleEmbeddingRepository.countAll(),
+                titleEmbeddingRepository.countDistinctTransactionContexts()
+            ]);
+            setEmbeddedCount(embedded);
+            setTotalContexts(total);
+        };
+
+        void loadCounts();
+    }, []);
 
     // eslint-disable-next-line max-statements -- Multi-phase sequential orchestration
     const start = async (): Promise<void> => {

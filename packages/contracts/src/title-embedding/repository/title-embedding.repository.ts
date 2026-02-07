@@ -14,7 +14,7 @@ import { UnembeddedTransactionDataInterface } from '../interface/unembedded-tran
 import { VecSearchResultInterface } from '../interface/vec-search-result.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
 
-const EMBEDDING_DIMENSIONS = 384;
+const EMBEDDING_DIMENSIONS = 1536;
 
 const hasEmbeddableContext = or(
     ne(TransactionEntityTable.title, ''),
@@ -243,10 +243,21 @@ export class TitleEmbeddingRepository {
     }
 
     async softDeleteByTitle(title: string): Promise<void> {
-        await this.db
-            .update(TitleEmbeddingEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(and(eq(TitleEmbeddingEntityTable.title, title), isNull(TitleEmbeddingEntityTable.deletedAt)));
+        await this.db.transaction(async tx => {
+            const rows = await tx
+                .select({ id: TitleEmbeddingEntityTable.id })
+                .from(TitleEmbeddingEntityTable)
+                .where(and(eq(TitleEmbeddingEntityTable.title, title), isNull(TitleEmbeddingEntityTable.deletedAt)));
+
+            for (const row of rows) {
+                tx.run(sql`DELETE FROM title_embedding_vec WHERE rowid = ${row.id}`);
+            }
+
+            await tx
+                .update(TitleEmbeddingEntityTable)
+                .set({ deletedAt: new Date() })
+                .where(and(eq(TitleEmbeddingEntityTable.title, title), isNull(TitleEmbeddingEntityTable.deletedAt)));
+        });
     }
 
     async truncate(): Promise<void> {

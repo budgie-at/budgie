@@ -1,12 +1,10 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { useEffect, useRef, useState } from 'react';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 interface UseSuggestionBaseParams<T> {
-    enabled: boolean;
-    isReady: boolean;
-    fetchSuggestions: () => Promise<T[]>;
+    readonly enabled: boolean;
+    readonly isReady: boolean;
+    readonly fetchSuggestions: () => Promise<T[]>;
 }
 
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionReturnInterface<T> => {
@@ -18,30 +16,34 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const hasTriggeredRef = useRef(false);
 
     useEffect(() => {
-        console.log('[AI-DEBUG] useSuggestionBase effect:', { enabled, isReady, hasTriggered: hasTriggeredRef.current }); // eslint-disable-line no-console -- Temporary debug
-        if (!isReady || hasTriggeredRef.current) {
-            return;
+        let cancelled = false;
+
+        if (isReady && !hasTriggeredRef.current) {
+            hasTriggeredRef.current = true;
+
+            const suggest = async (): Promise<void> => {
+                setInternalStatus('loading');
+
+                try {
+                    const results = await fetchSuggestions();
+
+                    if (!cancelled) {
+                        setSuggestions(results);
+                        setInternalStatus('success');
+                    }
+                } catch {
+                    if (!cancelled) {
+                        setInternalStatus('error');
+                    }
+                }
+            };
+
+            void suggest();
         }
 
-        hasTriggeredRef.current = true;
-        console.log('[AI-DEBUG] useSuggestionBase triggering fetch'); // eslint-disable-line no-console -- Temporary debug
-
-        const suggest = async (): Promise<void> => {
-            setInternalStatus('loading');
-
-            try {
-                const results = await fetchSuggestions();
-
-                console.log('[AI-DEBUG] useSuggestionBase results:', results.length); // eslint-disable-line no-console -- Temporary debug
-                setSuggestions(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch (error) {
-                console.log('[AI-DEBUG] useSuggestionBase error:', error); // eslint-disable-line no-console -- Temporary debug
-                setInternalStatus('error');
-            }
+        return () => {
+            cancelled = true;
         };
-
-        void suggest();
     }, [isReady, fetchSuggestions]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';

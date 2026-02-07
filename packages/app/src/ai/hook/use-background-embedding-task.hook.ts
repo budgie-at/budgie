@@ -7,14 +7,18 @@ import { titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
 
 const BACKGROUND_EMBEDDING_INTERVAL_MS = 60_000;
 
+interface CancellationToken {
+    cancelled: boolean;
+}
+
 // eslint-disable-next-line max-statements -- Batch processing with cursor pagination
-const processAllUnembedded = async (embeddingService: EmbeddingService): Promise<void> => {
+const processAllUnembedded = async (embeddingService: EmbeddingService, token: CancellationToken): Promise<void> => {
     const existingContexts = new Set(await titleEmbeddingRepository.findAllContexts());
     let cursor: number | undefined;
     let hasMore = true;
 
     /* eslint-disable no-await-in-loop -- Sequential batch processing to avoid overwhelming LLM */
-    while (hasMore) {
+    while (hasMore && !token.cancelled) {
         const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, cursor);
 
         if (!isNotEmptyArray(transactionData)) {
@@ -22,7 +26,10 @@ const processAllUnembedded = async (embeddingService: EmbeddingService): Promise
         }
 
         for (const row of transactionData) {
-            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
+            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment, {
+                categoryName: row.categoryTitleEn,
+                tagNames: row.tagTitlesEn
+            });
 
             if (!isNotEmptyString(context) || existingContexts.has(context)) {
                 continue; // eslint-disable-line no-continue -- Skip already embedded or empty contexts
@@ -47,6 +54,8 @@ export const useBackgroundEmbeddingTask = (llm: LlmInterface): void => {
     const isRunningRef = useRef(false);
 
     useEffect(() => {
+        const token = { cancelled: false };
+
         const run = async (): Promise<void> => {
             if (!llm.isReady || isRunningRef.current) {
                 return;
@@ -55,7 +64,7 @@ export const useBackgroundEmbeddingTask = (llm: LlmInterface): void => {
             isRunningRef.current = true;
 
             try {
-                await processAllUnembedded(new EmbeddingService(llm));
+                await processAllUnembedded(new EmbeddingService(llm), token);
             } finally {
                 isRunningRef.current = false; // eslint-disable-line require-atomic-updates -- Intentional: ref is only written by this function
             }
@@ -65,6 +74,9 @@ export const useBackgroundEmbeddingTask = (llm: LlmInterface): void => {
 
         const interval = setInterval(() => void run().catch(emptyFn), BACKGROUND_EMBEDDING_INTERVAL_MS);
 
-        return () => void clearInterval(interval);
+        return () => {
+            token.cancelled = true;
+            clearInterval(interval);
+        };
     }, [llm]);
 };
