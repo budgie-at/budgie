@@ -2,7 +2,7 @@ import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterfac
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
@@ -31,6 +31,8 @@ export const useRepeatedTransactionSuggestion = (
     const isReady = enabled && isPositiveNumber(accountId);
 
     useEffect(() => {
+        let cancelled = false;
+
         const clearDebounceTimer = (): void => {
             if (isDefined(debounceTimerRef.current)) {
                 clearTimeout(debounceTimerRef.current);
@@ -52,9 +54,9 @@ export const useRepeatedTransactionSuggestion = (
         clearDebounceTimer();
 
         const fetchSuggestions = async (): Promise<void> => {
-            console.log('[AI-DEBUG] Pattern fetch starting:', { type, accountId, amount, categoryId, isReady }); // eslint-disable-line no-console -- Temporary debug
             setInternalStatus('loading');
             lastFetchedAmountRef.current = amount;
+            currentTimeRef.current = new Date();
 
             try {
                 const results = await repeatedTransactionService.getSuggestions({
@@ -65,11 +67,14 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isPositiveNumber(categoryId) && { categoryId })
                 });
 
-                console.log('[AI-DEBUG] Pattern results:', results.length, results.map(r => r.title)); // eslint-disable-line no-console -- Temporary debug
-                setSuggestions(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+                if (!cancelled) {
+                    setSuggestions(results);
+                    setInternalStatus('success');
+                }
             } catch {
-                setInternalStatus('error');
+                if (!cancelled) {
+                    setInternalStatus('error');
+                }
             }
         };
 
@@ -79,7 +84,10 @@ export const useRepeatedTransactionSuggestion = (
             debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
         }
 
-        return clearDebounceTimer;
+        return () => {
+            cancelled = true;
+            clearDebounceTimer();
+        };
     }, [isReady, type, accountId, amount, categoryId]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
