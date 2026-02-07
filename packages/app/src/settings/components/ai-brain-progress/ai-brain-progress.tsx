@@ -9,7 +9,7 @@ const ANIMATION_DURATION = 300;
 const PERCENT_DIVISOR = 100;
 
 const styles = StyleSheet.create({
-    iconPosition: { position: 'absolute', top: 0, left: 0 }
+    iconPosition: { position: 'absolute', bottom: 0, left: 0 }
 });
 
 interface Props {
@@ -27,7 +27,7 @@ export const AiBrainProgress = ({ progress, size, iconSize }: Props) => {
 
     const clipStyle = useAnimatedStyle(() => ({
         position: 'absolute' as const,
-        top: 0,
+        bottom: 0,
         left: 0,
         right: 0,
         overflow: 'hidden' as const,
@@ -40,7 +40,7 @@ export const AiBrainProgress = ({ progress, size, iconSize }: Props) => {
     return (
         <View className="items-center justify-center bg-ghost-background" style={containerStyle}>
             <View style={iconWrapperStyle}>
-                <Icon className="text-secondary-foreground opacity-20" icon={UserIconNameEnum.Brain} size={iconSize} />
+                <Icon className="text-secondary-foreground opacity-60" icon={UserIconNameEnum.Brain} size={iconSize} />
                 <Animated.View style={clipStyle}>
                     <Icon className="text-positive-foreground" icon={UserIconNameEnum.Brain} size={iconSize} style={styles.iconPosition} />
                 </Animated.View>
