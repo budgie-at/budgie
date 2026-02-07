@@ -50,41 +50,22 @@ export class TransactionPatternRepository {
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
-        const entryType = this.getEntryTypeForTransactionType(query.type);
+        const conditions = this.buildCommonPatternConditions(query);
 
         const weekdayCondition = sql`CAST(strftime('%w', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) = ${query.weekday}`;
-
         const timeCondition = sql`
             CAST(strftime('%H', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) * 60 +
             CAST(strftime('%M', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)
             BETWEEN ${query.timeWindowStartMinutes} AND ${query.timeWindowEndMinutes}
         `;
 
-        const conditions: SQL[] = [
-            eq(TransactionEntityTable.type, query.type),
-            isNull(TransactionEntityTable.deletedAt),
-            weekdayCondition,
-            timeCondition,
-            eq(TransactionEntryEntityTable.type, entryType),
-            ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-            isNotNull(TransactionEntryEntityTable.categoryId)
-        ];
-
-        this.addOptionalConditions(conditions, query);
-
-        return conditions;
-    }
-
-    private addOptionalConditions(conditions: SQL[], query: TransactionPatternQueryInterface): void {
-        if (isPositiveNumber(query.accountId)) {
-            conditions.push(eq(TransactionEntryEntityTable.accountId, query.accountId));
-        }
+        conditions.push(weekdayCondition, timeCondition);
 
         if (isPositiveNumber(query.categoryId)) {
             conditions.push(eq(TransactionEntryEntityTable.categoryId, query.categoryId));
         }
 
-        this.addOptionalAmountConditions(conditions, query);
+        return conditions;
     }
 
     private async executePatternQuery(conditions: SQL[], limit: number): Promise<PatternRowInterface[]> {

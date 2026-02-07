@@ -380,7 +380,7 @@ export const TRANSLATION_SYSTEM_PROMPT = `...`;
 export const TRANSLATION_TEMPERATURE = 0.7;
 
 // Bad - prompt inline in service
-class CategoryLlmService {
+class TranslationLlmService {
     private readonly PROMPT = `...`; // Move to constant file
 }
 ```

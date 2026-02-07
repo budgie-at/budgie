@@ -1,9 +1,8 @@
 import {
-    CategoryLlmService,
     EMBEDDING_BATCH_LIMIT,
     EmbeddingService,
     LlmInterface,
-    TagLlmService,
+    TranslationLlmService,
     buildTransactionContext,
     serializeEmbedding
 } from '@budgie/ai';
@@ -109,10 +108,10 @@ const processEmbeddingBatches = async (
 
             hasMore = transactionData.length === EMBEDDING_BATCH_LIMIT;
             consecutiveFailures = 0;
+            offset += EMBEDDING_BATCH_LIMIT;
         } catch {
             consecutiveFailures += 1;
         }
-        offset += EMBEDDING_BATCH_LIMIT;
     }
     /* eslint-enable no-await-in-loop */
 };
@@ -155,21 +154,19 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
                 setProgress(Math.min(100, Math.round((completedSteps / totalSteps) * 100)));
             };
 
-            setPhaseLabel(t`Translating categories...`);
-            const categoryService = new CategoryLlmService(llm);
+            const translationService = new TranslationLlmService(llm);
 
             /* eslint-disable no-await-in-loop -- Sequential LLM processing */
+            setPhaseLabel(t`Translating categories...`);
             for (const category of categories) {
-                const result = await categoryService.translate(category.title);
+                const result = await translationService.translate(category.title);
                 await categoryRepository.updateTranslation(category.id, result.titleEn, result.titleTags);
                 updateProgress();
             }
 
             setPhaseLabel(t`Translating tags...`);
-            const tagService = new TagLlmService(llm);
-
             for (const tag of tags) {
-                const result = await tagService.translate(tag.title);
+                const result = await translationService.translate(tag.title);
                 await tagRepository.updateTranslation(tag.id, result.titleEn, result.titleTags);
                 updateProgress();
             }

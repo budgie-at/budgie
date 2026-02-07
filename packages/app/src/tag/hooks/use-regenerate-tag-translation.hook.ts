@@ -1,4 +1,4 @@
-import { TagLlmService, TranslationResultInterface } from '@budgie/ai';
+import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
 import { useState } from 'react';
 
@@ -30,7 +30,7 @@ export const useRegenerateTagTranslation = (): UseRegenerateTagTranslationReturn
         setError(null);
 
         try {
-            const service = new TagLlmService(llm);
+            const service = new TranslationLlmService(llm);
             const result = await service.translate(title);
             await tagRepository.updateTranslation(tagId, result.titleEn, result.titleTags);
 
