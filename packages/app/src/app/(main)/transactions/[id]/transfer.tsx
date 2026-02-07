@@ -21,6 +21,7 @@ import { convertFromMicroUnits } from '../../../../@generic/utils/convert-from-m
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
+import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
 import { TransferQuickForm } from '../../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useUpdateTransactionForm } from '../../../../transaction/hook/use-update-transaction-form.hook';
@@ -36,6 +37,7 @@ interface UpdateTransferFormProps {
 /* jscpd:ignore-start */
 const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormProps) => {
     const { t } = useLingui();
+    const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
@@ -45,7 +47,8 @@ const UpdateTransferForm = ({ transaction, transactionId }: UpdateTransferFormPr
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: TransferTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onAfterSubmit: data => void generateForTransaction(data.title, data.comment, data.entries[0]?.mccCategoryId ?? null)
     });
 
     const [fromAccountId, amount] = useWatch({

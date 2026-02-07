@@ -17,6 +17,7 @@ import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { useEmbeddingGenerator } from '../../../../ai/hook/use-embedding-generator.hook';
 import { ConvertToTransferMenuItem } from '../../../../transaction/components/convert-to-transfer-menu-item/convert-to-transfer-menu-item';
 import { SimpleQuickForm } from '../../../../transaction/components/simple-quick-form/simple-quick-form';
 import { TransactionActionsMenu } from '../../../../transaction/components/transaction-actions-menu/transaction-actions-menu';
@@ -36,13 +37,15 @@ interface UpdateExpenseFormProps {
 const UpdateExpenseForm = ({ transaction, transactionId }: UpdateExpenseFormProps) => {
     const { t } = useLingui();
     const { openConvertToTransfer } = useConvertToTransferModal();
+    const { generateForTransaction } = useEmbeddingGenerator();
 
     const transactionInput = convertTransactionToInput(transaction);
 
     const { form, handleSubmit, handleDelete } = useUpdateTransactionForm({
         transaction: transactionInput,
         schema: ExpenseTransactionCreateInputSchema,
-        id: transactionId
+        id: transactionId,
+        onAfterSubmit: data => void generateForTransaction(data.title, data.comment, data.entries[0]?.mccCategoryId ?? null)
     });
 
     const fromAccountId = form.watch('fromAccountId');
