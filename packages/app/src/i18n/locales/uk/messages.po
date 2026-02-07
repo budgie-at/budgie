@@ -31,7 +31,7 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{availableCount} columns available"
 msgstr "{availableCount} стовпців доступно"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:13
+#: src/settings/components/ai-data-card/ai-data-card.tsx:25
 msgid "{embeddedCount} of {totalContexts} contexts embedded"
 msgstr "{embeddedCount} з {totalContexts} контекстів вбудовано"
 
@@ -146,9 +146,13 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:187
+#: src/settings/hook/use-ai-data-preparation.hook.ts:207
 msgid "AI data preparation failed"
 msgstr "Підготовка даних ШІ не вдалася"
+
+#: src/settings/hook/use-ai-data-preparation.hook.ts:149
+msgid "AI model is loading, please wait..."
+msgstr "ШІ модель завантажується, зачекайте..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
@@ -182,8 +186,8 @@ msgstr "Вже синхронізується"
 msgid "Amount"
 msgstr "Сума"
 
-#: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:60
+#: src/app/(main)/transactions/[id]/transfer.tsx:66
 msgid "Amount exceeds debt account balance"
 msgstr "Сума перевищує баланс боргового рахунку"
 
@@ -434,7 +438,7 @@ msgstr "Не вдалося створити транзакцію. Будь ла
 msgid "Could not delete account."
 msgstr "Не вдалося видалити рахунок."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+#: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
@@ -466,7 +470,7 @@ msgstr "Не вдалося зберегти категорію"
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+#: src/transaction/hook/use-update-transaction-form.hook.ts:44
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
@@ -619,13 +623,17 @@ msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/settings/hook/use-ai-data-preparation.hook.ts:183
+#: src/settings/hook/use-ai-data-preparation.hook.ts:202
 msgid "Done"
 msgstr "Готово"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:109
 msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
 msgstr "Завантажте виписку з рахунку у форматі PDF з George (онлайн-банкінг Erste Bank): Рахунок → Виписки → Завантажити PDF."
+
+#: src/settings/components/ai-data-card/ai-data-card.tsx:22
+msgid "Downloading AI model..."
+msgstr "Завантаження ШІ моделі..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -647,11 +655,11 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit Category"
 msgstr "Редагувати категорію"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:75
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Edit Income"
 msgstr "Редагувати дохід"
 
@@ -659,7 +667,7 @@ msgstr "Редагувати дохід"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:79
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
 
@@ -882,7 +890,7 @@ msgstr "Валюта з"
 msgid "General"
 msgstr "Загальне"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:176
+#: src/settings/hook/use-ai-data-preparation.hook.ts:195
 msgid "Generating embeddings..."
 msgstr "Генерація вбудовувань..."
 
@@ -980,6 +988,10 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
+#: src/settings/components/ai-data-card/ai-data-card.tsx:28
+msgid "Initializing AI model..."
+msgstr "Ініціалізація ШІ моделі..."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx:57
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:56
 msgid "Invalid file"
@@ -1063,15 +1075,15 @@ msgstr "Монобанк"
 msgid "New Account"
 msgstr "Новий рахунок"
 
-#: src/app/(main)/create-transaction/expense.tsx:50
+#: src/app/(main)/create-transaction/expense.tsx:57
 msgid "New Expense"
 msgstr "Нова витрата"
 
-#: src/app/(main)/create-transaction/income.tsx:39
+#: src/app/(main)/create-transaction/income.tsx:46
 msgid "New Income"
 msgstr "Новий дохід"
 
-#: src/app/(main)/create-transaction/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:70
 msgid "New Transfer"
 msgstr "Новий переказ"
 
@@ -1254,7 +1266,7 @@ msgstr "Польська (Польща)"
 msgid "Portuguese (Portugal)"
 msgstr "Португальська (Португалія)"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:20
+#: src/settings/components/ai-data-card/ai-data-card.tsx:42
 msgid "Prepare AI Data"
 msgstr "Підготувати дані ШІ"
 
@@ -1700,11 +1712,11 @@ msgstr "Помилка транскрипції"
 msgid "Transfer"
 msgstr "Переказ"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:156
+#: src/settings/hook/use-ai-data-preparation.hook.ts:180
 msgid "Translating categories..."
 msgstr "Переклад категорій..."
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:166
+#: src/settings/hook/use-ai-data-preparation.hook.ts:187
 msgid "Translating tags..."
 msgstr "Переклад тегів..."
 
