@@ -48,7 +48,7 @@ export class EmbeddingSuggestionService {
 
     private async findSimilarContexts(context: string, llm: LlmInterface): Promise<string[]> {
         const service = new EmbeddingService(llm);
-        const queryEmbedding = await service.generateEmbedding(context);
+        const queryEmbedding = await service.generateEmbeddingWithTranslation(context);
 
         if (!isDefined(queryEmbedding)) {
             return [];

@@ -14,11 +14,22 @@ const FULL_PROGRESS = 100;
 
 export const AiDataCard = () => {
     const { t } = useLingui();
-    const { start, isRunning, progress, phaseLabel, embeddedCount, totalContexts } = useAiDataPreparation();
+    const { start, isRunning, progress, phaseLabel, embeddedCount, totalContexts, isLlmReady, isLlmInitializing, llmDownloadProgress } =
+        useAiDataPreparation();
 
     const completionRatio = isPositiveNumber(totalContexts) ? Math.round((embeddedCount / totalContexts) * FULL_PROGRESS) : 0;
-    const brainProgress = isRunning ? progress : completionRatio;
-    const subtitle = isRunning ? phaseLabel : t`${embeddedCount} of ${totalContexts} contexts embedded`;
+    const downloadPercent = Math.round(llmDownloadProgress * FULL_PROGRESS);
+    let idleSubtitle = t`Downloading AI model...`;
+    let idleProgress = downloadPercent;
+    if (isLlmReady) {
+        idleSubtitle = t`${embeddedCount} of ${totalContexts} contexts embedded`;
+        idleProgress = completionRatio;
+    } else if (isLlmInitializing) {
+        idleSubtitle = t`Initializing AI model...`;
+        idleProgress = downloadPercent;
+    }
+    const brainProgress = isRunning ? progress : idleProgress;
+    const subtitle = isRunning ? phaseLabel : idleSubtitle;
 
     return (
         <HorizontalCell
