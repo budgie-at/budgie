@@ -33,7 +33,7 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{availableCount} columns available"
 msgstr "{availableCount} columns available"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:13
+#: src/settings/components/ai-data-card/ai-data-card.tsx:25
 msgid "{embeddedCount} of {totalContexts} contexts embedded"
 msgstr "{embeddedCount} of {totalContexts} contexts embedded"
 
@@ -148,9 +148,13 @@ msgstr "Adjustment"
 msgid "AI"
 msgstr "AI"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:187
+#: src/settings/hook/use-ai-data-preparation.hook.ts:207
 msgid "AI data preparation failed"
 msgstr "AI data preparation failed"
+
+#: src/settings/hook/use-ai-data-preparation.hook.ts:149
+msgid "AI model is loading, please wait..."
+msgstr "AI model is loading, please wait..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx:74
 msgid "AI-Generated Metadata"
@@ -184,8 +188,8 @@ msgstr "Already syncing"
 msgid "Amount"
 msgstr "Amount"
 
-#: src/app/(main)/create-transaction/transfer.tsx:53
-#: src/app/(main)/transactions/[id]/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:60
+#: src/app/(main)/transactions/[id]/transfer.tsx:66
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
@@ -436,7 +440,7 @@ msgstr "Could not create transaction. Please try again later."
 msgid "Could not delete account."
 msgstr "Could not delete account."
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:54
+#: src/transaction/hook/use-update-transaction-form.hook.ts:57
 msgid "Could not delete transaction."
 msgstr "Could not delete transaction."
 
@@ -468,7 +472,7 @@ msgstr "Could not save category"
 msgid "Could not save tag"
 msgstr "Could not save tag"
 
-#: src/transaction/hook/use-update-transaction-form.hook.ts:41
+#: src/transaction/hook/use-update-transaction-form.hook.ts:44
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
@@ -621,13 +625,17 @@ msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
 #: src/import/components/import-column-mapper-bottom-sheet/import-column-mapper-bottom-sheet.tsx:91
-#: src/settings/hook/use-ai-data-preparation.hook.ts:183
+#: src/settings/hook/use-ai-data-preparation.hook.ts:202
 msgid "Done"
 msgstr "Done"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx:109
 msgid "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
 msgstr "Download your account statement as PDF from George (Erste Bank online banking): Account → Statements → Download PDF."
+
+#: src/settings/components/ai-data-card/ai-data-card.tsx:22
+msgid "Downloading AI model..."
+msgstr "Downloading AI model..."
 
 #: src/i18n/constant/locales.constant.ts:178
 msgid "Dutch (Netherlands)"
@@ -649,11 +657,11 @@ msgstr "e.g. Savings Account"
 msgid "Edit Category"
 msgstr "Edit Category"
 
-#: src/app/(main)/transactions/[id]/expense.tsx:72
+#: src/app/(main)/transactions/[id]/expense.tsx:75
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
-#: src/app/(main)/transactions/[id]/income.tsx:72
+#: src/app/(main)/transactions/[id]/income.tsx:75
 msgid "Edit Income"
 msgstr "Edit Income"
 
@@ -661,7 +669,7 @@ msgstr "Edit Income"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/app/(main)/transactions/[id]/transfer.tsx:76
+#: src/app/(main)/transactions/[id]/transfer.tsx:79
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
@@ -884,7 +892,7 @@ msgstr "From Currency"
 msgid "General"
 msgstr "General"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:176
+#: src/settings/hook/use-ai-data-preparation.hook.ts:195
 msgid "Generating embeddings..."
 msgstr "Generating embeddings..."
 
@@ -982,6 +990,10 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
+#: src/settings/components/ai-data-card/ai-data-card.tsx:28
+msgid "Initializing AI model..."
+msgstr "Initializing AI model..."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx:57
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx:56
 msgid "Invalid file"
@@ -1065,15 +1077,15 @@ msgstr "Monobank"
 msgid "New Account"
 msgstr "New Account"
 
-#: src/app/(main)/create-transaction/expense.tsx:50
+#: src/app/(main)/create-transaction/expense.tsx:57
 msgid "New Expense"
 msgstr "New Expense"
 
-#: src/app/(main)/create-transaction/income.tsx:39
+#: src/app/(main)/create-transaction/income.tsx:46
 msgid "New Income"
 msgstr "New Income"
 
-#: src/app/(main)/create-transaction/transfer.tsx:63
+#: src/app/(main)/create-transaction/transfer.tsx:70
 msgid "New Transfer"
 msgstr "New Transfer"
 
@@ -1256,7 +1268,7 @@ msgstr "Polish (Poland)"
 msgid "Portuguese (Portugal)"
 msgstr "Portuguese (Portugal)"
 
-#: src/settings/components/ai-data-card/ai-data-card.tsx:20
+#: src/settings/components/ai-data-card/ai-data-card.tsx:42
 msgid "Prepare AI Data"
 msgstr "Prepare AI Data"
 
@@ -1702,11 +1714,11 @@ msgstr "Transcription failed"
 msgid "Transfer"
 msgstr "Transfer"
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:156
+#: src/settings/hook/use-ai-data-preparation.hook.ts:180
 msgid "Translating categories..."
 msgstr "Translating categories..."
 
-#: src/settings/hook/use-ai-data-preparation.hook.ts:166
+#: src/settings/hook/use-ai-data-preparation.hook.ts:187
 msgid "Translating tags..."
 msgstr "Translating tags..."
 
