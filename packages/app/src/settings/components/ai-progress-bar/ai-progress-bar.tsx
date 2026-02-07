@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import { Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { View } from 'react-native';
+import Animated, { FadeIn, FadeOut, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+
+const ANIMATION_DURATION = 300;
 
 interface Props {
     readonly progress: number;
-    readonly phaseLabel: string;
-    readonly isActive: boolean;
 }
 
-export const AiProgressBar = ({ progress, phaseLabel, isActive }: Props) => {
+export const AiProgressBar = ({ progress }: Props) => {
     const progressValue = useSharedValue(0);
 
     useEffect(() => {
@@ -16,22 +16,14 @@ export const AiProgressBar = ({ progress, phaseLabel, isActive }: Props) => {
     }, [progress, progressValue]);
 
     const widthStyle = useAnimatedStyle(() => ({
-        width: withTiming(`${progressValue.value}%`, { duration: 300 })
+        width: withTiming(`${progressValue.value}%`, { duration: ANIMATION_DURATION })
     }));
 
-    if (!isActive) {
-        return null;
-    }
-
     return (
-        <View className="gap-y-sm">
-            <View className="flex-row items-center justify-between">
-                <Text className="text-xs text-secondary-foreground">{phaseLabel}</Text>
-                <Text className="text-xs text-secondary-foreground">{progress}%</Text>
-            </View>
-            <View className="rounded-5xl bg-secondary-corner h-2">
+        <Animated.View entering={FadeIn.duration(ANIMATION_DURATION)} exiting={FadeOut.duration(ANIMATION_DURATION)}>
+            <View className="rounded-5xl bg-secondary-corner h-2 mt-lg">
                 <Animated.View style={widthStyle} className="h-2 rounded-5xl bg-secondary-foreground" />
             </View>
-        </View>
+        </Animated.View>
     );
 };

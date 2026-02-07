@@ -52,6 +52,7 @@ export const useRepeatedTransactionSuggestion = (
         clearDebounceTimer();
 
         const fetchSuggestions = async (): Promise<void> => {
+            console.log('[AI-DEBUG] Pattern fetch starting:', { type, accountId, amount, categoryId, isReady }); // eslint-disable-line no-console -- Temporary debug
             setInternalStatus('loading');
             lastFetchedAmountRef.current = amount;
 
@@ -64,6 +65,7 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isPositiveNumber(categoryId) && { categoryId })
                 });
 
+                console.log('[AI-DEBUG] Pattern results:', results.length, results.map(r => r.title)); // eslint-disable-line no-console -- Temporary debug
                 setSuggestions(results);
                 setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
             } catch {

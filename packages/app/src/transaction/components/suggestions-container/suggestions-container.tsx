@@ -1,5 +1,7 @@
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 
 import { CategorySuggestionRow } from './category-suggestion-row';
@@ -43,12 +45,14 @@ export const SuggestionsContainer = (props: Props) => {
     } = props;
 
     const safeCategoryId = categoryId ?? 0;
-    const hasCategorySelected = safeCategoryId > 0;
-    const hasContext = (mccCategoryId !== null && mccCategoryId > 0) || comment.length > 0 || aiContext.length > 0;
+    const hasCategorySelected = isPositiveNumber(safeCategoryId);
+    const hasContext =
+        isNotEmptyString(transactionTitle) || isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
     const showRepeatedSuggestions = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
     const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
+    console.log('[AI-DEBUG] SuggestionsContainer:', { isNewTransaction, hasCategorySelected, hasContext, isSplitActive, hasTagsSelected, showRepeatedSuggestions, showCategorySuggestions, showTagSuggestions, categoryId, mccCategoryId, transactionTitle, accountId }); // eslint-disable-line no-console -- Temporary debug
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;

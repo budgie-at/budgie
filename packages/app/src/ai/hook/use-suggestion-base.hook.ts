@@ -18,11 +18,13 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const hasTriggeredRef = useRef(false);
 
     useEffect(() => {
+        console.log('[AI-DEBUG] useSuggestionBase effect:', { enabled, isReady, hasTriggered: hasTriggeredRef.current }); // eslint-disable-line no-console -- Temporary debug
         if (!isReady || hasTriggeredRef.current) {
             return;
         }
 
         hasTriggeredRef.current = true;
+        console.log('[AI-DEBUG] useSuggestionBase triggering fetch'); // eslint-disable-line no-console -- Temporary debug
 
         const suggest = async (): Promise<void> => {
             setInternalStatus('loading');
@@ -30,9 +32,11 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
             try {
                 const results = await fetchSuggestions();
 
+                console.log('[AI-DEBUG] useSuggestionBase results:', results.length); // eslint-disable-line no-console -- Temporary debug
                 setSuggestions(results);
                 setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch {
+            } catch (error) {
+                console.log('[AI-DEBUG] useSuggestionBase error:', error); // eslint-disable-line no-console -- Temporary debug
                 setInternalStatus('error');
             }
         };
