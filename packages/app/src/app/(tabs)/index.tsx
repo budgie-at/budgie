@@ -34,8 +34,6 @@ const getSectionAccountType = (section: HomeSectionInterface): AccountTypeEnum =
 };
 
 export default function HomePage() {
-    // eslint-disable-next-line no-console
-    console.log(`[perf] HomePage render: ${Math.round(performance.now())}ms`); // eslint-disable-line lingui/no-unlocalized-strings
     const { accounts } = useAccountsWithBankSyncQuery();
     const { bottom } = useSafeAreaInsets();
 
