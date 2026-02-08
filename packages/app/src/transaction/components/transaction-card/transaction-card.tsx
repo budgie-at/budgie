@@ -38,7 +38,7 @@ export const TransactionCard = ({ transaction, formattedDate, categoryLabel }: T
     const getHref = (): Href => {
         const { id } = transaction;
 
-        if (isTransferTransaction(transaction)) {
+        if (isTransferTransaction(transaction) || transaction.type === TransactionTypeEnum.DEBT) {
             return `/transactions/${id}/transfer`;
         }
 
