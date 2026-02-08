@@ -1,4 +1,4 @@
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
@@ -25,15 +25,12 @@ export class EmbeddingService {
     }
 
     async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
-        const results = new Map<string, Float32Array>();
         const batch = texts.slice(0, EMBEDDING_BATCH_LIMIT);
+        const rawResults = await this.llm.batchEmbedding(batch);
 
-        for (const text of batch) {
-            const embeddingResult = await this.generateEmbeddingWithTranslation(text); // eslint-disable-line no-await-in-loop -- Sequential to avoid overwhelming LLM
-
-            if (isDefined(embeddingResult)) {
-                results.set(text, embeddingResult);
-            }
+        const results = new Map<string, Float32Array>();
+        for (const [text, embedding] of rawResults) {
+            results.set(text, new Float32Array(embedding));
         }
 
         return results;
