@@ -30,7 +30,7 @@ const SIMILAR_TITLES_BY_CONTEXT_QUERY = `
     WHERE te.deleted_at IS NULL AND te.context != ?
 `;
 
-const yieldToUi = (): Promise<void> =>
+const microPause = (): Promise<void> =>
     new Promise(resolve => {
         setTimeout(resolve, 0);
     });
@@ -66,7 +66,7 @@ export class TitleEmbeddingRepository {
                 titleSet.add(row.title);
             }
 
-            await yieldToUi();
+            await microPause();
         }
         /* eslint-enable no-await-in-loop */
 
