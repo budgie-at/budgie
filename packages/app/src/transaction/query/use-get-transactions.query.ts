@@ -16,10 +16,7 @@ export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
     const { formatMonthAndYear } = useFormatDate();
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
-    const queryStart = performance.now();
     const { data, error, updatedAt } = useLiveQuery(transactionRepository.getAll(loadedCount + 1, filters), [loadedCount, filters]);
-    // eslint-disable-next-line no-console
-    console.log(`[perf] useGetTransactionsQuery: ${Math.round(performance.now() - queryStart)}ms, rows=${data.length}`); // eslint-disable-line lingui/no-unlocalized-strings
 
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
