@@ -215,6 +215,37 @@ export class TitleEmbeddingRepository {
             return [];
         }
 
+        const titles = await this.db
+            .select({ title: TitleEmbeddingEntityTable.title, context: TitleEmbeddingEntityTable.context })
+            .from(TitleEmbeddingEntityTable)
+            .where(and(inArray(TitleEmbeddingEntityTable.context, contexts), isNull(TitleEmbeddingEntityTable.deletedAt)));
+
+        const titleStrings = titles.map(row => row.title);
+
+        const matchingTransactions = await this.db
+            .select({
+                title: TransactionEntityTable.title,
+                categoryId: TransactionEntryEntityTable.categoryId,
+                entryDeleted: TransactionEntryEntityTable.deletedAt,
+                txDeleted: TransactionEntityTable.deletedAt
+            })
+            .from(TransactionEntityTable)
+            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .where(inArray(TransactionEntityTable.title, titleStrings))
+            .limit(20);
+
+        // eslint-disable-next-line no-console
+        console.log('[findCategoriesByContexts] debug', {
+            inputContexts: contexts.length,
+            embeddingTitles: titleStrings.slice(0, 5),
+            matchingTxSample: matchingTransactions.slice(0, 10).map(row => ({
+                title: row.title,
+                categoryId: row.categoryId,
+                entryDeleted: row.entryDeleted,
+                txDeleted: row.txDeleted
+            }))
+        });
+
         return this.db
             .select({
                 categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`,
