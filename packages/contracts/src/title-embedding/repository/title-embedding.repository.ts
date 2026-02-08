@@ -2,7 +2,7 @@ import { and, count, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } fro
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { DB } from '../../@generic/type/db.type';
+import { DB, RawDb } from '../../@generic/type/db.type';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
@@ -16,6 +16,25 @@ import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table
 
 const EMBEDDING_DIMENSIONS = 1536;
 
+const SIMILAR_CONTEXTS_QUERY = `
+    SELECT te.context, te.title
+    FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN title_embeddings te ON te.id = vec.rowid
+    WHERE te.deleted_at IS NULL
+`;
+
+const SIMILAR_TITLES_BY_CONTEXT_QUERY = `
+    SELECT te.context, te.title
+    FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN title_embeddings te ON te.id = vec.rowid
+    WHERE te.deleted_at IS NULL AND te.context != ?
+`;
+
+const yieldToUi = (): Promise<void> =>
+    new Promise(resolve => {
+        setTimeout(resolve, 0);
+    });
+
 const hasEmbeddableContext = or(
     ne(TransactionEntityTable.title, ''),
     ne(TransactionEntityTable.comment, ''),
@@ -23,32 +42,33 @@ const hasEmbeddableContext = or(
 );
 
 export class TitleEmbeddingRepository {
-    constructor(private readonly db: DB) {}
+    constructor(
+        private readonly db: DB,
+        private readonly rawDb: RawDb
+    ) {}
 
-    findSimilarContexts(queryEmbedding: Uint8Array, limit: number): EmbeddingContextResultInterface[] {
-        return this.db.all<VecSearchResultInterface>(sql`
-            SELECT te.context, te.title
-            FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ${queryEmbedding} ORDER BY distance LIMIT ${limit}) vec
-            JOIN title_embeddings te ON te.id = vec.rowid
-            WHERE te.deleted_at IS NULL
-        `);
+    async findSimilarContexts(queryEmbedding: Uint8Array, limit: number): Promise<EmbeddingContextResultInterface[]> {
+        return this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [queryEmbedding, limit]);
     }
 
-    findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): string[] {
+    async findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): Promise<string[]> {
         const titleSet = new Set<string>();
 
+        /* eslint-disable no-await-in-loop -- Sequential execution with UI yielding between vector searches */
         for (const { context, embedding } of contextEmbeddings) {
-            const results = this.db.all<VecSearchResultInterface>(sql`
-                SELECT te.context, te.title
-                FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ${embedding} ORDER BY distance LIMIT ${limit}) vec
-                JOIN title_embeddings te ON te.id = vec.rowid
-                WHERE te.deleted_at IS NULL AND te.context != ${context}
-            `);
+            const results = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_TITLES_BY_CONTEXT_QUERY, [
+                embedding,
+                limit,
+                context
+            ]);
 
             for (const row of results) {
                 titleSet.add(row.title);
             }
+
+            await yieldToUi();
         }
+        /* eslint-enable no-await-in-loop */
 
         return [...titleSet];
     }

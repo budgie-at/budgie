@@ -14,7 +14,7 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository, titleEmbeddingRepository } from '../../@generic/drizzle/db/db';
-import { yieldToUI } from '../../@generic/utils/yield-to-ui/yield-to-ui.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { useLlmContext } from '../../ai/context/llm.context';
 
 interface TransactionContextDataInterface {
@@ -75,7 +75,7 @@ const storeEmbeddingBatch = async (
             existingContexts.add(item.context);
             callbacks.onStep();
             callbacks.onEmbeddingStored(existingContexts.size);
-            await yieldToUI(); // eslint-disable-line no-await-in-loop -- Yield to render progress updates
+            await microPause(); // eslint-disable-line no-await-in-loop -- Yield to render progress updates
         }
     }
 };
@@ -156,7 +156,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
         isRunningRef.current = true;
         setIsRunning(true);
         setProgress(0);
-        await yieldToUI();
+        await microPause();
 
         try {
             const categories = await categoryRepository.findWithoutTags();
@@ -170,7 +170,7 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             setTotalContexts(totalDistinctContexts);
             setEmbeddedCount(existingContexts.size);
-            await yieldToUI();
+            await microPause();
 
             let completedSteps = 0;
             const updateProgress = () => {
@@ -182,26 +182,26 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
 
             /* eslint-disable no-await-in-loop -- Sequential LLM processing */
             setPhaseLabel(t`Translating categories...`);
-            await yieldToUI();
+            await microPause();
             for (const category of categories) {
                 const result = await translationService.translate(category.title);
                 await categoryRepository.updateTranslation(category.id, result.titleEn, result.titleTags);
                 updateProgress();
-                await yieldToUI();
+                await microPause();
             }
 
             setPhaseLabel(t`Translating tags...`);
-            await yieldToUI();
+            await microPause();
             for (const tag of tags) {
                 const result = await translationService.translate(tag.title);
                 await tagRepository.updateTranslation(tag.id, result.titleEn, result.titleTags);
                 updateProgress();
-                await yieldToUI();
+                await microPause();
             }
             /* eslint-enable no-await-in-loop */
 
             setPhaseLabel(t`Generating embeddings...`);
-            await yieldToUI();
+            await microPause();
             await processEmbeddingBatches(llm, existingContexts, {
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => void setEmbeddedCount(count)

@@ -12,6 +12,9 @@ import { exchangeRatesService } from './exchange-rates.service';
 
 class ExchangeRatesSyncService {
     async sync(): Promise<void> {
+        const syncStart = performance.now();
+        console.log('[perf] exchangeRateSync.sync START'); // eslint-disable-line lingui/no-unlocalized-strings
+
         const baseInstrument = await exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument)) {
@@ -26,6 +29,8 @@ class ExchangeRatesSyncService {
                 await this.updateInstrumentRate(baseInstrument.id, instrument, apiData.rates);
             }
         }
+
+        console.log(`[perf] exchangeRateSync.sync DONE: ${Math.round(performance.now() - syncStart)}ms`); // eslint-disable-line lingui/no-unlocalized-strings
     }
 
     async registerBackgroundTask(): Promise<void> {

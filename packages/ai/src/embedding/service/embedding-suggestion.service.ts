@@ -55,7 +55,7 @@ export class EmbeddingSuggestionService {
         }
 
         const serialized = serializeEmbedding(queryEmbedding);
-        const results = this.repository.findSimilarContexts(serialized, EMBEDDING_VEC_SEARCH_LIMIT);
+        const results = await this.repository.findSimilarContexts(serialized, EMBEDDING_VEC_SEARCH_LIMIT);
 
         return results.map(row => row.context);
     }

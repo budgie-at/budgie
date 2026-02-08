@@ -1,6 +1,7 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
+import { InteractionManager } from 'react-native';
 
 import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -30,6 +31,7 @@ export const useRepeatedTransactionSuggestion = (
 
     const isReady = enabled && isPositiveNumber(accountId);
 
+    // eslint-disable-next-line max-statements -- Effect with deferred initial fetch and debounced subsequent fetches
     useEffect(() => {
         let cancelled = false;
 
@@ -79,10 +81,15 @@ export const useRepeatedTransactionSuggestion = (
         };
 
         if (isInitialFetch) {
-            void fetchSuggestions();
-        } else {
-            debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
+            const task = InteractionManager.runAfterInteractions(() => void fetchSuggestions());
+
+            return () => {
+                cancelled = true;
+                task.cancel();
+            };
         }
+
+        debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
 
         return () => {
             cancelled = true;
