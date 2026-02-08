@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, TagEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TagEntityInterface, TitleEmbeddingRepository } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -9,12 +9,11 @@ import {
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
-import { EmbeddingRepositoryInterface } from '../interface/embedding-repository.interface';
 
 import { EmbeddingService } from './embedding.service';
 
 export class EmbeddingSuggestionService {
-    constructor(private readonly repository: EmbeddingRepositoryInterface) {}
+    constructor(private readonly repository: TitleEmbeddingRepository) {}
 
     async suggestCategories(context: string, llm: LlmInterface, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface[]> {
         const similarContexts = await this.findSimilarContexts(context, llm);

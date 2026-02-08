@@ -1,16 +1,14 @@
-import { RepeatedTransactionPatternInterface } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TitleEmbeddingRepository, TransactionPatternRepository } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_RECENT_TITLE_COUNT, EMBEDDING_VEC_PATTERN_SEARCH_LIMIT } from '../../@generic/constant/embedding.constant';
-import { EmbeddingPatternRepositoryInterface } from '../interface/embedding-pattern-repository.interface';
 import { FindSimilarPatternsParamsInterface } from '../interface/find-similar-patterns-params.interface';
-import { TransactionPatternRepositoryInterface } from '../interface/transaction-pattern-repository.interface';
 
 export class EmbeddingPatternService {
     constructor(
-        private readonly embeddingRepository: EmbeddingPatternRepositoryInterface,
-        private readonly patternRepository: TransactionPatternRepositoryInterface
+        private readonly embeddingRepository: TitleEmbeddingRepository,
+        private readonly patternRepository: TransactionPatternRepository
     ) {}
 
     async findSimilarPatterns(params: FindSimilarPatternsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
