@@ -28,28 +28,53 @@ declare global {
     var __drizzleDb__: ExpoSQLiteDatabase<typeof schema> | undefined;
 }
 
-const dbInit = () => {
-    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+const logTime = (label: string, start: number): void => {
+    // eslint-disable-next-line no-console
+    console.log(`[dbInit] ${label}: ${Math.round(performance.now() - start)}ms`); // eslint-disable-line lingui/no-unlocalized-strings
+};
 
+const dbInit = () => {
+    const totalStart = performance.now();
+
+    let stepStart = performance.now();
+    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+    logTime('openDatabaseSync', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+    stepStart = performance.now();
     const pin = SecureStore.getItem(PIN_KEY);
+    logTime('SecureStore.getItem', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
     if (isNotEmptyString(pin)) {
+        stepStart = performance.now();
         global.__expoSqliteDb__.execSync(`PRAGMA key = '${pin}';`);
+        logTime('PRAGMA key', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
     }
 
+    stepStart = performance.now();
     global.__expoSqliteDb__.execSync('PRAGMA journal_mode = WAL;'); // eslint-disable-line lingui/no-unlocalized-strings
+    logTime('PRAGMA journal_mode', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+    stepStart = performance.now();
     global.__expoSqliteDb__.execSync('PRAGMA busy_timeout = 5000;'); // eslint-disable-line lingui/no-unlocalized-strings
+    logTime('PRAGMA busy_timeout', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
 
     try {
         const extension = SQLite.bundledExtensions['sqlite-vec']; // eslint-disable-line lingui/no-unlocalized-strings
 
         if (isDefined(extension)) {
+            stepStart = performance.now();
             global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+            logTime('loadExtensionSync', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+            stepStart = performance.now();
             global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
+            logTime('CREATE vec0 table', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
         }
     } catch {
         // eslint-disable-next-line no-console
         console.log('Failed to load sqlite-vec extension'); // eslint-disable-line lingui/no-unlocalized-strings
     }
+
+    logTime('dbInit TOTAL', totalStart); // eslint-disable-line lingui/no-unlocalized-strings
 
     return global.__expoSqliteDb__;
 };
@@ -62,30 +87,47 @@ const hasTable = (sqliteDb: SQLite.SQLiteDatabase, tableName: string): boolean =
     return result.count > 0;
 };
 
-export const initPostMigration = (sqliteDb: SQLite.SQLiteDatabase): void => {
-    if (hasTable(sqliteDb, 'transaction_entries')) {
-        // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_transaction_id ON transaction_entries(transaction_id)'); // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_category_id ON transaction_entries(category_id)'); // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transaction_entries_account_id ON transaction_entries(account_id)'); // eslint-disable-line lingui/no-unlocalized-strings
-    }
+const getRowCount = (sqliteDb: SQLite.SQLiteDatabase, query: string): number => {
+    const [result] = sqliteDb.getAllSync<{ count: number }>(query); // eslint-disable-line lingui/no-unlocalized-strings
 
-    if (hasTable(sqliteDb, 'transactions')) {
-        // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_transactions_title ON transactions(title)'); // eslint-disable-line lingui/no-unlocalized-strings
-    }
-
-    if (hasTable(sqliteDb, 'title_embeddings')) {
-        // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('DROP TABLE IF EXISTS title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync('CREATE VIRTUAL TABLE title_embedding_vec USING vec0(embedding float[1536])'); // eslint-disable-line lingui/no-unlocalized-strings
-        sqliteDb.execSync(
-            'INSERT OR IGNORE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
-        );
-        sqliteDb.execSync('CREATE INDEX IF NOT EXISTS idx_title_embeddings_title ON title_embeddings(title)'); // eslint-disable-line lingui/no-unlocalized-strings
-    }
+    return result.count;
 };
 
+export const initPostMigration = (sqliteDb: SQLite.SQLiteDatabase): void => {
+    const totalStart = performance.now();
+
+    if (!hasTable(sqliteDb, 'title_embeddings') || !hasTable(sqliteDb, 'title_embedding_vec')) {
+        logTime('initPostMigration (no tables, skip)', totalStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+        return;
+    }
+
+    let stepStart = performance.now();
+    const embeddingCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embeddings WHERE deleted_at IS NULL'); // eslint-disable-line lingui/no-unlocalized-strings
+    const vecCount = getRowCount(sqliteDb, 'SELECT COUNT(*) as count FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
+    logTime(`initPostMigration counts (embeddings=${embeddingCount}, vec=${vecCount})`, stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+    if (embeddingCount === vecCount) {
+        logTime('initPostMigration TOTAL (in sync, skip)', totalStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+        return;
+    }
+
+    stepStart = performance.now();
+    sqliteDb.execSync('DELETE FROM title_embedding_vec'); // eslint-disable-line lingui/no-unlocalized-strings
+    logTime('initPostMigration DELETE vec', stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+    stepStart = performance.now();
+    sqliteDb.execSync(
+        'INSERT INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL' // eslint-disable-line lingui/no-unlocalized-strings
+    );
+    logTime(`initPostMigration INSERT ${embeddingCount} rows`, stepStart); // eslint-disable-line lingui/no-unlocalized-strings
+
+    logTime('initPostMigration TOTAL (rebuilt)', totalStart); // eslint-disable-line lingui/no-unlocalized-strings
+};
+
+// eslint-disable-next-line no-console
+console.log(`[dbInit] module load START, time=${Math.round(performance.now())}ms`); // eslint-disable-line lingui/no-unlocalized-strings
 export let expoDb = dbInit();
 
 /** @deprecated TODO: DELETE ME WHEN DB IS STABLE */
@@ -95,7 +137,9 @@ export const __REMOVE_ME_RESET_DB = async () => {
     expoDb = dbInit();
 };
 
+let drizzleStart = performance.now();
 export const db = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
+logTime('drizzle() init', drizzleStart); // eslint-disable-line lingui/no-unlocalized-strings
 
 export const tagRepository = new TagRepository(db);
 export const accountRepository = new AccountRepository(db);
@@ -111,4 +155,4 @@ export const bankSyncRepository = new BankSyncRepository(db);
 export const mccCategoryRepository = new MccCategoryRepository(db);
 export const statisticsRepository = new StatisticsRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
-export const titleEmbeddingRepository = new TitleEmbeddingRepository(db);
+export const titleEmbeddingRepository = new TitleEmbeddingRepository(db, expoDb);
