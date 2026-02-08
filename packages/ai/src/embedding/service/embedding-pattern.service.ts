@@ -26,7 +26,10 @@ export class EmbeddingPatternService {
             return [];
         }
 
-        const similarTitles = this.embeddingRepository.findSimilarTitlesByContexts(contextEmbeddings, EMBEDDING_VEC_PATTERN_SEARCH_LIMIT);
+        const similarTitles = await this.embeddingRepository.findSimilarTitlesByContexts(
+            contextEmbeddings,
+            EMBEDDING_VEC_PATTERN_SEARCH_LIMIT
+        );
 
         if (!isNotEmptyArray(similarTitles)) {
             return [];

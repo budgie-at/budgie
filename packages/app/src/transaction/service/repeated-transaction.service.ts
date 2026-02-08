@@ -1,7 +1,7 @@
 import { EmbeddingPatternService } from '@budgie/ai';
 import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { titleEmbeddingRepository, transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import {
@@ -61,7 +61,16 @@ const calculateAmountBounds = (amount: number): AmountBoundsInterface => ({
 
 const embeddingPatternService = new EmbeddingPatternService(titleEmbeddingRepository, transactionPatternRepository);
 
+const EMBEDDING_CACHE_TTL_MS = 60_000;
+
+interface EmbeddingCacheEntryInterface {
+    readonly patterns: RepeatedTransactionPatternInterface[];
+    readonly timestamp: number;
+}
+
 class RepeatedTransactionService {
+    private readonly embeddingCache = new Map<string, EmbeddingCacheEntryInterface>();
+
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const { currentTime, type, accountId, amount, categoryId } = params;
         const hasAmount = isPositiveNumber(amount);
@@ -85,17 +94,39 @@ class RepeatedTransactionService {
                 ...(isPositiveNumber(accountId) && { accountId }),
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
             }),
-            embeddingPatternService
-                .findSimilarPatterns({
-                    type,
-                    ...(isPositiveNumber(accountId) && { accountId }),
-                    ...amountBounds,
-                    limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-                })
-                .catch(() => [])
+            this.getEmbeddingPatterns(type, accountId, amountBounds)
         ]);
 
         return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns, embeddingPatterns);
+    }
+
+    private async getEmbeddingPatterns(
+        type: TransactionTypeEnum,
+        accountId: number | undefined,
+        amountBounds: AmountBoundsInterface | Record<string, never>
+    ): Promise<RepeatedTransactionPatternInterface[]> {
+        const cacheKey = `${type}-${String(accountId)}`;
+        const cached = this.embeddingCache.get(cacheKey);
+        const isCacheValid = isDefined(cached) && Date.now() - cached.timestamp < EMBEDDING_CACHE_TTL_MS;
+
+        if (isCacheValid) {
+            return cached.patterns;
+        }
+
+        try {
+            const patterns = await embeddingPatternService.findSimilarPatterns({
+                type,
+                ...(isPositiveNumber(accountId) && { accountId }),
+                ...amountBounds,
+                limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
+            });
+
+            this.embeddingCache.set(cacheKey, { patterns, timestamp: Date.now() });
+
+            return patterns;
+        } catch {
+            return [];
+        }
     }
 
     private mergeAndDeduplicate(

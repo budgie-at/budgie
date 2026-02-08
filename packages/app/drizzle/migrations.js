@@ -13,6 +13,7 @@ import m0008 from './0008_breezy_darkhawk.sql';
 import m0009 from './0009_fine_molten_man.sql';
 import m0010 from './0010_light_loa.sql';
 import m0011 from './0011_windy_lyja.sql';
+import m0012 from './0012_smooth_hedge_knight.sql';
 
   export default {
     journal,
@@ -28,7 +29,8 @@ m0007,
 m0008,
 m0009,
 m0010,
-m0011
+m0011,
+m0012
     }
   }
   
