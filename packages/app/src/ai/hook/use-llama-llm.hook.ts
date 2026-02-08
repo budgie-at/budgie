@@ -4,7 +4,7 @@ import { createDownloadResumable } from 'expo-file-system/legacy';
 import { LlamaContext, initLlama, releaseAllLlama } from 'llama.rn';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 interface RunCompletionParams {
     context: LlamaContext;
@@ -21,6 +21,7 @@ const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
 const DEFAULT_MAX_TOKENS = 64;
 const GPU_LAYERS = 99;
 const CONTEXT_SIZE = 2048;
+const PARALLEL_EMBEDDING_SLOTS = 8;
 const GENERATION_CONFIG = { temperature: 0.1, top_k: 40, top_p: 0.95 };
 
 const downloadModel = async (onProgress: (progress: number) => void): Promise<string> => {
@@ -184,10 +185,49 @@ export const useLlamaLlm = (): LlmInterface => {
         }
     };
 
+    // eslint-disable-next-line max-statements -- Parallel embedding with queue + await pattern
+    const batchEmbedding = async (texts: string[]): Promise<Map<string, number[]>> => {
+        const context = contextRef.current;
+
+        if (!isDefined(context) || !isNotEmptyArray(texts)) {
+            return new Map();
+        }
+
+        try {
+            const parallelSize = Math.min(texts.length, PARALLEL_EMBEDDING_SLOTS);
+            await context.parallel.enable({ n_parallel: parallelSize });
+
+            const queued: Array<{ text: string; promise: Promise<{ embedding: number[] }> }> = [];
+            /* eslint-disable no-await-in-loop -- Sequential queuing for parallel batch processing */
+            for (const text of texts) {
+                const { promise } = await context.parallel.embedding(text);
+                queued.push({ text, promise });
+            }
+            /* eslint-enable no-await-in-loop */
+
+            const results = new Map<string, number[]>();
+            await Promise.all(
+                queued.map(async ({ text, promise }) => {
+                    const result = await promise;
+
+                    if (isNotEmptyArray(result.embedding)) {
+                        results.set(text, result.embedding);
+                    }
+                })
+            );
+
+            return results;
+        } catch {
+            return new Map();
+        } finally {
+            await context.parallel.disable().catch(emptyFn);
+        }
+    };
+
     const interrupt = (): void => {
         void contextRef.current?.stopCompletion();
         setIsGenerating(false);
     };
 
-    return { isReady, isInitializing, isGenerating, downloadProgress, error, generate, embedding, interrupt };
+    return { isReady, isInitializing, isGenerating, downloadProgress, error, generate, embedding, batchEmbedding, interrupt };
 };

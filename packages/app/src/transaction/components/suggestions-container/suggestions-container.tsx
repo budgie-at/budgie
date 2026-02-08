@@ -53,6 +53,23 @@ export const SuggestionsContainer = (props: Props) => {
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
     const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
 
+    // eslint-disable-next-line no-console
+    console.log('[SuggestionsContainer]', {
+        isNewTransaction,
+        categoryId,
+        safeCategoryId,
+        hasCategorySelected,
+        hasContext,
+        isSplitActive,
+        showCategorySuggestions,
+        showTagSuggestions,
+        showRepeatedSuggestions,
+        transactionTitle,
+        mccCategoryId,
+        comment: comment?.slice(0, 20),
+        aiContext: aiContext?.slice(0, 20)
+    });
+
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
     }

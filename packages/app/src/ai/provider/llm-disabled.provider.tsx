@@ -18,6 +18,7 @@ const disabledLlm: LlmInterface = {
     error: null,
     generate: () => Promise.reject(new Error('AI is disabled')),
     embedding: () => Promise.resolve([]),
+    batchEmbedding: () => Promise.resolve(new Map()),
     interrupt: emptyFn
 };
 

@@ -14,8 +14,18 @@ const FULL_PROGRESS = 100;
 
 export const AiDataCard = () => {
     const { t } = useLingui();
-    const { start, isRunning, progress, phaseLabel, embeddedCount, totalContexts, isLlmReady, isLlmInitializing, llmDownloadProgress } =
-        useAiDataPreparation();
+    const {
+        start,
+        startFresh,
+        isRunning,
+        progress,
+        phaseLabel,
+        embeddedCount,
+        totalContexts,
+        isLlmReady,
+        isLlmInitializing,
+        llmDownloadProgress
+    } = useAiDataPreparation();
 
     const completionRatio = isPositiveNumber(totalContexts) ? Math.round((embeddedCount / totalContexts) * FULL_PROGRESS) : 0;
     const downloadPercent = Math.round(llmDownloadProgress * FULL_PROGRESS);
@@ -33,7 +43,7 @@ export const AiDataCard = () => {
 
     return (
         <HorizontalCell
-            {...(!isRunning && { onPress: () => void start() })}
+            {...(!isRunning && { onPress: () => void start(), onLongPress: () => void startFresh() })}
             left={<AiBrainProgress progress={brainProgress} size={ICON_CONTAINER_SIZE} iconSize={ICON_SIZE} />}
             right={<Text className="text-sm font-medium text-secondary-foreground">{`${brainProgress}%`}</Text>}
             variant="secondary"

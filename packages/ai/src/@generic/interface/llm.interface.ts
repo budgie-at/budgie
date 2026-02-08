@@ -11,5 +11,6 @@ export interface LlmInterface {
     error: string | null;
     generate: (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface) => Promise<string>;
     embedding: (text: string) => Promise<number[]>;
+    batchEmbedding: (texts: string[]) => Promise<Map<string, number[]>>;
     interrupt: () => void;
 }
