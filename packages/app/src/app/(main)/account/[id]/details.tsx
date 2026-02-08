@@ -32,8 +32,6 @@ const descriptionVariants = cva('uppercase', {
 });
 
 export default function AccountDetails() {
-    // eslint-disable-next-line no-console
-    console.log(`[perf] AccountDetails render: ${Math.round(performance.now())}ms`); // eslint-disable-line lingui/no-unlocalized-strings
     const params = useLocalSearchParams<IdParamInterface>();
     const id = Number(params.id);
 
