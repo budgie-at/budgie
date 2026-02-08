@@ -16,10 +16,7 @@ export {
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
 
 // embedding - interfaces
-export type { EmbeddingPatternRepositoryInterface } from './embedding/interface/embedding-pattern-repository.interface';
-export type { EmbeddingRepositoryInterface } from './embedding/interface/embedding-repository.interface';
 export type { FindSimilarPatternsParamsInterface } from './embedding/interface/find-similar-patterns-params.interface';
-export type { TransactionPatternRepositoryInterface } from './embedding/interface/transaction-pattern-repository.interface';
 
 // embedding - services
 export { EmbeddingPatternService } from './embedding/service/embedding-pattern.service';
