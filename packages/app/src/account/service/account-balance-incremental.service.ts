@@ -11,6 +11,10 @@ import { ONE_WEEK_IN_SECONDS } from '../constant/one-week-in-seconds.constant';
 
 class AccountBalanceIncrementalService {
     async updateAllBalances(truncate: boolean, tx?: Transaction): Promise<void> {
+        const totalStart = performance.now();
+        // eslint-disable-next-line no-console
+        console.log('[perf] accountBalance.updateAllBalances START'); // eslint-disable-line lingui/no-unlocalized-strings
+
         const accounts = await accountRepository.getAllActiveAccounts();
         if (isEmptyArray(accounts)) {
             return;
@@ -22,10 +26,13 @@ class AccountBalanceIncrementalService {
 
         const accountIds = accounts.map(({ id }) => id);
 
+        let stepStart = performance.now();
         const [currentBalances, deltaMap] = await Promise.all([
             accountBalanceRepository.getByAccountIds(accountIds),
             accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds)
         ]);
+        // eslint-disable-next-line no-console
+        console.log(`[perf] accountBalance queries: ${Math.round(performance.now() - stepStart)}ms`); // eslint-disable-line lingui/no-unlocalized-strings
 
         const balancesMap = this.buildBalancesMap(currentBalances);
 
@@ -41,8 +48,14 @@ class AccountBalanceIncrementalService {
         });
 
         if (isNotEmptyArray(balancesToInsert)) {
+            stepStart = performance.now();
             await Promise.all(balancesToInsert.map(async balance => accountBalanceRepository.upsert(balance, tx)));
+            // eslint-disable-next-line no-console
+            console.log(`[perf] accountBalance upserts (${balancesToInsert.length}): ${Math.round(performance.now() - stepStart)}ms`); // eslint-disable-line lingui/no-unlocalized-strings
         }
+
+        // eslint-disable-next-line no-console
+        console.log(`[perf] accountBalance.updateAllBalances TOTAL: ${Math.round(performance.now() - totalStart)}ms`); // eslint-disable-line lingui/no-unlocalized-strings
     }
 
     async registerBackgroundTask(): Promise<void> {

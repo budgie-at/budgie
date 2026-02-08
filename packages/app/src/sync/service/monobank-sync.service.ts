@@ -79,11 +79,16 @@ class AppMonobankSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
         this.isRunning = true;
+        const syncStart = performance.now();
+        console.log('[perf] monobankSync.sync START');
         try {
             const mccCategories = await mccCategoryRepository.findAll();
             this.mccCategoryIdMap = new Map(mccCategories.map(mccCategory => [mccCategory.mcc, mccCategory.id]));
 
-            return await this.executeSyncLoop();
+            const result = await this.executeSyncLoop();
+            console.log(`[perf] monobankSync.sync DONE: ${Math.round(performance.now() - syncStart)}ms`);
+
+            return result;
         } finally {
             this.isRunning = false;
         }
