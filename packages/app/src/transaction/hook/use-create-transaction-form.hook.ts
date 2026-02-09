@@ -49,8 +49,12 @@ export const useCreateTransactionForm = <T extends TransactionCreateInputInterfa
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
+            const start = performance.now();
+            console.log('[CreateForm] handleSubmit START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             await onSubmit(data);
+            console.log(`[CreateForm] onSubmit done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             router.back();
+            console.log(`[CreateForm] router.back() done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         } catch {
             Toast.show({
                 type: 'error',

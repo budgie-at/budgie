@@ -72,6 +72,8 @@ class RepeatedTransactionService {
     private readonly embeddingCache = new Map<string, EmbeddingCacheEntryInterface>();
 
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
+        console.log('[RepeatSvc] getSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const { currentTime, type, accountId, amount, categoryId } = params;
         const hasAmount = isPositiveNumber(amount);
         const timeWindow = calculateTimeWindow(currentTime, hasAmount);
@@ -96,30 +98,42 @@ class RepeatedTransactionService {
             }),
             this.getEmbeddingPatterns(type, accountId, amountBounds)
         ]);
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log(
+            `[RepeatSvc] in ${(performance.now() - start).toFixed(0)}ms w=${weeklyPatterns.length} m=${monthlyPatterns.length} e=${embeddingPatterns.length}`
+        );
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
         return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns, embeddingPatterns);
     }
 
+    // eslint-disable-next-line max-statements -- Debug logging
     private async getEmbeddingPatterns(
         type: TransactionTypeEnum,
         accountId: number | undefined,
         amountBounds: AmountBoundsInterface | Record<string, never>
     ): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
         const cacheKey = `${type}-${String(accountId)}`;
         const cached = this.embeddingCache.get(cacheKey);
         const isCacheValid = isDefined(cached) && Date.now() - cached.timestamp < EMBEDDING_CACHE_TTL_MS;
 
         if (isCacheValid) {
+            console.log('[RepeatSvc] embedding patterns from cache'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return cached.patterns;
         }
 
         try {
+            console.log('[RepeatSvc] getEmbeddingPatterns START (cache miss)'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             const patterns = await embeddingPatternService.findSimilarPatterns({
                 type,
                 ...(isPositiveNumber(accountId) && { accountId }),
                 ...amountBounds,
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
             });
+            // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
+            console.log(`[RepeatSvc] embedPatterns in ${(performance.now() - start).toFixed(0)}ms n=${patterns.length}`);
 
             this.embeddingCache.set(cacheKey, { patterns, timestamp: Date.now() });
 

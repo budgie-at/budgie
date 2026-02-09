@@ -31,10 +31,13 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         hasTriggeredRef.current = true;
 
         const suggest = async (): Promise<void> => {
+            const start = performance.now();
+            console.log('[SuggestBase] suggest START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setInternalStatus('loading');
 
             try {
                 const results = await fetchSuggestionsRef.current();
+                console.log(`[SuggestBase] suggest done in ${(performance.now() - start).toFixed(0)}ms, results=${results.length}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
                 if (!cancelled) {
                     setSuggestions(results);

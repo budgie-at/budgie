@@ -188,13 +188,18 @@ export const useLlamaLlm = (): LlmInterface => {
         setError(null);
 
         try {
-            return await runCompletion({
+            const start = performance.now();
+            console.log(`[LLM] generate START msg="${userMessage.slice(0, 80)}"`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            const result = await runCompletion({
                 context: chatContextRef.current,
                 systemPrompt,
                 userMessage,
                 maxTokens: options?.maxNewTokens ?? DEFAULT_MAX_TOKENS,
                 temperature: options?.temperature
             });
+            console.log(`[LLM] generate done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
+            return result;
         } catch (err: unknown) {
             setError(getErrorMessage(err));
             throw err;
@@ -222,11 +227,15 @@ export const useLlamaLlm = (): LlmInterface => {
 
     const embedding = async (text: string): Promise<number[]> => {
         if (!isDefined(embeddingContextRef.current)) {
+            console.log('[LLM] embedding called but context not ready'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return [];
         }
 
         try {
+            const start = performance.now();
             const result = await embeddingContextRef.current.embedding(text);
+            console.log(`[LLM] embedding inference done in ${(performance.now() - start).toFixed(0)}ms`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
             return result.embedding;
         } catch {
