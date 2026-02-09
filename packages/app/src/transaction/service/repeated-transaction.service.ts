@@ -96,7 +96,7 @@ class RepeatedTransactionService {
                 ...(isPositiveNumber(accountId) && { accountId }),
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
             }),
-            this.getEmbeddingPatterns(type, accountId, amountBounds)
+            this.getEmbeddingPatterns(type)
         ]);
         /* eslint-disable no-console, lingui/no-unlocalized-strings */
         console.log(
@@ -108,13 +108,9 @@ class RepeatedTransactionService {
     }
 
     // eslint-disable-next-line max-statements -- Debug logging
-    private async getEmbeddingPatterns(
-        type: TransactionTypeEnum,
-        accountId: number | undefined,
-        amountBounds: AmountBoundsInterface | Record<string, never>
-    ): Promise<RepeatedTransactionPatternInterface[]> {
+    private async getEmbeddingPatterns(type: TransactionTypeEnum): Promise<RepeatedTransactionPatternInterface[]> {
         const start = performance.now();
-        const cacheKey = `${type}-${String(accountId)}`;
+        const cacheKey = type;
         const cached = this.embeddingCache.get(cacheKey);
         const isCacheValid = isDefined(cached) && Date.now() - cached.timestamp < EMBEDDING_CACHE_TTL_MS;
 
@@ -128,8 +124,6 @@ class RepeatedTransactionService {
             console.log('[RepeatSvc] getEmbeddingPatterns START (cache miss)'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             const patterns = await embeddingPatternService.findSimilarPatterns({
                 type,
-                ...(isPositiveNumber(accountId) && { accountId }),
-                ...amountBounds,
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
             });
             // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
