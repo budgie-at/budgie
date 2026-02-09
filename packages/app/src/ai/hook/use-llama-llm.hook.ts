@@ -14,18 +14,28 @@ interface RunCompletionParams {
     temperature?: number;
 }
 
-const MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf';
-const MODEL_FILENAME = 'qwen2.5-1.5b-instruct-q8_0.gguf';
+const CHAT_MODEL_URL = 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q8_0.gguf';
+const CHAT_MODEL_FILENAME = 'qwen2.5-1.5b-instruct-q8_0.gguf';
+const CHAT_CONTEXT_SIZE = 2048;
+
+const EMBEDDING_MODEL_URL = 'https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe-GGUF/resolve/main/nomic-embed-text-v2-moe.Q8_0.gguf';
+const EMBEDDING_MODEL_FILENAME = 'nomic-embed-text-v2-moe.Q8_0.gguf';
+const EMBEDDING_CONTEXT_SIZE = 512;
+
 const STOP_TOKENS = ['<|im_end|>', '<|endoftext|>'];
 
 const DEFAULT_MAX_TOKENS = 64;
 const GPU_LAYERS = 99;
-const CONTEXT_SIZE = 2048;
-const PARALLEL_EMBEDDING_SLOTS = 8;
 const GENERATION_CONFIG = { temperature: 0.1, top_k: 40, top_p: 0.95 };
 
-const downloadModel = async (onProgress: (progress: number) => void): Promise<string> => {
-    const destPath = `${Paths.document.uri}${MODEL_FILENAME}`;
+const CHAT_MODEL_SIZE_MB = 1620;
+const EMBEDDING_MODEL_SIZE_MB = 488;
+const TOTAL_MODEL_SIZE_MB = CHAT_MODEL_SIZE_MB + EMBEDDING_MODEL_SIZE_MB;
+const CHAT_DOWNLOAD_WEIGHT = CHAT_MODEL_SIZE_MB / TOTAL_MODEL_SIZE_MB;
+const EMBEDDING_DOWNLOAD_WEIGHT = EMBEDDING_MODEL_SIZE_MB / TOTAL_MODEL_SIZE_MB;
+
+const downloadModel = async (url: string, filename: string, onProgress: (progress: number) => void): Promise<string> => {
+    const destPath = `${Paths.document.uri}${filename}`;
     const destFile = new File(destPath);
 
     if (destFile.exists) {
@@ -34,7 +44,7 @@ const downloadModel = async (onProgress: (progress: number) => void): Promise<st
         return destPath;
     }
 
-    const download = createDownloadResumable(MODEL_URL, destPath, {}, progress => {
+    const download = createDownloadResumable(url, destPath, {}, progress => {
         onProgress(progress.totalBytesWritten / progress.totalBytesExpectedToWrite);
     });
 
@@ -63,9 +73,10 @@ const runCompletion = async (params: RunCompletionParams): Promise<string> => {
     return result.text.trim();
 };
 
-// eslint-disable-next-line max-lines-per-function -- LLM hook requires model lifecycle, generation mutex, and state management
+// eslint-disable-next-line max-lines-per-function, max-statements -- LLM hook requires dual model lifecycle, generation mutex, and state management
 export const useLlamaLlm = (): LlmInterface => {
-    const contextRef = useRef<LlamaContext | null>(null);
+    const chatContextRef = useRef<LlamaContext | null>(null);
+    const embeddingContextRef = useRef<LlamaContext | null>(null);
     const isLoadingRef = useRef(false);
     const isMountedRef = useRef(true);
     const generateMutexRef = useRef<Promise<unknown>>(Promise.resolve());
@@ -85,21 +96,59 @@ export const useLlamaLlm = (): LlmInterface => {
 
         const isMounted = (): boolean => isMountedRef.current;
 
-        const initializeModel = async (): Promise<void> => {
+        let chatDownloadProgress = 0;
+        let embeddingDownloadProgress = 0;
+
+        const updateCombinedProgress = (): void => {
+            const combined = chatDownloadProgress * CHAT_DOWNLOAD_WEIGHT + embeddingDownloadProgress * EMBEDDING_DOWNLOAD_WEIGHT;
+            setDownloadProgress(combined);
+        };
+
+        const handleChatDownloadProgress = (progress: number): void => {
+            chatDownloadProgress = progress;
+            updateCombinedProgress();
+        };
+
+        const handleEmbeddingDownloadProgress = (progress: number): void => {
+            embeddingDownloadProgress = progress;
+            updateCombinedProgress();
+        };
+
+        // eslint-disable-next-line max-statements -- Dual model initialization requires sequential context setup with mount checks
+        const initializeModels = async (): Promise<void> => {
             try {
-                const modelPath = await downloadModel(setDownloadProgress);
+                const [chatModelPath, embeddingModelPath] = await Promise.all([
+                    downloadModel(CHAT_MODEL_URL, CHAT_MODEL_FILENAME, handleChatDownloadProgress),
+                    downloadModel(EMBEDDING_MODEL_URL, EMBEDDING_MODEL_FILENAME, handleEmbeddingDownloadProgress)
+                ]);
 
                 if (!isMounted()) {
                     return;
                 }
 
                 setIsInitializing(true);
-                contextRef.current = await initLlama({
-                    model: modelPath,
-                    n_ctx: CONTEXT_SIZE,
+
+                chatContextRef.current = await initLlama({
+                    model: chatModelPath,
+                    n_ctx: CHAT_CONTEXT_SIZE,
                     n_gpu_layers: GPU_LAYERS,
                     use_mlock: true,
-                    embedding: true
+                    embedding: false
+                });
+
+                if (!isMounted()) {
+                    void releaseAllLlama();
+
+                    return;
+                }
+
+                embeddingContextRef.current = await initLlama({
+                    model: embeddingModelPath,
+                    n_ctx: EMBEDDING_CONTEXT_SIZE,
+                    n_gpu_layers: GPU_LAYERS,
+                    use_mlock: true,
+                    embedding: true,
+                    pooling_type: 'mean'
                 });
 
                 if (!isMounted()) {
@@ -121,7 +170,7 @@ export const useLlamaLlm = (): LlmInterface => {
             }
         };
 
-        void initializeModel();
+        void initializeModels();
 
         return () => {
             isMountedRef.current = false;
@@ -130,7 +179,7 @@ export const useLlamaLlm = (): LlmInterface => {
     }, []);
 
     const generateInternal = async (systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> => {
-        if (!isDefined(contextRef.current)) {
+        if (!isDefined(chatContextRef.current)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
             throw new Error('Model not loaded');
         }
@@ -140,7 +189,7 @@ export const useLlamaLlm = (): LlmInterface => {
 
         try {
             return await runCompletion({
-                context: contextRef.current,
+                context: chatContextRef.current,
                 systemPrompt,
                 userMessage,
                 maxTokens: options?.maxNewTokens ?? DEFAULT_MAX_TOKENS,
@@ -172,12 +221,12 @@ export const useLlamaLlm = (): LlmInterface => {
     };
 
     const embedding = async (text: string): Promise<number[]> => {
-        if (!isDefined(contextRef.current)) {
+        if (!isDefined(embeddingContextRef.current)) {
             return [];
         }
 
         try {
-            const result = await contextRef.current.embedding(text);
+            const result = await embeddingContextRef.current.embedding(text);
 
             return result.embedding;
         } catch {
@@ -185,47 +234,34 @@ export const useLlamaLlm = (): LlmInterface => {
         }
     };
 
-    // eslint-disable-next-line max-statements -- Parallel embedding with queue + await pattern
     const batchEmbedding = async (texts: string[]): Promise<Map<string, number[]>> => {
-        const context = contextRef.current;
+        const context = embeddingContextRef.current;
 
         if (!isDefined(context) || !isNotEmptyArray(texts)) {
             return new Map();
         }
 
-        try {
-            const parallelSize = Math.min(texts.length, PARALLEL_EMBEDDING_SLOTS);
-            await context.parallel.enable({ n_parallel: parallelSize });
+        const results = new Map<string, number[]>();
 
-            const queued: Array<{ text: string; promise: Promise<{ embedding: number[] }> }> = [];
-            /* eslint-disable no-await-in-loop -- Sequential queuing for parallel batch processing */
-            for (const text of texts) {
-                const { promise } = await context.parallel.embedding(text);
-                queued.push({ text, promise });
+        /* eslint-disable no-await-in-loop -- Sequential batch embedding to avoid duplicate embeddings from parallel calls */
+        for (const text of texts) {
+            try {
+                const result = await context.embedding(text);
+
+                if (isNotEmptyArray(result.embedding)) {
+                    results.set(text, result.embedding);
+                }
+            } catch {
+                // Silently skip failed items
             }
-            /* eslint-enable no-await-in-loop */
-
-            const results = new Map<string, number[]>();
-            await Promise.all(
-                queued.map(async ({ text, promise }) => {
-                    const result = await promise;
-
-                    if (isNotEmptyArray(result.embedding)) {
-                        results.set(text, result.embedding);
-                    }
-                })
-            );
-
-            return results;
-        } catch {
-            return new Map();
-        } finally {
-            await context.parallel.disable().catch(emptyFn);
         }
+        /* eslint-enable no-await-in-loop */
+
+        return results;
     };
 
     const interrupt = (): void => {
-        void contextRef.current?.stopCompletion();
+        void chatContextRef.current?.stopCompletion();
         setIsGenerating(false);
     };
 

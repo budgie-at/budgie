@@ -61,20 +61,6 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const showLoadingIndicator = showLoading && !isReady;
     const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
 
-    // eslint-disable-next-line no-console
-    console.log('[useSuggestionLoadingState]', {
-        status,
-        hasResults,
-        enabled,
-        isProcessing,
-        isReady,
-        showLoading,
-        showLoadingIndicator,
-        showContent,
-        hasSelected,
-        wasProcessing: wasProcessingRef.current
-    });
-
     const markSelected = () => {
         setHasSelected(true);
     };

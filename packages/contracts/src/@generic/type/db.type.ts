@@ -8,4 +8,5 @@ type RawDbBindValue = string | number | null | boolean | Uint8Array;
 
 export interface RawDb {
     getAllAsync<T>(source: string, params: RawDbBindValue[]): Promise<T[]>;
+    runAsync(source: string, params: RawDbBindValue[]): Promise<unknown>;
 }
