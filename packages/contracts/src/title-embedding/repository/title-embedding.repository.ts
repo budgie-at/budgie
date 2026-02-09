@@ -60,6 +60,28 @@ const SIMILAR_TAGS_QUERY = `
     LIMIT ?
 `;
 
+const RECENT_TRANSACTION_SCAN_LIMIT = 200;
+
+const RECENT_CONTEXTS_QUERY = `
+    SELECT te.title, te.context
+    FROM title_embeddings te
+    INNER JOIN (
+        SELECT title, MAX(operated_at) as max_op
+        FROM (
+            SELECT title, operated_at
+            FROM transactions
+            WHERE deleted_at IS NULL AND title != ''
+            ORDER BY operated_at DESC
+            LIMIT ${RECENT_TRANSACTION_SCAN_LIMIT}
+        )
+        GROUP BY title
+        ORDER BY max_op DESC
+    ) recent ON recent.title = te.title
+    WHERE te.deleted_at IS NULL
+    ORDER BY recent.max_op DESC
+    LIMIT ?
+`;
+
 const hasEmbeddableContext = or(
     ne(TransactionEntityTable.title, ''),
     ne(TransactionEntityTable.comment, ''),
@@ -282,15 +304,7 @@ export class TitleEmbeddingRepository {
 
     async findRecentContexts(limit: number): Promise<EmbeddingContextResultInterface[]> {
         const start = performance.now();
-        const results = await this.db
-            .select({
-                title: TitleEmbeddingEntityTable.title,
-                context: TitleEmbeddingEntityTable.context
-            })
-            .from(TitleEmbeddingEntityTable)
-            .where(isNull(TitleEmbeddingEntityTable.deletedAt))
-            .orderBy(desc(TitleEmbeddingEntityTable.updatedAt))
-            .limit(limit);
+        const results = await this.rawDb.getAllAsync<EmbeddingContextResultInterface>(RECENT_CONTEXTS_QUERY, [limit]);
         console.log(`[VecRepo] findRecentContexts done in ${(performance.now() - start).toFixed(0)}ms, rows=${results.length}`); // eslint-disable-line no-console
 
         return results;
