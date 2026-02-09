@@ -28,17 +28,6 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const hasCategoriesLoaded = categories.length > 0;
     const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
-    // eslint-disable-next-line no-console
-    console.log('[useCategorySuggestion]', {
-        enabled,
-        llmReady: llm.isReady,
-        isMccLoading,
-        isCategoriesLoading,
-        hasCategoriesLoaded,
-        categoriesCount: categories.length,
-        isReady
-    });
-
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;

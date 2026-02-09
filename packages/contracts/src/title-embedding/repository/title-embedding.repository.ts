@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Repository with multiple vec search queries and transaction data methods */
 import { and, count, desc, eq, inArray, isNotNull, isNull, lt, ne, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -9,12 +10,14 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { CategoryCountResultInterface } from '../interface/category-count-result.interface';
 import { EmbeddingContextResultInterface } from '../interface/embedding-context-result.interface';
+import { TagCountResultInterface } from '../interface/tag-count-result.interface';
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
 import { VecSearchResultInterface } from '../interface/vec-search-result.interface';
 import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table';
 
-const EMBEDDING_DIMENSIONS = 1536;
+const EMBEDDING_DIMENSIONS = 768;
 
 const SIMILAR_CONTEXTS_QUERY = `
     SELECT te.context, te.title
@@ -30,10 +33,32 @@ const SIMILAR_TITLES_BY_CONTEXT_QUERY = `
     WHERE te.deleted_at IS NULL AND te.context != ?
 `;
 
-const microPause = (): Promise<void> =>
-    new Promise(resolve => {
-        setTimeout(resolve, 0);
-    });
+const SIMILAR_CATEGORIES_QUERY = `
+    SELECT e.category_id as categoryId, COUNT(DISTINCT t.id) as count
+    FROM (SELECT rowid, distance FROM title_embedding_vec
+          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN title_embeddings te ON te.id = vec.rowid
+    JOIN transactions t ON t.title = te.title AND t.deleted_at IS NULL
+    JOIN transaction_entries e ON e.transaction_id = t.id
+        AND e.deleted_at IS NULL AND e.category_id IS NOT NULL
+    WHERE te.deleted_at IS NULL AND te.title != '' AND vec.distance < ?
+    GROUP BY e.category_id
+    ORDER BY count DESC
+    LIMIT ?
+`;
+
+const SIMILAR_TAGS_QUERY = `
+    SELECT tt.tag_id as tagId, COUNT(DISTINCT t.id) as count
+    FROM (SELECT rowid, distance FROM title_embedding_vec
+          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN title_embeddings te ON te.id = vec.rowid
+    JOIN transactions t ON t.title = te.title AND t.deleted_at IS NULL
+    JOIN transaction_tags tt ON tt.transaction_id = t.id
+    WHERE te.deleted_at IS NULL AND te.title != '' AND vec.distance < ?
+    GROUP BY tt.tag_id
+    ORDER BY count DESC
+    LIMIT ?
+`;
 
 const hasEmbeddableContext = or(
     ne(TransactionEntityTable.title, ''),
@@ -48,7 +73,38 @@ export class TitleEmbeddingRepository {
     ) {}
 
     async findSimilarContexts(queryEmbedding: Uint8Array, limit: number): Promise<EmbeddingContextResultInterface[]> {
-        return this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [queryEmbedding, limit]);
+        return this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [
+            this.convertEmbeddingToJson(queryEmbedding),
+            limit
+        ]);
+    }
+
+    async findSimilarCategories(
+        queryEmbedding: Uint8Array,
+        vecLimit: number,
+        distanceThreshold: number,
+        categoryLimit: number
+    ): Promise<CategoryCountResultInterface[]> {
+        return this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
+            this.convertEmbeddingToJson(queryEmbedding),
+            vecLimit,
+            distanceThreshold,
+            categoryLimit
+        ]);
+    }
+
+    async findSimilarTags(
+        queryEmbedding: Uint8Array,
+        vecLimit: number,
+        distanceThreshold: number,
+        tagLimit: number
+    ): Promise<TagCountResultInterface[]> {
+        return this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
+            this.convertEmbeddingToJson(queryEmbedding),
+            vecLimit,
+            distanceThreshold,
+            tagLimit
+        ]);
     }
 
     async findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): Promise<string[]> {
@@ -57,7 +113,7 @@ export class TitleEmbeddingRepository {
         /* eslint-disable no-await-in-loop -- Sequential execution with UI yielding between vector searches */
         for (const { context, embedding } of contextEmbeddings) {
             const results = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_TITLES_BY_CONTEXT_QUERY, [
-                embedding,
+                this.convertEmbeddingToJson(embedding),
                 limit,
                 context
             ]);
@@ -66,7 +122,9 @@ export class TitleEmbeddingRepository {
                 titleSet.add(row.title);
             }
 
-            await microPause();
+            await new Promise<void>(resolve => {
+                setTimeout(resolve, 0);
+            });
         }
         /* eslint-enable no-await-in-loop */
 
@@ -100,18 +158,19 @@ export class TitleEmbeddingRepository {
             return;
         }
 
-        await this.db.transaction(async tx => {
-            const [row] = await tx
-                .insert(TitleEmbeddingEntityTable)
-                .values({ title, context, embedding, dimensions })
-                .onConflictDoUpdate({
-                    target: TitleEmbeddingEntityTable.context,
-                    set: { title, embedding, dimensions, updatedAt: new Date() }
-                })
-                .returning({ id: TitleEmbeddingEntityTable.id });
+        const [row] = await this.db
+            .insert(TitleEmbeddingEntityTable)
+            .values({ title, context, embedding, dimensions })
+            .onConflictDoUpdate({
+                target: TitleEmbeddingEntityTable.context,
+                set: { title, embedding, dimensions, updatedAt: new Date() }
+            })
+            .returning({ id: TitleEmbeddingEntityTable.id });
 
-            tx.run(sql`INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) VALUES (${row.id}, ${embedding})`);
-        });
+        await this.rawDb.runAsync(
+            'INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE id = ?',
+            [row.id]
+        );
     }
 
     async countAll(): Promise<number> {
@@ -210,87 +269,12 @@ export class TitleEmbeddingRepository {
         return results;
     }
 
-    async findCategoriesByContexts(contexts: string[]): Promise<{ categoryId: number; count: number }[]> {
-        if (!isNotEmptyArray(contexts)) {
-            return [];
-        }
-
-        const titles = await this.db
-            .select({ title: TitleEmbeddingEntityTable.title, context: TitleEmbeddingEntityTable.context })
-            .from(TitleEmbeddingEntityTable)
-            .where(and(inArray(TitleEmbeddingEntityTable.context, contexts), isNull(TitleEmbeddingEntityTable.deletedAt)));
-
-        const titleStrings = titles.map(row => row.title);
-
-        const matchingTransactions = await this.db
-            .select({
-                title: TransactionEntityTable.title,
-                categoryId: TransactionEntryEntityTable.categoryId,
-                entryDeleted: TransactionEntryEntityTable.deletedAt,
-                txDeleted: TransactionEntityTable.deletedAt
-            })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .where(inArray(TransactionEntityTable.title, titleStrings))
-            .limit(20);
-
-        // eslint-disable-next-line no-console
-        console.log('[findCategoriesByContexts] debug', {
-            inputContexts: contexts.length,
-            embeddingTitles: titleStrings.slice(0, 5),
-            matchingTxSample: matchingTransactions.slice(0, 10).map(row => ({
-                title: row.title,
-                categoryId: row.categoryId,
-                entryDeleted: row.entryDeleted,
-                txDeleted: row.txDeleted
-            }))
-        });
-
-        return this.db
-            .select({
-                categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`,
-                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`
-            })
-            .from(TitleEmbeddingEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
-            .innerJoin(
-                TransactionEntryEntityTable,
-                and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), isNull(TransactionEntryEntityTable.deletedAt))
-            )
-            .where(
-                and(
-                    inArray(TitleEmbeddingEntityTable.context, contexts),
-                    isNull(TitleEmbeddingEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNotNull(TransactionEntryEntityTable.categoryId)
-                )
-            )
-            .groupBy(TransactionEntryEntityTable.categoryId)
-            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`));
-    }
-
-    async findTagsByContexts(contexts: string[]): Promise<{ tagId: number; count: number }[]> {
-        if (!isNotEmptyArray(contexts)) {
-            return [];
-        }
-
-        return this.db
-            .select({
-                tagId: sql<number>`${TransactionTagsEntityTable.tagId}`,
-                count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})`
-            })
-            .from(TitleEmbeddingEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
-            .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .where(
-                and(
-                    inArray(TitleEmbeddingEntityTable.context, contexts),
-                    isNull(TitleEmbeddingEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            )
-            .groupBy(TransactionTagsEntityTable.tagId)
-            .orderBy(desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`));
+    async rebuildVecIndex(): Promise<void> {
+        await this.rawDb.runAsync('DELETE FROM title_embedding_vec', []);
+        await this.rawDb.runAsync(
+            'INSERT INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE deleted_at IS NULL',
+            []
+        );
     }
 
     async softDeleteByTitle(title: string): Promise<void> {
@@ -316,5 +300,9 @@ export class TitleEmbeddingRepository {
             await tx.delete(TitleEmbeddingEntityTable);
             tx.run(sql`DELETE FROM title_embedding_vec`);
         });
+    }
+
+    private convertEmbeddingToJson(embedding: Uint8Array): string {
+        return JSON.stringify(Array.from(new Float32Array(embedding.buffer, embedding.byteOffset, embedding.byteLength / 4)));
     }
 }
