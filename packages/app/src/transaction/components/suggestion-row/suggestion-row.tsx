@@ -30,7 +30,7 @@ export const SuggestionRow = <T,>(props: Props<T>) => {
 
     return (
         <SuggestionRowLayout showContent={showContent} showLoading={showLoading}>
-            {suggestions.map((item, index) => renderPill(item, index, () => void handleSelect(item)))}
+            {[...suggestions].reverse().map((item, index) => renderPill(item, index, () => void handleSelect(item)))}
         </SuggestionRowLayout>
     );
 };
