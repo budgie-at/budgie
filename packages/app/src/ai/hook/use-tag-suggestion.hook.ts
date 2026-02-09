@@ -32,6 +32,8 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
     const isReady = enabled && llm.isReady && !isCategoryLoading && !isMccLoading && !isTagsLoading && hasTagsLoaded;
 
     const fetchSuggestions = async (): Promise<TagEntityInterface[]> => {
+        const start = performance.now();
+        console.log('[TagSuggest] fetchSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         if (!isNotEmptyArray(allTags)) {
             return [];
         }
@@ -43,7 +45,10 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
 
-        return embeddingSuggestionService.suggestTags(context, llm, allTags);
+        const result = await embeddingSuggestionService.suggestTags(context, llm, allTags);
+        console.log(`[TagSuggest] fetchSuggestions done in ${(performance.now() - start).toFixed(0)}ms, results=${result.length}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
+        return result;
     };
 
     return useSuggestionBase({

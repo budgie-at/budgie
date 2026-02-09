@@ -56,6 +56,8 @@ export const useRepeatedTransactionSuggestion = (
         clearDebounceTimer();
 
         const fetchSuggestions = async (): Promise<void> => {
+            const start = performance.now();
+            console.log('[PatternSuggest] fetchSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setInternalStatus('loading');
             lastFetchedAmountRef.current = amount;
             currentTimeRef.current = new Date();
@@ -68,6 +70,8 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isPositiveNumber(amount) && { amount }),
                     ...(isPositiveNumber(categoryId) && { categoryId })
                 });
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
+                console.log(`[PatternSuggest] done in ${(performance.now() - start).toFixed(0)}ms n=${results.length}`);
 
                 if (!cancelled) {
                     setSuggestions(results);
