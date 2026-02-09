@@ -1,11 +1,12 @@
 import { CategoryEntityInterface, TagEntityInterface, TitleEmbeddingRepository } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
     EMBEDDING_TAG_SUGGESTION_LIMIT,
-    EMBEDDING_VEC_SEARCH_LIMIT
+    EMBEDDING_VEC_DISTANCE_THRESHOLD,
+    EMBEDDING_VEC_OVERSAMPLE_LIMIT
 } from '../../@generic/constant/embedding.constant';
 import { LlmInterface } from '../../@generic/interface/llm.interface';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
@@ -16,67 +17,47 @@ export class EmbeddingSuggestionService {
     constructor(private readonly repository: TitleEmbeddingRepository) {}
 
     async suggestCategories(context: string, llm: LlmInterface, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface[]> {
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] suggestCategories start', { context, categoriesCount: categories.length });
+        const serialized = await this.generateSerializedEmbedding(context, llm);
 
-        const similarContexts = await this.findSimilarContexts(context, llm);
-
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] similarContexts', { count: similarContexts.length, contexts: similarContexts.slice(0, 3) });
-
-        if (!isNotEmptyArray(similarContexts)) {
+        if (!isDefined(serialized)) {
             return [];
         }
 
-        const categoryCounts = await this.repository.findCategoriesByContexts(similarContexts);
+        const categoryCounts = await this.repository.findSimilarCategories(
+            serialized,
+            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+            EMBEDDING_VEC_DISTANCE_THRESHOLD,
+            EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+        );
 
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] categoryCounts', { count: categoryCounts.length, rows: categoryCounts.slice(0, 5) });
-
-        return categoryCounts
-            .map(row => categories.find(category => category.id === row.categoryId))
-            .filter(isDefined)
-            .slice(0, EMBEDDING_CATEGORY_SUGGESTION_LIMIT);
+        return categoryCounts.map(row => categories.find(category => category.id === row.categoryId)).filter(isDefined);
     }
 
     async suggestTags(context: string, llm: LlmInterface, allTags: TagEntityInterface[]): Promise<TagEntityInterface[]> {
-        const similarContexts = await this.findSimilarContexts(context, llm);
+        const serialized = await this.generateSerializedEmbedding(context, llm);
 
-        if (!isNotEmptyArray(similarContexts)) {
+        if (!isDefined(serialized)) {
             return [];
         }
 
-        const tagCounts = await this.repository.findTagsByContexts(similarContexts);
+        const tagCounts = await this.repository.findSimilarTags(
+            serialized,
+            EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+            EMBEDDING_VEC_DISTANCE_THRESHOLD,
+            EMBEDDING_TAG_SUGGESTION_LIMIT
+        );
 
-        return tagCounts
-            .map(row => allTags.find(tag => tag.id === row.tagId))
-            .filter(isDefined)
-            .slice(0, EMBEDDING_TAG_SUGGESTION_LIMIT);
+        return tagCounts.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     }
 
-    private async findSimilarContexts(context: string, llm: LlmInterface): Promise<string[]> {
+    private async generateSerializedEmbedding(context: string, llm: LlmInterface): Promise<Uint8Array | null> {
         const service = new EmbeddingService(llm);
-
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] generating embedding for context...');
         const queryEmbedding = await service.generateEmbeddingWithTranslation(context);
 
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] embedding result', { hasEmbedding: isDefined(queryEmbedding), length: queryEmbedding?.length });
-
-        if (!isDefined(queryEmbedding)) {
-            return [];
+        if (!isDefined(queryEmbedding) || queryEmbedding.length === 0) {
+            return null;
         }
 
-        const serialized = serializeEmbedding(queryEmbedding);
-
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] vec search', { serializedLength: serialized.length, limit: EMBEDDING_VEC_SEARCH_LIMIT });
-        const results = await this.repository.findSimilarContexts(serialized, EMBEDDING_VEC_SEARCH_LIMIT);
-
-        // eslint-disable-next-line no-console
-        console.log('[EmbeddingSuggestion] vec results', { count: results.length, first: results.slice(0, 2) });
-
-        return results.map(row => row.context);
+        return serializeEmbedding(queryEmbedding);
     }
 }
