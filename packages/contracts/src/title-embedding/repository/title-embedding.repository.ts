@@ -73,10 +73,14 @@ export class TitleEmbeddingRepository {
     ) {}
 
     async findSimilarContexts(queryEmbedding: Uint8Array, limit: number): Promise<EmbeddingContextResultInterface[]> {
-        return this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [
+        const start = performance.now();
+        const result = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_CONTEXTS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             limit
         ]);
+        console.log(`[VecRepo] findSimilarContexts done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
+
+        return result;
     }
 
     async findSimilarCategories(
@@ -85,12 +89,16 @@ export class TitleEmbeddingRepository {
         distanceThreshold: number,
         categoryLimit: number
     ): Promise<CategoryCountResultInterface[]> {
-        return this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
+        const start = performance.now();
+        const result = await this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
+        console.log(`[VecRepo] findSimilarCategories done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
+
+        return result;
     }
 
     async findSimilarTags(
@@ -99,24 +107,35 @@ export class TitleEmbeddingRepository {
         distanceThreshold: number,
         tagLimit: number
     ): Promise<TagCountResultInterface[]> {
-        return this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
+        const start = performance.now();
+        const result = await this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             tagLimit
         ]);
+        console.log(`[VecRepo] findSimilarTags done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
+
+        return result;
     }
 
     async findSimilarTitlesByContexts(contextEmbeddings: { context: string; embedding: Uint8Array }[], limit: number): Promise<string[]> {
+        const start = performance.now();
+        console.log(`[VecRepo] findSimilarTitlesByContexts START, contexts=${contextEmbeddings.length}`); // eslint-disable-line no-console
         const titleSet = new Set<string>();
 
         /* eslint-disable no-await-in-loop -- Sequential execution with UI yielding between vector searches */
         for (const { context, embedding } of contextEmbeddings) {
+            const iterStart = performance.now();
             const results = await this.rawDb.getAllAsync<VecSearchResultInterface>(SIMILAR_TITLES_BY_CONTEXT_QUERY, [
                 this.convertEmbeddingToJson(embedding),
                 limit,
                 context
             ]);
+            // eslint-disable-next-line no-console
+            console.log(
+                `[VecRepo] vec "${context.slice(0, 40)}" in ${(performance.now() - iterStart).toFixed(0)}ms rows=${results.length}`
+            );
 
             for (const row of results) {
                 titleSet.add(row.title);
@@ -127,11 +146,13 @@ export class TitleEmbeddingRepository {
             });
         }
         /* eslint-enable no-await-in-loop */
+        console.log(`[VecRepo] findSimilarTitlesByContexts TOTAL ${(performance.now() - start).toFixed(0)}ms, titles=${titleSet.size}`); // eslint-disable-line no-console
 
         return [...titleSet];
     }
 
     async findEmbeddingsByContexts(contexts: string[]): Promise<Map<string, Uint8Array>> {
+        const start = performance.now();
         const resultMap = new Map<string, Uint8Array>();
 
         if (!isNotEmptyArray(contexts)) {
@@ -149,6 +170,10 @@ export class TitleEmbeddingRepository {
         for (const row of results) {
             resultMap.set(row.context, row.embedding);
         }
+        // eslint-disable-next-line no-console
+        console.log(
+            `[VecRepo] findEmbeddingsByContexts in ${(performance.now() - start).toFixed(0)}ms n=${resultMap.size}/${contexts.length}`
+        );
 
         return resultMap;
     }
@@ -158,6 +183,7 @@ export class TitleEmbeddingRepository {
             return;
         }
 
+        const start = performance.now();
         const [row] = await this.db
             .insert(TitleEmbeddingEntityTable)
             .values({ title, context, embedding, dimensions })
@@ -171,6 +197,7 @@ export class TitleEmbeddingRepository {
             'INSERT OR REPLACE INTO title_embedding_vec(rowid, embedding) SELECT id, embedding FROM title_embeddings WHERE id = ?',
             [row.id]
         );
+        console.log(`[VecRepo] upsert done in ${(performance.now() - start).toFixed(0)}ms, id=${row.id}`); // eslint-disable-line no-console
     }
 
     async countAll(): Promise<number> {
@@ -254,17 +281,17 @@ export class TitleEmbeddingRepository {
     }
 
     async findRecentContexts(limit: number): Promise<EmbeddingContextResultInterface[]> {
+        const start = performance.now();
         const results = await this.db
             .select({
                 title: TitleEmbeddingEntityTable.title,
                 context: TitleEmbeddingEntityTable.context
             })
             .from(TitleEmbeddingEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.title, TitleEmbeddingEntityTable.title))
-            .where(and(isNull(TitleEmbeddingEntityTable.deletedAt), isNull(TransactionEntityTable.deletedAt)))
-            .groupBy(TitleEmbeddingEntityTable.context, TitleEmbeddingEntityTable.title)
-            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`))
+            .where(isNull(TitleEmbeddingEntityTable.deletedAt))
+            .orderBy(desc(TitleEmbeddingEntityTable.updatedAt))
             .limit(limit);
+        console.log(`[VecRepo] findRecentContexts done in ${(performance.now() - start).toFixed(0)}ms, rows=${results.length}`); // eslint-disable-line no-console
 
         return results;
     }

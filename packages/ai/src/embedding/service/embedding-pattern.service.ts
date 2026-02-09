@@ -11,14 +11,21 @@ export class EmbeddingPatternService {
         private readonly patternRepository: TransactionPatternRepository
     ) {}
 
+    // eslint-disable-next-line max-statements -- Debug logging
     async findSimilarPatterns(params: FindSimilarPatternsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
+        console.log('[EmbedPattern] findSimilarPatterns START'); // eslint-disable-line no-console
         const recentContexts = await this.embeddingRepository.findRecentContexts(EMBEDDING_RECENT_TITLE_COUNT);
+        // eslint-disable-next-line no-console
+        console.log(`[EmbedPattern] recentContexts in ${(performance.now() - start).toFixed(0)}ms n=${recentContexts.length}`);
 
         if (!isNotEmptyArray(recentContexts)) {
             return [];
         }
 
         const contextEmbeddings = await this.buildContextEmbeddings(recentContexts);
+        // eslint-disable-next-line no-console
+        console.log(`[EmbedPattern] contextEmbeddings in ${(performance.now() - start).toFixed(0)}ms n=${contextEmbeddings.length}`);
 
         if (!isNotEmptyArray(contextEmbeddings)) {
             return [];
@@ -28,12 +35,14 @@ export class EmbeddingPatternService {
             contextEmbeddings,
             EMBEDDING_VEC_PATTERN_SEARCH_LIMIT
         );
+        // eslint-disable-next-line no-console
+        console.log(`[EmbedPattern] similarTitles in ${(performance.now() - start).toFixed(0)}ms n=${similarTitles.length}`);
 
         if (!isNotEmptyArray(similarTitles)) {
             return [];
         }
 
-        return this.patternRepository.findPatternsByTitles({
+        const patterns = await this.patternRepository.findPatternsByTitles({
             titles: similarTitles,
             type: params.type,
             ...(isDefined(params.accountId) && { accountId: params.accountId }),
@@ -41,6 +50,9 @@ export class EmbeddingPatternService {
             ...(isDefined(params.amountMax) && { amountMax: params.amountMax }),
             ...(isDefined(params.limit) && { limit: params.limit })
         });
+        console.log(`[EmbedPattern] findPatternsByTitles done in ${(performance.now() - start).toFixed(0)}ms, patterns=${patterns.length}`); // eslint-disable-line no-console
+
+        return patterns;
     }
 
     private async buildContextEmbeddings(recentContexts: { context: string }[]): Promise<{ context: string; embedding: Uint8Array }[]> {

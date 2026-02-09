@@ -29,13 +29,18 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const isReady = enabled && llm.isReady && !isMccLoading && !isCategoriesLoading && hasCategoriesLoaded;
 
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
+        const start = performance.now();
+        console.log('[CatSuggest] fetchSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment);
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
 
-        return embeddingSuggestionService.suggestCategories(context, llm, categories);
+        const result = await embeddingSuggestionService.suggestCategories(context, llm, categories);
+        console.log(`[CatSuggest] fetchSuggestions done in ${(performance.now() - start).toFixed(0)}ms, results=${result.length}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
+        return result;
     };
 
     return useSuggestionBase({
