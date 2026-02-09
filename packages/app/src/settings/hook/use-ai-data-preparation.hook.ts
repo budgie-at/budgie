@@ -4,7 +4,6 @@ import {
     LlmInterface,
     TranslationLlmService,
     buildTransactionContext,
-    containsNonLatin,
     serializeEmbedding
 } from '@budgie/ai';
 import { UnembeddedTransactionDataInterface } from '@budgie/contracts';
@@ -95,15 +94,10 @@ const processEmbeddingBatches = async (
     let hasMore = true;
     let consecutiveFailures = 0;
 
-    let batchNumber = 0;
-
     /* eslint-disable no-await-in-loop -- Sequential batch processing */
     while (hasMore && consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
         try {
-            batchNumber += 1;
-            const batchStart = Date.now();
             const transactionData = await titleEmbeddingRepository.findTransactionData(EMBEDDING_BATCH_LIMIT, cursor);
-            const queryMs = Date.now() - batchStart;
 
             if (!isNotEmptyArray(transactionData)) {
                 break;
@@ -114,28 +108,20 @@ const processEmbeddingBatches = async (
 
             if (isNotEmptyArray(unembeddedContexts)) {
                 const contextStrings = unembeddedContexts.map(item => item.context);
-                const embedStart = Date.now();
                 const embeddings = await embeddingService.generateEmbeddings(contextStrings);
-                const embedMs = Date.now() - embedStart;
-                const storeStart = Date.now();
-                await storeEmbeddingBatch(unembeddedContexts, embeddings, existingContexts, callbacks);
-                const storeMs = Date.now() - storeStart;
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log('[AiPrep] batch', {
-                    batch: batchNumber,
-                    contexts: unembeddedContexts.length,
-                    queryMs,
-                    embedMs,
-                    storeMs,
-                    totalMs: Date.now() - batchStart
-                });
-            } else {
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log('[AiPrep] batch skipped', { batch: batchNumber, allEmbedded: contextData.length, queryMs });
+
+                if (embeddings.size === 0) {
+                    consecutiveFailures += 1;
+                    cursor = transactionData[transactionData.length - 1].maxOperatedAt;
+                } else {
+                    await storeEmbeddingBatch(unembeddedContexts, embeddings, existingContexts, callbacks);
+                }
             }
 
-            hasMore = transactionData.length === EMBEDDING_BATCH_LIMIT;
-            consecutiveFailures = 0;
+            if (consecutiveFailures === 0) {
+                hasMore = transactionData.length === EMBEDDING_BATCH_LIMIT;
+            }
+
             cursor = transactionData[transactionData.length - 1].maxOperatedAt;
         } catch {
             consecutiveFailures += 1;
@@ -212,51 +198,29 @@ export const useAiDataPreparation = (): UseAiDataPreparationReturn => {
             /* eslint-disable no-await-in-loop -- Sequential LLM processing */
             setPhaseLabel(t`Translating categories...`);
             await microPause();
-            const categoryTranslationStart = Date.now();
             for (const category of categories) {
-                const itemStart = Date.now();
-                const skippedTranslation = !containsNonLatin(category.title);
                 const result = await translationService.translate(category.title);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log('[AiPrep] category', {
-                    title: category.title,
-                    titleEn: result.titleEn,
-                    skippedTranslation,
-                    ms: Date.now() - itemStart
-                });
                 await categoryRepository.updateTranslation(category.id, result.titleEn, result.titleTags);
                 updateProgress();
                 await microPause();
             }
-            // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-            console.log('[AiPrep] categories done', { count: categories.length, totalMs: Date.now() - categoryTranslationStart });
 
             setPhaseLabel(t`Translating tags...`);
             await microPause();
-            const tagTranslationStart = Date.now();
             for (const tag of tags) {
-                const itemStart = Date.now();
-                const skippedTranslation = !containsNonLatin(tag.title);
                 const result = await translationService.translate(tag.title);
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log('[AiPrep] tag', { title: tag.title, titleEn: result.titleEn, skippedTranslation, ms: Date.now() - itemStart });
                 await tagRepository.updateTranslation(tag.id, result.titleEn, result.titleTags);
                 updateProgress();
                 await microPause();
             }
-            // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-            console.log('[AiPrep] tags done', { count: tags.length, totalMs: Date.now() - tagTranslationStart });
             /* eslint-enable no-await-in-loop */
 
             setPhaseLabel(t`Generating embeddings...`);
             await microPause();
-            const embeddingStart = Date.now();
             await processEmbeddingBatches(llm, existingContexts, {
                 onStep: updateProgress,
                 onEmbeddingStored: (count: number) => void setEmbeddedCount(count)
             });
-            // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-            console.log('[AiPrep] embeddings done', { totalMs: Date.now() - embeddingStart });
 
             setProgress(100);
             setPhaseLabel(t`Done`);
