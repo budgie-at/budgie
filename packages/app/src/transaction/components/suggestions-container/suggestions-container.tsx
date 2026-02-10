@@ -57,7 +57,8 @@ export const SuggestionsContainer = (props: Props) => {
     const hasContext =
         isNotEmptyString(transactionTitle) || isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
-    const patternEnabled = isNewTransaction && !isSplitActive;
+    const hasAiContext = isNotEmptyString(aiContext);
+    const patternEnabled = isNewTransaction && !hasAiContext && !isSplitActive;
     const { suggestions: patterns, status: patternStatus } = useRepeatedTransactionSuggestion({
         enabled: patternEnabled,
         type: transactionType,
@@ -72,7 +73,8 @@ export const SuggestionsContainer = (props: Props) => {
     const hasPatternComments = isNotEmptyArray(patternComments);
     const hasComment = isNotEmptyString(comment);
 
-    const showPatternCategories = isNewTransaction && !hasCategorySelected && !isSplitActive;
+    const showAiCategories = isNewTransaction && !hasCategorySelected && hasAiContext && !isSplitActive;
+    const showPatternCategories = isNewTransaction && !hasCategorySelected && !hasAiContext && !isSplitActive;
     const showPatternTags = isNewTransaction && hasCategorySelected && !hasTagsSelected && hasPatternTags && !isSplitActive;
     const showPatternComments =
         isNewTransaction &&
@@ -114,6 +116,19 @@ export const SuggestionsContainer = (props: Props) => {
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
+    }
+
+    if (showAiCategories) {
+        return (
+            <CategorySuggestionRow
+                transactionTitle={transactionTitle}
+                mccCategoryId={mccCategoryId}
+                comment={comment}
+                aiContext={aiContext}
+                enabled={showAiCategories}
+                onSelect={onSelectCategory}
+            />
+        );
     }
 
     if (showPatternCategories) {
