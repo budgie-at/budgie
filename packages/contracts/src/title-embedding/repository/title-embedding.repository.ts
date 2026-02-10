@@ -167,10 +167,7 @@ export class TitleEmbeddingRepository {
         return result;
     }
 
-    async findSimilarTags(
-        queryEmbedding: Uint8Array,
-        params: SimilarTagsQueryParamsInterface
-    ): Promise<TagCountResultInterface[]> {
+    async findSimilarTags(queryEmbedding: Uint8Array, params: SimilarTagsQueryParamsInterface): Promise<TagCountResultInterface[]> {
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
         const start = performance.now();
         const result = await this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [

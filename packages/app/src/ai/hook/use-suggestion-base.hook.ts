@@ -15,7 +15,6 @@ interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
     readonly refresh: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Shared suggestion orchestration (request keying, refresh, focus refresh, and status mapping)
 export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);
@@ -27,8 +26,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         suggestions: []
     });
     const [refreshVersion, setRefreshVersion] = useState(0);
-    const lastFetchKeyRef = useRef<string | null>(null);
-    const lastRefreshVersionRef = useRef(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
 
     useEffect(() => {
@@ -36,15 +33,9 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [fetchSuggestions]);
 
     useEffect(() => {
-        const hasRequestChanged = lastFetchKeyRef.current !== requestKey;
-        const hasRefreshRequested = lastRefreshVersionRef.current !== refreshVersion;
-
-        if (!isReady || (!hasRequestChanged && !hasRefreshRequested)) {
+        if (!isReady) {
             return emptyFn;
         }
-
-        lastFetchKeyRef.current = requestKey;
-        lastRefreshVersionRef.current = refreshVersion;
 
         let cancelled = false;
 
@@ -84,10 +75,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
 
     const refresh = useCallback((): void => {
-        if (lastFetchKeyRef.current === null) {
-            return;
-        }
-
         setRefreshVersion(version => version + 1);
     }, []);
 

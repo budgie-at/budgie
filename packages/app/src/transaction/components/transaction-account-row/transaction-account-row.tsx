@@ -51,7 +51,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label }: Props)
     const accessibilityLabel = `${displayLabel}: ${account?.title ?? t`Select`}`;
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} style={shakeStyle}>
+        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200).withInitialValues({ opacity: 0 })} style={shakeStyle}>
             <HapticPressable
                 className="flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
                 onPress={handlePress}
