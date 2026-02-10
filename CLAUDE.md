@@ -15,12 +15,14 @@ yarn build:force                          # Build without cache
 # Validation (run in this order before committing)
 yarn format                               # Prettier (run first - may modify files)
 yarn ts                                   # TypeScript check
-yarn lint                                 # ESLint
+yarn lint                                 # ESLint (skip during debug sessions)
 yarn deadcode                             # Knip dead code detection
 yarn cpd                                  # Code duplication check
 yarn test                                 # Jest tests
 
 # IMPORTANT: After completing any task, ALWAYS run:
+# During debug sessions (when user says "skip lint"), only run: yarn ts
+# Otherwise run full validation:
 yarn format && yarn ts && yarn lint && yarn deadcode && yarn cpd
 
 # Utilities
@@ -63,7 +65,7 @@ packages/
 14. **Utility functions in `/utils` folder** - Extract reusable functions to module's `utils/` folder with `.util.ts` suffix
 15. **Pick minimal interface properties** - Use `Pick<EntityInterface, 'prop'>` when only specific properties are needed
 16. **No redundant wrapper functions** - Don't create functions that only delegate to another function without adding logic. If a lint rule prevents inline callbacks, the wrapper is acceptable
-17. **Use existing utility functions** - Use `convertFromMicroUnits()` for amount conversion instead of manual `/ PRECISION`
+17. **Use microunits utility functions** - Use `convertFromMicroUnits()` and `convertToMicroUnits()` for amount conversion instead of manual `/ PRECISION` or `* PRECISION`
 18. **Spread syntax for optional params** - Use `...(isPositiveNumber(x) && { x })` instead of `x: isPositiveNumber(x) ? x : undefined` with eslint-disable
 19. **Interfaces in separate files** - Repository-specific interfaces go in `/interface` folder, not inline in repository files
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
@@ -154,13 +156,16 @@ For simple null/undefined checks on functions, prefer optional chaining: `callba
 
 **Microunits conversion:**
 ```typescript
-// Good - use utility function
+// Good - use utility functions
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../../@generic/utils/convert-to-micro-units.util';
 const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+const microAmount = convertToMicroUnits(userInputAmount);
 
-// Bad - manual division
+// Bad - manual arithmetic with PRECISION
 import { PRECISION } from '@budgie/contracts';
 const displayAmount = pattern.averageAmount / PRECISION;
+const microAmount = Math.round(userInputAmount * PRECISION);
 ```
 
 **Optional params with spread syntax:**

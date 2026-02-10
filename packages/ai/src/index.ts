@@ -8,18 +8,13 @@ export {
     EMBEDDING_CONTEXT_MAX_LENGTH,
     EMBEDDING_RECENT_TITLE_COUNT,
     EMBEDDING_TAG_SUGGESTION_LIMIT,
-    EMBEDDING_VEC_PATTERN_SEARCH_LIMIT,
     EMBEDDING_VEC_SEARCH_LIMIT
 } from './@generic/constant/embedding.constant';
 
 // @generic - utils
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
 
-// embedding - interfaces
-export type { FindSimilarPatternsParamsInterface } from './embedding/interface/find-similar-patterns-params.interface';
-
 // embedding - services
-export { EmbeddingPatternService } from './embedding/service/embedding-pattern.service';
 export { EmbeddingService } from './embedding/service/embedding.service';
 export { EmbeddingSuggestionService } from './embedding/service/embedding-suggestion.service';
 
