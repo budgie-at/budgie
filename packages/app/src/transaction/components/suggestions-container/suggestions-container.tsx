@@ -2,9 +2,9 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { ExistingTransactionSuggestionsOrchestrator } from './orchestrator/existing-transaction-suggestions-orchestrator';
-import { NewTransactionSuggestionsOrchestrator } from './orchestrator/new-transaction-suggestions-orchestrator';
-import { VoiceTransactionSuggestionsOrchestrator } from './orchestrator/voice-transaction-suggestions-orchestrator';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator.interface';
+import { AiSuggestionOrchestrator } from '../ai-suggestion-orchestrator/ai-suggestion-orchestrator';
+import { PatternSuggestionOrchestrator } from '../pattern-suggestion-orchestrator/pattern-suggestion-orchestrator';
 
 interface Props {
     readonly isNewTransaction: boolean;
@@ -24,17 +24,23 @@ interface Props {
     readonly onFillPatternAmount: (amount: number) => void;
 }
 
+const NEW_TRANSACTION_PATTERN_CONFIG: PatternSuggestionOrchestratorConfig = {
+    loadPatternBeforeCategorySelection: true,
+    allowPatternComments: true,
+    autoFillAmountFromPattern: true
+};
+
 export const SuggestionsContainer = (props: Props) => {
     const { isNewTransaction, ...orchestratorProps } = props;
     const isVoiceTransaction = isNewTransaction && isNotEmptyString(orchestratorProps.aiContext);
 
     if (!isNewTransaction) {
-        return <ExistingTransactionSuggestionsOrchestrator {...orchestratorProps} />;
+        return <AiSuggestionOrchestrator {...orchestratorProps} />;
     }
 
     if (isVoiceTransaction) {
-        return <VoiceTransactionSuggestionsOrchestrator {...orchestratorProps} />;
+        return <AiSuggestionOrchestrator {...orchestratorProps} />;
     }
 
-    return <NewTransactionSuggestionsOrchestrator {...orchestratorProps} />;
+    return <PatternSuggestionOrchestrator {...orchestratorProps} config={NEW_TRANSACTION_PATTERN_CONFIG} />;
 };
