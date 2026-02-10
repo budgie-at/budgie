@@ -8,17 +8,22 @@ import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggesti
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
 import { TagSuggestionRow } from '../tag-suggestion-row/tag-suggestion-row';
 
-const hasEmbeddingContext = (
-    transactionTitle: string,
-    mccCategoryId: number | null,
-    comment: string,
-    aiContext: string
-): boolean =>
+const hasEmbeddingContext = (transactionTitle: string, mccCategoryId: number | null, comment: string, aiContext: string): boolean =>
     isNotEmptyString(transactionTitle) || isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
 export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProps) => {
-    const { isSplitActive, transactionTitle, categoryId, mccCategoryId, comment, aiContext, hasTagsSelected, onSelectCategory, onSelectTag, onSelectComment } =
-        props;
+    const {
+        isSplitActive,
+        transactionTitle,
+        categoryId,
+        mccCategoryId,
+        comment,
+        aiContext,
+        hasTagsSelected,
+        onSelectCategory,
+        onSelectTag,
+        onSelectComment
+    } = props;
 
     const safeCategoryId = categoryId ?? 0;
     const step = useAiSuggestionOrchestrator({

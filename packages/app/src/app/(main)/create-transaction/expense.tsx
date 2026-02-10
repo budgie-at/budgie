@@ -17,8 +17,7 @@ import { transactionService } from '../../../transaction/service/transaction.ser
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
 /* jscpd:ignore-end */
 
-const normalizeRouteParam = (value: string | string[] | undefined): string | undefined =>
-    Array.isArray(value) ? value[0] : value;
+const normalizeRouteParam = (value: string | string[] | undefined): string | undefined => (Array.isArray(value) ? value[0] : value);
 
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
@@ -38,7 +37,8 @@ export default function CreateExpenseTransactionPage() {
     const normalizedComment = normalizeRouteParam(comment);
     const normalizedAiContext = normalizeRouteParam(aiContext);
 
-    const parsedAccountId = isDefined(normalizedAccountId) && isPositiveNumber(Number(normalizedAccountId)) ? Number(normalizedAccountId) : null;
+    const parsedAccountId =
+        isDefined(normalizedAccountId) && isPositiveNumber(Number(normalizedAccountId)) ? Number(normalizedAccountId) : null;
     const parsedCategoryId =
         isDefined(normalizedCategoryId) && isPositiveNumber(Number(normalizedCategoryId)) ? Number(normalizedCategoryId) : void 0;
     const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
