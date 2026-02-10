@@ -31,9 +31,8 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
     const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
         const start = performance.now();
         console.log('[CatSuggest] fetchSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-        const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
-        const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment);
+        const context = isNotEmptyString(aiContext) ? aiContext : buildTransactionContext(transactionTitle, mccDescription, comment);
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
 
