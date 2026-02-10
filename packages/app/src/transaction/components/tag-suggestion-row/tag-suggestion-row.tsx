@@ -2,9 +2,7 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
 /* jscpd:ignore-start */
 import { useTagSuggestion } from '../../../ai/hook/use-tag-suggestion.hook';
-import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
-import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
-import { SuggestionRow } from '../suggestion-row/suggestion-row';
+import { IconTitleSuggestionRow } from '../icon-title-suggestion-row/icon-title-suggestion-row';
 
 interface Props {
     readonly transactionTitle: string;
@@ -17,8 +15,9 @@ interface Props {
 }
 /* jscpd:ignore-end */
 
-const ANIMATION_DURATION = 200;
-const STAGGER_DELAY = 60;
+const getTagKey = (tag: TagEntityInterface): number => tag.id;
+const getTagIcon = (): UserIconNameEnum => UserIconNameEnum.Hash;
+const getTagTitle = (tag: TagEntityInterface): string => tag.title;
 
 export const TagSuggestionRow = (props: Props) => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled, onSelect } = props;
@@ -36,17 +35,15 @@ export const TagSuggestionRow = (props: Props) => {
         onSelect(tag.id);
     };
 
-    const renderPill = (tag: TagEntityInterface, index: number, onPillSelect: () => void) => (
-        <SuggestionPill
-            key={tag.id}
-            index={index}
-            animationDuration={ANIMATION_DURATION}
-            staggerDelay={STAGGER_DELAY}
-            onPress={onPillSelect}
-        >
-            <SuggestionPillContent icon={UserIconNameEnum.Hash} title={tag.title} />
-        </SuggestionPill>
+    return (
+        <IconTitleSuggestionRow
+            suggestions={suggestions}
+            status={status}
+            enabled={enabled}
+            onSelect={handleSelect}
+            getKey={getTagKey}
+            getIcon={getTagIcon}
+            getTitle={getTagTitle}
+        />
     );
-
-    return <SuggestionRow suggestions={suggestions} status={status} enabled={enabled} renderPill={renderPill} onSelect={handleSelect} />;
 };
