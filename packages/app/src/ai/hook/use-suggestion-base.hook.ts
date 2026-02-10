@@ -1,51 +1,65 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
-import { useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
-    readonly isReady: boolean;
+    readonly readyChecks: readonly boolean[];
+    readonly requestKeyParts: readonly unknown[];
     readonly fetchSuggestions: () => Promise<T[]>;
 }
 
-export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionReturnInterface<T> => {
-    const { enabled, isReady, fetchSuggestions } = params;
+interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
+    readonly refresh: () => void;
+}
 
-    const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
-    const [suggestions, setSuggestions] = useState<T[]>([]);
+// eslint-disable-next-line max-statements -- Shared suggestion orchestration (request keying, refresh, focus refresh, and status mapping)
+export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSuggestionBaseReturn<T> => {
+    const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
+    const requestKey = JSON.stringify(requestKeyParts);
+    const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
 
-    const hasTriggeredRef = useRef(false);
+    const [result, setResult] = useState<{ key: string | null; status: SuggestionInternalStatus; suggestions: T[] }>({
+        key: null,
+        status: 'idle',
+        suggestions: []
+    });
+    const [refreshVersion, setRefreshVersion] = useState(0);
+    const lastFetchKeyRef = useRef<string | null>(null);
+    const lastRefreshVersionRef = useRef(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
 
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
-    });
+    }, [fetchSuggestions]);
 
     useEffect(() => {
-        if (!isReady || hasTriggeredRef.current) {
+        const hasRequestChanged = lastFetchKeyRef.current !== requestKey;
+        const hasRefreshRequested = lastRefreshVersionRef.current !== refreshVersion;
+
+        if (!isReady || (!hasRequestChanged && !hasRefreshRequested)) {
             return emptyFn;
         }
 
+        lastFetchKeyRef.current = requestKey;
+        lastRefreshVersionRef.current = refreshVersion;
+
         let cancelled = false;
-        hasTriggeredRef.current = true;
 
         const suggest = async (): Promise<void> => {
-            const start = performance.now();
-            console.log('[SuggestBase] suggest START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-            setInternalStatus('loading');
+            setResult({ key: requestKey, status: 'loading', suggestions: [] });
 
             try {
                 const results = await fetchSuggestionsRef.current();
-                console.log(`[SuggestBase] suggest done in ${(performance.now() - start).toFixed(0)}ms, results=${results.length}`); // eslint-disable-line no-console, lingui/no-unlocalized-strings
 
                 if (!cancelled) {
-                    setSuggestions(results);
-                    setInternalStatus('success');
+                    setResult({ key: requestKey, status: 'success', suggestions: results });
                 }
             } catch {
                 if (!cancelled) {
-                    setInternalStatus('error');
+                    setResult({ key: requestKey, status: 'error', suggestions: [] });
                 }
             }
         };
@@ -55,10 +69,33 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         return () => {
             cancelled = true;
         };
-    }, [isReady]);
+    }, [isReady, requestKey, refreshVersion]);
 
-    const isInitializing = enabled && !isReady && internalStatus === 'idle';
-    const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
+    const currentResult =
+        result.key === requestKey
+            ? result
+            : {
+                  key: requestKey,
+                  status: 'idle' as SuggestionInternalStatus,
+                  suggestions: [] as T[]
+              };
 
-    return { status, suggestions };
+    const isInitializing = enabled && !isReady && currentResult.status === 'idle';
+    const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
+
+    const refresh = useCallback((): void => {
+        if (lastFetchKeyRef.current === null) {
+            return;
+        }
+
+        setRefreshVersion(version => version + 1);
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            refresh();
+        }, [refresh])
+    );
+
+    return { status, suggestions: currentResult.suggestions, refresh };
 };
