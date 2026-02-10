@@ -1,9 +1,9 @@
-import { EmbeddingPatternService } from '@budgie/ai';
-import { PRECISION, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
-import { titleEmbeddingRepository, transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import {
     MINUTES_IN_DAY,
     MONTHLY_PATTERN_DAY_WINDOW,
@@ -55,32 +55,29 @@ const calculateMonthlyWindow = (currentTime: Date): MonthlyWindowInterface => ({
 });
 
 const calculateAmountBounds = (amount: number): AmountBoundsInterface => ({
-    amountMin: Math.round(amount * PRECISION * (1 - REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT)),
-    amountMax: Math.round(amount * PRECISION * (1 + REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT))
+    amountMin: convertToMicroUnits(amount * (1 - REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT)),
+    amountMax: convertToMicroUnits(amount * (1 + REPEATED_TRANSACTION_AMOUNT_TOLERANCE_PERCENT))
 });
 
-const embeddingPatternService = new EmbeddingPatternService(titleEmbeddingRepository, transactionPatternRepository);
-
-const EMBEDDING_CACHE_TTL_MS = 60_000;
-
-interface EmbeddingCacheEntryInterface {
-    readonly patterns: RepeatedTransactionPatternInterface[];
-    readonly timestamp: number;
-}
+const AMOUNT_SCORE_BASE_WEIGHT = 0.3;
+const AMOUNT_SCORE_PROXIMITY_WEIGHT = 0.7;
 
 class RepeatedTransactionService {
-    private readonly embeddingCache = new Map<string, EmbeddingCacheEntryInterface>();
-
+    // eslint-disable-next-line max-statements -- Debug logging
     async getSuggestions(params: GetSuggestionsParamsInterface): Promise<RepeatedTransactionPatternInterface[]> {
         const start = performance.now();
-        console.log('[RepeatSvc] getSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
         const { currentTime, type, accountId, amount, categoryId } = params;
         const hasAmount = isPositiveNumber(amount);
         const timeWindow = calculateTimeWindow(currentTime, hasAmount);
         const monthlyWindow = calculateMonthlyWindow(currentTime);
         const amountBounds = hasAmount ? calculateAmountBounds(amount) : {};
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log(
+            `[RepeatSvc] params: day=${timeWindow.weekday} time=${timeWindow.timeWindowStartMinutes}-${timeWindow.timeWindowEndMinutes} dom=${monthlyWindow.dayOfMonth} type=${type} acct=${String(accountId)} amt=${String(amount)} cat=${String(categoryId)}`
+        );
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
-        const [weeklyPatterns, monthlyPatterns, embeddingPatterns] = await Promise.all([
+        const [weeklyPatterns, monthlyPatterns, frequentPatterns] = await Promise.all([
             transactionPatternRepository.findRepeatedPatterns({
                 ...timeWindow,
                 ...amountBounds,
@@ -96,51 +93,40 @@ class RepeatedTransactionService {
                 ...(isPositiveNumber(accountId) && { accountId }),
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
             }),
-            this.getEmbeddingPatterns(type)
-        ]);
-        /* eslint-disable no-console, lingui/no-unlocalized-strings */
-        console.log(
-            `[RepeatSvc] in ${(performance.now() - start).toFixed(0)}ms w=${weeklyPatterns.length} m=${monthlyPatterns.length} e=${embeddingPatterns.length}`
-        );
-        /* eslint-enable no-console, lingui/no-unlocalized-strings */
-
-        return this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns, embeddingPatterns);
-    }
-
-    // eslint-disable-next-line max-statements -- Debug logging
-    private async getEmbeddingPatterns(type: TransactionTypeEnum): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = performance.now();
-        const cacheKey = type;
-        const cached = this.embeddingCache.get(cacheKey);
-        const isCacheValid = isDefined(cached) && Date.now() - cached.timestamp < EMBEDDING_CACHE_TTL_MS;
-
-        if (isCacheValid) {
-            console.log('[RepeatSvc] embedding patterns from cache'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-
-            return cached.patterns;
-        }
-
-        try {
-            console.log('[RepeatSvc] getEmbeddingPatterns START (cache miss)'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-            const patterns = await embeddingPatternService.findSimilarPatterns({
+            transactionPatternRepository.findFrequentPatterns({
                 type,
                 limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
-            });
-            // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-            console.log(`[RepeatSvc] embedPatterns in ${(performance.now() - start).toFixed(0)}ms n=${patterns.length}`);
-
-            this.embeddingCache.set(cacheKey, { patterns, timestamp: Date.now() });
-
-            return patterns;
-        } catch {
-            return [];
+            })
+        ]);
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        const logPattern = (pt: RepeatedTransactionPatternInterface): string => `${pt.title}(cat=${pt.categoryId},n=${pt.occurrenceCount})`;
+        console.log(
+            `[RepeatSvc] in ${(performance.now() - start).toFixed(0)}ms w=${weeklyPatterns.length} m=${monthlyPatterns.length} f=${frequentPatterns.length}`
+        );
+        if (weeklyPatterns.length > 0) {
+            console.log(`[RepeatSvc] weekly: ${weeklyPatterns.map(logPattern).join(', ')}`);
         }
+        if (monthlyPatterns.length > 0) {
+            console.log(`[RepeatSvc] monthly: ${monthlyPatterns.map(logPattern).join(', ')}`);
+        }
+        if (frequentPatterns.length > 0) {
+            console.log(`[RepeatSvc] frequent: ${frequentPatterns.map(logPattern).join(', ')}`);
+        }
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
+
+        const amountInMicroUnits = hasAmount ? convertToMicroUnits(amount) : 0;
+        const merged = this.mergeAndDeduplicate(weeklyPatterns, monthlyPatterns, frequentPatterns, amountInMicroUnits);
+        // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
+        console.log(`[RepeatSvc] merged: ${merged.map(logPattern).join(', ')}`);
+
+        return merged;
     }
 
     private mergeAndDeduplicate(
         weeklyPatterns: RepeatedTransactionPatternInterface[],
         monthlyPatterns: RepeatedTransactionPatternInterface[],
-        embeddingPatterns: RepeatedTransactionPatternInterface[]
+        frequentPatterns: RepeatedTransactionPatternInterface[],
+        amountInMicroUnits: number
     ): RepeatedTransactionPatternInterface[] {
         const patternMap = new Map<string, RepeatedTransactionPatternInterface>();
 
@@ -149,7 +135,7 @@ class RepeatedTransactionService {
             patternMap.set(key, pattern);
         }
 
-        for (const pattern of [...monthlyPatterns, ...embeddingPatterns]) {
+        for (const pattern of [...monthlyPatterns, ...frequentPatterns]) {
             const key = `${pattern.categoryId}-${pattern.title}`;
             const existing = patternMap.get(key);
 
@@ -158,9 +144,26 @@ class RepeatedTransactionService {
             }
         }
 
+        const hasAmount = isPositiveNumber(amountInMicroUnits);
+
         return [...patternMap.values()]
-            .sort((first, second) => second.occurrenceCount - first.occurrenceCount)
+            .sort((first, second) => {
+                const firstScore = this.calculatePatternScore(first, amountInMicroUnits, hasAmount);
+                const secondScore = this.calculatePatternScore(second, amountInMicroUnits, hasAmount);
+
+                return secondScore - firstScore;
+            })
             .slice(0, REPEATED_TRANSACTION_DEFAULT_LIMIT);
+    }
+
+    private calculatePatternScore(pattern: RepeatedTransactionPatternInterface, amountInMicroUnits: number, hasAmount: boolean): number {
+        if (!hasAmount) {
+            return pattern.occurrenceCount;
+        }
+
+        const amountRatio = Math.min(pattern.averageAmount, amountInMicroUnits) / Math.max(pattern.averageAmount, amountInMicroUnits);
+
+        return pattern.occurrenceCount * (AMOUNT_SCORE_BASE_WEIGHT + AMOUNT_SCORE_PROXIMITY_WEIGHT * amountRatio);
     }
 }
 
