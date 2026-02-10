@@ -38,10 +38,11 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
             return [];
         }
 
-        const suggestionComment = isNotEmptyString(aiContext) ? aiContext : comment;
         const mccDescription = mccCategory?.fullDescription ?? null;
         const categoryName = category?.titleEn ?? category?.title ?? null;
-        const context = buildTransactionContext(transactionTitle, mccDescription, suggestionComment, { categoryName });
+        const context = isNotEmptyString(aiContext)
+            ? aiContext
+            : buildTransactionContext(transactionTitle, mccDescription, comment, { categoryName });
 
         const embeddingSuggestionService = new EmbeddingSuggestionService(titleEmbeddingRepository);
 
