@@ -11,6 +11,7 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { CategoryCountResultInterface } from '../interface/category-count-result.interface';
+import { CommentCountResultInterface } from '../interface/comment-count-result.interface';
 import { EmbeddingContextResultInterface } from '../interface/embedding-context-result.interface';
 import { TagCountResultInterface } from '../interface/tag-count-result.interface';
 import { UnembeddedTransactionDataInterface } from '../interface/unembedded-transaction-data.interface';
@@ -20,7 +21,7 @@ import { TitleEmbeddingEntityTable } from '../table/title-embedding-entity.table
 const EMBEDDING_DIMENSIONS = 768;
 
 const SIMILAR_CONTEXTS_QUERY = `
-    SELECT te.context, te.title
+    SELECT te.context, te.title, vec.distance
     FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
     JOIN title_embeddings te ON te.id = vec.rowid
     WHERE te.deleted_at IS NULL
@@ -54,13 +55,46 @@ const SIMILAR_TAGS_QUERY = `
     JOIN title_embeddings te ON te.id = vec.rowid
     JOIN transactions t ON t.title = te.title AND t.deleted_at IS NULL
     JOIN transaction_tags tt ON tt.transaction_id = t.id
+    JOIN transaction_entries e ON e.transaction_id = t.id
+        AND e.deleted_at IS NULL AND e.category_id IS NOT NULL
     WHERE te.deleted_at IS NULL AND te.title != '' AND vec.distance < ?
+        AND (? IS NULL OR e.category_id = ?)
     GROUP BY tt.tag_id
     ORDER BY count DESC
     LIMIT ?
 `;
 
+const SIMILAR_COMMENTS_QUERY = `
+    SELECT t.comment as comment, COUNT(DISTINCT t.id) as count
+    FROM (SELECT rowid, distance FROM title_embedding_vec
+          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    JOIN title_embeddings te ON te.id = vec.rowid
+    JOIN transactions t ON t.title = te.title AND t.deleted_at IS NULL
+    JOIN transaction_entries e ON e.transaction_id = t.id
+        AND e.deleted_at IS NULL AND e.category_id IS NOT NULL
+    WHERE te.deleted_at IS NULL AND te.title != '' AND vec.distance < ?
+        AND t.comment != ''
+        AND (? IS NULL OR e.category_id = ?)
+    GROUP BY t.comment
+    ORDER BY count DESC
+    LIMIT ?
+`;
+
 const RECENT_TRANSACTION_SCAN_LIMIT = 200;
+
+interface SimilarTagsQueryParamsInterface {
+    readonly vecLimit: number;
+    readonly distanceThreshold: number;
+    readonly categoryId: number | null;
+    readonly tagLimit: number;
+}
+
+interface SimilarCommentsQueryParamsInterface {
+    readonly vecLimit: number;
+    readonly distanceThreshold: number;
+    readonly categoryId: number | null;
+    readonly commentLimit: number;
+}
 
 const RECENT_CONTEXTS_QUERY = `
     SELECT te.title, te.context
@@ -112,31 +146,61 @@ export class TitleEmbeddingRepository {
         categoryLimit: number
     ): Promise<CategoryCountResultInterface[]> {
         const start = performance.now();
+
+        const debugRaw = await this.rawDb.getAllAsync<{ title: string; distance: number }>(
+            `SELECT te.title, vec.distance
+             FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT 5) vec
+             JOIN title_embeddings te ON te.id = vec.rowid
+             WHERE te.deleted_at IS NULL`,
+            [this.convertEmbeddingToJson(queryEmbedding)]
+        );
+        console.log(`[VecRepo] DEBUG raw vec top5: ${JSON.stringify(debugRaw)}`); // eslint-disable-line no-console
+
         const result = await this.rawDb.getAllAsync<CategoryCountResultInterface>(SIMILAR_CATEGORIES_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
             categoryLimit
         ]);
-        console.log(`[VecRepo] findSimilarCategories done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
+        console.log(`[VecRepo] findSimilarCats ${(performance.now() - start).toFixed(0)}ms rows=${result.length} th=${distanceThreshold}`); // eslint-disable-line no-console
 
         return result;
     }
 
     async findSimilarTags(
         queryEmbedding: Uint8Array,
-        vecLimit: number,
-        distanceThreshold: number,
-        tagLimit: number
+        params: SimilarTagsQueryParamsInterface
     ): Promise<TagCountResultInterface[]> {
+        const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
         const start = performance.now();
         const result = await this.rawDb.getAllAsync<TagCountResultInterface>(SIMILAR_TAGS_QUERY, [
             this.convertEmbeddingToJson(queryEmbedding),
             vecLimit,
             distanceThreshold,
+            categoryId,
+            categoryId,
             tagLimit
         ]);
         console.log(`[VecRepo] findSimilarTags done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
+
+        return result;
+    }
+
+    async findSimilarComments(
+        queryEmbedding: Uint8Array,
+        params: SimilarCommentsQueryParamsInterface
+    ): Promise<CommentCountResultInterface[]> {
+        const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
+        const start = performance.now();
+        const result = await this.rawDb.getAllAsync<CommentCountResultInterface>(SIMILAR_COMMENTS_QUERY, [
+            this.convertEmbeddingToJson(queryEmbedding),
+            vecLimit,
+            distanceThreshold,
+            categoryId,
+            categoryId,
+            commentLimit
+        ]);
+        console.log(`[VecRepo] findSimilarComments done in ${(performance.now() - start).toFixed(0)}ms, rows=${result.length}`); // eslint-disable-line no-console
 
         return result;
     }
