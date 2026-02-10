@@ -30,7 +30,7 @@ const SIMILAR_TITLES_BY_CONTEXT_QUERY = `
     SELECT te.context, te.title
     FROM (SELECT rowid, distance FROM title_embedding_vec WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
     JOIN title_embeddings te ON te.id = vec.rowid
-    WHERE te.deleted_at IS NULL AND te.context != ?
+    WHERE te.deleted_at IS NULL AND te.context != ? AND te.title != ''
 `;
 
 const SIMILAR_CATEGORIES_QUERY = `

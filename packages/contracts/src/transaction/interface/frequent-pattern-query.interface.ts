@@ -1,6 +1,6 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-export interface FindSimilarPatternsParamsInterface {
+export interface FrequentPatternQueryInterface {
     readonly type: TransactionTypeEnum;
     readonly accountId?: number;
     readonly amountMin?: number;

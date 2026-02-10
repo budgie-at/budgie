@@ -1,9 +1,8 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useEffect, useRef, useState } from 'react';
-import { InteractionManager } from 'react-native';
 
-import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
@@ -30,11 +29,14 @@ export const useRepeatedTransactionSuggestion = (
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
+    /* eslint-disable no-console, lingui/no-unlocalized-strings */
+    console.log(
+        `[PatternHook] RENDER enabled=${String(enabled)} accountId=${accountId} isReady=${String(isReady)} status=${internalStatus} suggestions=${suggestions.length}`
+    );
+    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
-    // eslint-disable-next-line max-statements -- Effect with deferred initial fetch and debounced subsequent fetches
+    // eslint-disable-next-line max-statements -- Debug logging in effect
     useEffect(() => {
-        let cancelled = false;
-
         const clearDebounceTimer = (): void => {
             if (isDefined(debounceTimerRef.current)) {
                 clearTimeout(debounceTimerRef.current);
@@ -42,12 +44,19 @@ export const useRepeatedTransactionSuggestion = (
         };
 
         if (!isReady) {
+            console.log('[PatternHook] NOT READY, skipping'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+
             return emptyFn;
         }
 
         const isInitialFetch = lastFetchedAmountRef.current === null;
         const hasAmountChanged = isPositiveNumber(amount) && lastFetchedAmountRef.current !== amount;
         const shouldFetch = isInitialFetch || hasAmountChanged;
+        /* eslint-disable no-console, lingui/no-unlocalized-strings */
+        console.log(
+            `[PatternHook] amount=${amount} lastFetched=${String(lastFetchedAmountRef.current)} isInitial=${String(isInitialFetch)} hasAmountChanged=${String(hasAmountChanged)} shouldFetch=${String(shouldFetch)} isReady=${String(isReady)}`
+        );
+        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
         if (!shouldFetch) {
             return emptyFn;
@@ -73,32 +82,23 @@ export const useRepeatedTransactionSuggestion = (
                 // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
                 console.log(`[PatternSuggest] done in ${(performance.now() - start).toFixed(0)}ms n=${results.length}`);
 
-                if (!cancelled) {
-                    setSuggestions(results);
-                    setInternalStatus('success');
-                }
-            } catch {
-                if (!cancelled) {
-                    setInternalStatus('error');
-                }
+                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
+                console.log(`[PatternHook] SET results=${results.length} status=${isNotEmptyArray(results) ? 'success' : 'error'}`);
+                setSuggestions(results);
+                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+            } catch (error) {
+                console.log('[PatternHook] CATCH error', error); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+                setInternalStatus('error');
             }
         };
 
         if (isInitialFetch) {
-            const task = InteractionManager.runAfterInteractions(() => void fetchSuggestions());
-
-            return () => {
-                cancelled = true;
-                task.cancel();
-            };
+            void fetchSuggestions();
+        } else {
+            debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
         }
 
-        debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
-
-        return () => {
-            cancelled = true;
-            clearDebounceTimer();
-        };
+        return clearDebounceTimer;
     }, [isReady, type, accountId, amount, categoryId]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';

@@ -1,5 +1,4 @@
 import {
-    RepeatedTransactionPatternInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
@@ -9,11 +8,9 @@ import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository } from '../../../@generic/drizzle/db/db';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useSplitEntriesModal } from '../../context/split-entries-modal.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
@@ -100,32 +97,13 @@ export const SimpleQuickForm = (props: Props) => {
         setValue('tagIds', [...currentTagIds, selectedTagId]);
     };
 
-    const handleSelectRepeatedPattern = async (pattern: RepeatedTransactionPatternInterface): Promise<void> => {
-        const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+    const handleSelectComment = (selectedComment: string) => {
+        setValue('comment', selectedComment);
+    };
 
-        setValue('entries.0.categoryId', pattern.categoryId);
-        setValue('tagIds', pattern.tagIds);
-        setValue('amount', displayAmount);
-        setFromNumeric(displayAmount);
-        setValue('title', pattern.title);
-        if (isNotEmptyString(pattern.comment)) {
-            setValue('comment', pattern.comment);
-        }
-
-        const isAccountUsable = pattern.accountIsActive && !isDefined(pattern.accountDeletedAt);
-
-        if (isAccountUsable) {
-            setValue(accountFieldName, pattern.accountId);
-        } else {
-            try {
-                const fallbackAccount = await accountRepository.findMostActiveByInstrumentAndType(pattern.instrumentId, transactionType);
-                if (isDefined(fallbackAccount)) {
-                    setValue(accountFieldName, fallbackAccount.id);
-                }
-            } catch {
-                /* empty */
-            }
-        }
+    const handleFillPatternAmount = (patternAmount: number) => {
+        setValue('amount', patternAmount);
+        setFromNumeric(patternAmount);
     };
 
     const handleSplitPress = async () => {
@@ -249,7 +227,8 @@ export const SimpleQuickForm = (props: Props) => {
                         hasTagsSelected={hasTagsSelected}
                         onSelectCategory={handleSelectCategory}
                         onSelectTag={handleSelectTag}
-                        onSelectRepeatedPattern={handleSelectRepeatedPattern}
+                        onSelectComment={handleSelectComment}
+                        onFillPatternAmount={handleFillPatternAmount}
                     />
                 </View>
             </View>

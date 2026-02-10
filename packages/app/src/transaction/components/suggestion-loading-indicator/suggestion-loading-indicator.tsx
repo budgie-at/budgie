@@ -32,7 +32,7 @@ export const SuggestionLoadingIndicator = ({ isAnimating = false }: Props) => {
     const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
 
     return (
-        <Animated.View style={animatedStyle} className="flex-row items-center gap-xs pl-sm pr-[8%] shrink-0">
+        <Animated.View style={animatedStyle} className="flex-row items-center gap-xs pl-sm pr-[4%] shrink-0">
             <Icon icon={UserIconNameEnum.ArrowLeft} size={12} className="text-secondary-foreground" />
             <Text className="text-xs text-secondary-foreground">{t`AI`}</Text>
             <Icon icon={UserIconNameEnum.Sparkles} size={12} className="text-secondary-foreground" />
