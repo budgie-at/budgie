@@ -77,6 +77,22 @@ const icon = isDefined(account) ? account.icon : UserIconNameEnum.Wallet;
 - **Constants** → module's `constant/` folder: `transaction/constant/pressed-scale.constant.ts`
 - **Utility functions** → module's `utils/` folder: `transaction/utils/format-operated-at.util.ts`
 
+### Microunits Conversion
+
+Always use utility functions for microunits conversion, never manual `* PRECISION` or `/ PRECISION`:
+```typescript
+// Good
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+const displayAmount = convertFromMicroUnits(pattern.averageAmount);
+const microAmount = convertToMicroUnits(userInputAmount);
+
+// Bad
+import { PRECISION } from '@budgie/contracts';
+const displayAmount = pattern.averageAmount / PRECISION;
+const microAmount = Math.round(userInputAmount * PRECISION);
+```
+
 ### Remove Useless Wrappers
 
 Don't create single-line wrapper functions that just forward to another function:
