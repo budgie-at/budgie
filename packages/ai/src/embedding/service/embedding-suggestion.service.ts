@@ -69,15 +69,12 @@ export class EmbeddingSuggestionService {
             return [];
         }
 
-        const tagCounts = await this.repository.findSimilarTags(
-            serialized,
-            {
-                vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
-                categoryId,
-                tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
-            }
-        );
+        const tagCounts = await this.repository.findSimilarTags(serialized, {
+            vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+            distanceThreshold,
+            categoryId,
+            tagLimit: EMBEDDING_TAG_SUGGESTION_LIMIT
+        });
 
         return tagCounts.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     }
@@ -99,15 +96,12 @@ export class EmbeddingSuggestionService {
             return [];
         }
 
-        const commentCounts = await this.repository.findSimilarComments(
-            serialized,
-            {
-                vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
-                categoryId,
-                commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
-            }
-        );
+        const commentCounts = await this.repository.findSimilarComments(serialized, {
+            vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+            distanceThreshold,
+            categoryId,
+            commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
+        });
 
         return commentCounts.map(row => row.comment).filter(isNotEmptyString);
     }

@@ -12,7 +12,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { FullPage } from '../../../../@generic/component/page/full-page';
 import { PageHeader } from '../../../../@generic/component/page-header/page-header';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -104,7 +103,7 @@ export default function UpdateIncomeTransactionPage() {
     const { transaction, isLoading } = useGetTransactionByIdQuery(Number(id));
 
     if (isLoading) {
-        return <LoadingScreen />;
+        return null;
     }
 
     if (!isDefined(transaction)) {
