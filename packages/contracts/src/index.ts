@@ -203,8 +203,6 @@ export { SellAssetTransactionCreateEntitySchema } from './transaction/schema/sel
 export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/transfer-asset-transaction-create-input.schema';
 
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
-export type { FrequentPatternQueryInterface } from './transaction/interface/frequent-pattern-query.interface';
-export type { MonthlyPatternQueryInterface } from './transaction/interface/monthly-pattern-query.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
@@ -272,7 +270,6 @@ export { TitleEmbeddingEntityTable } from './title-embedding/table/title-embeddi
 export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embedding-entity.schema';
 
 export type { TitleEmbeddingEntityInterface } from './title-embedding/interface/title-embedding-entity.interface';
-export type { EmbeddingPatternQueryInterface } from './title-embedding/interface/embedding-pattern-query.interface';
 export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
 export type { UnembeddedTransactionDataInterface } from './title-embedding/interface/unembedded-transaction-data.interface';
 

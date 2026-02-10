@@ -6,13 +6,10 @@ import { DB } from '../../@generic/type/db.type';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
-import { EmbeddingPatternQueryInterface } from '../../title-embedding/interface/embedding-pattern-query.interface';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
-import { FrequentPatternQueryInterface } from '../interface/frequent-pattern-query.interface';
-import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
 import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
 import { TransactionPatternQueryInterface } from '../interface/transaction-pattern-query.interface';
@@ -21,63 +18,19 @@ import { isValidPatternRow } from '../type-guard/is-valid-pattern-row.type-guard
 
 const DEFAULT_LIMIT = 10;
 const MIN_OCCURRENCES = 2;
-const DAYS_IN_MONTH = 31;
 
 export class TransactionPatternRepository {
     constructor(private db: DB) {}
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = performance.now();
         const conditions = this.buildPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
-        // eslint-disable-next-line no-console
-        console.log(`[PatternRepo] weekly in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
-
-        return this.enrichPatternsWithTags(patternRows);
-    }
-
-    async findMonthlyPatterns(query: MonthlyPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = performance.now();
-        const conditions = this.buildMonthlyPatternConditions(query);
-        const havingConditions = this.buildMonthlyHavingConditions(query);
-        const patternRows = await this.executeMonthlyPatternQuery(conditions, havingConditions, query.limit ?? DEFAULT_LIMIT);
-        // eslint-disable-next-line no-console
-        console.log(`[PatternRepo] monthly in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
-
-        return this.enrichPatternsWithTags(patternRows);
-    }
-
-    async findPatternsByTitles(query: EmbeddingPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = performance.now();
-        /* eslint-disable no-console */
-        console.log(
-            `[PatternRepo] findPatternsByTitles titles=${query.titles.join(',')}, type=${query.type}, acct=${String(query.accountId)}`
-        );
-        /* eslint-enable no-console */
-        const conditions = this.buildEmbeddingPatternConditions(query);
-        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= 1`;
-        const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
-        const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
-        // eslint-disable-next-line no-console
-        console.log(`[PatternRepo] findPatternsByTitles in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
-
-        return this.enrichPatternsWithTags(patternRows);
-    }
-
-    async findFrequentPatterns(query: FrequentPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
-        const start = performance.now();
-        const conditions = this.buildCommonPatternConditions(query);
-        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`;
-        const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
-        const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
-        // eslint-disable-next-line no-console
-        console.log(`[PatternRepo] frequent in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
 
         return this.enrichPatternsWithTags(patternRows);
     }
 
     private buildPatternConditions(query: TransactionPatternQueryInterface): SQL[] {
-        const conditions = this.buildCommonPatternConditions(query);
+        const entryType = this.getEntryTypeForTransactionType(query.type);
 
         const weekdayCondition = sql`CAST(strftime('%w', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER) = ${query.weekday}`;
         const timeCondition = sql`
@@ -86,86 +39,30 @@ export class TransactionPatternRepository {
             BETWEEN ${query.timeWindowStartMinutes} AND ${query.timeWindowEndMinutes}
         `;
 
-        conditions.push(weekdayCondition, timeCondition);
-
-        if (isPositiveNumber(query.categoryId)) {
-            conditions.push(eq(TransactionEntryEntityTable.categoryId, query.categoryId));
-        }
-
-        return conditions;
-    }
-
-    private async executePatternQuery(conditions: SQL[], limit: number): Promise<PatternRowInterface[]> {
-        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`;
-        const orderBy = [desc(sql`MAX(${TransactionEntityTable.operatedAt})`), desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`)];
-
-        return this.executeBasePatternQuery(conditions, havingCondition, orderBy, limit);
-    }
-
-    private buildCommonPatternConditions(
-        query: Pick<MonthlyPatternQueryInterface, 'type' | 'accountId' | 'amountMin' | 'amountMax'>
-    ): SQL[] {
-        const entryType = this.getEntryTypeForTransactionType(query.type);
-
         const conditions: SQL[] = [
             eq(TransactionEntityTable.type, query.type),
             isNull(TransactionEntityTable.deletedAt),
-            ne(TransactionEntityTable.title, ''),
+            weekdayCondition,
+            timeCondition,
             eq(TransactionEntryEntityTable.type, entryType),
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
             isNotNull(TransactionEntryEntityTable.categoryId)
         ];
 
-        this.addOptionalAmountConditions(conditions, query);
+        this.addOptionalPatternConditions(conditions, query);
 
+        return conditions;
+    }
+
+    private addOptionalPatternConditions(conditions: SQL[], query: TransactionPatternQueryInterface): void {
         if (isPositiveNumber(query.accountId)) {
             conditions.push(eq(TransactionEntryEntityTable.accountId, query.accountId));
         }
 
-        return conditions;
-    }
-
-    private buildMonthlyPatternConditions(query: MonthlyPatternQueryInterface): SQL[] {
-        return this.buildCommonPatternConditions(query);
-    }
-
-    private buildEmbeddingPatternConditions(query: EmbeddingPatternQueryInterface): SQL[] {
-        const conditions = this.buildCommonPatternConditions(query);
-        conditions.push(inArray(TransactionEntityTable.title, query.titles));
-
-        return conditions;
-    }
-
-    private buildMonthlyHavingConditions(query: MonthlyPatternQueryInterface): SQL {
-        const dayOfMonthExpression = sql`CAST(strftime('%d', ${TransactionEntityTable.operatedAt}, 'unixepoch') AS INTEGER)`;
-
-        const consistencyCheck = sql`(
-            MAX(${dayOfMonthExpression}) - MIN(${dayOfMonthExpression}) <= ${query.dayWindowSize + 1}
-            OR (${DAYS_IN_MONTH} - MAX(${dayOfMonthExpression}) + MIN(${dayOfMonthExpression})) <= ${query.dayWindowSize + 1}
-        )`;
-
-        const avgDayOfMonth = sql`CAST(AVG(${dayOfMonthExpression}) AS INTEGER)`;
-        const dayWindowCheck = this.buildDayWindowCheck(avgDayOfMonth, query.dayOfMonth, query.dayWindowSize);
-
-        return sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES} AND ${consistencyCheck} AND ${dayWindowCheck}`;
-    }
-
-    private buildDayWindowCheck(avgDayOfMonth: SQL, dayOfMonth: number, dayWindowSize: number): SQL {
-        const windowStart = dayOfMonth - dayWindowSize;
-        const windowEnd = dayOfMonth + dayWindowSize;
-
-        if (windowStart < 1) {
-            return sql`(${avgDayOfMonth} >= ${windowStart + DAYS_IN_MONTH} OR ${avgDayOfMonth} <= ${windowEnd})`;
+        if (isPositiveNumber(query.categoryId)) {
+            conditions.push(eq(TransactionEntryEntityTable.categoryId, query.categoryId));
         }
 
-        if (windowEnd > DAYS_IN_MONTH) {
-            return sql`(${avgDayOfMonth} >= ${windowStart} OR ${avgDayOfMonth} <= ${windowEnd - DAYS_IN_MONTH})`;
-        }
-
-        return sql`${avgDayOfMonth} BETWEEN ${windowStart} AND ${windowEnd}`;
-    }
-
-    private addOptionalAmountConditions(conditions: SQL[], query: Pick<MonthlyPatternQueryInterface, 'amountMin' | 'amountMax'>): void {
         if (isPositiveNumber(query.amountMin)) {
             conditions.push(gte(TransactionEntryEntityTable.amount, query.amountMin));
         }
@@ -175,18 +72,7 @@ export class TransactionPatternRepository {
         }
     }
 
-    private async executeMonthlyPatternQuery(conditions: SQL[], havingConditions: SQL, limit: number): Promise<PatternRowInterface[]> {
-        const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
-
-        return this.executeBasePatternQuery(conditions, havingConditions, orderBy, limit);
-    }
-
-    private async executeBasePatternQuery(
-        conditions: SQL[],
-        havingCondition: SQL,
-        orderBy: SQL[],
-        limit: number
-    ): Promise<PatternRowInterface[]> {
+    private async executePatternQuery(conditions: SQL[], limit: number): Promise<PatternRowInterface[]> {
         return this.db
             .select({
                 categoryId: TransactionEntryEntityTable.categoryId,
@@ -208,8 +94,8 @@ export class TransactionPatternRepository {
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
             .where(and(...conditions))
             .groupBy(TransactionEntryEntityTable.categoryId, TransactionEntityTable.title)
-            .having(havingCondition)
-            .orderBy(...orderBy)
+            .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
+            .orderBy(desc(sql`MAX(${TransactionEntityTable.operatedAt})`), desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`))
             .limit(limit);
     }
 

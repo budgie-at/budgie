@@ -29,13 +29,7 @@ export const useRepeatedTransactionSuggestion = (
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
-    /* eslint-disable no-console, lingui/no-unlocalized-strings */
-    console.log(
-        `[PatternHook] RENDER enabled=${String(enabled)} accountId=${accountId} isReady=${String(isReady)} status=${internalStatus} suggestions=${suggestions.length}`
-    );
-    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
-    // eslint-disable-next-line max-statements -- Debug logging in effect
     useEffect(() => {
         const clearDebounceTimer = (): void => {
             if (isDefined(debounceTimerRef.current)) {
@@ -44,19 +38,12 @@ export const useRepeatedTransactionSuggestion = (
         };
 
         if (!isReady) {
-            console.log('[PatternHook] NOT READY, skipping'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
-
             return emptyFn;
         }
 
         const isInitialFetch = lastFetchedAmountRef.current === null;
         const hasAmountChanged = isPositiveNumber(amount) && lastFetchedAmountRef.current !== amount;
         const shouldFetch = isInitialFetch || hasAmountChanged;
-        /* eslint-disable no-console, lingui/no-unlocalized-strings */
-        console.log(
-            `[PatternHook] amount=${amount} lastFetched=${String(lastFetchedAmountRef.current)} isInitial=${String(isInitialFetch)} hasAmountChanged=${String(hasAmountChanged)} shouldFetch=${String(shouldFetch)} isReady=${String(isReady)}`
-        );
-        /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
         if (!shouldFetch) {
             return emptyFn;
@@ -65,8 +52,6 @@ export const useRepeatedTransactionSuggestion = (
         clearDebounceTimer();
 
         const fetchSuggestions = async (): Promise<void> => {
-            const start = performance.now();
-            console.log('[PatternSuggest] fetchSuggestions START'); // eslint-disable-line no-console, lingui/no-unlocalized-strings
             setInternalStatus('loading');
             lastFetchedAmountRef.current = amount;
             currentTimeRef.current = new Date();
@@ -79,15 +64,10 @@ export const useRepeatedTransactionSuggestion = (
                     ...(isPositiveNumber(amount) && { amount }),
                     ...(isPositiveNumber(categoryId) && { categoryId })
                 });
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log(`[PatternSuggest] done in ${(performance.now() - start).toFixed(0)}ms n=${results.length}`);
 
-                // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-                console.log(`[PatternHook] SET results=${results.length} status=${isNotEmptyArray(results) ? 'success' : 'error'}`);
                 setSuggestions(results);
                 setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
-            } catch (error) {
-                console.log('[PatternHook] CATCH error', error); // eslint-disable-line no-console, lingui/no-unlocalized-strings
+            } catch {
                 setInternalStatus('error');
             }
         };
