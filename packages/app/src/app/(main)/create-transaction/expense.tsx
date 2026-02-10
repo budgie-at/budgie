@@ -17,22 +17,31 @@ import { transactionService } from '../../../transaction/service/transaction.ser
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
 /* jscpd:ignore-end */
 
+const normalizeRouteParam = (value: string | string[] | undefined): string | undefined =>
+    Array.isArray(value) ? value[0] : value;
+
 /* jscpd:ignore-start */
 export default function CreateExpenseTransactionPage() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
     const { generateForTransaction } = useEmbeddingGenerator();
     const { accountId, categoryId, amount, comment, aiContext } = useLocalSearchParams<{
-        accountId?: string;
-        categoryId?: string;
-        amount?: string;
-        comment?: string;
-        aiContext?: string;
+        accountId?: string | string[];
+        categoryId?: string | string[];
+        amount?: string | string[];
+        comment?: string | string[];
+        aiContext?: string | string[];
     }>();
+    const normalizedAccountId = normalizeRouteParam(accountId);
+    const normalizedCategoryId = normalizeRouteParam(categoryId);
+    const normalizedAmount = normalizeRouteParam(amount);
+    const normalizedComment = normalizeRouteParam(comment);
+    const normalizedAiContext = normalizeRouteParam(aiContext);
 
-    const parsedAccountId = isDefined(accountId) && isPositiveNumber(Number(accountId)) ? Number(accountId) : null;
-    const parsedCategoryId = isDefined(categoryId) && isPositiveNumber(Number(categoryId)) ? Number(categoryId) : void 0;
-    const parsedAmount = isDefined(amount) && isPositiveNumber(Number(amount)) ? Number(amount) : void 0;
+    const parsedAccountId = isDefined(normalizedAccountId) && isPositiveNumber(Number(normalizedAccountId)) ? Number(normalizedAccountId) : null;
+    const parsedCategoryId =
+        isDefined(normalizedCategoryId) && isPositiveNumber(Number(normalizedCategoryId)) ? Number(normalizedCategoryId) : void 0;
+    const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
@@ -51,7 +60,7 @@ export default function CreateExpenseTransactionPage() {
         toAccountId: null,
         amount: parsedAmount,
         categoryId: parsedCategoryId,
-        comment
+        comment: normalizedComment
     });
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -65,7 +74,7 @@ export default function CreateExpenseTransactionPage() {
                     accountFieldName="fromAccountId"
                     transactionTitle=""
                     mccCategoryId={null}
-                    aiContext={aiContext}
+                    aiContext={normalizedAiContext}
                     isNewTransaction
                     buildEntries={buildExpenseEntry}
                     onSubmit={handleSubmit}

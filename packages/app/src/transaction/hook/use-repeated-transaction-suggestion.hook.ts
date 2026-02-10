@@ -1,8 +1,9 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { emptyFn, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
 
@@ -16,6 +17,7 @@ interface UseRepeatedTransactionSuggestionParams {
     readonly categoryId: number;
 }
 
+// eslint-disable-next-line max-statements -- Suggestion orchestration with focus-refresh and debounced amount updates
 export const useRepeatedTransactionSuggestion = (
     params: UseRepeatedTransactionSuggestionParams
 ): UseSuggestionReturnInterface<RepeatedTransactionPatternInterface> => {
@@ -23,17 +25,33 @@ export const useRepeatedTransactionSuggestion = (
 
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [suggestions, setSuggestions] = useState<RepeatedTransactionPatternInterface[]>([]);
+    const [refreshVersion, setRefreshVersion] = useState(0);
 
     const currentTimeRef = useRef(new Date());
-    const lastFetchedAmountRef = useRef<number | null>(null);
+    const lastRequestKeyRef = useRef<string | null>(null);
+    const lastAmountRef = useRef<number | null>(null);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
+    const amountOrNull = isPositiveNumber(amount) ? amount : null;
+    const categoryIdOrNull = isPositiveNumber(categoryId) ? categoryId : null;
 
+    useFocusEffect(
+        useCallback(() => {
+            if (!isDefined(lastRequestKeyRef.current)) {
+                return;
+            }
+
+            setRefreshVersion(version => version + 1);
+        }, [])
+    );
+
+    // eslint-disable-next-line max-statements -- Debounce and request-key orchestration for pattern suggestions
     useEffect(() => {
         const clearDebounceTimer = (): void => {
             if (isDefined(debounceTimerRef.current)) {
                 clearTimeout(debounceTimerRef.current);
+                debounceTimerRef.current = null;
             }
         };
 
@@ -41,19 +59,28 @@ export const useRepeatedTransactionSuggestion = (
             return emptyFn;
         }
 
-        const isInitialFetch = lastFetchedAmountRef.current === null;
-        const hasAmountChanged = isPositiveNumber(amount) && lastFetchedAmountRef.current !== amount;
-        const shouldFetch = isInitialFetch || hasAmountChanged;
+        const requestKey = JSON.stringify({
+            type,
+            accountId,
+            amount: amountOrNull,
+            categoryId: categoryIdOrNull,
+            refreshVersion
+        });
+        const hasRequestChanged = lastRequestKeyRef.current !== requestKey;
 
-        if (!shouldFetch) {
+        if (!hasRequestChanged) {
             return emptyFn;
         }
 
+        const shouldDebounce = isDefined(lastAmountRef.current) && lastAmountRef.current !== amountOrNull;
+        lastRequestKeyRef.current = requestKey;
+        lastAmountRef.current = amountOrNull;
+
         clearDebounceTimer();
 
+        let cancelled = false;
         const fetchSuggestions = async (): Promise<void> => {
             setInternalStatus('loading');
-            lastFetchedAmountRef.current = amount;
             currentTimeRef.current = new Date();
 
             try {
@@ -61,25 +88,32 @@ export const useRepeatedTransactionSuggestion = (
                     currentTime: currentTimeRef.current,
                     type,
                     accountId,
-                    ...(isPositiveNumber(amount) && { amount }),
-                    ...(isPositiveNumber(categoryId) && { categoryId })
+                    ...(isDefined(amountOrNull) && { amount: amountOrNull }),
+                    ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 });
 
-                setSuggestions(results);
-                setInternalStatus(isNotEmptyArray(results) ? 'success' : 'error');
+                if (!cancelled) {
+                    setSuggestions(results);
+                    setInternalStatus('success');
+                }
             } catch {
-                setInternalStatus('error');
+                if (!cancelled) {
+                    setInternalStatus('error');
+                }
             }
         };
 
-        if (isInitialFetch) {
-            void fetchSuggestions();
-        } else {
+        if (shouldDebounce) {
             debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
+        } else {
+            void fetchSuggestions();
         }
 
-        return clearDebounceTimer;
-    }, [isReady, type, accountId, amount, categoryId]);
+        return () => {
+            cancelled = true;
+            clearDebounceTimer();
+        };
+    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;

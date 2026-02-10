@@ -43,10 +43,7 @@ interface ProgressCallbackInterface {
 const buildContextData = (transactionData: UnembeddedTransactionDataInterface[]): TransactionContextDataInterface[] =>
     transactionData
         .map(row => {
-            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment, {
-                categoryName: row.categoryTitleEn,
-                tagNames: row.tagTitlesEn
-            });
+            const context = buildTransactionContext(row.title, row.mccFullDescription, row.comment);
 
             if (!isNotEmptyString(context)) {
                 return null;
