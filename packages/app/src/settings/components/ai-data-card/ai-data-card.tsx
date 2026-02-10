@@ -4,8 +4,8 @@ import { Text } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
+import { AiBrainProgress } from '../../../ai/component/ai-brain-progress/ai-brain-progress';
 import { useAiDataPreparation } from '../../hook/use-ai-data-preparation.hook';
-import { AiBrainProgress } from '../ai-brain-progress/ai-brain-progress';
 import { AiProgressBar } from '../ai-progress-bar/ai-progress-bar';
 
 const ICON_CONTAINER_SIZE = 36;
@@ -44,7 +44,7 @@ export const AiDataCard = () => {
     return (
         <HorizontalCell
             {...(!isRunning && { onPress: () => void start(), onLongPress: () => void startFresh() })}
-            left={<AiBrainProgress progress={brainProgress} size={ICON_CONTAINER_SIZE} iconSize={ICON_SIZE} />}
+            left={<AiBrainProgress progress={brainProgress} size={ICON_CONTAINER_SIZE} iconSize={ICON_SIZE} isAnimating={isRunning} />}
             right={<Text className="text-sm font-medium text-secondary-foreground">{`${brainProgress}%`}</Text>}
             variant="secondary"
             contentClassName="gap-y-xs"

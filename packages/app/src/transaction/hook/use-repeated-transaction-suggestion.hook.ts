@@ -17,7 +17,7 @@ interface UseRepeatedTransactionSuggestionParams {
     readonly categoryId: number;
 }
 
-// eslint-disable-next-line max-statements -- Suggestion orchestration with focus-refresh and debounced amount updates
+// eslint-disable-next-line max-statements -- Hook coordinates debounce, focus refresh, and async suggestion fetch lifecycle
 export const useRepeatedTransactionSuggestion = (
     params: UseRepeatedTransactionSuggestionParams
 ): UseSuggestionReturnInterface<RepeatedTransactionPatternInterface> => {
@@ -28,25 +28,26 @@ export const useRepeatedTransactionSuggestion = (
     const [refreshVersion, setRefreshVersion] = useState(0);
 
     const currentTimeRef = useRef(new Date());
-    const lastRequestKeyRef = useRef<string | null>(null);
     const lastAmountRef = useRef<number | null>(null);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
     const amountOrNull = isPositiveNumber(amount) ? amount : null;
     const categoryIdOrNull = isPositiveNumber(categoryId) ? categoryId : null;
+    const requestKey = JSON.stringify({
+        type,
+        accountId,
+        amount: amountOrNull,
+        categoryId: categoryIdOrNull,
+        refreshVersion
+    });
 
     useFocusEffect(
         useCallback(() => {
-            if (!isDefined(lastRequestKeyRef.current)) {
-                return;
-            }
-
             setRefreshVersion(version => version + 1);
         }, [])
     );
 
-    // eslint-disable-next-line max-statements -- Debounce and request-key orchestration for pattern suggestions
     useEffect(() => {
         const clearDebounceTimer = (): void => {
             if (isDefined(debounceTimerRef.current)) {
@@ -59,21 +60,7 @@ export const useRepeatedTransactionSuggestion = (
             return emptyFn;
         }
 
-        const requestKey = JSON.stringify({
-            type,
-            accountId,
-            amount: amountOrNull,
-            categoryId: categoryIdOrNull,
-            refreshVersion
-        });
-        const hasRequestChanged = lastRequestKeyRef.current !== requestKey;
-
-        if (!hasRequestChanged) {
-            return emptyFn;
-        }
-
         const shouldDebounce = isDefined(lastAmountRef.current) && lastAmountRef.current !== amountOrNull;
-        lastRequestKeyRef.current = requestKey;
         lastAmountRef.current = amountOrNull;
 
         clearDebounceTimer();
@@ -113,7 +100,7 @@ export const useRepeatedTransactionSuggestion = (
             cancelled = true;
             clearDebounceTimer();
         };
-    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion]);
+    }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, requestKey]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : internalStatus;
