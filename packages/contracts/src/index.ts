@@ -271,6 +271,7 @@ export { TitleEmbeddingEntitySchema } from './title-embedding/schema/title-embed
 
 export type { TitleEmbeddingEntityInterface } from './title-embedding/interface/title-embedding-entity.interface';
 export type { EmbeddingContextResultInterface } from './title-embedding/interface/embedding-context-result.interface';
+export type { CommentCountResultInterface } from './title-embedding/interface/comment-count-result.interface';
 export type { UnembeddedTransactionDataInterface } from './title-embedding/interface/unembedded-transaction-data.interface';
 
 export { TitleEmbeddingRepository } from './title-embedding/repository/title-embedding.repository';

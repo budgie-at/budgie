@@ -14,7 +14,6 @@ interface UseSuggestionLoadingStateParams {
 interface UseSuggestionLoadingStateReturn {
     readonly showLoading: boolean;
     readonly showContent: boolean;
-    readonly hasSelected: boolean;
     readonly markSelected: () => void;
 }
 
@@ -22,7 +21,6 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     const { status, hasResults, enabled } = params;
 
     const [showLoading, setShowLoading] = useState(false);
-    const [hasSelected, setHasSelected] = useState(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const wasProcessingRef = useRef(false);
 
@@ -59,11 +57,7 @@ export const useSuggestionLoadingState = (params: UseSuggestionLoadingStateParam
     }, [isProcessing]);
 
     const showLoadingIndicator = showLoading && !isReady;
-    const showContent = enabled && !hasSelected && (showLoadingIndicator || isReady);
+    const showContent = enabled && (showLoadingIndicator || isReady);
 
-    const markSelected = () => {
-        setHasSelected(true);
-    };
-
-    return { showLoading: showLoadingIndicator, showContent, hasSelected, markSelected };
+    return { showLoading: showLoadingIndicator, showContent, markSelected: () => void 0 };
 };
