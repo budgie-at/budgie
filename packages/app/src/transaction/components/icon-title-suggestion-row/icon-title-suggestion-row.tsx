@@ -23,7 +23,13 @@ export const IconTitleSuggestionRow = <T,>(props: Props<T>) => {
     const { suggestions, status, enabled, onSelect, getKey, getIcon, getTitle, getBadge } = props;
 
     const renderPill = (item: T, index: number, onPillSelect: () => void) => (
-        <SuggestionPill key={getKey(item)} index={index} animationDuration={ANIMATION_DURATION} staggerDelay={STAGGER_DELAY} onPress={onPillSelect}>
+        <SuggestionPill
+            key={getKey(item)}
+            index={index}
+            animationDuration={ANIMATION_DURATION}
+            staggerDelay={STAGGER_DELAY}
+            onPress={onPillSelect}
+        >
             <SuggestionPillContent icon={getIcon(item)} title={getTitle(item)} badge={getBadge?.(item)} />
         </SuggestionPill>
     );

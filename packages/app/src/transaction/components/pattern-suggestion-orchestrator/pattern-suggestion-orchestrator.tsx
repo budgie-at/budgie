@@ -1,18 +1,12 @@
 import { SuggestionStatus } from '@budgie/ai';
-import {
-    RepeatedTransactionPatternInterface,
-    TagEntityInterface,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { RepeatedTransactionPatternInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { usePatternSuggestionOrchestrator } from '../../hook/use-pattern-suggestion-orchestrator.hook';
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
-import {
-    PatternSuggestionOrchestratorConfig
-} from '../../interface/pattern-suggestion-orchestrator.interface';
+import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator.interface';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.interface';
 import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { deduplicatePatternCategories } from '../../utils/deduplicate-pattern-categories.util';
@@ -65,10 +59,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
     const canUsePattern = isPositiveNumber(accountId);
     const hasComment = isNotEmptyString(comment);
 
-    const patternEnabled =
-        !isSplitActive &&
-        canUsePattern &&
-        (config.loadPatternBeforeCategorySelection || hasCategorySelected);
+    const patternEnabled = !isSplitActive && canUsePattern && (config.loadPatternBeforeCategorySelection || hasCategorySelected);
     const { suggestions: patterns, status: patternStatus } = useRepeatedTransactionSuggestion({
         enabled: patternEnabled,
         type: transactionType,
@@ -111,10 +102,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         const categoryPatternComments = getPatternComments(patterns, selectedCategoryId);
         const hasNextTagStep = isNotEmptyArray(categoryPatternTagIds);
         const hasNextCommentStep =
-            !hasNextTagStep &&
-            !hasComment &&
-            config.allowPatternComments &&
-            isNotEmptyArray(categoryPatternComments);
+            !hasNextTagStep && !hasComment && config.allowPatternComments && isNotEmptyArray(categoryPatternComments);
 
         if (!hasNextTagStep && !hasNextCommentStep) {
             fillPatternAmount(selectedCategoryId);
