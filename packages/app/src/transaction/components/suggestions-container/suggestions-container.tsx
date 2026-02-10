@@ -57,12 +57,6 @@ export const SuggestionsContainer = (props: Props) => {
     const hasContext =
         isNotEmptyString(transactionTitle) || isPositiveNumber(mccCategoryId) || isNotEmptyString(comment) || isNotEmptyString(aiContext);
 
-    /* eslint-disable no-console, lingui/no-unlocalized-strings */
-    console.log(
-        `[Suggest] RENDER isNew=${String(isNewTransaction)} split=${String(isSplitActive)} acct=${accountId} amt=${amount} cat=${String(categoryId)}`
-    );
-    /* eslint-enable no-console, lingui/no-unlocalized-strings */
-
     const patternEnabled = isNewTransaction && !isSplitActive;
     const { suggestions: patterns, status: patternStatus } = useRepeatedTransactionSuggestion({
         enabled: patternEnabled,
@@ -72,32 +66,11 @@ export const SuggestionsContainer = (props: Props) => {
         categoryId: 0
     });
 
-    // eslint-disable-next-line no-console, lingui/no-unlocalized-strings
-    console.log(`[Suggest] hook result: status=${patternStatus} patterns=${patterns.length} enabled=${String(patternEnabled)}`);
-
     const patternTagIds = hasCategorySelected ? getPatternTagIds(patterns, safeCategoryId) : [];
     const patternComments = hasCategorySelected ? getPatternComments(patterns, safeCategoryId) : [];
     const hasPatternTags = isNotEmptyArray(patternTagIds);
     const hasPatternComments = isNotEmptyArray(patternComments);
     const hasComment = isNotEmptyString(comment);
-
-    /* eslint-disable no-console, lingui/no-unlocalized-strings */
-    if (isNotEmptyArray(patterns)) {
-        console.log(
-            `[Suggest] patterns(${patterns.length}): ${patterns.map(pt => `${pt.title}(cat=${pt.categoryId}/${pt.categoryTitle}, tags=[${pt.tagIds.join(',')}], comment=${String(pt.comment)}, n=${pt.occurrenceCount})`).join(' | ')}`
-        );
-    }
-    if (hasCategorySelected) {
-        const matchingPatterns = patterns.filter(pt => pt.categoryId === safeCategoryId);
-        console.log(
-            `[Suggest] cat=${safeCategoryId} matching(${matchingPatterns.length}): ${matchingPatterns.map(pt => `${pt.title}(tags=[${pt.tagIds.join(',')}], comment=${String(pt.comment)})`).join(' | ')}`
-        );
-        console.log(`[Suggest] tagIds=[${patternTagIds.join(',')}] comments=[${patternComments.join(',')}]`);
-    }
-    console.log(
-        `[Suggest] phase: hasCat=${String(hasCategorySelected)} hasTags=${String(hasTagsSelected)} hasComment=${String(hasComment)} hasPatternTags=${String(hasPatternTags)} hasPatternComments=${String(hasPatternComments)}`
-    );
-    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
     const showPatternCategories = isNewTransaction && !hasCategorySelected && !isSplitActive;
     const showPatternTags = isNewTransaction && hasCategorySelected && !hasTagsSelected && hasPatternTags && !isSplitActive;
@@ -138,12 +111,6 @@ export const SuggestionsContainer = (props: Props) => {
 
     const showCategorySuggestions = !isNewTransaction && !hasCategorySelected && hasContext && !isSplitActive;
     const showTagSuggestions = !isNewTransaction && hasCategorySelected && !hasTagsSelected && hasContext && !isSplitActive;
-
-    /* eslint-disable no-console, lingui/no-unlocalized-strings */
-    console.log(
-        `[Suggest] branches: showPatCat=${String(showPatternCategories)} showPatTag=${String(showPatternTags)} showPatComment=${String(showPatternComments)} showCatSuggest=${String(showCategorySuggestions)} showTagSuggest=${String(showTagSuggestions)}`
-    );
-    /* eslint-enable no-console, lingui/no-unlocalized-strings */
 
     if (isSplitActive) {
         return <SuggestionRowSpacer />;
