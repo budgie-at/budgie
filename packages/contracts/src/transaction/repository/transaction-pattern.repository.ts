@@ -11,6 +11,7 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import { FrequentPatternQueryInterface } from '../interface/frequent-pattern-query.interface';
 import { MonthlyPatternQueryInterface } from '../interface/monthly-pattern-query.interface';
 import { PatternRowInterface } from '../interface/pattern-row.interface';
 import { RepeatedTransactionPatternInterface } from '../interface/repeated-transaction-pattern.interface';
@@ -26,25 +27,51 @@ export class TransactionPatternRepository {
     constructor(private db: DB) {}
 
     async findRepeatedPatterns(query: TransactionPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
         const conditions = this.buildPatternConditions(query);
         const patternRows = await this.executePatternQuery(conditions, query.limit ?? DEFAULT_LIMIT);
+        // eslint-disable-next-line no-console
+        console.log(`[PatternRepo] weekly in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
 
         return this.enrichPatternsWithTags(patternRows);
     }
 
     async findMonthlyPatterns(query: MonthlyPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
         const conditions = this.buildMonthlyPatternConditions(query);
         const havingConditions = this.buildMonthlyHavingConditions(query);
         const patternRows = await this.executeMonthlyPatternQuery(conditions, havingConditions, query.limit ?? DEFAULT_LIMIT);
+        // eslint-disable-next-line no-console
+        console.log(`[PatternRepo] monthly in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
 
         return this.enrichPatternsWithTags(patternRows);
     }
 
     async findPatternsByTitles(query: EmbeddingPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
+        /* eslint-disable no-console */
+        console.log(
+            `[PatternRepo] findPatternsByTitles titles=${query.titles.join(',')}, type=${query.type}, acct=${String(query.accountId)}`
+        );
+        /* eslint-enable no-console */
         const conditions = this.buildEmbeddingPatternConditions(query);
+        const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= 1`;
+        const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
+        const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
+        // eslint-disable-next-line no-console
+        console.log(`[PatternRepo] findPatternsByTitles in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
+
+        return this.enrichPatternsWithTags(patternRows);
+    }
+
+    async findFrequentPatterns(query: FrequentPatternQueryInterface): Promise<RepeatedTransactionPatternInterface[]> {
+        const start = performance.now();
+        const conditions = this.buildCommonPatternConditions(query);
         const havingCondition = sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`;
         const orderBy = [desc(sql`COUNT(DISTINCT ${TransactionEntityTable.id})`), desc(sql`MAX(${TransactionEntityTable.operatedAt})`)];
         const patternRows = await this.executeBasePatternQuery(conditions, havingCondition, orderBy, query.limit ?? DEFAULT_LIMIT);
+        // eslint-disable-next-line no-console
+        console.log(`[PatternRepo] frequent in ${(performance.now() - start).toFixed(0)}ms, rows=${patternRows.length}`);
 
         return this.enrichPatternsWithTags(patternRows);
     }
@@ -83,6 +110,7 @@ export class TransactionPatternRepository {
         const conditions: SQL[] = [
             eq(TransactionEntityTable.type, query.type),
             isNull(TransactionEntityTable.deletedAt),
+            ne(TransactionEntityTable.title, ''),
             eq(TransactionEntryEntityTable.type, entryType),
             ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
             isNotNull(TransactionEntryEntityTable.categoryId)
