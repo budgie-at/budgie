@@ -5,6 +5,7 @@ export interface GenerateOptionsInterface {
 
 export interface LlmInterface {
     isReady: boolean;
+    isEmbeddingReady: boolean;
     isInitializing: boolean;
     isGenerating: boolean;
     downloadProgress: number;
