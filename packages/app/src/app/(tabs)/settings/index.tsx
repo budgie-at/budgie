@@ -1,7 +1,7 @@
 import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -31,8 +31,7 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
-    const { scrollTo } = useLocalSearchParams<{ scrollTo?: string }>();
-    const { scrollViewRef, sectionRef } = useScrollToRef(scrollTo);
+    const { scrollViewRef, anchorRef } = useScrollToRef();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
@@ -61,85 +60,95 @@ export default function SettingsPage() {
                         />
                     </SettingsGroup>
 
-                    <SettingsGroup title={t`Security`}>
-                        <PinCard />
-                        <SettingsCard
-                            icon={UserIconNameEnum.ShieldCheck}
-                            variant="pink"
-                            title={t`Screenshot Protection`}
-                            description={t`Hide account balances and net worth when taking screenshots`}
-                            right={
-                                <ThemedSwitch
-                                    className="my-auto"
-                                    onValueChange={handleToggle('isScreenshotProtectionEnabled')}
-                                    value={isScreenshotProtectionEnabled}
-                                />
-                            }
-                        />
-                    </SettingsGroup>
+                    <View ref={anchorRef('security')}>
+                        <SettingsGroup title={t`Security`}>
+                            <PinCard />
+                            <SettingsCard
+                                icon={UserIconNameEnum.ShieldCheck}
+                                variant="pink"
+                                title={t`Screenshot Protection`}
+                                description={t`Hide account balances and net worth when taking screenshots`}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        onValueChange={handleToggle('isScreenshotProtectionEnabled')}
+                                        value={isScreenshotProtectionEnabled}
+                                    />
+                                }
+                            />
+                        </SettingsGroup>
+                    </View>
 
-                    <SettingsGroup title={t`General`}>
-                        <LanguageSelector />
-                        <DefaultCurrencySelector />
-                        <DefaultAccountSelector />
-                    </SettingsGroup>
+                    <View ref={anchorRef('general')}>
+                        <SettingsGroup title={t`General`}>
+                            <LanguageSelector />
+                            <DefaultCurrencySelector />
+                            <DefaultAccountSelector />
+                        </SettingsGroup>
+                    </View>
 
-                    <View ref={sectionRef}>
+                    <View ref={anchorRef('ai')}>
                         <SettingsGroup title={t`AI`}>
                             <AiDataCard />
                         </SettingsGroup>
                     </View>
 
-                    <SettingsGroup title={t`Organization`}>
-                        <SettingsCard
-                            onPress={handleNavigateToCategories}
-                            title={t`Manage Categories`}
-                            description={t`View and delete custom categories`}
-                            icon={UserIconNameEnum.Folder}
-                            variant="default"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToTags}
-                            title={t`Manage Tags`}
-                            description={t`Create and organize transaction tags`}
-                            icon={UserIconNameEnum.Tag}
-                            variant="pink"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToArchived}
-                            title={t`Archived Accounts`}
-                            description={t`View and restore archived accounts`}
-                            icon={UserIconNameEnum.Archive}
-                            variant="dark-warning"
-                        />
-                        <SettingsCard
-                            onPress={handleNavigateToInactive}
-                            title={t`Inactive Accounts`}
-                            description={t`View and activate hidden accounts`}
-                            icon={UserIconNameEnum.EyeOff}
-                            variant="dark-warning"
-                        />
-                    </SettingsGroup>
+                    <View ref={anchorRef('organization')}>
+                        <SettingsGroup title={t`Organization`}>
+                            <SettingsCard
+                                onPress={handleNavigateToCategories}
+                                title={t`Manage Categories`}
+                                description={t`View and delete custom categories`}
+                                icon={UserIconNameEnum.Folder}
+                                variant="default"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToTags}
+                                title={t`Manage Tags`}
+                                description={t`Create and organize transaction tags`}
+                                icon={UserIconNameEnum.Tag}
+                                variant="pink"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToArchived}
+                                title={t`Archived Accounts`}
+                                description={t`View and restore archived accounts`}
+                                icon={UserIconNameEnum.Archive}
+                                variant="dark-warning"
+                            />
+                            <SettingsCard
+                                onPress={handleNavigateToInactive}
+                                title={t`Inactive Accounts`}
+                                description={t`View and activate hidden accounts`}
+                                icon={UserIconNameEnum.EyeOff}
+                                variant="dark-warning"
+                            />
+                        </SettingsGroup>
+                    </View>
 
-                    <SettingsGroup title={t`Appearance`}>
-                        <ThemeSwitch />
-                        <SettingsCard
-                            title={t`Show Cents`}
-                            description={t`Show $1,234.56 instead of $1,235`}
-                            icon={UserIconNameEnum.DollarSign}
-                            right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
-                            variant="positive"
-                        />
-                    </SettingsGroup>
+                    <View ref={anchorRef('appearance')}>
+                        <SettingsGroup title={t`Appearance`}>
+                            <ThemeSwitch />
+                            <SettingsCard
+                                title={t`Show Cents`}
+                                description={t`Show $1,234.56 instead of $1,235`}
+                                icon={UserIconNameEnum.DollarSign}
+                                right={<ThemedSwitch className="my-auto" onValueChange={handleToggle('showCents')} value={showCents} />}
+                                variant="positive"
+                            />
+                        </SettingsGroup>
+                    </View>
 
-                    <SettingsGroup title={t`Data management`}>
-                        <ImportCsv />
-                        <ExportCsv />
-                        <ImportDatabase />
-                        <ExportDatabase />
-                        <RecalculateBalances />
-                        <TruncateData />
-                    </SettingsGroup>
+                    <View ref={anchorRef('data')}>
+                        <SettingsGroup title={t`Data management`}>
+                            <ImportCsv />
+                            <ExportCsv />
+                            <ImportDatabase />
+                            <ExportDatabase />
+                            <RecalculateBalances />
+                            <TruncateData />
+                        </SettingsGroup>
+                    </View>
 
                     <SettingsGroup title={t`About`}>
                         <SettingsCard
