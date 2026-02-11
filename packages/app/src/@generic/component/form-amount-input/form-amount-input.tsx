@@ -29,12 +29,22 @@ const textVariants = cva('', {
     }
 });
 
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const FormAmountInput = (props: Props) => {
     const { value, onChange, variant, textClassName, instrumentSymbol, allowNegative = false, autoFocus } = props;
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const [isNegative, setIsNegative] = useState(value < 0);
+    const [previousValue, setPreviousValue] = useState(value);
+
+    if (value !== previousValue) {
+        setPreviousValue(value);
+
+        if (value !== 0) {
+            setIsNegative(value < 0);
+        }
+    }
 
     const absoluteValue = Math.abs(value);
     const displayedText = absoluteValue === 0 ? '' : formatDigits(absoluteValue.toString());
@@ -46,15 +56,12 @@ export const FormAmountInput = (props: Props) => {
     const fontSizeStyle = { fontSize };
 
     const handleToggleSign = () => {
-        setIsNegative(previous => {
-            const newIsNegative = !previous;
+        const newIsNegative = !isNegative;
+        setIsNegative(newIsNegative);
 
-            if (absoluteValue !== 0) {
-                onChange(newIsNegative ? -absoluteValue : absoluteValue);
-            }
-
-            return newIsNegative;
-        });
+        if (absoluteValue !== 0) {
+            onChange(newIsNegative ? -absoluteValue : absoluteValue);
+        }
     };
 
     const handleAmountChange = (newAbsoluteValue: number) => {
